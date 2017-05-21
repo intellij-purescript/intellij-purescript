@@ -13,13 +13,31 @@
   tokenTypeClass="net.kenro.ji.jin.purescript.psi.PSTokenType"
 
   psiImplUtilClass="net.kenro.ji.jin.purescript.psi.impl.PSPsiImplUtil"
+
+  tokens = [
+    ID = "regexp:\w+"
+    space='regexp:\s+'
+    OP_PAR_LEFT = "("
+    OP_PAR_RIGHT = ")"
+  ]
 }
 
 PSFile ::= item_*
 
 private item_ ::= (ModuleDeclaration)
 
+Identifier ::= ID
+
 // Module
 
+ModuleName ::=
+  Identifier ['.' ModuleName]
+
+ModuleExport ::=
+     Identifier [',' ModuleExport]
+
+ModuleExports ::=
+  '(' ModuleExport ')'
+
 ModuleDeclaration ::=
-  'module this is cool where'
+  'module' ModuleName ModuleExports? 'where'
