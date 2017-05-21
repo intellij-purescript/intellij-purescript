@@ -1,0 +1,25 @@
+{
+  parserClass="net.kenro.ji.jin.purescript.parser.PSParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Simple"
+  psiImplClassSuffix="Impl"
+  psiPackage="net.kenro.ji.jin.purescript.psi"
+  psiImplPackage="net.kenro.ji.jin.purescript.psi.impl"
+
+  elementTypeHolderClass="net.kenro.ji.jin.purescript.psi.PSTypes"
+  elementTypeClass="net.kenro.ji.jin.purescript.psi.PSElementType"
+  tokenTypeClass="net.kenro.ji.jin.purescript.psi.PSTokenType"
+
+  psiImplUtilClass="net.kenro.ji.jin.purescript.psi.impl.PSPsiImplUtil"
+}
+
+PSFile ::= item_*
+
+private item_ ::= (ModuleDeclaration)
+
+// Module
+
+ModuleDeclaration ::=
+  'module this is cool where'
