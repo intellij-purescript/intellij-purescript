@@ -74,10 +74,10 @@
     STRING_ERROR = "STRING_ERROR"
     STRING_ESCAPED = "STRING_ESCAPED"
     STRING_GAP = "STRING_GAP"
-    WS = "WS"
 
 
-//    ID = "regexp:\w+"
+
+//    PROPER_NAME = "regexp:\w+"
 //    space='regexp:\s+'
   ]
 }
@@ -86,15 +86,13 @@ PSFile ::= item_*
 
 private item_ ::= (ModuleDeclaration)
 
-Identifier ::= ID
-
 // Module
 
 ModuleName ::=
-  Identifier ['.' ModuleName]
+  PROPER_NAME ['.' ModuleName]
 
 ModuleExport ::=
-     Identifier [',' ModuleExport]
+     PROPER_NAME [',' ModuleExport]
 
 ModuleExports ::=
   '(' ModuleExport ')'

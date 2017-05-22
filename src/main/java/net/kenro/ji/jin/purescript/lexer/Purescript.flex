@@ -18,13 +18,22 @@ return;
 
 %eof}
 
+
+//WHITE_SPACE_CHAR = [\ \t\f]
+//NEW_LINE = [\n\r]+
 whitespace = [ \t\f\r\n]
+
+
+LETTER = [:letter:]
+DIGIT = [:digit:]
+properName = (_|{LETTER}) (_|{DIGIT}|{LETTER})*
+
 opChars = [\:\!#\$%&*+./<=>?@\\\^|\-~]
 identStart = [:lowercase:]|"_"
 identLetter = [:letter:]|[:digit:]|[_\']
-properStart = [:uppercase:]
-properLetter = [:letter:]|[:digit:]
-properName = {properStart}{properLetter}*
+//properStart = [:uppercase:]
+//properLetter = [:letter:]|[:digit:]
+//properName = {properStart}{properLetter}*
 
 decimal = [0-9]+
 hexadecimal = [xX][0-9a-zA-Z]+
@@ -34,7 +43,7 @@ fractExponent = {fraction} {exponent}? | {exponent}
 fraction = "." {decimal}
 exponent = [eE] [+\-]? {decimal}
 escapeEmpty = "&"
-escapeGap = {whitespace}*"\\"
+//escapeGap = {whitespace}*"\\"
 escapeCode = {charEsc} | {charNum} | {charAscii} | {charControl}
 charEsc = [abfnrtv\\\"\']
 charNum = {decimal} | "x" [0-9a-zA-Z]+ | "o" [0-7]+
@@ -64,7 +73,7 @@ charControl = "^" [:uppercase:]
 {stringChar}                   { return STRING; }
 "\\" {escapeCode}              { return STRING_ESCAPED; }
 "\\" {escapeEmpty}             { return STRING_GAP; }
-"\\" {escapeGap}               { return STRING_GAP; }
+//"\\" {escapeGap}               { return STRING_GAP; }
 "\\"                           { return STRING_ERROR; }
 [^]                            { return ERROR; }
 }
@@ -76,7 +85,9 @@ charControl = "^" [:uppercase:]
 
 <YYINITIAL> {
 
-{whitespace}+                  { return WS; }
+{whitespace}+                  { return com.intellij.psi.TokenType.WHITE_SPACE; }
+//{WHITE_SPACE_CHAR}+            { return com.intellij.psi.TokenType.WHITE_SPACE; }
+//{NEW_LINE}+                    { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
 "{-"                           { yybegin(COMMENT); comment_nesting = 1; return MLCOMMENT; }
 "--" [^\n]*                    { return SLCOMMENT; }
