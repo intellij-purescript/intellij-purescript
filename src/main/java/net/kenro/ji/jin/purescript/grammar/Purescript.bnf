@@ -77,14 +77,15 @@
 
 
 
-//    PROPER_NAME = "regexp:\w+"
-//    space='regexp:\s+'
+    ID = "regexp:\w+"
+    PROPER_NAME = "regexp:\w+"
+    space='regexp:\s+'
   ]
 }
 
 PSFile ::= item_*
 
-private item_ ::= Declaration
+private item_ ::= ModuleDeclaration Declaration?
 
 // Module
 
@@ -120,8 +121,7 @@ DeclarationRefs ::=
 // Declarations
 
 Declaration ::=
-  ModuleDeclaration
-  | ImportDeclaration
+    ImportDeclaration
   | DataDeclaration
 
 // Imports
@@ -140,4 +140,4 @@ DataDeclaration ::=
 
 
 DeclarationRefIdList ::=
-  DeclarationRefId [ WHITE_SPACE DeclarationRefId]
+  DeclarationRefId [ ',' DeclarationRefId]
