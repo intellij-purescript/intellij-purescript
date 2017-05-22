@@ -1,1 +1,1 @@
-module Main2 where
+module Main where
