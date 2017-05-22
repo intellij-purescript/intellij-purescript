@@ -122,6 +122,7 @@ DeclarationRefs ::=
 Declaration ::=
   ModuleDeclaration
   | ImportDeclaration
+  | DataDeclaration
 
 // Imports
 
@@ -130,3 +131,13 @@ ImportDeclaration ::=
 
 ImportName ::=
   PROPER_NAME ['.' ImportName] DeclarationRefs?
+
+// Data Declaration
+
+DataDeclaration ::=
+  'data' DeclarationRefType DeclarationRefIdList?
+
+
+
+DeclarationRefIdList ::=
+  DeclarationRefId [ WHITE_SPACE DeclarationRefId]
