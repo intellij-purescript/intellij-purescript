@@ -84,35 +84,49 @@
 
 PSFile ::= item_*
 
-private item_ ::= (ModuleDeclaration)
+private item_ ::= Declaration
 
 // Module
+
+ModuleDeclaration ::=
+  'module' ModuleName DeclarationRefs? 'where'
 
 ModuleName ::=
   PROPER_NAME ['.' ModuleName]
 
-ModuleExportType ::= PROPER_NAME
-
-ModuleExportTypeConstructorItem ::=
-  PROPER_NAME [',' PROPER_NAME]
-
-ModuleExportTypeConstructor ::=
-    ModuleExportType LPAREN (DDOT | ModuleExportTypeConstructorItem) RPAREN
-
 ModuleExportModuleName ::= 'module' PROPER_NAME
 
-ModuleExportId ::= ID
+// Export & Import List
 
+DeclarationRefType ::= PROPER_NAME
 
+DeclarationRefId ::= ID
 
-ModuleExport ::=
-     (ModuleExportTypeConstructor
-     | ModuleExportType
+DeclarationRefTypeConstructorItem ::=
+  PROPER_NAME [',' PROPER_NAME]
+
+DeclarationRefTypeConstructor ::=
+    DeclarationRefType LPAREN (DDOT | DeclarationRefTypeConstructorItem) RPAREN
+
+DeclarationRefList ::=
+     (DeclarationRefTypeConstructor
+     | DeclarationRefType
      | ModuleExportModuleName
-     | ModuleExportId ) [',' ModuleExport]
+     | DeclarationRefId ) [',' DeclarationRefList]
 
-ModuleExports ::=
-  '(' ModuleExport ')'
+DeclarationRefs ::=
+  '(' DeclarationRefList ')'
 
-ModuleDeclaration ::=
-  'module' ModuleName ModuleExports? 'where'
+// Declarations
+
+Declaration ::=
+  ModuleDeclaration
+  | ImportDeclaration
+
+// Imports
+
+ImportDeclaration ::=
+  'import' ImportName
+
+ImportName ::=
+  PROPER_NAME ['.' ImportName] DeclarationRefs?

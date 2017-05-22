@@ -1,0 +1,12 @@
+Purescript File
+  PSDeclarationImpl(DECLARATION)
+    PSModuleDeclarationImpl(MODULE_DECLARATION)
+      PsiElement(PSTokenType.module)('module')
+      PSModuleNameImpl(MODULE_NAME)
+        PsiElement(PSTokenType.PROPER_NAME)('A')
+      PsiElement(PSTokenType.where)('where')
+  PSDeclarationImpl(DECLARATION)
+    PSImportDeclarationImpl(IMPORT_DECLARATION)
+      PsiElement(PSTokenType.import)('import')
+      PSImportNameImpl(IMPORT_NAME)
+        PsiElement(PSTokenType.PROPER_NAME)('B')
