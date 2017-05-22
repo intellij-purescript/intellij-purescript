@@ -77,9 +77,9 @@
 
 
 
-    ID = "regexp:\w+"
-    PROPER_NAME = "regexp:\w+"
-    space='regexp:\s+'
+//    ID = "regexp:\w+"
+//    PROPER_NAME = "regexp:\w+"
+//    space='regexp:\s+'
   ]
 }
 
@@ -138,6 +138,5 @@ DataDeclaration ::=
   'data' DeclarationRefType DeclarationRefIdList?
 
 
-
 DeclarationRefIdList ::=
-  DeclarationRefId [ ',' DeclarationRefId]
+  DeclarationRefId [ DeclarationRefIdList ]
