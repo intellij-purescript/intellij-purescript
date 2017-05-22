@@ -16,11 +16,10 @@ import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.lexer.PSLexerAdapter;
 import org.jetbrains.annotations.NotNull;
 import net.kenro.ji.jin.purescript.psi.*;
-import net.kenro.ji.jin.purescript.parser;
 
 public class PSParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    public static final TokenSet COMMENTS = TokenSet.create(PSTypes.COMMENT);
+    public static final TokenSet COMMENTS = TokenSet.create(PSTypes.SLCOMMENT, PSTypes.MLCOMMENT);
 
     public static final IFileElementType FILE = new IFileElementType(PSLanguage.INSTANCE);
 

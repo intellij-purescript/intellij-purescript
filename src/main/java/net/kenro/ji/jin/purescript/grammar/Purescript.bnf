@@ -3,7 +3,7 @@
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
-  psiClassPrefix="Simple"
+  psiClassPrefix="PS"
   psiImplClassSuffix="Impl"
   psiPackage="net.kenro.ji.jin.purescript.psi"
   psiImplPackage="net.kenro.ji.jin.purescript.psi.impl"
@@ -62,7 +62,18 @@
     RCURLY    = "}"
     DDOT      = ".."
 
-    ID = "regexp:\w+"
+    ID = "ID"
+    MLCOMMENT = "MLCOMMENT"
+    SLCOMMENT = "SLCOMMENT"
+    PROPER_NAME = "PROPER_NAME"
+    OPERATOR = "OPERATOR"
+    STRING = "STRING"
+    NATURAL = "NATURAL"
+    FLOAT = "FLOAT"
+    WS = "WS"
+
+
+//    ID = "regexp:\w+"
 //    space='regexp:\s+'
   ]
 }
