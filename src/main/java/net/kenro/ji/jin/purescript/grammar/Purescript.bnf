@@ -91,8 +91,25 @@ private item_ ::= (ModuleDeclaration)
 ModuleName ::=
   PROPER_NAME ['.' ModuleName]
 
+ModuleExportType ::= PROPER_NAME
+
+ModuleExportTypeConstructorItem ::=
+  PROPER_NAME [',' PROPER_NAME]
+
+ModuleExportTypeConstructor ::=
+    ModuleExportType LPAREN (DDOT | ModuleExportTypeConstructorItem) RPAREN
+
+ModuleExportModuleName ::= 'module' PROPER_NAME
+
+ModuleExportId ::= ID
+
+
+
 ModuleExport ::=
-     PROPER_NAME [',' ModuleExport]
+     (ModuleExportTypeConstructor
+     | ModuleExportType
+     | ModuleExportModuleName
+     | ModuleExportId ) [',' ModuleExport]
 
 ModuleExports ::=
   '(' ModuleExport ')'

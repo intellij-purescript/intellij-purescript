@@ -9,6 +9,8 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 
     // modules
     public void testmodule1() { doTest(true, true); }
+    public void testmodule2() { doTest(true, true); }
+    public void testmodule_export1() { doTest(true, true); }
 
 
 

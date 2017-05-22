@@ -18,16 +18,7 @@ return;
 
 %eof}
 
-
-//WHITE_SPACE_CHAR = [\ \t\f]
-//NEW_LINE = [\n\r]+
 whitespace = [ \t\f\r\n]
-
-
-//LETTER = [:letter:]
-//DIGIT = [:digit:]
-//properName = (_|{LETTER}) (_|{DIGIT}|{LETTER})*
-
 opChars = [\:\!#\$%&*+./<=>?@\\\^|\-~]
 identStart = [:lowercase:]|"_"
 identLetter = [:letter:]|[:digit:]|[_\']
