@@ -6,6 +6,6 @@ import java.io.Reader;
 
 public class PSLexerAdapter extends FlexAdapter {
     public PSLexerAdapter() {
-        super(new SimpleLexer((Reader) null));
+        super(new PSLanguageLexer((Reader) null));
     }
 }

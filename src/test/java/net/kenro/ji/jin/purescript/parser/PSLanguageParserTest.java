@@ -4,7 +4,7 @@ package net.kenro.ji.jin.purescript.parser;
 public class PSLanguageParserTest extends PSLanguageParserTestBase {
 
     public PSLanguageParserTest() {
-        super("parser", "d", new PSParserDefinition());
+        super("parser", "purs", new PSParserDefinition());
     }
 
     // modules

@@ -2,7 +2,7 @@ package net.kenro.ji.jin.purescript.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import static net.kenro.ji.jin.psi.PSTypes.*;
+import static net.kenro.ji.jin.purescript.psi.PSTypes.*;
 
 %%
 
