@@ -14,11 +14,56 @@
 
   psiImplUtilClass="net.kenro.ji.jin.purescript.psi.impl.PSPsiImplUtil"
 
+  generateTokenAccessors=true
+
   tokens = [
+    DATA      = "data"
+    TYPE      = "type"
+    NEWTYPE   = "newtype"
+    FOREIGN   = "foreign"
+    IMPORT    = "import"
+    INFIXL    = "infixl"
+    INFIXR    = "infixr"
+    INFIX     = "infix"
+    CLASS     = "class"
+    INSTANCE  = "instance"
+    MODULE    = "module"
+    CASE      = "case"
+    OF        = "of"
+    IF        = "if"
+    THEN      = "then"
+    ELSE      = "else"
+    DO        = "do"
+    LET       = "let"
+    TRUE      = "true"
+    FALSE     = "false"
+    IN        = "in"
+    WHERE     = "where"
+    FORALL    = "forall"
+    QUALIFIED = "qualified"
+    HIDING    = "hiding"
+    AS        = "as"
+    DARROW    = "=>"
+    ARROW     = "->"
+    LARROW    = "<-"
+    EQ        = "="
+    DOT       = "."
+    BACKSLASH = "\\"
+    SEMI      = ";"
+    DCOLON    = "::"
+    TICK      = "`"
+    PIPE      = "|"
+    COMMA     = ","
+    LPAREN    = "("
+    RPAREN    = ")"
+    LBRACK    = "["
+    RBRACK    = "]"
+    LCURLY    = "{"
+    RCURLY    = "}"
+    DDOT      = ".."
+
     ID = "regexp:\w+"
-    space='regexp:\s+'
-    OP_PAR_LEFT = "("
-    OP_PAR_RIGHT = ")"
+//    space='regexp:\s+'
   ]
 }
 

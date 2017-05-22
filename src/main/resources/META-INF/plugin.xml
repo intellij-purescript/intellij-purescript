@@ -26,7 +26,9 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <fileTypeFactory implementation="net.kenro.ji.jin.purescript.file.PSFileTypeFactory2"/>
+    <fileTypeFactory implementation="net.kenro.ji.jin.purescript.file.PSFileTypeFactory"/>
+
+    <lang.parserDefinition language="Purescript" implementationClass="net.kenro.ji.jin.purescript.parser.PSParserDefinition"/>
   </extensions>
 
   <actions>
