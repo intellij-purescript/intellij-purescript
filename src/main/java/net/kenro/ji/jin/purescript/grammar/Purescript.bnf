@@ -85,7 +85,7 @@
 
 PSFile ::= item_*
 
-private item_ ::= ModuleDeclaration Declaration?
+private item_ ::= ModuleDeclaration Declarations?
 
 // Module
 
@@ -119,6 +119,9 @@ DeclarationRefs ::=
   '(' DeclarationRefList ')'
 
 // Declarations
+
+Declarations ::=
+  Declaration Declarations?
 
 Declaration ::=
     ImportDeclaration
