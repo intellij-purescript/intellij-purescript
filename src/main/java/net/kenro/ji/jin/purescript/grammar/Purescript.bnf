@@ -144,7 +144,7 @@ DataDeclarationItemList ::=
    DataDeclarationItem [PIPE DataDeclarationItem ]
 
 DeclarationRefIdList ::=
-  DeclarationRefId [ DeclarationRefIdList ]
+  DeclarationRefId DeclarationRefIdList?
 
 DataDeclarationBody ::=
    LCURLY  DataDeclarationTypeDefinitionList  RCURLY
