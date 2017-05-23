@@ -156,7 +156,7 @@ DataDeclarationBody ::=
    LCURLY  DataDeclarationTypeDefinitionList  RCURLY
 
 DataDeclarationTypeDefinition ::=
-   ID DCOLON (DeclarationRefType [ARROW DeclarationRefType])
+   ID DCOLON ( (DeclarationRefId | DeclarationRefType) [ARROW (DeclarationRefId | DeclarationRefType)])
 
 DataDeclarationTypeDefinitionList ::=
    DataDeclarationTypeDefinition [ ',' DataDeclarationTypeDefinitionList ]
