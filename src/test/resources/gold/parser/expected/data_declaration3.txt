@@ -13,5 +13,6 @@ Purescript File
         PsiElement(PSTokenType.=)('=')
         PSDataDeclarationItemListImpl(DATA_DECLARATION_ITEM_LIST)
           PSDataDeclarationItemImpl(DATA_DECLARATION_ITEM)
-            PSDeclarationRefTypeImpl(DECLARATION_REF_TYPE)
-              PsiElement(PSTokenType.PROPER_NAME)('NoOp2')
+            PSDeclarationRefTypeListImpl(DECLARATION_REF_TYPE_LIST)
+              PSDeclarationRefTypeImpl(DECLARATION_REF_TYPE)
+                PsiElement(PSTokenType.PROPER_NAME)('NoOp2')

@@ -141,13 +141,16 @@ DataDeclaration ::=
   'data' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
 
 DataDeclarationItem ::=
-  DeclarationRefType DeclarationRefIdList? DataDeclarationBody?
+  DeclarationRefTypeList DeclarationRefIdList? DataDeclarationBody?
 
 DataDeclarationItemList ::=
-   DataDeclarationItem [PIPE DataDeclarationItem ]
+   DataDeclarationItem [PIPE DataDeclarationItemList ]
 
 DeclarationRefIdList ::=
   DeclarationRefId DeclarationRefIdList?
+
+DeclarationRefTypeList ::=
+  DeclarationRefType DeclarationRefTypeList?
 
 DataDeclarationBody ::=
    LCURLY  DataDeclarationTypeDefinitionList  RCURLY
