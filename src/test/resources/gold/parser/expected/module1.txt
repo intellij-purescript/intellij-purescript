@@ -1,7 +1,6 @@
 Purescript File
-  PSDeclarationImpl(DECLARATION)
-    PSModuleDeclarationImpl(MODULE_DECLARATION)
-      PsiElement(PSTokenType.module)('module')
-      PSModuleNameImpl(MODULE_NAME)
-        PsiElement(PSTokenType.PROPER_NAME)('Main')
-      PsiElement(PSTokenType.where)('where')
+  PSModuleDeclarationImpl(MODULE_DECLARATION)
+    PsiElement(PSTokenType.module)('module')
+    PSModuleNameImpl(MODULE_NAME)
+      PsiElement(PSTokenType.PROPER_NAME)('Main')
+    PsiElement(PSTokenType.where)('where')

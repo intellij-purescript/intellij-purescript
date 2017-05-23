@@ -135,8 +135,26 @@ ImportName ::=
 // Data Declaration
 
 DataDeclaration ::=
-  'data' DeclarationRefType DeclarationRefIdList?
+  'data' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
 
+DataDeclarationItem ::=
+  DeclarationRefType DeclarationRefIdList? DataDeclarationBody?
+
+DataDeclarationItemList ::=
+   DataDeclarationItem [PIPE DataDeclarationItem ]
 
 DeclarationRefIdList ::=
   DeclarationRefId [ DeclarationRefIdList ]
+
+DataDeclarationBody ::=
+   LCURLY  DataDeclarationTypeDefinitionList  RCURLY
+
+DataDeclarationTypeDefinition ::=
+   ID DCOLON (DeclarationRefType [ARROW DeclarationRefType])
+
+DataDeclarationTypeDefinitionList ::=
+   DataDeclarationTypeDefinition [ ',' DataDeclarationTypeDefinitionList ]
+
+
+
+
