@@ -160,10 +160,20 @@ DataDeclarationBody ::=
    LCURLY  DataDeclarationTypeDefinitionList?  RCURLY
 
 DataDeclarationTypeDefinition ::=
-   ID DCOLON ( (DeclarationRefId | DeclarationRefType) [ARROW (DeclarationRefId | DeclarationRefType)])
+   ID DCOLON ( LPAREN? ParenthesisedTypeThenIdList RPAREN? [ARROW  LPAREN? ParenthesisedTypeThenIdList RPAREN? ] )
+
+ParenthesisedTypeThenIdList ::=
+    (LPAREN? ParenthesisedDeclarationRefTypeList ParenthesisedDeclarationRefIdList? RPAREN?)
 
 DataDeclarationTypeDefinitionList ::=
    DataDeclarationTypeDefinition [ ',' DataDeclarationTypeDefinitionList ]
+
+
+ParenthesisedDeclarationRefIdList ::=
+  LPAREN? DeclarationRefId RPAREN? ParenthesisedDeclarationRefIdList?
+
+ParenthesisedDeclarationRefTypeList ::=
+  LPAREN? DeclarationRefType RPAREN? ParenthesisedDeclarationRefTypeList?
 
 // Type Declaration
 
