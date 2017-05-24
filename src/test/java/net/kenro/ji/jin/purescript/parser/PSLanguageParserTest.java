@@ -29,6 +29,9 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testdata_declaration7() { doTest(true, true); }
     public void testdata_declaration8() { doTest(true, true); }
     public void testdata_declaration9() { doTest(true, true); }
+    public void testdata_declaration10() { doTest(true, true); }
+    public void testdata_declaration11() { doTest(true, true); }
+    public void testdata_declaration12() { doTest(true, true); }
 
 
 

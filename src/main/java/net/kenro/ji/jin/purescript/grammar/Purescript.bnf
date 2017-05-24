@@ -77,9 +77,9 @@
 
 
 
-//    ID = "regexp:\w+"
-//    PROPER_NAME = "regexp:\w+"
-//    space='regexp:\s+'
+    PROPER_NAME = "regexp:[A-Z]\w+"
+    ID = "regexp:\w+"
+    space='regexp:\s+'
   ]
 }
 
@@ -126,6 +126,8 @@ Declarations ::=
 Declaration ::=
     ImportDeclaration
   | DataDeclaration
+  | TypeDeclaration
+  | NewTypeDeclaration
 
 // Imports
 
@@ -141,7 +143,7 @@ DataDeclaration ::=
   'data' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
 
 DataDeclarationItem ::=
-  DeclarationRefTypeList DeclarationRefIdList? DataDeclarationBody?
+  DeclarationRefTypeList DeclarationRefIdList? LPAREN? DataDeclarationBody? RPAREN?
 
 DataDeclarationItemList ::=
    DataDeclarationItem [PIPE DataDeclarationItemList ]
@@ -152,8 +154,10 @@ DeclarationRefIdList ::=
 DeclarationRefTypeList ::=
   DeclarationRefType DeclarationRefTypeList?
 
+//{ name :: (String -> (Array User)), age :: (a -> b)   }
+
 DataDeclarationBody ::=
-   LCURLY  DataDeclarationTypeDefinitionList  RCURLY
+   LCURLY  DataDeclarationTypeDefinitionList?  RCURLY
 
 DataDeclarationTypeDefinition ::=
    ID DCOLON ( (DeclarationRefId | DeclarationRefType) [ARROW (DeclarationRefId | DeclarationRefType)])
@@ -161,6 +165,14 @@ DataDeclarationTypeDefinition ::=
 DataDeclarationTypeDefinitionList ::=
    DataDeclarationTypeDefinition [ ',' DataDeclarationTypeDefinitionList ]
 
+// Type Declaration
 
+TypeDeclaration ::=
+   'type' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
+
+// NewType Declaration
+
+NewTypeDeclaration ::=
+   'newtype'
 
 
