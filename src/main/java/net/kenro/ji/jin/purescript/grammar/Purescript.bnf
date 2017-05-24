@@ -189,8 +189,21 @@ TypeDeclarationTypeOnly ::=
 ParenthesisedTypeOrIdList ::=
 (LPAREN? (ParenthesisedDeclarationRefTypeList | ParenthesisedDeclarationRefIdList) RPAREN?)
 
+Row ::=
+  LPAREN RowItemList? RPAREN
+
+RowItem ::=
+  ID DCOLON (LPAREN? (ParenthesisedDeclarationRefTypeList? ParenthesisedDeclarationRefIdList?) RPAREN?)
+
+RowItemList ::=
+  RowItem [',' RowItem] PIPE ID
+
 TypeDeclaration ::=
-   'type' DeclarationRefTypeList DeclarationRefIdList? (EQ LPAREN? TypeDeclarationItem RPAREN?)?
+   'type' DeclarationRefTypeList DeclarationRefIdList? EQ (ParenthesisedDeclarationRefTypeList ParenthesisedDeclarationRefIdList?) LPAREN RPAREN
+   |'type' DeclarationRefTypeList DeclarationRefIdList? EQ (DeclarationRefTypeList | DeclarationRefIdList)? LPAREN RowItemList? RPAREN
+   | 'type' DeclarationRefTypeList DeclarationRefIdList? (EQ LPAREN? TypeDeclarationItem RPAREN?)?
+
+
 
 GenericModifier ::=
    'forall' DeclarationRefIdList '.'
