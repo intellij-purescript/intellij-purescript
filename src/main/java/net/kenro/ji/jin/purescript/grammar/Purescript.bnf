@@ -181,7 +181,7 @@ ParenthesisedDeclarationRefTypeList ::=
 // Type Declaration
 
 TypeDeclaration ::=
-   'type' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
+   'type' DeclarationRefType DeclarationRefIdList? (EQ LPAREN? DataDeclarationItemList RPAREN?)?
 
 // NewType Declaration
 
