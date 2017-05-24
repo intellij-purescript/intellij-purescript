@@ -76,7 +76,7 @@
     STRING_GAP = "STRING_GAP"
 
 
-
+    // uncomment to play with live preview
     PROPER_NAME = "regexp:[A-Z]\w+"
     ID = "regexp:\w+"
     space='regexp:\s+'
@@ -143,7 +143,7 @@ DataDeclaration ::=
   'data' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
 
 DataDeclarationItem ::=
-  DeclarationRefTypeList DeclarationRefIdList? LPAREN? DataDeclarationBody? RPAREN?
+  DeclarationRefTypeList DeclarationRefIdList? LPAREN? DataDeclarationBody? DataDeclarationTypeOnly? RPAREN?
 
 DataDeclarationItemList ::=
    DataDeclarationItem [PIPE DataDeclarationItemList ]
@@ -154,20 +154,23 @@ DeclarationRefIdList ::=
 DeclarationRefTypeList ::=
   DeclarationRefType DeclarationRefTypeList?
 
-//{ name :: (String -> (Array User)), age :: (a -> b)   }
-
 DataDeclarationBody ::=
    LCURLY  DataDeclarationTypeDefinitionList?  RCURLY
 
+DataDeclarationTypeOnly ::=
+( LPAREN? ( ParenthesisedTypeThenIdList | ParenthesisedIdList ) RPAREN? [ARROW  LPAREN? ( ParenthesisedTypeThenIdList | ParenthesisedIdList ) RPAREN? ] )
+
 DataDeclarationTypeDefinition ::=
-   ID DCOLON ( LPAREN? ParenthesisedTypeThenIdList RPAREN? [ARROW  LPAREN? ParenthesisedTypeThenIdList RPAREN? ] )
+   ID DCOLON ( LPAREN? ( ParenthesisedTypeThenIdList | ParenthesisedIdList ) RPAREN? [ARROW  LPAREN? ( ParenthesisedTypeThenIdList | ParenthesisedIdList ) RPAREN? ] )
 
 ParenthesisedTypeThenIdList ::=
     (LPAREN? ParenthesisedDeclarationRefTypeList ParenthesisedDeclarationRefIdList? RPAREN?)
 
+ParenthesisedIdList ::=
+    (LPAREN? ParenthesisedDeclarationRefIdList RPAREN?)
+
 DataDeclarationTypeDefinitionList ::=
    DataDeclarationTypeDefinition [ ',' DataDeclarationTypeDefinitionList ]
-
 
 ParenthesisedDeclarationRefIdList ::=
   LPAREN? DeclarationRefId RPAREN? ParenthesisedDeclarationRefIdList?
