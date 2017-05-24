@@ -1,0 +1,12 @@
+Purescript File
+  PSModuleDeclarationImpl(MODULE_DECLARATION)
+    PsiElement(PSTokenType.module)('module')
+    PSModuleNameImpl(MODULE_NAME)
+      PsiElement(PSTokenType.PROPER_NAME)('A')
+    PsiElement(PSTokenType.where)('where')
+  PSDeclarationsImpl(DECLARATIONS)
+    PSDeclarationImpl(DECLARATION)
+      PSNewTypeDeclarationImpl(NEW_TYPE_DECLARATION)
+        PsiElement(PSTokenType.newtype)('newtype')
+        PSDeclarationRefTypeImpl(DECLARATION_REF_TYPE)
+          PsiElement(PSTokenType.PROPER_NAME)('User1')

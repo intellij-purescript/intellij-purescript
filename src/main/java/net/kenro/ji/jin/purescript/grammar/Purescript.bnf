@@ -198,6 +198,6 @@ GenericModifier ::=
 // NewType Declaration
 
 NewTypeDeclaration ::=
-   'newtype'
+   'newtype' DeclarationRefType (DeclarationRefIdList? EQ DataDeclarationItem )?
 
 
