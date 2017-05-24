@@ -180,8 +180,20 @@ ParenthesisedDeclarationRefTypeList ::=
 
 // Type Declaration
 
+TypeDeclarationItem ::=
+  LPAREN? GenericModifier? (DataDeclarationBody | TypeDeclarationTypeOnly) RPAREN? [ARROW TypeDeclarationItem]
+
+TypeDeclarationTypeOnly ::=
+  LPAREN? ParenthesisedTypeOrIdList RPAREN? [ARROW  LPAREN? ParenthesisedTypeOrIdList RPAREN? ]
+
+ParenthesisedTypeOrIdList ::=
+(LPAREN? (ParenthesisedDeclarationRefTypeList | ParenthesisedDeclarationRefIdList) RPAREN?)
+
 TypeDeclaration ::=
-   'type' DeclarationRefType DeclarationRefIdList? (EQ LPAREN? DataDeclarationItemList RPAREN?)?
+   'type' DeclarationRefTypeList DeclarationRefIdList? (EQ LPAREN? TypeDeclarationItem RPAREN?)?
+
+GenericModifier ::=
+   'forall' DeclarationRefIdList '.'
 
 // NewType Declaration
 
