@@ -20,6 +20,4 @@ Purescript File
         PsiElement(whitespace)(' ')
         PsiElement(proper name)('NoOp3')
         PsiElement(whitespace)(' ')
-        PSASTWrapperElement(TypeAtom)
-          PSASTWrapperElement(TypeVar)
-            PsiElement(identifier)('a')
+        PsiElement(identifier)('a')
