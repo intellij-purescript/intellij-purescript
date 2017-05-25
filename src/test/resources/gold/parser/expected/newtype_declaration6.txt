@@ -23,7 +23,7 @@ Purescript File
         PsiElement(proper name)('User9')
         PsiElement(whitespace)(' ')
         PsiElement(identifier)('a')
-        PsiElement(whitespace)(' ')
+        PsiElement(whitespace)('\n ')
         PsiElement({)('{')
         PsiElement(whitespace)('\n  ')
         PsiElement(identifier)('name')
@@ -35,6 +35,5 @@ Purescript File
         PsiElement(->)('->')
         PsiElement(whitespace)(' ')
         PsiElement(identifier)('b')
-        PsiElement(whitespace)('\n')
-  PsiErrorElement:Unexpected }. Expecting Module
-    PsiElement(})('}')
+        PsiElement(whitespace)('\n ')
+        PsiElement(})('}')
