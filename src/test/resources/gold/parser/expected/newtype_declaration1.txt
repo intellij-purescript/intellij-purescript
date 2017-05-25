@@ -9,8 +9,7 @@ Purescript File
       PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
-      PsiElement(newtype)('newtype')
-      PsiElement(whitespace)(' ')
-      PsiElement(proper name)('User1')
-      PsiErrorElement:Expecting proper name, identifier or =
-        <empty list>
+      PSASTWrapperElement(NewtypeDeclaration)
+        PsiElement(newtype)('newtype')
+        PsiElement(whitespace)(' ')
+        PsiElement(proper name)('User1')
