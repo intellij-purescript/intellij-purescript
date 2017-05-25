@@ -213,7 +213,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseType
                 = many1(parseTypePostfix)
                 .then(optional(
-                        reserved(ARROW).then(parseTypeRef)
+                        choice(reserved(ARROW),reserved(DARROW)).then(parseTypeRef)
                 )).as(Type);
 
         {
