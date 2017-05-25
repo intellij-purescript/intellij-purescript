@@ -99,21 +99,21 @@ ModuleExportModuleName ::= 'module' PROPER_NAME
 
 // Export & Import List
 
-DeclarationRefType ::= PROPER_NAME
+DeclarationType ::= PROPER_NAME
 
-DeclarationRefId ::= ID
+DeclarationId ::= ID
 
 DeclarationRefTypeConstructorItem ::=
   PROPER_NAME [',' PROPER_NAME]
 
 DeclarationRefTypeConstructor ::=
-    DeclarationRefType LPAREN (DDOT | DeclarationRefTypeConstructorItem) RPAREN
+    DeclarationType LPAREN (DDOT | DeclarationRefTypeConstructorItem) RPAREN
 
 DeclarationRefList ::=
      (DeclarationRefTypeConstructor
-     | DeclarationRefType
+     | DeclarationType
      | ModuleExportModuleName
-     | DeclarationRefId ) [',' DeclarationRefList]
+     | DeclarationId ) [',' DeclarationRefList]
 
 DeclarationRefs ::=
   '(' DeclarationRefList ')'
@@ -140,19 +140,19 @@ ImportName ::=
 // Data Declaration
 
 DataDeclaration ::=
-  'data' DeclarationRefType DeclarationRefIdList? (EQ DataDeclarationItemList )?
+  'data' DeclarationType IdList? (EQ DataDeclarationItemList )?
 
 DataDeclarationItem ::=
-  DeclarationRefTypeList DeclarationRefIdList? LPAREN? DataDeclarationBody? DataDeclarationTypeOnly? RPAREN?
+  TypeList IdList? LPAREN? DataDeclarationBody? DataDeclarationTypeOnly? RPAREN?
 
 DataDeclarationItemList ::=
    DataDeclarationItem [PIPE DataDeclarationItemList ]
 
-DeclarationRefIdList ::=
-  DeclarationRefId DeclarationRefIdList?
+IdList ::=
+  DeclarationId IdList?
 
-DeclarationRefTypeList ::=
-  DeclarationRefType DeclarationRefTypeList?
+TypeList ::=
+  DeclarationType TypeList?
 
 DataDeclarationBody ::=
    LCURLY  DataDeclarationTypeDefinitionList?  RCURLY
@@ -164,19 +164,16 @@ DataDeclarationTypeDefinition ::=
    ID DCOLON ( LPAREN? ( ParenthesisedTypeThenIdList | ParenthesisedIdList ) RPAREN? [ARROW  LPAREN? ( ParenthesisedTypeThenIdList | ParenthesisedIdList ) RPAREN? ] )
 
 ParenthesisedTypeThenIdList ::=
-    (LPAREN? ParenthesisedDeclarationRefTypeList ParenthesisedDeclarationRefIdList? RPAREN?)
-
-ParenthesisedIdList ::=
-    (LPAREN? ParenthesisedDeclarationRefIdList RPAREN?)
+    (LPAREN? ParenthesisedTypeList ParenthesisedIdList? RPAREN?)
 
 DataDeclarationTypeDefinitionList ::=
    DataDeclarationTypeDefinition [ ',' DataDeclarationTypeDefinitionList ]
 
-ParenthesisedDeclarationRefIdList ::=
-  LPAREN? DeclarationRefId RPAREN? ParenthesisedDeclarationRefIdList?
+ParenthesisedIdList ::=
+  LPAREN? (LPAREN? DeclarationId RPAREN? ParenthesisedIdList?) RPAREN?
 
-ParenthesisedDeclarationRefTypeList ::=
-  LPAREN? DeclarationRefType RPAREN? ParenthesisedDeclarationRefTypeList?
+ParenthesisedTypeList ::=
+  LPAREN? DeclarationType RPAREN? ParenthesisedTypeList?
 
 // Type Declaration
 
@@ -184,33 +181,30 @@ TypeDeclarationItem ::=
   LPAREN? GenericModifier? (DataDeclarationBody | TypeDeclarationTypeOnly) RPAREN? [ARROW TypeDeclarationItem]
 
 TypeDeclarationTypeOnly ::=
-  LPAREN? ParenthesisedTypeOrIdList RPAREN? [ARROW  LPAREN? ParenthesisedTypeOrIdList RPAREN? ]
+  LPAREN? ParenthesisedTypeOrIdList RPAREN? [ (ARROW | DARROW)  TypeDeclarationTypeOnly ]
 
 ParenthesisedTypeOrIdList ::=
-(LPAREN? (ParenthesisedDeclarationRefTypeList | ParenthesisedDeclarationRefIdList) RPAREN?)
+  (LPAREN? (ParenthesisedTypeList? ParenthesisedIdList? LPAREN? RPAREN?) RPAREN?)
 
 Row ::=
-  LPAREN RowItemList? RPAREN
+  LPAREN? RowItemList RPAREN?
 
 RowItem ::=
-  ID DCOLON (LPAREN? (ParenthesisedDeclarationRefTypeList? ParenthesisedDeclarationRefIdList?) RPAREN?)
+  ID DCOLON TypeDeclarationTypeOnly
 
 RowItemList ::=
-  RowItem [',' RowItem] PIPE ID
+  RowItem [',' RowItemList ] PIPE? ID?
 
 TypeDeclaration ::=
-   'type' DeclarationRefTypeList DeclarationRefIdList? EQ (ParenthesisedDeclarationRefTypeList ParenthesisedDeclarationRefIdList?) LPAREN RPAREN
-   |'type' DeclarationRefTypeList DeclarationRefIdList? EQ (DeclarationRefTypeList | DeclarationRefIdList)? LPAREN RowItemList? RPAREN
-   | 'type' DeclarationRefTypeList DeclarationRefIdList? (EQ LPAREN? TypeDeclarationItem RPAREN?)?
-
+    'type' TypeList IdList? EQ ( Row | LPAREN? TypeDeclarationItem RPAREN? )
 
 
 GenericModifier ::=
-   'forall' DeclarationRefIdList '.'
+   'forall' IdList '.'
 
 // NewType Declaration
 
 NewTypeDeclaration ::=
-   'newtype' DeclarationRefType (DeclarationRefIdList? EQ DataDeclarationItem )?
+   'newtype' DeclarationType (IdList? EQ DataDeclarationItem )?
 
 
