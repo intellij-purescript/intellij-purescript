@@ -2,12 +2,12 @@ package net.kenro.ji.jin.purescript.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import static net.kenro.ji.jin.purescript.psi.PSTypes.*;
+import static net.kenro.ji.jin.purescript.psi.PSTokens.*;
 
 %%
 
 %unicode
-%class PSLanguageLexer
+%class _PSLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -76,7 +76,7 @@ charControl = "^" [:uppercase:]
 
 <YYINITIAL> {
 
-{whitespace}+                  { return com.intellij.psi.TokenType.WHITE_SPACE; }
+{whitespace}+                  { return WS; }
 
 "{-"                           { yybegin(COMMENT); comment_nesting = 1; return MLCOMMENT; }
 "--" [^\n]*                    { return SLCOMMENT; }
@@ -134,7 +134,7 @@ charControl = "^" [:uppercase:]
 "\"\"\""                       { yybegin(BLOCK_STRINGS); return STRING; }
 "\""                           { yybegin(STRINGS); return STRING; }
 
-{identStart}{identLetter}*     { return ID; }
+{identStart}{identLetter}*     { return IDENT; }
 {properName}                   { return PROPER_NAME; }
 {opChars}+                     { return OPERATOR; }
 

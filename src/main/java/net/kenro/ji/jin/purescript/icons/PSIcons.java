@@ -1,4 +1,4 @@
-package net.kenro.ji.jin.purescript;
+package net.kenro.ji.jin.purescript.icons;
 
 import com.intellij.openapi.util.IconLoader;
 

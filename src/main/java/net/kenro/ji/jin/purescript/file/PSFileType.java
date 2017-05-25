@@ -1,7 +1,7 @@
 package net.kenro.ji.jin.purescript.file;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import net.kenro.ji.jin.purescript.PSIcons;
+import net.kenro.ji.jin.purescript.icons.PSIcons;
 import net.kenro.ji.jin.purescript.PSLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
