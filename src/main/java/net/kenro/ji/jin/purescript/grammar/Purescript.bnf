@@ -173,7 +173,7 @@ ParenthesisedIdList ::=
   LPAREN? (LPAREN? DeclarationId RPAREN? ParenthesisedIdList?) RPAREN?
 
 ParenthesisedTypeList ::=
-  LPAREN? DeclarationType RPAREN? ParenthesisedTypeList?
+  LPAREN? DeclarationType Row? RPAREN? ParenthesisedTypeList?
 
 // Type Declaration
 
@@ -205,6 +205,7 @@ GenericModifier ::=
 // NewType Declaration
 
 NewTypeDeclaration ::=
-   'newtype' DeclarationType (IdList? EQ DataDeclarationItem )?
+   'newtype' DeclarationType (IdList? EQ DataDeclarationItem)?
+
 
 
