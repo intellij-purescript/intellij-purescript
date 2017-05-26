@@ -32,6 +32,8 @@ public interface PSTokens {
     PSElementType WHERE = new PSElementType("where");
 
     PSElementType FORALL = new PSElementType("forall");  // contextual keyword
+
+    // TODO kings - I think qualified on import is gone now and can be removed
     PSElementType QUALIFIED = new PSElementType("qualified");  // contextual keyword
     PSElementType HIDING = new PSElementType("hiding");  // contextual keyword
     PSElementType AS = new PSElementType("as");  // contextual keyword

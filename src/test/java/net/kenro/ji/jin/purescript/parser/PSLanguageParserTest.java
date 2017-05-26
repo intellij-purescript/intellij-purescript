@@ -60,6 +60,8 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
    // fixes for purescript examples failures
    public void test1570() { doTest(true, true); }
    public void test2049_fixity() { doTest(true, true); }
+//   public void test2049_named_pattern_matching() { doTest(true, true); }
+   public void test2288() { doTest(true, true); }
 
 }
 

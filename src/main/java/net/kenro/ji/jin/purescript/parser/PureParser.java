@@ -349,24 +349,15 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 )))
                 .as(TypeInstanceDeclaration);
 
-        private final Parsec qualImport
-                = reserved(QUALIFIED)
-                .then(indented(moduleName))
-                .then(optional(indented(parens(commaSep(parseDeclarationRef)))))
-                .then(reserved(AS))
-                .then(moduleName);
-
         private final Parsec importDeclarationType
                 = optional(indented(parens(commaSep(parseDeclarationRef))));
 
-        private final Parsec stdImport
-                = moduleName
-                .then(optional(reserved(HIDING)))
-                .then(importDeclarationType);
-
         private final SymbolicParsec parseImportDeclaration
                 = reserved(IMPORT)
-                .then(indented(choice(qualImport, stdImport)))
+                .then(indented(moduleName))
+                .then(optional(reserved(AS).then(moduleName)))
+                .then(optional(reserved(HIDING)))
+                .then(importDeclarationType)
                 .as(ImportDeclaration);
 
         private final Parsec parseDeclaration = positioned(choice(
