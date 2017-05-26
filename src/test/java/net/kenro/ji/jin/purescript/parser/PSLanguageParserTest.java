@@ -57,7 +57,9 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testnewtype_declaration9() { doTest(true, true); }
     public void testnewtype_declaration10() { doTest(true, true); }
 
-
+   // fixes for purescript examples failures
+   public void test1570() { doTest(true, true); }
+   public void test2049_fixity() { doTest(true, true); }
 
 }
 

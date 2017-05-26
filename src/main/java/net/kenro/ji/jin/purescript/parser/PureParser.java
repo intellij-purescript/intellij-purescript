@@ -176,6 +176,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 = commaSep(parseNameAndType(parsePolyTypeRef))
                 .then(parseRowEnding)
                 .as(Row);
+
+        private final Parsec parseAnonRow = parens(lexeme(identifier).then(reserved(DCOLON)).then(indented(identifier))).as(Row);
         private final Parsec parseObject = braces(parseRow).as(ObjectType);
         private final Parsec parseTypeAtom = indented(
                 choice(
@@ -308,7 +310,9 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseFixity = parseAssociativity.then(indented(lexeme(NATURAL))).as(Fixity);
         private final SymbolicParsec parseFixityDeclaration
                 = parseFixity
-                .then(indented(lexeme(operator)))
+                .then((properName))
+                .then((reserved(AS)))
+                .then((lexeme(operator)))
                 .as(FixityDeclaration);
 
         private final SymbolicParsec parseDeclarationRef = choice(
@@ -411,7 +415,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         private final Parsec parseAbs
                 = reserved(BACKSLASH)
-                .then(many1(indented(parseIdent.or(parseBinderNoParensRef).as(Abs))))
+                .then(choice(parseAnonRow,many1(indented(parseIdent.or(parseBinderNoParensRef).as(Abs)))))
                 .then(indented(reserved(ARROW)))
                 .then(parseValueRef);
         private final SymbolicParsec parseVar = parseQualified(parseIdent).as(Var);
