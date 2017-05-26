@@ -18,6 +18,7 @@ public interface PSTokens {
     PSElementType INFIX = new PSElementType("infix");
     PSElementType CLASS = new PSElementType("class");
     PSElementType INSTANCE = new PSElementType("instance");
+    PSElementType DERIVE = new PSElementType("derive");
     PSElementType MODULE = new PSElementType("module");
     PSElementType CASE = new PSElementType("case");
     PSElementType OF = new PSElementType("of");
@@ -71,7 +72,7 @@ public interface PSTokens {
     PSElementType NATURAL = new PSElementType("natural");
     PSElementType FLOAT = new PSElementType("float");
 
-    TokenSet kKeywords = TokenSet.create(DATA, NEWTYPE, TYPE, FOREIGN, IMPORT, INFIXL, INFIXR, INFIX, CLASS, INSTANCE,
+    TokenSet kKeywords = TokenSet.create(DATA, NEWTYPE, TYPE, FOREIGN, IMPORT, INFIXL, INFIXR, INFIX, CLASS, DERIVE ,INSTANCE,
             MODULE, CASE, OF, IF, THEN, ELSE, DO, LET, TRUE, FALSE, IN, WHERE, FORALL, QUALIFIED, HIDING, AS, START,
             BANG);
     TokenSet kStrings = TokenSet.create(STRING);

@@ -91,6 +91,7 @@ charControl = "^" [:uppercase:]
 "infix"                        { return INFIX; }
 "class"                        { return CLASS; }
 "instance"                     { return INSTANCE; }
+"derive"                       { return DERIVE; }
 "module"                       { return MODULE; }
 "case"                         { return CASE; }
 "of"                           { return OF; }

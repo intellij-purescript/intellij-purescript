@@ -62,6 +62,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void test2049_fixity() { doTest(true, true); }
     public void test2288() { doTest(true, true); }
     public void test2609() { doTest(true, true); }
+    public void test2616() { doTest(true, true); }
 //    public void test2378() { doTest(true, true); }
 //    public void test2049_named_pattern_matching() { doTest(true, true); }
 
