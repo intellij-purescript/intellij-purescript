@@ -23,7 +23,7 @@ opChars = [\:\!#\$%&*+./<=>?@\\\^|\-~]
 identStart = [:lowercase:]|"_"
 identLetter = [:letter:]|[:digit:]|[_\']
 properStart = [:uppercase:]
-properLetter = [:letter:]|[:digit:]
+properLetter = [:letter:]|[:digit:]|[\']
 properName = {properStart}{properLetter}*
 
 decimal = [0-9]+
