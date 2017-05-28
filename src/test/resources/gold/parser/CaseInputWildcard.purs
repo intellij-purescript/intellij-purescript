@@ -6,11 +6,21 @@ import Control.Monad.Eff.Console (log, CONSOLE)
 
 data Foo = X | Y
 
-what ∷ Foo → Int → Boolean → Foo
+what :: Foo -> Int -> Boolean -> Foo
 what x = case _, x, _ of
-  0, X, true → X
-  0, Y, true → X
-  _, _, _ → Y
+    0, X, true -> X
+    0, Y, true -> X
+    _, _, _ -> Y
+
+
+guu a = case _ of
+    true  | a -> "yes"
+    false | a -> "no"
+
+muu a = case _ of
+    true  -> "yes"
+    false -> "no"
+
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
