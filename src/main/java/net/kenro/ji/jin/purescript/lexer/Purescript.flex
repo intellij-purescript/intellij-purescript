@@ -105,19 +105,24 @@ charControl = "^" [:uppercase:]
 "in"                           { return IN; }
 "where"                        { return WHERE; }
 "forall"                       { return FORALL; }
+"∀"                            { return FORALL; }
 "qualified"                    { return QUALIFIED; }
 "hiding"                       { return HIDING; }
 "as"                           { return AS; }
 
 "=>"                           { return DARROW; }
+"⇒"                            { return DARROW; }
 "->"                           { return ARROW; }
+"→"                            { return ARROW; }
 "<-"                           { return LARROW; }
+"←"                            { return LARROW; }
 "="                            { return EQ; }
 "."                            { return DOT; }
 "\\"                           { return BACKSLASH; }
 
 ";"                            { return SEMI; }
 "::"                           { return DCOLON; }
+"∷"                            { return DCOLON; }
 "`"                            { return TICK; }
 "|"                            { return PIPE; }
 
