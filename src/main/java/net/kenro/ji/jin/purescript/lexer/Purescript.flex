@@ -129,6 +129,7 @@ charControl = "^" [:uppercase:]
 "{"                            { return LCURLY; }
 "}"                            { return RCURLY; }
 ".."                           { return DDOT; }
+"_"                            { return UNDERSCORE; }
 
 "0"({hexadecimal}|{octal}|{decimal})|{decimal} { return NATURAL; }
 {decimal}{fractExponent}       { return FLOAT; }

@@ -57,6 +57,7 @@ public interface PSTokens {
     PSElementType RBRACK = new PSElementType("]");
     PSElementType LCURLY = new PSElementType("{");
     PSElementType RCURLY = new PSElementType("}");
+    PSElementType UNDERSCORE = new PSElementType("}");
 
     PSElementType START = new PSElementType("*");
     PSElementType BANG = new PSElementType("!");

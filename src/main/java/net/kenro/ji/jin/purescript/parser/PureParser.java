@@ -416,15 +416,19 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         private final SymbolicParsec parseVar = parseQualified(parseIdent).as(Var);
         private final SymbolicParsec parseConstructor = parseQualified(properName).as(Constructor);
+
         private final SymbolicParsec parseCaseAlternative
-                = parseBinderRef
+                = commaSep1(parseValueRef.or(reserved(UNDERSCORE)))
                 .then(indented(choice(
                         many1(parseGuard.then(indented(lexeme(ARROW).then(parseValueRef)))),
                         reserved(ARROW).then(parseValueRef))))
                 .as(CaseAlternative);
+
+
+
         private final SymbolicParsec parseCase
                 = reserved(CASE)
-                .then(parseValueRef)
+                .then(commaSep1(parseValueRef.or(reserved(UNDERSCORE))))
                 .then(indented(reserved(OF)))
                 .then(indented(indentedList(mark(parseCaseAlternative))))
                 .as(Case);
