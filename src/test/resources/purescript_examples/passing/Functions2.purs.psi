@@ -94,7 +94,6 @@ Purescript File
             PSASTWrapperElement(Abs)
               PsiElement(identifier)('const')
               PsiElement(whitespace)(' ')
-            PSASTWrapperElement(Abs)
               PsiElement(identifier)('_')
               PsiElement(whitespace)(' ')
             PsiElement(->)('->')

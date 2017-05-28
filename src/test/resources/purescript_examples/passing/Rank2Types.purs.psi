@@ -210,7 +210,6 @@ Purescript File
             PSASTWrapperElement(Abs)
               PsiElement(identifier)('bind')
               PsiElement(whitespace)(' ')
-            PSASTWrapperElement(Abs)
               PsiElement(identifier)('action')
               PsiElement(whitespace)(' ')
             PsiElement(->)('->')

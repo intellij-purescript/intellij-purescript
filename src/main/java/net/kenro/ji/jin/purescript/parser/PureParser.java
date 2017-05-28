@@ -429,7 +429,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseConstructor = parseQualified(properName).as(Constructor);
 
         private final SymbolicParsec parseCaseAlternative
-                = commaSep1(parseValueRef.or(reserved(UNDERSCORE)))
+                = commaSep1(parseValueRef.or(parseTypeWildcard))
                 .then(indented(choice(
                         many1(parseGuard.then(indented(lexeme(ARROW).then(parseValueRef)))),
                         reserved(ARROW).then(parseValueRef))))
@@ -439,7 +439,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         private final SymbolicParsec parseCase
                 = reserved(CASE)
-                .then(commaSep1(parseValueRef.or(reserved(UNDERSCORE))))
+                .then(commaSep1(parseValueRef.or(parseTypeWildcard)))
                 .then(indented(reserved(OF)))
                 .then(indented(indentedList(mark(parseCaseAlternative))))
                 .as(Case);

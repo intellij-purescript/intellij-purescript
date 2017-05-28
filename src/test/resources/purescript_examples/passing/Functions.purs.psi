@@ -67,7 +67,6 @@ Purescript File
             PSASTWrapperElement(Abs)
               PsiElement(identifier)('a')
               PsiElement(whitespace)(' ')
-            PSASTWrapperElement(Abs)
               PsiElement(identifier)('b')
               PsiElement(whitespace)(' ')
             PsiElement(->)('->')
