@@ -310,22 +310,15 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseFixity = parseAssociativity.then(indented(lexeme(NATURAL))).as(Fixity);
         private final SymbolicParsec parseFixityDeclaration
                 = parseFixity
-                .then((properName))
+                .then(parseQualified(properName).as(pModuleName))
                 .then((reserved(AS)))
                 .then((lexeme(operator)))
                 .as(FixityDeclaration);
 
-//        private final SymbolicParsec parseDeclarationRef = choice(
-//                choice(parseIdent.as(ValueRef), reserved(MODULE).then(moduleName)),
-//                properName.then(
-//                        optional(parens(optional(choice(
-//                                        reserved(DDOT),
-//                                commaSep1(properName))))))).as(PositionedDeclarationRef);
-
         private final SymbolicParsec parseDeclarationRef =
                  parseIdent.as(ValueRef)
                 .or(reserved(MODULE).then(moduleName))
-                .or(reserved(CLASS).then(properName))
+                .or(reserved(CLASS).then(parseQualified(properName).as(pClassName)))
                 .or(properName.then(
                         optional(parens(optional(choice(
                                         reserved(DDOT),

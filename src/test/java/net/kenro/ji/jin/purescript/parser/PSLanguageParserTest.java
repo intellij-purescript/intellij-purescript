@@ -76,7 +76,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testClassRefSyntax() { doTest(true, true); }
 //    public void testConstraintParens() { doTest(true, true); }
 //    public void testConstraintParsingIssue() { doTest(true, true); }
-//    public void testDctorName() { doTest(true, true); }
+    public void testDctorName() { doTest(true, true); }
 //    public void testDctorOperatorAlias() { doTest(true, true); }
 
 //    public void testDerivingFunctor() { doTest(true, true); }
