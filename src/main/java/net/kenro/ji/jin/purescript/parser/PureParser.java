@@ -315,12 +315,23 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then((lexeme(operator)))
                 .as(FixityDeclaration);
 
-        private final SymbolicParsec parseDeclarationRef = choice(
-                choice(parseIdent.as(ValueRef), reserved(MODULE).then(moduleName)),
-                properName.then(
+//        private final SymbolicParsec parseDeclarationRef = choice(
+//                choice(parseIdent.as(ValueRef), reserved(MODULE).then(moduleName)),
+//                properName.then(
+//                        optional(parens(optional(choice(
+//                                        reserved(DDOT),
+//                                commaSep1(properName))))))).as(PositionedDeclarationRef);
+
+        private final SymbolicParsec parseDeclarationRef =
+                 parseIdent.as(ValueRef)
+                .or(reserved(MODULE).then(moduleName))
+                .or(reserved(CLASS).then(properName))
+                .or(properName.then(
                         optional(parens(optional(choice(
                                         reserved(DDOT),
                                 commaSep1(properName))))))).as(PositionedDeclarationRef);
+
+
 
         private final SymbolicParsec parseTypeClassDeclaration
                 = lexeme(CLASS)
@@ -355,9 +366,9 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseImportDeclaration
                 = reserved(IMPORT)
                 .then(indented(moduleName))
+                .then(optional(reserved(HIDING))
+                .then(importDeclarationType))
                 .then(optional(reserved(AS).then(moduleName)))
-                .then(optional(reserved(HIDING)))
-                .then(importDeclarationType)
                 .as(ImportDeclaration);
 
         private final Parsec parseDeclaration = positioned(choice(
