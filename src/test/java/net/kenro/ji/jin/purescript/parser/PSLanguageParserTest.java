@@ -64,36 +64,36 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void test2609() { doTest(true, true); }
     public void test2616() { doTest(true, true); }
     public void test2695() { doTest(true, true); }
-
-//    public void test2663() { doTest(true, true); }
-//    public void test2378() { doTest(true, true); }
-//    public void test2049_named_pattern_matching() { doTest(true, true); }
-
     public void test2626() { doTest(true, true); }
     public void testAutoPrelude2() { doTest(true, true); }
     public void testCaseInputWildcard() { doTest(true, true); }
     public void testCaseMultipleExpressions() { doTest(true, true); }
     public void testClassRefSyntax() { doTest(true, true); }
+    public void testDctorName() { doTest(true, true); }
+    public void testExportedInstanceDeclarations() { doTest(true, true); }
+    public void testImportHiding() { doTest(true, true); }
+    public void testPolyLabels() { doTest(true, true); }
+    public void testQualifiedQualifiedImports() { doTest(true, true); }
+    public void testDollar() { doTest(true, true); }
+
+    //public void test2663() { doTest(true, true); }
+//    public void test2378() { doTest(true, true); }
+//    public void test2049_named_pattern_matching() { doTest(true, true); }
 //    public void testConstraintParens() { doTest(true, true); }
 //    public void testConstraintParsingIssue() { doTest(true, true); }
-    public void testDctorName() { doTest(true, true); }
 //    public void testDctorOperatorAlias() { doTest(true, true); }
 
 //    public void testDerivingFunctor() { doTest(true, true); }
-//    public void testDollar() { doTest(true, true); }
 //    public void testDuplicateProperties() { doTest(true, true); }
-//    public void testExportedInstanceDeclarations() { doTest(true, true); }
 //    public void testExtendedInfixOperators() { doTest(true, true); }
 //    public void testFieldConsPuns() { doTest(true, true); }
 //    public void testFieldPuns() { doTest(true, true); }
-
 //    public void testForeignKind() { doTest(true, true); }
 //    public void testFunWithFunDeps() { doTest(true, true); }
 //    public void testFunctionalDependencies() { doTest(true, true); }
 //    public void testGenericsRep() { doTest(true, true); }
 //    public void testGuards() { doTest(true, true); }
 //    public void testIfWildcard() { doTest(true, true); }
-//    public void testImportHiding() { doTest(true, true); }
 //    public void testIntAndChar() { doTest(true, true); }
 //    public void testKindedType() { doTest(true, true); }
 //    public void testLetPattern() { doTest(true, true); }
@@ -108,9 +108,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 //    public void testOperatorAlias() { doTest(true, true); }
 //    public void testOperatorAliasElsewhere() { doTest(true, true); }
 //    public void testOperators() { doTest(true, true); }
-//    public void testPolyLabels() { doTest(true, true); }
 //    public void testPrimedTypeName() { doTest(true, true); }
-//    public void testQualifiedQualifiedImports() { doTest(true, true); }
 //    public void testRebindableSyntax() { doTest(true, true); }
 //    public void testRowConstructors() { doTest(true, true); }
 //    public void testRowInInstanceHeadDetermined() { doTest(true, true); }
