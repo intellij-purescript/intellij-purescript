@@ -26,6 +26,9 @@ properStart = [:uppercase:]
 properLetter = [:letter:]|[:digit:]|[\']
 properName = {properStart}{properLetter}*
 
+// http://www.regular-expressions.info/unicode.html#prop
+uniCode = \p{S}
+
 decimal = [0-9]+
 hexadecimal = [xX][0-9a-zA-Z]+
 octal = [oO][0-7]+
@@ -152,6 +155,7 @@ charControl = "^" [:uppercase:]
 
 {identStart}{identLetter}*     { return IDENT; }
 {properName}                   { return PROPER_NAME; }
+{uniCode}+                     { return OPERATOR; }
 {opChars}+                     { return OPERATOR; }
 
 .                              { return ERROR; }
