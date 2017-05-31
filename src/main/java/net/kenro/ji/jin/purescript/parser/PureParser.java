@@ -344,11 +344,12 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseTypeInstanceDeclaration
                 = optional(reserved(DERIVE)).then(reserved(INSTANCE)
                 .then(parseIdent.then(indented(lexeme(DCOLON))))
-                .then(optional(
-                        parens(commaSep1(parseQualified(properName).then(many(parseTypeAtom))))
-                                .then(indented(reserved(DARROW)))
+                .then(optional(choice(
+                        parens(commaSep1(parseQualified(properName).then(many(parseTypeAtom)))),
+                        commaSep1(parseQualified(properName).then(many(parseTypeAtom))))
+                                .then(optional(indented(reserved(DARROW))))
                 ))
-                .then(indented(parseQualified(properName)).as(pClassName))
+                .then(optional(indented(parseQualified(properName)).as(pClassName)))
                 .then(many(indented(parseTypeAtom)))
                 .then(optional(attempt(
                         indented(reserved(WHERE))
