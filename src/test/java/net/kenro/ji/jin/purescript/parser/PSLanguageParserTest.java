@@ -98,6 +98,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testWildcardInInstance() { doTest(true, true); }
     public void testTypeClasses() { doTest(true, true); }
     public void testTypedBinders() { doTest(true, true); }
+    public void testUnicodeOperators() { doTest(true, true); }
 
 //    public void testDctorOperatorAlias() { doTest(true, true); }
 //    public void test2663() { doTest(true, true); }
@@ -126,7 +127,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 //    public void testStream() { doTest(true, true); }
 //    public void testTailCall() { doTest(true, true); }
 //    public void testTypeOperators() { doTest(true, true); }
-//    public void testUnicodeOperators() { doTest(true, true); }
+
 
 
 
