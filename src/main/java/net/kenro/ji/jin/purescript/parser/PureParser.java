@@ -413,8 +413,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 braces(commaSep(parseIdentifierAndValue)).as(ObjectLiteral);
 
         private final Parsec typedIdent
-                = choice(lexeme(identifier),
-                parens(lexeme(identifier).then(indented(lexeme(DCOLON))).then(indented(parsePolyTypeRef))));
+                = choice(many1(lexeme(identifier).or(properName)),
+                parens(many1(lexeme(identifier).or(properName)).then(indented(lexeme(DCOLON))).then(indented(parsePolyTypeRef))));
 
         private final Parsec parseAbs
                 = reserved(BACKSLASH)

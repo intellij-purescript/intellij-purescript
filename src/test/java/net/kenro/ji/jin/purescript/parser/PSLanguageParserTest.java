@@ -122,7 +122,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 //    public void testTailCall() { doTest(true, true); }
 //    public void testTypeClasses() { doTest(true, true); }
 //    public void testTypeOperators() { doTest(true, true); }
-//    public void testTypedBinders() { doTest(true, true); }
+    public void testTypedBinders() { doTest(true, true); }
 //    public void testUnicodeOperators() { doTest(true, true); }
     public void testUnicodeType() { doTest(true, true); }
     public void testUntupledConstraints() { doTest(true, true); }
