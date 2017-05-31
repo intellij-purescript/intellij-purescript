@@ -154,7 +154,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final Parsec parseTypeVariable = lexeme(guard(idents, new Predicate<String>() {
             @Override
             public boolean test(String content) {
-                return !content.equals("forall");
+                return !(content.equals("∀") || content.equals("forall"));
             }
         }, "not `forall`")).as(TypeVar);
 
