@@ -104,7 +104,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 token(QUALIFIED),
                 token(HIDING),
                 token(AS)).as(Identifier));
-        private final Parsec operator = choice(token(OPERATOR), token(DDOT), token(LARROW), token(LDARROW));
+        private final Parsec operator = choice(token(OPERATOR), token(DDOT), token(LARROW), token(LDARROW), token(OPTIMISTIC));
         private final Parsec properName = lexeme(PROPER_NAME);
         private final Parsec moduleName = lexeme(parseQualified(token(PROPER_NAME).as(pModuleName)));
 
@@ -215,7 +215,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseType
                 = many1(parseTypePostfix)
                 .then(optional(
-                        choice(reserved(ARROW),reserved(DARROW)).then(parseTypeRef)
+                        choice(reserved(ARROW),reserved(DARROW), reserved(OPTIMISTIC)).then(parseTypeRef)
                 )).as(Type);
 
         {
@@ -316,7 +316,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .as(FixityDeclaration);
 
         private final SymbolicParsec parseDeclarationRef =
-                 parseIdent.as(ValueRef)
+                 choice(parseIdent.as(ValueRef),
+                reserved("type").then(optional(parens(operator))))
                 .or(reserved(MODULE).then(moduleName))
                 .or(reserved(CLASS).then(parseQualified(properName).as(pClassName)))
                 .or(properName.then(

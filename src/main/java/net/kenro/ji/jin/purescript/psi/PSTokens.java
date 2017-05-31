@@ -73,11 +73,13 @@ public interface PSTokens {
     PSElementType NATURAL = new PSElementType("natural");
     PSElementType FLOAT = new PSElementType("float");
 
+    PSElementType OPTIMISTIC = new PSElementType("~>");
+
     TokenSet kKeywords = TokenSet.create(DATA, NEWTYPE, TYPE, FOREIGN, IMPORT, INFIXL, INFIXR, INFIX, CLASS, DERIVE ,INSTANCE,
             MODULE, CASE, OF, IF, THEN, ELSE, DO, LET, TRUE, FALSE, IN, WHERE, FORALL, QUALIFIED, HIDING, AS, START,
             BANG);
     TokenSet kStrings = TokenSet.create(STRING);
-    TokenSet kOperators = TokenSet.create(DARROW, LDARROW, ARROW, EQ, DOT, LPAREN, RPAREN, LBRACK, RBRACK, LCURLY, RCURLY);
+    TokenSet kOperators = TokenSet.create(DARROW, LDARROW, ARROW, EQ, DOT, LPAREN, RPAREN, LBRACK, RBRACK, LCURLY, RCURLY, OPTIMISTIC);
 
     PSElementType EOF = new PSElementType("<<eof>>");
 }

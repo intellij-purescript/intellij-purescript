@@ -143,6 +143,8 @@ charControl = "^" [:uppercase:]
 "}"                            { return RCURLY; }
 ".."                           { return DDOT; }
 
+"~>"                           {return OPTIMISTIC; }
+
 "0"({hexadecimal}|{octal}|{decimal})|{decimal} { return NATURAL; }
 {decimal}{fractExponent}       { return FLOAT; }
 "\"\"\""                       { yybegin(BLOCK_STRINGS); return STRING; }
