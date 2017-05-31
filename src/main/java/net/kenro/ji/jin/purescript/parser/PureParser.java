@@ -325,15 +325,18 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                                 commaSep1(properName))))))).as(PositionedDeclarationRef);
 
 
-
         private final SymbolicParsec parseTypeClassDeclaration
                 = lexeme(CLASS)
-                .then(optional(indented(parens(commaSep1(parseQualified(properName).then(many(parseTypeAtom))))).then(reserved("<=")).as(pImplies)))
-                .then(indented(properName.as(pClassName)))
-                .then(many(indented(kindedIdent)))
+                .then(optional(indented(
+                        choice(parens(commaSep1(parseQualified(properName).then(many(parseTypeAtom)))),
+                                commaSep1(parseQualified(properName).then(many(parseTypeAtom))))
+                ).then(optional(reserved("<=")).as(pImplies))))
+                .then(optional(indented(properName.as(pClassName))))
+                .then(optional(many(indented(kindedIdent))))
+                .then(optional(lexeme(PIPE).then(indented(parsePolyTypeRef))))
                 .then(optional(attempt(
-                                indented(reserved(WHERE)).then(
-                                        indentedList(positioned(parseTypeDeclaration)))
+                        indented(reserved(WHERE)).then(
+                                indentedList(positioned(parseTypeDeclaration)))
                         )
                 ))
                 .as(TypeClassDeclaration);
