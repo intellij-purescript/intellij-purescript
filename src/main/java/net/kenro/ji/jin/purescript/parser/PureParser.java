@@ -333,7 +333,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 ).then(optional(reserved("<=")).as(pImplies))))
                 .then(optional(indented(properName.as(pClassName))))
                 .then(optional(many(indented(kindedIdent))))
-                .then(optional(lexeme(PIPE).then(indented(parsePolyTypeRef))))
+                .then(optional(lexeme(PIPE).then(indented(commaSep1(parsePolyTypeRef)))))
                 .then(optional(attempt(
                         indented(reserved(WHERE)).then(
                                 indentedList(positioned(parseTypeDeclaration)))
