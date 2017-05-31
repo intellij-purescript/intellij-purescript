@@ -533,7 +533,7 @@ Purescript File
                     PsiElement(whitespace)(' ')
               PSASTWrapperElement(IdentInfix)
                 PSASTWrapperElement(Qualified)
-                  PsiElement(operator)('<=')
+                  PsiElement(<=)('<=')
                   PsiElement(whitespace)(' ')
               PSASTWrapperElement(Value)
                 PSASTWrapperElement(PrefixValue)

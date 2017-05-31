@@ -99,7 +99,7 @@ Purescript File
         PsiElement())(')')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Implies)
-          PsiElement(operator)('<=')
+          PsiElement(<=)('<=')
           PsiElement(whitespace)(' ')
         PSASTWrapperElement(ClassName)
           PsiElement(proper name)('Baz')

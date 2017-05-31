@@ -104,7 +104,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 token(QUALIFIED),
                 token(HIDING),
                 token(AS)).as(Identifier));
-        private final Parsec operator = choice(token(OPERATOR), token(DDOT), token(LARROW));
+        private final Parsec operator = choice(token(OPERATOR), token(DDOT), token(LARROW), token(LDARROW));
         private final Parsec properName = lexeme(PROPER_NAME);
         private final Parsec moduleName = lexeme(parseQualified(token(PROPER_NAME).as(pModuleName)));
 
@@ -198,7 +198,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                                 .then(lexeme(DARROW))
                 )).then(indented(parseTypeRef)).as(ConstrainedType);
         private final SymbolicParsec parseForAll
-                = reserved("forall")
+                = reserved(FORALL)
                 .then(many1(indented(lexeme(identifier))))
                 .then(indented(lexeme(DOT)))
                 .then(parseConstrainedType).as(ForAll);
@@ -330,7 +330,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(optional(indented(
                         choice(parens(commaSep1(parseQualified(properName).then(many(parseTypeAtom)))),
                                 commaSep1(parseQualified(properName).then(many(parseTypeAtom))))
-                ).then(optional(reserved("<=")).as(pImplies))))
+                ).then(optional(reserved(LDARROW)).as(pImplies))))
                 .then(optional(indented(properName.as(pClassName))))
                 .then(optional(many(indented(kindedIdent))))
                 .then(optional(lexeme(PIPE).then(indented(commaSep1(parsePolyTypeRef)))))

@@ -24,7 +24,7 @@ g' = g Baz''
 
 h ∷ Bar' → Int
 h (Bar' x)
- | x <= 10 = x * 2 
+ | x ⇐ 10 = x * 2
  | otherwise = 10
 
 h' ∷ Int

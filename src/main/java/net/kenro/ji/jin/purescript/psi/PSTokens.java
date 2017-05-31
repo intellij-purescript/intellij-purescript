@@ -40,6 +40,7 @@ public interface PSTokens {
     PSElementType AS = new PSElementType("as");  // contextual keyword
 
     PSElementType DARROW = new PSElementType("=>");
+    PSElementType LDARROW = new PSElementType("<=");
     PSElementType ARROW = new PSElementType("->");
     PSElementType LARROW = new PSElementType("<-");
     PSElementType EQ = new PSElementType("=");
@@ -76,7 +77,7 @@ public interface PSTokens {
             MODULE, CASE, OF, IF, THEN, ELSE, DO, LET, TRUE, FALSE, IN, WHERE, FORALL, QUALIFIED, HIDING, AS, START,
             BANG);
     TokenSet kStrings = TokenSet.create(STRING);
-    TokenSet kOperators = TokenSet.create(DARROW, ARROW, EQ, DOT, LPAREN, RPAREN, LBRACK, RBRACK, LCURLY, RCURLY);
+    TokenSet kOperators = TokenSet.create(DARROW, LDARROW, ARROW, EQ, DOT, LPAREN, RPAREN, LBRACK, RBRACK, LCURLY, RCURLY);
 
     PSElementType EOF = new PSElementType("<<eof>>");
 }
