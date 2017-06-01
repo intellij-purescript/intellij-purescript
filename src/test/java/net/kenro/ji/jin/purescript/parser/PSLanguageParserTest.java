@@ -99,8 +99,10 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testTypeClasses() { doTest(true, true); }
     public void testTypedBinders() { doTest(true, true); }
     public void testUnicodeOperators() { doTest(true, true); }
+    public void testDctorOperatorAlias() { doTest(true, true); }
+    public void testLetPattern() { doTest(true, true); }
+    public void testTypeOperators() { doTest(true, true); }
 
-//    public void testDctorOperatorAlias() { doTest(true, true); }
 //    public void test2663() { doTest(true, true); }
 //    public void test2378() { doTest(true, true); }
 //    public void test2049_named_pattern_matching() { doTest(true, true); }
@@ -113,7 +115,6 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 //    public void testGuards() { doTest(true, true); }
 //    public void testIntAndChar() { doTest(true, true); }
 //    public void testKindedType() { doTest(true, true); }
-//    public void testLetPattern() { doTest(true, true); }
 //    public void testMutRec2() { doTest(true, true); }
 //    public void testMutRec3() { doTest(true, true); }
 //    public void testNestedRecordUpdate() { doTest(true, true); }
@@ -126,7 +127,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 //    public void testSolvingCompareSymbol() { doTest(true, true); }
 //    public void testStream() { doTest(true, true); }
 //    public void testTailCall() { doTest(true, true); }
-//    public void testTypeOperators() { doTest(true, true); }
+
 
 
 
