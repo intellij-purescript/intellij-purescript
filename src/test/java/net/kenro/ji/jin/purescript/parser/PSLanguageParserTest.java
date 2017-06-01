@@ -103,15 +103,18 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testLetPattern() { doTest(true, true); }
     public void testTypeOperators() { doTest(true, true); }
     public void testTailCall() { doTest(true, true); }
+    public void testForeignKind() { doTest(true, true); }
+    public void testStream() { doTest(true, true); }
+    public void testSolvingAppendSymbol() { doTest(true, true); }
+    public void testSolvingCompareSymbol() { doTest(true, true); }
+    public void test2663() { doTest(true, true); }
 
-//    public void test2663() { doTest(true, true); }
 //    public void test2378() { doTest(true, true); }
 //    public void test2049_named_pattern_matching() { doTest(true, true); }
 //    public void testDuplicateProperties() { doTest(true, true); }
 //    public void testExtendedInfixOperators() { doTest(true, true); }
 //    public void testFieldConsPuns() { doTest(true, true); }
 //    public void testFieldPuns() { doTest(true, true); }
-//    public void testForeignKind() { doTest(true, true); }
 //    public void testFunWithFunDeps() { doTest(true, true); }
 //    public void testGuards() { doTest(true, true); }
 //    public void testIntAndChar() { doTest(true, true); }
@@ -124,9 +127,8 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 //    public void testPrimedTypeName() { doTest(true, true); }
 //    public void testRowConstructors() { doTest(true, true); }
 //    public void testRowUnion() { doTest(true, true); }
-//    public void testSolvingAppendSymbol() { doTest(true, true); }
-//    public void testSolvingCompareSymbol() { doTest(true, true); }
-    public void testStream() { doTest(true, true); }
+
+
 
 
 

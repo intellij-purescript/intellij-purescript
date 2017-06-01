@@ -209,7 +209,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         );
 
         private final Parsec parseTypePostfix
-                = parseTypeAtom
+                = choice(parseTypeAtom, lexeme(STRING))
                 .then(optional(attempt(indented(lexeme(DCOLON).then(parseKind)))));
 
         private final SymbolicParsec parseType
@@ -336,12 +336,16 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then((lexeme(operator)))
                 .as(FixityDeclaration);
 
+
+
         private final SymbolicParsec parseDeclarationRef =
-                 choice(parseIdent.as(ValueRef),
-                reserved("type").then(optional(parens(operator))))
-                .or(reserved(MODULE).then(moduleName))
-                .or(reserved(CLASS).then(parseQualified(properName).as(pClassName)))
-                .or(properName.then(
+                 choice(
+                         reserved("kind").then(parseQualified(properName).as(pClassName)),
+                         parseIdent.as(ValueRef),
+                         reserved(TYPE).then(optional(parens(operator))),
+                reserved(MODULE).then(moduleName),
+                reserved(CLASS).then(parseQualified(properName).as(pClassName)),
+                properName.then(
                         optional(parens(optional(choice(
                                         reserved(DDOT),
                                 commaSep1(properName))))))).as(PositionedDeclarationRef);
