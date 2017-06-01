@@ -428,7 +428,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseArrayLiteral = squares(commaSep(parseValueRef)).as(ArrayLiteral);
         private final SymbolicParsec parseIdentifierAndValue
                 = indented(lexeme(lname).or(stringLiteral))
-                .then(indented(lexeme(OPERATOR)))
+                .then(indented(lexeme(OPERATOR).or(reserved(COMMA))))
                 .then(indented(parseValueRef))
                 .as(ObjectBinderField);
         private final SymbolicParsec parseObjectLiteral =
@@ -499,6 +499,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseNumericLiteral),
                 attempt(parseStringLiteral),
                 attempt(parseBooleanLiteral),
+                attempt(reserved(TICK).then(properName).then(reserved(TICK))),
                 parseArrayLiteral,
                 attempt(parseObjectLiteral),
                 parseAbs,

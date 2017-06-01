@@ -1,0 +1,10 @@
+Purescript File
+  PSASTWrapperElement(Program)
+    PSASTWrapperElement(Module)
+      PsiElement(module)('module')
+      PsiElement(whitespace)(' ')
+      PSASTWrapperElement(Qualified)
+        PSASTWrapperElement(ModuleName)
+          PsiElement(proper name)('Main')
+      PsiElement(whitespace)(' ')
+      PsiElement(where)('where')
