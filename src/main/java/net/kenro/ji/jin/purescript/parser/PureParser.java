@@ -504,7 +504,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseNumericLiteral),
                 attempt(parseStringLiteral),
                 attempt(parseBooleanLiteral),
-                attempt(reserved(TICK).then(properName).then(reserved(TICK))),
+                attempt(reserved(TICK).then(choice(properName, many1(identifier))).then(reserved(TICK))),
                 parseArrayLiteral,
                 attempt(parseObjectLiteral),
                 parseAbs,
