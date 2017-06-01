@@ -270,13 +270,14 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                                 .then(indented(mark(many1(same(parseLocalDeclarationRef)))))));
 
         // Some Binders - rest at the bottom
-        private final Parsec parseIdentifierAndBinder
-                = lexeme(lname.or(stringLiteral))
-                .then(indented(lexeme(EQ).or(lexeme(OPERATOR))))
-                .then(indented(parseBinderRef));
-        private final SymbolicParsec parseObjectBinder
-                = braces(commaSep(parseIdentifierAndBinder)).as(ObjectBinder);
+
         private final SymbolicParsec parseArrayBinder = squares(commaSep(parseBinderRef)).as(ObjectBinder);
+
+        private final SymbolicParsec parsePatternMatchObject = indented(braces(commaSep(
+                identifier.or(lname).or(stringLiteral)
+                .then(optional(indented(lexeme(EQ).or(lexeme(OPERATOR)))))
+                .then(optional(indented(parseBinderRef)))
+        ))).as(Binder);
 
         private final Parsec parseRowPatternBinder = indented(lexeme(OPERATOR))
                 .then(indented(parseBinderRef));
@@ -288,7 +289,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                         .then(optional(many1(parseIdent)))
                         .then(optional(parseArrayBinder))
                         .then(optional(indented(lexeme("@")).then(indented(braces(commaSep(identifier))))).as(NamedBinder))
-                        .then(optional(parseObjectBinder))
+                        .then(optional(parsePatternMatchObject))
                         .then(optional(parseRowPatternBinder))
                         .then(optional(reserved(RPAREN)))
                 // ---------- end of LET stuff -----------
@@ -560,7 +561,14 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 ))
                 .as(Value);
 
-        // Binders
+        // Binder
+        private final Parsec parseIdentifierAndBinder
+                = lexeme(lname.or(stringLiteral))
+                .then(indented(lexeme(EQ).or(lexeme(OPERATOR))))
+                .then(indented(parseBinderRef));
+
+        private final SymbolicParsec parseObjectBinder
+                = braces(commaSep(parseIdentifierAndBinder)).as(ObjectBinder);
         private final SymbolicParsec parseNullBinder = reserved("_").as(NullBinder);
         private final SymbolicParsec parseStringBinder = lexeme(STRING).as(StringBinder);
         private final SymbolicParsec parseBooleanBinder = lexeme("true").or(lexeme("false")).as(BooleanBinder);

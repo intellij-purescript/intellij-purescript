@@ -113,7 +113,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testDuplicateProperties() { doTest(true, true); }
     public void testExtendedInfixOperators() { doTest(true, true); }
 //    public void testFieldConsPuns() { doTest(true, true); }
-//    public void testFieldPuns() { doTest(true, true); }
+    public void testFieldPuns() { doTest(true, true); }
 //    public void testFunWithFunDeps() { doTest(true, true); }
 //    public void testGuards() { doTest(true, true); }
 //    public void testIntAndChar() { doTest(true, true); }

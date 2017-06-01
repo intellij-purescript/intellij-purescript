@@ -208,7 +208,7 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(NamedBinder)
           <empty list>
-        PSASTWrapperElement(ObjectBinder)
+        PSASTWrapperElement(Binder)
           PsiElement({)('{')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(identifier)
