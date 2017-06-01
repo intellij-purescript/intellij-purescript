@@ -282,6 +282,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(indented(parseBinderRef));
 
         private final SymbolicParsec parseValueDeclaration
+                // this is for when used with LET
                 = optional(reserved(LPAREN))
                         .then(optional(properName))
                         .then(optional(many1(parseIdent)))
@@ -290,6 +291,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                         .then(optional(parseObjectBinder))
                         .then(optional(parseRowPatternBinder))
                         .then(optional(reserved(RPAREN)))
+                // ---------- end of LET stuff -----------
                 .then(many(parseBinderNoParensRef))
                 .then(choice(
                         indented(many1(parseGuard.then(indented(lexeme(EQ).then(parseValueWithWhereClause))))),
@@ -370,13 +372,12 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseTypeInstanceDeclaration
                 = optional(reserved(DERIVE)).then(reserved(INSTANCE)
                 .then(parseIdent.then(indented(lexeme(DCOLON))))
-                .then(optional(choice(
-                        parens(commaSep1(parseQualified(properName).then(many(parseTypeAtom)))),
-                        commaSep1(parseQualified(properName).then(many(parseTypeAtom))))
+                .then(optional(
+                      optional(reserved(LPAREN)).then(commaSep1(parseQualified(properName).then(many(parseTypeAtom)))).then(optional(reserved(RPAREN)))
                                 .then(optional(indented(reserved(DARROW))))
                 ))
                 .then(optional(indented(parseQualified(properName)).as(pClassName)))
-                .then(many(indented(parseTypeAtom)))
+                .then(many(indented(parseTypeAtom).or(lexeme(STRING))))
                 .then(optional(attempt(
                         indented(reserved(WHERE))
                                 .then(indented(indentedList(positioned(parseValueDeclaration))))
@@ -571,6 +572,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseConstructorBinder = lexeme(parseQualified(properName).then(many(indented(parseBinderNoParensRef)))).as(ConstructorBinder);
         private final SymbolicParsec parseNullaryConstructorBinder = lexeme(parseQualified(properName)).as(ConstructorBinder);
 
+        private final SymbolicParsec parsePatternMatch = indented(braces(commaSep(identifier))).as(Binder);
+
         private final SymbolicParsec parseBinderAtom = choice(
                 attempt(parseNullBinder),
                 attempt(parseStringBinder),
@@ -581,6 +584,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseConstructorBinder),
                 attempt(parseObjectBinder),
                 attempt(parseArrayBinder),
+                attempt(parsePatternMatch),
                 attempt(parens(parseBinderRef))
         ).as(BinderAtom);
         private final SymbolicParsec parseBinder
@@ -597,6 +601,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseNullaryConstructorBinder),
                 attempt(parseObjectBinder),
                 attempt(parseArrayBinder),
+                attempt(parsePatternMatch),
                 attempt(parens(parseBinderRef))
         ).as(Binder);
 
