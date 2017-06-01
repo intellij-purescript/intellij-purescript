@@ -130,13 +130,13 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final ParsecRef parseKindPrefixRef = ref();
         private final SymbolicParsec parseStar = keyword(START, "*").as(Star);
         private final SymbolicParsec parseBang = keyword(BANG, "!").as(Bang);
-        private final Parsec parseKindAtom = indented(choice(parseStar, parseBang, parens(parseKindRef)));
+        private final Parsec parseKindAtom = indented(choice(parseStar, parseBang, properName, parens(parseKindRef)));
         private final Parsec parseKindPrefix
                 = choice(
                 lexeme("#").then(parseKindPrefixRef).as(RowKind),
                 parseKindAtom);
         private final SymbolicParsec parseKind
-                = parseKindPrefix.then(optional(reserved(ARROW).then(parseKindRef))).as(FunKind);
+                = parseKindPrefix.then(optional(reserved(ARROW).or(optional(properName)).then(optional(parseKindRef)))).as(FunKind);
 
         {
             parseKindPrefixRef.setRef(parseKindPrefix);

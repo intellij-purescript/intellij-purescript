@@ -110,7 +110,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void test2663() { doTest(true, true); }
     public void test2378() { doTest(true, true); }
     public void test2049_named_pattern_matching() { doTest(true, true); }
-//    public void testDuplicateProperties() { doTest(true, true); }
+    public void testDuplicateProperties() { doTest(true, true); }
 //    public void testExtendedInfixOperators() { doTest(true, true); }
 //    public void testFieldConsPuns() { doTest(true, true); }
 //    public void testFieldPuns() { doTest(true, true); }
