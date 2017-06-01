@@ -431,6 +431,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseBooleanLiteral = reserved(PSTokens.TRUE).or(reserved(PSTokens.FALSE)).as(BooleanLiteral);
         private final SymbolicParsec parseNumericLiteral = reserved(NATURAL).or(reserved(FLOAT)).as(NumericLiteral);
         private final SymbolicParsec parseStringLiteral = reserved(STRING).as(StringLiteral);
+        private final SymbolicParsec parseCharLiteral = lexeme("'").as(StringLiteral);
         private final SymbolicParsec parseArrayLiteral = squares(commaSep(parseValueRef)).as(ArrayLiteral);
         private final SymbolicParsec parseIdentifierAndValue
                 = indented(lexeme(lname).or(stringLiteral))
@@ -507,6 +508,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseBooleanLiteral),
                 attempt(reserved(TICK).then(choice(properName, many1(identifier))).then(reserved(TICK))),
                 parseArrayLiteral,
+                parseCharLiteral,
                 attempt(parseObjectLiteral),
                 parseAbs,
                 attempt(parseConstructor),
@@ -582,6 +584,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         private final SymbolicParsec parsePatternMatch = indented(braces(commaSep(identifier))).as(Binder);
 
+        private final SymbolicParsec parseCharBinder = lexeme("'").as(StringBinder);
+
         private final SymbolicParsec parseBinderAtom = choice(
                 attempt(parseNullBinder),
                 attempt(parseStringBinder),
@@ -593,6 +597,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseObjectBinder),
                 attempt(parseArrayBinder),
                 attempt(parsePatternMatch),
+                attempt(parseCharBinder),
                 attempt(parens(parseBinderRef))
         ).as(BinderAtom);
         private final SymbolicParsec parseBinder
@@ -610,6 +615,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseObjectBinder),
                 attempt(parseArrayBinder),
                 attempt(parsePatternMatch),
+                attempt(parseCharBinder),
                 attempt(parens(parseBinderRef))
         ).as(Binder);
 
