@@ -36,8 +36,8 @@ public class PurescriptExamplesTest extends PsiTestCase {
     public void testExamples() {
         String testDataPath = "src/test/resources/purescript_examples";
         FileUtil.processFilesRecursively(new File(testDataPath + "/passing"), processor(true));
-//        FileUtil.processFilesRecursively(new File(testDataPath + "/manual/passing"), processor(true));
-//        FileUtil.processFilesRecursively(new File(testDataPath + "/failing"), processor(false));
+        FileUtil.processFilesRecursively(new File(testDataPath + "/manual/passing"), processor(true));
+//        FileUtil.processFilesRecursively(new File(testDataPath + "/failing"), processor(true));
 //        FileUtil.processFilesRecursively(new File(testDataPath + "/manual/failing"), processor(false));
 
 //        String additionalTests = "src/test/resources/additional";
