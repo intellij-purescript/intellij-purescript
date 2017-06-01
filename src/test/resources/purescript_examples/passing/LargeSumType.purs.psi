@@ -9,6 +9,8 @@ Purescript File
       PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
@@ -145,6 +147,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -165,6 +169,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -185,6 +191,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -205,6 +213,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -225,6 +235,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -245,6 +257,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -265,6 +279,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -285,6 +301,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -305,6 +323,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -325,6 +345,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -345,6 +367,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -365,6 +389,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -385,6 +411,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -405,6 +433,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -425,6 +455,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -445,6 +477,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -465,6 +499,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -485,6 +521,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -505,6 +543,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -525,6 +565,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -545,6 +587,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -565,6 +609,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -585,6 +631,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -605,6 +653,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -625,6 +675,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -645,6 +697,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PSASTWrapperElement(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
@@ -665,14 +719,12 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('explode')
         PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(NullBinder)
-            PsiElement(identifier)('_')
-            PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(NullBinder)
-            PsiElement(identifier)('_')
-            PsiElement(whitespace)(' ')
+        PsiElement(identifier)('_')
+        PsiElement(whitespace)(' ')
+        PsiElement(identifier)('_')
+        PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -683,6 +735,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('main')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)

@@ -9,6 +9,8 @@ Purescript File
       PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
@@ -16,6 +18,8 @@ Purescript File
           PSASTWrapperElement(ModuleName)
             PsiElement(proper name)('Prelude')
         PsiElement(whitespace)('\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
@@ -41,6 +45,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test1')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -102,10 +108,10 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('f')
         PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(VarBinder)
-            PsiElement(identifier)('x')
-            PsiElement(whitespace)(' ')
+        PsiElement(identifier)('x')
+        PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -121,6 +127,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test2')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -182,6 +190,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test7')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -193,6 +203,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test8')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -234,6 +246,8 @@ Purescript File
           PSASTWrapperElement(TypeVar)
             PsiElement(identifier)('a')
             PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -272,6 +286,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('show')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PSASTWrapperElement(Binder)
             PsiElement(()('(')
             PSASTWrapperElement(Binder)
@@ -318,6 +334,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test3')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -346,6 +364,8 @@ Purescript File
                         PsiElement(string)('"testing"')
                   PsiElement())(')')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -366,6 +386,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('map')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(Value)
@@ -374,6 +396,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(identifier)('liftM1')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -394,6 +418,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('apply')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(Value)
@@ -402,6 +428,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(identifier)('ap')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -422,6 +450,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('pure')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(Value)
@@ -430,6 +460,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(proper name)('Data')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -450,6 +482,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('bind')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PSASTWrapperElement(Binder)
             PsiElement(()('(')
             PSASTWrapperElement(Binder)
@@ -479,6 +513,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(identifier)('a')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -514,6 +550,8 @@ Purescript File
           PSASTWrapperElement(TypeVar)
             PsiElement(identifier)('a')
             PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -534,6 +572,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('map')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(Value)
@@ -542,6 +582,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(identifier)('liftM1')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -562,6 +604,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('apply')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(Value)
@@ -570,6 +614,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(identifier)('ap')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -590,6 +636,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('pure')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(Value)
@@ -598,6 +646,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(proper name)('Just')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -618,6 +668,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('bind')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PSASTWrapperElement(Binder)
             PSASTWrapperElement(ConstructorBinder)
               PSASTWrapperElement(Qualified)
@@ -638,6 +690,8 @@ Purescript File
         PSASTWrapperElement(ValueDeclaration)
           PsiElement(identifier)('bind')
           PsiElement(whitespace)(' ')
+          PSASTWrapperElement(NamedBinder)
+            <empty list>
           PSASTWrapperElement(Binder)
             PsiElement(()('(')
             PSASTWrapperElement(Binder)
@@ -667,6 +721,8 @@ Purescript File
                 PSASTWrapperElement(Qualified)
                   PsiElement(identifier)('a')
                   PsiElement(whitespace)('\n\n')
+      PSASTWrapperElement(NamedBinder)
+        <empty list>
       PSASTWrapperElement(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -730,6 +786,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test4')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -752,6 +810,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test5')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -810,10 +870,10 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('ask')
         PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(VarBinder)
-            PsiElement(identifier)('r')
-            PsiElement(whitespace)(' ')
+        PsiElement(identifier)('r')
+        PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -825,14 +885,12 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('runReader')
         PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(VarBinder)
-            PsiElement(identifier)('r')
-            PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(VarBinder)
-            PsiElement(identifier)('f')
-            PsiElement(whitespace)(' ')
+        PsiElement(identifier)('r')
+        PsiElement(whitespace)(' ')
+        PsiElement(identifier)('f')
+        PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -848,10 +906,10 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('test9')
         PsiElement(whitespace)(' ')
-        PSASTWrapperElement(Binder)
-          PSASTWrapperElement(NullBinder)
-            PsiElement(identifier)('_')
-            PsiElement(whitespace)(' ')
+        PsiElement(identifier)('_')
+        PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
@@ -914,6 +972,8 @@ Purescript File
       PSASTWrapperElement(ValueDeclaration)
         PsiElement(identifier)('main')
         PsiElement(whitespace)(' ')
+        PSASTWrapperElement(NamedBinder)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(Value)
