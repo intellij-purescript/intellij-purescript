@@ -215,7 +215,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseType
                 = many1(parseTypePostfix)
                 .then(optional(
-                        choice(reserved(ARROW),reserved(DARROW), reserved(OPTIMISTIC)).then(parseTypeRef)
+                        choice(reserved(ARROW),reserved(DARROW), reserved(OPTIMISTIC), reserved(OPERATOR)).then(parseTypeRef)
                 )).as(Type);
 
         {
@@ -241,10 +241,12 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(optional(attempt(lexeme(EQ))
                         .then(sepBy1(properName.then(many(indented(parseTypeAtom))), PIPE))))
                 .as(DataDeclaration);
+
         private final SymbolicParsec parseTypeDeclaration
                 = attempt(parseIdent.then(indented(lexeme(DCOLON))))
                 .then(parsePolyTypeRef)
                 .as(TypeDeclaration);
+
         private final SymbolicParsec parseNewtypeDeclaration
                 = reserved(NEWTYPE)
                 .then(indented(properName))
@@ -270,7 +272,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         // Some Binders - rest at the bottom
         private final Parsec parseIdentifierAndBinder
                 = lexeme(lname.or(stringLiteral))
-                .then(indented(lexeme(EQ).or(lexeme(":"))))
+                .then(indented(lexeme(EQ).or(lexeme(OPERATOR))))
                 .then(indented(parseBinderRef));
         private final SymbolicParsec parseObjectBinder
                 = braces(commaSep(parseIdentifierAndBinder)).as(ObjectBinder);
@@ -426,7 +428,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseArrayLiteral = squares(commaSep(parseValueRef)).as(ArrayLiteral);
         private final SymbolicParsec parseIdentifierAndValue
                 = indented(lexeme(lname).or(stringLiteral))
-                .then(indented(lexeme(":")))
+                .then(indented(lexeme(OPERATOR)))
                 .then(indented(parseValueRef))
                 .as(ObjectBinderField);
         private final SymbolicParsec parseObjectLiteral =
@@ -578,7 +580,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         ).as(BinderAtom);
         private final SymbolicParsec parseBinder
                 = parseBinderAtom
-                .then(optional(lexeme(":").then(parseBinderRef)))
+                .then(optional(lexeme(OPERATOR).then(parseBinderRef)))
                 .as(Binder);
         private final SymbolicParsec parseBinderNoParens = choice(
                 attempt(parseNullBinder),
