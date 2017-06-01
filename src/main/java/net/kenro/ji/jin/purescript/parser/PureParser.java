@@ -371,7 +371,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .as(TypeClassDeclaration);
 
         private final SymbolicParsec parseTypeInstanceDeclaration
-                = optional(reserved(DERIVE)).then(reserved(INSTANCE)
+                = optional(reserved(DERIVE)).then(optional(reserved(NEWTYPE))).then(reserved(INSTANCE)
                 .then(parseIdent.then(indented(lexeme(DCOLON))))
                 .then(optional(
                       optional(reserved(LPAREN)).then(commaSep1(parseQualified(properName).then(many(parseTypeAtom)))).then(optional(reserved(RPAREN)))
