@@ -121,8 +121,8 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testMutRec3() { doTest(true, true); }
     public void testNewtypeInstance() { doTest(true, true); }
     public void testIntAndChar() { doTest(true, true); }
-//    public void testNestedRecordUpdate() { doTest(true, true); }
-//    public void testNestedRecordUpdateWildcards() { doTest(true, true); }
+    public void testNestedRecordUpdate() { doTest(true, true); }
+    public void testNestedRecordUpdateWildcards() { doTest(true, true); }
 //    public void testPrimedTypeName() { doTest(true, true); }
 //    public void testRowConstructors() { doTest(true, true); }
 //    public void testGuards() { doTest(true, true); }

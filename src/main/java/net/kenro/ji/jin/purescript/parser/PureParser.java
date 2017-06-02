@@ -334,6 +334,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseFixity = parseAssociativity.then(indented(lexeme(NATURAL))).as(Fixity);
         private final SymbolicParsec parseFixityDeclaration
                 = parseFixity
+                .then(optional(reserved(TYPE)))
                 .then((parseQualified(properName).as(pModuleName)).or(parseIdent))
                 .then((reserved(AS)))
                 .then((lexeme(operator)))
@@ -502,6 +503,11 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(indented(indentedList(mark(parseDoNotationElement))));
 
 
+        private final Parsec parsePropertyUpdate
+                = reserved(lname.or(stringLiteral))
+                .then(optional(indented(lexeme(EQ))))
+                .then(indented(parseValueRef));
+
         private final Parsec parseValueAtom = choice(
                 attempt(parseNumericLiteral),
                 attempt(parseStringLiteral),
@@ -509,6 +515,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(reserved(TICK).then(choice(properName, many1(identifier))).then(reserved(TICK))),
                 parseArrayLiteral,
                 parseCharLiteral,
+                attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
                 attempt(parseObjectLiteral),
                 parseAbs,
                 attempt(parseConstructor),
@@ -520,10 +527,6 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 parens(parseValueRef).as(Parens)
         );
 
-        private final Parsec parsePropertyUpdate
-                = reserved(lname.or(stringLiteral))
-                .then(indented(lexeme(EQ)))
-                .then(indented(parseValueRef));
         private final Parsec parseAccessor
                 = attempt(indented(token(DOT)).then(indented(lname.or(stringLiteral)))).as(Accessor);
 
