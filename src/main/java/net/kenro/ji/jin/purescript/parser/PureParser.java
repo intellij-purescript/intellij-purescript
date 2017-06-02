@@ -241,7 +241,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final ParsecRef parseValueRef = ref();
         private final ParsecRef parseLocalDeclarationRef = ref();
 
-        private final SymbolicParsec parseGuard = lexeme(PIPE).then(indented(parseValueRef)).as(Guard);
+        private final SymbolicParsec parseGuard = lexeme(PIPE).then(indented(commaSep(parseValueRef))).as(Guard);
         private final SymbolicParsec parseDataDeclaration
                 = reserved(DATA)
                 .then(indented(properName))

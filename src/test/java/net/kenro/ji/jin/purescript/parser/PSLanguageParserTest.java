@@ -125,7 +125,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testNestedRecordUpdateWildcards() { doTest(true, true); }
     public void testPrimedTypeName() { doTest(true, true); }
     public void testRowConstructors() { doTest(true, true); }
-//    public void testGuards() { doTest(true, true); }
+    public void testGuards() { doTest(true, true); }
 
 
 
