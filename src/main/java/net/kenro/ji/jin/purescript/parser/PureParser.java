@@ -171,7 +171,14 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                         indented(lexeme(PIPE)).then(indented(
                                 (choice(
                                         attempt(parseTypeWildcard),
-                                        attempt(optional(lexeme(many(properName))).then(optional(lexeme(identifier))).as(TypeVar)))
+                                        attempt(
+                                          optional(lexeme(many(properName)))
+                                           .then(optional(lexeme(identifier)))
+                                           .then(optional(indented(lexeme(choice(lname, stringLiteral)))))
+                                           .then(optional(indented(lexeme(DCOLON))).then(optional(parsePolyTypeRef)))
+                                           .as(TypeVar))
+
+                                        )
                         ))));
 
         private final Parsec parseRow
