@@ -15,12 +15,14 @@ env:
   global:
   - ORG_GRADLE_PROJECT_downloadIdeaSources=false
   matrix:
-  - ORG_GRADLE_PROJECT_ideaVersion=LATEST-DEV-SNAPSHOT
+  - ORG_GRADLE_PROJECT_ideaVersion=LATEST-EAP-SNAPSHOT
+  - ORG_GRADLE_PROJECT_ideaVersion=2017.1.2
+  - ORG_GRADLE_PROJECT_ideaVersion=2017.1.1
   - ORG_GRADLE_PROJECT_ideaVersion=2017.1
 
 matrix:
   allow_failures:
-  - env: ORG_GRADLE_PROJECT_ideaVersion=LATEST-DEV-SNAPSHOT
+  - env: ORG_GRADLE_PROJECT_ideaVersion=LATEST-EAP-SNAPSHOT
 
 # pull requests skip the deployment step
 deploy:
@@ -31,9 +33,9 @@ deploy:
     on:
       branch: master
       condition: $ORG_GRADLE_PROJECT_ideaVersion=2017.1
-  # deploy tags to stable channel
+  # deploy tags to default stable channel
   - provider: script
-    script: ORG_GRADLE_PROJECT_publishChannels=stable ORG_GRADLE_PROJECT_version=$TRAVIS_TAG ./gradlew publishPlugin
+    script: ORG_GRADLE_PROJECT_version=$TRAVIS_TAG ./gradlew publishPlugin
     on:
       tags: true
       condition: $ORG_GRADLE_PROJECT_ideaVersion=2017.1
