@@ -47,7 +47,7 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
     protected void checkResult(@NonNls @TestDataFile String targetDataName,
                                final PsiFile file) throws IOException {
         doCheckResult(myFullDataPath, file, checkAllPsiRoots(),
-                "expected" + File.separator + targetDataName, skipSpaces(),
+                "" + File.separator + targetDataName, skipSpaces(),
                 includeRanges());
     }
 

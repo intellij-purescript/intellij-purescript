@@ -100,7 +100,7 @@ allprojects {
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
         useJUnit {
-            include 'net/kenro/ji/jin/purescript/build/**', 'net/kenro/ji/jin/purescript/jps/**'
+            include 'net/kenro/ji/jin/purescript/build/**/**/*'
         }
         testLogging {
             exceptionFormat = 'full'
