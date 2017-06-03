@@ -1,17 +1,15 @@
 <idea-plugin>
-  <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <id>net.kenro.ji.jin.intellij.purescript</id>
+  <name>Purescript language plugin</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="kingsley.hendrickse@gmail.com" url="http://kenro-ji-jin.net/">Kenro Ji Jin</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      This plugin provides Purescript language support
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      Initial first cut of the language parser - nothing else.
     ]]>
   </change-notes>
 
