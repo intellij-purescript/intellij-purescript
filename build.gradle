@@ -16,11 +16,9 @@ plugins {
 sourceSets {
     main {
         java.srcDirs 'src/main/java', 'src/main/gen'
-//        java.srcDirs 'src/main/java', 'src/main/kotlin', 'gen'
         resources.srcDirs 'src/main/resources'
     }
     test {
-//        java.srcDirs 'src/test/java', 'src/test/kotlin'
         java.srcDirs 'src/test/java'
         resources.srcDirs 'src/test/resources'
     }
@@ -129,6 +127,6 @@ idea {
         languageLevel = javaVersion
     }
     module {
-        generatedSourceDirs += file('gen')
+        generatedSourceDirs += file('src/main/gen')
     }
 }
