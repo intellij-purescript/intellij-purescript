@@ -1,0 +1,12 @@
+Purescript File
+  PsiElement(whitespace)('-- @shouldFailWith DuplicateModule\n')
+  PSASTWrapperElement(Program)
+    PSASTWrapperElement(Module)
+      PsiElement(module)('module')
+      PsiElement(whitespace)(' ')
+      PSASTWrapperElement(Qualified)
+        PSASTWrapperElement(ModuleName)
+          PsiElement(proper name)('M1')
+      PsiElement(whitespace)(' ')
+      PsiElement(where)('where')
+      PsiElement(whitespace)('\n')

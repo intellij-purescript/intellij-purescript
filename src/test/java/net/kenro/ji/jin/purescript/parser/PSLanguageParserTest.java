@@ -127,6 +127,15 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testRowConstructors() { doTest(true, true); }
     public void testGuards() { doTest(true, true); }
 
+//    public void testDiffKindsSameName() { doTest(true, true); }
+//    public void testProgrammableTypeErrors() { doTest(true, true); }
+//    public void testSuggestComposition() { doTest(true, true); }
+//    public void testTypedHole() { doTest(true, true); }
+//    public void testBasicEval() { doTest(true, true); }
+//    public void testMultiline() { doTest(true, true); }
+//    public void testShadowedNameParens() { doTest(true, true); }
+//    public void testTypeLevelString() { doTest(true, true); }
+
 
 
 

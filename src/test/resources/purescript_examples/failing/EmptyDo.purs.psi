@@ -1,0 +1,18 @@
+Purescript File
+  PsiElement(whitespace)('-- @shouldFailWith ErrorParsingModule\n\n')
+  PsiElement(module)('module')
+  PsiElement(whitespace)(' ')
+  PSASTWrapperElement(Qualified)
+    PSASTWrapperElement(ModuleName)
+      PsiElement(proper name)('Main')
+  PsiElement(whitespace)(' ')
+  PsiElement(where)('where')
+  PsiElement(whitespace)('\n\n')
+  PsiElement(identifier)('main')
+  PsiElement(whitespace)(' ')
+  PSASTWrapperElement(NamedBinder)
+    <empty list>
+  PsiElement(=)('=')
+  PsiElement(whitespace)(' ')
+  PsiElement(do)('do')
+  PsiElement(whitespace)('\n\n')
