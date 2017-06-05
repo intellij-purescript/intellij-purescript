@@ -2,8 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/intellij-purescript/intellij-purescript.svg?branch=master)](https://travis-ci.org/intellij-purescript/intellij-purescript)
-
-
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/intellj-purescript/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 
