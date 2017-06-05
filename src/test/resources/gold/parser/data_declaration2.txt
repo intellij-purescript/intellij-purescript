@@ -15,4 +15,5 @@ Purescript File
         PsiElement(proper name)('User2')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeArgs)
-          PsiElement(identifier)('a')
+          PSASTWrapperElement(GenericIdentifier)
+            PsiElement(identifier)('a')

@@ -13,7 +13,7 @@ public final class PSLexer extends LookAheadLexer {
 
     private static final class MergedPureLexer extends MergingLexerAdapterBase {
         public MergedPureLexer() {
-            super(new FlexAdapter(new net.kenro.ji.jin.purescript.lexer._PSLexer((Reader) null)));
+            super(new FlexAdapter(new _PSLexer((Reader) null)));
         }
 
         private static final MergeFunction mergeFunction = new MergeFunction() {

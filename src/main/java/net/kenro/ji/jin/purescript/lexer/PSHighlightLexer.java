@@ -10,7 +10,7 @@ import java.io.Reader;
 
 public final class PSHighlightLexer extends LookAheadLexer {
     public PSHighlightLexer() {
-        super(new MergingLexerAdapter(new FlexAdapter(new net.kenro.ji.jin.purescript.lexer._PSLexer((Reader) null)), TokenSet.create(PSTokens.MLCOMMENT, PSTokens.WS, PSTokens.STRING)), 10);
+        super(new MergingLexerAdapter(new FlexAdapter(new _PSLexer((Reader) null)), TokenSet.create(PSTokens.MLCOMMENT, PSTokens.WS, PSTokens.STRING)), 10);
     }
 }
 

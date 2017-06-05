@@ -14,6 +14,8 @@ public interface PSElements {
     PSElementType Qualified = new PSElementType("Qualified");
     PSElementType Type = new PSElementType("Type");
     PSElementType TypeArgs = new PSElementType("TypeArgs");
+    PSElementType TypeAnnotationName = new PSElementType("TypeAnnotationName");
+
     PSElementType ForAll = new PSElementType("ForAll");
     PSElementType ConstrainedType = new PSElementType("ConstrainedType");
     PSElementType Row = new PSElementType("Row");
@@ -23,6 +25,8 @@ public interface PSElements {
     PSElementType TypeApp = new PSElementType("TypeApp");
     PSElementType TypeAtom = new PSElementType("TypeAtom");
     PSElementType PolyType = new PSElementType("PolyType");
+    PSElementType GenericIdentifier = new PSElementType("GenericIdentifier");
+    PSElementType LocalIdentifier = new PSElementType("LocalIdentifier");
 
     PSElementType DataDeclaration = new PSElementType("DataDeclaration");
     PSElementType PositionedDeclaration = new PSElementType("PositionedDeclaration");

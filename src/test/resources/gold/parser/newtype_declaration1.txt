@@ -12,4 +12,5 @@ Purescript File
       PSASTWrapperElement(NewtypeDeclaration)
         PsiElement(newtype)('newtype')
         PsiElement(whitespace)(' ')
-        PsiElement(proper name)('User1')
+        PSASTWrapperElement(TypeConstructor)
+          PsiElement(proper name)('User1')

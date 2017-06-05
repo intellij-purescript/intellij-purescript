@@ -58,6 +58,7 @@ public interface PSTokens {
     PSElementType RBRACK = new PSElementType("]");
     PSElementType LCURLY = new PSElementType("{");
     PSElementType RCURLY = new PSElementType("}");
+    PSElementType UNDERSCORE = new PSElementType("_");
 
     PSElementType START = new PSElementType("*");
     PSElementType BANG = new PSElementType("!");
@@ -79,7 +80,7 @@ public interface PSTokens {
             MODULE, CASE, OF, IF, THEN, ELSE, DO, LET, TRUE, FALSE, IN, WHERE, FORALL, QUALIFIED, HIDING, AS, START,
             BANG);
     TokenSet kStrings = TokenSet.create(STRING);
-    TokenSet kOperators = TokenSet.create(DARROW, LDARROW, ARROW, EQ, DOT, LPAREN, RPAREN, LBRACK, RBRACK, LCURLY, RCURLY, OPTIMISTIC);
+    TokenSet kOperators = TokenSet.create(DARROW, LDARROW, ARROW, EQ, DOT, OPTIMISTIC, OPERATOR);
 
     PSElementType EOF = new PSElementType("<<eof>>");
 }

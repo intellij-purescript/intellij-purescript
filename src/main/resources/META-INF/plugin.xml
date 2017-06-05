@@ -34,6 +34,12 @@
     <lang.syntaxHighlighterFactory language="Purescript"
                                    implementationClass="net.kenro.ji.jin.purescript.highlighting.PSSyntaxHighlighterFactory"/>
 
+    <annotator
+            language="Purescript"
+            implementationClass="net.kenro.ji.jin.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
+
+    <additionalTextAttributes scheme="Default" file="colorSchemes/PurescriptDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/PurescriptDarcula.xml"/>
   </extensions>
 
   <actions>
