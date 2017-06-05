@@ -6,6 +6,9 @@
 
 [![Join the chat at https://gitter.im/intellij-purescript/intellij-purescript][gitter-chat-svg]][gitter-chat]
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/intellij-purescript/intellij-purescript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 ## Status
 
 This plugin is still in the **early stages of development** so only has a handful of features. But over time things will stabilize and more features will be added.
