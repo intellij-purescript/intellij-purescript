@@ -126,7 +126,6 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testPrimedTypeName() { doTest(true, true); }
     public void testRowConstructors() { doTest(true, true); }
     public void testGuards() { doTest(true, true); }
-
     public void testDiffKindsSameName() { doTest(true, true); }
     public void testProgrammableTypeErrors() { doTest(true, true); }
     public void testSuggestComposition() { doTest(true, true); }
@@ -134,7 +133,23 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testShadowedNameParens() { doTest(true, true); }
     public void testTypeLevelString() { doTest(true, true); }
 
-
+    // Bugs
+//    public void testbug_do_block1() { doTest(true, true); }
+//    public void testbug_do_block2() { doTest(true, true); }
+//    public void testbug_functions1() { doTest(true, true); }
+//    public void testbug_functions2() { doTest(true, true); }
+//    public void testbug_functions3() { doTest(true, true); }
+//    public void testbug_functions4() { doTest(true, true); }
+//    public void testbug_functions5() { doTest(true, true); }
+//    public void testbug_functions6() { doTest(true, true); }
+//    public void testbug_hilighting1() { doTest(true, true); }
+//    public void testbug_instance1() { doTest(true, true); }
+//    public void testbug_newtype1() { doTest(true, true); }
+//    public void testbug_newtype2() { doTest(true, true); }
+//    public void testbug_syntax_sugar1() { doTest(true, true); }
+//    public void testbug_syntax_sugar2() { doTest(true, true); }
+//    public void testbug_syntax_sugar3() { doTest(true, true); }
+//    public void testbug_syntax_sugar4() { doTest(true, true); }
 
 
 
