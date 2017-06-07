@@ -104,7 +104,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 token(QUALIFIED),
                 token(HIDING),
                 token(AS)).as(Identifier));
-        private final Parsec operator = choice(token(OPERATOR), token(DDOT), token(LARROW), token(LDARROW), token(OPTIMISTIC));
+        private final Parsec operator = choice(token(OPERATOR), token(DOT), token(DDOT), token(LARROW), token(LDARROW), token(OPTIMISTIC));
         private final Parsec properName = lexeme(PROPER_NAME);
         private final Parsec moduleName = lexeme(parseQualified(token(PROPER_NAME)).as(pModuleName));
 
@@ -444,6 +444,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseStringLiteral = reserved(STRING).as(StringLiteral);
         private final SymbolicParsec parseCharLiteral = lexeme("'").as(StringLiteral);
         private final SymbolicParsec parseArrayLiteral = squares(commaSep(parseValueRef)).as(ArrayLiteral);
+        private final SymbolicParsec parseTypeHole = lexeme("?").as(TypeHole);
         private final SymbolicParsec parseIdentifierAndValue
                 = indented(lexeme(lname).or(stringLiteral))
                 .then(indented(lexeme(OPERATOR).or(reserved(COMMA))))
@@ -519,6 +520,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(indented(parseValueRef));
 
         private final Parsec parseValueAtom = choice(
+                attempt(parseTypeHole),
                 attempt(parseNumericLiteral),
                 attempt(parseStringLiteral),
                 attempt(parseBooleanLiteral),

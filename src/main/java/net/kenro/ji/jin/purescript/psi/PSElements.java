@@ -87,5 +87,6 @@ public interface PSElements {
     PSElementType pModuleName = new PSElementType("ModuleName");
     PSElementType pClassName = new PSElementType("ClassName");
     PSElementType pImplies = new PSElementType("Implies");
+    PSElementType TypeHole = new PSElementType("TypeHole");
 }
 
