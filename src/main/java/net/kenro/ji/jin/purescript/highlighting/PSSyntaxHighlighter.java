@@ -75,7 +75,7 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
     // 'String' in 'foo :: String -> String'
     public static final TextAttributesKey TYPE_NAME = createKey("PS_TYPE_NAME", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
 
-    // 'foo' in 'fo :: String -> String'
+    // 'foo' in 'foo :: String -> String'
     public static final TextAttributesKey TYPE_ANNOTATION_NAME = createKey("PS_TYPE_ANNOTATION_NAME", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
 
     // 'a' in 'foo:: forall a. a -> a -> String'
