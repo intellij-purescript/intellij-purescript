@@ -130,13 +130,13 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final ParsecRef parseKindPrefixRef = ref();
         private final SymbolicParsec parseStar = keyword(START, "*").as(Star);
         private final SymbolicParsec parseBang = keyword(BANG, "!").as(Bang);
-        private final Parsec parseKindAtom = indented(choice(parseStar, parseBang, properName, parens(parseKindRef)));
+        private final Parsec parseKindAtom = indented(choice(parseStar, parseBang, parseQualified(properName), parens(parseKindRef)));
         private final Parsec parseKindPrefix
                 = choice(
                 lexeme("#").then(parseKindPrefixRef).as(RowKind),
                 parseKindAtom);
         private final SymbolicParsec parseKind
-                = parseKindPrefix.then(optional(reserved(ARROW).or(optional(properName)).then(optional(parseKindRef)))).as(FunKind);
+                = parseKindPrefix.then(optional(reserved(ARROW).or(optional(parseQualified(properName))).then(optional(parseKindRef)))).as(FunKind);
 
         {
             parseKindPrefixRef.setRef(parseKindPrefix);
@@ -244,10 +244,10 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseGuard = lexeme(PIPE).then(indented(commaSep(parseValueRef))).as(Guard);
         private final SymbolicParsec parseDataDeclaration
                 = reserved(DATA)
-                .then(indented(properName))
+                .then(indented(properName).as(TypeConstructor))
                 .then(many(indented(kindedIdent)).as(TypeArgs))
                 .then(optional(attempt(lexeme(EQ))
-                        .then(sepBy1(properName.then(many(indented(parseTypeAtom))), PIPE))))
+                        .then(sepBy1(properName.as(GenericIdentifier).then(many(indented(parseTypeAtom))), PIPE))))
                 .as(DataDeclaration);
 
         private final SymbolicParsec parseTypeDeclaration
@@ -260,7 +260,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(indented(properName).as(TypeConstructor))
                 .then(optional(many(indented(identifier))))
                 .then(optional(lexeme(EQ)
-                .then(properName
+                .then(properName.as(TypeConstructor)
                        .then(optional(many(indented(identifier))))
                        .then(optional(indented(parseTypeAtom))))))
                 .as(NewtypeDeclaration);
