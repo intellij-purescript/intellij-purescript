@@ -21,9 +21,11 @@ public class PSSyntaxHighlightAnnotator implements Annotator {
         } else if (psiElement(PSElements.TypeAnnotationName).accepts(element)) {
             Annotation ann = holder.createInfoAnnotation(element, element.getText());
             ann.setTextAttributes(PSSyntaxHighlighter.TYPE_ANNOTATION_NAME);
-        } else if ((psiElement(PSElements.PositionedDeclarationRef).accepts(element) || psiElement(PSElements.TypeConstructor).accepts(element))) {
+        } else if ((psiElement(PSElements.PositionedDeclarationRef).accepts(element)
+                || psiElement(PSElements.TypeConstructor).accepts(element)
+//                || psiElement(PSElements.Qualified).accepts(element)
+                || psiElement(PSElements.pModuleName).accepts(element))) {
             Annotation ann = holder.createInfoAnnotation(element, element.getText());
-            System.out.print("WOOOOOP " +  element.getText());
             ann.setTextAttributes(PSSyntaxHighlighter.TYPE_NAME);
         } else if ((psiElement(PSElements.GenericIdentifier).accepts(element) || psiElement(PSElements.Constructor).accepts(element))) {
             Annotation ann = holder.createInfoAnnotation(element, element.getText());
