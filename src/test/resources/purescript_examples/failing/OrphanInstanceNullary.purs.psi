@@ -31,5 +31,6 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)
           PSASTWrapperElement(Qualified)
-            PsiElement(proper name)('C')
-            PsiElement(whitespace)('\n')
+            PSASTWrapperElement(TypeConstructor)
+              PsiElement(proper name)('C')
+              PsiElement(whitespace)('\n')

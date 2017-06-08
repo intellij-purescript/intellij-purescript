@@ -134,7 +134,7 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testTypeLevelString() { doTest(true, true); }
 
     // Bugs
-//    public void testbug_do_block1() { doTest(true, true); }
+    public void testbug_do_block1() { doTest(true, true); }
 //    public void testbug_do_block2() { doTest(true, true); }
 //    public void testbug_functions1() { doTest(true, true); }
 //    public void testbug_functions2() { doTest(true, true); }

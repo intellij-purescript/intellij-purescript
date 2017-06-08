@@ -15,9 +15,7 @@ main = HA.runHalogenAff do
   body <- HA.awaitBody
   io <- runUI B.myButton unit body
 
-  io.subscribe $ CR.consumer \(B.Toggled newState) -> do
-    log $ "Button was toggled to: " <> show newState
-    pure Nothing
+
 
   io.query $ H.action $ B.Toggle
   io.query $ H.action $ B.Toggle

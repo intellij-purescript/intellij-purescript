@@ -105,7 +105,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 token(HIDING),
                 token(AS)).as(Identifier));
         private final Parsec operator = choice(token(OPERATOR), token(DOT), token(DDOT), token(LARROW), token(LDARROW), token(OPTIMISTIC));
-        private final Parsec properName = lexeme(PROPER_NAME);
+        private final Parsec properName = lexeme(PROPER_NAME).as(TypeConstructor);
         private final Parsec moduleName = lexeme(parseQualified(token(PROPER_NAME)).as(pModuleName));
 
         private final Parsec stringLiteral = attempt(lexeme(STRING));
@@ -174,7 +174,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                                         attempt(
                                           optional(lexeme(many(properName).as(TypeConstructor)))
                                            .then(optional(lexeme(identifier).as(GenericIdentifier)))
-                                           .then(optional(indented(lexeme(choice(lname, stringLiteral).as(GenericIdentifier)))))
+                                           .then(optional(indented(lexeme(choice(lname, stringLiteral)))))
                                            .then(optional(indented(lexeme(DCOLON))).then(optional(parsePolyTypeRef)))
                                            .as(TypeVar))
 
@@ -247,7 +247,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(indented(properName).as(TypeConstructor))
                 .then(many(indented(kindedIdent)).as(TypeArgs))
                 .then(optional(attempt(lexeme(EQ))
-                        .then(sepBy1(properName.as(GenericIdentifier).then(many(indented(parseTypeAtom))), PIPE))))
+                        .then(sepBy1(properName.as(TypeConstructor).then(many(indented(parseTypeAtom))), PIPE))))
                 .as(DataDeclaration);
 
         private final SymbolicParsec parseTypeDeclaration
@@ -361,7 +361,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 properName.then(
                         optional(parens(optional(choice(
                                         reserved(DDOT),
-                                commaSep1(properName))))))).as(PositionedDeclarationRef);
+                                commaSep1(properName.as(TypeConstructor)))))))).as(PositionedDeclarationRef);
 
 
         private final SymbolicParsec parseTypeClassDeclaration
@@ -455,7 +455,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         private final Parsec typedIdent
                 = optional(reserved(LPAREN))
-                  .then(many1(lexeme(identifier).as(GenericIdentifier).or(properName).as(TypeConstructor)))
+                  .then(many1(lexeme(identifier).as(GenericIdentifier).or(parseQualified(properName)).as(TypeConstructor)))
                   .then(optional(indented(lexeme(DCOLON)).then(indented(parsePolyTypeRef))))
                   .then(optional(reserved(RPAREN)));
 
