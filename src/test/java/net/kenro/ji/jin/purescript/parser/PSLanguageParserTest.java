@@ -150,6 +150,9 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testbug_syntax_sugar2() { doTest(true, true); }
     public void testbug_functions6() { doTest(true, true); }
     public void testbug_abs1() { doTest(true, true); }
+    public void testbug_import1() { doTest(true, true); }
+//    public void testbug_function7() { doTest(true, true); }
+//    public void testbug_function8() { doTest(true, true); }
     //    public void testbug_hilighting1() { doTest(true, true); }
 
 
