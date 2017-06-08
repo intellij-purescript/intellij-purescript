@@ -40,6 +40,10 @@
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/PurescriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/PurescriptDarcula.xml"/>
+
+    <colorSettingsPage
+            implementation="net.kenro.ji.jin.purescript.highlighting.PSColorSettingsPage" />
+
   </extensions>
 
   <actions>
