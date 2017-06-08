@@ -141,15 +141,17 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
     public void testbug_functions3() { doTest(true, true); }
     public void testbug_functions4() { doTest(true, true); }
     public void testbug_functions5() { doTest(true, true); }
+    public void testbug_instance1() { doTest(true, true); }
+    public void testbug_newtype1() { doTest(true, true); }
+    public void testbug_newtype2() { doTest(true, true); }
+    public void testbug_syntax_sugar1() { doTest(true, true); }
+    public void testbug_syntax_sugar3() { doTest(true, true); }
+    public void testbug_syntax_sugar4() { doTest(true, true); }
+
+//    public void testbug_syntax_sugar2() { doTest(true, true); }
 //    public void testbug_functions6() { doTest(true, true); }
 //    public void testbug_hilighting1() { doTest(true, true); }
-//    public void testbug_instance1() { doTest(true, true); }
-//    public void testbug_newtype1() { doTest(true, true); }
-//    public void testbug_newtype2() { doTest(true, true); }
-//    public void testbug_syntax_sugar1() { doTest(true, true); }
-//    public void testbug_syntax_sugar2() { doTest(true, true); }
-//    public void testbug_syntax_sugar3() { doTest(true, true); }
-//    public void testbug_syntax_sugar4() { doTest(true, true); }
+//    public void testbug_abs1() { doTest(true, true); }
 
 
 

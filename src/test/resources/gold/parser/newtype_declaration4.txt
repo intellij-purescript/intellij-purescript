@@ -16,6 +16,8 @@ Purescript File
           PSASTWrapperElement(TypeConstructor)
             PsiElement(proper name)('User6')
             PsiElement(whitespace)(' ')
+        PSASTWrapperElement(TypeArgs)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

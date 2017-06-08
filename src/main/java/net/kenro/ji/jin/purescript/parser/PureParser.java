@@ -258,7 +258,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseNewtypeDeclaration
                 = reserved(NEWTYPE)
                 .then(indented(properName).as(TypeConstructor))
-                .then(optional(many(indented(identifier))))
+                .then(many(indented(kindedIdent)).as(TypeArgs))
+//                .then(optional(many(indented(identifier))))
                 .then(optional(lexeme(EQ)
                 .then(properName.as(TypeConstructor)
                        .then(optional(many(indented(identifier))))

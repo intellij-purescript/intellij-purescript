@@ -501,6 +501,8 @@ Purescript File
           PSASTWrapperElement(TypeConstructor)
             PsiElement(proper name)('W')
             PsiElement(whitespace)(' ')
+        PSASTWrapperElement(TypeArgs)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)
@@ -751,6 +753,8 @@ Purescript File
           PSASTWrapperElement(TypeConstructor)
             PsiElement(proper name)('U')
             PsiElement(whitespace)(' ')
+        PSASTWrapperElement(TypeArgs)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

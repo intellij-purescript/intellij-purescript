@@ -244,6 +244,8 @@ Purescript File
           PSASTWrapperElement(TypeConstructor)
             PsiElement(proper name)('RecordNewtype')
             PsiElement(whitespace)(' ')
+        PSASTWrapperElement(TypeArgs)
+          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

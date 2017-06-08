@@ -15,3 +15,5 @@ Purescript File
         PSASTWrapperElement(TypeConstructor)
           PSASTWrapperElement(TypeConstructor)
             PsiElement(proper name)('User1')
+        PSASTWrapperElement(TypeArgs)
+          <empty list>
