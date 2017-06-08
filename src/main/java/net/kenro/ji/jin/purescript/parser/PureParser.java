@@ -447,8 +447,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseTypeHole = lexeme("?").as(TypeHole);
         private final SymbolicParsec parseIdentifierAndValue
                 = indented(lexeme(lname).or(stringLiteral))
-                .then(indented(lexeme(OPERATOR).or(reserved(COMMA))))
-                .then(indented(parseValueRef))
+                .then(optional(indented(lexeme(OPERATOR).or(reserved(COMMA)))))
+                .then(optional(indented(parseValueRef)))
                 .as(ObjectBinderField);
         private final SymbolicParsec parseObjectLiteral =
                 braces(commaSep(parseIdentifierAndValue)).as(ObjectLiteral);

@@ -135,12 +135,12 @@ public class PSLanguageParserTest extends PSLanguageParserTestBase {
 
     // Bugs
     public void testbug_do_block1() { doTest(true, true); }
-//    public void testbug_do_block2() { doTest(true, true); }
-//    public void testbug_functions1() { doTest(true, true); }
-//    public void testbug_functions2() { doTest(true, true); }
-//    public void testbug_functions3() { doTest(true, true); }
-//    public void testbug_functions4() { doTest(true, true); }
-//    public void testbug_functions5() { doTest(true, true); }
+    public void testbug_do_block2() { doTest(true, true); }
+    public void testbug_functions1() { doTest(true, true); }
+    public void testbug_functions2() { doTest(true, true); }
+    public void testbug_functions3() { doTest(true, true); }
+    public void testbug_functions4() { doTest(true, true); }
+    public void testbug_functions5() { doTest(true, true); }
 //    public void testbug_functions6() { doTest(true, true); }
 //    public void testbug_hilighting1() { doTest(true, true); }
 //    public void testbug_instance1() { doTest(true, true); }
