@@ -40,8 +40,8 @@ mkdirRec path = case Arr.uncons (Str.split (Str.Pattern "/") path) of
     _ ← Arr.foldM mkSegment head tail
     success ← FSA.exists path
     unless success $ throwError $ error $ "Failed to create " <> path
-  where
-  mkSegment done next = do
+   where
+   mkSegment done next = do
     let acc = done <> "/" <> next
     apathize $ FSA.mkdir acc
     pure acc
