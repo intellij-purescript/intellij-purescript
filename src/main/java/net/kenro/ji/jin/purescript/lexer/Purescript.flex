@@ -23,7 +23,7 @@ opChars = [\:\!#\$%&*+./<=>?@\\\^|\-~]
 identStart = [:lowercase:]|"_"
 identLetter = [:letter:]|[:digit:]|[_\']
 properStart = [:uppercase:]
-properLetter = [:letter:]|[:digit:]|[_\']
+properLetter = [:letter:]|[:digit:]|[\']|[_]
 properName = {properStart}{properLetter}*
 
 // http://www.regular-expressions.info/unicode.html#prop
