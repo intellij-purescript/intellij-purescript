@@ -23,11 +23,13 @@ public class PSSyntaxHighlightAnnotator implements Annotator {
             ann.setTextAttributes(PSSyntaxHighlighter.TYPE_ANNOTATION_NAME);
         } else if ((psiElement(PSElements.PositionedDeclarationRef).accepts(element)
                 || psiElement(PSElements.TypeConstructor).accepts(element)
-                || psiElement(PSElements.pClassName).accepts(element)
-                || psiElement(PSElements.pModuleName).accepts(element))) {
+                || psiElement(PSElements.pClassName).accepts(element))) {
+//                || psiElement(PSElements.pModuleName).accepts(element))) {
             Annotation ann = holder.createInfoAnnotation(element, element.getText());
             ann.setTextAttributes(PSSyntaxHighlighter.TYPE_NAME);
-        } else if ((psiElement(PSElements.GenericIdentifier).accepts(element) || psiElement(PSElements.Constructor).accepts(element))) {
+        } else if ((psiElement(PSElements.GenericIdentifier).accepts(element)
+                || psiElement(PSElements.Constructor).accepts(element)
+                || psiElement(PSElements.qualifiedModuleName).accepts(element))) {
             Annotation ann = holder.createInfoAnnotation(element, element.getText());
             ann.setTextAttributes(PSSyntaxHighlighter.TYPE_VARIABLE);
         } else if (psiElement(PSElements.LocalIdentifier).accepts(element)) {
@@ -35,4 +37,6 @@ public class PSSyntaxHighlightAnnotator implements Annotator {
             ann.setTextAttributes(PSSyntaxHighlighter.NUMBER);
         }
     }
+
+
 }

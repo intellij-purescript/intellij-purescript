@@ -103,8 +103,8 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
         keys.put(PSTokens.DOT, PS_DOT);
         keys.put(PSTokens.DCOLON, PS_DCOLON);
         keys.put(PSTokens.ARROW, PS_ARROW);
+        keys.put(PSTokens.LARROW, PS_ARROW);
         keys.put(PSTokens.FLOAT, NUMBER);
-        keys.put(PSTokens.UNDERSCORE, PS_UNDERSCORE);
     }
 
     @NotNull

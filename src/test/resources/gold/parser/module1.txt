@@ -6,5 +6,5 @@ Purescript File
       PSASTWrapperElement(ModuleName)
         PSASTWrapperElement(Qualified)
           PsiElement(proper name)('Main')
-      PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
       PsiElement(where)('where')

@@ -85,6 +85,8 @@ public interface PSElements {
     PSElementType Fixity = new PSElementType("Fixity");
     PSElementType JSRaw = new PSElementType("JavaScript");
     PSElementType pModuleName = new PSElementType("ModuleName");
+    PSElementType importModuleName = new PSElementType("ImportModuleName");
+    PSElementType qualifiedModuleName = new PSElementType("QualifiedModuleName");
     PSElementType pClassName = new PSElementType("ClassName");
     PSElementType pImplies = new PSElementType("Implies");
     PSElementType TypeHole = new PSElementType("TypeHole");

@@ -6,7 +6,7 @@ Purescript File
       PSASTWrapperElement(ModuleName)
         PSASTWrapperElement(Qualified)
           PsiElement(proper name)('NewOperators2')
-      PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)

@@ -7,7 +7,7 @@ Purescript File
       PSASTWrapperElement(ModuleName)
         PSASTWrapperElement(Qualified)
           PsiElement(proper name)('ExplicitTypeSignatures')
-      PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n-- This should use the explicit type signature so that the type variable name\n-- is preserved.\n')
       PSASTWrapperElement(TypeDeclaration)
