@@ -23,10 +23,10 @@ public class PSColorSettingsPage implements ColorSettingsPage {
     private static final Map<String, TextAttributesKey> TAG_HIGHLIGHTING_MAP = new HashMap<String, TextAttributesKey>();
 
     static {
-        TAG_HIGHLIGHTING_MAP.put("import_ref", IMPORT_REF);
-        TAG_HIGHLIGHTING_MAP.put("type_variable", TYPE_VARIABLE);
-        TAG_HIGHLIGHTING_MAP.put("type_name", TYPE_NAME);
-        TAG_HIGHLIGHTING_MAP.put("type_annotation_name", TYPE_ANNOTATION_NAME);
+        TAG_HIGHLIGHTING_MAP.put("import_ref", IMPORT_REF); // blue
+        TAG_HIGHLIGHTING_MAP.put("type_variable", TYPE_VARIABLE); // red
+        TAG_HIGHLIGHTING_MAP.put("type_name", TYPE_NAME); // yellow
+        TAG_HIGHLIGHTING_MAP.put("type_annotation_name", TYPE_ANNOTATION_NAME); // blue
     }
 
     private static final AttributesDescriptor[] ATTRIBS = {
@@ -63,9 +63,65 @@ public class PSColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
 
-        return "module Main (Todo) where" +
+        return "module <type_name>DemoText.View</type_name> where\n" +
                 "\n" +
-                "import Data.Html (div, h1)";
+                "import <type_name>Prelude hiding</type_name> (<import_ref>div</import_ref>)\n" +
+                "import <type_name>UserManagement.Models</type_name> (<type_name>Model(..)</type_name>, <type_name>User(..)</type_name>, <type_name>class Cool</type_name>)\n" +
+                "import <type_name>UserManagement.Query</type_name>\n" +
+                "import <type_name>Data.Functor</type_name> (<import_ref>map</import_ref>)\n" +
+                "\n" +
+                "-- This is a line comment\n" +
+                "\n" +
+                "{- \n" +
+                " This is a block comment\n" +
+                "-}\n" +
+                "\n" +
+                "newtype <type_name>X</type_name> = <type_name>X Int</type_name>\n" +
+                "\n" +
+                "<type_annotation_name>patternNewtype</type_annotation_name> :: <type_name>Boolean</type_name>\n" +
+                "patternNewtype =\n" +
+                "  let <type_name>X</type_name> a = <type_name>X</type_name> 123\n" +
+                "  in\n" +
+                "   a == 123\n" +
+                "\n" +
+                "<type_annotation_name>patternDoNewtype</type_annotation_name> :: forall <type_variable>e</type_variable>. <type_name>Eff</type_name> <type_variable>e</type_variable> <type_name>Boolean</type_name>\n" +
+                "patternDoNewtype = do\n" +
+                "  let <type_name>X</type_name> a = <type_name>X</type_name> 123\n" +
+                "  pure $ a == 123\n" +
+                "\n" +
+                "data <type_name>Y</type_name> = <type_name>Y Int String Boolean</type_name>\n" +
+                "\n" +
+                "-- Guards have access to current scope\n" +
+                "collatz2 = \\<type_variable>x</type_variable> <type_variable>y</type_variable> -> case x of\n" +
+                "  z | y > 0.0 -> z / 2.0\n" +
+                "  z -> z * 3.0 + 1.0\n" +
+                "\n" +
+                "<type_annotation_name>min</type_annotation_name> :: forall <type_variable>a</type_variable>. <type_name>Ord</type_name> <type_variable>a</type_variable> => <type_variable>a</type_variable> -> <type_variable>a</type_variable> -> <type_variable>a</type_variable>\n" +
+                "min n m | n < m     = n\n" +
+                "        | otherwise = m\n" +
+                "\n" +
+                "<type_annotation_name>max</type_annotation_name> :: forall <type_variable>a</type_variable>. <type_name>Ord</type_name> <type_variable>a</type_variable> => <type_variable>a</type_variable> -> <type_variable>a</type_variable> -> <type_variable>a</type_variable>\n" +
+                "max n m = case unit of\n" +
+                "  _ | m < n     -> n\n" +
+                "    | otherwise -> m\n" +
+                "\n" +
+                "<type_annotation_name>testIndentation</type_annotation_name> :: <type_name>Number</type_name> -> <type_name>Number</type_name> -> <type_name>Number</type_name>\n" +
+                "testIndentation x y | x > 0.0\n" +
+                "  = x + y\n" +
+                "                    | otherwise\n" +
+                "  = y - x\n" +
+                "\n" +
+                "-- pattern guard example with two clauses\n" +
+                "<type_annotation_name>clunky1</type_annotation_name> :: <type_name>Int</type_name> -> <type_name>Int</type_name> -> <type_name>Int</type_name>\n" +
+                "clunky1 a b | x <- max a b , x > 5 = x\n" +
+                "clunky1 a _ = a\n" +
+                "\n" +
+                "<type_annotation_name>clunky2</type_annotation_name> ::<type_name>Int</type_name> -> <type_name>Int</type_name> -> <type_name>Int</type_name>\n" +
+                "clunky2 a b | x <- max a b\n" +
+                "            , x > 5\n" +
+                "            = x\n" +
+                "            | otherwise\n" +
+                "            = a + b";
     }
 
     @Nullable
