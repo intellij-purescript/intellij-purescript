@@ -63,12 +63,12 @@ public class PSColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
 
-        return "module <type_name>DemoText.View</type_name> where\n" +
+        return "module DemoText.View where\n" +
                 "\n" +
-                "import <type_name>Prelude hiding</type_name> (<import_ref>div</import_ref>)\n" +
-                "import <type_name>UserManagement.Models</type_name> (<type_name>Model(..)</type_name>, <type_name>User(..)</type_name>, <type_name>class Cool</type_name>)\n" +
-                "import <type_name>UserManagement.Query</type_name>\n" +
-                "import <type_name>Data.Functor</type_name> (<import_ref>map</import_ref>)\n" +
+                "import Prelude hiding (<import_ref>div</import_ref>)\n" +
+                "import UserManagement.Models (<type_name>Model(..)</type_name>, <type_name>User(..)</type_name>, <type_name>class Cool</type_name>)\n" +
+                "import UserManagement.Query\n" +
+                "import Data.Functor (<import_ref>map</import_ref>)\n" +
                 "\n" +
                 "-- This is a line comment\n" +
                 "\n" +
@@ -80,13 +80,13 @@ public class PSColorSettingsPage implements ColorSettingsPage {
                 "\n" +
                 "<type_annotation_name>patternNewtype</type_annotation_name> :: <type_name>Boolean</type_name>\n" +
                 "patternNewtype =\n" +
-                "  let <type_name>X</type_name> a = <type_name>X</type_name> 123\n" +
+                "  let <type_variable>X</type_variable> a = <type_variable>X</type_variable> 123\n" +
                 "  in\n" +
                 "   a == 123\n" +
                 "\n" +
                 "<type_annotation_name>patternDoNewtype</type_annotation_name> :: forall <type_variable>e</type_variable>. <type_name>Eff</type_name> <type_variable>e</type_variable> <type_name>Boolean</type_name>\n" +
                 "patternDoNewtype = do\n" +
-                "  let <type_name>X</type_name> a = <type_name>X</type_name> 123\n" +
+                "  let <type_variable>X</type_variable> a = <type_variable>X</type_variable> 123\n" +
                 "  pure $ a == 123\n" +
                 "\n" +
                 "data <type_name>Y</type_name> = <type_name>Y Int String Boolean</type_name>\n" +
