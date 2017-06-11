@@ -8,13 +8,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.file.PSFileStubType;
 import net.kenro.ji.jin.purescript.lexer.PSLexer;
+import net.kenro.ji.jin.purescript.psi.PSElements;
 import net.kenro.ji.jin.purescript.psi.PSTokens;
 import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement;
+import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl;
+import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class PSParserDefinition implements ParserDefinition, PSTokens {
@@ -55,7 +59,14 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
-        return new PSASTWrapperElement(node);
+        IElementType type = node.getElementType();
+        if (type.equals(PSElements.ProperName)) {
+            return new PSProperNameImpl(node);
+        } else if (type.equals(PSElements.Identifier)) {
+            return new PSIdentifierImpl(node);
+        } else {
+            return new PSASTWrapperElement(node);
+        }
     }
 
     @Override

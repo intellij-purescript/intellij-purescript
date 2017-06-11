@@ -31,8 +31,9 @@ Purescript File
           PSASTWrapperElement(TypeAtom)
             PSASTWrapperElement(TypeConstructor)
               PSASTWrapperElement(Qualified)
-                PsiElement(proper name)('Unit')
-                PsiElement(whitespace)('\n\n')
+                PSProperNameImpl(ProperName)
+                  PsiElement(proper name)('Unit')
+                  PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
       PSASTWrapperElement(TypeClassDeclaration)
@@ -40,7 +41,8 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)
           PSASTWrapperElement(Qualified)
-            PsiElement(proper name)('Fail')
-            PsiElement(whitespace)('\n')
+            PSProperNameImpl(ProperName)
+              PsiElement(proper name)('Fail')
+              PsiElement(whitespace)('\n')
         PSASTWrapperElement(Implies)
           <empty list>

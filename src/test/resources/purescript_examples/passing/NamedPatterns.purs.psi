@@ -83,7 +83,7 @@ Purescript File
                             PsiElement({)('{')
                             PsiElement(whitespace)(' ')
                             PSASTWrapperElement(ObjectBinderField)
-                              PSASTWrapperElement(identifier)
+                              PSIdentifierImpl(identifier)
                                 PsiElement(identifier)('foo')
                               PsiElement(operator)(':')
                               PsiElement(whitespace)(' ')

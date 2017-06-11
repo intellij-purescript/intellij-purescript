@@ -22,5 +22,6 @@ Purescript File
           PsiElement(whitespace)(' ')
         PsiElement(()('(')
         PSASTWrapperElement(PositionedDeclarationRef)
-          PsiElement(proper name)('CHILD_PROCESS')
+          PSProperNameImpl(ProperName)
+            PsiElement(proper name)('CHILD_PROCESS')
         PsiElement())(')')

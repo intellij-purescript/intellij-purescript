@@ -31,5 +31,6 @@ Purescript File
           PSASTWrapperElement(TypeAtom)
             PSASTWrapperElement(TypeConstructor)
               PSASTWrapperElement(Qualified)
-                PsiElement(proper name)('T')
-                PsiElement(whitespace)('\n')
+                PSProperNameImpl(ProperName)
+                  PsiElement(proper name)('T')
+                  PsiElement(whitespace)('\n')

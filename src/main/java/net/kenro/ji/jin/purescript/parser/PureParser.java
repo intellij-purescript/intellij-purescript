@@ -105,7 +105,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 token(HIDING),
                 token(AS)).as(Identifier));
         private final Parsec operator = choice(token(OPERATOR), token(DOT), token(DDOT), token(LARROW), token(LDARROW), token(OPTIMISTIC));
-        private final Parsec properName = lexeme(PROPER_NAME);
+        private final Parsec properName = lexeme(PROPER_NAME).as(ProperName);
         private final Parsec moduleName = lexeme(parseQualified(token(PROPER_NAME)));
 
         private final Parsec stringLiteral = attempt(lexeme(STRING));

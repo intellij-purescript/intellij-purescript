@@ -6,6 +6,8 @@ import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.tree.IElementType;
 import net.kenro.ji.jin.purescript.psi.PSElements;
+import net.kenro.ji.jin.purescript.psi.PSTokens;
+import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class PSASTWrapperElement extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {

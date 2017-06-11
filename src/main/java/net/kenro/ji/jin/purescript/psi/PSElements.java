@@ -2,6 +2,7 @@ package net.kenro.ji.jin.purescript.psi;
 
 public interface PSElements {
     PSElementType Identifier = new PSElementType("identifier");
+    PSElementType ProperName = new PSElementType("ProperName");
 
     PSElementType Program = new PSElementType("Program");
     PSElementType Module = new PSElementType("Module");

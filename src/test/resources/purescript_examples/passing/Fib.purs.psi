@@ -165,7 +165,7 @@ Purescript File
                               PSASTWrapperElement(Var)
                                 PSASTWrapperElement(Qualified)
                                   PsiElement(()('(')
-                                  PSASTWrapperElement(identifier)
+                                  PSIdentifierImpl(identifier)
                                     PsiElement(operator)('>')
                                   PsiElement())(')')
                                   PsiElement(whitespace)(' ')

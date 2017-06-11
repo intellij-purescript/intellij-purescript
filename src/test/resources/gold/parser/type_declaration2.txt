@@ -36,7 +36,7 @@ Purescript File
                       PsiElement({)('{')
                       PSASTWrapperElement(Row)
                         PSASTWrapperElement(GenericIdentifier)
-                          PSASTWrapperElement(identifier)
+                          PSIdentifierImpl(identifier)
                             PsiElement(identifier)('name')
                           PsiElement(whitespace)(' ')
                         PsiElement(::)('::')

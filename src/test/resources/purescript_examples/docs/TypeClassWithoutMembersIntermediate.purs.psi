@@ -35,6 +35,7 @@ Purescript File
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(ClassName)
             PSASTWrapperElement(Qualified)
-              PsiElement(proper name)('SomeClass')
+              PSProperNameImpl(ProperName)
+                PsiElement(proper name)('SomeClass')
         PsiElement())(')')
         PsiElement(whitespace)('\n')
