@@ -25,6 +25,7 @@ sourceSets {
 }
 
 version = "${version}"
+//version = "1.14-SNAPSHOT"
 
 allprojects {
 //    apply plugin: 'kotlin'
