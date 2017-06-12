@@ -1,6 +1,7 @@
 //package net.kenro.ji.jin.purescript.psi.scope;
 //
 //import net.kenro.ji.jin.purescript.file.PSFile;
+//import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 //import net.kenro.ji.jin.purescript.psi.PSProperName;
 //import net.kenro.ji.jin.purescript.util.TypeFilter;
 //
@@ -13,7 +14,7 @@
 //    private final PSFile file;
 //
 //    private final Stack<PSProperName> types = new Stack<>();
-//    private final Stack<ElmImportClause> importClauses = new Stack<>();
+//    private final Stack<PSImportDeclaration> importClauses = new Stack<>();
 //    private final Stack<String> implicitImports;
 //    private TypesProvidingPhase phase = CURRENT_FILE;
 //

@@ -18,6 +18,10 @@ public class PSVisitor extends PsiElementVisitor {
         visitNamedElement(o);
     }
 
+    public void visitPSImportDeclaration(@NotNull PSImportDeclaration o) {
+        visitPsiElement(o);
+    }
+
     public void visitPSIdentifier(@NotNull PSIdentifier o) {
         visitNamedElement(o);
     }

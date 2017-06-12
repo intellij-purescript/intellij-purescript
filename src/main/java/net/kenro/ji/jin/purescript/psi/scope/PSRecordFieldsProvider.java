@@ -2,6 +2,7 @@
 //
 //import net.kenro.ji.jin.purescript.file.PSFile;
 //import net.kenro.ji.jin.purescript.psi.PSIdentifier;
+//import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 //
 //import java.util.Optional;
 //import java.util.Stack;
@@ -13,7 +14,7 @@
 //    private final PSFile file;
 //
 //    private final Stack<PSIdentifier> fields = new Stack<>();
-//    private final Stack<ElmImportClause> importClauses = new Stack<>();
+//    private final Stack<PSImportDeclaration> importClauses = new Stack<>();
 //    private final Stack<String> implicitImports;
 //    private PSTypesProvider.TypesProvidingPhase phase = CURRENT_FILE;
 //
