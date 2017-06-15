@@ -11,7 +11,7 @@ public class PSProperNameImpl extends PSNamedElementImpl implements PSProperName
 
     public PSProperNameImpl(ASTNode node){
         super(node);
-        System.out.print("IN THE PSPROPERNAME IMPL");
+//        System.out.print("IN THE PSPROPERNAME IMPL");
     }
 
     public void accept(@NotNull PSVisitor visitor) {

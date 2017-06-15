@@ -11,7 +11,7 @@ Purescript File
       PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -20,7 +20,7 @@ Purescript File
           PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -33,7 +33,7 @@ Purescript File
           PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -48,7 +48,7 @@ Purescript File
           PsiElement(whitespace)('\n\n-- Here we import as alias of reflectSymbol without importing Data.Symbol. However,\n-- Data.Symbol should be implicitly imported as we have an instance of IsSymbol solved.\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)

@@ -15,7 +15,7 @@ Purescript File
       PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -24,7 +24,7 @@ Purescript File
           PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -53,7 +53,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -83,7 +83,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -113,7 +113,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -134,7 +134,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -157,7 +157,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -186,7 +186,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -216,7 +216,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -254,7 +254,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -279,7 +279,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -304,7 +304,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -334,7 +334,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -357,7 +357,7 @@ Purescript File
         PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -374,7 +374,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -396,7 +396,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -413,7 +413,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -430,7 +430,7 @@ Purescript File
           PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -447,7 +447,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -473,7 +473,7 @@ Purescript File
         PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -490,7 +490,7 @@ Purescript File
         PsiElement(whitespace)('\n\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -509,7 +509,7 @@ Purescript File
           PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)
@@ -528,7 +528,7 @@ Purescript File
           PsiElement(whitespace)('\n')
       PSASTWrapperElement(NamedBinder)
         <empty list>
-      PSASTWrapperElement(ImportDeclaration)
+      PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(ImportModuleName)

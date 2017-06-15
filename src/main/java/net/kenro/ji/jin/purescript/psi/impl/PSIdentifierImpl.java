@@ -12,7 +12,7 @@ public class PSIdentifierImpl extends PSNamedElementImpl implements PSIdentifier
 
     public PSIdentifierImpl(ASTNode node){
         super(node);
-        System.out.print("IN THE PSIDENTIFIER IMPL");
+//        System.out.print("  IN THE PSIDENTIFIER IMPL  ");
     }
 
     public void accept(@NotNull PSVisitor visitor) {
