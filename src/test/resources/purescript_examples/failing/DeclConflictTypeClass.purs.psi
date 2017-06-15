@@ -22,7 +22,7 @@ Purescript File
               PsiElement(whitespace)('\n\n')
         PSASTWrapperElement(Implies)
           <empty list>
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

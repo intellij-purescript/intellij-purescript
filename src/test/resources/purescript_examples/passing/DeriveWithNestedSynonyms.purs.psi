@@ -55,7 +55,7 @@ Purescript File
                 <empty list>
               PsiElement(})('}')
               PsiElement(whitespace)('\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)
@@ -115,7 +115,7 @@ Purescript File
                 <empty list>
               PsiElement(})('}')
               PsiElement(whitespace)('\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)
@@ -187,7 +187,7 @@ Purescript File
                 <empty list>
               PsiElement(})('}')
               PsiElement(whitespace)('\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

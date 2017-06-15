@@ -9,7 +9,7 @@ Purescript File
         PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

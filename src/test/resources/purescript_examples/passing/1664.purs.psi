@@ -46,7 +46,7 @@ Purescript File
             PsiElement(.)('.')
             PsiElement(proper name)('Console')
           PsiElement(whitespace)('\n\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

@@ -97,7 +97,7 @@ Purescript File
               PSASTWrapperElement(StringLiteral)
                 PsiElement(string)('"Done"')
                 PsiElement(whitespace)('\n\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

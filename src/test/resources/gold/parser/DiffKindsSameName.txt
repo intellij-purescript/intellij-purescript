@@ -44,7 +44,7 @@ Purescript File
           PSASTWrapperElement(Qualified)
             PsiElement(proper name)('LibB')
           PsiElement(whitespace)('\n\n-- both `LibA` and `LibB` define a kind locally called `DemoKind`\n-- `LibB` defines `DemoData :: LibB.DemoKind`\n-- if we try to use `DemoData` in a place where `LibA.DemoKind` is expected, it should fail with `KindsDoNotUnify`\n\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

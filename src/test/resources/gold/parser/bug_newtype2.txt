@@ -545,7 +545,7 @@ Purescript File
             PsiElement(proper name)('RefLabel')
         PsiElement())(')')
         PsiElement(whitespace)('\n\n-- | The Halogen component algebra\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

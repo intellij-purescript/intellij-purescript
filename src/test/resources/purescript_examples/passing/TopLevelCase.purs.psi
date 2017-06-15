@@ -259,7 +259,7 @@ Purescript File
               PSASTWrapperElement(Qualified)
                 PsiElement(identifier)('xs')
                 PsiElement(whitespace)('\n\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)

@@ -46,8 +46,8 @@ class PSTypesProvider {
     }
 
     private void gatherTypesFromCurrentFile() {
-//        this.file.getInternalTypes()
-//                .forEach(this.types::push);
+        this.file.getInternalTypes()
+                .forEach(this.types::push);
         this.file.getImportClauses()
                 .forEach(this.importClauses::push);
         this.updatePhase();

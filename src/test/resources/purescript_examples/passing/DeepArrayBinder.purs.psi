@@ -63,7 +63,7 @@ Purescript File
             PsiElement(.)('.')
             PsiElement(proper name)('Assert')
           PsiElement(whitespace)('\n\n')
-      PSASTWrapperElement(DataDeclaration)
+      PSDataDeclarationImpl(DataDeclaration)
         PsiElement(data)('data')
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(TypeConstructor)
