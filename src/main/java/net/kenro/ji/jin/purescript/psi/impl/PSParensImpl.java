@@ -7,9 +7,9 @@ import net.kenro.ji.jin.purescript.psi.PSParens;
 import net.kenro.ji.jin.purescript.psi.PSVisitor;
 import org.jetbrains.annotations.NotNull;
 
-public class PSParensmpl extends PSPsiElement implements PSParens {
+public class PSParensImpl extends PSPsiElement implements PSParens {
 
-    public PSParensmpl(ASTNode node) {
+    public PSParensImpl(ASTNode node) {
         super(node);
     }
 

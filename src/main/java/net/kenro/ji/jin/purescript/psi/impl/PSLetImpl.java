@@ -7,9 +7,9 @@ import net.kenro.ji.jin.purescript.psi.PSLet;
 import net.kenro.ji.jin.purescript.psi.PSVisitor;
 import org.jetbrains.annotations.NotNull;
 
-public class PSLetmpl extends PSPsiElement implements PSLet {
+public class PSLetImpl extends PSPsiElement implements PSLet {
 
-    public PSLetmpl(ASTNode node) {
+    public PSLetImpl(ASTNode node) {
         super(node);
     }
 
