@@ -23,14 +23,12 @@ public interface PSElements {
     PSElementType ObjectType = new PSElementType("ObjectType");
     PSElementType TypeVar = new PSElementType("TypeVar");
     PSElementType TypeConstructor = new PSElementType("TypeConstructor");
-    PSElementType TypeApp = new PSElementType("TypeApp");
+
     PSElementType TypeAtom = new PSElementType("TypeAtom");
-    PSElementType PolyType = new PSElementType("PolyType");
     PSElementType GenericIdentifier = new PSElementType("GenericIdentifier");
     PSElementType LocalIdentifier = new PSElementType("LocalIdentifier");
-
     PSElementType DataDeclaration = new PSElementType("DataDeclaration");
-    PSElementType PositionedDeclaration = new PSElementType("PositionedDeclaration");
+
     PSElementType TypeDeclaration = new PSElementType("TypeDeclaration");
     PSElementType TypeSynonymDeclaration = new PSElementType("TypeSynonymDeclaration");
     PSElementType ValueDeclaration = new PSElementType("ValueDeclaration");
@@ -39,7 +37,7 @@ public interface PSElements {
     PSElementType ExternDeclaration = new PSElementType("ExternDeclaration");
     PSElementType FixityDeclaration = new PSElementType("FixityDeclaration");
     PSElementType ImportDeclaration = new PSElementType("ImportDeclaration");
-    PSElementType LocalDeclaration = new PSElementType("LocalDeclaration");
+
     PSElementType PositionedDeclarationRef = new PSElementType("PositionedDeclarationRef");
     PSElementType TypeClassDeclaration = new PSElementType("TypeClassDeclaration");
     PSElementType TypeInstanceDeclaration = new PSElementType("TypeInstanceDeclaration");
@@ -91,5 +89,11 @@ public interface PSElements {
     PSElementType pClassName = new PSElementType("ClassName");
     PSElementType pImplies = new PSElementType("Implies");
     PSElementType TypeHole = new PSElementType("TypeHole");
+
+    // NOT USED?
+    PSElementType TypeApp = new PSElementType("TypeApp");
+    PSElementType PolyType = new PSElementType("PolyType");
+    PSElementType PositionedDeclaration = new PSElementType("PositionedDeclaration");
+    PSElementType LocalDeclaration = new PSElementType("LocalDeclaration");
 }
 

@@ -18,10 +18,7 @@ import net.kenro.ji.jin.purescript.psi.PSElements;
 import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSTokens;
 import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement;
-import net.kenro.ji.jin.purescript.psi.impl.PSDataDeclarationImpl;
-import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl;
-import net.kenro.ji.jin.purescript.psi.impl.PSImportDeclarationImpl;
-import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
+import net.kenro.ji.jin.purescript.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 public class PSParserDefinition implements ParserDefinition, PSTokens {
@@ -71,6 +68,8 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
             return new PSImportDeclarationImpl(node);
         } else if (type.equals(PSElements.DataDeclaration)) {
             return new PSDataDeclarationImpl(node);
+        } else if (type.equals(PSElements.Binder)) {
+            return new PSBinderImpl(node);
         } else {
             return new PSASTWrapperElement(node);
         }
