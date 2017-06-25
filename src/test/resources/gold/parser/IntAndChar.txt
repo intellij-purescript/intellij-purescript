@@ -68,7 +68,7 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(NamedBinder)
           <empty list>
-        PSASTWrapperElement(Binder)
+        PSBinderImpl(Binder)
           PSASTWrapperElement(NumberBinder)
             PsiElement(natural)('1')
             PsiElement(whitespace)(' ')
@@ -98,10 +98,10 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(NamedBinder)
           <empty list>
-        PSASTWrapperElement(Binder)
+        PSBinderImpl(Binder)
           PSASTWrapperElement(StringBinder)
             PsiElement(error)(''')
-        PSASTWrapperElement(Binder)
+        PSBinderImpl(Binder)
           PSASTWrapperElement(VarBinder)
             PsiElement(identifier)('a'')
             PsiElement(whitespace)(' ')

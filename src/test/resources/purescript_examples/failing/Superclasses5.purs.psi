@@ -231,7 +231,7 @@ Purescript File
           PsiElement(whitespace)(' ')
           PSASTWrapperElement(ObjectBinder)
             PsiElement([)('[')
-            PSASTWrapperElement(Binder)
+            PSBinderImpl(Binder)
               PSASTWrapperElement(BinderAtom)
                 PSASTWrapperElement(VarBinder)
                   PsiElement(identifier)('x')

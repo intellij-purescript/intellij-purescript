@@ -163,7 +163,7 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(NamedBinder)
           <empty list>
-        PSASTWrapperElement(Binder)
+        PSBinderImpl(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
               PSProperNameImpl(ProperName)
@@ -245,7 +245,7 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSASTWrapperElement(NamedBinder)
           <empty list>
-        PSASTWrapperElement(Binder)
+        PSBinderImpl(Binder)
           PSASTWrapperElement(ConstructorBinder)
             PSASTWrapperElement(Qualified)
               PSProperNameImpl(ProperName)

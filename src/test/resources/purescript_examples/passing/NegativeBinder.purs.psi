@@ -67,7 +67,7 @@ Purescript File
         PSASTWrapperElement(NamedBinder)
           <empty list>
         PsiElement(operator)('-')
-        PSASTWrapperElement(Binder)
+        PSBinderImpl(Binder)
           PSASTWrapperElement(BinderAtom)
             PSASTWrapperElement(NumberBinder)
               PsiElement(float)('1.0')

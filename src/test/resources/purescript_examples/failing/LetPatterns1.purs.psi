@@ -44,11 +44,11 @@ Purescript File
                   <empty list>
                 PsiElement())(')')
                 PsiElement(whitespace)(' ')
-                PSASTWrapperElement(Binder)
+                PSBinderImpl(Binder)
                   PSASTWrapperElement(VarBinder)
                     PsiElement(identifier)('x')
                     PsiElement(whitespace)(' ')
-                PSASTWrapperElement(Binder)
+                PSBinderImpl(Binder)
                   PSASTWrapperElement(VarBinder)
                     PsiElement(identifier)('y')
                     PsiElement(whitespace)(' ')

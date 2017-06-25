@@ -59,7 +59,7 @@ Purescript File
             PsiElement(do)('do')
             PsiElement(whitespace)(' ')
             PSASTWrapperElement(DoNotationBind)
-              PSASTWrapperElement(Binder)
+              PSBinderImpl(Binder)
                 PSASTWrapperElement(BinderAtom)
                   PSASTWrapperElement(VarBinder)
                     PsiElement(identifier)('x')
