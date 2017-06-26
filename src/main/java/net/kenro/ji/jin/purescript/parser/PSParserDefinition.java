@@ -62,7 +62,7 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
         IElementType type = node.getElementType();
         if (type.equals(PSElements.ProperName)) {
             return new PSProperNameImpl(node);
-        } else if (type.equals(PSElements.Identifier)) {
+        } else if ((type.equals(PSElements.Identifier) || type.equals(PSElements.GenericIdentifier) || type.equals(PSElements.LocalIdentifier))) {
             return new PSIdentifierImpl(node);
         } else if (type.equals(PSElements.ImportDeclaration)) {
             return new PSImportDeclarationImpl(node);
@@ -70,7 +70,6 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
             return new PSDataDeclarationImpl(node);
         } else if (type.equals(PSElements.Binder)) {
             return new PSBinderImpl(node);
-
 
         } else if (type.equals(PSElements.Program)) {
             return new PSProgramImpl(node);

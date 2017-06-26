@@ -91,12 +91,21 @@ allprojects {
     intellij {
         pluginName 'purity-intellij'
         version ideaVersion
+        plugins ['PsiViewer:3.28.93']
 
         publishPlugin {
             username System.getenv('JETBRAINS_USERNAME')
             password System.getenv('JETBRAINS_PASSWORD')
             channels publishChannels
         }
+
+        prepareSandbox {
+            copy {
+                from './PsiViewer.jar'
+                into './build/idea-sandbox/plugins/'
+            }
+        }
+
     }
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {

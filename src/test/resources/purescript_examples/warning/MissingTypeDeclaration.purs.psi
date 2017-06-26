@@ -11,8 +11,9 @@ Purescript File
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSValueDeclarationImpl(ValueDeclaration)
-        PsiElement(identifier)('x')
-        PsiElement(whitespace)(' ')
+        PSIdentifierImpl(identifier)
+          PsiElement(identifier)('x')
+          PsiElement(whitespace)(' ')
         PSNamedBinderImpl(NamedBinder)
           <empty list>
         PsiElement(=)('=')

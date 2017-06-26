@@ -58,6 +58,7 @@ Purescript File
         PsiElement(()('(')
         PSPositionedDeclarationRefImpl(PositionedDeclarationRef)
           PSValueRefImpl(ValueRef)
-            PsiElement(identifier)('one')
+            PSIdentifierImpl(identifier)
+              PsiElement(identifier)('one')
         PsiElement())(')')
         PsiElement(whitespace)('\n')

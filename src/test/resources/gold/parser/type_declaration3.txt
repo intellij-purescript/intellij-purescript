@@ -23,7 +23,7 @@ Purescript File
               PsiElement({)('{')
               PsiElement(whitespace)('\n    ')
               PSRowImpl(Row)
-                PSGenericIdentifierImpl(GenericIdentifier)
+                PSIdentifierImpl(GenericIdentifier)
                   PSIdentifierImpl(identifier)
                     PsiElement(identifier)('users')
                   PsiElement(whitespace)(' ')
