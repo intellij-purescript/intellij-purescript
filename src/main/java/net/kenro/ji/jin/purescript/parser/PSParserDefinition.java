@@ -60,9 +60,17 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
     @Override
     public PsiElement createElement(ASTNode node) {
         IElementType type = node.getElementType();
-        if (type.equals(PSElements.ProperName)) {
+        if ((type.equals(PSElements.ProperName)  ||
+             type.equals(PSElements.Qualified)   ||
+             type.equals(PSElements.pClassName)  ||
+             type.equals(PSElements.pModuleName) ||
+             type.equals(PSElements.importModuleName))) {
             return new PSProperNameImpl(node);
-        } else if ((type.equals(PSElements.Identifier) || type.equals(PSElements.GenericIdentifier) || type.equals(PSElements.LocalIdentifier))) {
+        } else if ((type.equals(PSElements.Identifier)    ||
+                type.equals(PSElements.GenericIdentifier) ||
+                type.equals(PSElements.TypeConstructor)   ||
+                type.equals(PSElements.Constructor)       ||
+                type.equals(PSElements.LocalIdentifier))) {
             return new PSIdentifierImpl(node);
         } else if (type.equals(PSElements.ImportDeclaration)) {
             return new PSImportDeclarationImpl(node);
@@ -89,8 +97,8 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
         } else if (type.equals(PSElements.FunKind)) {
             return new PSFunKindImpl(node);
 
-        } else if (type.equals(PSElements.Qualified)) {
-            return new PSQualifiedImpl(node);
+//        } else if (type.equals(PSElements.Qualified)) {
+//            return new PSQualifiedImpl(node);
 
         } else if (type.equals(PSElements.Type)) {
             return new PSTypeImpl(node);
@@ -116,8 +124,8 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
         } else if (type.equals(PSElements.TypeVar)) {
             return new PSTypeVarImpl(node);
 
-        } else if (type.equals(PSElements.TypeConstructor)) {
-            return new PSTypeConstructorImpl(node);
+//        } else if (type.equals(PSElements.TypeConstructor)) {
+//            return new PSTypeConstructorImpl(node);
 
         } else if (type.equals(PSElements.TypeAtom)) {
             return new PSTypeAtomImpl(node);
@@ -223,9 +231,9 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
 
         } else if (type.equals(PSElements.Var)) {
             return new PSVarImpl(node);
-
-        } else if (type.equals(PSElements.Constructor)) {
-            return new PSConstructorImpl(node);
+//
+//        } else if (type.equals(PSElements.Constructor)) {
+//            return new PSConstructorImpl(node);
 
         } else if (type.equals(PSElements.Case)) {
             return new PSCaseImpl(node);
@@ -269,17 +277,17 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
         } else if (type.equals(PSElements.JSRaw)) {
             return new PSJSRawImpl(node);
 
-        } else if (type.equals(PSElements.pModuleName)) {
-            return new PSModuleNameImpl(node);
-
-        } else if (type.equals(PSElements.importModuleName)) {
-            return new PSImportModuleNameImpl(node);
-
-        } else if (type.equals(PSElements.qualifiedModuleName)) {
-            return new PSQualifiedModuleNameImpl(node);
-
-        } else if (type.equals(PSElements.pClassName)) {
-            return new PSClassNameImpl(node);
+//        } else if (type.equals(PSElements.pModuleName)) {
+//            return new PSModuleNameImpl(node);
+//
+//        } else if (type.equals(PSElements.importModuleName)) {
+//            return new PSImportModuleNameImpl(node);
+//
+//        } else if (type.equals(PSElements.qualifiedModuleName)) {
+//            return new PSQualifiedModuleNameImpl(node);
+//
+//        } else if (type.equals(PSElements.pClassName)) {
+//            return new PSClassNameImpl(node);
 
         } else if (type.equals(PSElements.pImplies)) {
             return new PSImpliesImpl(node);

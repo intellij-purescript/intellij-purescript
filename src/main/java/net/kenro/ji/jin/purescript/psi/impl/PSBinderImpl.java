@@ -12,8 +12,6 @@ public class PSBinderImpl extends PSPsiElement implements PSBinder {
 
     public PSBinderImpl(ASTNode node) {
         super(node);
-        List<PSIdentifier> idents = getIdentifierList();
-        List<PSBinder> binders = getBinderList();
     }
 
     public void accept(@NotNull PSVisitor visitor) {

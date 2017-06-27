@@ -69,7 +69,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         @NotNull
         private Parsec parseQualified(@NotNull Parsec p) {
-            return attempt(many(attempt(token(PROPER_NAME).then(token(DOT)))).then(p).as(Qualified));
+            return attempt(many(attempt(token(PROPER_NAME).as(ProperName).then(token(DOT)))).then(p).as(Qualified));
         }
 
         private final Parsec idents = choice(token(IDENT), choice(token(FORALL), token(QUALIFIED), token(HIDING), token(AS)).as(Identifier));
@@ -343,7 +343,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseFixityDeclaration
                 = parseFixity
                 .then(optional(reserved(TYPE)))
-                .then((parseQualified(properName).as(pModuleName)).or(parseIdent))
+                .then((parseQualified(properName).as(pModuleName)).or(parseIdent.as(ProperName)))
                 .then((reserved(AS)))
                 .then((lexeme(operator)))
                 .as(FixityDeclaration);
@@ -357,7 +357,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                          reserved(TYPE).then(optional(parens(operator))),
                 reserved(MODULE).then(moduleName).as(importModuleName),
                 reserved(CLASS).then(parseQualified(properName).as(pClassName)),
-                properName.then(
+                properName.as(ProperName).then(
                         optional(parens(optional(choice(
                                         reserved(DDOT),
                                 commaSep1(properName.as(TypeConstructor)))))))).as(PositionedDeclarationRef);
@@ -526,7 +526,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseNumericLiteral),
                 attempt(parseStringLiteral),
                 attempt(parseBooleanLiteral),
-                attempt(reserved(TICK).then(choice(properName, many1(identifier))).then(reserved(TICK))),
+                attempt(reserved(TICK).then(choice(properName.as(ProperName), many1(identifier.as(ProperName)))).then(reserved(TICK))),
                 parseArrayLiteral,
                 parseCharLiteral,
                 attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
@@ -597,7 +597,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseNamedBinder = parseIdent.then(indented(lexeme("@")).then(indented(parseBinderRef))).as(NamedBinder);
         private final SymbolicParsec parseVarBinder = parseIdent.as(VarBinder);
         private final SymbolicParsec parseConstructorBinder = lexeme(parseQualified(properName).as(GenericIdentifier).then(many(indented(parseBinderNoParensRef)))).as(ConstructorBinder);
-        private final SymbolicParsec parseNullaryConstructorBinder = lexeme(parseQualified(properName)).as(ConstructorBinder);
+        private final SymbolicParsec parseNullaryConstructorBinder = lexeme(parseQualified(properName.as(ProperName))).as(ConstructorBinder);
 
         private final SymbolicParsec parsePatternMatch = indented(braces(commaSep(identifier))).as(Binder);
 
