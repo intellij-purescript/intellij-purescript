@@ -31,3 +31,11 @@ coming soon
 ## Contributing
  
 coming soon 
+
+### Dev
+
+1. clone the repo
+2. ./gradlew idea
+3. ./generate_parser.sh
+4. ./gradlew build
+5. open in intellij
