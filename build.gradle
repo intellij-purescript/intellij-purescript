@@ -93,6 +93,10 @@ allprojects {
         version ideaVersion
         plugins ['PsiViewer:3.28.93']
 
+        patchPluginXml {
+            untilBuild ''
+        }
+
         publishPlugin {
             username System.getenv('JETBRAINS_USERNAME')
             password System.getenv('JETBRAINS_PASSWORD')
