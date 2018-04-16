@@ -8,6 +8,8 @@
 
 ## Status
 
+You want to build this yourself; the version in the normal plugin repository is very out of date. See Dev instructions below.
+
 This plugin is still in the **early stages of development** so only has a handful of features. But over time things will stabilize and more features will be added.
  
 ## Usage
@@ -40,4 +42,5 @@ coming soon
 2. ./gradlew idea
 3. ./generate_parser.sh
 4. ./gradlew build
-5. open in intellij
+5. ./gradlew buildPlugin
+6. drag build/distributions/purity[...].zip into intellij to install newly built plugin
