@@ -14,8 +14,8 @@ public final class ParserContext {
     @NotNull
     private final PsiBuilder builder;
     private int column;
-    private Stack<Integer> indentationLevel = new Stack<Integer>();
-    private HashMap<IElementType, Integer> recoverySet = new HashMap<IElementType, Integer>();
+    private final Stack<Integer> indentationLevel = new Stack<Integer>();
+    private final HashMap<IElementType, Integer> recoverySet = new HashMap<IElementType, Integer>();
     private boolean inAttempt;
     private int inOptional;
 
