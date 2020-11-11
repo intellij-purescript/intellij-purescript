@@ -3,7 +3,6 @@ package net.kenro.ji.jin.purescript.psi.cst;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ReflectionCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
@@ -19,7 +18,7 @@ public class PSElement extends CompositePsiElement {
     public <T extends PSElement> T[] findChildren(Class<T> type) {
         ArrayList<T> result = new ArrayList<T>();
         for (PsiElement psiElement : this.getChildren()) {
-            if (ReflectionCache.isInstance(psiElement, type)) {
+            if (type.isInstance(psiElement)) {
                 result.add((T) psiElement);
             }
         }
