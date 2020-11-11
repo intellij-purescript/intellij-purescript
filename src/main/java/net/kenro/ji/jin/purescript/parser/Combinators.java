@@ -20,15 +20,6 @@ public class Combinators {
     }
 
     @NotNull
-    private static HashSet<String> strings(HashSet<String>... names) {
-        HashSet<String> result = new LinkedHashSet<String>();
-        for (HashSet<String> name : names) {
-            result.addAll(name);
-        }
-        return result;
-    }
-
-    @NotNull
     static Parsec token(@NotNull final IElementType tokenType) {
         return new Parsec() {
             @NotNull
@@ -192,7 +183,12 @@ public class Combinators {
             @NotNull
             @Override
             protected HashSet<String> calcExpectedName() {
-                if (p1.canBeEmpty()) { return strings(p1.getExpectedName(), p2.getExpectedName()); }
+                if (p1.canBeEmpty()) {
+                    HashSet<String> result = new LinkedHashSet<>();
+                    result.addAll(p1.getExpectedName());
+                    result.addAll(p2.getExpectedName());
+                    return result;
+                }
                 return p1.getExpectedName();
             }
 
