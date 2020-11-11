@@ -151,12 +151,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final Parsec parseTypeWildcard = reserved("_");
 
         private final Parsec parseFunction = parens(reserved(ARROW));
-        private final Parsec parseTypeVariable = lexeme(guard(idents, new Predicate<String>() {
-            @Override
-            public boolean test(String content) {
-                return !(content.equals("∀") || content.equals("forall"));
-            }
-        }, "not `forall`")).as(GenericIdentifier);
+        private final Parsec parseTypeVariable = lexeme(guard(idents,
+            content -> !(content.equals("∀") || content.equals("forall")), "not `forall`")).as(GenericIdentifier);
 
         private final Parsec parseTypeConstructor = parseQualified(properName).as(TypeConstructor);
 

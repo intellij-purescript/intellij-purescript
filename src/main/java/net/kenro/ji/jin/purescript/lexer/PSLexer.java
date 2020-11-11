@@ -14,12 +14,12 @@ public final class PSLexer extends LookAheadLexer {
             super(new FlexAdapter(new _PSLexer(null)));
         }
 
-        private static final MergeFunction mergeFunction = new MergeFunction() {
-            @Override
-            public IElementType merge(IElementType type, Lexer originalLexer) {
+        private static final MergeFunction mergeFunction =
+            (type, originalLexer) -> {
                 if (type == PSTokens.STRING) {
                     while (true) {
-                        final IElementType tokenType = originalLexer.getTokenType();
+                        final IElementType tokenType =
+                            originalLexer.getTokenType();
                         if (tokenType != PSTokens.STRING && tokenType != PSTokens.STRING_ESCAPED && tokenType != PSTokens.STRING_GAP)
                             break;
                         originalLexer.advance();
@@ -36,8 +36,7 @@ public final class PSLexer extends LookAheadLexer {
                     type = PSTokens.WS;
                 }
                 return type;
-            }
-        };
+            };
 
         @Override
         public MergeFunction getMergeFunction() {

@@ -15,21 +15,18 @@ import org.jetbrains.annotations.NotNull;
 public class PurescriptExamplesTest extends PsiTestCase {
 
     private Processor<File> processor(final boolean passing) {
-        return new Processor<File>() {
-            @Override
-            public boolean process(File file) {
-                if (file.isFile()) {
-                    try {
-                        if (file.getName().endsWith(".purs")) {
-                            testExample(file, passing);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        fail("Failed to read file " + file.getAbsolutePath());
+        return file -> {
+            if (file.isFile()) {
+                try {
+                    if (file.getName().endsWith(".purs")) {
+                        testExample(file, passing);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    fail("Failed to read file " + file.getAbsolutePath());
                 }
-                return true;
             }
+            return true;
         };
     }
 
