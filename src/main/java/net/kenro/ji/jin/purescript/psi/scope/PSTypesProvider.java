@@ -3,7 +3,6 @@ package net.kenro.ji.jin.purescript.psi.scope;
 import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSProperName;
-import net.kenro.ji.jin.purescript.util.TypeFilter;
 
 import java.util.Optional;
 import java.util.Stack;

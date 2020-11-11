@@ -2,7 +2,6 @@ package net.kenro.ji.jin.purescript.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import net.kenro.ji.jin.purescript.psi.impl.PSAbsImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class PSVisitor extends PsiElementVisitor {

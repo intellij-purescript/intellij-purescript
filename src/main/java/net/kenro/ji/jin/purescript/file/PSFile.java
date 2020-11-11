@@ -8,7 +8,6 @@ import net.kenro.ji.jin.purescript.PSLanguage;
 import net.kenro.ji.jin.purescript.psi.PSDataDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSProperName;
-import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 import net.kenro.ji.jin.purescript.util.TypeFilter;
 import org.jetbrains.annotations.NotNull;
 

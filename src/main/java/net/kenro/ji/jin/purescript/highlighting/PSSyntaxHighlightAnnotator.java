@@ -1,6 +1,5 @@
 package net.kenro.ji.jin.purescript.highlighting;
 
-import com.intellij.codeInsight.template.postfix.templates.SoutPostfixTemplate;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;

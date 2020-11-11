@@ -3,8 +3,6 @@ package net.kenro.ji.jin.purescript.parser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 public class ParserInfo {
