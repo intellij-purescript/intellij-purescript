@@ -13,14 +13,6 @@ public class PSImportDeclarationImpl extends PSPsiElement implements PSImportDec
 
     public PSImportDeclarationImpl(ASTNode node) {
         super(node);
-
-
-
-
-//        List<PSProperName> names = Arrays.asList(Arrays.stream(node.getPsi().getChildren())
-//                .filter(e -> ).toArray());
-
-        System.out.println("  IN THE IMPORT DECLARATION IMPL  ");
     }
 
     public void accept(@NotNull PSVisitor visitor) {
