@@ -2,7 +2,9 @@
   <id>net.kenro.ji.jin.intellij.purescript</id>
   <name>Purescript</name>
   <version>1.0</version>
-  <vendor email="kingsley.hendrickse@gmail.com" url="http://kenro-ji-jin.net/">Kenro Ji Jin</vendor>
+  <vendor url="https://github.com/Neppord">
+    Samuel Ytterbrink
+  </vendor>
 
   <description><![CDATA[
       This plugin provides Purescript language support
