@@ -46,11 +46,20 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey OPERATOR = createKey("PS_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 
-    public static final TextAttributesKey VARIABLE = createKey("PS_VARIABLE", CodeInsightColors.INSTANCE_FIELD_ATTRIBUTES);
+    public static final TextAttributesKey VARIABLE = createKey(
+        "PS_VARIABLE",
+        DefaultLanguageHighlighterColors.INSTANCE_FIELD
+    );
 
-    public static final TextAttributesKey MODULE_NAME = createKey("PS_MODULE_NAME", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
+    public static final TextAttributesKey MODULE_NAME = createKey(
+        "PS_MODULE_NAME",
+        DefaultLanguageHighlighterColors.METADATA
+    );
 
-    public static final TextAttributesKey METHOD_DECLARATION = createKey("PS_METHOD_DECLARATION", CodeInsightColors.METHOD_CALL_ATTRIBUTES);
+    public static final TextAttributesKey METHOD_DECLARATION = createKey(
+        "PS_METHOD_DECLARATION",
+        DefaultLanguageHighlighterColors.FUNCTION_CALL
+    );
 
     public static final TextAttributesKey PS_EQ = createKey("PS_EQ", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 
@@ -71,13 +80,22 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey IMPORT_REF = createKey("PS_IMPORT_REF", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
 
     // 'String' in 'foo :: String -> String'
-    public static final TextAttributesKey TYPE_NAME = createKey("PS_TYPE_NAME", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
+    public static final TextAttributesKey TYPE_NAME = createKey(
+        "PS_TYPE_NAME",
+        DefaultLanguageHighlighterColors.METADATA
+    );
 
     // 'foo' in 'foo :: String -> String'
-    public static final TextAttributesKey TYPE_ANNOTATION_NAME = createKey("PS_TYPE_ANNOTATION_NAME", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
+    public static final TextAttributesKey TYPE_ANNOTATION_NAME = createKey(
+        "PS_TYPE_ANNOTATION_NAME",
+        DefaultLanguageHighlighterColors.METADATA
+    );
 
     // 'a' in 'foo:: forall a. a -> a -> String'
-    public static final TextAttributesKey TYPE_VARIABLE = createKey("PS_TYPE_VARIABLE", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
+    public static final TextAttributesKey TYPE_VARIABLE = createKey(
+        "PS_TYPE_VARIABLE",
+        DefaultLanguageHighlighterColors.METADATA
+    );
 
     static {
         fillMap(keys, TokenSet.create(PSTokens.SLCOMMENT), LINE_COMMENT);
