@@ -1,6 +1,6 @@
 <idea-plugin>
   <id>net.kenro.ji.jin.intellij.purescript</id>
-  <name>Purescript language plugin</name>
+  <name>Purescript</name>
   <version>1.0</version>
   <vendor email="kingsley.hendrickse@gmail.com" url="http://kenro-ji-jin.net/">Kenro Ji Jin</vendor>
 
