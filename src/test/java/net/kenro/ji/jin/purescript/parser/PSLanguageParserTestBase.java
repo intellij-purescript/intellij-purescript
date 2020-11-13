@@ -32,7 +32,7 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
      * Perform a test. Add tests that should work but does not work yet with
      * doTest(false, false).
      */
-    protected void doTest(boolean checkResult, boolean shouldPass) {
+    protected void doTestThatMaybyShouldPass(boolean checkResult, boolean shouldPass) {
         doTest(true);
         if (shouldPass) {
             assertFalse(
