@@ -91,7 +91,7 @@ allprojects {
     intellij {
         pluginName 'purity-intellij'
         version ideaVersion
-        plugins ['PsiViewer:3.28.93']
+        plugins = ['PsiViewer:3.28.93', 'com.intellij.java']
 
         publishPlugin {
             username System.getenv('JETBRAINS_USERNAME')
