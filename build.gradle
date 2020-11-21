@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '0.2.5'
+    id 'org.jetbrains.intellij' version '0.6.3'
 }
 
 
@@ -91,7 +91,7 @@ allprojects {
     intellij {
         pluginName 'purity-intellij'
         version ideaVersion
-        plugins ['PsiViewer:3.28.93']
+        plugins = ['PsiViewer:3.28.93', 'com.intellij.java']
 
         publishPlugin {
             username System.getenv('JETBRAINS_USERNAME')

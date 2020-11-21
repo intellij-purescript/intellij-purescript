@@ -1,6 +1,6 @@
 language: java
 jdk:
-- oraclejdk8
+- oraclejdk11
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
@@ -16,9 +16,7 @@ env:
   - ORG_GRADLE_PROJECT_downloadIdeaSources=false
   matrix:
   - ORG_GRADLE_PROJECT_ideaVersion=LATEST-EAP-SNAPSHOT
-  - ORG_GRADLE_PROJECT_ideaVersion=2017.1.2
-  - ORG_GRADLE_PROJECT_ideaVersion=2017.1.1
-  - ORG_GRADLE_PROJECT_ideaVersion=2017.1
+  - {}
 
 matrix:
   allow_failures:
