@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 
 
 public abstract class PSLanguageParserTestBase extends ParsingTestCase {
@@ -53,7 +52,7 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
     protected void checkResult(
         @NotNull @NonNls @TestDataFile String targetDataName,
         @NotNull final PsiFile file
-    ) throws IOException {
+    ) {
         final String fullTargetDataName = "" + File.separator + targetDataName;
         doCheckResult(
             myFullDataPath,
