@@ -134,6 +134,8 @@ charControl = "^" [:uppercase:]
 ";"                            { return SEMI; }
 "::"                           { return DCOLON; }
 "∷"                            { return DCOLON; }
+"\u2237"                       { return DCOLON; }
+"\\u2237"                      { return DCOLON; }
 "`"                            { return TICK; }
 "|"                            { return PIPE; }
 
