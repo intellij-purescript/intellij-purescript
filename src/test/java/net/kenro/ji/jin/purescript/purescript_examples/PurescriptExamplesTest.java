@@ -50,9 +50,7 @@ public class PurescriptExamplesTest extends PsiTestCase {
 //    }
 
     public static String readFile(File file) throws IOException {
-        String content = new String(FileUtil.loadFileText(file.getCanonicalFile()));
-        assertNotNull(content);
-        return content;
+        return FileUtil.loadFile(file.getCanonicalFile(), "utf-8", true);
     }
 
     private double perfExample(@NotNull File fileName) throws Exception {
@@ -75,7 +73,7 @@ public class PurescriptExamplesTest extends PsiTestCase {
         String psiTree = DebugUtil.psiToString(file, false);
         File expectedFile = new File(fileName.getAbsolutePath() + ".psi");
         if (expectedFile.isFile()) {
-            String expectedTree = FileUtil.loadFile(expectedFile);
+            String expectedTree = readFile(expectedFile);
             assertEquals(fileName.getName() + " failed.", expectedTree, psiTree);
         } else {
 //            assert false;  // Only manually.
