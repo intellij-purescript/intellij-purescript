@@ -7,14 +7,18 @@ import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.testFramework.TestDataFile;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 
 
 public abstract class PSLanguageParserTestBase extends ParsingTestCase {
 
-    public PSLanguageParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
+    public PSLanguageParserTestBase(
+        String dataPath,
+        String fileExt,
+        ParserDefinition... definitions
+    ) {
         super(dataPath, fileExt, definitions);
     }
 
@@ -36,25 +40,34 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
         doTest(true);
         if (shouldPass) {
             assertFalse(
-                    "PsiFile contains error elements",
-                    toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
+                "PsiFile contains error elements",
+                toParseTreeText(myFile, skipSpaces(), includeRanges()).contains(
+                    "PsiErrorElement")
             );
         }
     }
 
 
     @Override
-    protected void checkResult(@NonNls @TestDataFile String targetDataName,
-                               final PsiFile file) throws IOException {
-        doCheckResult(myFullDataPath, file, checkAllPsiRoots(),
-                "" + File.separator + targetDataName, skipSpaces(),
-                includeRanges());
+    protected void checkResult(
+        @NotNull @NonNls @TestDataFile String targetDataName,
+        @NotNull final PsiFile file
+    ) {
+        final String fullTargetDataName = "" + File.separator + targetDataName;
+        doCheckResult(
+            myFullDataPath,
+            file,
+            checkAllPsiRoots(),
+            fullTargetDataName,
+            skipSpaces(),
+            includeRanges()
+        );
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        VirtualFile m = new MockVirtualFile(true,myFullDataPath);
+        VirtualFile m = new MockVirtualFile(true, myFullDataPath);
         myProject.setBaseDir(m);
     }
 
