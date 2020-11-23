@@ -16,11 +16,9 @@ public class PurescriptExamplesTest extends PsiTestCase {
 
     private Processor<File> processor(final boolean passing) {
         return file -> {
-            if (file.isFile()) {
+            if (file.isFile() && file.getName().endsWith(".purs")) {
                 try {
-                    if (file.getName().endsWith(".purs")) {
-                        testExample(file, passing);
-                    }
+                    testExample(file, passing);
                 } catch (Exception e) {
                     e.printStackTrace();
                     fail("Failed to read file " + file.getAbsolutePath());
