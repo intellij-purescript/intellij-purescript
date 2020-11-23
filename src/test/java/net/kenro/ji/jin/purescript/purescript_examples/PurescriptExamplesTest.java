@@ -76,9 +76,7 @@ public class PurescriptExamplesTest extends PsiTestCase {
         File expectedFile = new File(fileName.getAbsolutePath() + ".psi");
         if (expectedFile.isFile()) {
             String expectedTree = FileUtil.loadFile(expectedFile);
-            //if (passing) {
             assertEquals(fileName.getName() + " failed.", expectedTree, psiTree);
-            //}
         } else {
 //            assert false;  // Only manually.
             FileUtil.writeToFile(new File(fileName.getAbsolutePath() + ".psi"), psiTree);
