@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.testFramework.TestDataFile;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,11 +51,16 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
 
     @Override
     protected void checkResult(
-        @NonNls @TestDataFile String targetDataName,
-        final PsiFile file
+        @NotNull @NonNls @TestDataFile String targetDataName,
+        @NotNull final PsiFile file
     ) throws IOException {
-        doCheckResult(myFullDataPath, file, checkAllPsiRoots(),
-            "" + File.separator + targetDataName, skipSpaces(),
+        final String fullTargetDataName = "" + File.separator + targetDataName;
+        doCheckResult(
+            myFullDataPath,
+            file,
+            checkAllPsiRoots(),
+            fullTargetDataName,
+            skipSpaces(),
             includeRanges()
         );
     }
