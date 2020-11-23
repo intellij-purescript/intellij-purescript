@@ -1,18 +1,18 @@
 package net.kenro.ji.jin.purescript.purescript_examples;
 
 
-import java.io.File;
-import java.io.IOException;
-
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.PsiTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.util.Processor;
-
+import net.kenro.ji.jin.purescript.PSLanguage;
 import net.kenro.ji.jin.purescript.file.PSFile;
 import org.jetbrains.annotations.NotNull;
 
-public class PurescriptExamplesTest extends PsiTestCase {
+import java.io.File;
+import java.io.IOException;
+
+public class PurescriptExamplesTest extends BasePlatformTestCase {
 
     private Processor<File> processor() {
         return file -> {
@@ -51,22 +51,11 @@ public class PurescriptExamplesTest extends PsiTestCase {
         return FileUtil.loadFile(file.getCanonicalFile(), "utf-8", true);
     }
 
-    private double perfExample(@NotNull File fileName) throws Exception {
-        int N = 100;
-        String text = readFile(fileName);
-        createFile(fileName.getName(), text);
-        long start = System.nanoTime();
-        for (int i = 0; i < N; i++) {
-            createFile(fileName.getName(), text);
-        }
-        long end = System.nanoTime();
-        double v = (end - start) * 1e-6 / N;
-        System.out.printf("Parsing %s :%.3fms\n", fileName, v);
-        return v;
-    }
 
     private void testExample(@NotNull File fileName) throws Exception {
-        PSFile file = (PSFile) createFile(fileName.getName(), readFile(fileName));
+        PSFile file = (PSFile) createLightFile(fileName.getName(),
+            PSLanguage.INSTANCE,
+            readFile(fileName));
 
         String psiTree = DebugUtil.psiToString(file, false);
         File expectedFile = new File(fileName.getAbsolutePath() + ".psi");
