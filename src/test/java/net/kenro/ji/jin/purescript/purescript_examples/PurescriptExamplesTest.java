@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class PurescriptExamplesTest extends PsiTestCase {
 
-    private Processor<File> processor(final boolean passing) {
+    private Processor<File> processor() {
         return file -> {
             if (file.isFile() && file.getName().endsWith(".purs")) {
                 try {
-                    testExample(file, passing);
+                    testExample(file);
                 } catch (Exception e) {
                     e.printStackTrace();
                     fail("Failed to read file " + file.getAbsolutePath());
@@ -30,13 +30,13 @@ public class PurescriptExamplesTest extends PsiTestCase {
 
     public void testExamples() {
         String testDataPath = "src/test/resources/purescript_examples";
-        FileUtil.processFilesRecursively(new File(testDataPath + "/passing"), processor(true));
-        FileUtil.processFilesRecursively(new File(testDataPath + "/failing"), processor(true));
-        FileUtil.processFilesRecursively(new File(testDataPath + "/warning"), processor(true));
-        FileUtil.processFilesRecursively(new File(testDataPath + "/docs"), processor(true));
+        FileUtil.processFilesRecursively(new File(testDataPath + "/passing"), processor());
+        FileUtil.processFilesRecursively(new File(testDataPath + "/failing"), processor());
+        FileUtil.processFilesRecursively(new File(testDataPath + "/warning"), processor());
+        FileUtil.processFilesRecursively(new File(testDataPath + "/docs"), processor());
 
         String additionalTests = "src/test/resources/additional";
-        FileUtil.processFilesRecursively(new File(additionalTests + "/passing"), processor(true));
+        FileUtil.processFilesRecursively(new File(additionalTests + "/passing"), processor());
 //        FileUtil.processFilesRecursively(new File(additionalTests + "/perf"), processor(true));
     }
 
@@ -65,7 +65,7 @@ public class PurescriptExamplesTest extends PsiTestCase {
         return v;
     }
 
-    private void testExample(@NotNull File fileName, final boolean passing) throws Exception {
+    private void testExample(@NotNull File fileName) throws Exception {
         PSFile file = (PSFile) createFile(fileName.getName(), readFile(fileName));
 
         String psiTree = DebugUtil.psiToString(file, false);
@@ -78,12 +78,7 @@ public class PurescriptExamplesTest extends PsiTestCase {
             FileUtil.writeToFile(new File(fileName.getAbsolutePath() + ".psi"), psiTree);
         }
 
-        if (passing) {
-            assertEquals(fileName.getName() + " failed.", true, !psiTree.contains("PsiErrorElement"));
-        } else {
-            // TODO: type checker.
-            // assertEquals(fileName.getName() + " failed.", true, psiTree.contains("PsiErrorElement"));
-        }
+        assertEquals(fileName.getName() + " failed.", true, !psiTree.contains("PsiErrorElement"));
     }
 }
 
