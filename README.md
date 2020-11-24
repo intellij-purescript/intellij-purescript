@@ -2,6 +2,7 @@
 
 
 [![Build Status](https://github.com/intellij-purescript/intellij-purescript/workflows/Gradle%20Check/badge.svg)](https://github.com/intellij-purescript/intellij-purescript/actions)
+[![Publish Status](https://github.com/intellij-purescript/intellij-purescript/workflows/Publish/badge.svg)](https://github.com/intellij-purescript/intellij-purescript/actions)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 
