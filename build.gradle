@@ -64,8 +64,7 @@ intellij {
     plugins = ['com.intellij.java']
 
     publishPlugin {
-        username System.getenv('JETBRAINS_USERNAME')
-        password System.getenv('JETBRAINS_PASSWORD')
+        token = "${intellijPublishToken}"
         channels publishChannels
     }
 
