@@ -30,49 +30,47 @@ sourceSets {
 
 version = "${version}"
 
-allprojects {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+// take the version number defined in gradle build and use that in plugin.xml
+task initConfig(type: Copy) {
+    from('src/main/resources') {
+        include '**/plugin.xml'
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
     }
-    // take the version number defined in gradle build and use that in plugin.xml
-    task initConfig(type: Copy) {
-        from('src/main/resources') {
-            include '**/plugin.xml'
-            filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
-        }
-    }
+}
 
-    apply plugin: 'org.jetbrains.intellij'
-    intellij {
-        pluginName 'purity-intellij'
-        version ideaVersion
-        plugins = ['PsiViewer:3.28.93', 'com.intellij.java']
+apply plugin: 'org.jetbrains.intellij'
+intellij {
+    pluginName 'purity-intellij'
+    version ideaVersion
+    plugins = ['PsiViewer:3.28.93', 'com.intellij.java']
 
-        publishPlugin {
-            username System.getenv('JETBRAINS_USERNAME')
-            password System.getenv('JETBRAINS_PASSWORD')
-            channels publishChannels
-        }
-
-        prepareSandbox {
-            copy {
-                from './PsiViewer.jar'
-                into './build/idea-sandbox/plugins/'
-            }
-        }
-
+    publishPlugin {
+        username System.getenv('JETBRAINS_USERNAME')
+        password System.getenv('JETBRAINS_PASSWORD')
+        channels publishChannels
     }
 
-    task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
-        useJUnit {
-            include 'net/kenro/ji/jin/purescript/build/**/**/*'
+    prepareSandbox {
+        copy {
+            from './PsiViewer.jar'
+            into './build/idea-sandbox/plugins/'
         }
-        testLogging {
-            exceptionFormat = 'full'
-        }
+    }
+
+}
+
+task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
+    useJUnit {
+        include 'net/kenro/ji/jin/purescript/build/**/**/*'
+    }
+    testLogging {
+        exceptionFormat = 'full'
     }
 }
 
