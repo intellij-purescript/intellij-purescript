@@ -38,49 +38,6 @@ allprojects {
         options.encoding = 'UTF-8'
         options.compilerArgs << "-Xlint:deprecation"
     }
-
-    tasks.withType(Test) {
-        useJUnit {
-            include '**/**/*Test.*' // any Java or Kotlin class that ends with 'Test'
-        }
-
-        testLogging {
-            beforeSuite { suite ->
-                if (!suite.parent) { // will match the outermost suite
-                    logger.lifecycle ' ----------- Building Tests -----------'
-                } else if (suite.className != null) {
-                    logger.lifecycle "${suite.className}:"
-                }
-            }
-
-            afterTest { descriptor, result ->
-                switch (result.resultType) {
-                    case 'SUCCESS':
-                    case 'PASSED':
-                        logger.lifecycle("\t✔ {}", descriptor.name)
-                        break
-                    case TestResult.ResultType.SKIPPED.name():
-                        logger.lifecycle("\t⛔ {}", descriptor.name)
-                        break
-                    case TestResult.ResultType.FAILURE.name():
-                        logger.lifecycle("\t✘ {}", descriptor.name)
-                        break
-                    default:
-                        logger.lifecycle("\t? {} {}", descriptor.name, result.resultType)
-                }
-            }
-
-            afterSuite { desc, result ->
-                if (!desc.parent) { // will match the outermost suite
-                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
-                    def startItem = '|  ', endItem = '  |'
-                    def repeatLength = startItem.length() + output.length() + endItem.length()
-                    println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength) + '\n')
-                }
-            }
-        }
-    }
-
     // take the version number defined in gradle build and use that in plugin.xml
     task initConfig(type: Copy) {
         from('src/main/resources') {
