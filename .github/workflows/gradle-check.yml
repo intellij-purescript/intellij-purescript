@@ -1,0 +1,43 @@
+name: Gradle Check
+
+on: [push]
+
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-latest, ubuntu-latest]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Cache gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache gradle wrapper
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradlewrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradlewrapper-
+
+      - name: Cache maven
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Gradle Check
+        run: ./gradlew check
