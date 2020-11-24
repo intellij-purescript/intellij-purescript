@@ -22,7 +22,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <fileTypeFactory implementation="net.kenro.ji.jin.purescript.file.PSFileTypeFactory"/>
+    <fileType
+        name="Purescript file"
+        implementationClass="net.kenro.ji.jin.purescript.file.PSFileType"
+        fieldName="INSTANCE"
+        language="Purescript"
+        extensions="purs"
+    />
 
     <lang.parserDefinition language="Purescript" implementationClass="net.kenro.ji.jin.purescript.parser.PSParserDefinition"/>
 
