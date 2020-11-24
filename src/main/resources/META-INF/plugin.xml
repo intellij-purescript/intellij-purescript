@@ -1,8 +1,8 @@
 <idea-plugin>
   <id>net.kenro.ji.jin.intellij.purescript</id>
-  <name>Purescript language plugin</name>
+  <name>Purescript</name>
   <version>1.0</version>
-  <vendor email="kingsley.hendrickse@gmail.com" url="http://kenro-ji-jin.net/">Kenro Ji Jin</vendor>
+  <vendor url="https://github.com/Neppord">Samuel Ytterbrink</vendor>
 
   <description><![CDATA[
       This plugin provides Purescript language support
@@ -19,10 +19,18 @@
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
   <depends>com.intellij.modules.lang</depends>
+  <!-- remove this when we are not longer dependent on legacy api -->
+  <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <fileTypeFactory implementation="net.kenro.ji.jin.purescript.file.PSFileTypeFactory"/>
+    <fileType
+        name="Purescript file"
+        implementationClass="net.kenro.ji.jin.purescript.file.PSFileType"
+        fieldName="INSTANCE"
+        language="Purescript"
+        extensions="purs"
+    />
 
     <lang.parserDefinition language="Purescript" implementationClass="net.kenro.ji.jin.purescript.parser.PSParserDefinition"/>
 
