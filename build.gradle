@@ -10,6 +10,7 @@ buildscript {
 
 plugins {
     id 'org.jetbrains.intellij' version '0.6.3'
+    id "org.jetbrains.grammarkit" version "2020.3.2"
 }
 
 repositories {
@@ -30,7 +31,21 @@ sourceSets {
         resources.srcDirs 'src/test/resources'
     }
 }
+// GRAMMAR KIT
 
+apply plugin: 'org.jetbrains.grammarkit'
+import org.jetbrains.grammarkit.tasks.GenerateLexer
+task generateLexer(type: GenerateLexer) {
+    source = "src/main/grammar/Purescript.flex"
+    targetDir = "src/main/gen/"
+    targetClass = "_PSLexer"
+    purgeOldFiles = true
+    skeleton = "src/main/grammar/idea-flex.skeleton"
+}
+
+compileJava {
+    dependsOn generateLexer
+}
 
 // take the version number defined in gradle build and use that in plugin.xml
 task initConfig(type: Copy) {
