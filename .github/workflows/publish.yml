@@ -51,6 +51,6 @@ jobs:
       - name: Gradle Publish Plugin
         run: |
           ./gradlew publishPlugin \
-            -PintellijPublishToken=${{ secrets.INTELLIJPUBLISHTOKEN }} \
+            -PintellijPublishToken="${{ secrets.INTELLIJPUBLISHTOKEN }}" \
             -PpublishChannels=Dev \
             -Pversion="$(git rev-parse--short HEAD)"
