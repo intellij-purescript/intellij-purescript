@@ -16,28 +16,11 @@ Visit [intellij-purescript.github.io] to find documentation about installation a
 
 ![example](https://github.com/intellij-purescript/intellij-purescript/raw/master/.README/ex1.png)
 
-## FAQ
-
-coming soon 
-
-## Compatible Jetbrains Products
-
-| IntelliJ                  |
-|---------------------------|
-| 2017.1.2                  |
-| 2017.1.1                  | 
-| 2017.1                    | 
-| Latest EAP                | 
-
-
-## Contributing
- 
-coming soon 
 
 ### Dev
 
 1. clone the repo
 2. ./gradlew idea
-3. ./generate_parser.sh
-4. ./gradlew build
-5. open in intellij
+    > creates the intellij project configuration from gradle
+4. ./gradlew runIde
+    > starts a Intellij instance with the plugin installed-
