@@ -49,7 +49,5 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Gradle Publish Plugin
-        run: ./gradlew publishPlugin \
-          -PintellijPublishToken="${{ secrets.INTELLIJPUBLISHTOKEN }}" \
-          -PpublishChannels=Dev \
-          -Pversion="$(git rev-parse--short HEAD)"
+        run: |
+          ./gradlew publishPlugin -PintellijPublishToken="${{ secrets.INTELLIJPUBLISHTOKEN }}"  -PpublishChannels=Dev  -Pversion="$(git rev-parse--short HEAD)"
