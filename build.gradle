@@ -64,7 +64,7 @@ intellij {
     plugins = ['com.intellij.java']
 
     publishPlugin {
-        token = "${intellijPublishToken}"
+        token = intellijPublishToken
         channels publishChannels
     }
 
