@@ -61,7 +61,7 @@ apply plugin: 'org.jetbrains.intellij'
 intellij {
     pluginName 'purity-intellij'
     version ideaVersion
-    plugins = ['com.intellij.java']
+    plugins = ['java']
 
     publishPlugin {
         token = intellijPublishToken
