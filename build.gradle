@@ -65,15 +65,6 @@ intellij {
 
 }
 
-task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
-    useJUnit {
-        include 'net/kenro/ji/jin/purescript/build/**/**/*'
-    }
-    testLogging {
-        exceptionFormat = 'full'
-    }
-}
-
 dependencies {
 }
 
