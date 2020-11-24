@@ -8,9 +8,6 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 
-before_install:
-  - ./generate_parser.sh
-
 env:
   global:
   - ORG_GRADLE_PROJECT_downloadIdeaSources=false
