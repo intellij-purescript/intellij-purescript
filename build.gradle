@@ -16,6 +16,9 @@ repositories {
     mavenCentral()
 }
 
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+tasks.withType(JavaCompile) {options.encoding = 'UTF-8' }
 
 sourceSets {
     main {
@@ -28,14 +31,7 @@ sourceSets {
     }
 }
 
-version = "${version}"
 
-sourceCompatibility = javaVersion
-targetCompatibility = javaVersion
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 // take the version number defined in gradle build and use that in plugin.xml
 task initConfig(type: Copy) {
     from('src/main/resources') {
@@ -44,6 +40,8 @@ task initConfig(type: Copy) {
     }
 }
 
+// Plugin config
+version = "${version}"
 apply plugin: 'org.jetbrains.intellij'
 intellij {
     pluginName 'purity-intellij'
@@ -68,6 +66,7 @@ intellij {
 dependencies {
 }
 
+// Intellij config
 apply plugin: 'idea'
 idea {
     project {
