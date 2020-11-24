@@ -21,6 +21,6 @@ Visit [intellij-purescript.github.io] to find documentation about installation a
 
 1. clone the repo
 2. ./gradlew idea
-    > creates the intellij project configuration from gradle
+    > creates the Intellij project configuration from gradle
 4. ./gradlew runIde
     > starts a Intellij instance with the plugin installed-
