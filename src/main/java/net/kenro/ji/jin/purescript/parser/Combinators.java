@@ -11,18 +11,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class Combinators {
     @NotNull
-    private static HashSet<String> strings(String... names) {
-        HashSet<String> result = new LinkedHashSet<String>();
-        for (String name : names) {
+    private static HashSet<String> strings(final String... names) {
+        final HashSet<String> result = new LinkedHashSet<String>();
+        for (final String name : names) {
             result.add(name);
         }
         return result;
     }
 
     @NotNull
-    private static HashSet<String> strings(HashSet<String>... names) {
-        HashSet<String> result = new LinkedHashSet<String>();
-        for (HashSet<String> name : names) {
+    private static HashSet<String> strings(final HashSet<String>... names) {
+        final HashSet<String> result = new LinkedHashSet<String>();
+        for (final HashSet<String> name : names) {
             result.addAll(name);
         }
         return result;
@@ -33,7 +33,7 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 if (context.eat(tokenType)) {
                     return new ParserInfo(context.getPosition(), this, true);
                 }
@@ -53,7 +53,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return type == tokenType;
             }
 
@@ -69,7 +69,7 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 if (context.text().equals(token)) {
                     context.advance();
                     return new ParserInfo(context.getPosition(), this, true);
@@ -90,7 +90,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return true;
             }
 
@@ -111,8 +111,8 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
-                ParserInfo info = p.parse(context);
+            public ParserInfo parse(@NotNull final ParserContext context) {
+                final ParserInfo info = p.parse(context);
                 if (info.success) {
                     context.whiteSpace();
                 }
@@ -132,7 +132,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -172,10 +172,10 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
-                ParserInfo info = p1.parse(context);
+            public ParserInfo parse(@NotNull final ParserContext context) {
+                final ParserInfo info = p1.parse(context);
                 if (info.success) {
-                    ParserInfo info2 = p2.parse(context);
+                    final ParserInfo info2 = p2.parse(context);
                     return ParserInfo.merge(info, info2, info2.success);
                 }
                 return info;
@@ -184,8 +184,8 @@ public class Combinators {
             @NotNull
             @Override
             public String calcName() {
-                String name1 = p1.getName();
-                String name2 = p2.getName();
+                final String name1 = p1.getName();
+                final String name2 = p2.getName();
                 return name1 + " " + name2;
             }
 
@@ -197,7 +197,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 if (p1.canBeEmpty()) { return p1.canStartWith(type) || p2.canStartWith(type); }
                 return p1.canStartWith(type);
             }
@@ -214,8 +214,8 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
-                int position = context.getPosition();
+            public ParserInfo parse(@NotNull final ParserContext context) {
+                final int position = context.getPosition();
                 ParserInfo info;
                 if (head.canBeEmpty() || head.canStartWith(context.peek())) {
                     info = head.parse(context);
@@ -226,8 +226,8 @@ public class Combinators {
                 if (context.getPosition() > position || info.success) {
                     return info;
                 }
-                for (Parsec p2 : tail) {
-                    ParserInfo info2;
+                for (final Parsec p2 : tail) {
+                    final ParserInfo info2;
                     if (p2.canBeEmpty() || p2.canStartWith(context.peek())) {
                         info2 = p2.parse(context);
                     } else {
@@ -246,9 +246,9 @@ public class Combinators {
             @Override
             public String calcName() {
                 // TODO: avoid unnecessary parentheses.
-                StringBuilder sb = new StringBuilder();
+                final StringBuilder sb = new StringBuilder();
                 sb.append("(").append(head.getName()).append(")");
-                for (Parsec parsec : tail) {
+                for (final Parsec parsec : tail) {
                     sb.append(" | (").append(parsec.getName()).append(")");
                 }
                 return sb.toString();
@@ -257,18 +257,18 @@ public class Combinators {
             @NotNull
             @Override
             protected HashSet<String> calcExpectedName() {
-                HashSet<String> result = new LinkedHashSet<String>();
+                final HashSet<String> result = new LinkedHashSet<String>();
                 result.addAll(head.getExpectedName());
-                for (Parsec parsec : tail) {
+                for (final Parsec parsec : tail) {
                     result.addAll(parsec.getExpectedName());
                 }
                 return result;
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 if (head.canStartWith(type)) { return true; }
-                for (Parsec parsec : tail) {
+                for (final Parsec parsec : tail) {
                     if (parsec.canStartWith(type)) { return true; }
                 }
                 return false;
@@ -277,7 +277,7 @@ public class Combinators {
             @Override
             public boolean calcCanBeEmpty() {
                 if (!head.canBeEmpty()) { return false; }
-                for (Parsec parsec : tail) {
+                for (final Parsec parsec : tail) {
                     if (!parsec.canBeEmpty()) { return false; }
                 }
                 return true;
@@ -290,10 +290,10 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 ParserInfo info = new ParserInfo(context.getPosition(), p, true);
                 while (!context.eof()) {
-                    int position = context.getPosition();
+                    final int position = context.getPosition();
                     info = p.parse(context);
                     if (info.success) {
                         if (position == context.getPosition()) {
@@ -322,7 +322,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -343,11 +343,11 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 try {
                     context.enterOptional();
-                    int position = context.getPosition();
-                    ParserInfo info1 = p.parse(context);
+                    final int position = context.getPosition();
+                    final ParserInfo info1 = p.parse(context);
                     if (info1.success) {
                         return info1;
                     }
@@ -371,7 +371,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -387,15 +387,15 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 if (!p.canBeEmpty() && !p.canStartWith(context.peek())) {
                     return new ParserInfo(context.getPosition(), p, false);
                 }
-                int start = context.getPosition();
-                PsiBuilder.Marker pack = context.start();
-                boolean inAttempt = context.isInAttempt();
+                final int start = context.getPosition();
+                final PsiBuilder.Marker pack = context.start();
+                final boolean inAttempt = context.isInAttempt();
                 context.setInAttempt(true);
-                ParserInfo info = p.parse(context);
+                final ParserInfo info = p.parse(context);
                 context.setInAttempt(inAttempt);
                 if (info.success) {
                     pack.drop();
@@ -419,7 +419,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -453,7 +453,7 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 if (context.getColumn() > context.getIndentationLevel()) {
                     return p.parse(context);
                 }
@@ -473,7 +473,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -489,7 +489,7 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 if (context.getColumn() == context.getIndentationLevel()) {
                     return p.parse(context);
                 }
@@ -509,7 +509,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -525,7 +525,7 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
+            public ParserInfo parse(@NotNull final ParserContext context) {
                 context.pushIndentationLevel();
                 try {
                     return p.parse(context);
@@ -547,7 +547,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -589,17 +589,17 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
-                int startPosition = context.getPosition();
-                boolean inAttempt = context.isInAttempt();
+            public ParserInfo parse(@NotNull final ParserContext context) {
+                final int startPosition = context.getPosition();
+                final boolean inAttempt = context.isInAttempt();
                 context.addUntilToken(token);
                 context.setInAttempt(false);
-                ParserInfo info = p.parse(context);
+                final ParserInfo info = p.parse(context);
                 context.setInAttempt(inAttempt);
                 if (info.success) {
                     return info;
                 }
-                PsiBuilder.Marker start = context.start();
+                final PsiBuilder.Marker start = context.start();
                 while (!context.eof()) {
                     if (context.isUntilToken(context.peek())) {
                         break;
@@ -628,7 +628,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -644,9 +644,9 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
-                int position = context.getPosition();
-                ParserInfo info = p.parse(context);
+            public ParserInfo parse(@NotNull final ParserContext context) {
+                final int position = context.getPosition();
+                final ParserInfo info = p.parse(context);
                 if (info.success || position == context.getPosition()) {
                     return info;
                 }
@@ -654,7 +654,7 @@ public class Combinators {
                 if (context.getColumn() <= context.getLastIndentationLevel()) {
                     return info;
                 }
-                PsiBuilder.Marker start = context.start();
+                final PsiBuilder.Marker start = context.start();
                 while (!context.eof()) {
                     if (context.getColumn() == context.getIndentationLevel()) {
                         break;
@@ -678,7 +678,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 
@@ -700,13 +700,13 @@ public class Combinators {
         return new Parsec() {
             @NotNull
             @Override
-            public ParserInfo parse(@NotNull ParserContext context) {
-                PsiBuilder.Marker pack = context.start();
-                int start = context.getPosition();
-                ParserInfo info1 = p.parse(context);
+            public ParserInfo parse(@NotNull final ParserContext context) {
+                final PsiBuilder.Marker pack = context.start();
+                final int start = context.getPosition();
+                final ParserInfo info1 = p.parse(context);
                 if (info1.success) {
-                    int end = context.getPosition();
-                    String text = context.getText(start, end);
+                    final int end = context.getPosition();
+                    final String text = context.getText(start, end);
                     if (!predicate.test(text)) {
                         return new ParserInfo(context.getPosition(), errorMessage, false);
                     }
@@ -730,7 +730,7 @@ public class Combinators {
             }
 
             @Override
-            public boolean canStartWith(@NotNull IElementType type) {
+            public boolean canStartWith(@NotNull final IElementType type) {
                 return p.canStartWith(type);
             }
 

@@ -35,13 +35,13 @@ import org.jetbrains.annotations.NotNull;
 public class PureParser implements PsiParser, PSTokens, PSElements {
     @NotNull
     @Override
-    public ASTNode parse(IElementType root, PsiBuilder builder) {
+    public ASTNode parse(final IElementType root, final PsiBuilder builder) {
         // builder.setDebugMode(true);
-        ParserContext context = new ParserContext(builder);
-        PsiBuilder.Marker mark = context.start();
+        final ParserContext context = new ParserContext(builder);
+        final PsiBuilder.Marker mark = context.start();
         context.whiteSpace();
         // Creating a new instance here allows hot swapping while debugging.
-        ParserInfo info = new PureParsecParser().program.parse(context);
+        final ParserInfo info = new PureParsecParser().program.parse(context);
         IElementType nextType = null;
         if (!context.eof()) {
             PsiBuilder.Marker errorMarker = null;
@@ -68,7 +68,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         }
 
         @NotNull
-        private Parsec parseQualified(@NotNull Parsec p) {
+        private Parsec parseQualified(@NotNull final Parsec p) {
             return attempt(many(attempt(token(PROPER_NAME).as(ProperName).then(token(DOT)))).then(p).as(Qualified));
         }
 
@@ -153,7 +153,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final Parsec parseFunction = parens(reserved(ARROW));
         private final Parsec parseTypeVariable = lexeme(guard(idents, new Predicate<String>() {
             @Override
-            public boolean test(String content) {
+            public boolean test(final String content) {
                 return !(content.equals("∀") || content.equals("forall"));
             }
         }, "not `forall`")).as(GenericIdentifier);
@@ -161,7 +161,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final Parsec parseTypeConstructor = parseQualified(properName).as(TypeConstructor);
 
         @NotNull
-        private Parsec parseNameAndType(Parsec p) {
+        private Parsec parseNameAndType(final Parsec p) {
             return indented(lexeme(choice(lname, stringLiteral).as(GenericIdentifier))).then(indented(lexeme(DCOLON))).then(p);
         }
 

@@ -14,8 +14,8 @@ public final class ParserContext {
     @NotNull
     private final PsiBuilder builder;
     private int column;
-    private Stack<Integer> indentationLevel = new Stack<Integer>();
-    private HashMap<IElementType, Integer> recoverySet = new HashMap<IElementType, Integer>();
+    private final Stack<Integer> indentationLevel = new Stack<Integer>();
+    private final HashMap<IElementType, Integer> recoverySet = new HashMap<IElementType, Integer>();
     private boolean inAttempt;
     private int inOptional;
 
@@ -27,12 +27,12 @@ public final class ParserContext {
         private final int start;
         private final PsiBuilder.Marker marker;
 
-        protected PureMarker(@NotNull PsiBuilder.Marker marker) {
+        protected PureMarker(@NotNull final PsiBuilder.Marker marker) {
             this.start = column;
             this.marker = marker;
         }
 
-        public PureMarker(int start, PsiBuilder.Marker marker) {
+        public PureMarker(final int start, final PsiBuilder.Marker marker) {
             this.start = start;
             this.marker = marker;
         }
@@ -54,49 +54,49 @@ public final class ParserContext {
         }
 
         @Override
-        public void done(IElementType type) {
+        public void done(final IElementType type) {
             marker.done(type);
         }
 
         @Override
-        public void collapse(IElementType type) {
+        public void collapse(final IElementType type) {
             marker.collapse(type);
         }
 
         @Override
-        public void doneBefore(IElementType type, PsiBuilder.Marker before) {
+        public void doneBefore(final IElementType type, final PsiBuilder.Marker before) {
             marker.doneBefore(type, before);
         }
 
         @Override
-        public void doneBefore(IElementType type, PsiBuilder.Marker before, String errorMessage) {
+        public void doneBefore(final IElementType type, final PsiBuilder.Marker before, final String errorMessage) {
             marker.doneBefore(type, before, errorMessage);
         }
 
         @Override
-        public void error(String message) {
+        public void error(final String message) {
             marker.error(message);
         }
 
         @Override
-        public void errorBefore(String message, PsiBuilder.Marker before) {
+        public void errorBefore(final String message, final PsiBuilder.Marker before) {
             marker.errorBefore(message, before);
         }
 
         @Override
-        public void setCustomEdgeTokenBinders(@Nullable WhitespacesAndCommentsBinder left, @Nullable WhitespacesAndCommentsBinder right) {
+        public void setCustomEdgeTokenBinders(@Nullable final WhitespacesAndCommentsBinder left, @Nullable final WhitespacesAndCommentsBinder right) {
             marker.setCustomEdgeTokenBinders(left, right);
         }
     }
 
-    public ParserContext(@NotNull PsiBuilder builder) {
+    public ParserContext(@NotNull final PsiBuilder builder) {
         this.builder = builder;
         this.indentationLevel.push(0);
     }
 
     public void whiteSpace() {
         while (!builder.eof()) {
-            IElementType type = builder.getTokenType();
+            final IElementType type = builder.getTokenType();
             if (type == PSTokens.WS) {
                 advance();
             } else {
@@ -106,12 +106,12 @@ public final class ParserContext {
     }
 
     public void advance() {
-        String text = builder.getTokenText();
+        final String text = builder.getTokenText();
         if (text != null) {
-            IElementType type = builder.getTokenType();
+            final IElementType type = builder.getTokenType();
             if (type == PSTokens.STRING || type == PSTokens.WS) {
                 for (int i = 0; i < text.length(); i++) {
-                    char ch = text.charAt(i);
+                    final char ch = text.charAt(i);
                     if (ch == '\n') {
                         column = 0;
                     } else if (ch == '\t') {
@@ -127,7 +127,7 @@ public final class ParserContext {
         builder.advanceLexer();
     }
 
-    public void addUntilToken(@NotNull IElementType token) {
+    public void addUntilToken(@NotNull final IElementType token) {
         int i = 0;
         if (recoverySet.containsKey(token)) {
             i = recoverySet.get(token);
@@ -135,8 +135,8 @@ public final class ParserContext {
         recoverySet.put(token, i + 1);
     }
 
-    public void removeUntilToken(@NotNull IElementType token) {
-        int i = recoverySet.get(token);
+    public void removeUntilToken(@NotNull final IElementType token) {
+        final int i = recoverySet.get(token);
         if (i == 1) {
             recoverySet.remove(token);
         } else {
@@ -144,11 +144,11 @@ public final class ParserContext {
         }
     }
 
-    public boolean isUntilToken(@NotNull IElementType token) {
+    public boolean isUntilToken(@NotNull final IElementType token) {
         return recoverySet.containsKey(token);
     }
 
-    public void setInAttempt(boolean inAttempt) {
+    public void setInAttempt(final boolean inAttempt) {
         this.inAttempt = inAttempt;
     }
 
@@ -171,22 +171,22 @@ public final class ParserContext {
 
     @NotNull
     public String text() {
-        String text = builder.getTokenText();
+        final String text = builder.getTokenText();
         if (text == null) return "";
         return text;
     }
 
     @NotNull
     public IElementType peek() {
-        IElementType tokenType = builder.getTokenType();
+        final IElementType tokenType = builder.getTokenType();
         return tokenType == null ? PSTokens.EOF : tokenType;
     }
 
-    public boolean match(@NotNull IElementType type) {
+    public boolean match(@NotNull final IElementType type) {
         return builder.getTokenType() == type;
     }
 
-    public boolean eat(@NotNull IElementType type) {
+    public boolean eat(@NotNull final IElementType type) {
         if (builder.getTokenType() == type) {
             advance();
             return true;
@@ -194,8 +194,8 @@ public final class ParserContext {
         return false;
     }
 
-    public boolean expect(@NotNull IElementType type) {
-        PsiBuilder.Marker mark = builder.mark();
+    public boolean expect(@NotNull final IElementType type) {
+        final PsiBuilder.Marker mark = builder.mark();
         if (builder.getTokenType() == type) {
             advance();
             mark.drop();
@@ -240,7 +240,7 @@ public final class ParserContext {
     }
 
     @NotNull
-    public String getText(int start, int end) {
+    public String getText(final int start, final int end) {
         return this.builder.getOriginalText().subSequence(start, end).toString();
     }
 }

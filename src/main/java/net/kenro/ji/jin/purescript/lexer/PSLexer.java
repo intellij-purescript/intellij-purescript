@@ -4,8 +4,6 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import net.kenro.ji.jin.purescript.psi.PSTokens;
 
-import java.io.Reader;
-
 public final class PSLexer extends LookAheadLexer {
     public PSLexer() {
         super(new MergedPureLexer(), 64);
@@ -13,12 +11,12 @@ public final class PSLexer extends LookAheadLexer {
 
     private static final class MergedPureLexer extends MergingLexerAdapterBase {
         public MergedPureLexer() {
-            super(new FlexAdapter(new _PSLexer((Reader) null)));
+            super(new FlexAdapter(new _PSLexer(null)));
         }
 
         private static final MergeFunction mergeFunction = new MergeFunction() {
             @Override
-            public IElementType merge(IElementType type, Lexer originalLexer) {
+            public IElementType merge(IElementType type, final Lexer originalLexer) {
                 if (type == PSTokens.STRING) {
                     while (true) {
                         final IElementType tokenType = originalLexer.getTokenType();

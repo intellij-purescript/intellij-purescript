@@ -11,58 +11,58 @@ public interface TypeFilter {
 
     String ALL_MEMBERS = "..";
 
-    static TypeFilter always(boolean value) {
+    static TypeFilter always(final boolean value) {
         return new TypeFilter() {
             @Override
-            public boolean testType(String name) {
+            public boolean testType(final String name) {
                 return value;
             }
 
             @Override
-            public boolean testTypeMember(String typeName, String memberName) {
+            public boolean testTypeMember(final String typeName, final String memberName) {
                 return value;
             }
         };
     }
 
-    static TypeFilter fromSets(Set<String> types, Set<Pair<String, String>> typeMembers) {
+    static TypeFilter fromSets(final Set<String> types, final Set<Pair<String, String>> typeMembers) {
         return new TypeFilter() {
             @Override
-            public boolean testType(String name) {
+            public boolean testType(final String name) {
                 return types.contains(name);
             }
 
             @Override
-            public boolean testTypeMember(String typeName, String memberName) {
+            public boolean testTypeMember(final String typeName, final String memberName) {
                 return typeMembers.contains(Pair.create(typeName, memberName))
                         || typeMembers.contains(Pair.create(typeName, ALL_MEMBERS));
             }
         };
     }
 
-    static TypeFilter byText(String text) {
+    static TypeFilter byText(final String text) {
         return new TypeFilter() {
             @Override
-            public boolean testType(String name) {
+            public boolean testType(final String name) {
                 return text.equals(name);
             }
 
             @Override
-            public boolean testTypeMember(String typeName, String memberName) {
+            public boolean testTypeMember(final String typeName, final String memberName) {
                 return text.equals(memberName);
             }
         };
     }
 
-    static TypeFilter and(TypeFilter a, TypeFilter b) {
+    static TypeFilter and(final TypeFilter a, final TypeFilter b) {
         return new TypeFilter() {
             @Override
-            public boolean testType(String name) {
+            public boolean testType(final String name) {
                 return a.testType(name) && b.testType((name));
             }
 
             @Override
-            public boolean testTypeMember(String typeName, String memberName) {
+            public boolean testTypeMember(final String typeName, final String memberName) {
                 return a.testTypeMember(typeName, memberName) && b.testTypeMember(typeName, memberName);
             }
         };

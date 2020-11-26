@@ -32,16 +32,16 @@ public class PSCoreLibrary {
 //        add("Sub");
     }};
 
-    public static boolean isBuiltIn(String typeName) {
+    public static boolean isBuiltIn(final String typeName) {
         return BUILT_IN_SYMBOLS.contains(typeName);
     }
 
-    public static boolean isImplicitImport(String moduleName) {
+    public static boolean isImplicitImport(final String moduleName) {
         return IMPLICIT_IMPORTS.contains(moduleName);
     }
 
     public static Stack<String> getImplicitImportsCopy() {
-        Stack<String> result = new Stack<>();
+        final Stack<String> result = new Stack<>();
         IMPLICIT_IMPORTS.forEach(result::push);
         return result;
     }

@@ -18,7 +18,7 @@ public class PSRecordFieldsProvider {
     private final Stack<String> implicitImports;
     private PSTypesProvider.TypesProvidingPhase phase = CURRENT_FILE;
 
-    PSRecordFieldsProvider(PSFile file) {
+    PSRecordFieldsProvider(final PSFile file) {
         this.file = file;
         this.implicitImports =  PSCoreLibrary.getImplicitImportsCopy();
     }

@@ -10,15 +10,15 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class PSElement extends CompositePsiElement {
-    protected PSElement(@NotNull IElementType type) {
+    protected PSElement(@NotNull final IElementType type) {
         super(type);
     }
 
     @SuppressWarnings("unchecked")
     @NotNull
-    public <T extends PSElement> T[] findChildren(Class<T> type) {
-        ArrayList<T> result = new ArrayList<T>();
-        for (PsiElement psiElement : this.getChildren()) {
+    public <T extends PSElement> T[] findChildren(final Class<T> type) {
+        final ArrayList<T> result = new ArrayList<T>();
+        for (final PsiElement psiElement : this.getChildren()) {
             if (ReflectionCache.isInstance(psiElement, type)) {
                 result.add((T) psiElement);
             }

@@ -40,17 +40,17 @@ public abstract class Parsec {
     protected abstract HashSet<String> calcExpectedName();
 
     @NotNull
-    public Parsec then(@NotNull Parsec next) {
+    public Parsec then(@NotNull final Parsec next) {
         return Combinators.seq(this, next);
     }
 
     @NotNull
-    public Parsec lexeme(@NotNull IElementType type) {
+    public Parsec lexeme(@NotNull final IElementType type) {
         return then(Combinators.lexeme(Combinators.token(type)));
     }
 
     @NotNull
-    public Parsec or(@NotNull Parsec next) {
+    public Parsec or(@NotNull final Parsec next) {
         return Combinators.choice(this, next);
     }
 

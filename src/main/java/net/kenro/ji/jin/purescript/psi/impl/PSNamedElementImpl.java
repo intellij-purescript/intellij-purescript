@@ -5,7 +5,7 @@ import net.kenro.ji.jin.purescript.psi.PSNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PSNamedElementImpl extends PSPsiElement implements PSNamedElement {
-    public PSNamedElementImpl(@NotNull ASTNode node){
+    public PSNamedElementImpl(@NotNull final ASTNode node){
         super(node);
     }
 }

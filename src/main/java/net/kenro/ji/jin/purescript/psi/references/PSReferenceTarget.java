@@ -6,7 +6,7 @@ public enum PSReferenceTarget {
 
     private final String displayName;
 
-    PSReferenceTarget(String displayName) {
+    PSReferenceTarget(final String displayName) {
         this.displayName = displayName;
     }
 

@@ -15,7 +15,6 @@ import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.file.PSFileStubType;
 import net.kenro.ji.jin.purescript.lexer.PSLexer;
 import net.kenro.ji.jin.purescript.psi.PSElements;
-import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSTokens;
 import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement;
 import net.kenro.ji.jin.purescript.psi.impl.*;
@@ -24,12 +23,12 @@ import org.jetbrains.annotations.NotNull;
 public class PSParserDefinition implements ParserDefinition, PSTokens {
     @NotNull
     @Override
-    public Lexer createLexer(Project project) {
+    public Lexer createLexer(final Project project) {
         return new PSLexer();
     }
 
     @Override
-    public PsiParser createParser(Project project) {
+    public PsiParser createParser(final Project project) {
         return new PureParser();
     }
 
@@ -58,8 +57,8 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
 
     @NotNull
     @Override
-    public PsiElement createElement(ASTNode node) {
-        IElementType type = node.getElementType();
+    public PsiElement createElement(final ASTNode node) {
+        final IElementType type = node.getElementType();
         if ((type.equals(PSElements.ProperName)  ||
              type.equals(PSElements.Qualified)   ||
              type.equals(PSElements.pClassName)  ||
@@ -303,12 +302,12 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
     }
 
     @Override
-    public PsiFile createFile(FileViewProvider viewProvider) {
+    public PsiFile createFile(final FileViewProvider viewProvider) {
         return new PSFile(viewProvider);
     }
 
     @Override
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    public SpaceRequirements spaceExistanceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
         return SpaceRequirements.MAY;
     }
 }

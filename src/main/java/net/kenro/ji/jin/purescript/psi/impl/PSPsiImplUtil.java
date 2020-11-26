@@ -8,12 +8,12 @@ import net.kenro.ji.jin.purescript.psi.PSProperName;
 
 public class PSPsiImplUtil {
 
-    public static String getName(PSProperName element) {
+    public static String getName(final PSProperName element) {
         return element.getText();
     }
 
-    public static PsiElement getNameIdentifier(PSProperName element) {
-        ASTNode node = element.getNode();
+    public static PsiElement getNameIdentifier(final PSProperName element) {
+        final ASTNode node = element.getNode();
         if (node != null) {
             return node.getPsi();
         } else {
@@ -21,12 +21,12 @@ public class PSPsiImplUtil {
         }
     }
 
-    public static String getName(PSIdentifier element) {
+    public static String getName(final PSIdentifier element) {
         return element.getText();
     }
 
-    public static PsiElement getNameIdentifier(PSIdentifier element) {
-        ASTNode node = element.getNode();
+    public static PsiElement getNameIdentifier(final PSIdentifier element) {
+        final ASTNode node = element.getNode();
         if (node != null) {
             return node.getPsi();
         } else {

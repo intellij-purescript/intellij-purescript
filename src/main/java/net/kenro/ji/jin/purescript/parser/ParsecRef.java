@@ -8,13 +8,13 @@ import java.util.HashSet;
 public final class ParsecRef extends Parsec {
     private Parsec ref;
 
-    public void setRef(@NotNull Parsec ref) {
+    public void setRef(@NotNull final Parsec ref) {
         this.ref = ref;
     }
 
     @NotNull
     @Override
-    public ParserInfo parse(@NotNull ParserContext context) {
+    public ParserInfo parse(@NotNull final ParserContext context) {
         return ref.parse(context);
     }
 
@@ -31,7 +31,7 @@ public final class ParsecRef extends Parsec {
     }
 
     @Override
-    public boolean canStartWith(@NotNull IElementType type) {
+    public boolean canStartWith(@NotNull final IElementType type) {
         return ref.canStartWith(type);
     }
 
