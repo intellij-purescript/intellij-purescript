@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PSPsiElement extends ASTWrapperPsiElement {
-    public PSPsiElement(@NotNull ASTNode node) {
+    public PSPsiElement(@NotNull final ASTNode node) {
         super(node);
     }
 }

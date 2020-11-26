@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class PSSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
-    public SyntaxHighlighter getSyntaxHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile) {
+    public SyntaxHighlighter getSyntaxHighlighter(@Nullable final Project project, @Nullable final VirtualFile virtualFile) {
         return new PSSyntaxHighlighter();
     }
 }

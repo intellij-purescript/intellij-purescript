@@ -13,11 +13,11 @@ abstract class PSReferenceBase <T extends PsiElement> extends PsiReferenceBase<P
 
     final T referencingElement;
 
-    PSReferenceBase(T element) {
+    PSReferenceBase(final T element) {
         this(element, element, new TextRange(0, element.getTextLength()));
     }
 
-    PSReferenceBase(PsiElement element, T referencingElement, TextRange rangeInElement) {
+    PSReferenceBase(final PsiElement element, final T referencingElement, final TextRange rangeInElement) {
         super(element, rangeInElement);
         this.referencingElement = referencingElement;
     }
@@ -27,8 +27,8 @@ abstract class PSReferenceBase <T extends PsiElement> extends PsiReferenceBase<P
     }
 
     @Override
-    public PSReference referenceInAncestor(PsiElement ancestor) {
-        int diff = this.myElement.getTextOffset() - ancestor.getTextOffset();
+    public PSReference referenceInAncestor(final PsiElement ancestor) {
+        final int diff = this.myElement.getTextOffset() - ancestor.getTextOffset();
         return constructor().apply(ancestor, this.referencingElement, this.getRangeInElement().shiftRight(diff));
     }
 
@@ -51,11 +51,11 @@ abstract class PSReferenceBase <T extends PsiElement> extends PsiReferenceBase<P
         return new Object[0];
     }
 
-    boolean theSameName(@NotNull PsiElement element) {
+    boolean theSameName(@NotNull final PsiElement element) {
         return element.getText().equals(this.referencingElement.getText());
     }
 
-    boolean theSameNameOrEmpty(Optional<T> optionalElem) {
+    boolean theSameNameOrEmpty(final Optional<T> optionalElem) {
         return optionalElem.map(this::theSameName)
                 .orElse(true);
     }

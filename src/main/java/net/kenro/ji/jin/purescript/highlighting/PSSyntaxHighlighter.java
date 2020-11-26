@@ -114,11 +114,11 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
     }
 
     @NotNull
-    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+    public TextAttributesKey[] getTokenHighlights(final IElementType tokenType) {
         return pack(keys.get(tokenType));
     }
 
-    private static TextAttributesKey createKey(String externalName, TextAttributesKey fallbackAttrs) {
+    private static TextAttributesKey createKey(final String externalName, final TextAttributesKey fallbackAttrs) {
         return createTextAttributesKey(externalName, fallbackAttrs);
     }
 }

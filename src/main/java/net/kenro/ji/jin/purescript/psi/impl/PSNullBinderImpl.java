@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSNullBinderImpl extends PSPsiElement implements PSNullBinder {
 
-    public PSNullBinderImpl(ASTNode node) {
+    public PSNullBinderImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSNullBinder(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

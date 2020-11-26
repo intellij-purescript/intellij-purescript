@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSDoNotationBindImpl extends PSPsiElement implements PSDoNotationBind {
 
-    public PSDoNotationBindImpl(ASTNode node) {
+    public PSDoNotationBindImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSDoNotationBind(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

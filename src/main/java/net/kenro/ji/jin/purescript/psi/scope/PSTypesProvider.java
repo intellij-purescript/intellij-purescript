@@ -18,7 +18,7 @@ class PSTypesProvider {
     private final Stack<String> implicitImports;
     private TypesProvidingPhase phase = CURRENT_FILE;
 
-    PSTypesProvider(PSFile file) {
+    PSTypesProvider(final PSFile file) {
         this.file = file;
         this.implicitImports = PSCoreLibrary.getImplicitImportsCopy();
     }

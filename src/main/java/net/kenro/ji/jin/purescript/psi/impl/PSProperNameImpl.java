@@ -9,16 +9,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSProperNameImpl extends PSNamedElementImpl implements PSProperName {
 
-    public PSProperNameImpl(ASTNode node){
+    public PSProperNameImpl(final ASTNode node){
         super(node);
 //        System.out.print("IN THE PSPROPERNAME IMPL");
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSProperName(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor)visitor);
         else super.accept(visitor);
     }
@@ -32,7 +32,7 @@ public class PSProperNameImpl extends PSNamedElementImpl implements PSProperName
     }
 
     @Override
-    public PsiElement setName(@NotNull String name) {
+    public PsiElement setName(@NotNull final String name) {
         return null;
     }
 }

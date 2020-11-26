@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class PSElementType extends IElementType {
-    public PSElementType(@NotNull @NonNls String debugName) {
+    public PSElementType(@NotNull @NonNls final String debugName) {
         super(debugName, PSLanguage.INSTANCE);
     }
 }

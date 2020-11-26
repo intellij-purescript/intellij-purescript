@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSTypeClassDeclarationImpl extends PSPsiElement implements PSTypeClassDeclaration {
 
-    public PSTypeClassDeclarationImpl(ASTNode node) {
+    public PSTypeClassDeclarationImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSTypeClassDeclaration(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

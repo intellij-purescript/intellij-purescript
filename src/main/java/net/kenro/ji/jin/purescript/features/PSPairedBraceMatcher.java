@@ -21,13 +21,13 @@ public class PSPairedBraceMatcher implements PairedBraceMatcher {
     }
 
     @Override
-    public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType lbraceType, @Nullable IElementType contextType) {
+    public boolean isPairedBracesAllowedBeforeType(@NotNull final IElementType lbraceType, @Nullable final IElementType contextType) {
         return contextType == null
                 || contextType == PSTokens.WS;
     }
 
     @Override
-    public int getCodeConstructStart(PsiFile file, int openingBraceOffset) {
+    public int getCodeConstructStart(final PsiFile file, final int openingBraceOffset) {
         return openingBraceOffset;
     }
 }

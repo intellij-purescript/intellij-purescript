@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSValueRefImpl extends PSPsiElement implements PSValueRef {
 
-    public PSValueRefImpl(ASTNode node) {
+    public PSValueRefImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSValueRef(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

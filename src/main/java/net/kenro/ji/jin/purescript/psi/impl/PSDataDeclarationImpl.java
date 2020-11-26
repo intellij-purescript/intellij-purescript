@@ -13,15 +13,15 @@ import java.util.List;
 
 public class PSDataDeclarationImpl extends PSPsiElement implements PSDataDeclaration {
 
-    public PSDataDeclarationImpl(ASTNode node) {
+    public PSDataDeclarationImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSDataDeclaration(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

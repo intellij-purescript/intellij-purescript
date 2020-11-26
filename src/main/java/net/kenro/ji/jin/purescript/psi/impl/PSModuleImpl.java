@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSModuleImpl extends PSPsiElement implements PSModule {
 
-    public PSModuleImpl(ASTNode node) {
+    public PSModuleImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSModule(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

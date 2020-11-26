@@ -12,16 +12,16 @@ public class SymbolicParsec extends Parsec {
     @NotNull
     private final IElementType node;
 
-    public SymbolicParsec(@NotNull Parsec ref, @NotNull IElementType node) {
+    public SymbolicParsec(@NotNull final Parsec ref, @NotNull final IElementType node) {
         this.ref = ref;
         this.node = node;
     }
 
     @NotNull
     @Override
-    public ParserInfo parse(@NotNull ParserContext context) {
-        int startPosition = context.getPosition();
-        PsiBuilder.Marker pack = context.start();
+    public ParserInfo parse(@NotNull final ParserContext context) {
+        final int startPosition = context.getPosition();
+        final PsiBuilder.Marker pack = context.start();
         ParserInfo info = ref.parse(context);
         if (info.success) {
             pack.done(node);
@@ -43,13 +43,13 @@ public class SymbolicParsec extends Parsec {
     @NotNull
     @Override
     protected HashSet<String> calcExpectedName() {
-        HashSet<String> result = new HashSet<String>();
+        final HashSet<String> result = new HashSet<String>();
         result.add(node.toString());
         return result;
     }
 
     @Override
-    public boolean canStartWith(@NotNull IElementType type) {
+    public boolean canStartWith(@NotNull final IElementType type) {
         return ref.canStartWith(type);
     }
 

@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PSRowKindImpl extends PSPsiElement implements PSRowKind {
 
-    public PSRowKindImpl(ASTNode node) {
+    public PSRowKindImpl(final ASTNode node) {
         super(node);
     }
 
-    public void accept(@NotNull PSVisitor visitor) {
+    public void accept(@NotNull final PSVisitor visitor) {
         visitor.visitPSRowKind(this);
     }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
+    public void accept(@NotNull final PsiElementVisitor visitor) {
         if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
         else super.accept(visitor);
     }

@@ -11,7 +11,7 @@ import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class PSASTWrapperElement extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
-    public PSASTWrapperElement(ASTNode astNode) {
+    public PSASTWrapperElement(final ASTNode astNode) {
         super(astNode);
     }
 
@@ -43,7 +43,7 @@ public class PSASTWrapperElement extends ASTWrapperPsiElement implements PsiLang
     }
 
     @Override
-    public PSASTWrapperElement updateText(@NotNull String s) {
+    public PSASTWrapperElement updateText(@NotNull final String s) {
         final ASTNode valueNode = getNode().getFirstChildNode();
         assert valueNode instanceof LeafElement;
         ((LeafElement)valueNode).replaceWithText(s);

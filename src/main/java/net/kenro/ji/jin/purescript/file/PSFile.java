@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class PSFile extends PsiFileBase {
-    public PSFile(@NotNull FileViewProvider viewProvider) {
+    public PSFile(@NotNull final FileViewProvider viewProvider) {
         super(viewProvider, PSLanguage.INSTANCE);
     }
 
@@ -35,12 +35,12 @@ public class PSFile extends PsiFileBase {
     }
 
     @Override
-    public Icon getIcon(int flags) {
+    public Icon getIcon(final int flags) {
         return super.getIcon(flags);
     }
 
     public List<PSImportDeclaration> getImportClauses() {
-        LinkedList<PSImportDeclaration> psImportDeclarations = new LinkedList<>(PsiTreeUtil.findChildrenOfType(this, PSImportDeclaration.class));
+        final LinkedList<PSImportDeclaration> psImportDeclarations = new LinkedList<>(PsiTreeUtil.findChildrenOfType(this, PSImportDeclaration.class));
         return psImportDeclarations;
     }
 
@@ -50,7 +50,7 @@ public class PSFile extends PsiFileBase {
     }
 
     @NotNull
-    private Stream<PSProperName> getTypes(TypeFilter typeFilter) {
+    private Stream<PSProperName> getTypes(final TypeFilter typeFilter) {
           return this.getDataTypes(typeFilter);
 //        return Stream.concat(
 //                this.getDataTypes(typeFilter)
@@ -59,7 +59,7 @@ public class PSFile extends PsiFileBase {
     }
 
     @NotNull
-    private Stream<PSProperName> getDataTypes(TypeFilter typeFilter) {
+    private Stream<PSProperName> getDataTypes(final TypeFilter typeFilter) {
         return Arrays.stream(this.getChildren())
                 .filter(e -> e instanceof PSDataDeclaration)
                 .map(e -> ((PSDataDeclaration) e).getProperName())

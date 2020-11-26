@@ -15,9 +15,9 @@ import java.io.File;
 public abstract class PSLanguageParserTestBase extends ParsingTestCase {
 
     public PSLanguageParserTestBase(
-        String dataPath,
-        String fileExt,
-        ParserDefinition... definitions
+        final String dataPath,
+        final String fileExt,
+        final ParserDefinition... definitions
     ) {
         super(dataPath, fileExt, definitions);
     }
@@ -36,7 +36,7 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
      * Perform a test. Add tests that should work but does not work yet with
      * doTest(false, false).
      */
-    protected void doTestOld(boolean checkResult, boolean shouldPass) {
+    protected void doTestOld(final boolean checkResult, final boolean shouldPass) {
         doTest(true);
         if (shouldPass) {
             assertFalse(
@@ -50,7 +50,7 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
 
     @Override
     protected void checkResult(
-        @NotNull @NonNls @TestDataFile String targetDataName,
+        @NotNull @NonNls @TestDataFile final String targetDataName,
         @NotNull final PsiFile file
     ) {
         final String fullTargetDataName = "" + File.separator + targetDataName;
@@ -67,7 +67,7 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        VirtualFile m = new MockVirtualFile(true, myFullDataPath);
+        final VirtualFile m = new MockVirtualFile(true, myFullDataPath);
         myProject.setBaseDir(m);
     }
 
