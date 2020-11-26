@@ -4,8 +4,6 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import net.kenro.ji.jin.purescript.psi.PSTokens;
 
-import java.io.Reader;
-
 public final class PSLexer extends LookAheadLexer {
     public PSLexer() {
         super(new MergedPureLexer(), 64);

@@ -15,7 +15,6 @@ import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.file.PSFileStubType;
 import net.kenro.ji.jin.purescript.lexer.PSLexer;
 import net.kenro.ji.jin.purescript.psi.PSElements;
-import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSTokens;
 import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement;
 import net.kenro.ji.jin.purescript.psi.impl.*;
