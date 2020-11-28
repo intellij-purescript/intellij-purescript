@@ -9,4 +9,7 @@ public class PSProgramImpl extends PSPsiElement implements PSProgram {
         super(node);
     }
 
+    public PSModuleImpl getModule() {
+        return (PSModuleImpl) this.getFirstChild();
+    }
 }

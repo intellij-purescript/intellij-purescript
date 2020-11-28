@@ -21,6 +21,6 @@ public class PSIdentifierImpl extends PSPsiElement {
     }
 
     public String getName() {
-        return PSPsiImplUtil.getName(this);
+        return getText().trim();
     }
 }

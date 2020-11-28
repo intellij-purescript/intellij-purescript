@@ -9,4 +9,10 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PSValueDecla
         super(node);
     }
 
+    @Override
+    public String getName() {
+        final PSIdentifierImpl identifier =
+            this.findChildByClass(PSIdentifierImpl.class);
+        return identifier.getName();
+    }
 }
