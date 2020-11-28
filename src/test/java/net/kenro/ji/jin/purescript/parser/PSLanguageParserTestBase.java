@@ -1,6 +1,5 @@
 package net.kenro.ji.jin.purescript.parser;
 
-import com.intellij.lang.ParserDefinition;
 import com.intellij.mock.MockVirtualFile;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -14,12 +13,8 @@ import java.io.File;
 
 public abstract class PSLanguageParserTestBase extends ParsingTestCase {
 
-    public PSLanguageParserTestBase(
-        final String dataPath,
-        final String fileExt,
-        final ParserDefinition... definitions
-    ) {
-        super(dataPath, fileExt, definitions);
+    public PSLanguageParserTestBase() {
+        super("parser", "purs", new PSParserDefinition());
     }
 
     @Override

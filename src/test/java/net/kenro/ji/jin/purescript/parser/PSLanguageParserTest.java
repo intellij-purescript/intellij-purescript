@@ -3,10 +3,6 @@ package net.kenro.ji.jin.purescript.parser;
 
 public class PSLanguageParserTest extends PSLanguageParserTestBase {
 
-    public PSLanguageParserTest() {
-        super("parser", "purs", new PSParserDefinition());
-    }
-
     // modules
     public void testmodule1() { doTestOld(true, true); }
     public void testmodule2() { doTestOld(true, true); }
