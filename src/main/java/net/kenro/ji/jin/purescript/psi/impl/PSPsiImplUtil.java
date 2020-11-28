@@ -19,6 +19,7 @@ public class PSPsiImplUtil {
         }
     }
 
+<<<<<<< HEAD
     public static String getName(final PSIdentifierImpl element) {
         return element.getText();
     }
@@ -31,4 +32,6 @@ public class PSPsiImplUtil {
             return null;
         }
     }
+=======
+>>>>>>> Inline and clean up simple methods
 }

@@ -8,7 +8,9 @@ public class PSIdentifierImpl extends PSPsiElement {
         super(node);
     }
 
+    @Override
     public String getName() {
         return getText().trim();
     }
+
 }
