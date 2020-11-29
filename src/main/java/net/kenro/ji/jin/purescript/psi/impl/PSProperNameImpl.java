@@ -15,7 +15,7 @@ public class PSProperNameImpl extends PSNamedElementImpl implements PSProperName
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSProperName(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -15,7 +15,7 @@ public class PSIdentifierImpl extends PSNamedElementImpl implements PSIdentifier
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSIdentifier(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {
