@@ -12,17 +12,4 @@ public class PSBooleanBinderImpl extends PSPsiElement implements PSBooleanBinder
         super(node);
     }
 
-    public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitElement(this);
-    }
-
-    public void accept(@NotNull final PsiElementVisitor visitor) {
-        if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
-        else super.accept(visitor);
-    }
-
-
-
-
-
 }

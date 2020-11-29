@@ -12,17 +12,4 @@ public class PSValueImpl extends PSPsiElement implements PSValue {
         super(node);
     }
 
-    public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitElement(this);
-    }
-
-    public void accept(@NotNull final PsiElementVisitor visitor) {
-        if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
-        else super.accept(visitor);
-    }
-
-
-
-
-
 }

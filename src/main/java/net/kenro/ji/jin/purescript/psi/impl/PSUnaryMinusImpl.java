@@ -12,17 +12,4 @@ public class PSUnaryMinusImpl extends PSPsiElement implements PSUnaryMinus {
         super(node);
     }
 
-    public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitElement(this);
-    }
-
-    public void accept(@NotNull final PsiElementVisitor visitor) {
-        if (visitor instanceof PSVisitor) accept((PSVisitor) visitor);
-        else super.accept(visitor);
-    }
-
-
-
-
-
 }
