@@ -22,6 +22,11 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
+    <lang.findUsagesProvider
+        language="Purescript"
+        implementationClass="net.kenro.ji.jin.purescript.features.PSFindUsageProvider"
+    />
+
     <fileType
         name="Purescript file"
         implementationClass="net.kenro.ji.jin.purescript.file.PSFileType"
