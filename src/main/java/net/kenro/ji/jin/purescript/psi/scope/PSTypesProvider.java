@@ -2,7 +2,7 @@ package net.kenro.ji.jin.purescript.psi.scope;
 
 import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
-import net.kenro.ji.jin.purescript.psi.PSProperName;
+import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 
 import java.util.Optional;
 import java.util.Stack;
@@ -12,7 +12,7 @@ import static net.kenro.ji.jin.purescript.psi.scope.PSTypesProvider.TypesProvidi
 class PSTypesProvider {
     private final PSFile file;
 
-    private final Stack<PSProperName> types = new Stack<>();
+    private final Stack<PSProperNameImpl> types = new Stack<>();
     private final Stack<PSImportDeclaration> importClauses = new Stack<>();
     private final Stack<String> implicitImports;
     private TypesProvidingPhase phase = CURRENT_FILE;
@@ -22,7 +22,7 @@ class PSTypesProvider {
         this.implicitImports = PSCoreLibrary.getImplicitImportsCopy();
     }
 
-    Optional<PSProperName> nextType() {
+    Optional<PSProperNameImpl> nextType() {
         if (!this.types.isEmpty()) {
             return Optional.of(types.pop());
         }
