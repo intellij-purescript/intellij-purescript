@@ -14,7 +14,7 @@ public class PSDataDeclarationImpl extends PSPsiElement implements PSDataDeclara
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSDataDeclaration(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSForAllImpl extends PSPsiElement implements PSForAll {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSForAll(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

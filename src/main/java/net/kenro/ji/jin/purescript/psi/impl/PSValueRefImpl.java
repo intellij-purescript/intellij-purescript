@@ -13,7 +13,7 @@ public class PSValueRefImpl extends PSPsiElement implements PSValueRef {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSValueRef(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

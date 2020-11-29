@@ -13,7 +13,7 @@ public class PSRowKindImpl extends PSPsiElement implements PSRowKind {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSRowKind(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

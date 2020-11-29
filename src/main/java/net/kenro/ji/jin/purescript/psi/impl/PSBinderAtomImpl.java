@@ -13,7 +13,7 @@ public class PSBinderAtomImpl extends PSPsiElement implements PSBinderAtom {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSBinderAtom(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSFixityImpl extends PSPsiElement implements PSFixity {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSFixity(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

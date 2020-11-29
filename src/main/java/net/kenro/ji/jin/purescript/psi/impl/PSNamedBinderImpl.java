@@ -13,7 +13,7 @@ public class PSNamedBinderImpl extends PSPsiElement implements PSNamedBinder {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSNamedBinder(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

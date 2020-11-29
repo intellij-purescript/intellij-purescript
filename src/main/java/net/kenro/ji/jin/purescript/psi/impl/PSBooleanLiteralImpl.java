@@ -13,7 +13,7 @@ public class PSBooleanLiteralImpl extends PSPsiElement implements PSBooleanLiter
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSBooleanLiteral(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSTypeHoleImpl extends PSPsiElement implements PSTypeHole {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSTypeHole(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

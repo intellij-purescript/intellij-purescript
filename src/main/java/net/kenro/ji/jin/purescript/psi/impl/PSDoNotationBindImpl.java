@@ -13,7 +13,7 @@ public class PSDoNotationBindImpl extends PSPsiElement implements PSDoNotationBi
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSDoNotationBind(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

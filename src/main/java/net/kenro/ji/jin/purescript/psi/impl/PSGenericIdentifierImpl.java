@@ -13,7 +13,7 @@ public class PSGenericIdentifierImpl extends PSPsiElement implements PSGenericId
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSGenericIdentifier(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

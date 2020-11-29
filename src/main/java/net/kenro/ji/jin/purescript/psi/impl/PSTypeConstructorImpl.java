@@ -13,7 +13,7 @@ public class PSTypeConstructorImpl extends PSPsiElement implements PSTypeConstru
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSTypeConstructor(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

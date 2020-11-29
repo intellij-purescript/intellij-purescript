@@ -13,7 +13,7 @@ public class PSTypeAnnotationNameImpl extends PSPsiElement implements PSTypeAnno
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSTypeAnnotationName(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSJSRawImpl extends PSPsiElement implements PSJSRaw {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSJSRaw(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

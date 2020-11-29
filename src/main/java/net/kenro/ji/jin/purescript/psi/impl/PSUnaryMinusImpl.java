@@ -13,7 +13,7 @@ public class PSUnaryMinusImpl extends PSPsiElement implements PSUnaryMinus {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSUnaryMinus(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

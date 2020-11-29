@@ -13,7 +13,7 @@ public class PSStarImpl extends PSPsiElement implements PSStar {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSStar(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

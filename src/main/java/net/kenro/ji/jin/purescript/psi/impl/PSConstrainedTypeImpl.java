@@ -13,7 +13,7 @@ public class PSConstrainedTypeImpl extends PSPsiElement implements PSConstrained
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSConstrainedType(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

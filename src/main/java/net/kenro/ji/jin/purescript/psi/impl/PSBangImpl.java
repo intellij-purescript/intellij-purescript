@@ -13,7 +13,7 @@ public class PSBangImpl extends PSPsiElement implements PSBang {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSBang(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

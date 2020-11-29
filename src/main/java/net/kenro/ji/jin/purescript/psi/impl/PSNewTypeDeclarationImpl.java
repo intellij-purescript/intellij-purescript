@@ -13,7 +13,7 @@ public class PSNewTypeDeclarationImpl extends PSPsiElement implements PSNewTypeD
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSNewTypeDeclaration(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSArrayLiteralImpl extends PSPsiElement implements PSArrayLiteral {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSArrayLiteral(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

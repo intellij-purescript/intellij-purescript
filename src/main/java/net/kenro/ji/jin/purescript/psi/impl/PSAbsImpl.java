@@ -13,7 +13,7 @@ public class PSAbsImpl extends PSPsiElement implements PSAbs {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSAbs(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

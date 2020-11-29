@@ -13,7 +13,7 @@ public class PSTypeSynonymDeclarationImpl extends PSPsiElement implements PSType
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSTypeSynonymDeclaration(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSIdentInfixImpl extends PSPsiElement implements PSIdentInfix {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSIdentInfix(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

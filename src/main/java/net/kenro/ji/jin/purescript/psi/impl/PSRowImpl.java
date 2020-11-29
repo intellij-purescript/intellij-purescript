@@ -13,7 +13,7 @@ public class PSRowImpl extends PSPsiElement implements PSRow {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSRow(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

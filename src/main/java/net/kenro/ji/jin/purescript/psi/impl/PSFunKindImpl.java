@@ -13,7 +13,7 @@ public class PSFunKindImpl extends PSPsiElement implements PSFunKind {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSFunKind(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

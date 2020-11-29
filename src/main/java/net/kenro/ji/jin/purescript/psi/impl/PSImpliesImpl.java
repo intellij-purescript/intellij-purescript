@@ -13,7 +13,7 @@ public class PSImpliesImpl extends PSPsiElement implements PSImplies {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSImplies(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

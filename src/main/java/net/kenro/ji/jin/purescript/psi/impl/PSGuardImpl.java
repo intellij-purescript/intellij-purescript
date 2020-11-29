@@ -13,7 +13,7 @@ public class PSGuardImpl extends PSPsiElement implements PSGuard {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSGuard(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

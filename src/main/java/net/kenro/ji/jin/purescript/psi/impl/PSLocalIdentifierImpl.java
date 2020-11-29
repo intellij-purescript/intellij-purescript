@@ -13,7 +13,7 @@ public class PSLocalIdentifierImpl extends PSPsiElement implements PSLocalIdenti
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSLocalIdentifier(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

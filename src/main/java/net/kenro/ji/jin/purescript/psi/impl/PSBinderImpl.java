@@ -15,7 +15,7 @@ public class PSBinderImpl extends PSPsiElement implements PSBinder {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSBinder(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

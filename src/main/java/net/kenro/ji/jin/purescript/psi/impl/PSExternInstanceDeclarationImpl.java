@@ -13,7 +13,7 @@ public class PSExternInstanceDeclarationImpl extends PSPsiElement implements PSE
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSExternInstanceDeclaration(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

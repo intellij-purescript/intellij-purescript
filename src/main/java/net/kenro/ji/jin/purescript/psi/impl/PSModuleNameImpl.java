@@ -13,7 +13,7 @@ public class PSModuleNameImpl extends PSPsiElement implements PSModuleName {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSModuleName(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

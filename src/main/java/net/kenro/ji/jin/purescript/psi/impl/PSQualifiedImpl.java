@@ -13,7 +13,7 @@ public class PSQualifiedImpl extends PSPsiElement implements PSQualified {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSQualified(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

@@ -13,7 +13,7 @@ public class PSNumericLiteralImpl extends PSPsiElement implements PSNumericLiter
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSNumericLiteral(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

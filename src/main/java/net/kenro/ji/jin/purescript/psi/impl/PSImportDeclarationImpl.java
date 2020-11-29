@@ -24,7 +24,7 @@ public class PSImportDeclarationImpl extends PSPsiElement implements PSImportDec
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSImportDeclaration(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

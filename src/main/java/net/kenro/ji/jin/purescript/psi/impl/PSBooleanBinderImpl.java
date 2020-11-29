@@ -13,7 +13,7 @@ public class PSBooleanBinderImpl extends PSPsiElement implements PSBooleanBinder
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSBooleanBinder(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

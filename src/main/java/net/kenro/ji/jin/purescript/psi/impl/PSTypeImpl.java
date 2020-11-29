@@ -13,7 +13,7 @@ public class PSTypeImpl extends PSPsiElement implements PSType {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSType(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

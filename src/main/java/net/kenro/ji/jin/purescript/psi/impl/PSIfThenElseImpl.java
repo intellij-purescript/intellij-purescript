@@ -13,7 +13,7 @@ public class PSIfThenElseImpl extends PSPsiElement implements PSIfThenElse {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSIfThenElse(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

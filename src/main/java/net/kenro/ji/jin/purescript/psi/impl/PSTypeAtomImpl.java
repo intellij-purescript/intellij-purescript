@@ -13,7 +13,7 @@ public class PSTypeAtomImpl extends PSPsiElement implements PSTypeAtom {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSTypeAtom(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

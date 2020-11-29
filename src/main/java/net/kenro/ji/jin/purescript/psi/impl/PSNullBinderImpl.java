@@ -13,7 +13,7 @@ public class PSNullBinderImpl extends PSPsiElement implements PSNullBinder {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSNullBinder(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

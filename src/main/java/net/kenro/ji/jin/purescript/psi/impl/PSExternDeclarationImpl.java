@@ -13,7 +13,7 @@ public class PSExternDeclarationImpl extends PSPsiElement implements PSExternDec
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSExternDeclaration(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

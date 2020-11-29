@@ -13,7 +13,7 @@ public class PSCaseAlternativeImpl extends PSPsiElement implements PSCaseAlterna
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSCaseAlternative(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

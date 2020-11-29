@@ -13,7 +13,7 @@ public class PSConstructorBinderImpl extends PSPsiElement implements PSConstruct
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSConstructorBinder(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

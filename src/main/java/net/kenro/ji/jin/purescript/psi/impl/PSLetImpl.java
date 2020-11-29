@@ -13,7 +13,7 @@ public class PSLetImpl extends PSPsiElement implements PSLet {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSLet(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

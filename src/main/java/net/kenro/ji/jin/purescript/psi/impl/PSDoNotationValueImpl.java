@@ -13,7 +13,7 @@ public class PSDoNotationValueImpl extends PSPsiElement implements PSDoNotationV
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSDoNotationValue(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {

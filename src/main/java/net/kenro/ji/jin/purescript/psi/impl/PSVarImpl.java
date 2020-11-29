@@ -13,7 +13,7 @@ public class PSVarImpl extends PSPsiElement implements PSVar {
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
-        visitor.visitPSVar(this);
+        visitor.visitElement(this);
     }
 
     public void accept(@NotNull final PsiElementVisitor visitor) {
