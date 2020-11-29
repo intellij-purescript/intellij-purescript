@@ -11,7 +11,6 @@ public class PSProperNameImpl extends PSPsiElement {
 
     public PSProperNameImpl(final ASTNode node){
         super(node);
-        //        System.out.print("IN THE PSPROPERNAME IMPL");
     }
 
     public void accept(@NotNull final PSVisitor visitor) {

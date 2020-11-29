@@ -11,7 +11,6 @@ public class PSIdentifierImpl extends PSPsiElement {
 
     public PSIdentifierImpl(final ASTNode node){
         super(node);
-        //        System.out.print("  IN THE PSIDENTIFIER IMPL  ");
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
