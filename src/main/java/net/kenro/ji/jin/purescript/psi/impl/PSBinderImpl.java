@@ -27,8 +27,8 @@ public class PSBinderImpl extends PSPsiElement implements PSBinder {
 
     @Override
     @NotNull
-    public List<PSIdentifier> getIdentifierList() {
-        return PsiTreeUtil.getChildrenOfTypeAsList(this, PSIdentifier.class);
+    public List<PSIdentifierImpl> getIdentifierList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, PSIdentifierImpl.class);
     }
 
     @Override

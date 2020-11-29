@@ -7,7 +7,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import net.kenro.ji.jin.purescript.PSLanguage;
 import net.kenro.ji.jin.purescript.psi.PSDataDeclaration;
 import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
-import net.kenro.ji.jin.purescript.psi.PSProperName;
+import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 import net.kenro.ji.jin.purescript.util.TypeFilter;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,12 +44,12 @@ public class PSFile extends PsiFileBase {
     }
 
     @NotNull
-    public Stream<PSProperName> getInternalTypes() {
+    public Stream<PSProperNameImpl> getInternalTypes() {
         return this.getTypes(TypeFilter.always(true));
     }
 
     @NotNull
-    private Stream<PSProperName> getTypes(final TypeFilter typeFilter) {
+    private Stream<PSProperNameImpl> getTypes(final TypeFilter typeFilter) {
           return this.getDataTypes(typeFilter);
 //        return Stream.concat(
 //                this.getDataTypes(typeFilter)
@@ -58,7 +58,7 @@ public class PSFile extends PsiFileBase {
     }
 
     @NotNull
-    private Stream<PSProperName> getDataTypes(final TypeFilter typeFilter) {
+    private Stream<PSProperNameImpl> getDataTypes(final TypeFilter typeFilter) {
         return Arrays.stream(this.getChildren())
                 .filter(e -> e instanceof PSDataDeclaration)
                 .map(e -> ((PSDataDeclaration) e).getProperName())

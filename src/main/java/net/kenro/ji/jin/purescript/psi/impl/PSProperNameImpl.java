@@ -1,17 +1,14 @@
 package net.kenro.ji.jin.purescript.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import net.kenro.ji.jin.purescript.psi.PSProperName;
 import net.kenro.ji.jin.purescript.psi.PSVisitor;
 import org.jetbrains.annotations.NotNull;
 
-public class PSProperNameImpl extends PSNamedElementImpl implements PSProperName {
+public class PSProperNameImpl extends PSPsiElement {
 
     public PSProperNameImpl(final ASTNode node){
         super(node);
-//        System.out.print("IN THE PSPROPERNAME IMPL");
     }
 
     public void accept(@NotNull final PSVisitor visitor) {
@@ -27,12 +24,4 @@ public class PSProperNameImpl extends PSNamedElementImpl implements PSProperName
         return PSPsiImplUtil.getName(this);
     }
 
-    public PsiElement getNameIdentifier() {
-        return PSPsiImplUtil.getNameIdentifier(this);
-    }
-
-    @Override
-    public PsiElement setName(@NotNull final String name) {
-        return null;
-    }
 }
