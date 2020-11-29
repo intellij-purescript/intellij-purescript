@@ -1,6 +1,7 @@
 package net.kenro.ji.jin.purescript;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase;
 import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl;
@@ -33,7 +34,12 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         );
         final PSIdentifierImpl psIdentifier =
             (PSIdentifierImpl) file.findElementAt(28).getParent();
-        final PsiElement resolved = psIdentifier.getReference().resolve();
+        final PsiReference reference = psIdentifier.getReference();
+        assertTrue(
+            "identifier reference should include the whole name in its range",
+            reference.getRangeInElement().contains(0)
+        );
+        final PsiElement resolved = reference.resolve();
         assertInstanceOf(resolved, PSValueDeclarationImpl.class);
         assertEquals("x", ((PSValueDeclarationImpl) resolved).getName());
     }
