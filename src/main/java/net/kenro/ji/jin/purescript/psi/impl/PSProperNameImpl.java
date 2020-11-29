@@ -7,7 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import net.kenro.ji.jin.purescript.psi.PSVisitor;
 import org.jetbrains.annotations.NotNull;
 
-public class PSProperNameImpl extends PSPsiElement implements PsiNameIdentifierOwner {
+public class PSProperNameImpl extends PSPsiElement {
 
     public PSProperNameImpl(final ASTNode node){
         super(node);
@@ -27,12 +27,4 @@ public class PSProperNameImpl extends PSPsiElement implements PsiNameIdentifierO
         return PSPsiImplUtil.getName(this);
     }
 
-    public PsiElement getNameIdentifier() {
-        return PSPsiImplUtil.getNameIdentifier(this);
-    }
-
-    @Override
-    public PsiElement setName(@NotNull final String name) {
-        return null;
-    }
 }
