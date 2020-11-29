@@ -19,16 +19,4 @@ public class PSPsiImplUtil {
         }
     }
 
-    public static String getName(final PSIdentifierImpl element) {
-        return element.getText();
-    }
-
-    public static PsiElement getNameIdentifier(final PSIdentifierImpl element) {
-        final ASTNode node = element.getNode();
-        if (node != null) {
-            return node.getPsi();
-        } else {
-            return null;
-        }
-    }
 }
