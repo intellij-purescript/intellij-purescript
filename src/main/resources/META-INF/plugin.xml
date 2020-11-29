@@ -6,6 +6,11 @@
 
   <description><![CDATA[
       This plugin provides Purescript language support
+      Features:<br>
+      <ul>
+        <li>Syntax highlight</li>
+        <li>Find usage of top level declarations</li>
+      </ul>
     ]]></description>
 
   <change-notes><![CDATA[
