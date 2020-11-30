@@ -74,6 +74,10 @@ intellij {
         }
     }
 
+    patchPluginXml {
+        sinceBuild '202.6397'
+    }
+
 }
 
 dependencies {
