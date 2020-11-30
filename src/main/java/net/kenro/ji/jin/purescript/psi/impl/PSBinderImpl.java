@@ -1,9 +1,8 @@
 package net.kenro.ji.jin.purescript.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import net.kenro.ji.jin.purescript.psi.*;
+import net.kenro.ji.jin.purescript.psi.PSBinder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

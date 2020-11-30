@@ -3,19 +3,13 @@ package net.kenro.ji.jin.purescript.file;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.util.PsiTreeUtil;
 import net.kenro.ji.jin.purescript.PSLanguage;
-import net.kenro.ji.jin.purescript.psi.PSDataDeclaration;
-import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
 import net.kenro.ji.jin.purescript.psi.impl.PSProgramImpl;
-import net.kenro.ji.jin.purescript.psi.impl.PSProperNameImpl;
 import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl;
-import net.kenro.ji.jin.purescript.util.TypeFilter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Map;
 
 public class PSFile extends PsiFileBase {
     public PSFile(@NotNull final FileViewProvider viewProvider) {
@@ -36,35 +30,6 @@ public class PSFile extends PsiFileBase {
     @Override
     public Icon getIcon(final int flags) {
         return super.getIcon(flags);
-    }
-
-    public List<PSImportDeclaration> getImportClauses() {
-        final LinkedList<PSImportDeclaration> psImportDeclarations =
-            new LinkedList<>(
-            PsiTreeUtil.findChildrenOfType(this, PSImportDeclaration.class));
-        return psImportDeclarations;
-    }
-
-    @NotNull
-    public Stream<PSProperNameImpl> getInternalTypes() {
-        return this.getTypes(TypeFilter.always(true));
-    }
-
-    @NotNull
-    private Stream<PSProperNameImpl> getTypes(final TypeFilter typeFilter) {
-          return this.getDataTypes(typeFilter);
-//        return Stream.concat(
-//                this.getDataTypes(typeFilter)
-//                this.getUnionTypesAndMembers(typeFilter)
-//        );
-    }
-
-    @NotNull
-    private Stream<PSProperNameImpl> getDataTypes(final TypeFilter typeFilter) {
-        return Arrays.stream(this.getChildren())
-            .filter(e -> e instanceof PSDataDeclaration)
-            .map(e -> ((PSDataDeclaration) e).getProperName())
-            .filter(e -> typeFilter.testType(e.getText()));
     }
 
     public Map<String, PSValueDeclarationImpl> getTopLevelValueDeclarations() {
