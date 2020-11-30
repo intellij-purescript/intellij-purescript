@@ -1,12 +1,12 @@
 package net.kenro.ji.jin.purescript.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import net.kenro.ji.jin.purescript.psi.PSImportDeclaration;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PSImportDeclarationImpl extends PSPsiElement implements PSImportDeclaration {
+public class PSImportDeclarationImpl extends PSPsiElement {
 
     public PSImportDeclarationImpl(final ASTNode node) {
         super(node);
@@ -16,7 +16,6 @@ public class PSImportDeclarationImpl extends PSPsiElement implements PSImportDec
         return null;
     }
 
-    @Override
     @Nullable
     public List<String> getExposingClause() {
         return null;
