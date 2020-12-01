@@ -29,7 +29,7 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
             "module Main where\n" +
-                "fn x = x + 1\n" +
+                "fn x = x + y\n" +
                 "y = 2"
         );
         final Map<String, PSValueDeclarationImpl> valueDeclarations =
@@ -38,7 +38,7 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         final Map<String, PSIdentifierImpl> parameterDeclarations =
             fn.getParameters();
         assertContainsElements(parameterDeclarations.keySet(), "x");
-        assertDoesntContain(parameterDeclarations.keySet(), "fn");
+        assertDoesntContain(parameterDeclarations.keySet(), "fn", "y");
         final PSIdentifierImpl x = parameterDeclarations.get("x");
         assertEquals("x", x.getName() );
     }
