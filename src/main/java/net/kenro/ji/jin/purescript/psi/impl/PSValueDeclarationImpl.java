@@ -7,6 +7,8 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdentifierOwner {
 
     public PSValueDeclarationImpl(final ASTNode node) {
@@ -27,4 +29,9 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdent
     public @Nullable PsiElement getNameIdentifier() {
         return this.findChildByClass(PSIdentifierImpl.class);
     }
+
+    public Map<String, PSIdentifierImpl> getParameters() {
+        return Map.of("x", this.findChildByClass(PSIdentifierImpl.class));
+    }
+
 }

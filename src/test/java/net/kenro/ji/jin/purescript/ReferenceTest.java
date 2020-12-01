@@ -25,6 +25,21 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         assertNotNull(valueDeclarations.get("y"));
     }
 
+    public void testFindParametersForValueDeclaration() {
+        final PSFile file = (PSFile) createFile(
+            "Main.purs",
+            "module Main where\n" +
+                "fn x = x + 1\n" +
+                "y = 2"
+        );
+        final Map<String, PSValueDeclarationImpl> valueDeclarations =
+            file.getTopLevelValueDeclarations();
+        final PSValueDeclarationImpl fn = valueDeclarations.get("fn");
+        final Map<String, PSIdentifierImpl> parameterDeclarations =
+            fn.getParameters();
+        assertContainsElements(parameterDeclarations.keySet(), "x");
+    }
+
     public void testIdentifierCanResolveToToplevelValueDeclaration() {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
