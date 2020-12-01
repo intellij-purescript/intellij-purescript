@@ -4,9 +4,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import net.kenro.ji.jin.purescript.file.PSFile;
+import net.kenro.ji.jin.purescript.psi.ContainsParameter;
 import org.jetbrains.annotations.Nullable;
 
-public class PSIdentifierImpl extends PSPsiElement {
+import java.util.Map;
+
+public class PSIdentifierImpl extends PSPsiElement implements ContainsParameter {
 
     public PSIdentifierImpl(final ASTNode node){
         super(node);
@@ -30,5 +33,10 @@ public class PSIdentifierImpl extends PSPsiElement {
                     .get(name);
             }
         };
+    }
+
+    @Override
+    public Map<String, PSIdentifierImpl> getParameters() {
+        return Map.of(getName(), this);
     }
 }

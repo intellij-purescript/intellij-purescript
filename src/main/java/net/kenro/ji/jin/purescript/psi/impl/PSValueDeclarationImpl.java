@@ -4,10 +4,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.IncorrectOperationException;
+import net.kenro.ji.jin.purescript.psi.ContainsParameter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,12 +36,12 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdent
 
     public Map<String, PSIdentifierImpl> getParameters() {
         return Arrays
-            .stream(this.findChildrenByClass(PSIdentifierImpl.class))
+            .stream(this.findChildrenByClass(ContainsParameter.class))
             .skip(1)
-            .collect(Collectors.toMap(
-                psIdentifier -> psIdentifier.getName(),
-                psIdentifier -> psIdentifier
-            ));
+            .map(ContainsParameter::getParameters)
+            .map(Map::entrySet)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
 }
