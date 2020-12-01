@@ -7,7 +7,9 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdentifierOwner {
 
@@ -31,7 +33,14 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdent
     }
 
     public Map<String, PSIdentifierImpl> getParameters() {
-        return Map.of("x", this.findChildByClass(PSIdentifierImpl.class));
+        return Arrays
+            .stream(this.getChildren())
+            .filter(psi -> psi instanceof  PSIdentifierImpl)
+            .map(psi -> (PSIdentifierImpl) psi)
+            .collect(Collectors.toMap(
+                psIdentifier -> psIdentifier.getName(),
+                psIdentifier -> psIdentifier
+            ));
     }
 
 }
