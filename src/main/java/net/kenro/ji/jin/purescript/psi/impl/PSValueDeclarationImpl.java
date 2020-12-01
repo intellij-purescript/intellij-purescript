@@ -34,10 +34,8 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdent
 
     public Map<String, PSIdentifierImpl> getParameters() {
         return Arrays
-            .stream(this.getChildren())
+            .stream(this.findChildrenByClass(PSIdentifierImpl.class))
             .skip(1)
-            .filter(psi -> psi instanceof  PSIdentifierImpl)
-            .map(psi -> (PSIdentifierImpl) psi)
             .collect(Collectors.toMap(
                 psIdentifier -> psIdentifier.getName(),
                 psIdentifier -> psIdentifier

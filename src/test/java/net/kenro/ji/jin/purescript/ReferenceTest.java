@@ -29,7 +29,7 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
             "module Main where\n" +
-                "fn x = x + y\n" +
+                "fn x (z) = x + y\n" +
                 "y = 2"
         );
         final Map<String, PSValueDeclarationImpl> valueDeclarations =
