@@ -38,7 +38,7 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         final Map<String, PSIdentifierImpl> parameterDeclarations =
             fn.getParameters();
         assertContainsElements(parameterDeclarations.keySet(), "x", "z", "n");
-        assertDoesntContain(parameterDeclarations.keySet(), "fn", "y");
+        assertDoesntContain(parameterDeclarations.keySet(), "fn", "y", "Just");
         final PSIdentifierImpl x = parameterDeclarations.get("x");
         assertEquals("x", x.getName() );
     }
