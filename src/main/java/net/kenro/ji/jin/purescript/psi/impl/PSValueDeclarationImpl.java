@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.IncorrectOperationException;
-import net.kenro.ji.jin.purescript.psi.ContainsParameter;
+import net.kenro.ji.jin.purescript.psi.ContainsIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,9 +36,9 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdent
 
     public Map<String, PSIdentifierImpl> getParameters() {
         return Arrays
-            .stream(this.findChildrenByClass(ContainsParameter.class))
+            .stream(this.findChildrenByClass(ContainsIdentifier.class))
             .skip(1)
-            .map(ContainsParameter::getParameters)
+            .map(ContainsIdentifier::getIdentifiers)
             .map(Map::entrySet)
             .flatMap(Collection::stream)
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
