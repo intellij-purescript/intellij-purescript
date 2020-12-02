@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.IncorrectOperationException;
 import net.kenro.ji.jin.purescript.psi.ContainsIdentifier;
+import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdentifierOwner {
 
@@ -34,12 +36,18 @@ public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdent
         return this.findChildByClass(PSIdentifierImpl.class);
     }
 
-    public Map<String, PSIdentifierImpl> getParameters() {
-        return Arrays
-            .stream(this.findChildrenByClass(ContainsIdentifier.class))
+    public Map<String, PSIdentifierImpl> getDeclaredIdentifiersInParameterList() {
+        final Stream<Map<String, PSIdentifierImpl>> identifiers = Arrays
+            .stream(this.findChildrenByClass(PSIdentifierImpl.class))
             .skip(1)
-            .map(ContainsIdentifier::getIdentifiers)
-            .map(Map::entrySet)
+            .map(ContainsIdentifier::getIdentifiers);
+        return
+            Stream.concat(
+                identifiers,
+                Arrays
+                    .stream(this.findChildrenByClass(DeclaresIdentifiers.class))
+                    .map(DeclaresIdentifiers::getDeclaredIdentifiers)
+            ).map(Map::entrySet)
             .flatMap(Collection::stream)
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
