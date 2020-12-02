@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class PSIdentifierImpl extends PSPsiElement implements ContainsIdentifier {
 
@@ -31,10 +33,23 @@ public class PSIdentifierImpl extends PSPsiElement implements ContainsIdentifier
             public @Nullable
             PsiElement resolve() {
                 final String name = myElement.getName();
+                final Optional<PSValueDeclarationImpl> psValueDeclaration = Stream
+                    .iterate(myElement, PsiElement::getParent)
+                    .filter(psi -> psi instanceof PSValueDeclarationImpl)
+                    .map(psi -> (PSValueDeclarationImpl) psi)
+                    .findFirst();
                 final PSFile containingFile = (PSFile) getContainingFile();
-                return containingFile
+                final PSValueDeclarationImpl topLevelDeclaration =
+                    containingFile
                     .getTopLevelValueDeclarations()
                     .get(name);
+                return psValueDeclaration
+                    .flatMap(psi -> Optional.ofNullable(psi
+                        .getDeclaredIdentifiersInParameterList()
+                        .get(name))
+                    )
+                    .map(psi -> (PsiElement) psi)
+                    .orElse(topLevelDeclaration);
             }
         };
     }

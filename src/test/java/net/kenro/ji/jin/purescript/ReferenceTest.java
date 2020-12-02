@@ -61,4 +61,23 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         assertInstanceOf(resolved, PSValueDeclarationImpl.class);
         assertEquals("x", ((PSValueDeclarationImpl) resolved).getName());
     }
+
+    public void testIdentifierCanResolveToParameter() {
+        final PSFile file = (PSFile) createFile(
+            "Main.purs",
+            "module Main where\n" +
+                "z = 1\n" +
+                "y x = x"
+        );
+        final PSIdentifierImpl psIdentifier =
+            (PSIdentifierImpl) file.findElementAt(30).getParent();
+        final PsiReference reference = psIdentifier.getReference();
+        assertTrue(
+            "identifier reference should include the whole name in its range",
+            reference.getRangeInElement().contains(0)
+        );
+        final PsiElement resolved = reference.resolve();
+        assertInstanceOf(resolved, PSIdentifierImpl.class);
+        assertEquals("x", ((PSIdentifierImpl) resolved).getName());
+    }
 }
