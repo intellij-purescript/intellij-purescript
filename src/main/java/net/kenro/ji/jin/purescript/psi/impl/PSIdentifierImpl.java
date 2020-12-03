@@ -28,7 +28,7 @@ public class PSIdentifierImpl extends PSPsiElement implements ContainsIdentifier
 
     @Override
     public PsiReference getReference() {
-        return new PsiReferenceBase<>(this, TextRange.allOf(this.getText())) {
+        return new PsiReferenceBase<>(this, TextRange.allOf(this.getName())) {
             @Override
             public @Nullable
             PsiElement resolve() {
