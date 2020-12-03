@@ -1,14 +1,11 @@
 package net.kenro.ji.jin.purescript;
 
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.usageView.UsageInfo;
 import net.kenro.ji.jin.purescript.file.PSFile;
 import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl;
 import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
