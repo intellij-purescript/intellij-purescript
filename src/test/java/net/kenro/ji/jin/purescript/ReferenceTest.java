@@ -29,15 +29,18 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
             "module Main where\n" +
-                "fn x = x + 1\n" +
+                "fn x (z) (Just n) = x + y\n" +
                 "y = 2"
         );
         final Map<String, PSValueDeclarationImpl> valueDeclarations =
             file.getTopLevelValueDeclarations();
         final PSValueDeclarationImpl fn = valueDeclarations.get("fn");
         final Map<String, PSIdentifierImpl> parameterDeclarations =
-            fn.getParameters();
-        assertContainsElements(parameterDeclarations.keySet(), "x");
+            fn.getDeclaredIdentifiersInParameterList();
+        assertContainsElements(parameterDeclarations.keySet(), "x", "z", "n");
+        assertDoesntContain(parameterDeclarations.keySet(), "fn", "y", "Just");
+        final PSIdentifierImpl x = parameterDeclarations.get("x");
+        assertEquals("x", x.getName() );
     }
 
     public void testIdentifierCanResolveToToplevelValueDeclaration() {
@@ -57,5 +60,24 @@ public class ReferenceTest extends PSLanguageParserTestBase {
         final PsiElement resolved = reference.resolve();
         assertInstanceOf(resolved, PSValueDeclarationImpl.class);
         assertEquals("x", ((PSValueDeclarationImpl) resolved).getName());
+    }
+
+    public void testIdentifierCanResolveToParameter() {
+        final PSFile file = (PSFile) createFile(
+            "Main.purs",
+            "module Main where\n" +
+                "z = 1\n" +
+                "y x = x"
+        );
+        final PSIdentifierImpl psIdentifier =
+            (PSIdentifierImpl) file.findElementAt(30).getParent();
+        final PsiReference reference = psIdentifier.getReference();
+        assertTrue(
+            "identifier reference should include the whole name in its range",
+            reference.getRangeInElement().contains(0)
+        );
+        final PsiElement resolved = reference.resolve();
+        assertInstanceOf(resolved, PSIdentifierImpl.class);
+        assertEquals("x", ((PSIdentifierImpl) resolved).getName());
     }
 }
