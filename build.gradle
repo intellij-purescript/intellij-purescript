@@ -3,14 +3,12 @@ buildscript {
         mavenCentral()
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
 }
 
 plugins {
     id 'org.jetbrains.intellij' version '0.6.3'
     id "org.jetbrains.grammarkit" version "2020.3.2"
+	id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
 }
 
 repositories {
@@ -20,14 +18,17 @@ repositories {
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 tasks.withType(JavaCompile) {options.encoding = 'UTF-8' }
+compileKotlin.kotlinOptions.jvmTarget = javaVersion
 
 sourceSets {
     main {
         java.srcDirs 'src/main/java', 'src/main/gen'
+        kotlin.srcDirs 'src/main/java'
         resources.srcDirs 'src/main/resources'
     }
     test {
         java.srcDirs 'src/test/java'
+        kotlin.srcDirs 'src/test/java'
         resources.srcDirs 'src/test/resources'
     }
 }
@@ -81,6 +82,7 @@ intellij {
 }
 
 dependencies {
+	testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
 // Intellij config
