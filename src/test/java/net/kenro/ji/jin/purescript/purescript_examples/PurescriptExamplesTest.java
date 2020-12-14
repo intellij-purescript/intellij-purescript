@@ -59,7 +59,10 @@ public class PurescriptExamplesTest extends BasePlatformTestCase {
             FileUtil.writeToFile(new File(fileName.getAbsolutePath() + ".psi"), psiTree);
         }
 
-        assertEquals(fileName.getName() + " failed.", true, !psiTree.contains("PsiErrorElement"));
+        assertTrue(
+            fileName.getName() + " failed.",
+            !psiTree.contains("PsiErrorElement")
+        );
     }
 }
 
