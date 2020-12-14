@@ -27,21 +27,6 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
         return true;
     }
 
-    /**
-     * Perform a test. Add tests that should work but does not work yet with
-     * doTest(false, false).
-     */
-    protected void doTestOld(final boolean checkResult, final boolean shouldPass) {
-        doTest(true);
-        if (shouldPass) {
-            assertFalse(
-                "PsiFile contains error elements",
-                toParseTreeText(myFile, skipSpaces(), includeRanges()).contains(
-                    "PsiErrorElement")
-            );
-        }
-    }
-
 
     @Override
     protected void checkResult(
