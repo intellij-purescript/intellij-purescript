@@ -37,15 +37,8 @@ public class PurescriptExamplesTest extends BasePlatformTestCase {
 
         final String additionalTests = "src/test/resources/additional";
         FileUtil.processFilesRecursively(new File(additionalTests + "/passing"), processor());
-//        FileUtil.processFilesRecursively(new File(additionalTests + "/perf"), processor(true));
     }
 
-//    public void testPerformance() throws Exception {
-//        String perfDir = "src/test/resources/additional/perf/";
-//        double emptyFile = perfExample(new File(perfDir + "Empty.purs"));
-//        double longFile = perfExample(new File(perfDir + "LongFile.purs"));
-//        assertTrue(longFile < emptyFile * 10);
-//    }
 
     public static String readFile(final File file) throws IOException {
         return FileUtil.loadFile(file.getCanonicalFile(), "utf-8", true);
@@ -63,7 +56,6 @@ public class PurescriptExamplesTest extends BasePlatformTestCase {
             final String expectedTree = readFile(expectedFile);
             assertEquals(fileName.getName() + " failed.", expectedTree, psiTree);
         } else {
-//            assert false;  // Only manually.
             FileUtil.writeToFile(new File(fileName.getAbsolutePath() + ".psi"), psiTree);
         }
 
