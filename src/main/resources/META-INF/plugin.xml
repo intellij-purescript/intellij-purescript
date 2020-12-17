@@ -10,11 +10,12 @@
       <ul>
         <li>Syntax highlight</li>
         <li>Find usage of top level declarations</li>
+        <li>Find usage of parameters</li>
       </ul>
     ]]></description>
 
   <change-notes><![CDATA[
-      Initial first cut of the language parser - nothing else.
+      Identifiers no longer contain trailing whitespace
     ]]>
   </change-notes>
 
