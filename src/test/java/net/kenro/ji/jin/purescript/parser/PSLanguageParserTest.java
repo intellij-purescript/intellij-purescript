@@ -4,153 +4,407 @@ package net.kenro.ji.jin.purescript.parser;
 public class PSLanguageParserTest extends PSLanguageParserTestBase {
 
     // modules
-    public void testmodule1() { doTestOld(true, true); }
-    public void testmodule2() { doTestOld(true, true); }
-    public void testmodule_export1() { doTestOld(true, true); }
+    public void testmodule1() {
+        doTest(true, true);
+    }
+    public void testmodule2() {
+        doTest(true, true);
+    }
+    public void testmodule_export1() {
+        doTest(true, true);
+    }
 
     // imports
-    public void testimport1() { doTestOld(true, true); }
-    public void testimport2() { doTestOld(true, true); }
+    public void testimport1() {
+        doTest(true, true);
+    }
+    public void testimport2() {
+        doTest(true, true);
+    }
 
     // declarations
-    public void testdeclarations() { doTestOld(true, true); }
+    public void testdeclarations() {
+        doTest(true, true);
+    }
 
     // data declaration
-    public void testdata_declaration1() { doTestOld(true, true); }
-    public void testdata_declaration2() { doTestOld(true, true); }
-    public void testdata_declaration3() { doTestOld(true, true); }
-    public void testdata_declaration4() { doTestOld(true, true); }
-    public void testdata_declaration5() { doTestOld(true, true); }
-    public void testdata_declaration6() { doTestOld(true, true); }
-    public void testdata_declaration7() { doTestOld(true, true); }
-    public void testdata_declaration8() { doTestOld(true, true); }
-    public void testdata_declaration9() { doTestOld(true, true); }
-    public void testdata_declaration10() { doTestOld(true, true); }
-    public void testdata_declaration11() { doTestOld(true, true); }
-    public void testdata_declaration12() { doTestOld(true, true); }
+    public void testdata_declaration1() {
+        doTest(true, true);
+    }
+    public void testdata_declaration2() {
+        doTest(true, true);
+    }
+    public void testdata_declaration3() {
+        doTest(true, true);
+    }
+    public void testdata_declaration4() {
+        doTest(true, true);
+    }
+    public void testdata_declaration5() {
+        doTest(true, true);
+    }
+    public void testdata_declaration6() {
+        doTest(true, true);
+    }
+    public void testdata_declaration7() {
+        doTest(true, true);
+    }
+    public void testdata_declaration8() {
+        doTest(true, true);
+    }
+    public void testdata_declaration9() {
+        doTest(true, true);
+    }
+    public void testdata_declaration10() {
+        doTest(true, true);
+    }
+    public void testdata_declaration11() {
+        doTest(true, true);
+    }
+    public void testdata_declaration12() {
+        doTest(true, true);
+    }
 
     // type declaration
-    public void testtype_declaration1() { doTestOld(true, true); }
-    public void testtype_declaration2() { doTestOld(true, true); }
-    public void testtype_declaration3() { doTestOld(true, true); }
-    public void testtype_declaration4() { doTestOld(true, true); }
-    public void testtype_declaration5() { doTestOld(true, true); }
-    public void testtype_declaration6() { doTestOld(true, true); }
-    public void testtype_declaration7() { doTestOld(true, true); }
-    public void testtype_declaration8() { doTestOld(true, true); }
-    public void testtype_declaration9() { doTestOld(true, true); }
-    public void testtype_declaration10() { doTestOld(true, true); }
+    public void testtype_declaration1() {
+        doTest(true, true);
+    }
+    public void testtype_declaration2() {
+        doTest(true, true);
+    }
+    public void testtype_declaration3() {
+        doTest(true, true);
+    }
+    public void testtype_declaration4() {
+        doTest(true, true);
+    }
+    public void testtype_declaration5() {
+        doTest(true, true);
+    }
+    public void testtype_declaration6() {
+        doTest(true, true);
+    }
+    public void testtype_declaration7() {
+        doTest(true, true);
+    }
+    public void testtype_declaration8() {
+        doTest(true, true);
+    }
+    public void testtype_declaration9() {
+        doTest(true, true);
+    }
+    public void testtype_declaration10() {
+        doTest(true, true);
+    }
 
     // newtype declaration
-    public void testnewtype_declaration1() { doTestOld(true, true); }
-    public void testnewtype_declaration2() { doTestOld(true, true); }
-    public void testnewtype_declaration3() { doTestOld(true, true); }
-    public void testnewtype_declaration4() { doTestOld(true, true); }
-    public void testnewtype_declaration5() { doTestOld(true, true); }
-    public void testnewtype_declaration6() { doTestOld(true, true); }
-    public void testnewtype_declaration7() { doTestOld(true, true); }
-    public void testnewtype_declaration8() { doTestOld(true, true); }
-    public void testnewtype_declaration9() { doTestOld(true, true); }
-    public void testnewtype_declaration10() { doTestOld(true, true); }
+    public void testnewtype_declaration1() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration2() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration3() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration4() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration5() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration6() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration7() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration8() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration9() {
+        doTest(true, true);
+    }
+    public void testnewtype_declaration10() {
+        doTest(true, true);
+    }
 
     // fixes for purescript examples failures
-    public void test1570() { doTestOld(true, true); }
-    public void test2049_fixity() { doTestOld(true, true); }
-    public void test2288() { doTestOld(true, true); }
-    public void test2609() { doTestOld(true, true); }
-    public void test2616() { doTestOld(true, true); }
-    public void test2695() { doTestOld(true, true); }
-    public void test2626() { doTestOld(true, true); }
-    public void testAutoPrelude2() { doTestOld(true, true); }
-    public void testCaseInputWildcard() { doTestOld(true, true); }
-    public void testCaseMultipleExpressions() { doTestOld(true, true); }
-    public void testClassRefSyntax() { doTestOld(true, true); }
-    public void testDctorName() { doTestOld(true, true); }
-    public void testExportedInstanceDeclarations() { doTestOld(true, true); }
-    public void testImportHiding() { doTestOld(true, true); }
-    public void testPolyLabels() { doTestOld(true, true); }
-    public void testQualifiedQualifiedImports() { doTestOld(true, true); }
-    public void testDollar() { doTestOld(true, true); }
-    public void testConstraintParens() { doTestOld(true, true); }
-    public void testConstraintParsingIssue() { doTestOld(true, true); }
-    public void testDerivingFunctor() { doTestOld(true, true); }
-    public void testFunctionalDependencies() { doTestOld(true, true); }
-    public void testGenericsRep() { doTestOld(true, true); }
-    public void testIfWildcard() { doTestOld(true, true); }
-    public void testMPTCs() { doTestOld(true, true); }
-    public void testMonadState() { doTestOld(true, true); }
-    public void testNewtypeClass() { doTestOld(true, true); }
-    public void testOperatorAlias() { doTestOld(true, true); }
-    public void testOperatorAliasElsewhere() { doTestOld(true, true); }
-    public void testOperators() { doTestOld(true, true); }
-    public void testRebindableSyntax() { doTestOld(true, true); }
-    public void testRowInInstanceHeadDetermined() { doTestOld(true, true); }
-    public void testRowPolyInstanceContext() { doTestOld(true, true); }
-    public void testRowsInInstanceContext() { doTestOld(true, true); }
-    public void testSuperclasses3() { doTestOld(true, true); }
-    public void testUnicodeType() { doTestOld(true, true); }
-    public void testUntupledConstraints() { doTestOld(true, true); }
-    public void testUsableTypeClassMethods() { doTestOld(true, true); }
-    public void testWildcardInInstance() { doTestOld(true, true); }
-    public void testTypeClasses() { doTestOld(true, true); }
-    public void testTypedBinders() { doTestOld(true, true); }
-    public void testUnicodeOperators() { doTestOld(true, true); }
-    public void testDctorOperatorAlias() { doTestOld(true, true); }
-    public void testLetPattern() { doTestOld(true, true); }
-    public void testTypeOperators() { doTestOld(true, true); }
-    public void testTailCall() { doTestOld(true, true); }
-    public void testForeignKind() { doTestOld(true, true); }
-    public void testStream() { doTestOld(true, true); }
-    public void testSolvingAppendSymbol() { doTestOld(true, true); }
-    public void testSolvingCompareSymbol() { doTestOld(true, true); }
-    public void test2663() { doTestOld(true, true); }
-    public void test2378() { doTestOld(true, true); }
-    public void test2049_named_pattern_matching() { doTestOld(true, true); }
-    public void testDuplicateProperties() { doTestOld(true, true); }
-    public void testExtendedInfixOperators() { doTestOld(true, true); }
-    public void testFieldPuns() { doTestOld(true, true); }
-    public void testFieldConsPuns() { doTestOld(true, true); }
-    public void testFunWithFunDeps() { doTestOld(true, true); }
-    public void testRowUnion() { doTestOld(true, true); }
-    public void testKindedType() { doTestOld(true, true); }
-    public void testMutRec2() { doTestOld(true, true); }
-    public void testMutRec3() { doTestOld(true, true); }
-    public void testNewtypeInstance() { doTestOld(true, true); }
-    public void testIntAndChar() { doTestOld(true, true); }
-    public void testNestedRecordUpdate() { doTestOld(true, true); }
-    public void testNestedRecordUpdateWildcards() { doTestOld(true, true); }
-    public void testPrimedTypeName() { doTestOld(true, true); }
-    public void testRowConstructors() { doTestOld(true, true); }
-    public void testGuards() { doTestOld(true, true); }
-    public void testDiffKindsSameName() { doTestOld(true, true); }
-    public void testProgrammableTypeErrors() { doTestOld(true, true); }
-    public void testSuggestComposition() { doTestOld(true, true); }
-    public void testTypedHole() { doTestOld(true, true); }
-    public void testShadowedNameParens() { doTestOld(true, true); }
-    public void testTypeLevelString() { doTestOld(true, true); }
+    public void test1570() {
+        doTest(true, true);
+    }
+    public void test2049_fixity() {
+        doTest(true, true);
+    }
+    public void test2288() {
+        doTest(true, true);
+    }
+    public void test2609() {
+        doTest(true, true);
+    }
+    public void test2616() {
+        doTest(true, true);
+    }
+    public void test2695() {
+        doTest(true, true);
+    }
+    public void test2626() {
+        doTest(true, true);
+    }
+    public void testAutoPrelude2() {
+        doTest(true, true);
+    }
+    public void testCaseInputWildcard() {
+        doTest(true, true);
+    }
+    public void testCaseMultipleExpressions() {
+        doTest(true, true);
+    }
+    public void testClassRefSyntax() {
+        doTest(true, true);
+    }
+    public void testDctorName() {
+        doTest(true, true);
+    }
+    public void testExportedInstanceDeclarations() {
+        doTest(true, true);
+    }
+    public void testImportHiding() {
+        doTest(true, true);
+    }
+    public void testPolyLabels() {
+        doTest(true, true);
+    }
+    public void testQualifiedQualifiedImports() {
+        doTest(true, true);
+    }
+    public void testDollar() {
+        doTest(true, true);
+    }
+    public void testConstraintParens() {
+        doTest(true, true);
+    }
+    public void testConstraintParsingIssue() {
+        doTest(true, true);
+    }
+    public void testDerivingFunctor() {
+        doTest(true, true);
+    }
+    public void testFunctionalDependencies() {
+        doTest(true, true);
+    }
+    public void testGenericsRep() {
+        doTest(true, true);
+    }
+    public void testIfWildcard() {
+        doTest(true, true);
+    }
+    public void testMPTCs() {
+        doTest(true, true);
+    }
+    public void testMonadState() {
+        doTest(true, true);
+    }
+    public void testNewtypeClass() {
+        doTest(true, true);
+    }
+    public void testOperatorAlias() {
+        doTest(true, true);
+    }
+    public void testOperatorAliasElsewhere() {
+        doTest(true, true);
+    }
+    public void testOperators() {
+        doTest(true, true);
+    }
+    public void testRebindableSyntax() {
+        doTest(true, true);
+    }
+    public void testRowInInstanceHeadDetermined() {
+        doTest(true, true);
+    }
+    public void testRowPolyInstanceContext() {
+        doTest(true, true);
+    }
+    public void testRowsInInstanceContext() {
+        doTest(true, true);
+    }
+    public void testSuperclasses3() {
+        doTest(true, true);
+    }
+    public void testUnicodeType() {
+        doTest(true, true);
+    }
+    public void testUntupledConstraints() {
+        doTest(true, true);
+    }
+    public void testUsableTypeClassMethods() {
+        doTest(true, true);
+    }
+    public void testWildcardInInstance() {
+        doTest(true, true);
+    }
+    public void testTypeClasses() {
+        doTest(true, true);
+    }
+    public void testTypedBinders() {
+        doTest(true, true);
+    }
+    public void testUnicodeOperators() {
+        doTest(true, true);
+    }
+    public void testDctorOperatorAlias() {
+        doTest(true, true);
+    }
+    public void testLetPattern() {
+        doTest(true, true);
+    }
+    public void testTypeOperators() {
+        doTest(true, true);
+    }
+    public void testTailCall() {
+        doTest(true, true);
+    }
+    public void testForeignKind() {
+        doTest(true, true);
+    }
+    public void testStream() {
+        doTest(true, true);
+    }
+    public void testSolvingAppendSymbol() {
+        doTest(true, true);
+    }
+    public void testSolvingCompareSymbol() {
+        doTest(true, true);
+    }
+    public void test2663() {
+        doTest(true, true);
+    }
+    public void test2378() {
+        doTest(true, true);
+    }
+    public void test2049_named_pattern_matching() {
+        doTest(true, true);
+    }
+    public void testDuplicateProperties() {
+        doTest(true, true);
+    }
+    public void testExtendedInfixOperators() {
+        doTest(true, true);
+    }
+    public void testFieldPuns() {
+        doTest(true, true);
+    }
+    public void testFieldConsPuns() {
+        doTest(true, true);
+    }
+    public void testFunWithFunDeps() {
+        doTest(true, true);
+    }
+    public void testRowUnion() {
+        doTest(true, true);
+    }
+    public void testKindedType() {
+        doTest(true, true);
+    }
+    public void testMutRec2() {
+        doTest(true, true);
+    }
+    public void testMutRec3() {
+        doTest(true, true);
+    }
+    public void testNewtypeInstance() {
+        doTest(true, true);
+    }
+    public void testIntAndChar() {
+        doTest(true, true);
+    }
+    public void testNestedRecordUpdate() {
+        doTest(true, true);
+    }
+    public void testNestedRecordUpdateWildcards() {
+        doTest(true, true);
+    }
+    public void testPrimedTypeName() {
+        doTest(true, true);
+    }
+    public void testRowConstructors() {
+        doTest(true, true);
+    }
+    public void testGuards() {
+        doTest(true, true);
+    }
+    public void testDiffKindsSameName() {
+        doTest(true, true);
+    }
+    public void testProgrammableTypeErrors() {
+        doTest(true, true);
+    }
+    public void testSuggestComposition() {
+        doTest(true, true);
+    }
+    public void testTypedHole() {
+        doTest(true, true);
+    }
+    public void testShadowedNameParens() {
+        doTest(true, true);
+    }
+    public void testTypeLevelString() {
+        doTest(true, true);
+    }
 
     // Bugs
-    public void testbug_do_block1() { doTestOld(true, true); }
-    public void testbug_do_block2() { doTestOld(true, true); }
-    public void testbug_functions1() { doTestOld(true, true); }
-    public void testbug_functions2() { doTestOld(true, true); }
-    public void testbug_functions3() { doTestOld(true, true); }
-    public void testbug_functions4() { doTestOld(true, true); }
-    public void testbug_functions5() { doTestOld(true, true); }
-    public void testbug_instance1() { doTestOld(true, true); }
-    public void testbug_newtype1() { doTestOld(true, true); }
-    public void testbug_newtype2() { doTestOld(true, true); }
-    public void testbug_syntax_sugar1() { doTestOld(true, true); }
-    public void testbug_syntax_sugar3() { doTestOld(true, true); }
-    public void testbug_syntax_sugar4() { doTestOld(true, true); }
-    public void testbug_syntax_sugar2() { doTestOld(true, true); }
-    public void testbug_functions6() { doTestOld(true, true); }
-    public void testbug_abs1() { doTestOld(true, true); }
-    public void testbug_import1() { doTestOld(true, true); }
-//    public void testbug_function7() { doTest(true, true); }
-//    public void testbug_function8() { doTest(true, true); }
-    //    public void testbug_hilighting1() { doTest(true, true); }
-
+    public void testbug_do_block1() {
+        doTest(true, true);
+    }
+    public void testbug_do_block2() {
+        doTest(true, true);
+    }
+    public void testbug_functions1() {
+        doTest(true, true);
+    }
+    public void testbug_functions2() {
+        doTest(true, true);
+    }
+    public void testbug_functions3() {
+        doTest(true, true);
+    }
+    public void testbug_functions4() {
+        doTest(true, true);
+    }
+    public void testbug_functions5() {
+        doTest(true, true);
+    }
+    public void testbug_instance1() {
+        doTest(true, true);
+    }
+    public void testbug_newtype1() {
+        doTest(true, true);
+    }
+    public void testbug_newtype2() {
+        doTest(true, true);
+    }
+    public void testbug_syntax_sugar1() {
+        doTest(true, true);
+    }
+    public void testbug_syntax_sugar3() {
+        doTest(true, true);
+    }
+    public void testbug_syntax_sugar4() {
+        doTest(true, true);
+    }
+    public void testbug_syntax_sugar2() {
+        doTest(true, true);
+    }
+    public void testbug_functions6() {
+        doTest(true, true);
+    }
+    public void testbug_abs1() {
+        doTest(true, true);
+    }
+    public void testbug_import1() {
+        doTest(true, true);
+    }
 
 
 

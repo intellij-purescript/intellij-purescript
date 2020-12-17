@@ -42,7 +42,7 @@ Purescript File
         PSIdentifierImpl(GenericIdentifier)
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('fooBar')
-            PsiElement(whitespace)(' ')
+          PsiElement(whitespace)(' ')
         PsiElement(::)('::')
         PsiElement(whitespace)(' ')
         PSIdentifierImpl(TypeConstructor)

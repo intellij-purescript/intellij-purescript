@@ -73,7 +73,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         }
 
         private final Parsec idents = choice(token(IDENT), choice(token(FORALL), token(QUALIFIED), token(HIDING), token(AS)).as(Identifier));
-        private final Parsec identifier = lexeme(idents);
+        private final Parsec identifier = idents;
         private final Parsec lname
                 = lexeme(choice(
                 token(IDENT),
@@ -211,7 +211,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(parseConstrainedType).as(ForAll);
 
         private final Parsec parseIdent = choice(
-                lexeme(identifier).as(Identifier),
+                lexeme(identifier.as(Identifier)),
                 attempt(parens(lexeme(operator.as(Identifier))))
         );
 
@@ -260,7 +260,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(many(indented(kindedIdent)).as(TypeArgs))
                 .then(optional(lexeme(EQ)
                 .then(properName.as(TypeConstructor)
-                       .then(optional(many(indented(identifier))))
+                       .then(optional(many(indented(lexeme(identifier)))))
                        .then(optional(indented(parseTypeAtom))))))
                 .as(NewtypeDeclaration);
 
@@ -282,7 +282,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseArrayBinder = squares(commaSep(parseBinderRef)).as(ObjectBinder);
 
         private final SymbolicParsec parsePatternMatchObject = indented(braces(commaSep(
-                identifier.or(lname).or(stringLiteral)
+                lexeme(identifier).or(lname).or(stringLiteral)
                 .then(optional(indented(lexeme(EQ).or(lexeme(OPERATOR)))))
                 .then(optional(indented(parseBinderRef)))
         ))).as(Binder);
@@ -296,7 +296,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                         .then(optional(attempt(properName).as(Constructor)))
                         .then(optional(attempt(many1(parseIdent))))
                         .then(optional(attempt(parseArrayBinder)))
-                        .then(optional(attempt(indented(lexeme("@")).then(indented(braces(commaSep(identifier)))))).as(NamedBinder))
+                        .then(optional(attempt(indented(lexeme("@")).then(indented(braces(commaSep(lexeme(identifier))))))).as(NamedBinder))
                         .then(optional(attempt(parsePatternMatchObject)))
                         .then(optional(attempt(parseRowPatternBinder)))
                         .then(optional(attempt(reserved(RPAREN))))
@@ -526,7 +526,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 attempt(parseNumericLiteral),
                 attempt(parseStringLiteral),
                 attempt(parseBooleanLiteral),
-                attempt(reserved(TICK).then(choice(properName.as(ProperName), many1(identifier.as(ProperName)))).then(reserved(TICK))),
+                attempt(reserved(TICK).then(choice(properName.as(ProperName),
+                    many1(lexeme(identifier).as(ProperName)))).then(reserved(TICK))),
                 parseArrayLiteral,
                 parseCharLiteral,
                 attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
@@ -546,7 +547,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
 
         private final Parsec parseIdentInfix =
                 choice(
-                        reserved(TICK).then(parseQualified(identifier)).lexeme(TICK),
+                        reserved(TICK).then(parseQualified(lexeme(identifier))).lexeme(TICK),
                         parseQualified(lexeme(operator))
                 ).as(IdentInfix);
 
@@ -599,7 +600,8 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
         private final SymbolicParsec parseConstructorBinder = lexeme(parseQualified(properName).as(GenericIdentifier).then(many(indented(parseBinderNoParensRef)))).as(ConstructorBinder);
         private final SymbolicParsec parseNullaryConstructorBinder = lexeme(parseQualified(properName.as(ProperName))).as(ConstructorBinder);
 
-        private final SymbolicParsec parsePatternMatch = indented(braces(commaSep(identifier))).as(Binder);
+        private final SymbolicParsec parsePatternMatch =
+            indented(braces(commaSep(lexeme(identifier)))).as(Binder);
 
         private final SymbolicParsec parseCharBinder = lexeme("'").as(StringBinder);
 

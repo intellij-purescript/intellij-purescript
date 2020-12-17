@@ -80,7 +80,7 @@ Purescript File
         PSTypeAnnotationNameImpl(TypeAnnotationName)
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('bProxy')
-            PsiElement(whitespace)(' ')
+          PsiElement(whitespace)(' ')
         PsiElement(::)('::')
         PsiElement(whitespace)(' ')
         PSTypeImpl(Type)
@@ -102,7 +102,7 @@ Purescript File
       PSValueDeclarationImpl(ValueDeclaration)
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('bProxy')
-          PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
         PSNamedBinderImpl(NamedBinder)
           <empty list>
         PsiElement(=)('=')
