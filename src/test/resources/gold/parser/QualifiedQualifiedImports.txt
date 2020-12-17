@@ -43,7 +43,7 @@ Purescript File
       PSValueDeclarationImpl(ValueDeclaration)
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('main')
-          PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
         PSNamedBinderImpl(NamedBinder)
           <empty list>
         PsiElement(=)('=')
@@ -57,6 +57,6 @@ Purescript File
                 PsiElement(.)('.')
                 PSIdentifierImpl(identifier)
                   PsiElement(identifier)('log')
-                  PsiElement(whitespace)(' ')
+                PsiElement(whitespace)(' ')
             PSStringLiteralImpl(StringLiteral)
               PsiElement(string)('"Done"')

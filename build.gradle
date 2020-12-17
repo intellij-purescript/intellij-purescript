@@ -48,6 +48,10 @@ compileJava {
     dependsOn generateLexer
 }
 
+test {
+    // systemProperty "idea.tests.overwrite.data", "true"
+}
+
 // take the version number defined in gradle build and use that in plugin.xml
 task initConfig(type: Copy) {
     from('src/main/resources') {

@@ -211,7 +211,7 @@ public class PureParser implements PsiParser, PSTokens, PSElements {
                 .then(parseConstrainedType).as(ForAll);
 
         private final Parsec parseIdent = choice(
-                lexeme(identifier).as(Identifier),
+                lexeme(identifier.as(Identifier)),
                 attempt(parens(lexeme(operator.as(Identifier))))
         );
 
