@@ -19,7 +19,7 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 
 public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
-    private static final Map<IElementType, TextAttributesKey> keys = new HashMap<IElementType, TextAttributesKey>();
+    private static final Map<IElementType, TextAttributesKey> keys = new HashMap<>();
 
     public static final TextAttributesKey LINE_COMMENT = createKey("PS_LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
 
