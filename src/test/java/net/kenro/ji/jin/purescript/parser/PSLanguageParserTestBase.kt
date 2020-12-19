@@ -1,39 +1,25 @@
-package net.kenro.ji.jin.purescript.parser;
+package net.kenro.ji.jin.purescript.parser
 
-import com.intellij.mock.MockVirtualFile;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.ParsingTestCase;
-import com.intellij.testFramework.TestDataFile;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.mock.MockVirtualFile
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.testFramework.ParsingTestCase
+import com.intellij.testFramework.TestDataFile
+import org.jetbrains.annotations.NonNls
+import java.io.File
 
-import java.io.File;
+abstract class PSLanguageParserTestBase :
+    ParsingTestCase("parser", "purs", PSParserDefinition()) {
+    override fun getTestDataPath(): String =
+        this.javaClass.classLoader.getResource("gold")!!.path
 
+    override fun skipSpaces(): Boolean = true
 
-public abstract class PSLanguageParserTestBase extends ParsingTestCase {
-
-    public PSLanguageParserTestBase() {
-        super("parser", "purs", new PSParserDefinition());
-    }
-
-    @Override
-    protected String getTestDataPath() {
-        return this.getClass().getClassLoader().getResource("gold").getPath();
-    }
-
-    @Override
-    protected boolean skipSpaces() {
-        return true;
-    }
-
-
-    @Override
-    protected void checkResult(
-        @NotNull @NonNls @TestDataFile final String targetDataName,
-        @NotNull final PsiFile file
+    override fun checkResult(
+        @NonNls @TestDataFile targetDataName: String,
+        file: PsiFile
     ) {
-        final String fullTargetDataName = "" + File.separator + targetDataName;
+        val fullTargetDataName = "" + File.separator + targetDataName
         doCheckResult(
             myFullDataPath,
             file,
@@ -41,14 +27,12 @@ public abstract class PSLanguageParserTestBase extends ParsingTestCase {
             fullTargetDataName,
             skipSpaces(),
             includeRanges()
-        );
+        )
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        final VirtualFile m = new MockVirtualFile(true, myFullDataPath);
-        myProject.setBaseDir(m);
+    override fun setUp() {
+        super.setUp()
+        val m: VirtualFile = MockVirtualFile(true, myFullDataPath)
+        myProject.baseDir = m
     }
-
 }
