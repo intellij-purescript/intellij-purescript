@@ -15,10 +15,10 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = javaVersion
-targetCompatibility = javaVersion
+sourceCompatibility = javaTargetVersion
+targetCompatibility = javaTargetVersion
 tasks.withType(JavaCompile) {options.encoding = 'UTF-8' }
-compileKotlin.kotlinOptions.jvmTarget = javaVersion
+compileKotlin.kotlinOptions.jvmTarget = javaTargetVersion
 
 sourceSets {
     main {
@@ -93,8 +93,8 @@ dependencies {
 apply plugin: 'idea'
 idea {
     project {
-        jdkName = javaVersion
-        languageLevel = javaVersion
+        jdkName = javaTargetVersion
+        languageLevel = javaTargetVersion
     }
     module {
         generatedSourceDirs += file('src/main/gen')
