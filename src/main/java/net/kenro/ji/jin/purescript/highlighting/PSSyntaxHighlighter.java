@@ -125,8 +125,7 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
         return new PSHighlightLexer();
     }
 
-    @NotNull
-    public TextAttributesKey[] getTokenHighlights(final IElementType tokenType) {
+    public TextAttributesKey @NotNull [] getTokenHighlights(final IElementType tokenType) {
         return pack(keys.get(tokenType));
     }
 
