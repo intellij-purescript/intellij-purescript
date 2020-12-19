@@ -1,83 +1,84 @@
-package net.kenro.ji.jin.purescript;
+package net.kenro.ji.jin.purescript
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import net.kenro.ji.jin.purescript.file.PSFile;
-import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase;
-import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl;
-import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl;
+import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
+import net.kenro.ji.jin.purescript.file.PSFile
+import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
+import com.intellij.testFramework.UsefulTestCase
+import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiElement
 
-import java.util.Map;
-
-public class ReferenceTest extends PSLanguageParserTestBase {
-
-    public void testFindTopLevelValueDeclarationWithName() {
-        final PSFile file = (PSFile) createFile(
+class ReferenceTest : PSLanguageParserTestBase() {
+    fun testFindTopLevelValueDeclarationWithName() {
+        val file = createFile(
             "Main.purs",
-            "module Main where\n" +
-                "x = 1\n" +
-                "y = 2"
-        );
-        final Map<String, PSValueDeclarationImpl> valueDeclarations =
-            file.getTopLevelValueDeclarations();
-        assertSize(2, valueDeclarations.keySet());
-        assertNotNull(valueDeclarations.get("x"));
-        assertNotNull(valueDeclarations.get("y"));
+            """
+                  module Main where
+                  x = 1
+                  y = 2
+                  """.trimIndent()
+        ) as PSFile
+        val valueDeclarations = file.topLevelValueDeclarations
+        assertSize(2, valueDeclarations.keys)
+        assertNotNull(valueDeclarations["x"])
+        assertNotNull(valueDeclarations["y"])
     }
 
-    public void testFindParametersForValueDeclaration() {
-        final PSFile file = (PSFile) createFile(
+    fun testFindParametersForValueDeclaration() {
+        val file = createFile(
             "Main.purs",
-            "module Main where\n" +
-                "fn x (z) (Just n) = x + y\n" +
-                "y = 2"
-        );
-        final Map<String, PSValueDeclarationImpl> valueDeclarations =
-            file.getTopLevelValueDeclarations();
-        final PSValueDeclarationImpl fn = valueDeclarations.get("fn");
-        final Map<String, PSIdentifierImpl> parameterDeclarations =
-            fn.getDeclaredIdentifiersInParameterList();
-        assertContainsElements(parameterDeclarations.keySet(), "x", "z", "n");
-        assertDoesntContain(parameterDeclarations.keySet(), "fn", "y", "Just");
-        final PSIdentifierImpl x = parameterDeclarations.get("x");
-        assertEquals("x", x.getName() );
+            """
+                  module Main where
+                  fn x (z) (Just n) = x + y
+                  y = 2
+                  """.trimIndent()
+        ) as PSFile
+        val valueDeclarations = file.topLevelValueDeclarations
+        val fn = valueDeclarations["fn"]
+        val parameterDeclarations = fn!!.declaredIdentifiersInParameterList
+        assertContainsElements(parameterDeclarations.keys, "x", "z", "n")
+        assertDoesntContain(parameterDeclarations.keys, "fn", "y", "Just")
+        val x = parameterDeclarations["x"]
+        assertEquals("x", x!!.name)
     }
 
-    public void testIdentifierCanResolveToToplevelValueDeclaration() {
-        final PSFile file = (PSFile) createFile(
+    fun testIdentifierCanResolveToToplevelValueDeclaration() {
+        val file = createFile(
             "Main.purs",
-            "module Main where\n" +
-                "x = 1\n" +
-                "y = x"
-        );
-        final PSIdentifierImpl psIdentifier =
-            (PSIdentifierImpl) file.findElementAt(28).getParent();
-        final PsiReference reference = psIdentifier.getReference();
+            """
+                  module Main where
+                  x = 1
+                  y = x
+                  """.trimIndent()
+        ) as PSFile
+        val psIdentifier = file.findElementAt(28)!!.parent as PSIdentifierImpl
+        val reference = psIdentifier.reference
         assertTrue(
             "identifier reference should include the whole name in its range",
-            reference.getRangeInElement().contains(0)
-        );
-        final PsiElement resolved = reference.resolve();
-        assertInstanceOf(resolved, PSValueDeclarationImpl.class);
-        assertEquals("x", ((PSValueDeclarationImpl) resolved).getName());
+            reference!!.rangeInElement.contains(0)
+        )
+        val resolved = reference.resolve()
+        assertInstanceOf(resolved, PSValueDeclarationImpl::class.java)
+        assertEquals("x", (resolved as PSValueDeclarationImpl?)!!.name)
     }
 
-    public void testIdentifierCanResolveToParameter() {
-        final PSFile file = (PSFile) createFile(
+    fun testIdentifierCanResolveToParameter() {
+        val file = createFile(
             "Main.purs",
-            "module Main where\n" +
-                "z = 1\n" +
-                "y x = x"
-        );
-        final PSIdentifierImpl psIdentifier =
-            (PSIdentifierImpl) file.findElementAt(30).getParent();
-        final PsiReference reference = psIdentifier.getReference();
+            """
+                  module Main where
+                  z = 1
+                  y x = x
+                  """.trimIndent()
+        ) as PSFile
+        val psIdentifier = file.findElementAt(30)!!.parent as PSIdentifierImpl
+        val reference = psIdentifier.reference
         assertTrue(
             "identifier reference should include the whole name in its range",
-            reference.getRangeInElement().contains(0)
-        );
-        final PsiElement resolved = reference.resolve();
-        assertInstanceOf(resolved, PSIdentifierImpl.class);
-        assertEquals("x", ((PSIdentifierImpl) resolved).getName());
+            reference!!.rangeInElement.contains(0)
+        )
+        val resolved = reference.resolve()
+        assertInstanceOf(resolved, PSIdentifierImpl::class.java)
+        assertEquals("x", (resolved as PSIdentifierImpl?)!!.name)
     }
 }
