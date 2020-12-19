@@ -14,9 +14,11 @@ public class ReferenceTest extends PSLanguageParserTestBase {
     public void testFindTopLevelValueDeclarationWithName() {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
-            "module Main where\n" +
-                "x = 1\n" +
-                "y = 2"
+            """
+                module Main where
+                x = 1
+                y = 2
+                """
         );
         final Map<String, PSValueDeclarationImpl> valueDeclarations =
             file.getTopLevelValueDeclarations();
@@ -28,9 +30,11 @@ public class ReferenceTest extends PSLanguageParserTestBase {
     public void testFindParametersForValueDeclaration() {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
-            "module Main where\n" +
-                "fn x (z) (Just n) = x + y\n" +
-                "y = 2"
+            """
+                module Main where
+                fn x (z) (Just n) = x + y
+                y = 2
+                """
         );
         final Map<String, PSValueDeclarationImpl> valueDeclarations =
             file.getTopLevelValueDeclarations();
@@ -46,9 +50,11 @@ public class ReferenceTest extends PSLanguageParserTestBase {
     public void testIdentifierCanResolveToToplevelValueDeclaration() {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
-            "module Main where\n" +
-                "x = 1\n" +
-                "y = x"
+            """
+                module Main where
+                x = 1
+                y = x
+                """
         );
         final PSIdentifierImpl psIdentifier =
             (PSIdentifierImpl) file.findElementAt(28).getParent();
@@ -65,9 +71,11 @@ public class ReferenceTest extends PSLanguageParserTestBase {
     public void testIdentifierCanResolveToParameter() {
         final PSFile file = (PSFile) createFile(
             "Main.purs",
-            "module Main where\n" +
-                "z = 1\n" +
-                "y x = x"
+            """
+                module Main where
+                z = 1
+                y x = x
+                """
         );
         final PSIdentifierImpl psIdentifier =
             (PSIdentifierImpl) file.findElementAt(30).getParent();

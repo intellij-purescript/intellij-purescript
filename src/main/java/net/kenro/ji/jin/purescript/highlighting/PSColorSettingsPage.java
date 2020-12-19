@@ -63,65 +63,67 @@ public class PSColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
 
-        return "module DemoText.View where\n" +
-                "\n" +
-                "import Prelude hiding (<import_ref>div</import_ref>)\n" +
-                "import UserManagement.Models (<type_name>Model(..)</type_name>, <type_name>User(..)</type_name>, <type_name>class Cool</type_name>)\n" +
-                "import UserManagement.Query\n" +
-                "import Data.Functor (<import_ref>map</import_ref>)\n" +
-                "\n" +
-                "-- This is a line comment\n" +
-                "\n" +
-                "{- \n" +
-                " This is a block comment\n" +
-                "-}\n" +
-                "\n" +
-                "newtype <type_name>X</type_name> = <type_name>X Int</type_name>\n" +
-                "\n" +
-                "<type_annotation_name>patternNewtype</type_annotation_name> :: <type_name>Boolean</type_name>\n" +
-                "patternNewtype =\n" +
-                "  let <type_variable>X</type_variable> a = <type_variable>X</type_variable> 123\n" +
-                "  in\n" +
-                "   a == 123\n" +
-                "\n" +
-                "<type_annotation_name>patternDoNewtype</type_annotation_name> :: forall <type_variable>e</type_variable>. <type_name>Eff</type_name> <type_variable>e</type_variable> <type_name>Boolean</type_name>\n" +
-                "patternDoNewtype = do\n" +
-                "  let <type_variable>X</type_variable> a = <type_variable>X</type_variable> 123\n" +
-                "  pure $ a == 123\n" +
-                "\n" +
-                "data <type_name>Y</type_name> = <type_name>Y Int String Boolean</type_name>\n" +
-                "\n" +
-                "-- Guards have access to current scope\n" +
-                "collatz2 = \\<type_variable>x</type_variable> <type_variable>y</type_variable> -> case x of\n" +
-                "  z | y > 0.0 -> z / 2.0\n" +
-                "  z -> z * 3.0 + 1.0\n" +
-                "\n" +
-                "<type_annotation_name>min</type_annotation_name> :: forall <type_variable>a</type_variable>. <type_name>Ord</type_name> <type_variable>a</type_variable> => <type_variable>a</type_variable> -> <type_variable>a</type_variable> -> <type_variable>a</type_variable>\n" +
-                "min n m | n < m     = n\n" +
-                "        | otherwise = m\n" +
-                "\n" +
-                "<type_annotation_name>max</type_annotation_name> :: forall <type_variable>a</type_variable>. <type_name>Ord</type_name> <type_variable>a</type_variable> => <type_variable>a</type_variable> -> <type_variable>a</type_variable> -> <type_variable>a</type_variable>\n" +
-                "max n m = case unit of\n" +
-                "  _ | m < n     -> n\n" +
-                "    | otherwise -> m\n" +
-                "\n" +
-                "<type_annotation_name>testIndentation</type_annotation_name> :: <type_name>Number</type_name> -> <type_name>Number</type_name> -> <type_name>Number</type_name>\n" +
-                "testIndentation x y | x > 0.0\n" +
-                "  = x + y\n" +
-                "                    | otherwise\n" +
-                "  = y - x\n" +
-                "\n" +
-                "-- pattern guard example with two clauses\n" +
-                "<type_annotation_name>clunky1</type_annotation_name> :: <type_name>Int</type_name> -> <type_name>Int</type_name> -> <type_name>Int</type_name>\n" +
-                "clunky1 a b | x <- max a b , x > 5 = x\n" +
-                "clunky1 a _ = a\n" +
-                "\n" +
-                "<type_annotation_name>clunky2</type_annotation_name> ::<type_name>Int</type_name> -> <type_name>Int</type_name> -> <type_name>Int</type_name>\n" +
-                "clunky2 a b | x <- max a b\n" +
-                "            , x > 5\n" +
-                "            = x\n" +
-                "            | otherwise\n" +
-                "            = a + b";
+        return """
+            module DemoText.View where
+
+            import Prelude hiding (<import_ref>div</import_ref>)
+            import UserManagement.Models (<type_name>Model(..)</type_name>, <type_name>User(..)</type_name>, <type_name>class Cool</type_name>)
+            import UserManagement.Query
+            import Data.Functor (<import_ref>map</import_ref>)
+
+            -- This is a line comment
+
+            {-\s
+             This is a block comment
+            -}
+
+            newtype <type_name>X</type_name> = <type_name>X Int</type_name>
+
+            <type_annotation_name>patternNewtype</type_annotation_name> :: <type_name>Boolean</type_name>
+            patternNewtype =
+              let <type_variable>X</type_variable> a = <type_variable>X</type_variable> 123
+              in
+               a == 123
+
+            <type_annotation_name>patternDoNewtype</type_annotation_name> :: forall <type_variable>e</type_variable>. <type_name>Eff</type_name> <type_variable>e</type_variable> <type_name>Boolean</type_name>
+            patternDoNewtype = do
+              let <type_variable>X</type_variable> a = <type_variable>X</type_variable> 123
+              pure $ a == 123
+
+            data <type_name>Y</type_name> = <type_name>Y Int String Boolean</type_name>
+
+            -- Guards have access to current scope
+            collatz2 = \\<type_variable>x</type_variable> <type_variable>y</type_variable> -> case x of
+              z | y > 0.0 -> z / 2.0
+              z -> z * 3.0 + 1.0
+
+            <type_annotation_name>min</type_annotation_name> :: forall <type_variable>a</type_variable>. <type_name>Ord</type_name> <type_variable>a</type_variable> => <type_variable>a</type_variable> -> <type_variable>a</type_variable> -> <type_variable>a</type_variable>
+            min n m | n < m     = n
+                    | otherwise = m
+
+            <type_annotation_name>max</type_annotation_name> :: forall <type_variable>a</type_variable>. <type_name>Ord</type_name> <type_variable>a</type_variable> => <type_variable>a</type_variable> -> <type_variable>a</type_variable> -> <type_variable>a</type_variable>
+            max n m = case unit of
+              _ | m < n     -> n
+                | otherwise -> m
+
+            <type_annotation_name>testIndentation</type_annotation_name> :: <type_name>Number</type_name> -> <type_name>Number</type_name> -> <type_name>Number</type_name>
+            testIndentation x y | x > 0.0
+              = x + y
+                                | otherwise
+              = y - x
+
+            -- pattern guard example with two clauses
+            <type_annotation_name>clunky1</type_annotation_name> :: <type_name>Int</type_name> -> <type_name>Int</type_name> -> <type_name>Int</type_name>
+            clunky1 a b | x <- max a b , x > 5 = x
+            clunky1 a _ = a
+
+            <type_annotation_name>clunky2</type_annotation_name> ::<type_name>Int</type_name> -> <type_name>Int</type_name> -> <type_name>Int</type_name>
+            clunky2 a b | x <- max a b
+                        , x > 5
+                        = x
+                        | otherwise
+                        = a + b
+            """;
     }
 
     @Nullable
