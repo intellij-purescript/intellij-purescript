@@ -53,10 +53,11 @@ test {
 }
 
 // take the version number defined in gradle build and use that in plugin.xml
+import org.apache.tools.ant.filters.ReplaceTokens
 task initConfig(type: Copy) {
     from('src/main/resources') {
         include '**/plugin.xml'
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
+        filter(ReplaceTokens, tokens: [version: version])
     }
 }
 
