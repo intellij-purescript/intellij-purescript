@@ -31,14 +31,11 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey STRING = createKey("PS_STRING", DefaultLanguageHighlighterColors.STRING);
 
-    private static final TextAttributes STRING_GAP_ATTR;
 
-    static {
-        STRING_GAP_ATTR = STRING.getDefaultAttributes().clone();
-        STRING_GAP_ATTR.setForegroundColor(JBColor.GRAY);
-    }
-
-    public static final TextAttributesKey STRING_GAP = createTextAttributesKey("PS_STRING_GAP", STRING_GAP_ATTR);
+    public static final TextAttributesKey STRING_GAP = createTextAttributesKey(
+        "PS_STRING_GAP",
+        STRING
+    );
 
     public static final TextAttributesKey NUMBER = createKey("PS_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 
