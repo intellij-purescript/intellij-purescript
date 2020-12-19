@@ -45,8 +45,6 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey VARIABLE = createKey("PS_VARIABLE", CodeInsightColors.INSTANCE_FIELD_ATTRIBUTES);
 
-    public static final TextAttributesKey MODULE_NAME = createKey("PS_MODULE_NAME", CodeInsightColors.ANNOTATION_NAME_ATTRIBUTES);
-
     public static final TextAttributesKey METHOD_DECLARATION = createKey("PS_METHOD_DECLARATION", CodeInsightColors.METHOD_CALL_ATTRIBUTES);
 
     public static final TextAttributesKey PS_EQ = createKey("PS_EQ", DefaultLanguageHighlighterColors.OPERATION_SIGN);
@@ -58,8 +56,6 @@ public class PSSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey PS_DCOLON = createKey("PS_DCOLON", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 
     public static final TextAttributesKey PS_ARROW = createKey("PS_ARROW", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-
-    public static final TextAttributesKey PS_UNDERSCORE = createKey("PS_UNDERSCORE", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 
 
     // annotation highlighting
