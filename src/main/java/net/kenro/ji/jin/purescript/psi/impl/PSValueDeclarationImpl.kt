@@ -1,55 +1,39 @@
-package net.kenro.ji.jin.purescript.psi.impl;
+package net.kenro.ji.jin.purescript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.util.IncorrectOperationException;
-import net.kenro.ji.jin.purescript.psi.ContainsIdentifier;
-import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers
+import net.kenro.ji.jin.purescript.psi.ContainsIdentifier
+import com.intellij.psi.PsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiNameIdentifierOwner
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-public class PSValueDeclarationImpl extends PSPsiElement implements PsiNameIdentifierOwner {
-
-    public PSValueDeclarationImpl(final ASTNode node) {
-        super(node);
+class PSValueDeclarationImpl(node: ASTNode) : PSPsiElement(node),
+    PsiNameIdentifierOwner {
+    override fun getName(): String? {
+        return findChildByClass(PSIdentifierImpl::class.java)!!
+            .name
     }
 
-    @Override
-    public String getName() {
-        return this.findChildByClass(PSIdentifierImpl.class).getName();
+    override fun setName(name: String): PsiElement? {
+        return null
     }
 
-    @Override
-    public PsiElement setName(@NotNull final String name) throws IncorrectOperationException {
-        return null;
+    override fun getNameIdentifier(): PsiElement? {
+        return findChildByClass(PSIdentifierImpl::class.java)
     }
 
-    @Override
-    public @Nullable PsiElement getNameIdentifier() {
-        return this.findChildByClass(PSIdentifierImpl.class);
-    }
-
-    public Map<String, PSIdentifierImpl> getDeclaredIdentifiersInParameterList() {
-        final Stream<Map<String, PSIdentifierImpl>> identifiers = Arrays
-            .stream(this.findChildrenByClass(PSIdentifierImpl.class))
-            .skip(1)
-            .map(ContainsIdentifier::getIdentifiers);
-        return
-            Stream.concat(
-                identifiers,
-                Arrays
-                    .stream(this.findChildrenByClass(DeclaresIdentifiers.class))
-                    .map(DeclaresIdentifiers::getDeclaredIdentifiers)
-            ).map(Map::entrySet)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
+    val declaredIdentifiersInParameterList: Map<String?, PSIdentifierImpl?>
+        get() {
+            val identifiers = findChildrenByClass(PSIdentifierImpl::class.java)
+                .asSequence()
+                .drop(1)
+                .map(ContainsIdentifier::identifiers)
+            val childrenIdentifiers =
+                findChildrenByClass(DeclaresIdentifiers::class.java)
+                    .asSequence()
+                    .map { it.getDeclaredIdentifiers() }
+            return (identifiers + childrenIdentifiers)
+                .flatMap { it.asSequence() }
+                .map { Pair(it.key, it.value) }
+                .toMap()
+        }
 }

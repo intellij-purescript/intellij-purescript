@@ -1,35 +1,28 @@
-package net.kenro.ji.jin.purescript.psi.impl;
+package net.kenro.ji.jin.purescript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import net.kenro.ji.jin.purescript.psi.ContainsIdentifier;
-import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers;
+import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers
+import net.kenro.ji.jin.purescript.psi.ContainsIdentifier
+import com.intellij.lang.ASTNode
+import java.util.*
+import kotlin.streams.asSequence
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+class PSConstructorBinderImpl(node: ASTNode) : PSPsiElement(node), DeclaresIdentifiers {
+    override fun getDeclaredIdentifiers(): Map<String?, PSIdentifierImpl?> {
+        val identifiers =
+            findChildrenByClass(PSIdentifierImpl::class.java)
+            .asSequence()
+            .drop(1)
+            .map(ContainsIdentifier::identifiers)
 
-public class PSConstructorBinderImpl extends PSPsiElement implements DeclaresIdentifiers {
-
-    public PSConstructorBinderImpl(final ASTNode node) {
-        super(node);
-    }
-
-    @Override
-    public Map<String, PSIdentifierImpl> getDeclaredIdentifiers() {
-        final Stream<Map<String, PSIdentifierImpl>> identifiers = Arrays
-            .stream(this.findChildrenByClass(PSIdentifierImpl.class))
-            .skip(1)
-            .map(ContainsIdentifier::getIdentifiers);
-        return
-            java.util.stream.Stream.concat(
-                identifiers,
-                Arrays
-                    .stream(this.findChildrenByClass(DeclaresIdentifiers.class))
-                    .map(DeclaresIdentifiers::getDeclaredIdentifiers)
-            ).map(Map::entrySet)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        val childrenIdentifiers =
+            findChildrenByClass(
+                DeclaresIdentifiers::class.java
+            )
+            .asSequence()
+            .map { it.getDeclaredIdentifiers() }
+        return (identifiers + childrenIdentifiers)
+            .flatMap { it.asSequence() }
+            .map { Pair(it.key, it.value) }
+            .toMap()
     }
 }
