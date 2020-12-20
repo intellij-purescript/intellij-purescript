@@ -18,7 +18,6 @@ repositories {
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 tasks.withType(JavaCompile) {options.encoding = 'UTF-8' }
-compileKotlin.kotlinOptions.jvmTarget = javaVersion
 
 sourceSets {
     main {
