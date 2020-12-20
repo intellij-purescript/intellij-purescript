@@ -1,18 +1,5 @@
 package net.kenro.ji.jin.purescript.psi
 
-import com.intellij.psi.PsiElement
-import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
-import kotlin.collections.MutableMap.MutableEntry
-import java.util.stream.Collectors
-import net.kenro.ji.jin.purescript.psi.ContainsIdentifier
-import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers
-import net.kenro.ji.jin.purescript.psi.PSElementType
-import org.jetbrains.annotations.NonNls
-import com.intellij.psi.tree.IElementType
-import net.kenro.ji.jin.purescript.PSLanguage
-import com.intellij.psi.tree.TokenSet
-import net.kenro.ji.jin.purescript.psi.PSTokens
-
 interface PSElements {
     companion object {
         @kotlin.jvm.JvmField

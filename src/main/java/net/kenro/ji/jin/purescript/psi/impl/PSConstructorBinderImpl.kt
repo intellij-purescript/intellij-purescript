@@ -1,10 +1,8 @@
 package net.kenro.ji.jin.purescript.psi.impl
 
-import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers
-import net.kenro.ji.jin.purescript.psi.ContainsIdentifier
 import com.intellij.lang.ASTNode
-import java.util.*
-import kotlin.streams.asSequence
+import net.kenro.ji.jin.purescript.psi.ContainsIdentifier
+import net.kenro.ji.jin.purescript.psi.DeclaresIdentifiers
 
 class PSConstructorBinderImpl(node: ASTNode) : PSPsiElement(node), DeclaresIdentifiers {
     override fun getDeclaredIdentifiers(): Map<String?, PSIdentifierImpl?> {

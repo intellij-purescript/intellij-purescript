@@ -1,12 +1,9 @@
 package net.kenro.ji.jin.purescript
 
-import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
 import net.kenro.ji.jin.purescript.file.PSFile
-import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
-import com.intellij.testFramework.UsefulTestCase
+import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
 import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiElement
+import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
 
 class ReferenceTest : PSLanguageParserTestBase() {
     fun testFindTopLevelValueDeclarationWithName() {
