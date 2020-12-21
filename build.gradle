@@ -47,6 +47,10 @@ compileJava {
     dependsOn generateLexer
 }
 
+compileKotlin {
+    dependsOn generateLexer
+}
+
 test {
     // systemProperty "idea.tests.overwrite.data", "true"
 }
