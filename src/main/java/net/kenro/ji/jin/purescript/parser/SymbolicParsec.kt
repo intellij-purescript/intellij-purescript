@@ -1,60 +1,40 @@
-package net.kenro.ji.jin.purescript.parser;
+package net.kenro.ji.jin.purescript.parser
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.tree.IElementType
+import java.util.*
 
-import java.util.HashSet;
-
-public class SymbolicParsec extends Parsec {
-    @NotNull
-    private final Parsec ref;
-    @NotNull
-    private final IElementType node;
-
-    public SymbolicParsec(@NotNull final Parsec ref, @NotNull final IElementType node) {
-        this.ref = ref;
-        this.node = node;
-    }
-
-    @NotNull
-    @Override
-    public ParserInfo parse(@NotNull final ParserContext context) {
-        final int startPosition = context.getPosition();
-        final PsiBuilder.Marker pack = context.start();
-        ParserInfo info = ref.parse(context);
+class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
+    Parsec() {
+    override fun parse(context: ParserContext): ParserInfo {
+        val startPosition = context.position
+        val pack = context.start()
+        var info = ref.parse(context)
         if (info.success) {
-            pack.done(node);
+            pack.done(node)
         } else {
-            pack.drop();
+            pack.drop()
         }
         if (startPosition == info.position) {
-            info = new ParserInfo(info.position, this, info.success);
+            info = ParserInfo(info.position, this, info.success)
         }
-        return info;
+        return info
     }
 
-    @NotNull
-    @Override
-    public String calcName() {
-        return node.toString();
+    public override fun calcName(): String {
+        return node.toString()
     }
 
-    @NotNull
-    @Override
-    protected HashSet<String> calcExpectedName() {
-        final HashSet<String> result = new HashSet<String>();
-        result.add(node.toString());
-        return result;
+    override fun calcExpectedName(): HashSet<String?> {
+        val result = HashSet<String?>()
+        result.add(node.toString())
+        return result
     }
 
-    @Override
-    public boolean canStartWith(@NotNull final IElementType type) {
-        return ref.canStartWith(type);
+    override fun canStartWith(type: IElementType): Boolean {
+        return ref.canStartWith(type)
     }
 
-    @Override
-    public boolean calcCanBeEmpty() {
-        return ref.canBeEmpty();
+    public override fun calcCanBeEmpty(): Boolean {
+        return ref.canBeEmpty()
     }
 }

@@ -1,246 +1,215 @@
-package net.kenro.ji.jin.purescript.parser;
+package net.kenro.ji.jin.purescript.parser
 
-import java.util.HashMap;
+import com.intellij.lang.PsiBuilder
+import com.intellij.lang.WhitespacesAndCommentsBinder
+import com.intellij.psi.tree.IElementType
+import com.intellij.util.containers.Stack
+import net.kenro.ji.jin.purescript.psi.PSTokens
+import java.util.*
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.WhitespacesAndCommentsBinder;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.containers.Stack;
-import net.kenro.ji.jin.purescript.psi.PSTokens;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-public final class ParserContext {
-    @NotNull
-    private final PsiBuilder builder;
-    private int column;
-    private final Stack<Integer> indentationLevel = new Stack<Integer>();
-    private final HashMap<IElementType, Integer> recoverySet = new HashMap<IElementType, Integer>();
-    private boolean inAttempt;
-    private int inOptional;
-
-    public boolean eof() {
-        return builder.eof();
+class ParserContext(private val builder: PsiBuilder) {
+    var column = 0
+        private set
+    val indentationLevel = Stack<Int>()
+    private val recoverySet = HashMap<IElementType, Int?>()
+    var isInAttempt = false
+    private var inOptional = 0
+    fun eof(): Boolean {
+        return builder.eof()
     }
 
-    private final class PureMarker implements PsiBuilder.Marker {
-        private final int start;
-        private final PsiBuilder.Marker marker;
+    private inner class PureMarker : PsiBuilder.Marker {
+        private val start: Int
+        private val marker: PsiBuilder.Marker
 
-        protected PureMarker(@NotNull final PsiBuilder.Marker marker) {
-            this.start = column;
-            this.marker = marker;
+        constructor(marker: PsiBuilder.Marker) {
+            start = column
+            this.marker = marker
         }
 
-        public PureMarker(final int start, final PsiBuilder.Marker marker) {
-            this.start = start;
-            this.marker = marker;
+        constructor(start: Int, marker: PsiBuilder.Marker) {
+            this.start = start
+            this.marker = marker
         }
 
-        @Override
-        public PsiBuilder.Marker precede() {
-            return new PureMarker(start, marker);
+        override fun precede(): PsiBuilder.Marker {
+            return PureMarker(start, marker)
         }
 
-        @Override
-        public void drop() {
-            marker.drop();
+        override fun drop() {
+            marker.drop()
         }
 
-        @Override
-        public void rollbackTo() {
-            column = start;
-            marker.rollbackTo();
+        override fun rollbackTo() {
+            column = start
+            marker.rollbackTo()
         }
 
-        @Override
-        public void done(final IElementType type) {
-            marker.done(type);
+        override fun done(type: IElementType) {
+            marker.done(type)
         }
 
-        @Override
-        public void collapse(final IElementType type) {
-            marker.collapse(type);
+        override fun collapse(type: IElementType) {
+            marker.collapse(type)
         }
 
-        @Override
-        public void doneBefore(final IElementType type, final PsiBuilder.Marker before) {
-            marker.doneBefore(type, before);
+        override fun doneBefore(type: IElementType, before: PsiBuilder.Marker) {
+            marker.doneBefore(type, before)
         }
 
-        @Override
-        public void doneBefore(final IElementType type, final PsiBuilder.Marker before, final String errorMessage) {
-            marker.doneBefore(type, before, errorMessage);
+        override fun doneBefore(
+            type: IElementType,
+            before: PsiBuilder.Marker,
+            errorMessage: String
+        ) {
+            marker.doneBefore(type, before, errorMessage)
         }
 
-        @Override
-        public void error(final String message) {
-            marker.error(message);
+        override fun error(message: String) {
+            marker.error(message)
         }
 
-        @Override
-        public void errorBefore(final String message, final PsiBuilder.Marker before) {
-            marker.errorBefore(message, before);
+        override fun errorBefore(message: String, before: PsiBuilder.Marker) {
+            marker.errorBefore(message, before)
         }
 
-        @Override
-        public void setCustomEdgeTokenBinders(@Nullable final WhitespacesAndCommentsBinder left, @Nullable final WhitespacesAndCommentsBinder right) {
-            marker.setCustomEdgeTokenBinders(left, right);
+        override fun setCustomEdgeTokenBinders(
+            left: WhitespacesAndCommentsBinder?,
+            right: WhitespacesAndCommentsBinder?
+        ) {
+            marker.setCustomEdgeTokenBinders(left, right)
         }
     }
 
-    public ParserContext(@NotNull final PsiBuilder builder) {
-        this.builder = builder;
-        this.indentationLevel.push(0);
-    }
-
-    public void whiteSpace() {
+    fun whiteSpace() {
         while (!builder.eof()) {
-            final IElementType type = builder.getTokenType();
-            if (type == PSTokens.WS) {
-                advance();
+            val type = builder.tokenType
+            if (type === PSTokens.WS) {
+                advance()
             } else {
-                break;
+                break
             }
         }
     }
 
-    public void advance() {
-        final String text = builder.getTokenText();
+    fun advance() {
+        val text = builder.tokenText
         if (text != null) {
-            final IElementType type = builder.getTokenType();
-            if (type == PSTokens.STRING || type == PSTokens.WS) {
-                for (int i = 0; i < text.length(); i++) {
-                    final char ch = text.charAt(i);
+            val type = builder.tokenType
+            if (type === PSTokens.STRING || type === PSTokens.WS) {
+                for (i in 0 until text.length) {
+                    val ch = text[i]
                     if (ch == '\n') {
-                        column = 0;
+                        column = 0
                     } else if (ch == '\t') {
-                        column = column - column % 8 + 8;
+                        column = column - column % 8 + 8
                     } else {
-                        column++;
+                        column++
                     }
                 }
             } else {
-                column += text.length();
+                column += text.length
             }
         }
-        builder.advanceLexer();
+        builder.advanceLexer()
     }
 
-    public void addUntilToken(@NotNull final IElementType token) {
-        int i = 0;
+    fun addUntilToken(token: IElementType) {
+        var i = 0
         if (recoverySet.containsKey(token)) {
-            i = recoverySet.get(token);
+            i = recoverySet[token]!!
         }
-        recoverySet.put(token, i + 1);
+        recoverySet[token] = i + 1
     }
 
-    public void removeUntilToken(@NotNull final IElementType token) {
-        final int i = recoverySet.get(token);
+    fun removeUntilToken(token: IElementType) {
+        val i = recoverySet[token]!!
         if (i == 1) {
-            recoverySet.remove(token);
+            recoverySet.remove(token)
         } else {
-            recoverySet.put(token, i - 1);
+            recoverySet[token] = i - 1
         }
     }
 
-    public boolean isUntilToken(@NotNull final IElementType token) {
-        return recoverySet.containsKey(token);
+    fun isUntilToken(token: IElementType): Boolean {
+        return recoverySet.containsKey(token)
     }
 
-    public void setInAttempt(final boolean inAttempt) {
-        this.inAttempt = inAttempt;
+    fun enterOptional() {
+        inOptional++
     }
 
-
-    public boolean isInAttempt() {
-        return this.inAttempt;
+    fun exitOptional() {
+        inOptional--
     }
 
-    public void enterOptional() {
-        this.inOptional++;
+    fun isInOptional(): Boolean {
+        return inOptional > 0
     }
 
-    public void exitOptional() {
-        this.inOptional--;
+    fun text(): String {
+        return builder.tokenText ?: return ""
     }
 
-    public boolean isInOptional() {
-        return inOptional > 0;
+    fun peek(): IElementType {
+        val tokenType = builder.tokenType
+        return tokenType ?: PSTokens.EOF
     }
 
-    @NotNull
-    public String text() {
-        final String text = builder.getTokenText();
-        if (text == null) return "";
-        return text;
+    fun match(type: IElementType): Boolean {
+        return builder.tokenType === type
     }
 
-    @NotNull
-    public IElementType peek() {
-        final IElementType tokenType = builder.getTokenType();
-        return tokenType == null ? PSTokens.EOF : tokenType;
-    }
-
-    public boolean match(@NotNull final IElementType type) {
-        return builder.getTokenType() == type;
-    }
-
-    public boolean eat(@NotNull final IElementType type) {
-        if (builder.getTokenType() == type) {
-            advance();
-            return true;
+    fun eat(type: IElementType): Boolean {
+        if (builder.tokenType === type) {
+            advance()
+            return true
         }
-        return false;
+        return false
     }
 
-    public boolean expect(@NotNull final IElementType type) {
-        final PsiBuilder.Marker mark = builder.mark();
-        if (builder.getTokenType() == type) {
-            advance();
-            mark.drop();
-            return true;
+    fun expect(type: IElementType): Boolean {
+        val mark = builder.mark()
+        if (builder.tokenType === type) {
+            advance()
+            mark.drop()
+            return true
         }
-        mark.error(String.format("Expecting %s.", type.toString()));
-        return false;
+        mark.error(String.format("Expecting %s.", type.toString()))
+        return false
     }
 
-    @NotNull
-    public PsiBuilder.Marker start() {
+    fun start(): PsiBuilder.Marker {
         // Consume all the white spaces.
-        builder.eof();
-        return new PureMarker(builder.mark());
+        builder.eof()
+        return PureMarker(builder.mark())
     }
 
-    public int getPosition() {
-        return builder.getCurrentOffset();
+    val position: Int
+        get() = builder.currentOffset
+
+    fun getIndentationLevel(): Int {
+        return indentationLevel.peek()
     }
 
-    public int getColumn() {
-        return column;
+    val lastIndentationLevel: Int
+        get() = if (indentationLevel.size >= 2) {
+            indentationLevel[indentationLevel.size - 2]
+        } else 0
+
+    fun pushIndentationLevel() {
+        indentationLevel.push(column)
     }
 
-    public int getIndentationLevel() {
-        return indentationLevel.peek();
+    fun popIndentationLevel() {
+        indentationLevel.tryPop()
     }
 
-    public int getLastIndentationLevel() {
-        if (indentationLevel.size() >= 2) {
-            return indentationLevel.get(indentationLevel.size() - 2);
-        }
-        return 0;
+    fun getText(start: Int, end: Int): String {
+        return builder.originalText.subSequence(start, end).toString()
     }
 
-    public void pushIndentationLevel() {
-        indentationLevel.push(column);
-    }
-
-    public void popIndentationLevel() {
-        indentationLevel.tryPop();
-    }
-
-    @NotNull
-    public String getText(final int start, final int end) {
-        return this.builder.getOriginalText().subSequence(start, end).toString();
+    init {
+        indentationLevel.push(0)
     }
 }

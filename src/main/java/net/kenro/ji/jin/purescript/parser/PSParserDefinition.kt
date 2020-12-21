@@ -1,280 +1,196 @@
-package net.kenro.ji.jin.purescript.parser;
+package net.kenro.ji.jin.purescript.parser
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.ParserDefinition;
-import com.intellij.lang.PsiParser;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.IFileElementType;
-import com.intellij.psi.tree.TokenSet;
-import net.kenro.ji.jin.purescript.file.PSFile;
-import net.kenro.ji.jin.purescript.file.PSFileStubType;
-import net.kenro.ji.jin.purescript.lexer.PSLexer;
-import net.kenro.ji.jin.purescript.psi.PSElements;
-import net.kenro.ji.jin.purescript.psi.PSTokens;
-import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement;
-import net.kenro.ji.jin.purescript.psi.impl.*;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode
+import com.intellij.lang.ParserDefinition
+import com.intellij.lang.ParserDefinition.SpaceRequirements
+import com.intellij.lang.PsiParser
+import com.intellij.lexer.Lexer
+import com.intellij.openapi.project.Project
+import com.intellij.psi.FileViewProvider
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.tree.IFileElementType
+import com.intellij.psi.tree.TokenSet
+import net.kenro.ji.jin.purescript.file.PSFile
+import net.kenro.ji.jin.purescript.file.PSFileStubType
+import net.kenro.ji.jin.purescript.lexer.PSLexer
+import net.kenro.ji.jin.purescript.psi.PSElements
+import net.kenro.ji.jin.purescript.psi.PSTokens
+import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement
+import net.kenro.ji.jin.purescript.psi.impl.*
 
-public class PSParserDefinition implements ParserDefinition, PSTokens {
-    @NotNull
-    @Override
-    public Lexer createLexer(final Project project) {
-        return new PSLexer();
+class PSParserDefinition : ParserDefinition, PSTokens {
+    override fun createLexer(project: Project): Lexer {
+        return PSLexer()
     }
 
-    @Override
-    public PsiParser createParser(final Project project) {
-        return new PureParser();
+    override fun createParser(project: Project): PsiParser {
+        return PureParser()
     }
 
-    @Override
-    public IFileElementType getFileNodeType() {
-        return PSFileStubType.INSTANCE;
+    override fun getFileNodeType(): IFileElementType {
+        return PSFileStubType.INSTANCE
     }
 
-    @NotNull
-    @Override
-    public TokenSet getWhitespaceTokens() {
-        return TokenSet.EMPTY;
+    override fun getWhitespaceTokens(): TokenSet {
+        return TokenSet.EMPTY
     }
 
-    @NotNull
-    @Override
-    public TokenSet getCommentTokens() {
-        return TokenSet.EMPTY;
+    override fun getCommentTokens(): TokenSet {
+        return TokenSet.EMPTY
     }
 
-    @NotNull
-    @Override
-    public TokenSet getStringLiteralElements() {
-        return kStrings;
+    override fun getStringLiteralElements(): TokenSet {
+        return PSTokens.kStrings
     }
 
-    @NotNull
-    @Override
-    public PsiElement createElement(final ASTNode node) {
-        final IElementType type = node.getElementType();
-        if ((type.equals(PSElements.ProperName)  ||
-             type.equals(PSElements.Qualified)   ||
-             type.equals(PSElements.pClassName)  ||
-             type.equals(PSElements.pModuleName) ||
-             type.equals(PSElements.importModuleName))) {
-            return new PSProperNameImpl(node);
-        } else if ((type.equals(PSElements.Identifier)    ||
-                type.equals(PSElements.GenericIdentifier) ||
-                type.equals(PSElements.TypeConstructor)   ||
-                type.equals(PSElements.Constructor)       ||
-                type.equals(PSElements.LocalIdentifier))) {
-            return new PSIdentifierImpl(node);
-        } else if (type.equals(PSElements.ImportDeclaration)) {
-            return new PSImportDeclarationImpl(node);
-        } else if (type.equals(PSElements.DataDeclaration)) {
-            return new PSDataDeclarationImpl(node);
-        } else if (type.equals(PSElements.Binder)) {
-            return new PSBinderImpl(node);
-
-        } else if (type.equals(PSElements.Program)) {
-            return new PSProgramImpl(node);
-
-        } else if (type.equals(PSElements.Module)) {
-            return new PSModuleImpl(node);
-
-        } else if (type.equals(PSElements.Star)) {
-            return new PSStarImpl(node);
-
-        } else if (type.equals(PSElements.Bang)) {
-            return new PSBangImpl(node);
-
-        } else if (type.equals(PSElements.RowKind)) {
-            return new PSRowKindImpl(node);
-
-        } else if (type.equals(PSElements.FunKind)) {
-            return new PSFunKindImpl(node);
+    override fun createElement(node: ASTNode): PsiElement {
+        val type = node.elementType
+        return if (type == PSElements.ProperName || type == PSElements.Qualified || type == PSElements.pClassName || type == PSElements.pModuleName || type == PSElements.importModuleName) {
+            PSProperNameImpl(node)
+        } else if (type == PSElements.Identifier || type == PSElements.GenericIdentifier || type == PSElements.TypeConstructor || type == PSElements.Constructor || type == PSElements.LocalIdentifier) {
+            PSIdentifierImpl(node)
+        } else if (type == PSElements.ImportDeclaration) {
+            PSImportDeclarationImpl(node)
+        } else if (type == PSElements.DataDeclaration) {
+            PSDataDeclarationImpl(node)
+        } else if (type == PSElements.Binder) {
+            PSBinderImpl(node)
+        } else if (type == PSElements.Program) {
+            PSProgramImpl(node)
+        } else if (type == PSElements.Module) {
+            PSModuleImpl(node)
+        } else if (type == PSElements.Star) {
+            PSStarImpl(node)
+        } else if (type == PSElements.Bang) {
+            PSBangImpl(node)
+        } else if (type == PSElements.RowKind) {
+            PSRowKindImpl(node)
+        } else if (type == PSElements.FunKind) {
+            PSFunKindImpl(node)
 
 //        } else if (type.equals(PSElements.Qualified)) {
 //            return new PSQualifiedImpl(node);
-
-        } else if (type.equals(PSElements.Type)) {
-            return new PSTypeImpl(node);
-
-        } else if (type.equals(PSElements.TypeArgs)) {
-            return new PSTypeArgsImpl(node);
-
-        } else if (type.equals(PSElements.TypeAnnotationName)) {
-            return new PSTypeAnnotationNameImpl(node);
-
-        } else if (type.equals(PSElements.ForAll)) {
-            return new PSForAllImpl(node);
-
-        } else if (type.equals(PSElements.ConstrainedType)) {
-            return new PSConstrainedTypeImpl(node);
-
-        } else if (type.equals(PSElements.Row)) {
-            return new PSRowImpl(node);
-
-        } else if (type.equals(PSElements.ObjectType)) {
-            return new PSObjectTypeImpl(node);
-
-        } else if (type.equals(PSElements.TypeVar)) {
-            return new PSTypeVarImpl(node);
+        } else if (type == PSElements.Type) {
+            PSTypeImpl(node)
+        } else if (type == PSElements.TypeArgs) {
+            PSTypeArgsImpl(node)
+        } else if (type == PSElements.TypeAnnotationName) {
+            PSTypeAnnotationNameImpl(node)
+        } else if (type == PSElements.ForAll) {
+            PSForAllImpl(node)
+        } else if (type == PSElements.ConstrainedType) {
+            PSConstrainedTypeImpl(node)
+        } else if (type == PSElements.Row) {
+            PSRowImpl(node)
+        } else if (type == PSElements.ObjectType) {
+            PSObjectTypeImpl(node)
+        } else if (type == PSElements.TypeVar) {
+            PSTypeVarImpl(node)
 
 //        } else if (type.equals(PSElements.TypeConstructor)) {
 //            return new PSTypeConstructorImpl(node);
-
-        } else if (type.equals(PSElements.TypeAtom)) {
-            return new PSTypeAtomImpl(node);
-
-        } else if (type.equals(PSElements.GenericIdentifier)) {
-            return new PSGenericIdentifierImpl(node);
-
-        } else if (type.equals(PSElements.LocalIdentifier)) {
-            return new PSLocalIdentifierImpl(node);
-
-        } else if (type.equals(PSElements.TypeDeclaration)) {
-            return new PSTypeDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.TypeSynonymDeclaration)) {
-            return new PSTypeSynonymDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.ValueDeclaration)) {
-            return new PSValueDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.ExternDataDeclaration)) {
-            return new PSExternDataDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.ExternInstanceDeclaration)) {
-            return new PSExternInstanceDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.ExternDeclaration)) {
-            return new PSExternDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.FixityDeclaration)) {
-            return new PSFixityDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.PositionedDeclarationRef)) {
-            return new PSPositionedDeclarationRefImpl(node);
-
-        } else if (type.equals(PSElements.TypeClassDeclaration)) {
-            return new PSTypeClassDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.TypeInstanceDeclaration)) {
-            return new PSTypeInstanceDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.NewtypeDeclaration)) {
-            return new PSNewTypeDeclarationImpl(node);
-
-        } else if (type.equals(PSElements.Guard)) {
-            return new PSGuardImpl(node);
-
-        } else if (type.equals(PSElements.NullBinder)) {
-            return new PSNullBinderImpl(node);
-
-        } else if (type.equals(PSElements.StringBinder)) {
-            return new PSStringBinderImpl(node);
-
-        } else if (type.equals(PSElements.BooleanBinder)) {
-            return new PSBooleanBinderImpl(node);
-
-        } else if (type.equals(PSElements.NumberBinder)) {
-            return new PSNumberBinderImpl(node);
-
-        } else if (type.equals(PSElements.NamedBinder)) {
-            return new PSNamedBinderImpl(node);
-
-        } else if (type.equals(PSElements.VarBinder)) {
-            return new PSVarBinderImpl(node);
-
-        } else if (type.equals(PSElements.ConstructorBinder)) {
-            return new PSConstructorBinderImpl(node);
-
-        } else if (type.equals(PSElements.ObjectBinder)) {
-            return new PSObjectBinderImpl(node);
-
-        } else if (type.equals(PSElements.ObjectBinderField)) {
-            return new PSObjectBinderFieldImpl(node);
-
-        } else if (type.equals(PSElements.BinderAtom)) {
-            return new PSBinderAtomImpl(node);
-
-        } else if (type.equals(PSElements.Binder)) {
-            return new PSBinderImpl(node);
-
-        } else if (type.equals(PSElements.ValueRef)) {
-            return new PSValueRefImpl(node);
-
-        } else if (type.equals(PSElements.BooleanLiteral)) {
-            return new PSBooleanLiteralImpl(node);
-
-        } else if (type.equals(PSElements.NumericLiteral)) {
-            return new PSNumericLiteralImpl(node);
-
-        } else if (type.equals(PSElements.StringLiteral)) {
-            return new PSStringLiteralImpl(node);
-
-        } else if (type.equals(PSElements.ArrayLiteral)) {
-            return new PSArrayLiteralImpl(node);
-
-        } else if (type.equals(PSElements.ObjectLiteral)) {
-            return new PSObjectLiteralImpl(node);
-
-        } else if (type.equals(PSElements.Abs)) {
-            return new PSAbsImpl(node);
-
-        } else if (type.equals(PSElements.IdentInfix)) {
-            return new PSIdentInfixImpl(node);
-
-        } else if (type.equals(PSElements.Var)) {
-            return new PSVarImpl(node);
-//
+        } else if (type == PSElements.TypeAtom) {
+            PSTypeAtomImpl(node)
+        } else if (type == PSElements.GenericIdentifier) {
+            PSGenericIdentifierImpl(node)
+        } else if (type == PSElements.LocalIdentifier) {
+            PSLocalIdentifierImpl(node)
+        } else if (type == PSElements.TypeDeclaration) {
+            PSTypeDeclarationImpl(node)
+        } else if (type == PSElements.TypeSynonymDeclaration) {
+            PSTypeSynonymDeclarationImpl(node)
+        } else if (type == PSElements.ValueDeclaration) {
+            PSValueDeclarationImpl(node)
+        } else if (type == PSElements.ExternDataDeclaration) {
+            PSExternDataDeclarationImpl(node)
+        } else if (type == PSElements.ExternInstanceDeclaration) {
+            PSExternInstanceDeclarationImpl(node)
+        } else if (type == PSElements.ExternDeclaration) {
+            PSExternDeclarationImpl(node)
+        } else if (type == PSElements.FixityDeclaration) {
+            PSFixityDeclarationImpl(node)
+        } else if (type == PSElements.PositionedDeclarationRef) {
+            PSPositionedDeclarationRefImpl(node)
+        } else if (type == PSElements.TypeClassDeclaration) {
+            PSTypeClassDeclarationImpl(node)
+        } else if (type == PSElements.TypeInstanceDeclaration) {
+            PSTypeInstanceDeclarationImpl(node)
+        } else if (type == PSElements.NewtypeDeclaration) {
+            PSNewTypeDeclarationImpl(node)
+        } else if (type == PSElements.Guard) {
+            PSGuardImpl(node)
+        } else if (type == PSElements.NullBinder) {
+            PSNullBinderImpl(node)
+        } else if (type == PSElements.StringBinder) {
+            PSStringBinderImpl(node)
+        } else if (type == PSElements.BooleanBinder) {
+            PSBooleanBinderImpl(node)
+        } else if (type == PSElements.NumberBinder) {
+            PSNumberBinderImpl(node)
+        } else if (type == PSElements.NamedBinder) {
+            PSNamedBinderImpl(node)
+        } else if (type == PSElements.VarBinder) {
+            PSVarBinderImpl(node)
+        } else if (type == PSElements.ConstructorBinder) {
+            PSConstructorBinderImpl(node)
+        } else if (type == PSElements.ObjectBinder) {
+            PSObjectBinderImpl(node)
+        } else if (type == PSElements.ObjectBinderField) {
+            PSObjectBinderFieldImpl(node)
+        } else if (type == PSElements.BinderAtom) {
+            PSBinderAtomImpl(node)
+        } else if (type == PSElements.Binder) {
+            PSBinderImpl(node)
+        } else if (type == PSElements.ValueRef) {
+            PSValueRefImpl(node)
+        } else if (type == PSElements.BooleanLiteral) {
+            PSBooleanLiteralImpl(node)
+        } else if (type == PSElements.NumericLiteral) {
+            PSNumericLiteralImpl(node)
+        } else if (type == PSElements.StringLiteral) {
+            PSStringLiteralImpl(node)
+        } else if (type == PSElements.ArrayLiteral) {
+            PSArrayLiteralImpl(node)
+        } else if (type == PSElements.ObjectLiteral) {
+            PSObjectLiteralImpl(node)
+        } else if (type == PSElements.Abs) {
+            PSAbsImpl(node)
+        } else if (type == PSElements.IdentInfix) {
+            PSIdentInfixImpl(node)
+        } else if (type == PSElements.Var) {
+            PSVarImpl(node)
+            //
 //        } else if (type.equals(PSElements.Constructor)) {
 //            return new PSConstructorImpl(node);
-
-        } else if (type.equals(PSElements.Case)) {
-            return new PSCaseImpl(node);
-
-        } else if (type.equals(PSElements.CaseAlternative)) {
-            return new PSCaseAlternativeImpl(node);
-
-        } else if (type.equals(PSElements.IfThenElse)) {
-            return new PSIfThenElseImpl(node);
-
-        } else if (type.equals(PSElements.Let)) {
-            return new PSLetImpl(node);
-
-        } else if (type.equals(PSElements.Parens)) {
-            return new PSParensImpl(node);
-
-        } else if (type.equals(PSElements.UnaryMinus)) {
-            return new PSUnaryMinusImpl(node);
-
-        } else if (type.equals(PSElements.PrefixValue)) {
-            return new PSPrefixValueImpl(node);
-
-        } else if (type.equals(PSElements.Accessor)) {
-            return new PSAccessorImpl(node);
-
-        } else if (type.equals(PSElements.DoNotationLet)) {
-            return new PSDoNotationLetImpl(node);
-
-        } else if (type.equals(PSElements.DoNotationBind)) {
-            return new PSDoNotationBindImpl(node);
-
-        } else if (type.equals(PSElements.DoNotationValue)) {
-            return new PSDoNotationValueImpl(node);
-
-        } else if (type.equals(PSElements.Value)) {
-            return new PSValueImpl(node);
-
-        } else if (type.equals(PSElements.Fixity)) {
-            return new PSFixityImpl(node);
-
-        } else if (type.equals(PSElements.JSRaw)) {
-            return new PSJSRawImpl(node);
+        } else if (type == PSElements.Case) {
+            PSCaseImpl(node)
+        } else if (type == PSElements.CaseAlternative) {
+            PSCaseAlternativeImpl(node)
+        } else if (type == PSElements.IfThenElse) {
+            PSIfThenElseImpl(node)
+        } else if (type == PSElements.Let) {
+            PSLetImpl(node)
+        } else if (type == PSElements.Parens) {
+            PSParensImpl(node)
+        } else if (type == PSElements.UnaryMinus) {
+            PSUnaryMinusImpl(node)
+        } else if (type == PSElements.PrefixValue) {
+            PSPrefixValueImpl(node)
+        } else if (type == PSElements.Accessor) {
+            PSAccessorImpl(node)
+        } else if (type == PSElements.DoNotationLet) {
+            PSDoNotationLetImpl(node)
+        } else if (type == PSElements.DoNotationBind) {
+            PSDoNotationBindImpl(node)
+        } else if (type == PSElements.DoNotationValue) {
+            PSDoNotationValueImpl(node)
+        } else if (type == PSElements.Value) {
+            PSValueImpl(node)
+        } else if (type == PSElements.Fixity) {
+            PSFixityImpl(node)
+        } else if (type == PSElements.JSRaw) {
+            PSJSRawImpl(node)
 
 //        } else if (type.equals(PSElements.pModuleName)) {
 //            return new PSModuleNameImpl(node);
@@ -287,27 +203,23 @@ public class PSParserDefinition implements ParserDefinition, PSTokens {
 //
 //        } else if (type.equals(PSElements.pClassName)) {
 //            return new PSClassNameImpl(node);
-
-        } else if (type.equals(PSElements.pImplies)) {
-            return new PSImpliesImpl(node);
-
-        } else if (type.equals(PSElements.TypeHole)) {
-            return new PSTypeHoleImpl(node);
-
+        } else if (type == PSElements.pImplies) {
+            PSImpliesImpl(node)
+        } else if (type == PSElements.TypeHole) {
+            PSTypeHoleImpl(node)
         } else {
-            return new PSASTWrapperElement(node);
+            PSASTWrapperElement(node)
         }
-
-
     }
 
-    @Override
-    public PsiFile createFile(final FileViewProvider viewProvider) {
-        return new PSFile(viewProvider);
+    override fun createFile(viewProvider: FileViewProvider): PsiFile {
+        return PSFile(viewProvider)
     }
 
-    @Override
-    public SpaceRequirements spaceExistenceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
-        return SpaceRequirements.MAY;
+    override fun spaceExistenceTypeBetweenTokens(
+        left: ASTNode,
+        right: ASTNode
+    ): SpaceRequirements {
+        return SpaceRequirements.MAY
     }
 }

@@ -1,72 +1,52 @@
-package net.kenro.ji.jin.purescript.parser;
+package net.kenro.ji.jin.purescript.parser
 
-import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.tree.IElementType
+import java.util.*
 
-import java.util.HashSet;
-
-public abstract class Parsec {
-    @Nullable
-    private String name;
-    @Nullable
-    private HashSet<String> expectedName;
-    @Nullable
-    private Boolean canBeEmpty;
-
-    @NotNull
-    public abstract ParserInfo parse(@NotNull ParserContext context);
-
-    @NotNull
-    public final String getName() {
-        if (name == null) {
-            name = calcName();
+abstract class Parsec {
+    var name: String? = null
+        get() {
+            if (field == null) {
+                field = calcName()
+            }
+            return field
         }
-        return name;
-    }
-
-    @NotNull
-    protected abstract String calcName();
-
-    @NotNull
-    public final HashSet<String> getExpectedName() {
-        if (expectedName == null) {
-            expectedName = calcExpectedName();
+        private set
+    var expectedName: HashSet<String?>? = null
+        get() {
+            if (field == null) {
+                field = calcExpectedName()
+            }
+            return field
         }
-        return expectedName;
+        private set
+    private var canBeEmpty: Boolean? = null
+    abstract fun parse(context: ParserContext): ParserInfo
+    protected abstract fun calcName(): String
+    protected abstract fun calcExpectedName(): HashSet<String?>
+    fun then(next: Parsec): Parsec {
+        return Combinators.seq(this, next)
     }
 
-    @NotNull
-    protected abstract HashSet<String> calcExpectedName();
-
-    @NotNull
-    public Parsec then(@NotNull final Parsec next) {
-        return Combinators.seq(this, next);
+    fun lexeme(type: IElementType): Parsec {
+        return then(Combinators.lexeme(Combinators.token(type)))
     }
 
-    @NotNull
-    public Parsec lexeme(@NotNull final IElementType type) {
-        return then(Combinators.lexeme(Combinators.token(type)));
+    fun or(next: Parsec): Parsec {
+        return Combinators.choice(this, next)
     }
 
-    @NotNull
-    public Parsec or(@NotNull final Parsec next) {
-        return Combinators.choice(this, next);
+    fun `as`(node: IElementType): SymbolicParsec {
+        return SymbolicParsec(this, node)
     }
 
-    @NotNull
-    public SymbolicParsec as(@NotNull final IElementType node) {
-        return new SymbolicParsec(this, node);
-    }
-
-    public abstract boolean canStartWith(@NotNull IElementType type);
-
-    public final boolean canBeEmpty() {
+    abstract fun canStartWith(type: IElementType): Boolean
+    fun canBeEmpty(): Boolean {
         if (canBeEmpty == null) {
-            canBeEmpty = calcCanBeEmpty();
+            canBeEmpty = calcCanBeEmpty()
         }
-        return canBeEmpty;
+        return canBeEmpty!!
     }
 
-    protected abstract boolean calcCanBeEmpty();
+    protected abstract fun calcCanBeEmpty(): Boolean
 }

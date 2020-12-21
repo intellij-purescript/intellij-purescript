@@ -1,743 +1,622 @@
-package net.kenro.ji.jin.purescript.parser;
+package net.kenro.ji.jin.purescript.parser
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+import com.intellij.psi.tree.IElementType
+import net.kenro.ji.jin.purescript.psi.PSTokens
+import java.util.*
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
+object Combinators {
 
-import net.kenro.ji.jin.purescript.psi.PSTokens;
-import org.jetbrains.annotations.NotNull;
+    private fun strings(name1: String): HashSet<String?> {
+        val result: HashSet<String?> = LinkedHashSet()
+        result.add(name1)
+        return result
+    }
 
-public class Combinators {
-    @NotNull
-    private static HashSet<String> strings(final String... names) {
-        final HashSet<String> result = new LinkedHashSet<String>();
-        for (final String name : names) {
-            result.add(name);
+    private fun strings(names1: HashSet<String?>, names2: HashSet<String?>): HashSet<String?> {
+        val result: HashSet<String?> = LinkedHashSet()
+        result.addAll(names1)
+        result.addAll(names2)
+        return result
+    }
+
+    fun token(tokenType: IElementType): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                return if (context.eat(tokenType)) {
+                    ParserInfo(context.position, this, true)
+                } else ParserInfo(context.position, this, false)
+            }
+
+            public override fun calcName(): String {
+                return tokenType.toString()
+            }
+
+            override fun calcExpectedName(): HashSet<String?> {
+                return strings(tokenType.toString())
+            }
+
+            override fun canStartWith(type: IElementType): Boolean {
+                return type === tokenType
+            }
+
+            public override fun calcCanBeEmpty(): Boolean {
+                return false
+            }
         }
-        return result;
     }
 
-    @NotNull
-    private static HashSet<String> strings(final HashSet<String>... names) {
-        final HashSet<String> result = new LinkedHashSet<String>();
-        for (final HashSet<String> name : names) {
-            result.addAll(name);
+    fun token(token: String): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                if (context.text() == token) {
+                    context.advance()
+                    return ParserInfo(context.position, this, true)
+                }
+                return ParserInfo(context.position, this, false)
+            }
+
+            public override fun calcName(): String {
+                return "\"" + token + "\""
+            }
+
+            override fun calcExpectedName(): HashSet<String?> {
+                return strings("\"" + token + "\"")
+            }
+
+            override fun canStartWith(type: IElementType): Boolean {
+                return true
+            }
+
+            public override fun calcCanBeEmpty(): Boolean {
+                return false
+            }
         }
-        return result;
     }
 
-    @NotNull
-    static Parsec token(@NotNull final IElementType tokenType) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                if (context.eat(tokenType)) {
-                    return new ParserInfo(context.getPosition(), this, true);
-                }
-                return new ParserInfo(context.getPosition(), this, false);
-            }
-
-            @NotNull
-            @Override
-            public String calcName() {
-                return tokenType.toString();
-            }
-
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return strings(tokenType.toString());
-            }
-
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return type == tokenType;
-            }
-
-            @Override
-            public boolean calcCanBeEmpty() {
-                return false;
-            }
-        };
+    fun lexeme(text: String): Parsec {
+        return lexeme(token(text))
     }
 
-    @NotNull
-    static Parsec token(@NotNull final String token) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                if (context.text().equals(token)) {
-                    context.advance();
-                    return new ParserInfo(context.getPosition(), this, true);
-                }
-                return new ParserInfo(context.getPosition(), this, false);
-            }
-
-            @NotNull
-            @Override
-            public String calcName() {
-                return "\"" + token + "\"";
-            }
-
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return strings("\"" + token + "\"");
-            }
-
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return true;
-            }
-
-            @Override
-            public boolean calcCanBeEmpty() {
-                return false;
-            }
-        };
-    }
-
-    @NotNull
-    static Parsec lexeme(@NotNull final String text) {
-        return lexeme(token(text));
-    }
-
-    @NotNull
-    static Parsec lexeme(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                final ParserInfo info = p.parse(context);
+    fun lexeme(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                val info = p.parse(context)
                 if (info.success) {
-                    context.whiteSpace();
+                    context.whiteSpace()
                 }
-                return info;
+                return info
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return p.getName() + " ws*";
+            public override fun calcName(): String {
+                return p.name + " ws*"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    static Parsec lexeme(@NotNull final IElementType type) {
-        return lexeme(token(type));
+    fun lexeme(type: IElementType): Parsec {
+        return lexeme(token(type))
     }
 
-    @NotNull
-    static Parsec reserved(@NotNull final Parsec p) {
-        return attempt(lexeme(p));
+    fun reserved(p: Parsec): Parsec {
+        return attempt(lexeme(p))
     }
 
-    static Parsec reserved(@NotNull final String content) {
-        return attempt(lexeme(content));
+    fun reserved(content: String): Parsec {
+        return attempt(lexeme(content))
     }
 
-    @NotNull
-    static Parsec reserved(@NotNull final IElementType tokenType) {
-        return attempt(lexeme(token(tokenType)));
+    fun reserved(tokenType: IElementType): Parsec {
+        return attempt(lexeme(token(tokenType)))
     }
 
-    @NotNull
-    static Parsec keyword(@NotNull final IElementType tokenType, @NotNull final String content) {
-        return reserved(content).as(tokenType);
+    fun keyword(tokenType: IElementType, content: String): Parsec {
+        return reserved(content).`as`(tokenType)
     }
 
-    @NotNull
-    static Parsec seq(@NotNull final Parsec p1, @NotNull final Parsec p2) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                final ParserInfo info = p1.parse(context);
+    fun seq(p1: Parsec, p2: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                val info = p1.parse(context)
                 if (info.success) {
-                    final ParserInfo info2 = p2.parse(context);
-                    return ParserInfo.merge(info, info2, info2.success);
+                    val info2 = p2.parse(context)
+                    return ParserInfo.merge(
+                        info,
+                        info2,
+                        info2.success
+                    )
                 }
-                return info;
+                return info
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                final String name1 = p1.getName();
-                final String name2 = p2.getName();
-                return name1 + " " + name2;
+            public override fun calcName(): String {
+                val name1 = p1.name
+                val name2 = p2.name
+                return "$name1 $name2"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                if (p1.canBeEmpty()) { return strings(p1.getExpectedName(), p2.getExpectedName()); }
-                return p1.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return if (p1.canBeEmpty()) {
+                    strings(p1.expectedName!!, p2.expectedName!!)
+                } else p1.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                if (p1.canBeEmpty()) { return p1.canStartWith(type) || p2.canStartWith(type); }
-                return p1.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return if (p1.canBeEmpty()) {
+                    p1.canStartWith(type) || p2.canStartWith(type)
+                } else p1.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p1.canBeEmpty() && p2.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p1.canBeEmpty() && p2.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    static Parsec choice(@NotNull final Parsec head, @NotNull final Parsec... tail) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                final int position = context.getPosition();
-                ParserInfo info;
-                if (head.canBeEmpty() || head.canStartWith(context.peek())) {
-                    info = head.parse(context);
-                } else {
-                    info = new ParserInfo(position, head, false);
-                }
-
-                if (context.getPosition() > position || info.success) {
-                    return info;
-                }
-                for (final Parsec p2 : tail) {
-                    final ParserInfo info2;
-                    if (p2.canBeEmpty() || p2.canStartWith(context.peek())) {
-                        info2 = p2.parse(context);
+    fun choice(head: Parsec, vararg tail: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                val position = context.position
+                var info: ParserInfo
+                info =
+                    if (head.canBeEmpty() || head.canStartWith(context.peek())) {
+                        head.parse(context)
                     } else {
-                        info2 = new ParserInfo(position, p2, false);
+                        ParserInfo(position, head, false)
                     }
-                    info = ParserInfo.merge(info, info2, info2.success);
-
-                    if (context.getPosition() > position || info.success) {
-                        return info;
-                    }
+                if (context.position > position || info.success) {
+                    return info
                 }
-                return info;
-            }
-
-            @NotNull
-            @Override
-            public String calcName() {
-                // TODO: avoid unnecessary parentheses.
-                final StringBuilder sb = new StringBuilder();
-                sb.append("(").append(head.getName()).append(")");
-                for (final Parsec parsec : tail) {
-                    sb.append(" | (").append(parsec.getName()).append(")");
-                }
-                return sb.toString();
-            }
-
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                final HashSet<String> result = new LinkedHashSet<String>();
-                result.addAll(head.getExpectedName());
-                for (final Parsec parsec : tail) {
-                    result.addAll(parsec.getExpectedName());
-                }
-                return result;
-            }
-
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                if (head.canStartWith(type)) { return true; }
-                for (final Parsec parsec : tail) {
-                    if (parsec.canStartWith(type)) { return true; }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean calcCanBeEmpty() {
-                if (!head.canBeEmpty()) { return false; }
-                for (final Parsec parsec : tail) {
-                    if (!parsec.canBeEmpty()) { return false; }
-                }
-                return true;
-            }
-        };
-    }
-
-    @NotNull
-    static Parsec many(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                ParserInfo info = new ParserInfo(context.getPosition(), p, true);
-                while (!context.eof()) {
-                    final int position = context.getPosition();
-                    info = p.parse(context);
-                    if (info.success) {
-                        if (position == context.getPosition()) {
-                            // TODO: this should not be allowed.
-                            return ParserInfo.merge(info, new ParserInfo(context.getPosition(), info, false), false);
+                for (p2 in tail) {
+                    val info2: ParserInfo
+                    info2 =
+                        if (p2.canBeEmpty() || p2.canStartWith(context.peek())) {
+                            p2.parse(context)
+                        } else {
+                            ParserInfo(position, p2, false)
                         }
-                    } else if (position == context.getPosition()) {
-                        return ParserInfo.merge(info, new ParserInfo(context.getPosition(), info, true), true);
+                    info =
+                        ParserInfo.merge(info, info2, info2.success)
+                    if (context.position > position || info.success) {
+                        return info
+                    }
+                }
+                return info
+            }
+
+            public override fun calcName(): String {
+                // TODO: avoid unnecessary parentheses.
+                val sb = StringBuilder()
+                sb.append("(").append(head.name).append(")")
+                for (parsec in tail) {
+                    sb.append(" | (").append(parsec.name).append(")")
+                }
+                return sb.toString()
+            }
+
+            override fun calcExpectedName(): HashSet<String?> {
+                val result: HashSet<String?> = LinkedHashSet()
+                result.addAll(head.expectedName!!)
+                for (parsec in tail) {
+                    result.addAll(parsec.expectedName!!)
+                }
+                return result
+            }
+
+            override fun canStartWith(type: IElementType): Boolean {
+                if (head.canStartWith(type)) {
+                    return true
+                }
+                for (parsec in tail) {
+                    if (parsec.canStartWith(type)) {
+                        return true
+                    }
+                }
+                return false
+            }
+
+            public override fun calcCanBeEmpty(): Boolean {
+                if (!head.canBeEmpty()) {
+                    return false
+                }
+                for (parsec in tail) {
+                    if (!parsec.canBeEmpty()) {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
+
+    fun many(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                var info = ParserInfo(context.position, p, true)
+                while (!context.eof()) {
+                    val position = context.position
+                    info = p.parse(context)
+                    if (info.success) {
+                        if (position == context.position) {
+                            // TODO: this should not be allowed.
+                            return ParserInfo.merge(
+                                info,
+                                ParserInfo(context.position, info, false),
+                                false
+                            )
+                        }
+                    } else return if (position == context.position) {
+                        ParserInfo.merge(
+                            info,
+                            ParserInfo(context.position, info, true),
+                            true
+                        )
                     } else {
-                        return info;
+                        info
                     }
                 }
-                return info;
+                return info
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return "(" + p.getName() + ")*";
+            public override fun calcName(): String {
+                return "(" + p.name + ")*"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return true;
+            public override fun calcCanBeEmpty(): Boolean {
+                return true
             }
-        };
+        }
     }
 
-    @NotNull
-    static Parsec many1(@NotNull final Parsec p) {
-        return p.then(many(p));
+    fun many1(p: Parsec): Parsec {
+        return p.then(many(p))
     }
 
-    @NotNull
-    static Parsec optional(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                try {
-                    context.enterOptional();
-                    final int position = context.getPosition();
-                    final ParserInfo info1 = p.parse(context);
+    fun optional(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                return try {
+                    context.enterOptional()
+                    val position = context.position
+                    val info1 = p.parse(context)
                     if (info1.success) {
-                        return info1;
-                    }
-                    return new ParserInfo(info1.position, info1, context.getPosition() == position);
+                        info1
+                    } else ParserInfo(
+                        info1.position,
+                        info1,
+                        context.position == position
+                    )
                 } finally {
-                    context.exitOptional();
+                    context.exitOptional()
                 }
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
+            public override fun calcName(): String {
                 // TODO: avoid unnecessary parentheses.
-                return "(" + p.getName() + ")?";
+                return "(" + p.name + ")?"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return true;
+            public override fun calcCanBeEmpty(): Boolean {
+                return true
             }
-        };
+        }
     }
 
-    @NotNull
-    static Parsec attempt(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
+    fun attempt(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
                 if (!p.canBeEmpty() && !p.canStartWith(context.peek())) {
-                    return new ParserInfo(context.getPosition(), p, false);
+                    return ParserInfo(context.position, p, false)
                 }
-                final int start = context.getPosition();
-                final PsiBuilder.Marker pack = context.start();
-                final boolean inAttempt = context.isInAttempt();
-                context.setInAttempt(true);
-                final ParserInfo info = p.parse(context);
-                context.setInAttempt(inAttempt);
+                val start = context.position
+                val pack = context.start()
+                val inAttempt = context.isInAttempt
+                context.isInAttempt = true
+                val info = p.parse(context)
+                context.isInAttempt = inAttempt
                 if (info.success) {
-                    pack.drop();
-                    return info;
+                    pack.drop()
+                    return info
                 }
-                pack.rollbackTo();
-                return new ParserInfo(start, info, false);
+                pack.rollbackTo()
+                return ParserInfo(start, info, false)
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
+            public override fun calcName(): String {
                 // TODO: avoid unnecessary parentheses.
-                return "try(" + p.getName() + ")";
+                return "try(" + p.name + ")"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    public static Parsec parens(@NotNull Parsec p) {
-        p = until(p, PSTokens.RPAREN);
-        return lexeme(PSTokens.LPAREN).then(indented(p)).then(indented(lexeme(PSTokens.RPAREN)));
+    fun parens(pInit: Parsec): Parsec {
+        var p = pInit
+        p = until(p, PSTokens.RPAREN)
+        return lexeme(PSTokens.LPAREN).then(indented(p))
+            .then(indented(lexeme(PSTokens.RPAREN)))
     }
 
-    @NotNull
-    public static Parsec squares(@NotNull Parsec p) {
-        p = until(p, PSTokens.RPAREN);
-        return lexeme(PSTokens.LBRACK).then(indented(p)).then(indented(lexeme(PSTokens.RBRACK)));
+    fun squares(pInit: Parsec): Parsec {
+        var p = pInit
+        p = until(p, PSTokens.RPAREN)
+        return lexeme(PSTokens.LBRACK).then(indented(p))
+            .then(indented(lexeme(PSTokens.RBRACK)))
     }
 
-    @NotNull
-    public static Parsec braces(@NotNull Parsec p) {
-        p = until(p, PSTokens.RPAREN);
-        return lexeme(PSTokens.LCURLY).then(indented(p)).then(indented(lexeme(PSTokens.RCURLY)));
+    fun braces(pInit: Parsec): Parsec {
+        var p = pInit
+        p = until(p, PSTokens.RPAREN)
+        return lexeme(PSTokens.LCURLY).then(indented(p))
+            .then(indented(lexeme(PSTokens.RCURLY)))
     }
 
-    @NotNull
-    public static Parsec indented(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                if (context.getColumn() > context.getIndentationLevel()) {
-                    return p.parse(context);
-                }
-                return new ParserInfo(context.getPosition(), this, false);
+    fun indented(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                return if (context.column > context.indentationLevel.peek()) {
+                    p.parse(context)
+                } else ParserInfo(context.position, this, false)
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return "indented (" + p.getName() + ")";
+            public override fun calcName(): String {
+                return "indented (" + p.name + ")"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    public static Parsec same(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                if (context.getColumn() == context.getIndentationLevel()) {
-                    return p.parse(context);
-                }
-                return new ParserInfo(context.getPosition(), this, false);
+    fun same(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                return if (context.column == context.indentationLevel.peek()) {
+                    p.parse(context)
+                } else ParserInfo(context.position, this, false)
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return "not indented (" + p.getName() + ")";
+            public override fun calcName(): String {
+                return "not indented (" + p.name + ")"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    public static Parsec mark(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                context.pushIndentationLevel();
-                try {
-                    return p.parse(context);
+    fun mark(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                context.pushIndentationLevel()
+                return try {
+                    p.parse(context)
                 } finally {
-                    context.popIndentationLevel();
+                    context.popIndentationLevel()
                 }
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return "not indented (" + p.getName() + ")";
+            public override fun calcName(): String {
+                return "not indented (" + p.name + ")"
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    static Parsec sepBy1(@NotNull Parsec p, @NotNull final IElementType sep) {
-        p = until(p, sep);
-        return p.then(attempt(many(lexeme(sep).then(p))));
+    fun sepBy1(p: Parsec, sep: IElementType): Parsec {
+        var p = p
+        p = until(p, sep)
+        return p.then(attempt(many(lexeme(sep).then(p))))
     }
 
-    @NotNull
-    static Parsec commaSep1(@NotNull final Parsec p) {
-        return sepBy1(p, PSTokens.COMMA);
+    fun commaSep1(p: Parsec): Parsec {
+        return sepBy1(p, PSTokens.COMMA)
     }
 
-    @NotNull
-    static Parsec sepBy(@NotNull final Parsec p, @NotNull final Parsec sep) {
-        return optional(p.then(many(sep.then(p))));
+    fun sepBy(p: Parsec, sep: Parsec): Parsec {
+        return optional(p.then(many(sep.then(p))))
     }
 
-    @NotNull
-    static Parsec commaSep(@NotNull final Parsec p) {
-        return sepBy(p, lexeme(PSTokens.COMMA));
+    fun commaSep(p: Parsec): Parsec {
+        return sepBy(p, lexeme(PSTokens.COMMA))
     }
 
-    @NotNull
-    static ParsecRef ref() {
-        return new ParsecRef();
+    fun ref(): ParsecRef {
+        return ParsecRef()
     }
 
-    @NotNull
-    static Parsec until(@NotNull final Parsec p, @NotNull final IElementType token) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                final int startPosition = context.getPosition();
-                final boolean inAttempt = context.isInAttempt();
-                context.addUntilToken(token);
-                context.setInAttempt(false);
-                final ParserInfo info = p.parse(context);
-                context.setInAttempt(inAttempt);
+    fun until(p: Parsec, token: IElementType): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                val startPosition = context.position
+                val inAttempt = context.isInAttempt
+                context.addUntilToken(token)
+                context.isInAttempt = false
+                val info = p.parse(context)
+                context.isInAttempt = inAttempt
                 if (info.success) {
-                    return info;
+                    return info
                 }
-                final PsiBuilder.Marker start = context.start();
+                val start = context.start()
                 while (!context.eof()) {
                     if (context.isUntilToken(context.peek())) {
-                        break;
+                        break
                     }
-                    context.advance();
+                    context.advance()
                 }
-                context.removeUntilToken(token);
-                if (!context.isInOptional() || startPosition != context.getPosition()) {
-                    start.error(info.toString());
+                context.removeUntilToken(token)
+                if (!context.isInOptional() || startPosition != context.position) {
+                    start.error(info.toString())
                 } else {
-                    start.drop();
+                    start.drop()
                 }
-                return new ParserInfo(info.position, info, !inAttempt);
+                return ParserInfo(info.position, info, !inAttempt)
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return p.getName();
+            public override fun calcName(): String {
+                return p.name!!
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    @NotNull
-    static Parsec untilSame(@NotNull final Parsec p) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                final int position = context.getPosition();
-                final ParserInfo info = p.parse(context);
-                if (info.success || position == context.getPosition()) {
-                    return info;
+    fun untilSame(p: Parsec): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                val position = context.position
+                val info = p.parse(context)
+                if (info.success || position == context.position) {
+                    return info
                 }
-                context.whiteSpace();
-                if (context.getColumn() <= context.getLastIndentationLevel()) {
-                    return info;
+                context.whiteSpace()
+                if (context.column <= context.lastIndentationLevel) {
+                    return info
                 }
-                final PsiBuilder.Marker start = context.start();
+                val start = context.start()
                 while (!context.eof()) {
-                    if (context.getColumn() == context.getIndentationLevel()) {
-                        break;
+                    if (context.column == context.indentationLevel.peek()) {
+                        break
                     }
-                    context.advance();
+                    context.advance()
                 }
-                start.error(info.toString());
-                return new ParserInfo(context.getPosition(), info, true);
+                start.error(info.toString())
+                return ParserInfo(context.position, info, true)
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return p.getName();
+            public override fun calcName(): String {
+                return p.name!!
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 
-    interface Predicate<T> {
-        boolean test(T content);
-    }
-
-    @NotNull
-    static Parsec guard(@NotNull final Parsec p,
-                        final Predicate<String> predicate,
-                        @NotNull final String errorMessage) {
-        return new Parsec() {
-            @NotNull
-            @Override
-            public ParserInfo parse(@NotNull final ParserContext context) {
-                final PsiBuilder.Marker pack = context.start();
-                final int start = context.getPosition();
-                final ParserInfo info1 = p.parse(context);
+    fun guard(
+        p: Parsec,
+        predicate: (String?) -> Boolean,
+        errorMessage: String
+    ): Parsec {
+        return object : Parsec() {
+            override fun parse(context: ParserContext): ParserInfo {
+                val pack = context.start()
+                val start = context.position
+                val info1 = p.parse(context)
                 if (info1.success) {
-                    final int end = context.getPosition();
-                    final String text = context.getText(start, end);
-                    if (!predicate.test(text)) {
-                        return new ParserInfo(context.getPosition(), errorMessage, false);
+                    val end = context.position
+                    val text = context.getText(start, end)
+                    if (!predicate.invoke(text)) {
+                        return ParserInfo(context.position, errorMessage, false)
                     }
-                    pack.drop();
-                    return info1;
+                    pack.drop()
+                    return info1
                 }
-                pack.rollbackTo();
-                return info1;
+                pack.rollbackTo()
+                return info1
             }
 
-            @NotNull
-            @Override
-            public String calcName() {
-                return p.getName();
+            public override fun calcName(): String {
+                return p.name!!
             }
 
-            @NotNull
-            @Override
-            protected HashSet<String> calcExpectedName() {
-                return p.getExpectedName();
+            override fun calcExpectedName(): HashSet<String?> {
+                return p.expectedName!!
             }
 
-            @Override
-            public boolean canStartWith(@NotNull final IElementType type) {
-                return p.canStartWith(type);
+            override fun canStartWith(type: IElementType): Boolean {
+                return p.canStartWith(type)
             }
 
-            @Override
-            public boolean calcCanBeEmpty() {
-                return p.canBeEmpty();
+            public override fun calcCanBeEmpty(): Boolean {
+                return p.canBeEmpty()
             }
-        };
+        }
     }
 }
