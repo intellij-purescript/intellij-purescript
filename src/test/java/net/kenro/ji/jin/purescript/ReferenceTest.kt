@@ -1,9 +1,13 @@
 package net.kenro.ji.jin.purescript
 
+import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.util.PsiTreeUtil
 import net.kenro.ji.jin.purescript.file.PSFile
 import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
+import net.kenro.ji.jin.purescript.psi.impl.PSDataDeclarationImpl
 import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
 import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
+import org.junit.Ignore
 
 class ReferenceTest : PSLanguageParserTestBase() {
     fun testFindTopLevelValueDeclarationWithName() {
@@ -78,4 +82,27 @@ class ReferenceTest : PSLanguageParserTestBase() {
         assertInstanceOf(resolved, PSIdentifierImpl::class.java)
         assertEquals("x", (resolved as PSIdentifierImpl?)!!.name)
     }
+
+    fun ignoreTestIdentifierCanResolveToTypeConstructor() {
+        val file = createFile(
+                "Main.purs",
+                """
+                module Data where
+                data A = A
+                func :: A -> A
+                func a = a
+                """.trimIndent()
+        ) as PSFile
+        val elementAtCursor = file.findElementAt(38)
+        val psIdentifier = if (elementAtCursor is PSIdentifierImpl)
+            elementAtCursor
+        else
+            PsiTreeUtil.findFirstParent(elementAtCursor)
+            { it is PSIdentifierImpl } as PSIdentifierImpl
+        val reference = psIdentifier.reference
+        val resolved = reference!!.resolve()
+        assertInstanceOf(resolved, PSDataDeclarationImpl::class.java)
+        assertEquals("A", (resolved as PsiNamedElement).name)
+    }
+
 }

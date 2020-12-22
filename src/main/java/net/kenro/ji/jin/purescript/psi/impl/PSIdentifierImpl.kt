@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
 import net.kenro.ji.jin.purescript.file.PSFile
 import net.kenro.ji.jin.purescript.psi.ContainsIdentifier
+import net.kenro.ji.jin.purescript.psi.PSElements
 import java.util.*
 
 // PsiNamedElement is only here so that the editor can find the the
@@ -24,6 +25,9 @@ class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
     }
 
     override fun getReference(): PsiReference? {
+        if (this.node.elementType == PSElements.TypeConstructor) {
+            return null
+        }
         return object : PsiReferenceBase<PSIdentifierImpl?>(
             this,
             TextRange.allOf(this.name)
