@@ -24,6 +24,7 @@ class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
         return null
     }
 
+
     override fun getReference(): PsiReference? {
         if (this.node.elementType == PSElements.TypeConstructor) {
             return null
@@ -32,6 +33,20 @@ class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
             this,
             TextRange.allOf(this.name)
         ) {
+            override fun getVariants(): Array<PsiNamedElement> {
+                val containingFile = containingFile as PSFile
+                return (containingFile
+                    .topLevelValueDeclarations
+                    .values
+                    + containingValueDeclaration
+                    .map {it.declaredIdentifiersInParameterList}
+                    .map {it.values.asSequence()}
+                    .orElse(emptySequence<PSIdentifierImpl>())
+                    )
+                    .map { it as PsiNamedElement }
+                    .toTypedArray()
+            }
+
             override fun resolve(): PsiElement? {
                 return parameterReference
                     .orElseGet { topLevelValueDeclarationReference }
