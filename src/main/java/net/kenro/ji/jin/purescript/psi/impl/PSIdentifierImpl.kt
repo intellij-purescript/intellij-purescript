@@ -17,7 +17,7 @@ import java.util.*
 class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
     PsiNamedElement {
     override fun getName(): String {
-        return text.trim { it <= ' ' }
+        return text
     }
 
     override fun setName(name: String): PsiElement? {
