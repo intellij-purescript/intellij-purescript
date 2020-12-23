@@ -11,11 +11,13 @@
         <li>Syntax highlight</li>
         <li>Find usage of top level declarations</li>
         <li>Find usage of parameters</li>
+        <li>Autocomplete of top level declarations</li>
+        <li>Autocomplete of parameters</li>
       </ul>
     ]]></description>
 
   <change-notes><![CDATA[
-      Identifiers no longer contain trailing whitespace
+      Added autocomplete for things that already had find usage
     ]]>
   </change-notes>
 
