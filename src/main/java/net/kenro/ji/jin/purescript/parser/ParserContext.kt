@@ -100,10 +100,9 @@ class ParserContext(private val builder: PsiBuilder) {
             val type = builder.tokenType
             if (type === PSTokens.STRING || type === PSTokens.WS) {
                 for (element in text) {
-                    val ch = element
-                    if (ch == '\n') {
+                    if (element == '\n') {
                         column = 0
-                    } else if (ch == '\t') {
+                    } else if (element == '\t') {
                         column = column - column % 8 + 8
                     } else {
                         column++
