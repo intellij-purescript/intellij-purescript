@@ -8,7 +8,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 
 class PSValueDeclarationImpl(node: ASTNode) : PSPsiElement(node),
     PsiNameIdentifierOwner {
-    override fun getName(): String? {
+    override fun getName(): String {
         return findChildByClass(PSIdentifierImpl::class.java)!!
             .name
     }

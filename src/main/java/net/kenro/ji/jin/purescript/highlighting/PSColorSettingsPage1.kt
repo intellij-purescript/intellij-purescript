@@ -18,71 +18,71 @@ class PSColorSettingsPage : ColorSettingsPage {
         private val ATTRIBS = arrayOf(
             AttributesDescriptor(
                 "Keyword",
-                PSSyntaxHighlighter.Companion.KEYWORD
+                PSSyntaxHighlighter.KEYWORD
             ),
             AttributesDescriptor(
                 "Number",
-                PSSyntaxHighlighter.Companion.NUMBER
+                PSSyntaxHighlighter.NUMBER
             ),
             AttributesDescriptor(
                 "String",
-                PSSyntaxHighlighter.Companion.STRING
+                PSSyntaxHighlighter.STRING
             ),
             AttributesDescriptor(
                 "Operator",
-                PSSyntaxHighlighter.Companion.OPERATOR
+                PSSyntaxHighlighter.OPERATOR
             ),
             AttributesDescriptor(
                 "Type",
-                PSSyntaxHighlighter.Companion.TYPE_NAME
+                PSSyntaxHighlighter.TYPE_NAME
             ),
             AttributesDescriptor(
                 "Type Variable",
-                PSSyntaxHighlighter.Companion.TYPE_VARIABLE
+                PSSyntaxHighlighter.TYPE_VARIABLE
             ),
             AttributesDescriptor(
                 "Type Annotation//Name",
-                PSSyntaxHighlighter.Companion.TYPE_ANNOTATION_NAME
+                PSSyntaxHighlighter.TYPE_ANNOTATION_NAME
             ),
             AttributesDescriptor(
                 "Punctuation//Arrows",
-                PSSyntaxHighlighter.Companion.PS_ARROW
+                PSSyntaxHighlighter.PS_ARROW
             ),
             AttributesDescriptor(
                 "Punctuation//Parentheses",
-                PSSyntaxHighlighter.Companion.PS_PARENTHESIS
+                PSSyntaxHighlighter.PS_PARENTHESIS
             ),
             AttributesDescriptor(
                 "Punctuation//Braces",
-                PSSyntaxHighlighter.Companion.PS_BRACES
+                PSSyntaxHighlighter.PS_BRACES
             ),
             AttributesDescriptor(
                 "Punctuation//Brackets",
-                PSSyntaxHighlighter.Companion.PS_BRACKETS
+                PSSyntaxHighlighter.PS_BRACKETS
             ),
             AttributesDescriptor(
                 "Punctuation//Comma",
-                PSSyntaxHighlighter.Companion.PS_COMMA
+                PSSyntaxHighlighter.PS_COMMA
             ),
             AttributesDescriptor(
                 "Punctuation//Dot",
-                PSSyntaxHighlighter.Companion.PS_DOT
+                PSSyntaxHighlighter.PS_DOT
             ),
             AttributesDescriptor(
                 "Punctuation//Equals",
-                PSSyntaxHighlighter.Companion.PS_EQ
+                PSSyntaxHighlighter.PS_EQ
             ),
             AttributesDescriptor(
                 "Import Reference",
-                PSSyntaxHighlighter.Companion.IMPORT_REF
+                PSSyntaxHighlighter.IMPORT_REF
             )
         )
 
         init {
-            TAG_HIGHLIGHTING_MAP["import_ref"] = PSSyntaxHighlighter.Companion.IMPORT_REF // blue
-            TAG_HIGHLIGHTING_MAP["type_variable"] = PSSyntaxHighlighter.Companion.TYPE_VARIABLE // red
-            TAG_HIGHLIGHTING_MAP["type_name"] = PSSyntaxHighlighter.Companion.TYPE_NAME // yellow
-            TAG_HIGHLIGHTING_MAP["type_annotation_name"] = PSSyntaxHighlighter.Companion.TYPE_ANNOTATION_NAME // blue
+            TAG_HIGHLIGHTING_MAP["import_ref"] = PSSyntaxHighlighter.IMPORT_REF // blue
+            TAG_HIGHLIGHTING_MAP["type_variable"] = PSSyntaxHighlighter.TYPE_VARIABLE // red
+            TAG_HIGHLIGHTING_MAP["type_name"] = PSSyntaxHighlighter.TYPE_NAME // yellow
+            TAG_HIGHLIGHTING_MAP["type_annotation_name"] = PSSyntaxHighlighter.TYPE_ANNOTATION_NAME // blue
         }
     }
 
@@ -156,7 +156,7 @@ clunky2 a b | x <- max a b
             = a + b"""
     }
 
-    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {
+    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> {
         return TAG_HIGHLIGHTING_MAP
     }
 

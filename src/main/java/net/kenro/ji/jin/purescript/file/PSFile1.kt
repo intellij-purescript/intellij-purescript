@@ -6,20 +6,15 @@ import com.intellij.psi.FileViewProvider
 import net.kenro.ji.jin.purescript.PSLanguage
 import net.kenro.ji.jin.purescript.psi.impl.PSProgramImpl
 import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
-import javax.swing.Icon
 
 class PSFile(viewProvider: FileViewProvider) :
     PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
     override fun getFileType(): FileType {
-        return PSFileType.Companion.INSTANCE
+        return PSFileType.INSTANCE
     }
 
     override fun toString(): String {
         return "Purescript File"
-    }
-
-    override fun getIcon(flags: Int): Icon? {
-        return super.getIcon(flags)
     }
 
     val topLevelValueDeclarations: Map<String, PSValueDeclarationImpl>

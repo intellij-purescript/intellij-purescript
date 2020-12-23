@@ -3,6 +3,7 @@ package net.kenro.ji.jin.purescript.psi.cst
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
+import kotlin.math.max
 
 class PSStringManipulator : AbstractElementManipulator<PSASTWrapperElement>() {
 
@@ -43,8 +44,8 @@ class PSStringManipulator : AbstractElementManipulator<PSASTWrapperElement>() {
         }
 
         private fun pairToTextRange(pair: Pair<Int, Int>): TextRange {
-            val start = Math.max(pair.first, 0)
-            val end = Math.max(pair.second, start)
+            val start = max(pair.first, 0)
+            val end = max(pair.second, start)
             return TextRange.from(start, end)
         }
     }

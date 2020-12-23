@@ -179,9 +179,7 @@ object Combinators {
                     return info
                 }
                 for (p2 in tail) {
-                    val info2: ParserInfo
-                    info2 =
-                        if (p2.canBeEmpty() || p2.canStartWith(context.peek())) {
+                    val info2: ParserInfo = if (p2.canBeEmpty() || p2.canStartWith(context.peek())) {
                             p2.parse(context)
                         } else {
                             ParserInfo(position, p2, false)

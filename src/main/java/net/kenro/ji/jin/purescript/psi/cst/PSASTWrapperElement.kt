@@ -15,8 +15,6 @@ class PSASTWrapperElement(astNode: ASTNode?) : ASTWrapperPsiElement(
         }
     val isBlockString: Boolean
         get() = stringText.startsWith("\"\"\"")
-    val isMultilineString: Boolean
-        get() = stringText.indexOf('\n') != -1
 
     /**
      * Returns the text of a string element, including its quotes.

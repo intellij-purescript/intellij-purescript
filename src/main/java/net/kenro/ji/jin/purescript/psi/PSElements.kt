@@ -156,14 +156,5 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val TypeHole = PSElementType("TypeHole")
 
-        // NOT USED?
-        @kotlin.jvm.JvmField
-        val TypeApp = PSElementType("TypeApp")
-        @kotlin.jvm.JvmField
-        val PolyType = PSElementType("PolyType")
-        @kotlin.jvm.JvmField
-        val PositionedDeclaration = PSElementType("PositionedDeclaration")
-        @kotlin.jvm.JvmField
-        val LocalDeclaration = PSElementType("LocalDeclaration")
     }
 }
