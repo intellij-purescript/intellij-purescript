@@ -18,8 +18,8 @@ class PSFileType private constructor() : LanguageFileType(PSLanguage.INSTANCE) {
         return DEFAULT_EXTENSION
     }
 
-    override fun getIcon(): Icon? {
-        return PSIcons.Companion.FILE
+    override fun getIcon(): Icon {
+        return PSIcons.FILE
     }
 
     companion object {

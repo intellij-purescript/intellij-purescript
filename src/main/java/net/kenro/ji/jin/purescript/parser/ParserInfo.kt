@@ -32,16 +32,14 @@ class ParserInfo {
         set<Parsec>(expected),
         null,
         success
-    ) {
-    }
+    )
 
     constructor(position: Int, info: ParserInfo, success: Boolean) : this(
         position,
         info.expected,
         null,
         success
-    ) {
-    }
+    )
 
     override fun toString(): String {
         if (errorMessage != null) return errorMessage

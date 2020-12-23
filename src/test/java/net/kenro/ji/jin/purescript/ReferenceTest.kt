@@ -7,7 +7,6 @@ import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
 import net.kenro.ji.jin.purescript.psi.impl.PSDataDeclarationImpl
 import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
 import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
-import org.junit.Ignore
 
 class ReferenceTest : PSLanguageParserTestBase() {
     fun testFindTopLevelValueDeclarationWithName() {
@@ -83,6 +82,7 @@ class ReferenceTest : PSLanguageParserTestBase() {
         assertEquals("x", (resolved as PSIdentifierImpl?)!!.name)
     }
 
+    @Suppress("unused")
     fun ignoreTestIdentifierCanResolveToTypeConstructor() {
         val file = createFile(
                 "Main.purs",

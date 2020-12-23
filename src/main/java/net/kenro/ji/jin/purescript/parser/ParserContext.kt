@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package net.kenro.ji.jin.purescript.parser
 
 import com.intellij.lang.PsiBuilder
@@ -97,8 +99,8 @@ class ParserContext(private val builder: PsiBuilder) {
         if (text != null) {
             val type = builder.tokenType
             if (type === PSTokens.STRING || type === PSTokens.WS) {
-                for (i in 0 until text.length) {
-                    val ch = text[i]
+                for (element in text) {
+                    val ch = element
                     if (ch == '\n') {
                         column = 0
                     } else if (ch == '\t') {
@@ -156,26 +158,11 @@ class ParserContext(private val builder: PsiBuilder) {
         return tokenType ?: PSTokens.EOF
     }
 
-    fun match(type: IElementType): Boolean {
-        return builder.tokenType === type
-    }
-
     fun eat(type: IElementType): Boolean {
         if (builder.tokenType === type) {
             advance()
             return true
         }
-        return false
-    }
-
-    fun expect(type: IElementType): Boolean {
-        val mark = builder.mark()
-        if (builder.tokenType === type) {
-            advance()
-            mark.drop()
-            return true
-        }
-        mark.error(String.format("Expecting %s.", type.toString()))
         return false
     }
 
@@ -187,10 +174,6 @@ class ParserContext(private val builder: PsiBuilder) {
 
     val position: Int
         get() = builder.currentOffset
-
-    fun getIndentationLevel(): Int {
-        return indentationLevel.peek()
-    }
 
     val lastIndentationLevel: Int
         get() = if (indentationLevel.size >= 2) {

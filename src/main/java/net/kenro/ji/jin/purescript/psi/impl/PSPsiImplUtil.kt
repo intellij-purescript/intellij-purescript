@@ -7,12 +7,4 @@ object PSPsiImplUtil {
         return element.text
     }
 
-    fun getNameIdentifier(element: PSProperNameImpl): PsiElement? {
-        val node = element.node
-        return if (node != null) {
-            node.psi
-        } else {
-            null
-        }
-    }
 }
