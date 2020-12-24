@@ -14,10 +14,8 @@ import com.intellij.psi.tree.TokenSet
 import net.kenro.ji.jin.purescript.file.PSFile
 import net.kenro.ji.jin.purescript.file.PSFileStubType
 import net.kenro.ji.jin.purescript.lexer.PSLexer
-import net.kenro.ji.jin.purescript.psi.PSElements
-import net.kenro.ji.jin.purescript.psi.PSTokens
-import net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement
-import net.kenro.ji.jin.purescript.psi.impl.*
+import net.kenro.ji.jin.purescript.psi.*
+import net.kenro.ji.jin.purescript.psi.PSASTWrapperElement
 
 class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createLexer(project: Project): Lexer {

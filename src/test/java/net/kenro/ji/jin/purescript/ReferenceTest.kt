@@ -4,9 +4,9 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
 import net.kenro.ji.jin.purescript.file.PSFile
 import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
-import net.kenro.ji.jin.purescript.psi.impl.PSDataDeclarationImpl
-import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
-import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
+import net.kenro.ji.jin.purescript.psi.PSDataDeclarationImpl
+import net.kenro.ji.jin.purescript.psi.PSIdentifierImpl
+import net.kenro.ji.jin.purescript.psi.PSValueDeclarationImpl
 
 class ReferenceTest : PSLanguageParserTestBase() {
     fun testFindTopLevelValueDeclarationWithName() {
