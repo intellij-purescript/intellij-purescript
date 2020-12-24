@@ -45,8 +45,8 @@
 
     <lang.parserDefinition language="Purescript" implementationClass="net.kenro.ji.jin.purescript.parser.PSParserDefinition"/>
 
-    <lang.elementManipulator forClass="net.kenro.ji.jin.purescript.psi.cst.PSASTWrapperElement"
-                             implementationClass="net.kenro.ji.jin.purescript.psi.cst.PSStringManipulator"/>
+    <lang.elementManipulator forClass="net.kenro.ji.jin.purescript.psi.PSASTWrapperElement"
+                             implementationClass="net.kenro.ji.jin.purescript.psi.PSStringManipulator"/>
 
     <lang.syntaxHighlighterFactory language="Purescript"
                                    implementationClass="net.kenro.ji.jin.purescript.highlighting.PSSyntaxHighlighterFactory"/>

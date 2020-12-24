@@ -1,13 +1,9 @@
 package net.kenro.ji.jin.purescript
 
 import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.util.PsiTreeUtil
 import net.kenro.ji.jin.purescript.file.PSFile
 import net.kenro.ji.jin.purescript.parser.PSLanguageParserTestBase
-import net.kenro.ji.jin.purescript.psi.impl.PSDataDeclarationImpl
-import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
-import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
-import org.junit.Ignore
+import net.kenro.ji.jin.purescript.psi.PSIdentifierImpl
 
 class VariantsTest : PSLanguageParserTestBase() {
     fun testIdentifierCanResolveToParameter() {
@@ -19,7 +15,7 @@ class VariantsTest : PSLanguageParserTestBase() {
                   y x = x
                   """.trimIndent()
         ) as PSFile
-        val psIdentifier:PSIdentifierImpl = file.findElementAt(30)!!.parent as PSIdentifierImpl
+        val psIdentifier: PSIdentifierImpl = file.findElementAt(30)!!.parent as PSIdentifierImpl
         val reference = psIdentifier.reference!!
         val resolved = reference
             .variants

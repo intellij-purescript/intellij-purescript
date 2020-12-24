@@ -3,8 +3,8 @@ package net.kenro.ji.jin.purescript.features
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
-import net.kenro.ji.jin.purescript.psi.impl.PSIdentifierImpl
-import net.kenro.ji.jin.purescript.psi.impl.PSValueDeclarationImpl
+import net.kenro.ji.jin.purescript.psi.PSIdentifierImpl
+import net.kenro.ji.jin.purescript.psi.PSValueDeclarationImpl
 import org.jetbrains.annotations.Nls
 
 class PSFindUsageProvider : FindUsagesProvider {
