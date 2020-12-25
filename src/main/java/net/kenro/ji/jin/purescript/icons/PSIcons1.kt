@@ -4,6 +4,6 @@ import com.intellij.openapi.util.IconLoader
 
 interface PSIcons {
     companion object {
-        val FILE = IconLoader.getIcon("/icons/pure.png")
+        val FILE = IconLoader.getIcon("/icons/pure.png", PSIcons::class.java)
     }
 }
