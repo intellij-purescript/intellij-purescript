@@ -37,7 +37,7 @@ apply plugin: 'org.jetbrains.grammarkit'
 import org.jetbrains.grammarkit.tasks.GenerateLexer
 task generateLexer(type: GenerateLexer) {
     source = "src/main/grammar/Purescript.flex"
-    targetDir = "src/main/gen/net/kenro/ji/jin/purescript/lexer/"
+    targetDir = "src/main/gen/org/purescript/lexer/"
     targetClass = "_PSLexer"
     purgeOldFiles = true
     skeleton = "src/main/grammar/idea-flex.skeleton"
