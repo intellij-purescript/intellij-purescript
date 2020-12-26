@@ -2,7 +2,7 @@
   <id>net.kenro.ji.jin.intellij.purescript</id>
   <name>Purescript</name>
   <version>1.0</version>
-  <vendor url="https://github.com/Neppord">Samuel Ytterbrink</vendor>
+  <vendor>intellij-purescript</vendor>
 
   <description><![CDATA[
       This plugin provides Purescript language support
