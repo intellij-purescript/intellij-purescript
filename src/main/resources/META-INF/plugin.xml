@@ -32,42 +32,42 @@
     <!-- Add your extensions here -->
     <lang.findUsagesProvider
         language="Purescript"
-        implementationClass="net.kenro.ji.jin.purescript.features.PSFindUsageProvider"
+        implementationClass="org.purescript.features.PSFindUsageProvider"
     />
 
     <fileType
         name="Purescript file"
-        implementationClass="net.kenro.ji.jin.purescript.file.PSFileType"
+        implementationClass="org.purescript.file.PSFileType"
         fieldName="INSTANCE"
         language="Purescript"
         extensions="purs"
     />
 
-    <lang.parserDefinition language="Purescript" implementationClass="net.kenro.ji.jin.purescript.parser.PSParserDefinition"/>
+    <lang.parserDefinition language="Purescript" implementationClass="org.purescript.parser.PSParserDefinition"/>
 
-    <lang.elementManipulator forClass="net.kenro.ji.jin.purescript.psi.PSASTWrapperElement"
-                             implementationClass="net.kenro.ji.jin.purescript.psi.PSStringManipulator"/>
+    <lang.elementManipulator forClass="org.purescript.psi.PSASTWrapperElement"
+                             implementationClass="org.purescript.psi.PSStringManipulator"/>
 
     <lang.syntaxHighlighterFactory language="Purescript"
-                                   implementationClass="net.kenro.ji.jin.purescript.highlighting.PSSyntaxHighlighterFactory"/>
+                                   implementationClass="org.purescript.highlighting.PSSyntaxHighlighterFactory"/>
 
     <annotator
             language="Purescript"
-            implementationClass="net.kenro.ji.jin.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
+            implementationClass="org.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/PurescriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/PurescriptDarcula.xml"/>
 
     <colorSettingsPage
-            implementation="net.kenro.ji.jin.purescript.highlighting.PSColorSettingsPage" />
+            implementation="org.purescript.highlighting.PSColorSettingsPage" />
 
     <lang.commenter
             language="Purescript"
-            implementationClass="net.kenro.ji.jin.purescript.features.PSCommenter"/>
+            implementationClass="org.purescript.features.PSCommenter"/>
 
     <lang.braceMatcher
             language="Purescript"
-            implementationClass="net.kenro.ji.jin.purescript.features.PSPairedBraceMatcher"/>
+            implementationClass="org.purescript.features.PSPairedBraceMatcher"/>
 
   </extensions>
 

@@ -1,8 +1,8 @@
-package net.kenro.ji.jin.purescript.lexer;
+package org.purescript.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import static net.kenro.ji.jin.purescript.psi.PSTokens.*;
+import static org.purescript.psi.PSTokens.*;
 
 %%
 
