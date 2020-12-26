@@ -7,8 +7,16 @@ import net.kenro.ji.jin.purescript.psi.PSTokens
 class PSLexer : LookAheadLexer(
     MergingLexerAdapter(
         MergingLexerAdapter(
-            FlexAdapter(_PSLexer(null)),
+            FilterLexer(
+                FlexAdapter(_PSLexer(null)),
+                FilterLexer.SetFilter(
+                    TokenSet.create(
+                        PSTokens.MLCOMMENT,
+                        PSTokens.SLCOMMENT
+                    )
+                )
+            ),
             TokenSet.create(PSTokens.STRING, PSTokens.STRING_GAP, PSTokens.STRING_ESCAPED)
         ),
-    TokenSet.create(PSTokens.MLCOMMENT, PSTokens.SLCOMMENT, PSTokens.WS)
+        TokenSet.create(PSTokens.WS)
     ))
