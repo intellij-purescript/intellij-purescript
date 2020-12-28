@@ -3,7 +3,7 @@ package org.purescript.file
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
-import org.purescript.PSLanguage
+import org.purescript.psi.PSModuleImpl
 import org.purescript.psi.PSProgramImpl
 import org.purescript.psi.PSValueDeclarationImpl
 
@@ -17,10 +17,12 @@ class PSFile(viewProvider: FileViewProvider) :
         return "Purescript File"
     }
 
+    val module: PSModuleImpl
+        get() = program.module
+
     val topLevelValueDeclarations: Map<String, PSValueDeclarationImpl>
-        get() = program
-            ?.module
-            ?.topLevelValueDeclarations!!
-    private val program: PSProgramImpl?
-        private get() = findChildByClass(PSProgramImpl::class.java)
+        get() = module.topLevelValueDeclarations
+
+    private val program: PSProgramImpl
+        get() = findChildByClass(PSProgramImpl::class.java)!!
 }
