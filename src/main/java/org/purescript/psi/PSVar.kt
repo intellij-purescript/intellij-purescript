@@ -6,6 +6,6 @@ import com.intellij.psi.PsiReference
 
 class PSVar(node: ASTNode) : PSPsiElement(node) {
     override fun getReference(): PsiReference {
-        return ValueReference(this, TextRange.allOf(this.text))
+        return ValueReference(this, TextRange.allOf(this.text.trim()))
     }
 }

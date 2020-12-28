@@ -47,15 +47,9 @@ class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
 
             override fun resolve(): PsiElement? {
                 return parameterReference
-                    .orElseGet { topLevelValueDeclarationReference }
+                    .orElseGet { null }
             }
 
-            private val topLevelValueDeclarationReference: PSValueDeclaration?
-                private get() {
-                    val containingFile = containingFile as PSFile
-                    return containingFile
-                        .topLevelValueDeclarations[myElement!!.name]
-                }
             private val parameterReference: Optional<PsiElement?>
                 private get() = containingValueDeclaration
                     .flatMap { Optional.ofNullable(it.declaredIdentifiersInParameterList[myElement!!.name]) }

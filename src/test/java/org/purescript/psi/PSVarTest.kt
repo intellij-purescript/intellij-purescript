@@ -1,5 +1,6 @@
 package org.purescript.psi
 
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.findDescendantOfType
 import junit.framework.TestCase
 import org.purescript.file.PSFile
@@ -26,5 +27,26 @@ class PSVarTest : PSLanguageParserTestBase() {
             .filterIsInstance(PSValueDeclaration::class.java)
             .first()
         TestCase.assertEquals("y", valueDeclaration.name)
+    }
+
+    fun `test var can see all value declarations`() {
+        val file = createFile(
+            "Main.purs",
+            """
+            module Main where
+            x = y
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        val psVar =
+            file.findDescendantOfType<PSVar>(
+                { psVar -> true }
+            )
+        val references =  psVar!!.references
+        val valueReference = references
+            .filterIsInstance(ValueReference::class.java)
+            .first()
+        val names = valueReference.variants.map { (it as PsiNamedElement).name }
+        assertContainsElements(names, "x", "y")
     }
 }
