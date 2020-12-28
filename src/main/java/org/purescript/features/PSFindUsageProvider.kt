@@ -27,10 +27,12 @@ class PSFindUsageProvider : FindUsagesProvider {
     }
 
     override fun getDescriptiveName(element: PsiElement): @Nls String {
-        if (element is PsiNamedElement) {
-            val name = element.name
-            if (name != null) {
-                return name
+        when (element) {
+            is PsiNamedElement -> {
+                val name = element.name
+                if (name != null) {
+                    return name
+                }
             }
         }
         return ""
