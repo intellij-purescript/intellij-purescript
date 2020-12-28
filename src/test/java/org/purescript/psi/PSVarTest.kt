@@ -20,8 +20,11 @@ class PSVarTest : PSLanguageParserTestBase() {
             file.findDescendantOfType<PSVar>(
                 { psVar -> true }
             )
-        val reference =  psVar!!.reference
-        val resolve = reference.resolve() as PSValueDeclaration
-        TestCase.assertEquals("y", resolve.name)
+        val references =  psVar!!.references
+        val valueDeclaration = references
+            .map {it.resolve()}
+            .filterIsInstance(PSValueDeclaration::class.java)
+            .first()
+        TestCase.assertEquals("y", valueDeclaration.name)
     }
 }
