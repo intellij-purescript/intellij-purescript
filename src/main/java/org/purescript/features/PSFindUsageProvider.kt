@@ -4,13 +4,13 @@ import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.PSIdentifierImpl
-import org.purescript.psi.PSValueDeclarationImpl
+import org.purescript.psi.PSValueDeclaration
 import org.jetbrains.annotations.Nls
 import org.purescript.file.PSFile
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return (psiElement is PSValueDeclarationImpl
+        return (psiElement is PSValueDeclaration
                 || psiElement is PSIdentifierImpl)
     }
 
@@ -19,7 +19,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     }
 
     override fun getType(element: PsiElement): @Nls String {
-        if (element is PSValueDeclarationImpl) {
+        if (element is PSValueDeclaration) {
             return "value"
         } else if (element is PSIdentifierImpl) {
             return "parameter"
@@ -29,7 +29,7 @@ class PSFindUsageProvider : FindUsagesProvider {
 
     override fun getDescriptiveName(element: PsiElement): @Nls String {
         when (element) {
-            is PSValueDeclarationImpl -> {
+            is PSValueDeclaration -> {
                 val file = element.containingFile as PSFile
                 return "${file.module.name}.${element.name}"
             }

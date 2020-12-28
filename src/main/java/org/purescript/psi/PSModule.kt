@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.PsiTreeUtil
 
-class PSModuleImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
+class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     override fun getName(): String {
         return nameIdentifier.name
     }
@@ -14,14 +14,14 @@ class PSModuleImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
         return null;
     }
 
-    override fun getNameIdentifier(): PSProperNameImpl {
-        return findChildByClass(PSProperNameImpl::class.java)!!
+    override fun getNameIdentifier(): PSProperName {
+        return findChildByClass(PSProperName::class.java)!!
     }
 
 
-    val topLevelValueDeclarations: Map<String, PSValueDeclarationImpl>
+    val topLevelValueDeclarations: Map<String, PSValueDeclaration>
         get() = PsiTreeUtil
-            .findChildrenOfType(this, PSValueDeclarationImpl::class.java)
+            .findChildrenOfType(this, PSValueDeclaration::class.java)
             .asSequence()
             .map { Pair(it.name, it) }
             .toMap()

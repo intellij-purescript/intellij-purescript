@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNameIdentifierOwner
 
-class PSValueDeclarationImpl(node: ASTNode) : PSPsiElement(node),
+class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
     PsiNameIdentifierOwner {
     override fun getName(): String {
         return findChildByClass(PSIdentifierImpl::class.java)!!

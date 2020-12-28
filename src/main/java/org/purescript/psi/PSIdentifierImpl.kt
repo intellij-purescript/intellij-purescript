@@ -50,7 +50,7 @@ class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
                     .orElseGet { topLevelValueDeclarationReference }
             }
 
-            private val topLevelValueDeclarationReference: PSValueDeclarationImpl?
+            private val topLevelValueDeclarationReference: PSValueDeclaration?
                 private get() {
                     val containingFile = containingFile as PSFile
                     return containingFile
@@ -60,11 +60,11 @@ class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
                 private get() = containingValueDeclaration
                     .flatMap { Optional.ofNullable(it.declaredIdentifiersInParameterList[myElement!!.name]) }
                     .map { psi: PSIdentifierImpl? -> psi }
-            private val containingValueDeclaration: Optional<PSValueDeclarationImpl>
+            private val containingValueDeclaration: Optional<PSValueDeclaration>
                 private get() {
                     val firstParent = PsiTreeUtil.getParentOfType(
                         myElement,
-                        PSValueDeclarationImpl::class.java
+                        PSValueDeclaration::class.java
                     )
                     return Optional.ofNullable(firstParent)
                 }

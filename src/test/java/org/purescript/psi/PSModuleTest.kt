@@ -4,7 +4,7 @@ import junit.framework.TestCase
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
 
-class PSModuleImplTest : PSLanguageParserTestBase() {
+class PSModuleTest : PSLanguageParserTestBase() {
     fun `test one word name`() {
         val file = createFile(
             "Main.purs",

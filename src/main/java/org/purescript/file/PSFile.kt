@@ -3,9 +3,9 @@ package org.purescript.file
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
-import org.purescript.psi.PSModuleImpl
-import org.purescript.psi.PSProgramImpl
-import org.purescript.psi.PSValueDeclarationImpl
+import org.purescript.psi.PSModule
+import org.purescript.psi.PSProgram
+import org.purescript.psi.PSValueDeclaration
 
 class PSFile(viewProvider: FileViewProvider) :
     PsiFileBase(viewProvider, org.purescript.PSLanguage.INSTANCE) {
@@ -17,12 +17,12 @@ class PSFile(viewProvider: FileViewProvider) :
         return "Purescript File"
     }
 
-    val module: PSModuleImpl
+    val module: PSModule
         get() = program.module
 
-    val topLevelValueDeclarations: Map<String, PSValueDeclarationImpl>
+    val topLevelValueDeclarations: Map<String, PSValueDeclaration>
         get() = module.topLevelValueDeclarations
 
-    private val program: PSProgramImpl
-        get() = findChildByClass(PSProgramImpl::class.java)!!
+    private val program: PSProgram
+        get() = findChildByClass(PSProgram::class.java)!!
 }
