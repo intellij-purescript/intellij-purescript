@@ -1,7 +1,5 @@
 package org.purescript.psi
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.findDescendantOfType
 import junit.framework.TestCase
 import org.purescript.file.PSFile
@@ -41,7 +39,7 @@ class PSVarTest : PSLanguageParserTestBase() {
         val valueReference = references
             .filterIsInstance(ValueReference::class.java)
             .first()
-        val names = valueReference.variants.map { (it as PsiNamedElement).name }
+        val names = valueReference.variants.map { it.name }
         assertContainsElements(names, "x", "y")
     }
 
