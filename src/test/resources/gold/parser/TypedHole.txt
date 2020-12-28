@@ -139,7 +139,7 @@ Purescript File
           PSPrefixValueImpl(PrefixValue)
             PSTypeHoleImpl(TypeHole)
               PsiElement(operator)('?')
-            PSVarImpl(Var)
+            PSVar(Var)
               PSProperName(Qualified)
                 PSIdentifierImpl(identifier)
                   PsiElement(identifier)('ummm')
