@@ -1,5 +1,6 @@
 package org.purescript.psi
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.findDescendantOfType
 import junit.framework.TestCase
 import org.purescript.file.PSFile
@@ -16,12 +17,9 @@ class PSVarTest : PSLanguageParserTestBase() {
             y = 1
             """.trimIndent()
         ) as PSFile
-        val psVar = getVarByName(file, "y")!!
-        val references =  psVar.references
-        val valueDeclaration = references
-            .map {it.resolve()}
-            .filterIsInstance(PSValueDeclaration::class.java)
-            .first()
+        val psVar = file.getVarByName("y")!!
+        val valueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclaration = valueReference.resolve()!!
         TestCase.assertEquals("y", valueDeclaration.name)
     }
 
@@ -34,19 +32,25 @@ class PSVarTest : PSLanguageParserTestBase() {
             y = 1
             """.trimIndent()
         ) as PSFile
-        val psVar = getVarByName(file, "y")!!
-        val references =  psVar.references
-        val valueReference = references
-            .filterIsInstance(ValueReference::class.java)
-            .first()
+        val psVar = file.getVarByName("y")!!
+        val valueReference = psVar.referenceOfType(ValueReference::class.java)
         val names = valueReference.variants.map { it.name }
         assertContainsElements(names, "x", "y")
     }
 
-    private fun getVarByName(
-        file: PSFile,
-        name: String
-    ): PSVar? {
-        return file.findDescendantOfType({ true }, { it.text.trim() == name})
-    }
+}
+
+private fun PsiElement.getVarByName(
+    name: String
+): PSVar? {
+    return this.findDescendantOfType({ true }, { it.text.trim() == name})
+}
+
+private fun PsiElement.referenceOfType(
+    referenceType: Class<ValueReference>
+): ValueReference {
+    return this
+        .references
+        .filterIsInstance(referenceType)
+        .first()
 }
