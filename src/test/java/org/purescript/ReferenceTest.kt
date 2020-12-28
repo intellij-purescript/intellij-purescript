@@ -6,7 +6,7 @@ import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
 import org.purescript.psi.PSDataDeclarationImpl
 import org.purescript.psi.PSIdentifierImpl
-import org.purescript.psi.PSValueDeclarationImpl
+import org.purescript.psi.PSValueDeclaration
 
 class ReferenceTest : PSLanguageParserTestBase() {
     fun testFindTopLevelValueDeclarationWithName() {
@@ -58,8 +58,8 @@ class ReferenceTest : PSLanguageParserTestBase() {
             reference!!.rangeInElement.contains(0)
         )
         val resolved = reference.resolve()
-        assertInstanceOf(resolved, PSValueDeclarationImpl::class.java)
-        assertEquals("x", (resolved as PSValueDeclarationImpl?)!!.name)
+        assertInstanceOf(resolved, PSValueDeclaration::class.java)
+        assertEquals("x", (resolved as PSValueDeclaration?)!!.name)
     }
 
     fun testIdentifierCanResolveToParameter() {

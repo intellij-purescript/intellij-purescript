@@ -45,7 +45,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createElement(node: ASTNode): PsiElement {
         val type = node.elementType
         return if (type == PSElements.ProperName || type == PSElements.Qualified || type == PSElements.pClassName || type == PSElements.pModuleName || type == PSElements.importModuleName) {
-            PSProperNameImpl(node)
+            PSProperName(node)
         } else if (type == PSElements.Identifier || type == PSElements.GenericIdentifier || type == PSElements.TypeConstructor || type == PSElements.Constructor || type == PSElements.LocalIdentifier) {
             PSIdentifierImpl(node)
         } else if (type == PSElements.ImportDeclaration) {
@@ -55,9 +55,9 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         } else if (type == PSElements.Binder) {
             PSBinderImpl(node)
         } else if (type == PSElements.Program) {
-            PSProgramImpl(node)
+            PSProgram(node)
         } else if (type == PSElements.Module) {
-            PSModuleImpl(node)
+            PSModule(node)
         } else if (type == PSElements.Star) {
             PSStarImpl(node)
         } else if (type == PSElements.Bang) {
@@ -99,7 +99,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         } else if (type == PSElements.TypeSynonymDeclaration) {
             PSTypeSynonymDeclarationImpl(node)
         } else if (type == PSElements.ValueDeclaration) {
-            PSValueDeclarationImpl(node)
+            PSValueDeclaration(node)
         } else if (type == PSElements.ExternDataDeclaration) {
             PSExternDataDeclarationImpl(node)
         } else if (type == PSElements.ExternInstanceDeclaration) {
