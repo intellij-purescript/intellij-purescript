@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.PSIdentifierImpl
 import org.purescript.psi.PSValueDeclarationImpl
 import org.jetbrains.annotations.Nls
+import org.purescript.file.PSFile
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
@@ -28,6 +29,10 @@ class PSFindUsageProvider : FindUsagesProvider {
 
     override fun getDescriptiveName(element: PsiElement): @Nls String {
         when (element) {
+            is PSValueDeclarationImpl -> {
+                val file = element.containingFile as PSFile
+                return "${file.module.name}.${element.name}"
+            }
             is PsiNamedElement -> {
                 val name = element.name
                 if (name != null) {
@@ -42,7 +47,9 @@ class PSFindUsageProvider : FindUsagesProvider {
         element: PsiElement,
         useFullName: Boolean
     ): @Nls String {
-        if (element is PsiNamedElement) {
+        if (useFullName) {
+            return getDescriptiveName(element)
+        } else if (element is PsiNamedElement) {
             val name = element.name
             if (name != null) {
                 return name
