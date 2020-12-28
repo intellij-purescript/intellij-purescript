@@ -6,8 +6,10 @@ import com.intellij.psi.PsiReferenceBase
 import org.jetbrains.annotations.NotNull
 import org.purescript.file.PSFile
 
-class ValueReference(element: @NotNull PSVar, rangeInElement: TextRange?) :
-    PsiReferenceBase<PSVar?>(element, rangeInElement) {
+class ValueReference(element: @NotNull PSPsiElement) : PsiReferenceBase<PSPsiElement?>(
+    element,
+    TextRange.allOf(element.text.trim())
+) {
 
     override fun resolve(): PSValueDeclaration? {
         val file = myElement?.containingFile as PSFile
