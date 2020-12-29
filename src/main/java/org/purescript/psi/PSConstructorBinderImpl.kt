@@ -8,7 +8,7 @@ class PSConstructorBinderImpl(node: ASTNode) : PSPsiElement(node), DeclaresIdent
             findChildrenByClass(PSIdentifierImpl::class.java)
             .asSequence()
             .drop(1)
-            .map(ContainsIdentifier::identifiers)
+            .map { it.identifiers }
 
         val childrenIdentifiers =
             findChildrenByClass(

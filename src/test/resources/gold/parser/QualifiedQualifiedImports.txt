@@ -50,7 +50,7 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
           PSPrefixValueImpl(PrefixValue)
-            PSVarImpl(Var)
+            PSVar(Var)
               PSProperName(Qualified)
                 PSASTWrapperElement(QualifiedModuleName)
                   PsiElement(proper name)('Console')

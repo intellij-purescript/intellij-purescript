@@ -157,7 +157,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         } else if (type == PSElements.IdentInfix) {
             PSIdentInfixImpl(node)
         } else if (type == PSElements.Var) {
-            PSVarImpl(node)
+            PSVar(node)
             //
 //        } else if (type.equals(PSElements.Constructor)) {
 //            return new PSConstructorImpl(node);

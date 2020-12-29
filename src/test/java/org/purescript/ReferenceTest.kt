@@ -42,46 +42,6 @@ class ReferenceTest : PSLanguageParserTestBase() {
         assertEquals("x", x!!.name)
     }
 
-    fun testIdentifierCanResolveToToplevelValueDeclaration() {
-        val file = createFile(
-            "Main.purs",
-            """
-                  module Main where
-                  x = 1
-                  y = x
-                  """.trimIndent()
-        ) as PSFile
-        val psIdentifier = file.findElementAt(28)!!.parent as PSIdentifierImpl
-        val reference = psIdentifier.reference
-        assertTrue(
-            "identifier reference should include the whole name in its range",
-            reference!!.rangeInElement.contains(0)
-        )
-        val resolved = reference.resolve()
-        assertInstanceOf(resolved, PSValueDeclaration::class.java)
-        assertEquals("x", (resolved as PSValueDeclaration?)!!.name)
-    }
-
-    fun testIdentifierCanResolveToParameter() {
-        val file = createFile(
-            "Main.purs",
-            """
-                  module Main where
-                  z = 1
-                  y x = x
-                  """.trimIndent()
-        ) as PSFile
-        val psIdentifier = file.findElementAt(30)!!.parent as PSIdentifierImpl
-        val reference = psIdentifier.reference
-        assertTrue(
-            "identifier reference should include the whole name in its range",
-            reference!!.rangeInElement.contains(0)
-        )
-        val resolved = reference.resolve()
-        assertInstanceOf(resolved, PSIdentifierImpl::class.java)
-        assertEquals("x", (resolved as PSIdentifierImpl?)!!.name)
-    }
-
     @Suppress("unused")
     fun ignoreTestIdentifierCanResolveToTypeConstructor() {
         val file = createFile(

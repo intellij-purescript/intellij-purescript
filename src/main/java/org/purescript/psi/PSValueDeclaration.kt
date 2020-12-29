@@ -24,7 +24,7 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
             val identifiers = findChildrenByClass(PSIdentifierImpl::class.java)
                 .asSequence()
                 .drop(1)
-                .map(ContainsIdentifier::identifiers)
+                .map { it.identifiers }
             val childrenIdentifiers =
                 findChildrenByClass(DeclaresIdentifiers::class.java)
                     .asSequence()

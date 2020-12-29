@@ -78,7 +78,7 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
           PSPrefixValueImpl(PrefixValue)
-            PSVarImpl(Var)
+            PSVar(Var)
               PSProperName(Qualified)
                 PSIdentifierImpl(identifier)
                   PsiElement(identifier)('log')
