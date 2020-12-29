@@ -945,7 +945,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .`as`(PSElements.ImportDeclaration)
-        private val parseDeclaration = positioned(
+        private val parseDecl = positioned(
             Combinators.choice(
                 parseDataDeclaration,
                 parseNewtypeDeclaration,
@@ -977,7 +977,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .then(Combinators.reserved(PSTokens.WHERE))
-            .then(indentedList(parseDeclaration))
+            .then(indentedList(parseDecl))
             .`as`(PSElements.Module)
         val program: Parsec = indentedList(parseModule).`as`(PSElements.Program)
 
