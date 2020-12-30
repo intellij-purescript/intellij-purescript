@@ -8,6 +8,7 @@ import org.purescript.parser.Combinators.lexeme
 import org.purescript.parser.Combinators.many
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.reserved
+import org.purescript.parser.Combinators.sepBy1
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
 
@@ -404,7 +405,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(optional(
                 attempt(lexeme(PSTokens.EQ))
                         .then(
-                            Combinators.sepBy1(
+                            sepBy1(
                                 properName.`as`(PSElements.TypeConstructor)
                                     .then(
                                         many(
