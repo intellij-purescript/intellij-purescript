@@ -399,9 +399,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .`as`(
                 PSElements.Guard
             )
-        private val parseDataDeclaration = reserved(PSTokens.DATA)
+        private val dataHead = reserved(PSTokens.DATA)
             .then(indented(properName).`as`(PSElements.TypeConstructor))
             .then(manyOrEmpty(indented(kindedIdent)).`as`(PSElements.TypeArgs))
+        private val parseDataDeclaration = dataHead
             .then(optional(
                 attempt(lexeme(PSTokens.EQ))
                     .then(sepBy1(
