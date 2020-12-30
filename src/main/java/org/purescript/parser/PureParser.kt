@@ -397,11 +397,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val parseDataDeclaration = reserved(PSTokens.DATA)
             .then(indented(properName).`as`(PSElements.TypeConstructor))
-            .then(
-                many(indented(kindedIdent)).`as`(
-                    PSElements.TypeArgs
-                )
-            )
+            .then(many(indented(kindedIdent)).`as`(PSElements.TypeArgs))
             .then(
                 Combinators.optional(
                     Combinators.attempt(
