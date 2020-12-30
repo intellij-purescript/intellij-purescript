@@ -238,7 +238,7 @@ object Combinators {
         }
     }
 
-    fun many(p: Parsec): Parsec {
+    fun manyOrEmpty(p: Parsec): Parsec {
         return object : Parsec() {
             override fun parse(context: ParserContext): ParserInfo {
                 var info = ParserInfo(context.position, p, true)
@@ -286,7 +286,7 @@ object Combinators {
     }
 
     fun many1(p: Parsec): Parsec {
-        return p.then(many(p))
+        return p.then(manyOrEmpty(p))
     }
 
     fun optional(p: Parsec): Parsec {
@@ -471,7 +471,7 @@ object Combinators {
     fun sepBy1(p: Parsec, sep: IElementType): Parsec {
         var p = p
         p = until(p, sep)
-        return p.then(attempt(many(lexeme(sep).then(p))))
+        return p.then(attempt(manyOrEmpty(lexeme(sep).then(p))))
     }
 
     fun commaSep1(p: Parsec): Parsec {
@@ -479,7 +479,7 @@ object Combinators {
     }
 
     fun sepBy(p: Parsec, sep: Parsec): Parsec {
-        return optional(p.then(many(sep.then(p))))
+        return optional(p.then(manyOrEmpty(sep.then(p))))
     }
 
     fun commaSep(p: Parsec): Parsec {
