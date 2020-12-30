@@ -3,6 +3,7 @@ package org.purescript.parser
 import com.intellij.lang.*
 import com.intellij.psi.tree.IElementType
 import org.purescript.parser.Combinators.attempt
+import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.indented
 import org.purescript.parser.Combinators.lexeme
 import org.purescript.parser.Combinators.manyOrEmpty
@@ -413,19 +414,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 attempt(lexeme(PSTokens.EQ)) +
                 sepBy1(dataCtor, PSTokens.PIPE)
             )).`as`(PSElements.DataDeclaration)
-        private val parseTypeDeclaration = attempt(
-            parseIdent.`as`(
-                PSElements.TypeAnnotationName
-            ).then(
-                indented(
-                    lexeme(
-                        PSTokens.DCOLON
-                    )
-                )
-            )
-        )
-            .then(attempt(parsePolyTypeRef))
-            .`as`(PSElements.TypeDeclaration)
+        private val parseTypeDeclaration =
+            (
+                attempt(
+                    parseIdent.`as`(PSElements.TypeAnnotationName) +
+                    indented(lexeme(PSTokens.DCOLON))
+                ) +
+                attempt(parsePolyTypeRef)
+            ).`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
                 .then(
