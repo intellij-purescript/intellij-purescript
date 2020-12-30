@@ -3,6 +3,7 @@ package org.purescript.parser
 import com.intellij.lang.*
 import com.intellij.psi.tree.IElementType
 import org.purescript.parser.Combinators.indented
+import org.purescript.parser.Combinators.many
 import org.purescript.parser.Combinators.reserved
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
@@ -38,7 +39,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
     class PureParsecParser {
         private fun parseQualified(p: Parsec): Parsec {
             return Combinators.attempt(
-                Combinators.many(
+                many(
                     Combinators.attempt(
                         Combinators.token(
                             PSTokens.PROPER_NAME
@@ -126,7 +127,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         private fun indentedList(p: Parsec): Parsec {
             return Combinators.mark(
-                Combinators.many(
+                many(
                     Combinators.untilSame(
                         Combinators.same(p)
                     )
@@ -227,7 +228,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         Combinators.attempt(
                             Combinators.optional(
                                 Combinators.lexeme(
-                                    Combinators.many(properName).`as`(
+                                    many(properName).`as`(
                                         PSElements.TypeConstructor
                                     )
                                 )
@@ -304,7 +305,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             PSElements.TypeConstructor
                         ).then(
                             indented(
-                                Combinators.many(parseTypeAtom)
+                                many(parseTypeAtom)
                             )
                         )
                     )
@@ -397,7 +398,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseDataDeclaration = reserved(PSTokens.DATA)
             .then(indented(properName).`as`(PSElements.TypeConstructor))
             .then(
-                Combinators.many(indented(kindedIdent)).`as`(
+                many(indented(kindedIdent)).`as`(
                     PSElements.TypeArgs
                 )
             )
@@ -412,7 +413,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             Combinators.sepBy1(
                                 properName.`as`(PSElements.TypeConstructor)
                                     .then(
-                                        Combinators.many(
+                                        many(
                                             indented(parseTypeAtom)
                                         )
                                     ), PSTokens.PIPE
@@ -441,7 +442,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         .`as`(PSElements.TypeConstructor)
                 )
                 .then(
-                    Combinators.many(indented(kindedIdent)).`as`(
+                    many(indented(kindedIdent)).`as`(
                         PSElements.TypeArgs
                     )
                 )
@@ -452,7 +453,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 properName.`as`(PSElements.TypeConstructor)
                                     .then(
                                         Combinators.optional(
-                                            Combinators.many(
+                                            many(
                                                 indented(
                                                     Combinators.lexeme(
                                                         identifier
@@ -480,7 +481,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     .`as`(PSElements.TypeConstructor)
             )
             .then(
-                Combinators.many(
+                many(
                     indented(
                         Combinators.lexeme(
                             kindedIdent
@@ -606,7 +607,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             ) // ---------- end of LET stuff -----------
-            .then(Combinators.attempt(Combinators.many(parseBinderNoParensRef)))
+            .then(Combinators.attempt(many(parseBinderNoParensRef)))
             .then(
                 Combinators.choice(
                     Combinators.attempt(
@@ -637,7 +638,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             Combinators.commaSep1(
                 parseQualified(properName).`as`(
                     PSElements.TypeConstructor
-                ).then(Combinators.many(parseTypeAtom))
+                ).then(many(parseTypeAtom))
             )
         )
             .then(indented(reserved(PSTokens.DARROW)))
@@ -671,7 +672,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 .then(Combinators.optional(parseDeps))
                                 .then(parseQualified(properName).`as`(PSElements.pClassName))
                                 .then(
-                                    Combinators.many(
+                                    many(
                                         indented(
                                             parseTypeAtom
                                         )
@@ -763,13 +764,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     Combinators.commaSep1(
                                         parseQualified(properName).`as`(
                                             PSElements.TypeConstructor
-                                        ).then(Combinators.many(parseTypeAtom))
+                                        ).then(many(parseTypeAtom))
                                     )
                                 ),
                                 Combinators.commaSep1(
                                     parseQualified(properName).`as`(
                                         PSElements.TypeConstructor
-                                    ).then(Combinators.many(parseTypeAtom))
+                                    ).then(many(parseTypeAtom))
                                 )
                             )
                         ).then(
@@ -791,7 +792,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
                 .then(
                     Combinators.optional(
-                        Combinators.many(
+                        many(
                             indented(
                                 kindedIdent
                             )
@@ -846,7 +847,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 Combinators.commaSep1(
                                     parseQualified(properName).`as`(
                                         PSElements.TypeConstructor
-                                    ).then(Combinators.many(parseTypeAtom))
+                                    ).then(many(parseTypeAtom))
                                 )
                             ).then(
                             Combinators.optional(
@@ -874,7 +875,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.many(
+                    many(
                         indented(parseTypeAtom).or(
                             Combinators.lexeme(
                                 PSTokens.STRING
@@ -896,7 +897,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             )
                         )
                             .then(parseQualified(properName).`as`(PSElements.TypeConstructor))
-                            .then(Combinators.many(parseTypeAtom)).then(
+                            .then(many(parseTypeAtom)).then(
                             Combinators.optional(
                                 reserved(
                                     PSTokens.RPAREN
@@ -1063,7 +1064,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(indented(reserved(PSTokens.ARROW)))
             .then(parseValueRef)
         private val parseVar = Combinators.attempt(
-            Combinators.many(
+            many(
                 Combinators.attempt(
                     Combinators.token(
                         PSTokens.PROPER_NAME
@@ -1227,7 +1228,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).`as`(PSElements.IdentInfix)
         private val indexersAndAccessors = parseValueAtom
             .then(
-                Combinators.many(
+                many(
                     Combinators.choice(
                         parseAccessor,
                         Combinators.attempt(
@@ -1248,7 +1249,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val parseValuePostFix = indexersAndAccessors
             .then(
-                Combinators.many(
+                many(
                     Combinators.choice(
                         indented(indexersAndAccessors),
                         Combinators.attempt(
@@ -1331,7 +1332,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseQualified(properName).`as`(
                 PSElements.GenericIdentifier
             ).then(
-                Combinators.many(
+                many(
                     indented(
                         parseBinderNoParensRef
                     )
