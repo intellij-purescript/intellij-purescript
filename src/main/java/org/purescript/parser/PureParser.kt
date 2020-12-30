@@ -404,16 +404,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(many(indented(kindedIdent)).`as`(PSElements.TypeArgs))
             .then(optional(
                 attempt(lexeme(PSTokens.EQ))
-                        .then(
-                            sepBy1(
-                                properName.`as`(PSElements.TypeConstructor)
-                                    .then(
-                                        many(
-                                            indented(parseTypeAtom)
-                                        )
-                                    ), PSTokens.PIPE
-                            )
-                        )
+                    .then(sepBy1(
+                        properName.`as`(PSElements.TypeConstructor)
+                            .then(many(indented(parseTypeAtom)))
+                        , PSTokens.PIPE
+                    ))
                 )
             )
             .`as`(PSElements.DataDeclaration)
