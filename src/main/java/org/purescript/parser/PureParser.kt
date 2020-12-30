@@ -403,15 +403,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
             reserved(PSTokens.DATA) +
             indented(properName).`as`(PSElements.TypeConstructor) +
             manyOrEmpty(indented(kindedIdent)).`as`(PSElements.TypeArgs)
+
+        val dataCtor =
+            properName.`as`(PSElements.TypeConstructor) +
+            manyOrEmpty(indented(parseTypeAtom))
         private val parseDataDeclaration =
             (dataHead +
             optional(
                 attempt(lexeme(PSTokens.EQ)) +
-                sepBy1(
-                    properName.`as`(PSElements.TypeConstructor) +
-                    (manyOrEmpty(indented(parseTypeAtom))),
-                    PSTokens.PIPE
-                )
+                sepBy1(dataCtor, PSTokens.PIPE)
             )).`as`(PSElements.DataDeclaration)
         private val parseTypeDeclaration = attempt(
             parseIdent.`as`(
