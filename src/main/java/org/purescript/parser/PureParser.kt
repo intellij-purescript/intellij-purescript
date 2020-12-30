@@ -2,8 +2,11 @@ package org.purescript.parser
 
 import com.intellij.lang.*
 import com.intellij.psi.tree.IElementType
+import org.purescript.parser.Combinators.attempt
 import org.purescript.parser.Combinators.indented
+import org.purescript.parser.Combinators.lexeme
 import org.purescript.parser.Combinators.many
+import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.reserved
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
@@ -38,9 +41,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
     class PureParsecParser {
         private fun parseQualified(p: Parsec): Parsec {
-            return Combinators.attempt(
+            return attempt(
                 many(
-                    Combinators.attempt(
+                    attempt(
                         Combinators.token(
                             PSTokens.PROPER_NAME
                         ).`as`(PSElements.ProperName).then(
@@ -63,7 +66,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ).`as`(PSElements.Identifier)
         )
         private val identifier = idents
-        private val lname = Combinators.lexeme(
+        private val lname = lexeme(
             Combinators.choice(
                 Combinators.token(PSTokens.IDENT),
                 Combinators.token(PSTokens.DATA),
@@ -105,18 +108,18 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
         private val properName: Parsec =
-            Combinators.lexeme(PSTokens.PROPER_NAME).`as`(
+            lexeme(PSTokens.PROPER_NAME).`as`(
                 PSElements.ProperName
             )
-        private val moduleName = Combinators.lexeme(
+        private val moduleName = lexeme(
             parseQualified(
                 Combinators.token(
                     PSTokens.PROPER_NAME
                 )
             )
         )
-        private val stringLiteral = Combinators.attempt(
-            Combinators.lexeme(
+        private val stringLiteral = attempt(
+            lexeme(
                 PSTokens.STRING
             )
         )
@@ -162,21 +165,21 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
         private val parseKindPrefix = Combinators.choice(
-            Combinators.lexeme("#").then(parseKindPrefixRef)
+            lexeme("#").then(parseKindPrefixRef)
                 .`as`(PSElements.RowKind),
             parseKindAtom
         )
         private val parseKind = parseKindPrefix.then(
-            Combinators.optional(
+            optional(
                 reserved(
                     PSTokens.ARROW
                 ).or(
-                    Combinators.optional(
+                    optional(
                         parseQualified(properName).`as`(
                             PSElements.TypeConstructor
                         )
                     )
-                ).then(Combinators.optional(parseKindRef))
+                ).then(optional(parseKindRef))
             )
         ).`as`(
             PSElements.FunKind
@@ -192,7 +195,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 PSTokens.ARROW
             )
         )
-        private val parseTypeVariable: Parsec = Combinators.lexeme(
+        private val parseTypeVariable: Parsec = lexeme(
             Combinators.guard(
                 idents,
                 { content:String? -> !(content == "∀" || content == "forall") },
@@ -206,44 +209,44 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         private fun parseNameAndType(p: Parsec): Parsec {
             return indented(
-                Combinators.lexeme(
+                lexeme(
                     Combinators.choice(lname, stringLiteral).`as`(
                         PSElements.GenericIdentifier
                     )
                 )
             ).then(
                 indented(
-                    Combinators.lexeme(
+                    lexeme(
                         PSTokens.DCOLON
                     )
                 )
             ).then(p)
         }
 
-        private val parseRowEnding = Combinators.optional(
-            indented(Combinators.lexeme(PSTokens.PIPE)).then(
+        private val parseRowEnding = optional(
+            indented(lexeme(PSTokens.PIPE)).then(
                 indented(
                     Combinators.choice(
-                        Combinators.attempt(parseTypeWildcard),
-                        Combinators.attempt(
-                            Combinators.optional(
-                                Combinators.lexeme(
+                        attempt(parseTypeWildcard),
+                        attempt(
+                            optional(
+                                lexeme(
                                     many(properName).`as`(
                                         PSElements.TypeConstructor
                                     )
                                 )
                             )
                                 .then(
-                                    Combinators.optional(
-                                        Combinators.lexeme(identifier).`as`(
+                                    optional(
+                                        lexeme(identifier).`as`(
                                             PSElements.GenericIdentifier
                                         )
                                     )
                                 )
                                 .then(
-                                    Combinators.optional(
+                                    optional(
                                         indented(
-                                            Combinators.lexeme(
+                                            lexeme(
                                                 Combinators.choice(
                                                     lname,
                                                     stringLiteral
@@ -253,14 +256,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .then(
-                                    Combinators.optional(
+                                    optional(
                                         indented(
-                                            Combinators.lexeme(
+                                            lexeme(
                                                 PSTokens.DCOLON
                                             )
                                         )
                                     ).then(
-                                        Combinators.optional(
+                                        optional(
                                             parsePolyTypeRef
                                         )
                                     )
@@ -280,25 +283,25 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseTypeAtom: Parsec = indented(
             Combinators.choice(
-                Combinators.attempt(
+                attempt(
                     Combinators.squares(
-                        Combinators.optional(
+                        optional(
                             parseTypeRef
                         )
                     )
                 ),
-                Combinators.attempt(parseFunction),
-                Combinators.attempt(parseObject),
-                Combinators.attempt(parseTypeWildcard),
-                Combinators.attempt(parseTypeVariable),
-                Combinators.attempt(parseTypeConstructor),
-                Combinators.attempt(parseForAllRef),
-                Combinators.attempt(Combinators.parens(parseRow)),
-                Combinators.attempt(Combinators.parens(parsePolyTypeRef))
+                attempt(parseFunction),
+                attempt(parseObject),
+                attempt(parseTypeWildcard),
+                attempt(parseTypeVariable),
+                attempt(parseTypeConstructor),
+                attempt(parseForAllRef),
+                attempt(Combinators.parens(parseRow)),
+                attempt(Combinators.parens(parsePolyTypeRef))
             )
         ).`as`(PSElements.TypeAtom)
-        private val parseConstrainedType: Parsec = Combinators.optional(
-            Combinators.attempt(
+        private val parseConstrainedType: Parsec = optional(
+            attempt(
                 Combinators.parens(
                     Combinators.commaSep1(
                         parseQualified(properName).`as`(
@@ -310,7 +313,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         )
                     )
                 )
-                    .then(Combinators.lexeme(PSTokens.DARROW))
+                    .then(lexeme(PSTokens.DARROW))
             )
         ).then(indented(parseTypeRef))
             .`as`(PSElements.ConstrainedType)
@@ -318,19 +321,19 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 Combinators.many1(
                     indented(
-                        Combinators.lexeme(identifier).`as`(
+                        lexeme(identifier).`as`(
                             PSElements.GenericIdentifier
                         )
                     )
                 )
             )
-            .then(indented(Combinators.lexeme(PSTokens.DOT)))
+            .then(indented(lexeme(PSTokens.DOT)))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
         private val parseIdent = Combinators.choice(
-            Combinators.lexeme(identifier.`as`(PSElements.Identifier)),
-            Combinators.attempt(
+            lexeme(identifier.`as`(PSElements.Identifier)),
+            attempt(
                 Combinators.parens(
-                    Combinators.lexeme(
+                    lexeme(
                         operator.`as`(
                             PSElements.Identifier
                         )
@@ -339,15 +342,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
         private val parseTypePostfix = Combinators.choice(
-            parseTypeAtom, Combinators.lexeme(
+            parseTypeAtom, lexeme(
                 PSTokens.STRING
             )
         )
             .then(
-                Combinators.optional(
-                    Combinators.attempt(
+                optional(
+                    attempt(
                         indented(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.DCOLON
                             ).then(parseKind)
                         )
@@ -356,7 +359,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val parseType = Combinators.many1(parseTypePostfix)
             .then(
-                Combinators.optional(
+                optional(
                     Combinators.choice(
                         reserved(PSTokens.ARROW),
                         reserved(
@@ -371,15 +374,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ).`as`(PSElements.Type)
 
         // Declarations.hs
-        private val kindedIdent = Combinators.lexeme(identifier).`as`(
+        private val kindedIdent = lexeme(identifier).`as`(
             PSElements.GenericIdentifier
         )
             .or(
                 Combinators.parens(
-                    Combinators.lexeme(identifier)
+                    lexeme(identifier)
                         .`as`(PSElements.GenericIdentifier).then(
                         indented(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.DCOLON
                             )
                         )
@@ -390,7 +393,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseBinderRef = Combinators.ref()
         private val parseValueRef = Combinators.ref()
         private val parseLocalDeclarationRef = Combinators.ref()
-        private val parseGuard = Combinators.lexeme(PSTokens.PIPE)
+        private val parseGuard = lexeme(PSTokens.PIPE)
             .then(indented(Combinators.commaSep(parseValueRef)))
             .`as`(
                 PSElements.Guard
@@ -399,9 +402,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(indented(properName).`as`(PSElements.TypeConstructor))
             .then(many(indented(kindedIdent)).`as`(PSElements.TypeArgs))
             .then(
-                Combinators.optional(
-                    Combinators.attempt(
-                        Combinators.lexeme(
+                optional(
+                    attempt(
+                        lexeme(
                             PSTokens.EQ
                         )
                     )
@@ -418,18 +421,18 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .`as`(PSElements.DataDeclaration)
-        private val parseTypeDeclaration = Combinators.attempt(
+        private val parseTypeDeclaration = attempt(
             parseIdent.`as`(
                 PSElements.TypeAnnotationName
             ).then(
                 indented(
-                    Combinators.lexeme(
+                    lexeme(
                         PSTokens.DCOLON
                     )
                 )
             )
         )
-            .then(Combinators.attempt(parsePolyTypeRef))
+            .then(attempt(parsePolyTypeRef))
             .`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
@@ -443,15 +446,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
-                        Combinators.lexeme(PSTokens.EQ)
+                    optional(
+                        lexeme(PSTokens.EQ)
                             .then(
                                 properName.`as`(PSElements.TypeConstructor)
                                     .then(
-                                        Combinators.optional(
+                                        optional(
                                             many(
                                                 indented(
-                                                    Combinators.lexeme(
+                                                    lexeme(
                                                         identifier
                                                     )
                                                 )
@@ -459,7 +462,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                         )
                                     )
                                     .then(
-                                        Combinators.optional(
+                                        optional(
                                             indented(
                                                 parseTypeAtom
                                             )
@@ -479,21 +482,21 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 many(
                     indented(
-                        Combinators.lexeme(
+                        lexeme(
                             kindedIdent
                         )
                     )
                 )
             )
             .then(
-                indented(Combinators.lexeme(PSTokens.EQ))
+                indented(lexeme(PSTokens.EQ))
                     .then(parsePolyTypeRef)
             )
             .`as`(PSElements.TypeSynonymDeclaration)
         private val parseValueWithWhereClause = parseValueRef
             .then(
-                Combinators.optional(
-                    indented(Combinators.lexeme(PSTokens.WHERE))
+                optional(
+                    indented(lexeme(PSTokens.WHERE))
                         .then(
                             indented(
                                 Combinators.mark(
@@ -516,18 +519,18 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parsePatternMatchObject = indented(
             Combinators.braces(
                 Combinators.commaSep(
-                    Combinators.lexeme(identifier).or(lname).or(stringLiteral)
+                    lexeme(identifier).or(lname).or(stringLiteral)
                         .then(
-                            Combinators.optional(
+                            optional(
                                 indented(
-                                    Combinators.lexeme(
+                                    lexeme(
                                         PSTokens.EQ
-                                    ).or(Combinators.lexeme(PSTokens.OPERATOR))
+                                    ).or(lexeme(PSTokens.OPERATOR))
                                 )
                             )
                         )
                         .then(
-                            Combinators.optional(
+                            optional(
                                 indented(
                                     parseBinderRef
                                 )
@@ -537,44 +540,44 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         ).`as`(PSElements.Binder)
         private val parseRowPatternBinder = indented(
-            Combinators.lexeme(
+            lexeme(
                 PSTokens.OPERATOR
             )
         )
             .then(indented(parseBinderRef))
         private val parseValueDeclaration // this is for when used with LET
-                = Combinators.optional(
-            Combinators.attempt(
+                = optional(
+            attempt(
                 reserved(PSTokens.LPAREN)
             )
         )
             .then(
-                Combinators.optional(
-                    Combinators.attempt(properName).`as`(
+                optional(
+                    attempt(properName).`as`(
                         PSElements.Constructor
                     )
                 )
             )
             .then(
-                Combinators.optional(
-                    Combinators.attempt(
+                optional(
+                    attempt(
                         Combinators.many1(
                             parseIdent
                         )
                     )
                 )
             )
-            .then(Combinators.optional(Combinators.attempt(parseArrayBinder)))
+            .then(optional(attempt(parseArrayBinder)))
             .then(
-                Combinators.optional(
-                    Combinators.attempt(
+                optional(
+                    attempt(
                         indented(
-                            Combinators.lexeme("@")
+                            lexeme("@")
                         ).then(
                             indented(
                                 Combinators.braces(
                                     Combinators.commaSep(
-                                        Combinators.lexeme(
+                                        lexeme(
                                             identifier
                                         )
                                     )
@@ -587,31 +590,31 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .then(
-                Combinators.optional(
-                    Combinators.attempt(
+                optional(
+                    attempt(
                         parsePatternMatchObject
                     )
                 )
             )
-            .then(Combinators.optional(Combinators.attempt(parseRowPatternBinder)))
+            .then(optional(attempt(parseRowPatternBinder)))
             .then(
-                Combinators.optional(
-                    Combinators.attempt(
+                optional(
+                    attempt(
                         reserved(
                             PSTokens.RPAREN
                         )
                     )
                 )
             ) // ---------- end of LET stuff -----------
-            .then(Combinators.attempt(many(parseBinderNoParensRef)))
+            .then(attempt(many(parseBinderNoParensRef)))
             .then(
                 Combinators.choice(
-                    Combinators.attempt(
+                    attempt(
                         indented(
                             Combinators.many1(
                                 parseGuard.then(
                                     indented(
-                                        Combinators.lexeme(
+                                        lexeme(
                                             PSTokens.EQ
                                         ).then(parseValueWithWhereClause)
                                     )
@@ -619,9 +622,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             )
                         )
                     ),
-                    Combinators.attempt(
+                    attempt(
                         indented(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.EQ
                             ).then(parseValueWithWhereClause)
                         )
@@ -653,19 +656,19 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                             )
                                     )
                                 )
-                                .then(Combinators.lexeme(PSTokens.DCOLON))
+                                .then(lexeme(PSTokens.DCOLON))
                                 .then(parseKind)
                                 .`as`(PSElements.ExternDataDeclaration),
                             reserved(PSTokens.INSTANCE)
                                 .then(parseIdent)
                                 .then(
                                     indented(
-                                        Combinators.lexeme(
+                                        lexeme(
                                             PSTokens.DCOLON
                                         )
                                     )
                                 )
-                                .then(Combinators.optional(parseDeps))
+                                .then(optional(parseDeps))
                                 .then(parseQualified(properName).`as`(PSElements.pClassName))
                                 .then(
                                     many(
@@ -675,9 +678,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .`as`(PSElements.ExternInstanceDeclaration),
-                            Combinators.attempt(parseIdent)
+                            attempt(parseIdent)
                                 .then(
-                                    Combinators.optional(
+                                    optional(
                                         stringLiteral.`as`(
                                             PSElements.JSRaw
                                         )
@@ -685,7 +688,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 )
                                 .then(
                                     indented(
-                                        Combinators.lexeme(
+                                        lexeme(
                                             PSTokens.DCOLON
                                         )
                                     )
@@ -702,13 +705,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseFixity = parseAssociativity.then(
             indented(
-                Combinators.lexeme(
+                lexeme(
                     PSTokens.NATURAL
                 )
             )
         ).`as`(PSElements.Fixity)
         private val parseFixityDeclaration = parseFixity
-            .then(Combinators.optional(reserved(PSTokens.TYPE)))
+            .then(optional(reserved(PSTokens.TYPE)))
             .then(
                 parseQualified(properName).`as`(PSElements.pModuleName).or(
                     parseIdent.`as`(
@@ -717,7 +720,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .then(reserved(PSTokens.AS))
-            .then(Combinators.lexeme(operator))
+            .then(lexeme(operator))
             .`as`(PSElements.FixityDeclaration)
         private val parseDeclarationRef = Combinators.choice(
             reserved("kind").then(
@@ -727,7 +730,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ),
             parseIdent.`as`(PSElements.ValueRef),
             reserved(PSTokens.TYPE)
-                .then(Combinators.optional(Combinators.parens(operator))),
+                .then(optional(Combinators.parens(operator))),
             reserved(PSTokens.MODULE).then(moduleName)
                 .`as`(PSElements.importModuleName),
             reserved(PSTokens.CLASS).then(
@@ -736,9 +739,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             ),
             properName.`as`(PSElements.ProperName).then(
-                Combinators.optional(
+                optional(
                     Combinators.parens(
-                        Combinators.optional(
+                        optional(
                             Combinators.choice(
                                 reserved(PSTokens.DDOT),
                                 Combinators.commaSep1(properName.`as`(PSElements.TypeConstructor))
@@ -751,9 +754,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             PSElements.PositionedDeclarationRef
         )
         private val parseTypeClassDeclaration =
-            Combinators.lexeme(PSTokens.CLASS)
+            lexeme(PSTokens.CLASS)
                 .then(
-                    Combinators.optional(
+                    optional(
                         indented(
                             Combinators.choice(
                                 Combinators.parens(
@@ -770,7 +773,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 )
                             )
                         ).then(
-                            Combinators.optional(reserved(PSTokens.LDARROW))
+                            optional(reserved(PSTokens.LDARROW))
                                 .`as`(
                                     PSElements.pImplies
                                 )
@@ -778,7 +781,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
+                    optional(
                         indented(
                             properName.`as`(
                                 PSElements.pClassName
@@ -787,7 +790,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
+                    optional(
                         many(
                             indented(
                                 kindedIdent
@@ -796,8 +799,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
-                        Combinators.lexeme(PSTokens.PIPE).then(
+                    optional(
+                        lexeme(PSTokens.PIPE).then(
                             indented(
                                 Combinators.commaSep1(parsePolyTypeRef)
                             )
@@ -805,8 +808,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
-                        Combinators.attempt(
+                    optional(
+                        attempt(
                             indented(reserved(PSTokens.WHERE))
                                 .then(
                                     indentedList(positioned(parseTypeDeclaration))
@@ -815,12 +818,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .`as`(PSElements.TypeClassDeclaration)
-        private val parseTypeInstanceDeclaration = Combinators.optional(
+        private val parseTypeInstanceDeclaration = optional(
             reserved(
                 PSTokens.DERIVE
             )
         ).then(
-            Combinators.optional(
+            optional(
                 reserved(
                     PSTokens.NEWTYPE
                 )
@@ -830,15 +833,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(
                     parseIdent.`as`(PSElements.GenericIdentifier).then(
                         indented(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.DCOLON
                             )
                         )
                     )
                 )
                 .then(
-                    Combinators.optional(
-                        Combinators.optional(reserved(PSTokens.LPAREN))
+                    optional(
+                        optional(reserved(PSTokens.LPAREN))
                             .then(
                                 Combinators.commaSep1(
                                     parseQualified(properName).`as`(
@@ -846,14 +849,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     ).then(many(parseTypeAtom))
                                 )
                             ).then(
-                            Combinators.optional(
+                            optional(
                                 reserved(
                                     PSTokens.RPAREN
                                 )
                             )
                         )
                             .then(
-                                Combinators.optional(
+                                optional(
                                     indented(
                                         reserved(
                                             PSTokens.DARROW
@@ -864,7 +867,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
+                    optional(
                         indented(parseQualified(properName)).`as`(
                             PSElements.pClassName
                         )
@@ -873,20 +876,20 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(
                     many(
                         indented(parseTypeAtom).or(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.STRING
                             )
                         )
                     )
                 )
                 .then(
-                    Combinators.optional(
+                    optional(
                         indented(
                             reserved(
                                 PSTokens.DARROW
                             )
                         ).then(
-                            Combinators.optional(
+                            optional(
                                 reserved(
                                     PSTokens.LPAREN
                                 )
@@ -894,7 +897,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         )
                             .then(parseQualified(properName).`as`(PSElements.TypeConstructor))
                             .then(many(parseTypeAtom)).then(
-                            Combinators.optional(
+                            optional(
                                 reserved(
                                     PSTokens.RPAREN
                                 )
@@ -903,8 +906,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .then(
-                    Combinators.optional(
-                        Combinators.attempt(
+                    optional(
+                        attempt(
                             indented(reserved(PSTokens.WHERE))
                                 .then(
                                     indented(
@@ -918,7 +921,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
         )
             .`as`(PSElements.TypeInstanceDeclaration)
-        private val importDeclarationType = Combinators.optional(
+        private val importDeclarationType = optional(
             indented(
                 Combinators.parens(Combinators.commaSep(parseDeclarationRef))
             )
@@ -930,11 +933,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         .`as`(PSElements.importModuleName)
                 )
                 .then(
-                    Combinators.optional(reserved(PSTokens.HIDING))
+                    optional(reserved(PSTokens.HIDING))
                         .then(importDeclarationType)
                 )
                 .then(
-                    Combinators.optional(
+                    optional(
                         reserved(PSTokens.AS).then(moduleName).`as`(
                             PSElements.importModuleName
                         )
@@ -964,7 +967,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseModule = reserved(PSTokens.MODULE)
             .then(indented(moduleName).`as`(PSElements.pModuleName))
             .then(
-                Combinators.optional(
+                optional(
                     Combinators.parens(
                         Combinators.commaSep1(
                             parseDeclarationRef
@@ -993,39 +996,39 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 PSElements.StringLiteral
             )
         private val parseCharLiteral =
-            Combinators.lexeme("'").`as`(PSElements.StringLiteral)
+            lexeme("'").`as`(PSElements.StringLiteral)
         private val parseArrayLiteral =
             Combinators.squares(Combinators.commaSep(parseValueRef)).`as`(
                 PSElements.ArrayLiteral
             )
         private val parseTypeHole =
-            Combinators.lexeme("?").`as`(PSElements.TypeHole)
+            lexeme("?").`as`(PSElements.TypeHole)
         private val parseIdentifierAndValue =
-            indented(Combinators.lexeme(lname).or(stringLiteral))
+            indented(lexeme(lname).or(stringLiteral))
                 .then(
-                    Combinators.optional(
+                    optional(
                         indented(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.OPERATOR
                             ).or(reserved(PSTokens.COMMA))
                         )
                     )
                 )
-                .then(Combinators.optional(indented(parseValueRef)))
+                .then(optional(indented(parseValueRef)))
                 .`as`(PSElements.ObjectBinderField)
         private val parseObjectLiteral =
             Combinators.braces(Combinators.commaSep(parseIdentifierAndValue))
                 .`as`(
                     PSElements.ObjectLiteral
                 )
-        private val typedIdent = Combinators.optional(
+        private val typedIdent = optional(
             reserved(
                 PSTokens.LPAREN
             )
         )
             .then(
                 Combinators.many1(
-                    Combinators.lexeme(identifier)
+                    lexeme(identifier)
                         .`as`(PSElements.GenericIdentifier).or(
                         parseQualified(properName).`as`(
                             PSElements.TypeConstructor
@@ -1034,16 +1037,16 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .then(
-                Combinators.optional(
+                optional(
                     indented(
-                        Combinators.lexeme(
+                        lexeme(
                             PSTokens.DCOLON
                         )
                     ).then(indented(parsePolyTypeRef))
                 )
             )
-            .then(Combinators.optional(parseObjectLiteral))
-            .then(Combinators.optional(reserved(PSTokens.RPAREN)))
+            .then(optional(parseObjectLiteral))
+            .then(optional(reserved(PSTokens.RPAREN)))
         private val parseAbs = reserved(PSTokens.BACKSLASH)
             .then(
                 Combinators.choice(
@@ -1059,9 +1062,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .then(indented(reserved(PSTokens.ARROW)))
             .then(parseValueRef)
-        private val parseVar = Combinators.attempt(
+        private val parseVar = attempt(
             many(
-                Combinators.attempt(
+                attempt(
                     Combinators.token(
                         PSTokens.PROPER_NAME
                     ).`as`(PSElements.qualifiedModuleName).then(
@@ -1088,7 +1091,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         Combinators.many1(
                             parseGuard.then(
                                 indented(
-                                    Combinators.lexeme(
+                                    lexeme(
                                         PSTokens.ARROW
                                     ).then(parseValueRef)
                                 )
@@ -1135,9 +1138,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .`as`(PSElements.DoNotationBind)
         private val parseDoNotationElement = Combinators.choice(
-            Combinators.attempt(parseDoNotationBind),
+            attempt(parseDoNotationBind),
             parseDoNotationLet,
-            Combinators.attempt(parseValueRef.`as`(PSElements.DoNotationValue))
+            attempt(parseValueRef.`as`(PSElements.DoNotationValue))
         )
         private val parseDo = reserved(PSTokens.DO)
             .then(
@@ -1152,9 +1155,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parsePropertyUpdate =
             reserved(lname.or(stringLiteral))
                 .then(
-                    Combinators.optional(
+                    optional(
                         indented(
-                            Combinators.lexeme(
+                            lexeme(
                                 PSTokens.EQ
                             )
                         )
@@ -1162,18 +1165,18 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
                 .then(indented(parseValueRef))
         private val parseValueAtom = Combinators.choice(
-            Combinators.attempt(parseTypeHole),
-            Combinators.attempt(parseNumericLiteral),
-            Combinators.attempt(parseStringLiteral),
-            Combinators.attempt(parseBooleanLiteral),
-            Combinators.attempt(
+            attempt(parseTypeHole),
+            attempt(parseNumericLiteral),
+            attempt(parseStringLiteral),
+            attempt(parseBooleanLiteral),
+            attempt(
                 reserved(PSTokens.TICK).then(
                     Combinators.choice(
                         properName.`as`(
                             PSElements.ProperName
                         ),
                         Combinators.many1(
-                            Combinators.lexeme(identifier)
+                            lexeme(identifier)
                                 .`as`(PSElements.ProperName)
                         )
                     )
@@ -1185,7 +1188,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ),
             parseArrayLiteral,
             parseCharLiteral,
-            Combinators.attempt(
+            attempt(
                 indented(
                     Combinators.braces(
                         Combinators.commaSep1(
@@ -1196,17 +1199,17 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             ),
-            Combinators.attempt(parseObjectLiteral),
+            attempt(parseObjectLiteral),
             parseAbs,
-            Combinators.attempt(parseConstructor),
-            Combinators.attempt(parseVar),
+            attempt(parseConstructor),
+            attempt(parseVar),
             parseCase,
             parseIfThenElse,
             parseDo,
             parseLet,
             Combinators.parens(parseValueRef).`as`(PSElements.Parens)
         )
-        private val parseAccessor: Parsec = Combinators.attempt(
+        private val parseAccessor: Parsec = attempt(
             indented(
                 Combinators.token(
                     PSTokens.DOT
@@ -1217,17 +1220,17 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseIdentInfix: Parsec = Combinators.choice(
             reserved(PSTokens.TICK)
-                .then(parseQualified(Combinators.lexeme(identifier))).lexeme(
+                .then(parseQualified(lexeme(identifier))).lexeme(
                 PSTokens.TICK
             ),
-            parseQualified(Combinators.lexeme(operator))
+            parseQualified(lexeme(operator))
         ).`as`(PSElements.IdentInfix)
         private val indexersAndAccessors = parseValueAtom
             .then(
                 many(
                     Combinators.choice(
                         parseAccessor,
-                        Combinators.attempt(
+                        attempt(
                             indented(
                                 Combinators.braces(
                                     Combinators.commaSep1(
@@ -1248,9 +1251,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 many(
                     Combinators.choice(
                         indented(indexersAndAccessors),
-                        Combinators.attempt(
+                        attempt(
                             indented(
-                                Combinators.lexeme(
+                                lexeme(
                                     PSTokens.DCOLON
                                 )
                             ).then(parsePolyTypeRef)
@@ -1261,15 +1264,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parsePrefixRef = Combinators.ref()
         private val parsePrefix = Combinators.choice(
             parseValuePostFix,
-            indented(Combinators.lexeme("-")).then(parsePrefixRef)
+            indented(lexeme("-")).then(parsePrefixRef)
                 .`as`(
                     PSElements.UnaryMinus
                 )
         ).`as`(PSElements.PrefixValue)
         private val parseValue = parsePrefix
             .then(
-                Combinators.optional(
-                    Combinators.attempt(indented(parseIdentInfix))
+                optional(
+                    attempt(indented(parseIdentInfix))
                         .then(parseValueRef)
                 )
             )
@@ -1277,11 +1280,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // Binder
         private val parseIdentifierAndBinder =
-            Combinators.lexeme(lname.or(stringLiteral))
+            lexeme(lname.or(stringLiteral))
                 .then(
                     indented(
-                        Combinators.lexeme(PSTokens.EQ).or(
-                            Combinators.lexeme(
+                        lexeme(PSTokens.EQ).or(
+                            lexeme(
                                 PSTokens.OPERATOR
                             )
                         )
@@ -1297,34 +1300,34 @@ class PureParser : PsiParser, PSTokens, PSElements {
             PSElements.NullBinder
         )
         private val parseStringBinder =
-            Combinators.lexeme(PSTokens.STRING).`as`(
+            lexeme(PSTokens.STRING).`as`(
                 PSElements.StringBinder
             )
         private val parseBooleanBinder =
-            Combinators.lexeme("true").or(Combinators.lexeme("false")).`as`(
+            lexeme("true").or(lexeme("false")).`as`(
                 PSElements.BooleanBinder
             )
-        private val parseNumberBinder = Combinators.optional(
+        private val parseNumberBinder = optional(
             Combinators.choice(
-                Combinators.lexeme("+"),
-                Combinators.lexeme("-")
+                lexeme("+"),
+                lexeme("-")
             )
         )
             .then(
-                Combinators.lexeme(PSTokens.NATURAL).or(
-                    Combinators.lexeme(
+                lexeme(PSTokens.NATURAL).or(
+                    lexeme(
                         PSTokens.FLOAT
                     )
                 )
             ).`as`(PSElements.NumberBinder)
         private val parseNamedBinder = parseIdent.then(
-            indented(Combinators.lexeme("@"))
+            indented(lexeme("@"))
                 .then(indented(parseBinderRef))
         ).`as`(
             PSElements.NamedBinder
         )
         private val parseVarBinder = parseIdent.`as`(PSElements.VarBinder)
-        private val parseConstructorBinder = Combinators.lexeme(
+        private val parseConstructorBinder = lexeme(
             parseQualified(properName).`as`(
                 PSElements.GenericIdentifier
             ).then(
@@ -1337,7 +1340,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).`as`(
             PSElements.ConstructorBinder
         )
-        private val parseNullaryConstructorBinder = Combinators.lexeme(
+        private val parseNullaryConstructorBinder = lexeme(
             parseQualified(
                 properName.`as`(
                     PSElements.ProperName
@@ -1346,47 +1349,47 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).`as`(PSElements.ConstructorBinder)
         private val parsePatternMatch = indented(
             Combinators.braces(
-                Combinators.commaSep(Combinators.lexeme(identifier))
+                Combinators.commaSep(lexeme(identifier))
             )
         ).`as`(
             PSElements.Binder
         )
         private val parseCharBinder =
-            Combinators.lexeme("'").`as`(PSElements.StringBinder)
+            lexeme("'").`as`(PSElements.StringBinder)
         private val parseBinderAtom = Combinators.choice(
-            Combinators.attempt(parseNullBinder),
-            Combinators.attempt(parseStringBinder),
-            Combinators.attempt(parseBooleanBinder),
-            Combinators.attempt(parseNumberBinder),
-            Combinators.attempt(parseNamedBinder),
-            Combinators.attempt(parseVarBinder),
-            Combinators.attempt(parseConstructorBinder),
-            Combinators.attempt(parseObjectBinder),
-            Combinators.attempt(parseArrayBinder),
-            Combinators.attempt(parsePatternMatch),
-            Combinators.attempt(parseCharBinder),
-            Combinators.attempt(Combinators.parens(parseBinderRef))
+            attempt(parseNullBinder),
+            attempt(parseStringBinder),
+            attempt(parseBooleanBinder),
+            attempt(parseNumberBinder),
+            attempt(parseNamedBinder),
+            attempt(parseVarBinder),
+            attempt(parseConstructorBinder),
+            attempt(parseObjectBinder),
+            attempt(parseArrayBinder),
+            attempt(parsePatternMatch),
+            attempt(parseCharBinder),
+            attempt(Combinators.parens(parseBinderRef))
         ).`as`(PSElements.BinderAtom)
         private val parseBinder = parseBinderAtom
             .then(
-                Combinators.optional(
-                    Combinators.lexeme(PSTokens.OPERATOR).then(parseBinderRef)
+                optional(
+                    lexeme(PSTokens.OPERATOR).then(parseBinderRef)
                 )
             )
             .`as`(PSElements.Binder)
         private val parseBinderNoParens = Combinators.choice(
-            Combinators.attempt(parseNullBinder),
-            Combinators.attempt(parseStringBinder),
-            Combinators.attempt(parseBooleanBinder),
-            Combinators.attempt(parseNumberBinder),
-            Combinators.attempt(parseNamedBinder),
-            Combinators.attempt(parseVarBinder),
-            Combinators.attempt(parseNullaryConstructorBinder),
-            Combinators.attempt(parseObjectBinder),
-            Combinators.attempt(parseArrayBinder),
-            Combinators.attempt(parsePatternMatch),
-            Combinators.attempt(parseCharBinder),
-            Combinators.attempt(Combinators.parens(parseBinderRef))
+            attempt(parseNullBinder),
+            attempt(parseStringBinder),
+            attempt(parseBooleanBinder),
+            attempt(parseNumberBinder),
+            attempt(parseNamedBinder),
+            attempt(parseVarBinder),
+            attempt(parseNullaryConstructorBinder),
+            attempt(parseObjectBinder),
+            attempt(parseArrayBinder),
+            attempt(parsePatternMatch),
+            attempt(parseCharBinder),
+            attempt(Combinators.parens(parseBinderRef))
         ).`as`(PSElements.Binder)
 
         init {
