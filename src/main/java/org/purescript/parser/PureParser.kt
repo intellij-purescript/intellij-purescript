@@ -26,6 +26,7 @@ import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
 import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
+import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.FunKind
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
@@ -39,6 +40,7 @@ import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeConstructor
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSTokens.Companion.ARROW
+import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DOT
 import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
@@ -263,23 +265,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 attempt(parens(type))
             )
         ).`as`(PSElements.TypeAtom)
-        private val parseConstrainedType: Parsec = optional(
-            attempt(
-                parens(
-                    commaSep1(
-                        parseQualified(properName).`as`(
-                            TypeConstructor
-                        ).then(
-                            indented(
-                                manyOrEmpty(parseTypeAtom)
-                            )
-                        )
-                    )
+        private val parseConstrainedType: Parsec =
+            optional(
+                attempt(
+                    parens(commaSep1(
+                        parseQualified(properName).`as`(TypeConstructor) +
+                            indented(manyOrEmpty(parseTypeAtom))
+                    )) + lexeme(DARROW)
                 )
-                    .then(lexeme(PSTokens.DARROW))
-            )
-        ).then(indented(parseTypeRef))
-            .`as`(PSElements.ConstrainedType)
+            ).then(indented(parseTypeRef)).`as`(ConstrainedType)
         private val parseForAll = reserved(PSTokens.FORALL)
             .then(
                 many1(
@@ -319,7 +313,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     choice(
                         reserved(ARROW),
                         reserved(
-                            PSTokens.DARROW
+                            DARROW
                         ),
                         reserved(PSTokens.OPTIMISTIC),
                         reserved(
@@ -488,7 +482,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 ).then(manyOrEmpty(parseTypeAtom))
             )
         )
-            .then(indented(reserved(PSTokens.DARROW)))
+            .then(indented(reserved(DARROW)))
         private val parseExternDeclaration =
             reserved(PSTokens.FOREIGN)
                 .then(indented(reserved(PSTokens.IMPORT)))
@@ -707,7 +701,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 optional(
                                     indented(
                                         reserved(
-                                            PSTokens.DARROW
+                                            DARROW
                                         )
                                     )
                                 )
@@ -734,7 +728,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         indented(
                             reserved(
-                                PSTokens.DARROW
+                                DARROW
                             )
                         ).then(
                             optional(
