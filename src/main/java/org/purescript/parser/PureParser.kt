@@ -478,9 +478,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // Some Binders - rest at the bottom
         private val parseArrayBinder =
-            squares(commaSep(parseBinderRef)).`as`(
-                PSElements.ObjectBinder
-            )
+            squares(commaSep(parseBinderRef)).`as`(PSElements.ObjectBinder)
         private val parsePatternMatchObject = indented(
             braces(
                 commaSep(
@@ -510,10 +508,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(indented(parseBinderRef))
         private val guardedDecl =
             choice(
+                attempt(indented(eq.then(exprWhere))),
                 attempt(indented(many1(
                     parseGuard.then(indented(eq.then(exprWhere)))
                 ))),
-                attempt(indented(eq.then(exprWhere)))
             )
 
         private val parseValueDeclaration // this is for when used with LET
