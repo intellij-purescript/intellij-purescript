@@ -1081,11 +1081,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     .then(parseValueRef)
             )
             .`as`(PSElements.DoNotationBind)
-        private val parseDoNotationElement = choice(
-            attempt(parseDoNotationBind),
-            parseDoNotationLet,
-            attempt(parseValueRef.`as`(PSElements.DoNotationValue))
-        )
+        private val parseDoNotationElement =
+            choice(
+                attempt(parseDoNotationBind),
+                parseDoNotationLet,
+                attempt(parseValueRef.`as`(PSElements.DoNotationValue))
+            )
         private val doBlock =
             reserved(PSTokens.DO)
             .then(indented(indentedList(mark(parseDoNotationElement))))
