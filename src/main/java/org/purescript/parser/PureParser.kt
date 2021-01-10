@@ -1233,16 +1233,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         // Binder
         private val parseIdentifierAndBinder =
             lexeme(lname.or(stringLiteral))
-                .then(
-                    indented(
-                        eq.or(
-                            lexeme(
-                                PSTokens.OPERATOR
-                            )
-                        )
-                    )
-                )
-                .then(indented(parseBinderRef))
+            .then(indented(eq.or(lexeme(PSTokens.OPERATOR))))
+            .then(indented(parseBinderRef))
         private val parseObjectBinder =
             braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
         private val parseNullBinder = reserved("_").`as`(NullBinder)
