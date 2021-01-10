@@ -905,15 +905,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseModule = reserved(PSTokens.MODULE)
             .then(indented(moduleName).`as`(PSElements.pModuleName))
-            .then(
-                optional(
-                    parens(
-                        Combinators.commaSep1(
-                            parseDeclarationRef
-                        )
-                    )
-                )
-            )
+            .then(optional(parens(Combinators.commaSep1(parseDeclarationRef))))
             .then(reserved(PSTokens.WHERE))
             .then(indentedList(parseDecl))
             .`as`(PSElements.Module)
