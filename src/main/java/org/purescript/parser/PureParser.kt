@@ -1252,13 +1252,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             lexeme("true").or(lexeme("false")).`as`(BooleanBinder)
         private val parseNumberBinder =
             optional(lexeme("+").or(lexeme("-")))
-            .then(
-                lexeme(PSTokens.NATURAL).or(
-                    lexeme(
-                        PSTokens.FLOAT
-                    )
-                )
-            ).`as`(PSElements.NumberBinder)
+            .then(lexeme(PSTokens.NATURAL).or(lexeme(PSTokens.FLOAT)))
+            .`as`(PSElements.NumberBinder)
         private val parseNamedBinder = ident.then(
             indented(lexeme("@"))
                 .then(indented(parseBinderRef))
