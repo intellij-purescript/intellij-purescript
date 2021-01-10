@@ -69,7 +69,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 ).then(p).`as`(PSElements.Qualified)
             )
         }
-        
+
         // tokens
         private val dcolon = lexeme(PSTokens.DCOLON)
         private val eq = lexeme(PSTokens.EQ)
@@ -140,10 +140,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 PSTokens.STRING
             )
         )
-
-        private fun positioned(p: Parsec): Parsec {
-            return p
-        }
 
         private fun indentedList(p: Parsec): Parsec {
             return mark(manyOrEmpty(untilSame(same(p))))
@@ -413,9 +409,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeDeclaration =
             (
                 parseIdent.`as`(PSElements.TypeAnnotationName) +
-                indented(dcolon) +
-                parsePolyTypeRef
-            ).`as`(PSElements.TypeDeclaration)
+                    indented(dcolon) +
+                    parsePolyTypeRef
+                ).`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
                 .then(
@@ -743,7 +739,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         attempt(
                             indented(reserved(PSTokens.WHERE))
                                 .then(
-                                    indentedList(positioned(parseTypeDeclaration))
+                                    indentedList(parseTypeDeclaration)
                                 )
                         )
                     )
@@ -843,7 +839,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 .then(
                                     indented(
                                         indentedList(
-                                            positioned(parseValueDeclaration)
+                                            parseValueDeclaration
                                         )
                                     )
                                 )
@@ -875,28 +871,24 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .`as`(PSElements.ImportDeclaration)
-        private val parseDecl = positioned(
-            choice(
-                attempt(dataHead + eq + sepBy1(dataCtor, PIPE))
-                    .`as`(PSElements.DataDeclaration),
-                (dataHead).`as`(PSElements.DataDeclaration),
-                parseNewtypeDeclaration,
-                attempt(parseTypeDeclaration),
-                parseTypeSynonymDeclaration,
-                
-                parseValueDeclaration,
-                parseExternDeclaration,
-                parseFixityDeclaration,
-                parseImportDeclaration,
-                parseTypeClassDeclaration,
-                parseTypeInstanceDeclaration
-            )
+        private val parseDecl = choice(
+            attempt(dataHead + eq + sepBy1(dataCtor, PIPE))
+                .`as`(PSElements.DataDeclaration),
+            (dataHead).`as`(PSElements.DataDeclaration),
+            parseNewtypeDeclaration,
+            attempt(parseTypeDeclaration),
+            parseTypeSynonymDeclaration,
+
+            parseValueDeclaration,
+            parseExternDeclaration,
+            parseFixityDeclaration,
+            parseImportDeclaration,
+            parseTypeClassDeclaration,
+            parseTypeInstanceDeclaration
         )
-        private val parseLocalDeclaration = positioned(
-            choice(
-                attempt(parseTypeDeclaration),
-                parseValueDeclaration
-            )
+        private val parseLocalDeclaration = choice(
+            attempt(parseTypeDeclaration),
+            parseValueDeclaration
         )
         private val parseModule = reserved(PSTokens.MODULE)
             .then(indented(moduleName).`as`(PSElements.pModuleName))
@@ -1088,7 +1080,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     many1(
                                         parseGuard.then(
                                             indented(
-                                                eq.then(parseValueWithWhereClause)
+                                                eq.then(
+                                                    parseValueWithWhereClause
+                                                )
                                             )
                                         )
                                     )
