@@ -26,6 +26,7 @@ import org.purescript.psi.PSElements
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
+import org.purescript.psi.PSElements.Companion.ProperName
 import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
@@ -68,7 +69,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     attempt(
                         token(
                             PSTokens.PROPER_NAME
-                        ).`as`(PSElements.ProperName).then(
+                        ).`as`(ProperName).then(
                             token(
                                 PSTokens.DOT
                             )
@@ -135,7 +136,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val properName: Parsec =
             lexeme(PSTokens.PROPER_NAME).`as`(
-                PSElements.ProperName
+                ProperName
             )
         private val moduleName = lexeme(
             parseQualified(
@@ -608,7 +609,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 parseQualified(properName).`as`(PSElements.pModuleName).or(
                     ident.`as`(
-                        PSElements.ProperName
+                        ProperName
                     )
                 )
             )
@@ -631,7 +632,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     PSElements.pClassName
                 )
             ),
-            properName.`as`(PSElements.ProperName).then(
+            properName.`as`(ProperName).then(
                 optional(
                     parens(
                         optional(
@@ -1131,8 +1132,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(parseBooleanLiteral),
             attempt(
                 reserved(TICK) +
-                properName.`as`(PSElements.ProperName)
-                .or(many1(lexeme(identifier).`as`(PSElements.ProperName))) +
+                properName.`as`(ProperName)
+                .or(many1(lexeme(identifier).`as`(ProperName))) +
                 reserved(TICK)
             ),
             parseArrayLiteral,
@@ -1248,7 +1249,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .`as`(PSElements.ConstructorBinder)
         private val parseNullaryConstructorBinder =
-            lexeme(parseQualified(properName.`as`(PSElements.ProperName)))
+            lexeme(parseQualified(properName.`as`(ProperName)))
             .`as`(PSElements.ConstructorBinder)
         private val parsePatternMatch = indented(
             braces(commaSep(lexeme(identifier)))).`as`(PSElements.Binder)
