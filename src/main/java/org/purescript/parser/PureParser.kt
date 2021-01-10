@@ -1080,10 +1080,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val doExpr = parseValueRef.`as`(PSElements.DoNotationValue)
         private val doStatement =
             choice(
-                attempt(parseDoNotationBind),
                 reserved(PSTokens.LET)
                     .then(indented(indentedList1(letBinding)))
                     .`as`(PSElements.DoNotationLet),
+                attempt(parseDoNotationBind),
                 attempt(doExpr)
             )
         private val doBlock =
