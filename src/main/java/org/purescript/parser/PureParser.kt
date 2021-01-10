@@ -177,11 +177,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeRef = Combinators.ref()
         private val parseForAllRef = Combinators.ref()
         private val parseTypeWildcard = reserved("_")
-        private val parseFunction = parens(
-            reserved(
-                ARROW
-            )
-        )
+        private val parseFunction = parens(reserved(ARROW))
         private val parseTypeVariable: Parsec = lexeme(
             guard(
                 idents,
