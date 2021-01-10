@@ -1081,7 +1081,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     .then(parseValueRef)
             )
             .`as`(PSElements.DoNotationBind)
-        private val parseDoNotationElement =
+        private val doStatement =
             choice(
                 attempt(parseDoNotationBind),
                 parseDoNotationLet,
@@ -1089,7 +1089,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val doBlock =
             reserved(PSTokens.DO)
-            .then(indented(indentedList(mark(parseDoNotationElement))))
+            .then(indented(indentedList(mark(doStatement))))
         private val parsePropertyUpdate =
             reserved(lname.or(stringLiteral))
                 .then(
