@@ -108,15 +108,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.AS)
             ).`as`(PSElements.Identifier)
         )
-        private val operator = choice(
-            token(PSTokens.OPERATOR), token(
-                PSTokens.DOT
-            ), token(PSTokens.DDOT), token(
-                PSTokens.LARROW
-            ), token(PSTokens.LDARROW), token(
-                PSTokens.OPTIMISTIC
+        private val operator =
+            choice(
+                token(PSTokens.OPERATOR),
+                token(PSTokens.DOT),
+                token(PSTokens.DDOT),
+                token(PSTokens.LARROW),
+                token(PSTokens.LDARROW),
+                token(PSTokens.OPTIMISTIC)
             )
-        )
         private val properName: Parsec =
             lexeme(PSTokens.PROPER_NAME).`as`(
                 PSElements.ProperName
