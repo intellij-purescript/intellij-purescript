@@ -333,18 +333,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .then(indented(lexeme(PSTokens.DOT)))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
-        private val parseIdent = choice(
-            lexeme(identifier.`as`(PSElements.Identifier)),
-            attempt(
-                parens(
-                    lexeme(
-                        operator.`as`(
-                            PSElements.Identifier
-                        )
-                    )
-                )
+        private val parseIdent =
+            choice(
+                lexeme(identifier.`as`(PSElements.Identifier)),
+                attempt(parens(lexeme(operator.`as`(PSElements.Identifier))))
             )
-        )
         private val parseTypePostfix = choice(
             parseTypeAtom, lexeme(
                 PSTokens.STRING
