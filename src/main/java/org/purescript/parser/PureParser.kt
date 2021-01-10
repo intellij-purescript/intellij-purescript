@@ -392,10 +392,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val parseBinderNoParensRef = Combinators.ref()
         private val parseBinderRef = Combinators.ref()
-        private val parseValueRef = Combinators.ref()
+        private val expr = Combinators.ref()
         private val parseLocalDeclarationRef = Combinators.ref()
         private val parseGuard = lexeme(PIPE)
-            .then(indented(commaSep(parseValueRef)))
+            .then(indented(commaSep(expr)))
             .`as`(
                 PSElements.Guard
             )
@@ -473,7 +473,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .`as`(PSElements.TypeSynonymDeclaration)
         private val parseValueWithWhereClause =
-            parseValueRef +
+            expr +
             optional(
                 indented(where) +
                 indented(mark(many1(same(parseLocalDeclarationRef))))
@@ -925,7 +925,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseCharLiteral =
             lexeme("'").`as`(PSElements.StringLiteral)
         private val parseArrayLiteral =
-            Combinators.squares(commaSep(parseValueRef)).`as`(
+            Combinators.squares(commaSep(expr)).`as`(
                 PSElements.ArrayLiteral
             )
         private val parseTypeHole =
@@ -941,7 +941,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         )
                     )
                 )
-                .then(optional(indented(parseValueRef)))
+                .then(optional(indented(expr)))
                 .`as`(PSElements.ObjectBinderField)
         private val parseObjectLiteral =
             braces(commaSep(parseIdentifierAndValue))
@@ -988,7 +988,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .then(indented(reserved(PSTokens.ARROW)))
-            .then(parseValueRef)
+            .then(expr)
         private val parseVar = attempt(
             manyOrEmpty(
                 attempt(
@@ -1008,7 +1008,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             PSElements.Constructor
         )
         private val parseCaseAlternative = commaSep1(
-            parseValueRef.or(
+            expr.or(
                 parseTypeWildcard
             )
         )
@@ -1020,17 +1020,17 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 indented(
                                     lexeme(
                                         PSTokens.ARROW
-                                    ).then(parseValueRef)
+                                    ).then(expr)
                                 )
                             )
                         ),
-                        reserved(PSTokens.ARROW).then(parseValueRef)
+                        reserved(PSTokens.ARROW).then(expr)
                     )
                 )
             )
             .`as`(PSElements.CaseAlternative)
         private val parseCase = reserved(PSTokens.CASE)
-            .then(commaSep1(parseValueRef.or(parseTypeWildcard)))
+            .then(commaSep1(expr.or(parseTypeWildcard)))
             .then(indented(reserved(PSTokens.OF)))
             .then(
                 indented(
@@ -1043,16 +1043,16 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .`as`(PSElements.Case)
         private val parseIfThenElse = reserved(PSTokens.IF)
-            .then(indented(parseValueRef))
+            .then(indented(expr))
             .then(indented(reserved(PSTokens.THEN)))
-            .then(indented(parseValueRef))
+            .then(indented(expr))
             .then(indented(reserved(PSTokens.ELSE)))
-            .then(indented(parseValueRef))
+            .then(indented(expr))
             .`as`(PSElements.IfThenElse)
         private val parseLet = reserved(PSTokens.LET)
             .then(indented(indentedList1(parseLocalDeclaration)))
             .then(indented(reserved(PSTokens.IN)))
-            .then(parseValueRef)
+            .then(expr)
             .`as`(PSElements.Let)
         private val letBinding =
             choice(
@@ -1111,10 +1111,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseBinderRef
                 .then(
                     indented(reserved(PSTokens.LARROW))
-                        .then(parseValueRef)
+                        .then(expr)
                 )
                 .`as`(PSElements.DoNotationBind)
-        private val doExpr = parseValueRef.`as`(PSElements.DoNotationValue)
+        private val doExpr = expr.`as`(PSElements.DoNotationValue)
         private val doStatement =
             choice(
                 reserved(PSTokens.LET)
@@ -1135,7 +1135,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         )
                     )
                 )
-                .then(indented(parseValueRef))
+                .then(indented(expr))
         private val parseValueAtom = choice(
             attempt(parseTypeHole),
             attempt(parseNumericLiteral),
@@ -1179,7 +1179,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseIfThenElse,
             doBlock,
             parseLet,
-            parens(parseValueRef).`as`(PSElements.Parens)
+            parens(expr).`as`(PSElements.Parens)
         )
         private val parseAccessor: Parsec = attempt(
             indented(
@@ -1245,7 +1245,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 optional(
                     attempt(indented(parseIdentInfix))
-                        .then(parseValueRef)
+                        .then(expr)
                 )
             )
             .`as`(PSElements.Value)
@@ -1384,7 +1384,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         init {
-            parseValueRef.setRef(parseValue)
+            expr.setRef(parseValue)
             parseBinderRef.setRef(parseBinder)
             parseBinderNoParensRef.setRef(parseBinderNoParens)
         }
