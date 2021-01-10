@@ -6,6 +6,7 @@ import org.purescript.parser.Combinators.attempt
 import org.purescript.parser.Combinators.braces
 import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.commaSep
+import org.purescript.parser.Combinators.commaSep1
 import org.purescript.parser.Combinators.guard
 import org.purescript.parser.Combinators.indented
 import org.purescript.parser.Combinators.lexeme
@@ -310,7 +311,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseConstrainedType: Parsec = optional(
             attempt(
                 parens(
-                    Combinators.commaSep1(
+                    commaSep1(
                         parseQualified(properName).`as`(
                             PSElements.TypeConstructor
                         ).then(
@@ -573,7 +574,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 PSElements.ValueDeclaration
             )
         private val parseDeps = parens(
-            Combinators.commaSep1(
+            commaSep1(
                 parseQualified(properName).`as`(
                     PSElements.TypeConstructor
                 ).then(manyOrEmpty(parseTypeAtom))
@@ -683,7 +684,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         optional(
                             choice(
                                 reserved(PSTokens.DDOT),
-                                Combinators.commaSep1(properName.`as`(PSElements.TypeConstructor))
+                                commaSep1(properName.`as`(PSElements.TypeConstructor))
                             )
                         )
                     )
@@ -699,13 +700,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         indented(
                             choice(
                                 parens(
-                                    Combinators.commaSep1(
+                                    commaSep1(
                                         parseQualified(properName).`as`(
                                             PSElements.TypeConstructor
                                         ).then(manyOrEmpty(parseTypeAtom))
                                     )
                                 ),
-                                Combinators.commaSep1(
+                                commaSep1(
                                     parseQualified(properName).`as`(
                                         PSElements.TypeConstructor
                                     ).then(manyOrEmpty(parseTypeAtom))
@@ -741,7 +742,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         lexeme(PSTokens.PIPE).then(
                             indented(
-                                Combinators.commaSep1(parsePolyTypeRef)
+                                commaSep1(parsePolyTypeRef)
                             )
                         )
                     )
@@ -782,7 +783,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         optional(reserved(PSTokens.LPAREN))
                             .then(
-                                Combinators.commaSep1(
+                                commaSep1(
                                     parseQualified(properName).`as`(
                                         PSElements.TypeConstructor
                                     ).then(manyOrEmpty(parseTypeAtom))
@@ -905,7 +906,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseModule = reserved(PSTokens.MODULE)
             .then(indented(moduleName).`as`(PSElements.pModuleName))
-            .then(optional(parens(Combinators.commaSep1(parseDeclarationRef))))
+            .then(optional(parens(commaSep1(parseDeclarationRef))))
             .then(reserved(PSTokens.WHERE))
             .then(indentedList(parseDecl))
             .`as`(PSElements.Module)
@@ -1011,7 +1012,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseConstructor = parseQualified(properName).`as`(
             PSElements.Constructor
         )
-        private val parseCaseAlternative = Combinators.commaSep1(
+        private val parseCaseAlternative = commaSep1(
             parseValueRef.or(
                 parseTypeWildcard
             )
@@ -1034,7 +1035,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .`as`(PSElements.CaseAlternative)
         private val parseCase = reserved(PSTokens.CASE)
-            .then(Combinators.commaSep1(parseValueRef.or(parseTypeWildcard)))
+            .then(commaSep1(parseValueRef.or(parseTypeWildcard)))
             .then(indented(reserved(PSTokens.OF)))
             .then(
                 indented(
@@ -1171,7 +1172,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(
                 indented(
                     braces(
-                        Combinators.commaSep1(
+                        commaSep1(
                             indented(
                                 parsePropertyUpdate
                             )
@@ -1213,7 +1214,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         attempt(
                             indented(
                                 braces(
-                                    Combinators.commaSep1(
+                                    commaSep1(
                                         indented(parsePropertyUpdate)
                                     )
                                 )
