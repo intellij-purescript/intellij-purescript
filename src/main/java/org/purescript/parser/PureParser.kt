@@ -413,13 +413,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         sepBy1(dataCtor, PSTokens.PIPE)
                 )).`as`(PSElements.DataDeclaration)
         private val parseTypeDeclaration =
-            (
-                attempt(
-                    parseIdent.`as`(PSElements.TypeAnnotationName) +
-                        indented(dcolon)
-                ) +
-                    attempt(parsePolyTypeRef)
-                ).`as`(PSElements.TypeDeclaration)
+            attempt(
+                parseIdent.`as`(PSElements.TypeAnnotationName) +
+                indented(dcolon) +
+                parsePolyTypeRef
+            ).`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
                 .then(
