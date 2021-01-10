@@ -29,6 +29,7 @@ import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.FunKind
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
+import org.purescript.psi.PSElements.Companion.ObjectType
 import org.purescript.psi.PSElements.Companion.ProperName
 import org.purescript.psi.PSElements.Companion.Qualified
 import org.purescript.psi.PSElements.Companion.RowKind
@@ -248,9 +249,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             commaSep(parseNameAndType(type))
                 .then(parseRowEnding)
                 .`as`(PSElements.Row)
-        private val parseObject: Parsec = braces(parseRow).`as`(
-            PSElements.ObjectType
-        )
+        private val parseObject: Parsec = braces(parseRow).`as`(ObjectType)
         private val parseTypeAtom: Parsec = indented(
             choice(
                 attempt(
