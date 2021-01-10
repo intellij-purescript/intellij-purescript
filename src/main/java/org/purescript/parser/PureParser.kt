@@ -1244,27 +1244,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
                 .then(indented(parseBinderRef))
         private val parseObjectBinder =
-            braces(commaSep(parseIdentifierAndBinder))
-                .`as`(
-                    ObjectBinder
-                )
-        private val parseNullBinder = reserved("_").`as`(
-            NullBinder
-        )
+            braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
+        private val parseNullBinder = reserved("_").`as`(NullBinder)
         private val parseStringBinder =
-            lexeme(PSTokens.STRING).`as`(
-                StringBinder
-            )
+            lexeme(PSTokens.STRING).`as`(StringBinder)
         private val parseBooleanBinder =
-            lexeme("true").or(lexeme("false")).`as`(
-                BooleanBinder
-            )
-        private val parseNumberBinder = optional(
-            choice(
-                lexeme("+"),
-                lexeme("-")
-            )
-        )
+            lexeme("true").or(lexeme("false")).`as`(BooleanBinder)
+        private val parseNumberBinder =
+            optional(lexeme("+").or(lexeme("-")))
             .then(
                 lexeme(PSTokens.NATURAL).or(
                     lexeme(
