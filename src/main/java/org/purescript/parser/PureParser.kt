@@ -30,6 +30,7 @@ import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSTokens.Companion.PIPE
+import org.purescript.psi.PSTokens.Companion.TICK
 
 class PureParser : PsiParser, PSTokens, PSElements {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
@@ -1129,7 +1130,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(parseStringLiteral),
             attempt(parseBooleanLiteral),
             attempt(
-                reserved(PSTokens.TICK) + choice(
+                reserved(TICK) + choice(
                     properName.`as`(
                         PSElements.ProperName
                     ),
@@ -1137,7 +1138,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         lexeme(identifier)
                             .`as`(PSElements.ProperName)
                     )
-                ) + reserved(PSTokens.TICK)
+                ) + reserved(TICK)
             ),
             parseArrayLiteral,
             parseCharLiteral,
@@ -1172,9 +1173,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             PSElements.Accessor
         )
         private val parseIdentInfix: Parsec = choice(
-            reserved(PSTokens.TICK)
+            reserved(TICK)
                 .then(parseQualified(lexeme(identifier))).lexeme(
-                    PSTokens.TICK
+                    TICK
                 ),
             parseQualified(lexeme(operator))
         ).`as`(PSElements.IdentInfix)
