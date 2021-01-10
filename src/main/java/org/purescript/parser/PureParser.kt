@@ -11,6 +11,7 @@ import org.purescript.parser.Combinators.indented
 import org.purescript.parser.Combinators.lexeme
 import org.purescript.parser.Combinators.many1
 import org.purescript.parser.Combinators.manyOrEmpty
+import org.purescript.parser.Combinators.mark
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.reserved
 import org.purescript.parser.Combinators.sepBy1
@@ -135,7 +136,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         private fun indentedList(p: Parsec): Parsec {
-            return Combinators.mark(
+            return mark(
                 manyOrEmpty(
                     Combinators.untilSame(
                         Combinators.same(p)
@@ -145,7 +146,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         private fun indentedList1(p: Parsec): Parsec {
-            return Combinators.mark(
+            return mark(
                 many1(
                     Combinators.untilSame(
                         Combinators.same(p)
@@ -491,7 +492,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     indented(lexeme(PSTokens.WHERE))
                         .then(
                             indented(
-                                Combinators.mark(
+                                mark(
                                     many1(
                                         Combinators.same(
                                             parseLocalDeclarationRef
@@ -1055,7 +1056,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 indented(
                     indentedList(
-                        Combinators.mark(
+                        mark(
                             parseCaseAlternative
                         )
                     )
@@ -1091,15 +1092,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val doBlock =
             reserved(PSTokens.DO)
-            .then(
-                indented(
-                    indentedList(
-                        Combinators.mark(
-                            parseDoNotationElement
-                        )
-                    )
-                )
-            )
+            .then(indented(indentedList(mark(parseDoNotationElement))))
         private val parsePropertyUpdate =
             reserved(lname.or(stringLiteral))
                 .then(
