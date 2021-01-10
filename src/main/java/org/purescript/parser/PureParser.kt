@@ -23,6 +23,10 @@ import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
+import org.purescript.psi.PSElements.Companion.BooleanBinder
+import org.purescript.psi.PSElements.Companion.NullBinder
+import org.purescript.psi.PSElements.Companion.ObjectBinder
+import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSTokens.Companion.PIPE
@@ -468,7 +472,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // Some Binders - rest at the bottom
         private val parseArrayBinder =
-            squares(commaSep(parseBinderRef)).`as`(PSElements.ObjectBinder)
+            squares(commaSep(parseBinderRef)).`as`(ObjectBinder)
         private val parsePatternMatchObject = indented(
             braces(
                 commaSep(
@@ -1242,18 +1246,18 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseObjectBinder =
             braces(commaSep(parseIdentifierAndBinder))
                 .`as`(
-                    PSElements.ObjectBinder
+                    ObjectBinder
                 )
         private val parseNullBinder = reserved("_").`as`(
-            PSElements.NullBinder
+            NullBinder
         )
         private val parseStringBinder =
             lexeme(PSTokens.STRING).`as`(
-                PSElements.StringBinder
+                StringBinder
             )
         private val parseBooleanBinder =
             lexeme("true").or(lexeme("false")).`as`(
-                PSElements.BooleanBinder
+                BooleanBinder
             )
         private val parseNumberBinder = optional(
             choice(
@@ -1303,7 +1307,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             PSElements.Binder
         )
         private val parseCharBinder =
-            lexeme("'").`as`(PSElements.StringBinder)
+            lexeme("'").`as`(StringBinder)
         private val parseBinderAtom = choice(
             attempt(parseNullBinder),
             attempt(parseStringBinder),
