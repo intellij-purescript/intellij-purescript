@@ -840,7 +840,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .`as`(PSElements.ImportDeclaration)
-        private val parseDecl = choice(
+        private val decl = choice(
             attempt(dataHead + eq + sepBy1(dataCtor, PIPE))
                 .`as`(PSElements.DataDeclaration),
             (dataHead).`as`(PSElements.DataDeclaration),
@@ -894,7 +894,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(indented(moduleName).`as`(PSElements.pModuleName))
             .then(optional(parens(commaSep1(parseDeclarationRef))))
             .then(reserved(PSTokens.WHERE))
-            .then(indentedList(parseDecl))
+            .then(indentedList(decl))
             .`as`(PSElements.Module)
         val program: Parsec = indentedList(parseModule).`as`(PSElements.Program)
 
