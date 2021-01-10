@@ -475,7 +475,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val exprWhere =
             expr +
             optional(
-                indented(where) +
+                where +
                 indentedList1(parseLocalDeclarationRef)
             )
 
