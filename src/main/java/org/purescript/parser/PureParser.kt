@@ -23,6 +23,8 @@ import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
+import org.purescript.psi.PSElements.Companion.TypeAnnotationName
+import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSTokens.Companion.PIPE
 
 class PureParser : PsiParser, PSTokens, PSElements {
@@ -409,8 +411,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             properName.`as`(PSElements.TypeConstructor) +
                 manyOrEmpty(indented(parseTypeAtom))
         private val parseTypeDeclaration =
-            (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
-                .`as`(PSElements.TypeDeclaration)
+            (ident.`as`(TypeAnnotationName) + dcolon + type).`as`(TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
                 .then(
