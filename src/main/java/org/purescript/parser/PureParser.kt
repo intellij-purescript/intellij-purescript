@@ -73,6 +73,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         // tokens
         private val dcolon = lexeme(PSTokens.DCOLON)
         private val eq = lexeme(PSTokens.EQ)
+        private val where = lexeme(PSTokens.WHERE)
 
         private val idents =
             choice(
@@ -471,23 +472,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     .then(parsePolyTypeRef)
             )
             .`as`(PSElements.TypeSynonymDeclaration)
-        private val parseValueWithWhereClause = parseValueRef
-            .then(
-                optional(
-                    indented(lexeme(PSTokens.WHERE))
-                        .then(
-                            indented(
-                                mark(
-                                    many1(
-                                        same(
-                                            parseLocalDeclarationRef
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                )
+        private val parseValueWithWhereClause =
+            parseValueRef +
+            optional(
+                indented(where) +
+                indented(mark(many1(same(parseLocalDeclarationRef))))
             )
+
 
         // Some Binders - rest at the bottom
         private val parseArrayBinder =
