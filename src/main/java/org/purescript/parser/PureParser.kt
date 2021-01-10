@@ -13,6 +13,7 @@ import org.purescript.parser.Combinators.manyOrEmpty
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.reserved
 import org.purescript.parser.Combinators.sepBy1
+import org.purescript.parser.Combinators.token
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
 
@@ -49,10 +50,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             return attempt(
                 manyOrEmpty(
                     attempt(
-                        Combinators.token(
+                        token(
                             PSTokens.PROPER_NAME
                         ).`as`(PSElements.ProperName).then(
-                            Combinators.token(
+                            token(
                                 PSTokens.DOT
                             )
                         )
@@ -62,53 +63,53 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         private val idents = choice(
-            Combinators.token(PSTokens.IDENT), choice(
-                Combinators.token(
+            token(PSTokens.IDENT), choice(
+                token(
                     PSTokens.FORALL
-                ), Combinators.token(PSTokens.QUALIFIED), Combinators.token(
+                ), token(PSTokens.QUALIFIED), token(
                     PSTokens.HIDING
-                ), Combinators.token(PSTokens.AS)
+                ), token(PSTokens.AS)
             ).`as`(PSElements.Identifier)
         )
         private val identifier = idents
         private val lname = lexeme(
             choice(
-                Combinators.token(PSTokens.IDENT),
-                Combinators.token(PSTokens.DATA),
-                Combinators.token(PSTokens.NEWTYPE),
-                Combinators.token(PSTokens.TYPE),
-                Combinators.token(PSTokens.FOREIGN),
-                Combinators.token(PSTokens.IMPORT),
-                Combinators.token(PSTokens.INFIXL),
-                Combinators.token(PSTokens.INFIXR),
-                Combinators.token(PSTokens.INFIX),
-                Combinators.token(PSTokens.CLASS),
-                Combinators.token(PSTokens.DERIVE),
-                Combinators.token(PSTokens.INSTANCE),
-                Combinators.token(PSTokens.MODULE),
-                Combinators.token(PSTokens.CASE),
-                Combinators.token(PSTokens.OF),
-                Combinators.token(PSTokens.IF),
-                Combinators.token(PSTokens.THEN),
-                Combinators.token(PSTokens.ELSE),
-                Combinators.token(PSTokens.DO),
-                Combinators.token(PSTokens.LET),
-                Combinators.token(PSTokens.TRUE),
-                Combinators.token(PSTokens.FALSE),
-                Combinators.token(PSTokens.IN),
-                Combinators.token(PSTokens.WHERE),
-                Combinators.token(PSTokens.FORALL),
-                Combinators.token(PSTokens.QUALIFIED),
-                Combinators.token(PSTokens.HIDING),
-                Combinators.token(PSTokens.AS)
+                token(PSTokens.IDENT),
+                token(PSTokens.DATA),
+                token(PSTokens.NEWTYPE),
+                token(PSTokens.TYPE),
+                token(PSTokens.FOREIGN),
+                token(PSTokens.IMPORT),
+                token(PSTokens.INFIXL),
+                token(PSTokens.INFIXR),
+                token(PSTokens.INFIX),
+                token(PSTokens.CLASS),
+                token(PSTokens.DERIVE),
+                token(PSTokens.INSTANCE),
+                token(PSTokens.MODULE),
+                token(PSTokens.CASE),
+                token(PSTokens.OF),
+                token(PSTokens.IF),
+                token(PSTokens.THEN),
+                token(PSTokens.ELSE),
+                token(PSTokens.DO),
+                token(PSTokens.LET),
+                token(PSTokens.TRUE),
+                token(PSTokens.FALSE),
+                token(PSTokens.IN),
+                token(PSTokens.WHERE),
+                token(PSTokens.FORALL),
+                token(PSTokens.QUALIFIED),
+                token(PSTokens.HIDING),
+                token(PSTokens.AS)
             ).`as`(PSElements.Identifier)
         )
         private val operator = choice(
-            Combinators.token(PSTokens.OPERATOR), Combinators.token(
+            token(PSTokens.OPERATOR), token(
                 PSTokens.DOT
-            ), Combinators.token(PSTokens.DDOT), Combinators.token(
+            ), token(PSTokens.DDOT), token(
                 PSTokens.LARROW
-            ), Combinators.token(PSTokens.LDARROW), Combinators.token(
+            ), token(PSTokens.LDARROW), token(
                 PSTokens.OPTIMISTIC
             )
         )
@@ -118,7 +119,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val moduleName = lexeme(
             parseQualified(
-                Combinators.token(
+                token(
                     PSTokens.PROPER_NAME
                 )
             )
@@ -1011,10 +1012,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseVar = attempt(
             manyOrEmpty(
                 attempt(
-                    Combinators.token(
+                    token(
                         PSTokens.PROPER_NAME
                     ).`as`(PSElements.qualifiedModuleName).then(
-                        Combinators.token(
+                        token(
                             PSTokens.DOT
                         )
                     )
@@ -1157,7 +1158,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseAccessor: Parsec = attempt(
             indented(
-                Combinators.token(
+                token(
                     PSTokens.DOT
                 )
             ).then(indented(lname.or(stringLiteral)))
