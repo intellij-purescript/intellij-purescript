@@ -62,15 +62,16 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         }
 
-        private val idents = choice(
-            token(PSTokens.IDENT), choice(
-                token(
-                    PSTokens.FORALL
-                ), token(PSTokens.QUALIFIED), token(
-                    PSTokens.HIDING
-                ), token(PSTokens.AS)
-            ).`as`(PSElements.Identifier)
-        )
+        private val idents =
+            choice(
+                token(PSTokens.IDENT),
+                choice(
+                    token(PSTokens.FORALL),
+                    token(PSTokens.QUALIFIED),
+                    token(PSTokens.HIDING),
+                    token(PSTokens.AS)
+                ).`as`(PSElements.Identifier)
+            )
         private val identifier = idents
         private val lname = lexeme(
             choice(
