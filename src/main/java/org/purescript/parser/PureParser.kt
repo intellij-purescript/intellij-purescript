@@ -1225,8 +1225,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
         private val parsePrefixRef = Combinators.ref()
-        private val parsePrefix = choice(
-            parseValuePostFix,
+        private val parsePrefix =
+            choice(
+                parseValuePostFix,
             indented(lexeme("-")).then(parsePrefixRef)
                 .`as`(
                     PSElements.UnaryMinus
@@ -1354,23 +1355,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
         init {
             parseKindPrefixRef.setRef(parseKindPrefix)
             parseKindRef.setRef(parseKind)
-        }
-
-        init {
             type.setRef(parseType)
             parseTypeRef.setRef(parseType)
             parseForAllRef.setRef(parseForAll)
-        }
-
-        init {
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
-        }
-
-        init {
             parsePrefixRef.setRef(parsePrefix)
-        }
-
-        init {
             expr.setRef(parseValue)
             parseBinderRef.setRef(parseBinder)
             parseBinderNoParensRef.setRef(parseBinderNoParens)
