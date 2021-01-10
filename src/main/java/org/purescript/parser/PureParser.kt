@@ -506,7 +506,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
             .then(indented(parseBinderRef))
-        private val guardedDeclExpr = parseGuard + indented(eq + exprWhere)
+        private val guardedDeclExpr = parseGuard + eq + exprWhere
         private val guardedDecl =
             choice(
                 attempt(eq) + exprWhere,
