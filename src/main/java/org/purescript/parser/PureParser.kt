@@ -31,6 +31,8 @@ import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSTokens.Companion.PIPE
+import org.purescript.psi.PSTokens.Companion.PROPER_NAME
+import org.purescript.psi.PSTokens.Companion.STRING
 import org.purescript.psi.PSTokens.Companion.TICK
 
 class PureParser : PsiParser, PSTokens, PSElements {
@@ -68,7 +70,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 manyOrEmpty(
                     attempt(
                         token(
-                            PSTokens.PROPER_NAME
+                            PROPER_NAME
                         ).`as`(ProperName).then(
                             token(
                                 PSTokens.DOT
@@ -134,23 +136,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.LDARROW),
                 token(PSTokens.OPTIMISTIC)
             )
-        private val properName: Parsec =
-            lexeme(PSTokens.PROPER_NAME).`as`(
-                ProperName
-            )
-        private val moduleName = lexeme(
-            parseQualified(
-                token(
-                    PSTokens.PROPER_NAME
-                )
-            )
-        )
-        private val stringLiteral = attempt(
-            lexeme(
-                PSTokens.STRING
-            )
-        )
-
+        private val properName: Parsec = lexeme(PROPER_NAME).`as`(ProperName)
+        private val moduleName = lexeme(parseQualified(token(PROPER_NAME)))
+        private val stringLiteral = attempt(lexeme(STRING))
         private fun indentedList(p: Parsec): Parsec =
             mark(manyOrEmpty(untilSame(same(p))))
 
@@ -345,7 +333,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val parseTypePostfix = choice(
             parseTypeAtom, lexeme(
-                PSTokens.STRING
+                STRING
             )
         )
             .then(
@@ -452,7 +440,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             PSTokens.TYPE
         )
             .then(
-                reserved(PSTokens.PROPER_NAME)
+                reserved(PROPER_NAME)
                     .`as`(PSElements.TypeConstructor)
             )
             .then(
@@ -544,7 +532,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             reserved(PSTokens.DATA)
                                 .then(
                                     indented(
-                                        reserved(PSTokens.PROPER_NAME)
+                                        reserved(PROPER_NAME)
                                             .`as`(
                                                 PSElements.TypeConstructor
                                             )
@@ -771,7 +759,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     manyOrEmpty(
                         indented(parseTypeAtom).or(
                             lexeme(
-                                PSTokens.STRING
+                                STRING
                             )
                         )
                     )
@@ -908,7 +896,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             ).`as`(PSElements.NumericLiteral)
         private val parseStringLiteral =
-            reserved(PSTokens.STRING).`as`(
+            reserved(STRING).`as`(
                 PSElements.StringLiteral
             )
         private val parseCharLiteral =
@@ -982,7 +970,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             manyOrEmpty(
                 attempt(
                     token(
-                        PSTokens.PROPER_NAME
+                        PROPER_NAME
                     ).`as`(PSElements.qualifiedModuleName).then(
                         token(
                             PSTokens.DOT
@@ -1230,7 +1218,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
         private val parseNullBinder = reserved("_").`as`(NullBinder)
         private val parseStringBinder =
-            lexeme(PSTokens.STRING).`as`(StringBinder)
+            lexeme(STRING).`as`(StringBinder)
         private val parseBooleanBinder =
             lexeme("true").or(lexeme("false")).`as`(BooleanBinder)
         private val parseNumberBinder =
