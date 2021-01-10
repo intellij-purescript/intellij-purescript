@@ -195,7 +195,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
 
         // Types.hs
-        private val parsePolyTypeRef = Combinators.ref()
+        private val type = Combinators.ref()
         private val parseTypeRef = Combinators.ref()
         private val parseForAllRef = Combinators.ref()
         private val parseTypeWildcard = reserved("_")
@@ -273,7 +273,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                         )
                                     ).then(
                                         optional(
-                                            parsePolyTypeRef
+                                            type
                                         )
                                     )
                                 )
@@ -284,7 +284,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
         private val parseRow: Parsec =
-            commaSep(parseNameAndType(parsePolyTypeRef))
+            commaSep(parseNameAndType(type))
                 .then(parseRowEnding)
                 .`as`(PSElements.Row)
         private val parseObject: Parsec = braces(parseRow).`as`(
@@ -306,7 +306,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 attempt(parseTypeConstructor),
                 attempt(parseForAllRef),
                 attempt(parens(parseRow)),
-                attempt(parens(parsePolyTypeRef))
+                attempt(parens(type))
             )
         ).`as`(PSElements.TypeAtom)
         private val parseConstrainedType: Parsec = optional(
@@ -412,7 +412,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             (
                 parseIdent.`as`(PSElements.TypeAnnotationName) +
                     dcolon +
-                    parsePolyTypeRef
+                    type
                 ).`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
@@ -470,7 +470,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .then(
                 indented(eq)
-                    .then(parsePolyTypeRef)
+                    .then(type)
             )
             .`as`(PSElements.TypeSynonymDeclaration)
         private val exprWhere =
@@ -591,7 +591,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                         )
                                     )
                                 )
-                                .then(parsePolyTypeRef)
+                                .then(type)
                                 .`as`(PSElements.ExternDeclaration)
                         )
                     )
@@ -700,7 +700,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         lexeme(PIPE).then(
                             indented(
-                                commaSep1(parsePolyTypeRef)
+                                commaSep1(type)
                             )
                         )
                     )
@@ -962,7 +962,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         lexeme(
                             PSTokens.DCOLON
                         )
-                    ).then(indented(parsePolyTypeRef))
+                    ).then(indented(type))
                 )
             )
             .then(optional(parseObjectLiteral))
@@ -1221,7 +1221,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 lexeme(
                                     PSTokens.DCOLON
                                 )
-                            ).then(parsePolyTypeRef)
+                            ).then(type)
                         )
                     )
                 )
@@ -1363,7 +1363,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         init {
-            parsePolyTypeRef.setRef(parseType)
+            type.setRef(parseType)
             parseTypeRef.setRef(parseType)
             parseForAllRef.setRef(parseForAll)
         }
