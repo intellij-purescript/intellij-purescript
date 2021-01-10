@@ -338,7 +338,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .then(indented(lexeme(PSTokens.DOT)))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
-        private val parseIdent =
+        private val ident =
             choice(
                 lexeme(identifier.`as`(PSElements.Identifier)),
                 attempt(parens(lexeme(operator.`as`(PSElements.Identifier))))
@@ -409,11 +409,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             properName.`as`(PSElements.TypeConstructor) +
                 manyOrEmpty(indented(parseTypeAtom))
         private val parseTypeDeclaration =
-            (
-                parseIdent.`as`(PSElements.TypeAnnotationName) +
-                    dcolon +
-                    type
-                ).`as`(PSElements.TypeDeclaration)
+            (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
+                .`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
             reserved(PSTokens.NEWTYPE)
                 .then(
@@ -516,7 +513,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseValueDeclaration // this is for when used with LET
             = optional(attempt(reserved(PSTokens.LPAREN)))
             .then(optional(attempt(properName).`as`(PSElements.Constructor)))
-            .then(optional(attempt(many1(parseIdent))))
+            .then(optional(attempt(many1(ident))))
             .then(optional(attempt(parseArrayBinder)))
             .then(
                 optional(
@@ -558,7 +555,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 .then(parseKind)
                                 .`as`(PSElements.ExternDataDeclaration),
                             reserved(PSTokens.INSTANCE)
-                                .then(parseIdent)
+                                .then(ident)
                                 .then(
                                     indented(
                                         lexeme(
@@ -576,7 +573,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .`as`(PSElements.ExternInstanceDeclaration),
-                            attempt(parseIdent)
+                            attempt(ident)
                                 .then(
                                     optional(
                                         stringLiteral.`as`(
@@ -612,7 +609,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(optional(reserved(PSTokens.TYPE)))
             .then(
                 parseQualified(properName).`as`(PSElements.pModuleName).or(
-                    parseIdent.`as`(
+                    ident.`as`(
                         PSElements.ProperName
                     )
                 )
@@ -626,7 +623,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     PSElements.pClassName
                 )
             ),
-            parseIdent.`as`(PSElements.ValueRef),
+            ident.`as`(PSElements.ValueRef),
             reserved(PSTokens.TYPE)
                 .then(optional(parens(operator))),
             reserved(PSTokens.MODULE).then(moduleName)
@@ -729,7 +726,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).then(
             reserved(PSTokens.INSTANCE)
                 .then(
-                    parseIdent.`as`(PSElements.GenericIdentifier).then(
+                    ident.`as`(PSElements.GenericIdentifier).then(
                         indented(
                             lexeme(
                                 PSTokens.DCOLON
@@ -851,7 +848,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseTypeSynonymDeclaration,
             optional(attempt(reserved(PSTokens.LPAREN)))
                 .then(optional(attempt(properName).`as`(PSElements.Constructor)))
-                .then(optional(attempt(many1(parseIdent))))
+                .then(optional(attempt(many1(ident))))
                 .then(optional(attempt(parseArrayBinder)))
                 .then(
                     optional(
@@ -876,7 +873,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             // this is for when used with LET
             optional(attempt(reserved(PSTokens.LPAREN)))
                 .then(optional(attempt(properName).`as`(PSElements.Constructor)))
-                .then(optional(attempt(many1(parseIdent))))
+                .then(optional(attempt(many1(ident))))
                 .then(optional(attempt(parseArrayBinder)))
                 .then(
                     optional(
@@ -973,7 +970,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     many1(typedIdent).`as`(PSElements.Abs),
                     many1(
                         indented(
-                            parseIdent.or(parseBinderNoParensRef).`as`(
+                            ident.or(parseBinderNoParensRef).`as`(
                                 PSElements.Abs
                             )
                         )
@@ -993,7 +990,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         )
                     )
                 )
-            ).then(parseIdent).`as`(PSElements.Qualified)
+            ).then(ident).`as`(PSElements.Qualified)
         ).`as`(
             PSElements.Var
         )
@@ -1052,7 +1049,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 attempt(parseTypeDeclaration),
                 optional(attempt(reserved(PSTokens.LPAREN)))
                     .then(optional(attempt(properName).`as`(PSElements.Constructor)))
-                    .then(optional(attempt(many1(parseIdent))))
+                    .then(optional(attempt(many1(ident))))
                     .then(optional(attempt(parseArrayBinder)))
                     .then(
                         optional(
@@ -1285,13 +1282,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             ).`as`(PSElements.NumberBinder)
-        private val parseNamedBinder = parseIdent.then(
+        private val parseNamedBinder = ident.then(
             indented(lexeme("@"))
                 .then(indented(parseBinderRef))
         ).`as`(
             PSElements.NamedBinder
         )
-        private val parseVarBinder = parseIdent.`as`(PSElements.VarBinder)
+        private val parseVarBinder = ident.`as`(PSElements.VarBinder)
         private val parseConstructorBinder = lexeme(
             parseQualified(properName).`as`(
                 PSElements.GenericIdentifier
