@@ -1089,7 +1089,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseDoNotationLet,
             attempt(parseValueRef.`as`(PSElements.DoNotationValue))
         )
-        private val parseDo = reserved(PSTokens.DO)
+        private val doBlock =
+            reserved(PSTokens.DO)
             .then(
                 indented(
                     indentedList(
@@ -1152,7 +1153,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(parseVar),
             parseCase,
             parseIfThenElse,
-            parseDo,
+            doBlock,
             parseLet,
             Combinators.parens(parseValueRef).`as`(PSElements.Parens)
         )
