@@ -186,9 +186,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         ).`as`(PSElements.GenericIdentifier)
         private val parseTypeConstructor: Parsec =
-            parseQualified(properName).`as`(
-                TypeConstructor
-            )
+            parseQualified(properName).`as`(TypeConstructor)
 
         private fun parseNameAndType(p: Parsec): Parsec {
             return indented(
