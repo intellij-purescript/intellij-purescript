@@ -407,12 +407,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
         val dataCtor =
             properName.`as`(PSElements.TypeConstructor) +
                 manyOrEmpty(indented(parseTypeAtom))
-        private val parseDataDeclaration =
-            (dataHead +
-                optional(
-                    attempt(lexeme(PSTokens.EQ)) +
-                        sepBy1(dataCtor, PSTokens.PIPE)
-                )).`as`(PSElements.DataDeclaration)
         private val parseTypeDeclaration =
             (
                 parseIdent.`as`(PSElements.TypeAnnotationName) +
@@ -886,10 +880,17 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .`as`(PSElements.ImportDeclaration)
         private val parseDecl = positioned(
             choice(
-                parseDataDeclaration,
+                attempt(
+                    dataHead + lexeme(PSTokens.EQ) + sepBy1(
+                        dataCtor,
+                        PSTokens.PIPE
+                    )
+                ).`as`(PSElements.DataDeclaration),
+                (dataHead).`as`(PSElements.DataDeclaration),
                 parseNewtypeDeclaration,
                 attempt(parseTypeDeclaration),
                 parseTypeSynonymDeclaration,
+                
                 parseValueDeclaration,
                 parseExternDeclaration,
                 parseFixityDeclaration,
