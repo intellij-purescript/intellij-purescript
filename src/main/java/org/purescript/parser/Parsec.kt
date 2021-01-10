@@ -24,8 +24,11 @@ abstract class Parsec {
     abstract fun parse(context: ParserContext): ParserInfo
     protected abstract fun calcName(): String
     protected abstract fun calcExpectedName(): HashSet<String?>
+    operator fun plus(other: Parsec): Parsec {
+        return Combinators.seq(this, other)
+    }
     fun then(next: Parsec): Parsec {
-        return Combinators.seq(this, next)
+        return this + next
     }
 
     fun lexeme(type: IElementType): Parsec {
