@@ -145,19 +145,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
 
-        private fun indentedList(p: Parsec): Parsec {
-            return mark(manyOrEmpty(untilSame(same(p))))
-        }
+        private fun indentedList(p: Parsec): Parsec =
+            mark(manyOrEmpty(untilSame(same(p))))
 
-        private fun indentedList1(p: Parsec): Parsec {
-            return mark(
-                many1(
-                    untilSame(
-                        same(p)
-                    )
-                )
-            )
-        }
+        private fun indentedList1(p: Parsec): Parsec =
+            mark(many1(untilSame(same(p))))
 
         // Kinds.hs
         private val parseKindRef = Combinators.ref()
