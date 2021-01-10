@@ -473,12 +473,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .`as`(PSElements.TypeSynonymDeclaration)
         private val exprWhere =
-            expr +
-            optional(
-                where +
-                indentedList1(parseLocalDeclarationRef)
-            )
-
+            expr + optional(where + indentedList1(parseLocalDeclarationRef))
 
         // Some Binders - rest at the bottom
         private val parseArrayBinder =
