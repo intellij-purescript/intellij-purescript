@@ -1269,12 +1269,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             lexeme(parseQualified(properName.`as`(PSElements.ProperName)))
             .`as`(PSElements.ConstructorBinder)
         private val parsePatternMatch = indented(
-            braces(
-                commaSep(lexeme(identifier))
-            )
-        ).`as`(
-            PSElements.Binder
-        )
+            braces(commaSep(lexeme(identifier)))).`as`(PSElements.Binder)
         private val parseCharBinder =
             lexeme("'").`as`(StringBinder)
         private val parseBinderAtom = choice(
