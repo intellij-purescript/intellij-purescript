@@ -22,6 +22,7 @@ import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
+import org.purescript.psi.PSTokens.Companion.PIPE
 
 class PureParser : PsiParser, PSTokens, PSElements {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
@@ -234,7 +235,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         private val parseRowEnding = optional(
-            indented(lexeme(PSTokens.PIPE)).then(
+            indented(lexeme(PIPE)).then(
                 indented(
                     choice(
                         attempt(parseTypeWildcard),
@@ -396,7 +397,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseBinderRef = Combinators.ref()
         private val parseValueRef = Combinators.ref()
         private val parseLocalDeclarationRef = Combinators.ref()
-        private val parseGuard = lexeme(PSTokens.PIPE)
+        private val parseGuard = lexeme(PIPE)
             .then(indented(commaSep(parseValueRef)))
             .`as`(
                 PSElements.Guard
@@ -730,7 +731,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
                 .then(
                     optional(
-                        lexeme(PSTokens.PIPE).then(
+                        lexeme(PIPE).then(
                             indented(
                                 commaSep1(parsePolyTypeRef)
                             )
@@ -876,11 +877,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .`as`(PSElements.ImportDeclaration)
         private val parseDecl = positioned(
             choice(
-                attempt(
-                    dataHead + eq + sepBy1(
-                        dataCtor,
-                        PSTokens.PIPE
-                    )
+                attempt(dataHead + eq + sepBy1(dataCtor, PIPE)
                 ).`as`(PSElements.DataDeclaration),
                 (dataHead).`as`(PSElements.DataDeclaration),
                 parseNewtypeDeclaration,
