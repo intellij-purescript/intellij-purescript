@@ -509,9 +509,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val guardedDecl =
             choice(
                 attempt(eq) + exprWhere,
-                attempt(indented(many1(
-                    parseGuard.then(indented(eq.then(exprWhere)))
-                ))),
+                attempt(indented(many1(parseGuard + indented(eq + exprWhere)))),
             )
 
         private val parseValueDeclaration // this is for when used with LET
