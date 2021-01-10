@@ -9,6 +9,7 @@ import org.purescript.parser.Combinators.commaSep
 import org.purescript.parser.Combinators.commaSep1
 import org.purescript.parser.Combinators.guard
 import org.purescript.parser.Combinators.indented
+import org.purescript.parser.Combinators.keyword
 import org.purescript.parser.Combinators.lexeme
 import org.purescript.parser.Combinators.many1
 import org.purescript.parser.Combinators.manyOrEmpty
@@ -23,11 +24,13 @@ import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
+import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ProperName
 import org.purescript.psi.PSElements.Companion.Qualified
+import org.purescript.psi.PSElements.Companion.Star
 import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeConstructor
@@ -142,12 +145,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         // Kinds.hs
         private val parseKindRef = Combinators.ref()
         private val parseKindPrefixRef = Combinators.ref()
-        private val parseStar = Combinators.keyword(PSTokens.START, "*").`as`(
-            PSElements.Star
-        )
-        private val parseBang = Combinators.keyword(PSTokens.BANG, "!").`as`(
-            PSElements.Bang
-        )
+        private val parseStar = keyword(PSTokens.START, "*").`as`(Star)
+        private val parseBang = keyword(PSTokens.BANG, "!").`as`(Bang)
         private val parseKindAtom = indented(
             choice(
                 parseStar, parseBang,
