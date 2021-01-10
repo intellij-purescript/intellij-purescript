@@ -472,7 +472,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     .then(parsePolyTypeRef)
             )
             .`as`(PSElements.TypeSynonymDeclaration)
-        private val parseValueWithWhereClause =
+        private val exprWhere =
             expr +
             optional(
                 indented(where) +
@@ -515,9 +515,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val guardedDecl =
             choice(
                 attempt(indented(many1(
-                    parseGuard.then(indented(eq.then(parseValueWithWhereClause)))
+                    parseGuard.then(indented(eq.then(exprWhere)))
                 ))),
-                attempt(indented(eq.then(parseValueWithWhereClause)))
+                attempt(indented(eq.then(exprWhere)))
             )
 
         private val parseValueDeclaration // this is for when used with LET
@@ -1090,7 +1090,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                         parseGuard.then(
                                             indented(
                                                 eq.then(
-                                                    parseValueWithWhereClause
+                                                    exprWhere
                                                 )
                                             )
                                         )
@@ -1099,7 +1099,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             ),
                             attempt(
                                 indented(
-                                    eq.then(parseValueWithWhereClause)
+                                    eq.then(exprWhere)
                                 )
                             )
                         )
