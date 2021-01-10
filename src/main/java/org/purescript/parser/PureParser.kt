@@ -163,15 +163,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 parseKindAtom
             )
         private val parseKind =
-            (parseKindPrefix +
-            optional(
-                reserved(ARROW)
-                .or(optional(parseQualified(properName).`as`(TypeConstructor))) +
-                (optional(parseKindRef))
-            )
-            ).`as`(
-                FunKind
-            )
+            (
+                parseKindPrefix +
+                optional(
+                    reserved(ARROW)
+                    .or(optional(parseQualified(properName).`as`(TypeConstructor))) +
+                    (optional(parseKindRef))
+                )
+            ).`as`(FunKind)
 
         // Types.hs
         private val type = Combinators.ref()
