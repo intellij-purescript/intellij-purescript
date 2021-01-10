@@ -1259,26 +1259,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(indented(lexeme("@")).then(indented(parseBinderRef)))
             .`as`(PSElements.NamedBinder)
         private val parseVarBinder = ident.`as`(PSElements.VarBinder)
-        private val parseConstructorBinder = lexeme(
-            parseQualified(properName).`as`(
-                PSElements.GenericIdentifier
-            ).then(
-                manyOrEmpty(
-                    indented(
-                        parseBinderNoParensRef
-                    )
-                )
+        private val parseConstructorBinder =
+            lexeme(
+                parseQualified(properName).`as`(PSElements.GenericIdentifier)
+                .then(manyOrEmpty(indented(parseBinderNoParensRef)))
             )
-        ).`as`(
-            PSElements.ConstructorBinder
-        )
-        private val parseNullaryConstructorBinder = lexeme(
-            parseQualified(
-                properName.`as`(
-                    PSElements.ProperName
-                )
-            )
-        ).`as`(PSElements.ConstructorBinder)
+            .`as`(PSElements.ConstructorBinder)
+        private val parseNullaryConstructorBinder =
+            lexeme(parseQualified(properName.`as`(PSElements.ProperName)))
+            .`as`(PSElements.ConstructorBinder)
         private val parsePatternMatch = indented(
             braces(
                 commaSep(lexeme(identifier))
