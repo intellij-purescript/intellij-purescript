@@ -252,13 +252,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseObject: Parsec = braces(parseRow).`as`(ObjectType)
         private val parseTypeAtom: Parsec = indented(
             choice(
-                attempt(
-                    squares(
-                        optional(
-                            parseTypeRef
-                        )
-                    )
-                ),
+                attempt(squares(optional(parseTypeRef))),
                 attempt(parseFunction),
                 attempt(parseObject),
                 attempt(parseTypeWildcard),
