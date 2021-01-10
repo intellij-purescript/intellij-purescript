@@ -534,66 +534,19 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
             .then(indented(parseBinderRef))
         private val parseValueDeclaration // this is for when used with LET
-                = optional(
-            attempt(
-                reserved(PSTokens.LPAREN)
-            )
-        )
-            .then(
-                optional(
-                    attempt(properName).`as`(
-                        PSElements.Constructor
-                    )
-                )
-            )
-            .then(
-                optional(
-                    attempt(
-                        Combinators.many1(
-                            parseIdent
-                        )
-                    )
-                )
-            )
+                = optional(attempt(reserved(PSTokens.LPAREN)))
+            .then(optional(attempt(properName).`as`(PSElements.Constructor)))
+            .then(optional(attempt(Combinators.many1(parseIdent))))
             .then(optional(attempt(parseArrayBinder)))
-            .then(
-                optional(
-                    attempt(
-                        indented(
-                            lexeme("@")
-                        ).then(
-                            indented(
-                                Combinators.braces(
-                                    Combinators.commaSep(
-                                        lexeme(
-                                            identifier
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ).`as`(
-                    PSElements.NamedBinder
-                )
-            )
-            .then(
-                optional(
-                    attempt(
-                        parsePatternMatchObject
-                    )
-                )
-            )
+            .then(optional(attempt(
+                indented(lexeme("@"))
+                .then(indented(Combinators.braces(Combinators.commaSep(lexeme(
+                    identifier
+                ))))))).`as`(PSElements.NamedBinder)
+            ).then(optional(attempt(parsePatternMatchObject)))
             .then(optional(attempt(parseRowPatternBinder)))
-            .then(
-                optional(
-                    attempt(
-                        reserved(
-                            PSTokens.RPAREN
-                        )
-                    )
-                )
-            ) // ---------- end of LET stuff -----------
+            .then(optional(attempt(reserved(PSTokens.RPAREN))))
+            // ---------- end of LET stuff -----------
             .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
             .then(
                 choice(
