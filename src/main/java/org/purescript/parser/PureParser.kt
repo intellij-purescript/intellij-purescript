@@ -476,7 +476,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             expr +
             optional(
                 indented(where) +
-                indented(indentedList1(parseLocalDeclarationRef))
+                indentedList1(parseLocalDeclarationRef)
             )
 
 
