@@ -413,7 +413,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         sepBy1(dataCtor, PSTokens.PIPE)
                 )).`as`(PSElements.DataDeclaration)
         private val parseTypeDeclaration =
-            attempt(
+            (
                 parseIdent.`as`(PSElements.TypeAnnotationName) +
                 indented(dcolon) +
                 parsePolyTypeRef
@@ -887,7 +887,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             choice(
                 parseDataDeclaration,
                 parseNewtypeDeclaration,
-                parseTypeDeclaration,
+                attempt(parseTypeDeclaration),
                 parseTypeSynonymDeclaration,
                 parseValueDeclaration,
                 parseExternDeclaration,
@@ -899,7 +899,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseLocalDeclaration = positioned(
             choice(
-                parseTypeDeclaration,
+                attempt(parseTypeDeclaration),
                 parseValueDeclaration
             )
         )
@@ -1068,7 +1068,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .`as`(PSElements.Let)
         private val letBinding =
             choice(
-                parseTypeDeclaration,
+                attempt(parseTypeDeclaration),
                 parseValueDeclaration
             )
         private val parseDoNotationBind: Parsec =
