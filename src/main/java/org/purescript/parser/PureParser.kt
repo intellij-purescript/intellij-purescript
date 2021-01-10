@@ -66,6 +66,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 ).then(p).`as`(PSElements.Qualified)
             )
         }
+        
+        // tokens
+        private val dcolon = lexeme(PSTokens.DCOLON)
 
         private val idents =
             choice(
@@ -413,7 +416,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             (
                 attempt(
                     parseIdent.`as`(PSElements.TypeAnnotationName) +
-                        indented(lexeme(PSTokens.DCOLON))
+                        indented(dcolon)
                 ) +
                     attempt(parsePolyTypeRef)
                 ).`as`(PSElements.TypeDeclaration)
@@ -594,7 +597,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                             )
                                     )
                                 )
-                                .then(lexeme(PSTokens.DCOLON))
+                                .then(dcolon)
                                 .then(parseKind)
                                 .`as`(PSElements.ExternDataDeclaration),
                             reserved(PSTokens.INSTANCE)
