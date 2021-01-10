@@ -411,7 +411,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeDeclaration =
             (
                 parseIdent.`as`(PSElements.TypeAnnotationName) +
-                    indented(dcolon) +
+                    dcolon +
                     parsePolyTypeRef
                 ).`as`(PSElements.TypeDeclaration)
         private val parseNewtypeDeclaration =
