@@ -26,15 +26,18 @@ import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
 import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
+import org.purescript.psi.PSElements.Companion.FunKind
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ProperName
 import org.purescript.psi.PSElements.Companion.Qualified
+import org.purescript.psi.PSElements.Companion.RowKind
 import org.purescript.psi.PSElements.Companion.Star
 import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeConstructor
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
+import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.DOT
 import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
@@ -156,13 +159,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseKindPrefix =
             choice(
-                (lexeme("#") + parseKindPrefixRef).`as`(PSElements.RowKind),
+                (lexeme("#") + parseKindPrefixRef).`as`(RowKind),
                 parseKindAtom
             )
         private val parseKind = parseKindPrefix.then(
             optional(
                 reserved(
-                    PSTokens.ARROW
+                    ARROW
                 ).or(
                     optional(
                         parseQualified(properName).`as`(
@@ -172,7 +175,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 ).then(optional(parseKindRef))
             )
         ).`as`(
-            PSElements.FunKind
+            FunKind
         )
 
         // Types.hs
@@ -182,7 +185,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeWildcard = reserved("_")
         private val parseFunction = parens(
             reserved(
-                PSTokens.ARROW
+                ARROW
             )
         )
         private val parseTypeVariable: Parsec = lexeme(
@@ -344,7 +347,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 optional(
                     choice(
-                        reserved(PSTokens.ARROW),
+                        reserved(ARROW),
                         reserved(
                             PSTokens.DARROW
                         ),
@@ -959,7 +962,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             )
-            .then(indented(reserved(PSTokens.ARROW)))
+            .then(indented(reserved(ARROW)))
             .then(expr)
         private val parseVar = attempt(
             manyOrEmpty(
@@ -991,12 +994,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             parseGuard.then(
                                 indented(
                                     lexeme(
-                                        PSTokens.ARROW
+                                        ARROW
                                     ).then(expr)
                                 )
                             )
                         ),
-                        reserved(PSTokens.ARROW).then(expr)
+                        reserved(ARROW).then(expr)
                     )
                 )
             )
