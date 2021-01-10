@@ -1072,12 +1072,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(parseValueRef)
             .`as`(PSElements.Let)
         private val letBinding = parseLocalDeclaration
-        private val parseDoNotationBind: Parsec = parseBinderRef
-            .then(
-                indented(reserved(PSTokens.LARROW))
-                    .then(parseValueRef)
-            )
-            .`as`(PSElements.DoNotationBind)
+        private val parseDoNotationBind: Parsec =
+            parseBinderRef
+                .then(indented(reserved(PSTokens.LARROW))
+                .then(parseValueRef))
+                .`as`(PSElements.DoNotationBind)
         private val doStatement =
             choice(
                 attempt(parseDoNotationBind),
