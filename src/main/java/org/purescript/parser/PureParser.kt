@@ -27,9 +27,11 @@ import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ProperName
+import org.purescript.psi.PSElements.Companion.Qualified
 import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
+import org.purescript.psi.PSTokens.Companion.DOT
 import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
 import org.purescript.psi.PSTokens.Companion.STRING
@@ -65,15 +67,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
 
     class PureParsecParser {
-        private fun parseQualified(p: Parsec): Parsec {
-            return attempt(
-                manyOrEmpty(
-                    attempt(
-                        token(PROPER_NAME).`as`(ProperName) + (token(PSTokens.DOT))
-                    )
-                ).then(p).`as`(PSElements.Qualified)
-            )
-        }
+        private fun parseQualified(p: Parsec): Parsec =
+            attempt(manyOrEmpty(
+                attempt(token(PROPER_NAME).`as`(ProperName) + token(DOT))
+            ).then(p).`as`(Qualified)
+        )
 
         // tokens
         private val dcolon = lexeme(PSTokens.DCOLON)
@@ -124,7 +122,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val operator =
             choice(
                 token(PSTokens.OPERATOR),
-                token(PSTokens.DOT),
+                token(DOT),
                 token(PSTokens.DDOT),
                 token(PSTokens.LARROW),
                 token(PSTokens.LDARROW),
@@ -318,7 +316,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             )
-            .then(indented(lexeme(PSTokens.DOT)))
+            .then(indented(lexeme(DOT)))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
         private val ident =
             choice(
@@ -967,11 +965,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         PROPER_NAME
                     ).`as`(PSElements.qualifiedModuleName).then(
                         token(
-                            PSTokens.DOT
+                            DOT
                         )
                     )
                 )
-            ).then(ident).`as`(PSElements.Qualified)
+            ).then(ident).`as`(Qualified)
         ).`as`(
             PSElements.Var
         )
@@ -1144,7 +1142,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseAccessor: Parsec = attempt(
             indented(
                 token(
-                    PSTokens.DOT
+                    DOT
                 )
             ).then(indented(lname.or(stringLiteral)))
         ).`as`(
