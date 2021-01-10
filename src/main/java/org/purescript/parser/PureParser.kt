@@ -154,11 +154,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 parens(parseKindRef)
             )
         )
-        private val parseKindPrefix = choice(
-            lexeme("#").then(parseKindPrefixRef)
-                .`as`(PSElements.RowKind),
-            parseKindAtom
-        )
+        private val parseKindPrefix =
+            choice(
+                (lexeme("#") + parseKindPrefixRef).`as`(PSElements.RowKind),
+                parseKindAtom
+            )
         private val parseKind = parseKindPrefix.then(
             optional(
                 reserved(
