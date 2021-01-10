@@ -70,8 +70,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private fun parseQualified(p: Parsec): Parsec =
             attempt(manyOrEmpty(
                 attempt(token(PROPER_NAME).`as`(ProperName) + token(DOT))
-            ).then(p).`as`(Qualified)
-        )
+            ).then(p)
+        ).`as`(Qualified)
 
         // tokens
         private val dcolon = lexeme(PSTokens.DCOLON)
