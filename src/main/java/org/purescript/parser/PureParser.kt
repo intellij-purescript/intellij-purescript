@@ -865,8 +865,22 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseNewtypeDeclaration,
             attempt(parseTypeDeclaration),
             parseTypeSynonymDeclaration,
-
-            parseValueDeclaration,
+            optional(attempt(reserved(PSTokens.LPAREN)))
+                .then(optional(attempt(properName).`as`(PSElements.Constructor)))
+                .then(optional(attempt(many1(parseIdent))))
+                .then(optional(attempt(parseArrayBinder)))
+                .then(
+                    optional(
+                        attempt(
+                            indented(lexeme("@"))
+                                .then(indented(braces(commaSep(lexeme(identifier)))))
+                        )
+                    ).`as`(PSElements.NamedBinder)
+                ).then(optional(attempt(parsePatternMatchObject)))
+                .then(optional(attempt(parseRowPatternBinder)))
+                .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
+                .then(guardedDecl).`as`(PSElements.ValueDeclaration),
             parseExternDeclaration,
             parseFixityDeclaration,
             parseImportDeclaration,
@@ -875,7 +889,24 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseLocalDeclaration = choice(
             attempt(parseTypeDeclaration),
-            parseValueDeclaration
+            // this is for when used with LET
+            optional(attempt(reserved(PSTokens.LPAREN)))
+                .then(optional(attempt(properName).`as`(PSElements.Constructor)))
+                .then(optional(attempt(many1(parseIdent))))
+                .then(optional(attempt(parseArrayBinder)))
+                .then(
+                    optional(
+                        attempt(
+                            indented(lexeme("@"))
+                                .then(indented(braces(commaSep(lexeme(identifier)))))
+                        )
+                    ).`as`(PSElements.NamedBinder)
+                ).then(optional(attempt(parsePatternMatchObject)))
+                .then(optional(attempt(parseRowPatternBinder)))
+                .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                // ---------- end of LET stuff -----------
+                .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
+                .then(guardedDecl).`as`(PSElements.ValueDeclaration)
         )
         private val parseModule = reserved(PSTokens.MODULE)
             .then(indented(moduleName).`as`(PSElements.pModuleName))
