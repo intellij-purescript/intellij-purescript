@@ -1233,10 +1233,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     PSElements.UnaryMinus
                 )
         ).`as`(PSElements.PrefixValue)
-        private val parseValue =
-            (
-            parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr)
-            ).`as`(PSElements.Value)
 
         // Binder
         private val parseIdentifierAndBinder =
@@ -1360,7 +1356,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseForAllRef.setRef(parseForAll)
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
             parsePrefixRef.setRef(parsePrefix)
-            expr.setRef(parseValue)
+            expr.setRef((
+                parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr)
+            ).`as`(PSElements.Value))
             parseBinderRef.setRef(parseBinder)
             parseBinderNoParensRef.setRef(parseBinderNoParens)
         }
