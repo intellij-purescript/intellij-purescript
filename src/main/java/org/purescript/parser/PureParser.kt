@@ -521,6 +521,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
             .then(indented(parseBinderRef))
+        private val guardedDecl =
+            choice(
+                attempt(indented(many1(
+                    parseGuard.then(indented(eq.then(parseValueWithWhereClause)))
+                ))),
+                attempt(indented(eq.then(parseValueWithWhereClause)))
+            )
+
         private val parseValueDeclaration // this is for when used with LET
             = optional(attempt(reserved(PSTokens.LPAREN)))
             .then(optional(attempt(properName).`as`(PSElements.Constructor)))
@@ -538,28 +546,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(optional(attempt(reserved(PSTokens.RPAREN))))
             // ---------- end of LET stuff -----------
             .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
-            .then(
-                choice(
-                    attempt(
-                        indented(
-                            many1(
-                                parseGuard.then(
-                                    indented(
-                                        eq.then(parseValueWithWhereClause)
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    attempt(
-                        indented(
-                            eq.then(parseValueWithWhereClause)
-                        )
-                    )
-                )
-            ).`as`(
-                PSElements.ValueDeclaration
-            )
+            .then(guardedDecl).`as`(PSElements.ValueDeclaration)
         private val parseDeps = parens(
             commaSep1(
                 parseQualified(properName).`as`(
