@@ -1286,12 +1286,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(parseCharBinder),
             attempt(parens(parseBinderRef))
         ).`as`(PSElements.BinderAtom)
-        private val parseBinder = parseBinderAtom
-            .then(
-                optional(
-                    lexeme(PSTokens.OPERATOR).then(parseBinderRef)
-                )
-            )
+        private val parseBinder =
+            parseBinderAtom
+            .then(optional(lexeme(PSTokens.OPERATOR).then(parseBinderRef)))
             .`as`(PSElements.Binder)
         private val parseBinderNoParens = choice(
             attempt(parseNullBinder),
