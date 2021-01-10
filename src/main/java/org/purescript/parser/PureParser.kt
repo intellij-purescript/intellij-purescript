@@ -1129,21 +1129,15 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(parseStringLiteral),
             attempt(parseBooleanLiteral),
             attempt(
-                reserved(PSTokens.TICK).then(
-                    choice(
-                        properName.`as`(
-                            PSElements.ProperName
-                        ),
-                        many1(
-                            lexeme(identifier)
-                                .`as`(PSElements.ProperName)
-                        )
+                reserved(PSTokens.TICK) + choice(
+                    properName.`as`(
+                        PSElements.ProperName
+                    ),
+                    many1(
+                        lexeme(identifier)
+                            .`as`(PSElements.ProperName)
                     )
-                ).then(
-                    reserved(
-                        PSTokens.TICK
-                    )
-                )
+                ) + reserved(PSTokens.TICK)
             ),
             parseArrayLiteral,
             parseCharLiteral,
