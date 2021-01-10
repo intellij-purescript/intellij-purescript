@@ -18,6 +18,7 @@ import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.reserved
 import org.purescript.parser.Combinators.same
 import org.purescript.parser.Combinators.sepBy1
+import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
 import org.purescript.psi.PSTokens
@@ -292,7 +293,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeAtom: Parsec = indented(
             choice(
                 attempt(
-                    Combinators.squares(
+                    squares(
                         optional(
                             parseTypeRef
                         )
@@ -477,7 +478,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // Some Binders - rest at the bottom
         private val parseArrayBinder =
-            Combinators.squares(commaSep(parseBinderRef)).`as`(
+            squares(commaSep(parseBinderRef)).`as`(
                 PSElements.ObjectBinder
             )
         private val parsePatternMatchObject = indented(
@@ -920,7 +921,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseCharLiteral =
             lexeme("'").`as`(PSElements.StringLiteral)
         private val parseArrayLiteral =
-            Combinators.squares(commaSep(expr)).`as`(
+            squares(commaSep(expr)).`as`(
                 PSElements.ArrayLiteral
             )
         private val parseTypeHole =
