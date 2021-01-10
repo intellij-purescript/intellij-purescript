@@ -69,13 +69,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             return attempt(
                 manyOrEmpty(
                     attempt(
-                        token(
-                            PROPER_NAME
-                        ).`as`(ProperName).then(
-                            token(
-                                PSTokens.DOT
-                            )
-                        )
+                        token(PROPER_NAME).`as`(ProperName) + (token(PSTokens.DOT))
                     )
                 ).then(p).`as`(PSElements.Qualified)
             )
