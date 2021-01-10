@@ -51,6 +51,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         return builder.treeBuilt
     }
 
+
     class PureParsecParser {
         private fun parseQualified(p: Parsec): Parsec {
             return attempt(
@@ -70,6 +71,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         
         // tokens
         private val dcolon = lexeme(PSTokens.DCOLON)
+        private val eq = lexeme(PSTokens.EQ)
 
         private val idents =
             choice(
@@ -426,7 +428,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
                 .then(
                     optional(
-                        lexeme(PSTokens.EQ)
+                        eq
                             .then(
                                 properName.`as`(PSElements.TypeConstructor)
                                     .then(
@@ -468,7 +470,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
             )
             .then(
-                indented(lexeme(PSTokens.EQ))
+                indented(eq)
                     .then(parsePolyTypeRef)
             )
             .`as`(PSElements.TypeSynonymDeclaration)
@@ -502,9 +504,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         .then(
                             optional(
                                 indented(
-                                    lexeme(
-                                        PSTokens.EQ
-                                    ).or(lexeme(PSTokens.OPERATOR))
+                                    eq.or(lexeme(PSTokens.OPERATOR))
                                 )
                             )
                         )
@@ -548,9 +548,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             many1(
                                 parseGuard.then(
                                     indented(
-                                        lexeme(
-                                            PSTokens.EQ
-                                        ).then(parseValueWithWhereClause)
+                                        eq.then(parseValueWithWhereClause)
                                     )
                                 )
                             )
@@ -558,9 +556,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     ),
                     attempt(
                         indented(
-                            lexeme(
-                                PSTokens.EQ
-                            ).then(parseValueWithWhereClause)
+                            eq.then(parseValueWithWhereClause)
                         )
                     )
                 )
@@ -881,7 +877,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseDecl = positioned(
             choice(
                 attempt(
-                    dataHead + lexeme(PSTokens.EQ) + sepBy1(
+                    dataHead + eq + sepBy1(
                         dataCtor,
                         PSTokens.PIPE
                     )
@@ -1095,9 +1091,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     many1(
                                         parseGuard.then(
                                             indented(
-                                                lexeme(
-                                                    PSTokens.EQ
-                                                ).then(parseValueWithWhereClause)
+                                                eq.then(parseValueWithWhereClause)
                                             )
                                         )
                                     )
@@ -1105,9 +1099,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             ),
                             attempt(
                                 indented(
-                                    lexeme(
-                                        PSTokens.EQ
-                                    ).then(parseValueWithWhereClause)
+                                    eq.then(parseValueWithWhereClause)
                                 )
                             )
                         )
@@ -1139,9 +1131,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(
                     optional(
                         indented(
-                            lexeme(
-                                PSTokens.EQ
-                            )
+                            eq
                         )
                     )
                 )
@@ -1265,7 +1255,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             lexeme(lname.or(stringLiteral))
                 .then(
                     indented(
-                        lexeme(PSTokens.EQ).or(
+                        eq.or(
                             lexeme(
                                 PSTokens.OPERATOR
                             )
