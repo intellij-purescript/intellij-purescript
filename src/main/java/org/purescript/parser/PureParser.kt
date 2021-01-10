@@ -14,8 +14,10 @@ import org.purescript.parser.Combinators.manyOrEmpty
 import org.purescript.parser.Combinators.mark
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.reserved
+import org.purescript.parser.Combinators.same
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.token
+import org.purescript.parser.Combinators.untilSame
 import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
 
@@ -136,20 +138,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
         }
 
         private fun indentedList(p: Parsec): Parsec {
-            return mark(
-                manyOrEmpty(
-                    Combinators.untilSame(
-                        Combinators.same(p)
-                    )
-                )
-            )
+            return mark(manyOrEmpty(untilSame(same(p))))
         }
 
         private fun indentedList1(p: Parsec): Parsec {
             return mark(
                 many1(
-                    Combinators.untilSame(
-                        Combinators.same(p)
+                    untilSame(
+                        same(p)
                     )
                 )
             )
@@ -494,7 +490,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             indented(
                                 mark(
                                     many1(
-                                        Combinators.same(
+                                        same(
                                             parseLocalDeclarationRef
                                         )
                                     )
