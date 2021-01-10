@@ -6,6 +6,7 @@ import org.purescript.parser.Combinators.attempt
 import org.purescript.parser.Combinators.braces
 import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.commaSep
+import org.purescript.parser.Combinators.guard
 import org.purescript.parser.Combinators.indented
 import org.purescript.parser.Combinators.lexeme
 import org.purescript.parser.Combinators.many1
@@ -201,7 +202,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         )
         private val parseTypeVariable: Parsec = lexeme(
-            Combinators.guard(
+            guard(
                 idents,
                 { content:String? -> !(content == "∀" || content == "forall") },
                 "not `forall`"
