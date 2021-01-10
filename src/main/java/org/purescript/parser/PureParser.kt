@@ -1069,7 +1069,57 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val letBinding =
             choice(
                 attempt(parseTypeDeclaration),
-                parseValueDeclaration
+                optional(attempt(reserved(PSTokens.LPAREN)))
+                    .then(optional(attempt(properName).`as`(PSElements.Constructor)))
+                    .then(optional(attempt(many1(parseIdent))))
+                    .then(optional(attempt(parseArrayBinder)))
+                    .then(
+                        optional(
+                            attempt(
+                                indented(lexeme("@"))
+                                    .then(
+                                        indented(
+                                            braces(
+                                                commaSep(
+                                                    lexeme(
+                                                        identifier
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                            )
+                        ).`as`(PSElements.NamedBinder)
+                    ).then(optional(attempt(parsePatternMatchObject)))
+                    .then(optional(attempt(parseRowPatternBinder)))
+                    .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                    .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
+                    .then(
+                        choice(
+                            attempt(
+                                indented(
+                                    many1(
+                                        parseGuard.then(
+                                            indented(
+                                                lexeme(
+                                                    PSTokens.EQ
+                                                ).then(parseValueWithWhereClause)
+                                            )
+                                        )
+                                    )
+                                )
+                            ),
+                            attempt(
+                                indented(
+                                    lexeme(
+                                        PSTokens.EQ
+                                    ).then(parseValueWithWhereClause)
+                                )
+                            )
+                        )
+                    ).`as`(
+                        PSElements.ValueDeclaration
+                    )
             )
         private val parseDoNotationBind: Parsec =
             parseBinderRef
