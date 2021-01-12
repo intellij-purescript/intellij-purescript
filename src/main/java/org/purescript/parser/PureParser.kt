@@ -262,9 +262,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseBinderRef = ref()
         private val expr = ref()
         private val parseLocalDeclarationRef = ref()
-        private val parseGuard = lexeme(PIPE)
-            .then(indented(commaSep(expr)))
-            .`as`(Guard)
+        private val parseGuard =
+            (lexeme(PIPE) + indented(commaSep(expr))).`as`(Guard)
         private val dataHead =
             reserved(PSTokens.DATA) +
                 indented(properName).`as`(TypeConstructor) +
