@@ -370,7 +370,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ( newtypeHead +
                 eq +
                 properName.`as`(TypeConstructor) +
-                optional(manyOrEmpty(indented(lexeme(identifier)))) +
+                manyOrEmpty(indented(lexeme(identifier))) +
                 optional(indented(parseTypeAtom))
             ).`as`(NewtypeDeclaration)
         private val parseTypeSynonymDeclaration = reserved(
