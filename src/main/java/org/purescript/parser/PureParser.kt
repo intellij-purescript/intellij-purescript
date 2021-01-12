@@ -750,7 +750,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .or(parseQualified(properName).`as`(TypeConstructor))
             ))
             .then(optional(
-                indented(lexeme(PSTokens.DCOLON)).then(indented(type))
+                indented(dcolon).then(indented(type))
             ))
             .then(optional(parseObjectLiteral))
             .then(optional(reserved(PSTokens.RPAREN)))
