@@ -1199,7 +1199,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     reserved(DARROW),
                     reserved(PSTokens.OPTIMISTIC),
                     reserved(PSTokens.OPERATOR)
-                ).then(type))).`as`(PSElements.Type)
+                ).then(type))).`as`(Type)
             )
             parseForAllRef.setRef(parseForAll)
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
