@@ -31,6 +31,7 @@ import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.FunKind
 import org.purescript.psi.PSElements.Companion.GenericIdentifier
 import org.purescript.psi.PSElements.Companion.Guard
+import org.purescript.psi.PSElements.Companion.ImportDeclaration
 import org.purescript.psi.PSElements.Companion.NewtypeDeclaration
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.NumericLiteral
@@ -49,12 +50,15 @@ import org.purescript.psi.PSElements.Companion.TypeArgs
 import org.purescript.psi.PSElements.Companion.TypeConstructor
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSElements.Companion.TypeSynonymDeclaration
+import org.purescript.psi.PSElements.Companion.importModuleName
 import org.purescript.psi.PSTokens.Companion.ARROW
+import org.purescript.psi.PSTokens.Companion.AS
 import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DOT
 import org.purescript.psi.PSTokens.Companion.FALSE
 import org.purescript.psi.PSTokens.Companion.FLOAT
+import org.purescript.psi.PSTokens.Companion.HIDING
 import org.purescript.psi.PSTokens.Companion.NATURAL
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
 import org.purescript.psi.PSTokens.Companion.OPERATOR
@@ -110,8 +114,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val idents =
             choice(
                 token(PSTokens.IDENT),
-                token(PSTokens.AS),
-                token(PSTokens.HIDING),
+                token(AS),
+                token(HIDING),
                 token(PSTokens.FORALL),
                 token(PSTokens.QUALIFIED),
             )
@@ -143,8 +147,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.WHERE),
                 token(PSTokens.FORALL),
                 token(PSTokens.QUALIFIED),
-                token(PSTokens.HIDING),
-                token(PSTokens.AS)
+                token(HIDING),
+                token(AS)
             ).`as`(PSElements.Identifier)
         )
         private val operator =
@@ -427,7 +431,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             )
-            .then(reserved(PSTokens.AS))
+            .then(reserved(AS))
             .then(lexeme(operator))
             .`as`(PSElements.FixityDeclaration)
         private val parseDeclarationRef = choice(
@@ -440,7 +444,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             reserved(PSTokens.TYPE)
                 .then(optional(parens(operator))),
             reserved(PSTokens.MODULE).then(moduleName)
-                .`as`(PSElements.importModuleName),
+                .`as`(importModuleName),
             reserved(PSTokens.CLASS).then(
                 parseQualified(properName).`as`(
                     PSElements.pClassName
@@ -640,22 +644,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseImportDeclaration =
             reserved(PSTokens.IMPORT)
-                .then(
-                    indented(moduleName)
-                        .`as`(PSElements.importModuleName)
-                )
-                .then(
-                    optional(reserved(PSTokens.HIDING))
-                        .then(importDeclarationType)
-                )
-                .then(
-                    optional(
-                        reserved(PSTokens.AS).then(moduleName).`as`(
-                            PSElements.importModuleName
-                        )
-                    )
-                )
-                .`as`(PSElements.ImportDeclaration)
+                .then(indented(moduleName).`as`(importModuleName))
+                .then(optional(reserved(HIDING)).then(importDeclarationType))
+                .then(optional(
+                        reserved(AS).then(moduleName).`as`(importModuleName)
+                )).`as`(ImportDeclaration)
         private val decl = choice(
             (dataHead + optional(eq + sepBy1(dataCtor, PIPE)))
                 .`as`(PSElements.DataDeclaration),
