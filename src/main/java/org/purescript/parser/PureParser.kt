@@ -33,6 +33,7 @@ import org.purescript.psi.PSElements.Companion.Guard
 import org.purescript.psi.PSElements.Companion.NewtypeDeclaration
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
+import org.purescript.psi.PSElements.Companion.ObjectBinderField
 import org.purescript.psi.PSElements.Companion.ObjectLiteral
 import org.purescript.psi.PSElements.Companion.ObjectType
 import org.purescript.psi.PSElements.Companion.ProperName
@@ -47,9 +48,11 @@ import org.purescript.psi.PSElements.Companion.TypeConstructor
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
 import org.purescript.psi.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.psi.PSTokens.Companion.ARROW
+import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DOT
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
+import org.purescript.psi.PSTokens.Companion.OPERATOR
 import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
 import org.purescript.psi.PSTokens.Companion.STRING
@@ -140,7 +143,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val operator =
             choice(
-                token(PSTokens.OPERATOR),
+                token(OPERATOR),
                 token(DOT),
                 token(PSTokens.DDOT),
                 token(PSTokens.LARROW),
@@ -302,11 +305,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parsePatternMatchObject =
             indented(braces(commaSep(
                 lexeme(idents).or(lname).or(stringLiteral)
-                .then(optional(indented(eq.or(lexeme(PSTokens.OPERATOR)))))
+                .then(optional(indented(eq.or(lexeme(OPERATOR)))))
                 .then(optional(indented(parseBinderRef)))
             ))).`as`(PSElements.Binder)
         private val parseRowPatternBinder =
-            indented(lexeme(PSTokens.OPERATOR)).then(indented(parseBinderRef))
+            indented(lexeme(OPERATOR)).then(indented(parseBinderRef))
         private val guardedDeclExpr = parseGuard + eq + exprWhere
         private val guardedDecl =
             choice(
@@ -729,18 +732,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeHole =
             lexeme("?").`as`(PSElements.TypeHole)
         private val parseIdentifierAndValue =
-            indented(lexeme(lname).or(stringLiteral))
-                .then(
-                    optional(
-                        indented(
-                            lexeme(
-                                PSTokens.OPERATOR
-                            ).or(reserved(PSTokens.COMMA))
-                        )
-                    )
-                )
-                .then(optional(indented(expr)))
-                .`as`(PSElements.ObjectBinderField)
+            indented(lexeme(lname)
+            .or(stringLiteral))
+            .then(optional(indented(lexeme(OPERATOR).or(reserved(COMMA)))))
+            .then(optional(indented(expr)))
+            .`as`(ObjectBinderField)
         private val parseObjectLiteral =
             braces(commaSep(parseIdentifierAndValue)).`as`(ObjectLiteral)
         private val typedIdent =
@@ -894,7 +890,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         // Binder
         private val parseIdentifierAndBinder =
             lexeme(lname.or(stringLiteral))
-                .then(indented(eq.or(lexeme(PSTokens.OPERATOR))))
+                .then(indented(eq.or(lexeme(OPERATOR))))
                 .then(indented(parseBinderRef))
         private val parseObjectBinder =
             braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
@@ -940,7 +936,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).`as`(PSElements.BinderAtom)
         private val parseBinder =
             parseBinderAtom
-                .then(optional(lexeme(PSTokens.OPERATOR).then(parseBinderRef)))
+                .then(optional(lexeme(OPERATOR).then(parseBinderRef)))
                 .`as`(PSElements.Binder)
         private val parseBinderNoParens = choice(
             attempt(parseNullBinder),
@@ -1003,7 +999,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 reserved(ARROW),
                                 reserved(DARROW),
                                 reserved(PSTokens.OPTIMISTIC),
-                                reserved(PSTokens.OPERATOR)
+                                reserved(OPERATOR)
                             ).then(type)
                         )
                     ).`as`(Type)
