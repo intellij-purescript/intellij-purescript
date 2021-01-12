@@ -110,15 +110,15 @@ object Combinators {
     }
 
     fun reserved(p: Parsec): Parsec {
-        return attempt(lexeme(p))
+        return lexeme(p)
     }
 
     fun reserved(content: String): Parsec {
-        return attempt(lexeme(content))
+        return lexeme(content)
     }
 
     fun reserved(tokenType: IElementType): Parsec {
-        return attempt(lexeme(token(tokenType)))
+        return lexeme(token(tokenType))
     }
 
     fun keyword(tokenType: IElementType, content: String): Parsec {
