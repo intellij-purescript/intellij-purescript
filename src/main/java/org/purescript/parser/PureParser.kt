@@ -192,7 +192,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         stringLiteral
                     ).`as`(PSElements.GenericIdentifier)
                 )
-            ) + indented(lexeme(PSTokens.DCOLON)) + p
+            ) + indented(dcolon) + p
 
         private val parseRowEnding = optional(
             indented(lexeme(PIPE)).then(
