@@ -38,11 +38,14 @@ import org.purescript.psi.PSElements.Companion.RowKind
 import org.purescript.psi.PSElements.Companion.Star
 import org.purescript.psi.PSElements.Companion.StringBinder
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
+import org.purescript.psi.PSElements.Companion.TypeArgs
 import org.purescript.psi.PSElements.Companion.TypeConstructor
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
+import org.purescript.psi.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DOT
+import org.purescript.psi.PSTokens.Companion.NEWTYPE
 import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
 import org.purescript.psi.PSTokens.Companion.STRING
@@ -103,7 +106,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             choice(
                 token(PSTokens.IDENT),
                 token(PSTokens.DATA),
-                token(PSTokens.NEWTYPE),
+                token(NEWTYPE),
                 token(PSTokens.TYPE),
                 token(PSTokens.FOREIGN),
                 token(PSTokens.IMPORT),
@@ -352,7 +355,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val dataHead =
             reserved(PSTokens.DATA) +
                 indented(properName).`as`(TypeConstructor) +
-                manyOrEmpty(indented(kindedIdent)).`as`(PSElements.TypeArgs)
+                manyOrEmpty(indented(kindedIdent)).`as`(TypeArgs)
 
         val dataCtor =
             properName.`as`(TypeConstructor) +
@@ -361,10 +364,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             (ident.`as`(TypeAnnotationName) + dcolon + type).`as`(TypeDeclaration)
 
         private val newtypeHead =
-            reserved(PSTokens.NEWTYPE) +
+            reserved(NEWTYPE) +
             indented(properName).`as`(TypeConstructor) +
             manyOrEmpty(indented(kindedIdent))
-                .`as`(PSElements.TypeArgs)
+                .`as`(TypeArgs)
 
         private val parseNewtypeDeclaration =
             (newtypeHead + eq + properName.`as`(TypeConstructor) + parseTypeAtom)
@@ -374,7 +377,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(reserved(PROPER_NAME).`as`(TypeConstructor))
                 .then(manyOrEmpty(indented(lexeme(kindedIdent))))
                 .then(indented(eq).then(type))
-            .`as`(PSElements.TypeSynonymDeclaration)
+            .`as`(TypeSynonymDeclaration)
         private val exprWhere =
             expr + optional(where + indentedList1(parseLocalDeclarationRef))
 
@@ -625,7 +628,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).then(
             optional(
                 reserved(
-                    PSTokens.NEWTYPE
+                    NEWTYPE
                 )
             )
         ).then(
