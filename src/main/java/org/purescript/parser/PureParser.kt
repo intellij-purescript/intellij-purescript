@@ -376,7 +376,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             reserved(PSTokens.TYPE)
                 .then(reserved(PROPER_NAME).`as`(TypeConstructor))
                 .then(manyOrEmpty(indented(lexeme(kindedIdent))))
-                .then(indented(eq).then(type))
+                .then(indented(eq) + (type))
             .`as`(TypeSynonymDeclaration)
         private val exprWhere =
             expr + optional(where + indentedList1(parseLocalDeclarationRef))
