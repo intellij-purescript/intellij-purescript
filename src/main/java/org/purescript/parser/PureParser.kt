@@ -1185,20 +1185,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
         init {
             parseKindPrefixRef.setRef(parseKindPrefix)
             parseKind.setRef(
-                (
-                    parseKindPrefix +
-                        optional(
-                            reserved(ARROW)
-                                .or(
-                                    optional(
-                                        parseQualified(properName).`as`(
-                                            TypeConstructor
-                                        )
-                                    )
-                                ) +
-                                (optional(parseKind))
-                        )
-                    ).`as`(FunKind)
+                (parseKindPrefix +
+                optional(
+                    reserved(ARROW)
+                    .or(optional(parseQualified(properName).`as`(TypeConstructor))) +
+                    optional(parseKind)
+                )).`as`(FunKind)
             )
             type.setRef(parseType)
             parseTypeRef.setRef(parseType)
