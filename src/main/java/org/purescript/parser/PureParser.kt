@@ -155,8 +155,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             mark(many1(untilSame(same(p))))
 
         // Kinds.hs
-        private val parseKind = Combinators.ref()
-        private val parseKindPrefixRef = Combinators.ref()
+        private val parseKind = ref()
+        private val parseKindPrefixRef = ref()
         private val parseStar = keyword(PSTokens.START, "*").`as`(Star)
         private val parseBang = keyword(PSTokens.BANG, "!").`as`(Bang)
         private val parseKindAtom = indented(
@@ -173,8 +173,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
 
         // Types.hs
-        private val type = Combinators.ref()
-        private val parseForAllRef = Combinators.ref()
+        private val type = ref()
+        private val parseForAllRef = ref()
         private val parseTypeWildcard = reserved("_")
         private val parseFunction = parens(reserved(ARROW))
         private val parseTypeVariable: Parsec = lexeme(
@@ -298,10 +298,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(indented(dcolon))
                 .then(indented(parseKind))
             ))
-        private val parseBinderNoParensRef = Combinators.ref()
-        private val parseBinderRef = Combinators.ref()
-        private val expr = Combinators.ref()
-        private val parseLocalDeclarationRef = Combinators.ref()
+        private val parseBinderNoParensRef = ref()
+        private val parseBinderRef = ref()
+        private val expr = ref()
+        private val parseLocalDeclarationRef = ref()
         private val parseGuard = lexeme(PIPE)
             .then(indented(commaSep(expr)))
             .`as`(
@@ -1077,7 +1077,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             )
-        private val parsePrefixRef = Combinators.ref()
+        private val parsePrefixRef = ref()
         private val parsePrefix =
             choice(
                 parseValuePostFix,
