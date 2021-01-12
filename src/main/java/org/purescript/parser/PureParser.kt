@@ -749,9 +749,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 lexeme(idents).`as`(GenericIdentifier)
                 .or(parseQualified(properName).`as`(TypeConstructor))
             ))
-            .then(optional(
-                indented(dcolon).then(indented(type))
-            ))
+            .then(optional(indented(dcolon).then(indented(type))))
             .then(optional(parseObjectLiteral))
             .then(optional(reserved(PSTokens.RPAREN)))
         private val parseAbs =
