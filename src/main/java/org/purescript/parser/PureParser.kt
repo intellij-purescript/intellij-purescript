@@ -297,27 +297,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
         // Some Binders - rest at the bottom
         private val parseArrayBinder =
             squares(commaSep(parseBinderRef)).`as`(ObjectBinder)
-        private val parsePatternMatchObject = indented(
-            braces(
-                commaSep(
-                    lexeme(idents).or(lname).or(stringLiteral)
-                        .then(
-                            optional(
-                                indented(
-                                    eq.or(lexeme(PSTokens.OPERATOR))
-                                )
-                            )
-                        )
-                        .then(
-                            optional(
-                                indented(
-                                    parseBinderRef
-                                )
-                            )
-                        )
-                )
-            )
-        ).`as`(PSElements.Binder)
+        private val parsePatternMatchObject =
+            indented(braces(commaSep(
+                lexeme(idents).or(lname).or(stringLiteral)
+                .then(optional(indented(eq.or(lexeme(PSTokens.OPERATOR)))))
+                .then(optional(indented(parseBinderRef)))
+            ))).`as`(PSElements.Binder)
         private val parseRowPatternBinder = indented(
             lexeme(
                 PSTokens.OPERATOR
