@@ -273,9 +273,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             properName.`as`(TypeConstructor) +
                 manyOrEmpty(indented(typeAtom))
         private val parseTypeDeclaration =
-            (ident.`as`(TypeAnnotationName) + dcolon + type).`as`(
-                TypeDeclaration
-            )
+            (ident.`as`(TypeAnnotationName) + dcolon + type)
+                .`as`(TypeDeclaration)
 
         private val newtypeHead =
             reserved(NEWTYPE) +
