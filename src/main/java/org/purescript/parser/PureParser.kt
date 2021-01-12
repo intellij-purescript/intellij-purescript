@@ -1022,10 +1022,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parsePrefix =
             choice(
                 parseValuePostFix,
-                indented(lexeme("-")).then(parsePrefixRef)
-                    .`as`(
-                        PSElements.UnaryMinus
-                    )
+                indented(lexeme("-"))
+                .then(parsePrefixRef)
+                .`as`(PSElements.UnaryMinus)
             ).`as`(PSElements.PrefixValue)
 
         // Binder
@@ -1052,15 +1051,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseConstructorBinder =
             lexeme(
                 parseQualified(properName).`as`(PSElements.GenericIdentifier)
-                    .then(manyOrEmpty(indented(parseBinderNoParensRef)))
-            )
-                .`as`(PSElements.ConstructorBinder)
+                .then(manyOrEmpty(indented(parseBinderNoParensRef)))
+            ).`as`(PSElements.ConstructorBinder)
         private val parseNullaryConstructorBinder =
             lexeme(parseQualified(properName.`as`(ProperName)))
                 .`as`(PSElements.ConstructorBinder)
-        private val parsePatternMatch = indented(
-            braces(commaSep(lexeme(idents)))
-        ).`as`(PSElements.Binder)
+        private val parsePatternMatch =
+            indented(braces(commaSep(lexeme(idents)))).`as`(PSElements.Binder)
         private val parseCharBinder =
             lexeme("'").`as`(StringBinder)
         private val parseBinderAtom = choice(
