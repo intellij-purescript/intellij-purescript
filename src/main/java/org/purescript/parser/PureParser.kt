@@ -28,6 +28,7 @@ import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.BooleanLiteral
 import org.purescript.psi.PSElements.Companion.ConstrainedType
+import org.purescript.psi.PSElements.Companion.ExternDataDeclaration
 import org.purescript.psi.PSElements.Companion.Fixity
 import org.purescript.psi.PSElements.Companion.FixityDeclaration
 import org.purescript.psi.PSElements.Companion.FunKind
@@ -259,16 +260,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         ).`as`(PSElements.TypeAtom)
         private val parseConstrainedType: Parsec =
-            optional(
-                attempt(
-                    parens(
-                        commaSep1(
-                            parseQualified(properName).`as`(TypeConstructor) +
-                                indented(manyOrEmpty(typeAtom))
-                        )
-                    ) + lexeme(DARROW)
-                )
-            ).then(indented(type)).`as`(ConstrainedType)
+            optional(attempt(
+                parens(commaSep1(
+                    parseQualified(properName).`as`(TypeConstructor) +
+                    indented(manyOrEmpty(typeAtom))
+                )) + lexeme(DARROW)
+            )).then(indented(type)).`as`(ConstrainedType)
         private val forlall = reserved(PSTokens.FORALL)
 
         private val parseForAll = forlall
@@ -282,13 +279,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
         // Declarations.hs
         private val typeVarBinding =
             lexeme(idents).`as`(GenericIdentifier)
-                .or(
-                    parens(
-                        lexeme(idents).`as`(GenericIdentifier)
-                            .then(indented(dcolon))
-                            .then(indented(parseKind))
-                    )
-                )
+            .or(parens(
+                lexeme(idents).`as`(GenericIdentifier)
+                .then(indented(dcolon)).then(indented(parseKind))
+            ))
         private val parseBinderNoParensRef = ref()
         private val parseBinderRef = ref()
         private val expr = ref()
@@ -361,71 +355,30 @@ class PureParser : PsiParser, PSTokens, PSElements {
             // ---------- end of LET stuff -----------
             .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
             .then(guardedDecl).`as`(PSElements.ValueDeclaration)
-        private val parseDeps = parens(
-            commaSep1(
-                parseQualified(properName).`as`(
-                    TypeConstructor
-                ).then(manyOrEmpty(typeAtom))
-            )
-        )
-            .then(indented(reserved(DARROW)))
+        private val parseDeps =
+            parens(commaSep1(
+                parseQualified(properName).`as`(TypeConstructor)
+                .then(manyOrEmpty(typeAtom))
+            )).then(indented(reserved(DARROW)))
         private val parseExternDeclaration =
             reserved(PSTokens.FOREIGN)
-                .then(indented(reserved(PSTokens.IMPORT)))
-                .then(
-                    indented(
-                        choice(
-                            reserved(PSTokens.DATA)
-                                .then(
-                                    indented(
-                                        reserved(PROPER_NAME)
-                                            .`as`(
-                                                TypeConstructor
-                                            )
-                                    )
-                                )
-                                .then(dcolon)
-                                .then(parseKind)
-                                .`as`(PSElements.ExternDataDeclaration),
-                            reserved(INSTANCE)
-                                .then(ident)
-                                .then(
-                                    indented(
-                                        lexeme(
-                                            PSTokens.DCOLON
-                                        )
-                                    )
-                                )
-                                .then(optional(parseDeps))
-                                .then(parseQualified(properName).`as`(pClassName))
-                                .then(
-                                    manyOrEmpty(
-                                        indented(
-                                            typeAtom
-                                        )
-                                    )
-                                )
-                                .`as`(PSElements.ExternInstanceDeclaration),
-                            attempt(ident)
-                                .then(
-                                    optional(
-                                        stringLiteral.`as`(
-                                            PSElements.JSRaw
-                                        )
-                                    )
-                                )
-                                .then(
-                                    indented(
-                                        lexeme(
-                                            PSTokens.DCOLON
-                                        )
-                                    )
-                                )
-                                .then(type)
-                                .`as`(PSElements.ExternDeclaration)
-                        )
-                    )
-                )
+            .then(indented(reserved(PSTokens.IMPORT)))
+            .then(indented(choice(
+                reserved(PSTokens.DATA)
+                    .then(indented(reserved(PROPER_NAME).`as`(TypeConstructor)))
+                    .then(dcolon).then(parseKind).`as`(ExternDataDeclaration),
+                reserved(INSTANCE)
+                    .then(ident).then(indented(dcolon))
+                    .then(optional(parseDeps))
+                    .then(parseQualified(properName).`as`(pClassName))
+                    .then(manyOrEmpty(indented(typeAtom)))
+                    .`as`(PSElements.ExternInstanceDeclaration),
+                attempt(ident)
+                    .then(optional(stringLiteral.`as`(PSElements.JSRaw)))
+                    .then(indented(lexeme(PSTokens.DCOLON)))
+                    .then(type)
+                    .`as`(PSElements.ExternDeclaration)
+            )))
         private val parseAssociativity = choice(
             reserved(PSTokens.INFIXL),
             reserved(PSTokens.INFIXR),
