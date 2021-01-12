@@ -303,12 +303,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(optional(indented(eq.or(lexeme(PSTokens.OPERATOR)))))
                 .then(optional(indented(parseBinderRef)))
             ))).`as`(PSElements.Binder)
-        private val parseRowPatternBinder = indented(
-            lexeme(
-                PSTokens.OPERATOR
-            )
-        )
-            .then(indented(parseBinderRef))
+        private val parseRowPatternBinder =
+            indented(lexeme(PSTokens.OPERATOR)).then(indented(parseBinderRef))
         private val guardedDeclExpr = parseGuard + eq + exprWhere
         private val guardedDecl =
             choice(
