@@ -1003,14 +1003,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             )
-        private val parseValuePostFix = indexersAndAccessors
-            .then(
-                manyOrEmpty(
-                    choice(
-                        indented(indexersAndAccessors),
-                        attempt(indented(dcolon).then(type))
-                    )
-                )
+        private val parseValuePostFix =
+            indexersAndAccessors +
+            manyOrEmpty(
+                indented(indexersAndAccessors).or(attempt(indented(dcolon) + type))
             )
         private val parsePrefixRef = ref()
         private val parsePrefix =
