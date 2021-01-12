@@ -32,6 +32,7 @@ import org.purescript.psi.PSElements.Companion.GenericIdentifier
 import org.purescript.psi.PSElements.Companion.Guard
 import org.purescript.psi.PSElements.Companion.NewtypeDeclaration
 import org.purescript.psi.PSElements.Companion.NullBinder
+import org.purescript.psi.PSElements.Companion.NumericLiteral
 import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinderField
 import org.purescript.psi.PSElements.Companion.ObjectLiteral
@@ -51,6 +52,8 @@ import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DOT
+import org.purescript.psi.PSTokens.Companion.FLOAT
+import org.purescript.psi.PSTokens.Companion.NATURAL
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
 import org.purescript.psi.PSTokens.Companion.OPERATOR
 import org.purescript.psi.PSTokens.Companion.PIPE
@@ -408,7 +411,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseFixity = parseAssociativity.then(
             indented(
                 lexeme(
-                    PSTokens.NATURAL
+                    NATURAL
                 )
             )
         ).`as`(PSElements.Fixity)
@@ -714,21 +717,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 PSElements.BooleanLiteral
             )
         private val parseNumericLiteral =
-            reserved(PSTokens.NATURAL).or(
-                reserved(
-                    PSTokens.FLOAT
-                )
-            ).`as`(PSElements.NumericLiteral)
+            reserved(NATURAL).or(reserved(FLOAT)).`as`(NumericLiteral)
         private val parseStringLiteral =
-            reserved(STRING).`as`(
-                PSElements.StringLiteral
-            )
+            reserved(STRING).`as`(PSElements.StringLiteral)
         private val parseCharLiteral =
             lexeme("'").`as`(PSElements.StringLiteral)
         private val parseArrayLiteral =
-            squares(commaSep(expr)).`as`(
-                PSElements.ArrayLiteral
-            )
+            squares(commaSep(expr)).`as`(PSElements.ArrayLiteral)
         private val parseTypeHole =
             lexeme("?").`as`(PSElements.TypeHole)
         private val parseIdentifierAndValue =
@@ -901,7 +896,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             lexeme("true").or(lexeme("false")).`as`(BooleanBinder)
         private val parseNumberBinder =
             optional(lexeme("+").or(lexeme("-")))
-                .then(lexeme(PSTokens.NATURAL).or(lexeme(PSTokens.FLOAT)))
+                .then(lexeme(NATURAL).or(lexeme(FLOAT)))
                 .`as`(PSElements.NumberBinder)
         private val parseNamedBinder =
             ident
