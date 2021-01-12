@@ -91,6 +91,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // tokens
         private val dcolon = lexeme(PSTokens.DCOLON)
+        private val dot = lexeme(DOT)
         private val eq = lexeme(PSTokens.EQ)
         private val where = lexeme(PSTokens.WHERE)
 
@@ -239,16 +240,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val forlall = reserved(PSTokens.FORALL)
 
         private val parseForAll = forlall
-            .then(
-                many1(
-                    indented(
-                        lexeme(idents).`as`(
-                            PSElements.GenericIdentifier
-                        )
-                    )
-                )
-            )
-            .then(indented(lexeme(DOT)))
+            .then(many1(indented(lexeme(idents).`as`(PSElements.GenericIdentifier))))
+            .then(indented(dot))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
         private val ident =
             choice(
@@ -1133,7 +1126,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val type3 = ref()
         private val type4 = ref()
         private val type5 = ref()
-        private val dot = token(DOT)
         private val arrow = reserved(ARROW)
         private val darrow = reserved(DARROW)
         private val qualOp = choice(
