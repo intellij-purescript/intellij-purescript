@@ -290,8 +290,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 parseTypeAtom,
                 lexeme(STRING)
             )
-            .then(optional(attempt(indented(lexeme(PSTokens.DCOLON)
-                .then(parseKind)))))
+            .then(optional(attempt(indented(dcolon.then(parseKind)))))
 
         // Declarations.hs
         private val kindedIdent =
