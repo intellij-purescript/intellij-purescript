@@ -208,18 +208,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                         )
                                     )
                                 )
-                                .then(
-                                    optional(
-                                        indented(
-                                            lexeme(
-                                                choice(
-                                                    lname,
-                                                    stringLiteral
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
+                                .then(optional(indented(lexeme(
+                                    lname.or(stringLiteral)
+                                ))))
                                 .then(
                                     optional(indented(dcolon))
                                     .then(optional(type))
