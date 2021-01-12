@@ -1084,7 +1084,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         ),
                         indented(
                             reserved(PSTokens.DCOLON)
-                                .then(parseType)
+                                .then(type)
                         )
                     )
                 )
