@@ -40,7 +40,6 @@ class PSLanguageParserTest : PSLanguageParserTestBase() {
     fun testtype_declaration10() = doTest(true, true)
 
     // newtype declaration
-    fun testnewtype_declaration1() = doTest(true, true)
     fun testnewtype_declaration2() = doTest(true, true)
     fun testnewtype_declaration3() = doTest(true, true)
     fun testnewtype_declaration4() = doTest(true, true)
