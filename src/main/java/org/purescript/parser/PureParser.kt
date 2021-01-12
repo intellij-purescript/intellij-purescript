@@ -28,6 +28,7 @@ import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.FunKind
+import org.purescript.psi.PSElements.Companion.Guard
 import org.purescript.psi.PSElements.Companion.NewtypeDeclaration
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
@@ -263,9 +264,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseLocalDeclarationRef = ref()
         private val parseGuard = lexeme(PIPE)
             .then(indented(commaSep(expr)))
-            .`as`(
-                PSElements.Guard
-            )
+            .`as`(Guard)
         private val dataHead =
             reserved(PSTokens.DATA) +
                 indented(properName).`as`(TypeConstructor) +
