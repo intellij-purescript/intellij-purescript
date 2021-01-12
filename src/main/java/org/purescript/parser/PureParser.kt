@@ -26,6 +26,7 @@ import org.purescript.psi.PSTokens
 import org.purescript.psi.PSElements
 import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
+import org.purescript.psi.PSElements.Companion.BooleanLiteral
 import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.FunKind
 import org.purescript.psi.PSElements.Companion.GenericIdentifier
@@ -52,6 +53,7 @@ import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DOT
+import org.purescript.psi.PSTokens.Companion.FALSE
 import org.purescript.psi.PSTokens.Companion.FLOAT
 import org.purescript.psi.PSTokens.Companion.NATURAL
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
@@ -60,6 +62,7 @@ import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
 import org.purescript.psi.PSTokens.Companion.STRING
 import org.purescript.psi.PSTokens.Companion.TICK
+import org.purescript.psi.PSTokens.Companion.TRUE
 
 class PureParser : PsiParser, PSTokens, PSElements {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
@@ -134,8 +137,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.ELSE),
                 token(PSTokens.DO),
                 token(PSTokens.LET),
-                token(PSTokens.TRUE),
-                token(PSTokens.FALSE),
+                token(TRUE),
+                token(FALSE),
                 token(PSTokens.IN),
                 token(PSTokens.WHERE),
                 token(PSTokens.FORALL),
@@ -712,10 +715,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         val program: Parsec = indentedList(parseModule).`as`(PSElements.Program)
 
         // Literals
-        private val parseBooleanLiteral = reserved(PSTokens.TRUE)
-            .or(reserved(PSTokens.FALSE)).`as`(
-                PSElements.BooleanLiteral
-            )
+        private val parseBooleanLiteral =
+            reserved(TRUE).or(reserved(FALSE)).`as`(BooleanLiteral)
         private val parseNumericLiteral =
             reserved(NATURAL).or(reserved(FLOAT)).`as`(NumericLiteral)
         private val parseStringLiteral =
