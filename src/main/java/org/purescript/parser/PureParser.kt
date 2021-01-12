@@ -153,7 +153,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             mark(many1(untilSame(same(p))))
 
         // Kinds.hs
-        private val parseKindRef = Combinators.ref()
+        private val parseKind = Combinators.ref()
         private val parseKindPrefixRef = Combinators.ref()
         private val parseStar = keyword(PSTokens.START, "*").`as`(Star)
         private val parseBang = keyword(PSTokens.BANG, "!").`as`(Bang)
@@ -161,7 +161,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             choice(
                 parseStar, parseBang,
                 parseQualified(properName).`as`(TypeConstructor),
-                parens(parseKindRef)
+                parens(parseKind)
             )
         )
         private val parseKindPrefix =
@@ -297,7 +297,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         indented(
                             lexeme(
                                 PSTokens.DCOLON
-                            ).then(parseKindRef)
+                            ).then(parseKind)
                         )
                     )
                 )
@@ -324,7 +324,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .or(parens(
                 lexeme(identifier).`as`(PSElements.GenericIdentifier)
                 .then(indented(dcolon))
-                .then(indented(parseKindRef))
+                .then(indented(parseKind))
             ))
         private val parseBinderNoParensRef = Combinators.ref()
         private val parseBinderRef = Combinators.ref()
@@ -443,7 +443,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .then(dcolon)
-                                .then(parseKindRef)
+                                .then(parseKind)
                                 .`as`(PSElements.ExternDataDeclaration),
                             reserved(PSTokens.INSTANCE)
                                 .then(ident)
@@ -1184,7 +1184,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         init {
             parseKindPrefixRef.setRef(parseKindPrefix)
-            parseKindRef.setRef(
+            parseKind.setRef(
                 (
                     parseKindPrefix +
                         optional(
@@ -1196,7 +1196,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                         )
                                     )
                                 ) +
-                                (optional(parseKindRef))
+                                (optional(parseKind))
                         )
                     ).`as`(FunKind)
             )
