@@ -637,11 +637,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
         )
             .`as`(PSElements.TypeInstanceDeclaration)
-        private val importDeclarationType = optional(
-            indented(
-                parens(commaSep(parseDeclarationRef))
-            )
-        )
+        private val importDeclarationType =
+            optional(indented(parens(commaSep(parseDeclarationRef))))
         private val parseImportDeclaration =
             reserved(PSTokens.IMPORT)
                 .then(indented(moduleName).`as`(importModuleName))
