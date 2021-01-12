@@ -28,6 +28,7 @@ import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.FunKind
+import org.purescript.psi.PSElements.Companion.NewtypeDeclaration
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ObjectType
@@ -371,7 +372,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(optional(manyOrEmpty(indented(lexeme(identifier)))))
                 .then(optional(indented(parseTypeAtom)))
                 ))
-            ).`as`(PSElements.NewtypeDeclaration)
+            ).`as`(NewtypeDeclaration)
         private val parseTypeSynonymDeclaration = reserved(
             PSTokens.TYPE
         )
