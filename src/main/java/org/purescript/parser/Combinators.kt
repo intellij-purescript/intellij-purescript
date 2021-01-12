@@ -121,10 +121,6 @@ object Combinators {
         return lexeme(token(tokenType))
     }
 
-    fun keyword(tokenType: IElementType, content: String): Parsec {
-        return reserved(content).`as`(tokenType)
-    }
-
     fun seq(p1: Parsec, p2: Parsec): Parsec {
         return object : Parsec() {
             override fun parse(context: ParserContext): ParserInfo {
