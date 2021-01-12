@@ -16,6 +16,7 @@ import org.purescript.parser.Combinators.manyOrEmpty
 import org.purescript.parser.Combinators.mark
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
+import org.purescript.parser.Combinators.ref
 import org.purescript.parser.Combinators.reserved
 import org.purescript.parser.Combinators.same
 import org.purescript.parser.Combinators.sepBy1
@@ -37,6 +38,7 @@ import org.purescript.psi.PSElements.Companion.Qualified
 import org.purescript.psi.PSElements.Companion.RowKind
 import org.purescript.psi.PSElements.Companion.Star
 import org.purescript.psi.PSElements.Companion.StringBinder
+import org.purescript.psi.PSElements.Companion.Type
 import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeArgs
 import org.purescript.psi.PSElements.Companion.TypeConstructor
@@ -268,7 +270,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )) + lexeme(DARROW)
                 )
             ).then(indented(type)).`as`(ConstrainedType)
-        private val parseForAll = reserved(PSTokens.FORALL)
+        private val forlall = reserved(PSTokens.FORALL)
+
+        private val parseForAll = forlall
             .then(
                 many1(
                     indented(
@@ -287,7 +291,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
 
         // Declarations.hs
-        private val kindedIdent =
+        private val typeVarBinding =
             lexeme(identifier).`as`(PSElements.GenericIdentifier)
             .or(parens(
                 lexeme(identifier).`as`(PSElements.GenericIdentifier)
@@ -306,7 +310,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val dataHead =
             reserved(PSTokens.DATA) +
                 indented(properName).`as`(TypeConstructor) +
-                manyOrEmpty(indented(kindedIdent)).`as`(TypeArgs)
+                manyOrEmpty(indented(typeVarBinding)).`as`(TypeArgs)
 
         val dataCtor =
             properName.`as`(TypeConstructor) +
@@ -317,7 +321,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val newtypeHead =
             reserved(NEWTYPE) +
             indented(properName).`as`(TypeConstructor) +
-            manyOrEmpty(indented(kindedIdent))
+            manyOrEmpty(indented(typeVarBinding))
                 .`as`(TypeArgs)
 
         private val parseNewtypeDeclaration =
@@ -326,7 +330,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeSynonymDeclaration =
             reserved(PSTokens.TYPE)
                 .then(reserved(PROPER_NAME).`as`(TypeConstructor))
-                .then(manyOrEmpty(indented(lexeme(kindedIdent))))
+                .then(manyOrEmpty(indented(lexeme(typeVarBinding))))
                 .then(indented(eq) + (type))
             .`as`(TypeSynonymDeclaration)
         private val exprWhere =
@@ -547,7 +551,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         manyOrEmpty(
                             indented(
-                                kindedIdent
+                                typeVarBinding
                             )
                         )
                     )
@@ -1150,12 +1154,34 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(parens(parseBinderRef))
         ).`as`(PSElements.Binder)
 
+        private val type0 = ref()
+        private val type1 = ref()
+        private val type2 = ref()
+        private val type3 = ref()
+        private val type4 = ref()
+        private val type5 = ref()
+        private val dot = token(DOT)
+        private val arrow = reserved(ARROW)
+        private val darrow = reserved(DARROW)
+        private val qualOp = choice(
+            operator,
+            lexeme("<="),
+            lexeme("-"),
+            lexeme("#"),
+            lexeme(":"),
+        )
         init {
+            type0.setRef(type1 + optional(dcolon + type0))
+            type1.setRef(type2.or(forlall + many1(typeVarBinding) + dot + type1))
+            type2.setRef(type3 + optional(arrow.or(darrow) + type1))
+            type3.setRef(type4 + optional(qualOp + type4))
+            type4.setRef(type5.or( lexeme("#") + type4))
+            type5.setRef(many1(typeAtom))
             parseKindPrefixRef.setRef(parseKindPrefix)
             parseKind.setRef(
                 (parseKindPrefix +
                     optional(
-                        reserved(ARROW)
+                        arrow
                             .or(
                                 optional(
                                     parseQualified(properName).`as`(
