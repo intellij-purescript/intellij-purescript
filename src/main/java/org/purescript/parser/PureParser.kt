@@ -172,7 +172,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // Types.hs
         private val type = Combinators.ref()
-        private val parseTypeRef = type
         private val parseForAllRef = Combinators.ref()
         private val parseTypeWildcard = reserved("_")
         private val parseFunction = parens(reserved(ARROW))
@@ -249,7 +248,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseObject: Parsec = braces(parseRow).`as`(ObjectType)
         private val parseTypeAtom: Parsec = indented(
             choice(
-                attempt(squares(optional(parseTypeRef))),
+                attempt(squares(optional(type))),
                 attempt(parseFunction),
                 attempt(parseObject),
                 attempt(parseTypeWildcard),
@@ -268,7 +267,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             indented(manyOrEmpty(parseTypeAtom))
                     )) + lexeme(DARROW)
                 )
-            ).then(indented(parseTypeRef)).`as`(ConstrainedType)
+            ).then(indented(type)).`as`(ConstrainedType)
         private val parseForAll = reserved(PSTokens.FORALL)
             .then(
                 many1(
@@ -314,7 +313,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         reserved(
                             PSTokens.OPERATOR
                         )
-                    ).then(parseTypeRef)
+                    ).then(type)
                 )
             ).`as`(PSElements.Type)
 
@@ -1186,20 +1185,28 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseKindPrefixRef.setRef(parseKindPrefix)
             parseKind.setRef(
                 (parseKindPrefix +
-                optional(
-                    reserved(ARROW)
-                    .or(optional(parseQualified(properName).`as`(TypeConstructor))) +
-                    optional(parseKind)
-                )).`as`(FunKind)
+                    optional(
+                        reserved(ARROW)
+                            .or(
+                                optional(
+                                    parseQualified(properName).`as`(
+                                        TypeConstructor
+                                    )
+                                )
+                            ) +
+                            optional(parseKind)
+                    )).`as`(FunKind)
             )
             type.setRef(parseType)
-            parseTypeRef.setRef(parseType)
+            type.setRef(parseType)
             parseForAllRef.setRef(parseForAll)
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
             parsePrefixRef.setRef(parsePrefix)
-            expr.setRef((
-                parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr)
-            ).`as`(PSElements.Value))
+            expr.setRef(
+                (
+                    parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr)
+                    ).`as`(PSElements.Value)
+            )
             parseBinderRef.setRef(parseBinder)
             parseBinderNoParensRef.setRef(parseBinderNoParens)
         }
