@@ -328,21 +328,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ).`as`(PSElements.Type)
 
         // Declarations.hs
-        private val kindedIdent = lexeme(identifier).`as`(
-            PSElements.GenericIdentifier
-        )
-            .or(
-                parens(
-                    lexeme(identifier)
-                        .`as`(PSElements.GenericIdentifier).then(
-                            indented(
-                                lexeme(
-                                    PSTokens.DCOLON
-                                )
-                            )
-                        ).then(indented(parseKindRef))
-                )
-            )
+        private val kindedIdent =
+            lexeme(identifier).`as`(PSElements.GenericIdentifier)
+            .or(parens(
+                lexeme(identifier).`as`(PSElements.GenericIdentifier)
+                .then(indented(lexeme(PSTokens.DCOLON)))
+                .then(indented(parseKindRef))
+            ))
         private val parseBinderNoParensRef = Combinators.ref()
         private val parseBinderRef = Combinators.ref()
         private val expr = Combinators.ref()
