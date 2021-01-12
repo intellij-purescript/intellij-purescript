@@ -246,7 +246,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(parseRowEnding)
                 .`as`(PSElements.Row)
         private val parseObject: Parsec = braces(parseRow).`as`(ObjectType)
-        private val parseTypeAtom: Parsec = indented(
+        private val typeAtom: Parsec = indented(
             choice(
                 attempt(squares(optional(type))),
                 attempt(parseFunction),
@@ -264,7 +264,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 attempt(
                     parens(commaSep1(
                         parseQualified(properName).`as`(TypeConstructor) +
-                            indented(manyOrEmpty(parseTypeAtom))
+                            indented(manyOrEmpty(typeAtom))
                     )) + lexeme(DARROW)
                 )
             ).then(indented(type)).`as`(ConstrainedType)
@@ -310,7 +310,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         val dataCtor =
             properName.`as`(TypeConstructor) +
-                manyOrEmpty(indented(parseTypeAtom))
+                manyOrEmpty(indented(typeAtom))
         private val parseTypeDeclaration =
             (ident.`as`(TypeAnnotationName) + dcolon + type).`as`(TypeDeclaration)
 
@@ -321,7 +321,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .`as`(TypeArgs)
 
         private val parseNewtypeDeclaration =
-            (newtypeHead + eq + properName.`as`(TypeConstructor) + parseTypeAtom)
+            (newtypeHead + eq + properName.`as`(TypeConstructor) + typeAtom)
                 .`as`(NewtypeDeclaration)
         private val parseTypeSynonymDeclaration =
             reserved(PSTokens.TYPE)
@@ -391,7 +391,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             commaSep1(
                 parseQualified(properName).`as`(
                     TypeConstructor
-                ).then(manyOrEmpty(parseTypeAtom))
+                ).then(manyOrEmpty(typeAtom))
             )
         )
             .then(indented(reserved(DARROW)))
@@ -427,7 +427,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 .then(
                                     manyOrEmpty(
                                         indented(
-                                            parseTypeAtom
+                                            typeAtom
                                         )
                                     )
                                 )
@@ -517,13 +517,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     commaSep1(
                                         parseQualified(properName).`as`(
                                             TypeConstructor
-                                        ).then(manyOrEmpty(parseTypeAtom))
+                                        ).then(manyOrEmpty(typeAtom))
                                     )
                                 ),
                                 commaSep1(
                                     parseQualified(properName).`as`(
                                         TypeConstructor
-                                    ).then(manyOrEmpty(parseTypeAtom))
+                                    ).then(manyOrEmpty(typeAtom))
                                 )
                             )
                         ).then(
@@ -600,7 +600,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 commaSep1(
                                     parseQualified(properName).`as`(
                                         TypeConstructor
-                                    ).then(manyOrEmpty(parseTypeAtom))
+                                    ).then(manyOrEmpty(typeAtom))
                                 )
                             ).then(
                                 optional(
@@ -629,7 +629,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )
                 .then(
                     manyOrEmpty(
-                        indented(parseTypeAtom).or(
+                        indented(typeAtom).or(
                             lexeme(
                                 STRING
                             )
@@ -652,7 +652,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             .then(parseQualified(properName).`as`(
                                 TypeConstructor
                             ))
-                            .then(manyOrEmpty(parseTypeAtom)).then(
+                            .then(manyOrEmpty(typeAtom)).then(
                                 optional(
                                     reserved(
                                         PSTokens.RPAREN
@@ -703,7 +703,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val decl = choice(
             (dataHead + optional(eq + sepBy1(dataCtor, PIPE)))
                 .`as`(PSElements.DataDeclaration),
-            (newtypeHead + eq + properName.`as`(TypeConstructor) + parseTypeAtom)
+            (newtypeHead + eq + properName.`as`(TypeConstructor) + typeAtom)
                 .`as`(NewtypeDeclaration),
             attempt(parseTypeDeclaration),
             parseTypeSynonymDeclaration,
@@ -1167,7 +1167,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )).`as`(FunKind)
             )
             type.setRef(
-                many1(parseTypeAtom.or(lexeme(STRING)) + optional(dcolon + parseKind))
+                many1(typeAtom.or(lexeme(STRING)) + optional(dcolon + parseKind))
                 .then(optional(choice(
                     reserved(ARROW),
                     reserved(DARROW),
