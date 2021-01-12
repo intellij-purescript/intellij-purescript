@@ -1184,20 +1184,12 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             type.setRef(
                 many1(parseTypePostfix)
-                    .then(
-                        optional(
-                            choice(
-                                reserved(ARROW),
-                                reserved(
-                                    DARROW
-                                ),
-                                reserved(PSTokens.OPTIMISTIC),
-                                reserved(
-                                    PSTokens.OPERATOR
-                                )
-                            ).then(type)
-                        )
-                    ).`as`(PSElements.Type)
+                .then(optional(choice(
+                    reserved(ARROW),
+                    reserved(DARROW),
+                    reserved(PSTokens.OPTIMISTIC),
+                    reserved(PSTokens.OPERATOR)
+                ).then(type))).`as`(PSElements.Type)
             )
             parseForAllRef.setRef(parseForAll)
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
