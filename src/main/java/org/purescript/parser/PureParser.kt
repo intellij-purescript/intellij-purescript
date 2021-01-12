@@ -244,10 +244,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(indented(dot))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
         private val ident =
-            choice(
-                lexeme(idents.`as`(PSElements.Identifier)),
-                attempt(parens(lexeme(operator.`as`(PSElements.Identifier))))
-            )
+            lexeme(idents.`as`(PSElements.Identifier))
+            .or(attempt(parens(lexeme(operator.`as`(PSElements.Identifier)))))
 
         // Declarations.hs
         private val typeVarBinding =
