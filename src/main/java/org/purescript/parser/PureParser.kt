@@ -945,17 +945,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             ),
             parseArrayLiteral,
             parseCharLiteral,
-            attempt(
-                indented(
-                    braces(
-                        commaSep1(
-                            indented(
-                                parsePropertyUpdate
-                            )
-                        )
-                    )
-                )
-            ),
+            attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
             attempt(parseObjectLiteral),
             parseAbs,
             attempt(parseConstructor),
