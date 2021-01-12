@@ -770,73 +770,36 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
             .then(optional(parseObjectLiteral))
             .then(optional(reserved(PSTokens.RPAREN)))
-        private val parseAbs = reserved(PSTokens.BACKSLASH)
-            .then(
-                choice(
-                    many1(typedIdent).`as`(PSElements.Abs),
-                    many1(
-                        indented(
-                            ident.or(parseBinderNoParensRef).`as`(
-                                PSElements.Abs
-                            )
-                        )
-                    )
-                )
-            )
+        private val parseAbs =
+            reserved(PSTokens.BACKSLASH)
+            .then(choice(
+                many1(typedIdent).`as`(PSElements.Abs),
+                many1(indented(
+                    ident.or(parseBinderNoParensRef).`as`(PSElements.Abs)
+                ))
+            ))
             .then(indented(reserved(ARROW)))
             .then(expr)
-        private val parseVar = attempt(
-            manyOrEmpty(
-                attempt(
-                    token(
-                        PROPER_NAME
-                    ).`as`(PSElements.qualifiedModuleName).then(
-                        token(
-                            DOT
-                        )
-                    )
-                )
-            ).then(ident).`as`(Qualified)
-        ).`as`(
-            PSElements.Var
-        )
-        private val parseConstructor = parseQualified(properName).`as`(
-            PSElements.Constructor
-        )
-        private val parseCaseAlternative = commaSep1(
-            expr.or(
-                parseTypeWildcard
-            )
-        )
-            .then(
-                indented(
-                    choice(
-                        many1(
-                            parseGuard.then(
-                                indented(
-                                    lexeme(
-                                        ARROW
-                                    ).then(expr)
-                                )
-                            )
-                        ),
-                        reserved(ARROW).then(expr)
-                    )
-                )
-            )
-            .`as`(PSElements.CaseAlternative)
+        private val parseVar =
+            attempt(
+                manyOrEmpty(attempt(
+                    token(PROPER_NAME).`as`(PSElements.qualifiedModuleName)
+                    .then(token(DOT))
+                ))
+                .then(ident).`as`(Qualified)
+            ).`as`(PSElements.Var)
+        private val parseConstructor =
+            parseQualified(properName).`as`(PSElements.Constructor)
+        private val parseCaseAlternative =
+            commaSep1(expr.or(parseTypeWildcard))
+            .then(indented(choice(
+                many1(parseGuard + indented(lexeme(ARROW) + expr)),
+                reserved(ARROW).then(expr)
+            ))).`as`(PSElements.CaseAlternative)
         private val parseCase = reserved(PSTokens.CASE)
             .then(commaSep1(expr.or(parseTypeWildcard)))
             .then(indented(reserved(PSTokens.OF)))
-            .then(
-                indented(
-                    indentedList(
-                        mark(
-                            parseCaseAlternative
-                        )
-                    )
-                )
-            )
+            .then(indented(indentedList(mark(parseCaseAlternative))))
             .`as`(PSElements.Case)
         private val parseIfThenElse = reserved(PSTokens.IF)
             .then(indented(expr))
