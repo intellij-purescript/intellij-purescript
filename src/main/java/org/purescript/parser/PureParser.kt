@@ -192,28 +192,23 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseRowEnding =
             optional(
                 indented(lexeme(PIPE))
-                .then(indented(choice(
-                        attempt(parseTypeWildcard),
-                        attempt(
-                            optional(
-                                lexeme(
-                                    manyOrEmpty(properName).`as`(TypeConstructor)
-                                )
+                .then(indented(
+                    attempt(parseTypeWildcard)
+                    .or(attempt(
+                        optional(
+                            lexeme(
+                                manyOrEmpty(properName).`as`(TypeConstructor)
                             )
-                            .then(
-                                    optional(
-                                        lexeme(idents).`as`(PSElements.GenericIdentifier)
-                                    )
-                                )
-                                .then(optional(indented(lexeme(
-                                    lname.or(stringLiteral)
-                                ))))
-                                .then(
-                                    optional(indented(dcolon))
-                                    .then(optional(type))
-                                ).`as`(PSElements.TypeVar)
                         )
-                )))
+                        .then(optional(
+                            lexeme(idents).`as`(PSElements.GenericIdentifier)
+                        )).then(optional(indented(lexeme(
+                            lname.or(stringLiteral)
+                        )))).then(
+                            optional(indented(dcolon)).then(optional(type))
+                        ).`as`(PSElements.TypeVar)
+                    ))
+                ))
             )
         private val parseRow: Parsec =
             commaSep(parseNameAndType(type))
