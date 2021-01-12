@@ -102,7 +102,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.FORALL),
                 token(PSTokens.QUALIFIED),
             )
-        private val identifier = idents
         private val lname = lexeme(
             choice(
                 token(PSTokens.IDENT),
@@ -210,7 +209,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             )
                                 .then(
                                     optional(
-                                        lexeme(identifier).`as`(
+                                        lexeme(idents).`as`(
                                             PSElements.GenericIdentifier
                                         )
                                     )
@@ -281,7 +280,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(
                 many1(
                     indented(
-                        lexeme(identifier).`as`(
+                        lexeme(idents).`as`(
                             PSElements.GenericIdentifier
                         )
                     )
@@ -291,16 +290,16 @@ class PureParser : PsiParser, PSTokens, PSElements {
             .then(parseConstrainedType).`as`(PSElements.ForAll)
         private val ident =
             choice(
-                lexeme(identifier.`as`(PSElements.Identifier)),
+                lexeme(idents.`as`(PSElements.Identifier)),
                 attempt(parens(lexeme(operator.`as`(PSElements.Identifier))))
             )
 
         // Declarations.hs
         private val typeVarBinding =
-            lexeme(identifier).`as`(PSElements.GenericIdentifier)
+            lexeme(idents).`as`(PSElements.GenericIdentifier)
                 .or(
                     parens(
-                        lexeme(identifier).`as`(PSElements.GenericIdentifier)
+                        lexeme(idents).`as`(PSElements.GenericIdentifier)
                             .then(indented(dcolon))
                             .then(indented(parseKind))
                     )
@@ -351,7 +350,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parsePatternMatchObject = indented(
             braces(
                 commaSep(
-                    lexeme(identifier).or(lname).or(stringLiteral)
+                    lexeme(idents).or(lname).or(stringLiteral)
                         .then(
                             optional(
                                 indented(
@@ -391,7 +390,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 optional(
                     attempt(
                         indented(lexeme("@"))
-                            .then(indented(braces(commaSep(lexeme(identifier)))))
+                            .then(indented(braces(commaSep(lexeme(idents)))))
                     )
                 ).`as`(PSElements.NamedBinder)
             ).then(optional(attempt(parsePatternMatchObject)))
@@ -730,7 +729,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         attempt(
                             indented(lexeme("@"))
-                                .then(indented(braces(commaSep(lexeme(identifier)))))
+                                .then(indented(braces(commaSep(lexeme(idents)))))
                         )
                     ).`as`(PSElements.NamedBinder)
                 ).then(optional(attempt(parsePatternMatchObject)))
@@ -755,7 +754,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         attempt(
                             indented(lexeme("@"))
-                                .then(indented(braces(commaSep(lexeme(identifier)))))
+                                .then(indented(braces(commaSep(lexeme(idents)))))
                         )
                     ).`as`(PSElements.NamedBinder)
                 ).then(optional(attempt(parsePatternMatchObject)))
@@ -821,7 +820,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
             .then(
                 many1(
-                    lexeme(identifier)
+                    lexeme(idents)
                         .`as`(PSElements.GenericIdentifier).or(
                             parseQualified(properName).`as`(
                                 TypeConstructor
@@ -936,7 +935,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                             braces(
                                                 commaSep(
                                                     lexeme(
-                                                        identifier
+                                                        idents
                                                     )
                                                 )
                                             )
@@ -1010,7 +1009,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             attempt(
                 reserved(TICK) +
                     properName.`as`(ProperName)
-                        .or(many1(lexeme(identifier).`as`(ProperName))) +
+                        .or(many1(lexeme(idents).`as`(ProperName))) +
                     reserved(TICK)
             ),
             parseArrayLiteral,
@@ -1047,7 +1046,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         )
         private val parseIdentInfix: Parsec = choice(
             reserved(TICK)
-                .then(parseQualified(lexeme(identifier))).lexeme(
+                .then(parseQualified(lexeme(idents))).lexeme(
                     TICK
                 ),
             parseQualified(lexeme(operator))
@@ -1129,7 +1128,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             lexeme(parseQualified(properName.`as`(ProperName)))
                 .`as`(PSElements.ConstructorBinder)
         private val parsePatternMatch = indented(
-            braces(commaSep(lexeme(identifier)))
+            braces(commaSep(lexeme(idents)))
         ).`as`(PSElements.Binder)
         private val parseCharBinder =
             lexeme("'").`as`(StringBinder)
