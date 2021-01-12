@@ -921,17 +921,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
         private val doBlock =
             reserved(PSTokens.DO)
-                .then(indented(indentedList(mark(doStatement))))
+            .then(indented(indentedList(mark(doStatement))))
         private val parsePropertyUpdate =
             reserved(lname.or(stringLiteral))
-                .then(
-                    optional(
-                        indented(
-                            eq
-                        )
-                    )
-                )
-                .then(indented(expr))
+            .then(optional(indented(eq)))
+            .then(indented(expr))
         private val parseValueAtom = choice(
             attempt(parseTypeHole),
             attempt(parseNumericLiteral),
