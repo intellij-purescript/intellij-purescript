@@ -286,7 +286,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 attempt(parens(lexeme(operator.`as`(PSElements.Identifier))))
             )
         private val parseTypePostfix =
-            parseTypeAtom.or(lexeme(STRING)) + optional(indented(dcolon + parseKind))
+            parseTypeAtom.or(lexeme(STRING)) + optional(dcolon + parseKind)
 
         // Declarations.hs
         private val kindedIdent =
