@@ -26,4 +26,6 @@ Purescript File
           PSProperName(ProperName)
             PsiElement(proper name)('NoOp3')
             PsiElement(whitespace)(' ')
-        PsiElement(identifier)('a')
+        PSTypeAtomImpl(TypeAtom)
+          PSIdentifierImpl(GenericIdentifier)
+            PsiElement(identifier)('a')
