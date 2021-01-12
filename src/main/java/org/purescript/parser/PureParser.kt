@@ -301,21 +301,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
             )
-        private val parseType = many1(parseTypePostfix)
-            .then(
-                optional(
-                    choice(
-                        reserved(ARROW),
-                        reserved(
-                            DARROW
-                        ),
-                        reserved(PSTokens.OPTIMISTIC),
-                        reserved(
-                            PSTokens.OPERATOR
-                        )
-                    ).then(type)
-                )
-            ).`as`(PSElements.Type)
 
         // Declarations.hs
         private val kindedIdent =
@@ -1197,7 +1182,23 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             optional(parseKind)
                     )).`as`(FunKind)
             )
-            type.setRef(parseType)
+            type.setRef(
+                many1(parseTypePostfix)
+                    .then(
+                        optional(
+                            choice(
+                                reserved(ARROW),
+                                reserved(
+                                    DARROW
+                                ),
+                                reserved(PSTokens.OPTIMISTIC),
+                                reserved(
+                                    PSTokens.OPERATOR
+                                )
+                            ).then(type)
+                        )
+                    ).`as`(PSElements.Type)
+            )
             parseForAllRef.setRef(parseForAll)
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
             parsePrefixRef.setRef(parsePrefix)
