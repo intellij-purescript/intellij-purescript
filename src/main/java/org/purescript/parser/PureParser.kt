@@ -975,13 +975,11 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).`as`(
             PSElements.Accessor
         )
-        private val parseIdentInfix: Parsec = choice(
-            reserved(TICK)
-                .then(parseQualified(lexeme(idents))).lexeme(
-                    TICK
-                ),
-            parseQualified(lexeme(operator))
-        ).`as`(PSElements.IdentInfix)
+        private val parseIdentInfix: Parsec =
+            choice(
+                (reserved(TICK) + parseQualified(lexeme(idents))).lexeme(TICK),
+                parseQualified(lexeme(operator))
+            ).`as`(PSElements.IdentInfix)
         private val indexersAndAccessors =
             parseValueAtom +
             manyOrEmpty(choice(
