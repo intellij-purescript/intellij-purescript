@@ -854,55 +854,24 @@ class PureParser : PsiParser, PSTokens, PSElements {
             choice(
                 attempt(parseTypeDeclaration),
                 optional(attempt(reserved(PSTokens.LPAREN)))
-                    .then(optional(attempt(properName).`as`(PSElements.Constructor)))
-                    .then(optional(attempt(many1(ident))))
-                    .then(optional(attempt(parseArrayBinder)))
-                    .then(
-                        optional(
-                            attempt(
-                                indented(lexeme("@"))
-                                    .then(
-                                        indented(
-                                            braces(
-                                                commaSep(
-                                                    lexeme(
-                                                        idents
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                            )
-                        ).`as`(PSElements.NamedBinder)
-                    ).then(optional(attempt(parsePatternMatchObject)))
-                    .then(optional(attempt(parseRowPatternBinder)))
-                    .then(optional(attempt(reserved(PSTokens.RPAREN))))
-                    .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
-                    .then(
-                        choice(
-                            attempt(
-                                indented(
-                                    many1(
-                                        parseGuard.then(
-                                            indented(
-                                                eq.then(
-                                                    exprWhere
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            ),
-                            attempt(
-                                indented(
-                                    eq.then(exprWhere)
-                                )
-                            )
-                        )
-                    ).`as`(
-                        PSElements.ValueDeclaration
-                    )
-            )
+                .then(optional(attempt(properName).`as`(PSElements.Constructor)))
+                .then(optional(attempt(many1(ident))))
+                .then(optional(attempt(parseArrayBinder)))
+                .then(optional(attempt(
+                    indented(lexeme("@"))
+                    .then(indented(braces(commaSep(lexeme(idents)))))
+                )).`as`(PSElements.NamedBinder))
+                .then(optional(attempt(parsePatternMatchObject)))
+                .then(optional(attempt(parseRowPatternBinder)))
+                .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
+                .then(choice(
+                    attempt(indented(
+                        many1(parseGuard + indented(eq + exprWhere))
+                    )),
+                    attempt(indented(eq + (exprWhere)))
+                )).`as`(PSElements.ValueDeclaration)
+        )
         private val parseDoNotationBind: Parsec =
             parseBinderRef
             .then(indented(reserved(PSTokens.LARROW)).then(expr))
