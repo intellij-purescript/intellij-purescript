@@ -332,7 +332,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             lexeme(identifier).`as`(PSElements.GenericIdentifier)
             .or(parens(
                 lexeme(identifier).`as`(PSElements.GenericIdentifier)
-                .then(indented(lexeme(PSTokens.DCOLON)))
+                .then(indented(dcolon))
                 .then(indented(parseKindRef))
             ))
         private val parseBinderNoParensRef = Combinators.ref()
