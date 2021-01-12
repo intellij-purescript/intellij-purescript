@@ -28,10 +28,12 @@ import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.FunKind
+import org.purescript.psi.PSElements.Companion.GenericIdentifier
 import org.purescript.psi.PSElements.Companion.Guard
 import org.purescript.psi.PSElements.Companion.NewtypeDeclaration
 import org.purescript.psi.PSElements.Companion.NullBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinder
+import org.purescript.psi.PSElements.Companion.ObjectLiteral
 import org.purescript.psi.PSElements.Companion.ObjectType
 import org.purescript.psi.PSElements.Companion.ProperName
 import org.purescript.psi.PSElements.Companion.Qualified
@@ -182,13 +184,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 { content: String? -> !(content == "∀" || content == "forall") },
                 "not `forall`"
             )
-        ).`as`(PSElements.GenericIdentifier)
+        ).`as`(GenericIdentifier)
         private val parseTypeConstructor: Parsec =
             parseQualified(properName).`as`(TypeConstructor)
 
         private fun parseNameAndType(p: Parsec): Parsec =
             indented(lexeme(
-                lname.or(stringLiteral).`as`(PSElements.GenericIdentifier)
+                lname.or(stringLiteral).`as`(GenericIdentifier)
             )) + indented(dcolon) + p
 
         private val parseRowEnding =
@@ -201,7 +203,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                             manyOrEmpty(properName).`as`(TypeConstructor)
                         )) +
                         optional(
-                            lexeme(idents).`as`(PSElements.GenericIdentifier)
+                            lexeme(idents).`as`(GenericIdentifier)
                         ) +
                         optional(indented(lexeme(lname.or(stringLiteral)))) +
                         optional(indented(dcolon)) +
@@ -241,7 +243,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val forlall = reserved(PSTokens.FORALL)
 
         private val parseForAll = forlall
-            .then(many1(indented(lexeme(idents).`as`(PSElements.GenericIdentifier))))
+            .then(many1(indented(lexeme(idents).`as`(GenericIdentifier))))
             .then(indented(dot))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
         private val ident =
@@ -250,10 +252,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
 
         // Declarations.hs
         private val typeVarBinding =
-            lexeme(idents).`as`(PSElements.GenericIdentifier)
+            lexeme(idents).`as`(GenericIdentifier)
                 .or(
                     parens(
-                        lexeme(idents).`as`(PSElements.GenericIdentifier)
+                        lexeme(idents).`as`(GenericIdentifier)
                             .then(indented(dcolon))
                             .then(indented(parseKind))
                     )
@@ -528,7 +530,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         ).then(
             reserved(PSTokens.INSTANCE)
                 .then(
-                    ident.`as`(PSElements.GenericIdentifier).then(
+                    ident.`as`(GenericIdentifier).then(
                         indented(
                             lexeme(
                                 PSTokens.DCOLON
@@ -740,34 +742,16 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(optional(indented(expr)))
                 .`as`(PSElements.ObjectBinderField)
         private val parseObjectLiteral =
-            braces(commaSep(parseIdentifierAndValue))
-                .`as`(
-                    PSElements.ObjectLiteral
-                )
-        private val typedIdent = optional(
-            reserved(
-                PSTokens.LPAREN
-            )
-        )
-            .then(
-                many1(
-                    lexeme(idents)
-                        .`as`(PSElements.GenericIdentifier).or(
-                            parseQualified(properName).`as`(
-                                TypeConstructor
-                            )
-                        )
-                )
-            )
-            .then(
-                optional(
-                    indented(
-                        lexeme(
-                            PSTokens.DCOLON
-                        )
-                    ).then(indented(type))
-                )
-            )
+            braces(commaSep(parseIdentifierAndValue)).`as`(ObjectLiteral)
+        private val typedIdent =
+            optional(reserved(PSTokens.LPAREN))
+            .then(many1(
+                lexeme(idents).`as`(GenericIdentifier)
+                .or(parseQualified(properName).`as`(TypeConstructor))
+            ))
+            .then(optional(
+                indented(lexeme(PSTokens.DCOLON)).then(indented(type))
+            ))
             .then(optional(parseObjectLiteral))
             .then(optional(reserved(PSTokens.RPAREN)))
         private val parseAbs =
@@ -932,7 +916,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseVarBinder = ident.`as`(PSElements.VarBinder)
         private val parseConstructorBinder =
             lexeme(
-                parseQualified(properName).`as`(PSElements.GenericIdentifier)
+                parseQualified(properName).`as`(GenericIdentifier)
                 .then(manyOrEmpty(indented(parseBinderNoParensRef)))
             ).`as`(PSElements.ConstructorBinder)
         private val parseNullaryConstructorBinder =
