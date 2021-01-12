@@ -359,17 +359,17 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseTypeDeclaration =
             (ident.`as`(TypeAnnotationName) + dcolon + type).`as`(TypeDeclaration)
         private val parseNewtypeDeclaration =
-            reserved(PSTokens.NEWTYPE)
-                .then(
+            (reserved(PSTokens.NEWTYPE)
+                +(
                     indented(properName)
                         .`as`(TypeConstructor)
                 )
-                .then(
+                +(
                     manyOrEmpty(indented(kindedIdent)).`as`(
                         PSElements.TypeArgs
                     )
                 )
-                .then(
+                +(
                     optional(
                         eq
                             .then(
@@ -394,7 +394,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                             )
                     )
-                )
+                ))
                 .`as`(PSElements.NewtypeDeclaration)
         private val parseTypeSynonymDeclaration = reserved(
             PSTokens.TYPE
