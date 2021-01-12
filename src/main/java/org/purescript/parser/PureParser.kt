@@ -1198,7 +1198,6 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )).`as`(FunKind)
             )
             type.setRef(parseType)
-            type.setRef(parseType)
             parseForAllRef.setRef(parseForAll)
             parseLocalDeclarationRef.setRef(parseLocalDeclaration)
             parsePrefixRef.setRef(parsePrefix)
