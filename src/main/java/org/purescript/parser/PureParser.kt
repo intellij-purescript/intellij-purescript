@@ -49,24 +49,31 @@ import org.purescript.psi.PSElements.Companion.TypeAnnotationName
 import org.purescript.psi.PSElements.Companion.TypeArgs
 import org.purescript.psi.PSElements.Companion.TypeConstructor
 import org.purescript.psi.PSElements.Companion.TypeDeclaration
+import org.purescript.psi.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.psi.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.psi.PSElements.Companion.importModuleName
+import org.purescript.psi.PSElements.Companion.pClassName
 import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.AS
 import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
+import org.purescript.psi.PSTokens.Companion.DERIVE
 import org.purescript.psi.PSTokens.Companion.DOT
 import org.purescript.psi.PSTokens.Companion.FALSE
 import org.purescript.psi.PSTokens.Companion.FLOAT
 import org.purescript.psi.PSTokens.Companion.HIDING
+import org.purescript.psi.PSTokens.Companion.INSTANCE
+import org.purescript.psi.PSTokens.Companion.LPAREN
 import org.purescript.psi.PSTokens.Companion.NATURAL
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
 import org.purescript.psi.PSTokens.Companion.OPERATOR
 import org.purescript.psi.PSTokens.Companion.PIPE
 import org.purescript.psi.PSTokens.Companion.PROPER_NAME
+import org.purescript.psi.PSTokens.Companion.RPAREN
 import org.purescript.psi.PSTokens.Companion.STRING
 import org.purescript.psi.PSTokens.Companion.TICK
 import org.purescript.psi.PSTokens.Companion.TRUE
+import org.purescript.psi.PSTokens.Companion.WHERE
 
 class PureParser : PsiParser, PSTokens, PSElements {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
@@ -109,7 +116,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val dcolon = lexeme(PSTokens.DCOLON)
         private val dot = lexeme(DOT)
         private val eq = lexeme(PSTokens.EQ)
-        private val where = lexeme(PSTokens.WHERE)
+        private val where = lexeme(WHERE)
 
         private val idents =
             choice(
@@ -131,8 +138,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.INFIXR),
                 token(PSTokens.INFIX),
                 token(PSTokens.CLASS),
-                token(PSTokens.DERIVE),
-                token(PSTokens.INSTANCE),
+                token(DERIVE),
+                token(INSTANCE),
                 token(PSTokens.MODULE),
                 token(PSTokens.CASE),
                 token(PSTokens.OF),
@@ -144,7 +151,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(TRUE),
                 token(FALSE),
                 token(PSTokens.IN),
-                token(PSTokens.WHERE),
+                token(WHERE),
                 token(PSTokens.FORALL),
                 token(PSTokens.QUALIFIED),
                 token(HIDING),
@@ -328,7 +335,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             )
 
         private val parseValueDeclaration // this is for when used with LET
-            = optional(attempt(reserved(PSTokens.LPAREN)))
+            = optional(attempt(reserved(LPAREN)))
             .then(optional(attempt(properName).`as`(PSElements.Constructor)))
             .then(optional(attempt(many1(ident))))
             .then(optional(attempt(parseArrayBinder)))
@@ -341,7 +348,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 ).`as`(PSElements.NamedBinder)
             ).then(optional(attempt(parsePatternMatchObject)))
             .then(optional(attempt(parseRowPatternBinder)))
-            .then(optional(attempt(reserved(PSTokens.RPAREN))))
+            .then(optional(attempt(reserved(RPAREN))))
             // ---------- end of LET stuff -----------
             .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
             .then(guardedDecl).`as`(PSElements.ValueDeclaration)
@@ -371,7 +378,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                 .then(dcolon)
                                 .then(parseKind)
                                 .`as`(PSElements.ExternDataDeclaration),
-                            reserved(PSTokens.INSTANCE)
+                            reserved(INSTANCE)
                                 .then(ident)
                                 .then(
                                     indented(
@@ -381,7 +388,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .then(optional(parseDeps))
-                                .then(parseQualified(properName).`as`(PSElements.pClassName))
+                                .then(parseQualified(properName).`as`(pClassName))
                                 .then(
                                     manyOrEmpty(
                                         indented(
@@ -437,7 +444,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseDeclarationRef = choice(
             reserved("kind").then(
                 parseQualified(properName).`as`(
-                    PSElements.pClassName
+                    pClassName
                 )
             ),
             ident.`as`(PSElements.ValueRef),
@@ -447,7 +454,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .`as`(importModuleName),
             reserved(PSTokens.CLASS).then(
                 parseQualified(properName).`as`(
-                    PSElements.pClassName
+                    pClassName
                 )
             ),
             properName.`as`(ProperName).then(
@@ -496,7 +503,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     optional(
                         indented(
                             properName.`as`(
-                                PSElements.pClassName
+                                pClassName
                             )
                         )
                     )
@@ -522,7 +529,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(
                     optional(
                         attempt(
-                            indented(reserved(PSTokens.WHERE))
+                            indented(reserved(WHERE))
                                 .then(
                                     indentedList(parseTypeDeclaration)
                                 )
@@ -530,113 +537,36 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     )
                 )
                 .`as`(PSElements.TypeClassDeclaration)
-        private val parseTypeInstanceDeclaration = optional(
-            reserved(
-                PSTokens.DERIVE
-            )
-        ).then(
-            optional(
-                reserved(
-                    NEWTYPE
-                )
-            )
-        ).then(
-            reserved(PSTokens.INSTANCE)
-                .then(
-                    ident.`as`(GenericIdentifier).then(
-                        indented(
-                            lexeme(
-                                PSTokens.DCOLON
-                            )
-                        )
-                    )
-                )
-                .then(
-                    optional(
-                        optional(reserved(PSTokens.LPAREN))
-                            .then(
-                                commaSep1(
-                                    parseQualified(properName).`as`(
-                                        TypeConstructor
-                                    ).then(manyOrEmpty(typeAtom))
-                                )
-                            ).then(
-                                optional(
-                                    reserved(
-                                        PSTokens.RPAREN
-                                    )
-                                )
-                            )
-                            .then(
-                                optional(
-                                    indented(
-                                        reserved(
-                                            DARROW
-                                        )
-                                    )
-                                )
-                            )
-                    )
-                )
-                .then(
-                    optional(
-                        indented(parseQualified(properName)).`as`(
-                            PSElements.pClassName
-                        )
-                    )
-                )
-                .then(
-                    manyOrEmpty(
-                        indented(typeAtom).or(
-                            lexeme(
-                                STRING
-                            )
-                        )
-                    )
-                )
-                .then(
-                    optional(
-                        indented(
-                            reserved(
-                                DARROW
-                            )
-                        ).then(
-                            optional(
-                                reserved(
-                                    PSTokens.LPAREN
-                                )
-                            )
-                        )
-                            .then(
-                                parseQualified(properName).`as`(
-                                    TypeConstructor
-                                )
-                            )
-                            .then(manyOrEmpty(typeAtom)).then(
-                                optional(
-                                    reserved(
-                                        PSTokens.RPAREN
-                                    )
-                                )
-                            )
-                    )
-                )
-                .then(
-                    optional(
-                        attempt(
-                            indented(reserved(PSTokens.WHERE))
-                                .then(
-                                    indented(
-                                        indentedList(
-                                            parseValueDeclaration
-                                        )
-                                    )
-                                )
-                        )
-                    )
-                )
-        )
-            .`as`(PSElements.TypeInstanceDeclaration)
+        private val parseTypeInstanceDeclaration =
+            optional(reserved(DERIVE))
+            .then(optional(reserved(NEWTYPE)))
+            .then(
+                reserved(INSTANCE)
+                .then(ident.`as`(GenericIdentifier).then(indented(dcolon)))
+                .then(optional(
+                    optional(reserved(LPAREN))
+                    .then(commaSep1(
+                        parseQualified(properName).`as`(TypeConstructor)
+                        .then(manyOrEmpty(typeAtom))
+                    ))
+                    .then(optional(reserved(RPAREN)))
+                    .then(optional(indented(reserved(DARROW))))
+                ))
+                .then(optional(
+                    indented(parseQualified(properName)).`as`(pClassName)
+                )).then(manyOrEmpty(indented(typeAtom).or(lexeme(STRING))))
+                .then(optional(
+                    indented(reserved(DARROW))
+                    .then(optional(reserved(LPAREN)))
+                    .then(parseQualified(properName).`as`(TypeConstructor))
+                    .then(manyOrEmpty(typeAtom))
+                    .then(optional(reserved(RPAREN)))
+                ))
+                .then(optional(attempt(
+                    indented(reserved(WHERE))
+                    .then(indented(indentedList(parseValueDeclaration)))
+                )))
+            ).`as`(TypeInstanceDeclaration)
         private val importDeclarationType =
             optional(indented(parens(commaSep(parseDeclarationRef))))
         private val parseImportDeclaration =
@@ -653,7 +583,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .`as`(NewtypeDeclaration),
             attempt(parseTypeDeclaration),
             parseTypeSynonymDeclaration,
-            optional(attempt(reserved(PSTokens.LPAREN)))
+            optional(attempt(reserved(LPAREN)))
                 .then(optional(attempt(properName).`as`(PSElements.Constructor)))
                 .then(optional(attempt(many1(ident))))
                 .then(optional(attempt(parseArrayBinder)))
@@ -666,7 +596,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     ).`as`(PSElements.NamedBinder)
                 ).then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
-                .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                .then(optional(attempt(reserved(RPAREN))))
                 .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
                 .then(guardedDecl).`as`(PSElements.ValueDeclaration),
             parseExternDeclaration,
@@ -678,7 +608,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseLocalDeclaration = choice(
             attempt(parseTypeDeclaration),
             // this is for when used with LET
-            optional(attempt(reserved(PSTokens.LPAREN)))
+            optional(attempt(reserved(LPAREN)))
                 .then(optional(attempt(properName).`as`(PSElements.Constructor)))
                 .then(optional(attempt(many1(ident))))
                 .then(optional(attempt(parseArrayBinder)))
@@ -691,7 +621,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                     ).`as`(PSElements.NamedBinder)
                 ).then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
-                .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                .then(optional(attempt(reserved(RPAREN))))
                 // ---------- end of LET stuff -----------
                 .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
                 .then(guardedDecl).`as`(PSElements.ValueDeclaration)
@@ -699,7 +629,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseModule = reserved(PSTokens.MODULE)
             .then(indented(moduleName).`as`(PSElements.pModuleName))
             .then(optional(parens(commaSep1(parseDeclarationRef))))
-            .then(reserved(PSTokens.WHERE))
+            .then(reserved(WHERE))
             .then(indentedList(decl))
             .`as`(PSElements.Module)
         val program: Parsec = indentedList(parseModule).`as`(PSElements.Program)
@@ -726,14 +656,14 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val parseObjectLiteral =
             braces(commaSep(parseIdentifierAndValue)).`as`(ObjectLiteral)
         private val typedIdent =
-            optional(reserved(PSTokens.LPAREN))
+            optional(reserved(LPAREN))
             .then(many1(
                 lexeme(idents).`as`(GenericIdentifier)
                 .or(parseQualified(properName).`as`(TypeConstructor))
             ))
             .then(optional(indented(dcolon).then(indented(type))))
             .then(optional(parseObjectLiteral))
-            .then(optional(reserved(PSTokens.RPAREN)))
+            .then(optional(reserved(RPAREN)))
         private val parseAbs =
             reserved(PSTokens.BACKSLASH)
             .then(choice(
@@ -780,7 +710,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val letBinding =
             choice(
                 attempt(parseTypeDeclaration),
-                optional(attempt(reserved(PSTokens.LPAREN)))
+                optional(attempt(reserved(LPAREN)))
                 .then(optional(attempt(properName).`as`(PSElements.Constructor)))
                 .then(optional(attempt(many1(ident))))
                 .then(optional(attempt(parseArrayBinder)))
@@ -790,7 +720,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 )).`as`(PSElements.NamedBinder))
                 .then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
-                .then(optional(attempt(reserved(PSTokens.RPAREN))))
+                .then(optional(attempt(reserved(RPAREN))))
                 .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
                 .then(choice(
                     attempt(indented(
