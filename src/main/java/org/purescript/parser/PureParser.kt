@@ -185,14 +185,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseQualified(properName).`as`(TypeConstructor)
 
         private fun parseNameAndType(p: Parsec): Parsec =
-            indented(
-                lexeme(
-                    choice(
-                        lname,
-                        stringLiteral
-                    ).`as`(PSElements.GenericIdentifier)
-                )
-            ) + indented(dcolon) + p
+            indented(lexeme(
+                lname.or(stringLiteral).`as`(PSElements.GenericIdentifier)
+            )) + indented(dcolon) + p
 
         private val parseRowEnding = optional(
             indented(lexeme(PIPE)).then(
