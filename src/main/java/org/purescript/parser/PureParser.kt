@@ -966,15 +966,10 @@ class PureParser : PsiParser, PSTokens, PSElements {
             parseLet,
             parens(expr).`as`(PSElements.Parens)
         )
-        private val parseAccessor: Parsec = attempt(
-            indented(
-                token(
-                    DOT
-                )
-            ).then(indented(lname.or(stringLiteral)))
-        ).`as`(
-            PSElements.Accessor
-        )
+        private val parseAccessor: Parsec =
+            attempt(
+                indented(token(DOT)).then(indented(lname.or(stringLiteral)))
+            ).`as`(PSElements.Accessor)
         private val parseIdentInfix: Parsec =
             choice(
                 (reserved(TICK) + parseQualified(lexeme(idents))).lexeme(TICK),
