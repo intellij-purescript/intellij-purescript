@@ -306,7 +306,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                         indented(
                             lexeme(
                                 PSTokens.DCOLON
-                            ).then(parseKind)
+                            ).then(parseKindRef)
                         )
                     )
                 )
@@ -452,7 +452,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .then(dcolon)
-                                .then(parseKind)
+                                .then(parseKindRef)
                                 .`as`(PSElements.ExternDataDeclaration),
                             reserved(PSTokens.INSTANCE)
                                 .then(ident)
