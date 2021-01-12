@@ -28,6 +28,8 @@ import org.purescript.psi.PSElements.Companion.Bang
 import org.purescript.psi.PSElements.Companion.BooleanBinder
 import org.purescript.psi.PSElements.Companion.BooleanLiteral
 import org.purescript.psi.PSElements.Companion.ConstrainedType
+import org.purescript.psi.PSElements.Companion.Fixity
+import org.purescript.psi.PSElements.Companion.FixityDeclaration
 import org.purescript.psi.PSElements.Companion.FunKind
 import org.purescript.psi.PSElements.Companion.GenericIdentifier
 import org.purescript.psi.PSElements.Companion.Guard
@@ -39,6 +41,7 @@ import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinderField
 import org.purescript.psi.PSElements.Companion.ObjectLiteral
 import org.purescript.psi.PSElements.Companion.ObjectType
+import org.purescript.psi.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.psi.PSElements.Companion.ProperName
 import org.purescript.psi.PSElements.Companion.Qualified
 import org.purescript.psi.PSElements.Companion.RowKind
@@ -53,8 +56,11 @@ import org.purescript.psi.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.psi.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.psi.PSElements.Companion.importModuleName
 import org.purescript.psi.PSElements.Companion.pClassName
+import org.purescript.psi.PSElements.Companion.pImplies
+import org.purescript.psi.PSElements.Companion.pModuleName
 import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.AS
+import org.purescript.psi.PSTokens.Companion.CLASS
 import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DERIVE
@@ -63,7 +69,9 @@ import org.purescript.psi.PSTokens.Companion.FALSE
 import org.purescript.psi.PSTokens.Companion.FLOAT
 import org.purescript.psi.PSTokens.Companion.HIDING
 import org.purescript.psi.PSTokens.Companion.INSTANCE
+import org.purescript.psi.PSTokens.Companion.LDARROW
 import org.purescript.psi.PSTokens.Companion.LPAREN
+import org.purescript.psi.PSTokens.Companion.MODULE
 import org.purescript.psi.PSTokens.Companion.NATURAL
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
 import org.purescript.psi.PSTokens.Companion.OPERATOR
@@ -73,6 +81,7 @@ import org.purescript.psi.PSTokens.Companion.RPAREN
 import org.purescript.psi.PSTokens.Companion.STRING
 import org.purescript.psi.PSTokens.Companion.TICK
 import org.purescript.psi.PSTokens.Companion.TRUE
+import org.purescript.psi.PSTokens.Companion.TYPE
 import org.purescript.psi.PSTokens.Companion.WHERE
 
 class PureParser : PsiParser, PSTokens, PSElements {
@@ -131,16 +140,16 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(PSTokens.IDENT),
                 token(PSTokens.DATA),
                 token(NEWTYPE),
-                token(PSTokens.TYPE),
+                token(TYPE),
                 token(PSTokens.FOREIGN),
                 token(PSTokens.IMPORT),
                 token(PSTokens.INFIXL),
                 token(PSTokens.INFIXR),
                 token(PSTokens.INFIX),
-                token(PSTokens.CLASS),
+                token(CLASS),
                 token(DERIVE),
                 token(INSTANCE),
-                token(PSTokens.MODULE),
+                token(MODULE),
                 token(PSTokens.CASE),
                 token(PSTokens.OF),
                 token(PSTokens.IF),
@@ -164,7 +173,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 token(DOT),
                 token(PSTokens.DDOT),
                 token(PSTokens.LARROW),
-                token(PSTokens.LDARROW),
+                token(LDARROW),
                 token(PSTokens.OPTIMISTIC)
             )
         private val properName: Parsec = lexeme(PROPER_NAME).`as`(ProperName)
@@ -308,7 +317,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
             (newtypeHead + eq + properName.`as`(TypeConstructor) + typeAtom)
                 .`as`(NewtypeDeclaration)
         private val parseTypeSynonymDeclaration =
-            reserved(PSTokens.TYPE)
+            reserved(TYPE)
                 .then(reserved(PROPER_NAME).`as`(TypeConstructor))
                 .then(manyOrEmpty(indented(lexeme(typeVarBinding))))
                 .then(indented(eq) + (type))
@@ -422,121 +431,53 @@ class PureParser : PsiParser, PSTokens, PSElements {
             reserved(PSTokens.INFIXR),
             reserved(PSTokens.INFIX)
         )
-        private val parseFixity = parseAssociativity.then(
-            indented(
-                lexeme(
-                    NATURAL
-                )
-            )
-        ).`as`(PSElements.Fixity)
+        private val parseFixity =
+            parseAssociativity.then(indented(lexeme(NATURAL))).`as`(Fixity)
         private val parseFixityDeclaration = parseFixity
-            .then(optional(reserved(PSTokens.TYPE)))
+            .then(optional(reserved(TYPE)))
             .then(
-                parseQualified(properName).`as`(PSElements.pModuleName).or(
-                    ident.`as`(
-                        ProperName
-                    )
-                )
+                parseQualified(properName).`as`(pModuleName)
+                .or(ident.`as`(ProperName))
             )
             .then(reserved(AS))
             .then(lexeme(operator))
-            .`as`(PSElements.FixityDeclaration)
-        private val parseDeclarationRef = choice(
-            reserved("kind").then(
-                parseQualified(properName).`as`(
-                    pClassName
-                )
-            ),
-            ident.`as`(PSElements.ValueRef),
-            reserved(PSTokens.TYPE)
-                .then(optional(parens(operator))),
-            reserved(PSTokens.MODULE).then(moduleName)
-                .`as`(importModuleName),
-            reserved(PSTokens.CLASS).then(
-                parseQualified(properName).`as`(
-                    pClassName
-                )
-            ),
-            properName.`as`(ProperName).then(
-                optional(
-                    parens(
-                        optional(
-                            choice(
-                                reserved(PSTokens.DDOT),
-                                commaSep1(properName.`as`(TypeConstructor))
-                            )
-                        )
-                    )
-                )
-            )
-        ).`as`(
-            PSElements.PositionedDeclarationRef
-        )
+            .`as`(FixityDeclaration)
+        private val parseDeclarationRef =
+            choice(
+                reserved("kind")
+                .then(parseQualified(properName).`as`(pClassName)),
+                ident.`as`(PSElements.ValueRef),
+                reserved(TYPE).then(optional(parens(operator))),
+                reserved(MODULE).then(moduleName).`as`(importModuleName),
+                reserved(CLASS).then(parseQualified(properName).`as`(pClassName)),
+                properName.`as`(ProperName)
+                .then(optional(parens(optional(choice(
+                    reserved(PSTokens.DDOT),
+                    commaSep1(properName.`as`(TypeConstructor))
+                )))))
+            ).`as`(PositionedDeclarationRef)
         private val parseTypeClassDeclaration =
-            lexeme(PSTokens.CLASS)
-                .then(
-                    optional(
-                        indented(
-                            choice(
-                                parens(
-                                    commaSep1(
-                                        parseQualified(properName).`as`(
-                                            TypeConstructor
-                                        ).then(manyOrEmpty(typeAtom))
-                                    )
-                                ),
-                                commaSep1(
-                                    parseQualified(properName).`as`(
-                                        TypeConstructor
-                                    ).then(manyOrEmpty(typeAtom))
-                                )
-                            )
-                        ).then(
-                            optional(reserved(PSTokens.LDARROW))
-                                .`as`(
-                                    PSElements.pImplies
-                                )
-                        )
+            lexeme(CLASS)
+            .then(
+                optional(indented(choice(
+                    parens(commaSep1(
+                        parseQualified(properName).`as`(TypeConstructor)
+                        .then(manyOrEmpty(typeAtom))
+                    )),
+                    commaSep1(
+                        parseQualified(properName).`as`(TypeConstructor)
+                        .then(manyOrEmpty(typeAtom))
                     )
-                )
-                .then(
-                    optional(
-                        indented(
-                            properName.`as`(
-                                pClassName
-                            )
-                        )
-                    )
-                )
-                .then(
-                    optional(
-                        manyOrEmpty(
-                            indented(
-                                typeVarBinding
-                            )
-                        )
-                    )
-                )
-                .then(
-                    optional(
-                        lexeme(PIPE).then(
-                            indented(
-                                commaSep1(type)
-                            )
-                        )
-                    )
-                )
-                .then(
-                    optional(
-                        attempt(
-                            indented(reserved(WHERE))
-                                .then(
-                                    indentedList(parseTypeDeclaration)
-                                )
-                        )
-                    )
-                )
-                .`as`(PSElements.TypeClassDeclaration)
+                ))
+                .then(optional(reserved(LDARROW)).`as`(pImplies))
+            )
+            ).then(optional(indented(properName.`as`(pClassName))))
+            .then(optional(manyOrEmpty(indented(typeVarBinding))))
+            .then(optional(lexeme(PIPE).then(indented(commaSep1(type)))))
+            .then(optional(attempt(
+                        indented(reserved(WHERE))
+                        .then(indentedList(parseTypeDeclaration))
+            ))).`as`(PSElements.TypeClassDeclaration)
         private val parseTypeInstanceDeclaration =
             optional(reserved(DERIVE))
             .then(optional(reserved(NEWTYPE)))
@@ -626,8 +567,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
                 .then(guardedDecl).`as`(PSElements.ValueDeclaration)
         )
-        private val parseModule = reserved(PSTokens.MODULE)
-            .then(indented(moduleName).`as`(PSElements.pModuleName))
+        private val parseModule = reserved(MODULE)
+            .then(indented(moduleName).`as`(pModuleName))
             .then(optional(parens(commaSep1(parseDeclarationRef))))
             .then(reserved(WHERE))
             .then(indentedList(decl))
