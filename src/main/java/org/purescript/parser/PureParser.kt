@@ -982,27 +982,13 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 ),
             parseQualified(lexeme(operator))
         ).`as`(PSElements.IdentInfix)
-        private val indexersAndAccessors = parseValueAtom
-            .then(
-                manyOrEmpty(
-                    choice(
-                        parseAccessor,
-                        attempt(
-                            indented(
-                                braces(
-                                    commaSep1(
-                                        indented(parsePropertyUpdate)
-                                    )
-                                )
-                            )
-                        ),
-                        indented(
-                            reserved(PSTokens.DCOLON)
-                                .then(type)
-                        )
-                    )
-                )
-            )
+        private val indexersAndAccessors =
+            parseValueAtom +
+            manyOrEmpty(choice(
+                parseAccessor,
+                attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
+                indented(dcolon + type)
+            ))
         private val parseValuePostFix =
             indexersAndAccessors +
             manyOrEmpty(
