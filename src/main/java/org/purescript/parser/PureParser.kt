@@ -764,7 +764,8 @@ class PureParser : PsiParser, PSTokens, PSElements {
         private val decl = choice(
             (dataHead + optional(eq + sepBy1(dataCtor, PIPE)))
                 .`as`(PSElements.DataDeclaration),
-            parseNewtypeDeclaration,
+            (newtypeHead + eq + properName.`as`(TypeConstructor) + parseTypeAtom)
+                .`as`(NewtypeDeclaration),
             attempt(parseTypeDeclaration),
             parseTypeSynonymDeclaration,
             optional(attempt(reserved(PSTokens.LPAREN)))
