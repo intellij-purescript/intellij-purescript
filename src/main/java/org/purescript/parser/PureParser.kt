@@ -189,20 +189,19 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 lname.or(stringLiteral).`as`(PSElements.GenericIdentifier)
             )) + indented(dcolon) + p
 
-        private val parseRowEnding = optional(
-            indented(lexeme(PIPE)).then(
+        private val parseRowEnding =
+            optional(
+                indented(lexeme(PIPE))
+                .then(
                 indented(
                     choice(
                         attempt(parseTypeWildcard),
-                        attempt(
-                            optional(
+                        attempt(optional(
                                 lexeme(
-                                    manyOrEmpty(properName).`as`(
-                                        TypeConstructor
-                                    )
+                                    manyOrEmpty(properName).`as`(TypeConstructor)
                                 )
                             )
-                                .then(
+                            .then(
                                     optional(
                                         lexeme(idents).`as`(
                                             PSElements.GenericIdentifier
@@ -222,19 +221,9 @@ class PureParser : PsiParser, PSTokens, PSElements {
                                     )
                                 )
                                 .then(
-                                    optional(
-                                        indented(
-                                            lexeme(
-                                                PSTokens.DCOLON
-                                            )
-                                        )
-                                    ).then(
-                                        optional(
-                                            type
-                                        )
-                                    )
-                                )
-                                .`as`(PSElements.TypeVar)
+                                    optional(indented(dcolon))
+                                    .then(optional(type))
+                                ).`as`(PSElements.TypeVar)
                         )
                     )
                 )
