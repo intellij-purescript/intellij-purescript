@@ -1008,13 +1008,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
                 manyOrEmpty(
                     choice(
                         indented(indexersAndAccessors),
-                        attempt(
-                            indented(
-                                lexeme(
-                                    PSTokens.DCOLON
-                                )
-                            ).then(type)
-                        )
+                        attempt(indented(dcolon).then(type))
                     )
                 )
             )
