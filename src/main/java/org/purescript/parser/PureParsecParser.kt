@@ -767,20 +767,6 @@ class PureParsecParser {
     private val parseBinder =
         parseBinderAtom
         .then(optional(lexeme(OPERATOR).then(parseBinderRef))).`as`(Binder)
-    private val parseBinderNoParens = choice(
-        attempt(parseNullBinder),
-        attempt(parseStringBinder),
-        attempt(parseBooleanBinder),
-        attempt(parseNumberBinder),
-        attempt(parseNamedBinder),
-        attempt(parseVarBinder),
-        attempt(parseNullaryConstructorBinder),
-        attempt(parseObjectBinder),
-        attempt(parseArrayBinder),
-        attempt(parsePatternMatch),
-        attempt(parseCharBinder),
-        attempt(parens(parseBinderRef))
-    ).`as`(Binder)
 
     private val type0 = ref()
     private val type1 = ref()
@@ -833,6 +819,21 @@ class PureParsecParser {
             .`as`(PSElements.Value)
         )
         parseBinderRef.setRef(parseBinder)
-        parseBinderNoParensRef.setRef(parseBinderNoParens)
+        parseBinderNoParensRef.setRef(
+            choice(
+                attempt(parseNullBinder),
+                attempt(parseStringBinder),
+                attempt(parseBooleanBinder),
+                attempt(parseNumberBinder),
+                attempt(parseNamedBinder),
+                attempt(parseVarBinder),
+                attempt(parseNullaryConstructorBinder),
+                attempt(parseObjectBinder),
+                attempt(parseArrayBinder),
+                attempt(parsePatternMatch),
+                attempt(parseCharBinder),
+                attempt(parens(parseBinderRef))
+            ).`as`(Binder)
+        )
     }
 }
