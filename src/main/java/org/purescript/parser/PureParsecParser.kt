@@ -30,12 +30,16 @@ import org.purescript.psi.PSElements.Companion.BooleanLiteral
 import org.purescript.psi.PSElements.Companion.CaseAlternative
 import org.purescript.psi.PSElements.Companion.ConstrainedType
 import org.purescript.psi.PSElements.Companion.Constructor
+import org.purescript.psi.PSElements.Companion.ConstructorBinder
 import org.purescript.psi.PSElements.Companion.DoNotationLet
 import org.purescript.psi.PSElements.Companion.ExternDataDeclaration
 import org.purescript.psi.PSElements.Companion.GenericIdentifier
 import org.purescript.psi.PSElements.Companion.Guard
 import org.purescript.psi.PSElements.Companion.Identifier
+import org.purescript.psi.PSElements.Companion.NamedBinder
+import org.purescript.psi.PSElements.Companion.NumberBinder
 import org.purescript.psi.PSElements.Companion.NumericLiteral
+import org.purescript.psi.PSElements.Companion.ObjectBinder
 import org.purescript.psi.PSElements.Companion.ObjectBinderField
 import org.purescript.psi.PSElements.Companion.PrefixValue
 import org.purescript.psi.PSElements.Companion.Program
@@ -53,6 +57,7 @@ import org.purescript.psi.PSElements.Companion.TypeHole
 import org.purescript.psi.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.psi.PSElements.Companion.UnaryMinus
 import org.purescript.psi.PSElements.Companion.ValueDeclaration
+import org.purescript.psi.PSElements.Companion.VarBinder
 import org.purescript.psi.PSElements.Companion.importModuleName
 import org.purescript.psi.PSElements.Companion.pClassName
 import org.purescript.psi.PSElements.Companion.pImplies
@@ -279,7 +284,7 @@ class PureParsecParser {
     // Some Binders - rest at the bottom
     private val parseArrayBinder =
         squares(commaSep(binder))
-            .`as`(PSElements.ObjectBinder)
+            .`as`(ObjectBinder)
     private val parsePatternMatchObject =
         indented(braces(commaSep(
             lexeme(idents).or(lname).or(stringLiteral)
@@ -296,7 +301,7 @@ class PureParsecParser {
         attempt(many1(ident))
         .then(optional(attempt(
             indented(lexeme("@")).then(indented(braces(commaSep(lexeme(idents)))))
-        )).`as`(PSElements.NamedBinder))
+        )).`as`(NamedBinder))
         .then(attempt(manyOrEmpty(binderAtom)))
         .then(guardedDecl).`as`(ValueDeclaration)
     private val parseDeps =
@@ -458,7 +463,7 @@ class PureParsecParser {
                                 )
                             )
                     )
-                ).`as`(PSElements.NamedBinder)
+                ).`as`(NamedBinder)
             ).then(
                 optional(
                     attempt(parsePatternMatchObject)
@@ -523,7 +528,7 @@ class PureParsecParser {
                                 )
                             )
                     )
-                ).`as`(PSElements.NamedBinder)
+                ).`as`(NamedBinder)
             ).then(
                 optional(
                     attempt(parsePatternMatchObject)
@@ -631,7 +636,7 @@ class PureParsecParser {
                 .then(optional(attempt(
                     indented(lexeme("@"))
                     .then(indented(braces(commaSep(lexeme(idents)))))
-                )).`as`(PSElements.NamedBinder))
+                )).`as`(NamedBinder))
                 .then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
                 .then(optional(attempt(reserved(RPAREN))))
@@ -721,7 +726,7 @@ class PureParsecParser {
         .then(indented(binder))
     private val parseObjectBinder =
         braces(commaSep(parseIdentifierAndBinder))
-            .`as`(PSElements.ObjectBinder)
+            .`as`(ObjectBinder)
     private val parseNullBinder = reserved("_")
         .`as`(PSElements.NullBinder)
     private val parseStringBinder =
@@ -731,21 +736,18 @@ class PureParsecParser {
     private val parseNumberBinder =
         optional(lexeme("+").or(lexeme("-")))
         .then(lexeme(NATURAL).or(lexeme(FLOAT)))
-        .`as`(PSElements.NumberBinder)
+        .`as`(NumberBinder)
     private val parseNamedBinder =
         ident
             .then(indented(lexeme("@"))
             .then(indented(binder)))
-            .`as`(PSElements.NamedBinder)
-    private val parseVarBinder = ident.`as`(PSElements.VarBinder)
+            .`as`(NamedBinder)
+    private val parseVarBinder = ident.`as`(VarBinder)
     private val parseConstructorBinder =
         lexeme(
             parseQualified(properName).`as`(GenericIdentifier)
             .then(manyOrEmpty(indented(binderAtom)))
-        ).`as`(PSElements.ConstructorBinder)
-    private val parseNullaryConstructorBinder =
-        lexeme(parseQualified(properName.`as`(ProperName)))
-            .`as`(PSElements.ConstructorBinder)
+        ).`as`(ConstructorBinder)
     private val parsePatternMatch =
         indented(braces(commaSep(lexeme(idents)))).`as`(Binder)
     private val parseCharBinder =
@@ -820,21 +822,28 @@ class PureParsecParser {
                 .then(optional(lexeme(OPERATOR).then(binder)))
                 .`as`(Binder)
         )
-        binderAtom.setRef(
-            choice(
-                attempt(parseNullBinder),
-                attempt(parseStringBinder),
-                attempt(parseBooleanBinder),
-                attempt(parseNumberBinder),
-                attempt(parseNamedBinder),
-                attempt(parseVarBinder),
-                attempt(parseNullaryConstructorBinder),
-                attempt(parseObjectBinder),
-                attempt(parseArrayBinder),
-                attempt(parsePatternMatch),
-                attempt(parseCharBinder),
-                attempt(parens(binder))
-            ).`as`(Binder)
-        )
+        binderAtom.setRef(choice(
+            attempt(reserved("_").`as`(PSElements.NullBinder)),
+            attempt(ident.`as`(VarBinder)),
+            attempt(
+                ident.then(indented(lexeme("@")).then(indented(binder)))
+                    .`as`(NamedBinder)
+            ),
+            attempt(lexeme(STRING).`as`(StringBinder)),
+            attempt(lexeme("true").or(lexeme("false")).`as`(BooleanBinder)),
+            attempt(
+                optional(lexeme("+").or(lexeme("-")))
+                .then(lexeme(NATURAL).or(lexeme(FLOAT))).`as`(NumberBinder)
+            ),
+            attempt(
+                lexeme(parseQualified(properName.`as`(ProperName)))
+                    .`as`(ConstructorBinder)
+            ),
+            attempt(braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)),
+            attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
+            attempt(indented(braces(commaSep(lexeme(idents)))).`as`(Binder)),
+            attempt(lexeme("'").`as`(StringBinder)),
+            attempt(parens(binder))
+        ).`as`(Binder))
     }
 }
