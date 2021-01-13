@@ -15,6 +15,7 @@ import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
 import org.purescript.parser.Combinators.same
+import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
@@ -1006,4 +1007,6 @@ class PureParsecParser {
             ).`as`(Binder)
         )
     }
+    private fun delim(start: Parsec, p: Parsec, sep:Parsec, end: Parsec): Parsec =
+        start + sepBy(p, sep) + end
 }
