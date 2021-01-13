@@ -109,6 +109,8 @@ class PureParsecParser {
     private val string = lexeme(STRING)
     private val where = lexeme(WHERE)
 
+    private val `at` = lexeme("@")
+
     private val number =
         optional(lexeme("+").or(lexeme("-")))
         .then(lexeme(NATURAL).or(lexeme(FLOAT)))
@@ -338,12 +340,13 @@ class PureParsecParser {
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, indented(many1(guardedDeclExpr)))
 
+
     private val parseValueDeclaration =
         attempt(many1(ident))
             .then(
                 optional(
                     attempt(
-                        indented(lexeme("@")).then(
+                        indented(at).then(
                             indented(
                                 braces(
                                     commaSep(
@@ -565,7 +568,7 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(lexeme("@"))
+                        indented(at)
                             .then(
                                 indented(
                                     braces(
@@ -630,7 +633,7 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(lexeme("@"))
+                        indented(at)
                             .then(
                                 indented(
                                     braces(
@@ -764,7 +767,7 @@ class PureParsecParser {
                 .then(
                     optional(
                         attempt(
-                            indented(lexeme("@"))
+                            indented(at)
                                 .then(indented(braces(commaSep(lexeme(idents)))))
                         )
                     ).`as`(NamedBinder)
@@ -892,7 +895,7 @@ class PureParsecParser {
     private val parseNamedBinder =
         ident
             .then(
-                indented(lexeme("@"))
+                indented(at)
                     .then(indented(binder))
             )
             .`as`(NamedBinder)
@@ -987,7 +990,7 @@ class PureParsecParser {
             choice(
                 attempt(lexeme("_").`as`(PSElements.NullBinder)),
                 attempt(ident.`as`(VarBinder)),
-                attempt(ident + lexeme("@") + binderAtom).`as`(NamedBinder),
+                attempt(ident + at + binderAtom).`as`(NamedBinder),
                 attempt(qualPropName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
                 attempt(char.`as`(StringBinder)),
