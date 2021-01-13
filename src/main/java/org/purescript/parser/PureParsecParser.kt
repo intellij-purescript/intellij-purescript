@@ -979,7 +979,7 @@ class PureParsecParser {
                 attempt(lexeme("_").`as`(PSElements.NullBinder)),
                 attempt(ident.`as`(VarBinder)),
                 attempt(
-                    ident.then(indented(lexeme("@")).then(indented(binder)))
+                    ident.then(indented(lexeme("@")).then(indented(binderAtom)))
                         .`as`(NamedBinder)
                 ),
                 attempt(lexeme(STRING).`as`(StringBinder)),
