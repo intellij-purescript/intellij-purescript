@@ -102,10 +102,16 @@ class PureParsecParser {
         ).`as`(Qualified)
 
     // tokens
+    private val char = lexeme("'")
     private val dcolon = lexeme(DCOLON)
     private val dot = lexeme(DOT)
     private val eq = lexeme(EQ)
+    private val string = lexeme(STRING)
     private val where = lexeme(WHERE)
+
+    private val number =
+        optional(lexeme("+").or(lexeme("-")))
+        .then(lexeme(NATURAL).or(lexeme(FLOAT)))
 
     private val idents =
         choice(
@@ -677,7 +683,8 @@ class PureParsecParser {
     private val parseNumericLiteral =
         lexeme(NATURAL).or(lexeme(FLOAT)).`as`(NumericLiteral)
     private val parseStringLiteral = lexeme(STRING).`as`(StringLiteral)
-    private val parseCharLiteral = lexeme("'").`as`(StringLiteral)
+
+    private val parseCharLiteral = char.`as`(StringLiteral)
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val parseTypeHole = lexeme("?").`as`(TypeHole)
     private val parseIdentifierAndValue =
@@ -898,7 +905,7 @@ class PureParsecParser {
     private val parsePatternMatch =
         indented(braces(commaSep(lexeme(idents)))).`as`(Binder)
     private val parseCharBinder =
-        lexeme("'").`as`(StringBinder)
+        char.`as`(StringBinder)
     private val parseBinderAtom = choice(
         attempt(parseNullBinder),
         attempt(parseStringBinder),
@@ -949,7 +956,7 @@ class PureParsecParser {
                 )).`as`(PSElements.FunKind)
         )
         type.setRef(
-            many1(typeAtom.or(lexeme(STRING)) + optional(dcolon + parseKind))
+            many1(typeAtom.or(string) + optional(dcolon + parseKind))
                 .then(
                     optional(
                         choice(
@@ -974,6 +981,8 @@ class PureParsecParser {
                 .then(optional(lexeme(OPERATOR).then(binder)))
                 .`as`(Binder)
         )
+        val boolean = lexeme("true").or(lexeme("false"))
+        val qualPropName = lexeme(parseQualified(properName.`as`(ProperName)))
         binderAtom.setRef(
             choice(
                 attempt(lexeme("_").`as`(PSElements.NullBinder)),
@@ -982,18 +991,11 @@ class PureParsecParser {
                     ident.then(indented(lexeme("@")).then(indented(binderAtom)))
                         .`as`(NamedBinder)
                 ),
-                attempt(
-                    lexeme(parseQualified(properName.`as`(ProperName)))
-                        .`as`(ConstructorBinder)
-                ),
-                attempt(lexeme("true").or(lexeme("false")).`as`(BooleanBinder)),
-                attempt(lexeme(STRING).`as`(StringBinder)),
-                attempt(lexeme("'").`as`(StringBinder)),
-                attempt(
-                    optional(lexeme("+").or(lexeme("-")))
-                        .then(lexeme(NATURAL).or(lexeme(FLOAT)))
-                        .`as`(NumberBinder)
-                ),
+                attempt(qualPropName.`as`(ConstructorBinder)),
+                attempt(boolean.`as`(BooleanBinder)),
+                attempt(char.`as`(StringBinder)),
+                attempt(string.`as`(StringBinder)),
+                attempt(number.`as`(NumberBinder)),
                 attempt(
                     braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
                 ),
