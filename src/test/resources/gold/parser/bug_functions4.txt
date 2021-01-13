@@ -51,8 +51,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('fromURI')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PSBinderImpl(Binder)
           PsiElement(()('(')
           PSBinderImpl(Binder)
@@ -790,8 +788,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('params')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)('\n  ')
         PSValueImpl(Value)
@@ -938,8 +934,6 @@ Purescript File
         PsiElement(whitespace)(' ')
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('scheme')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(operator)('@')
         PSBinderImpl(Binder)
           PSBinderAtomImpl(BinderAtom)
@@ -1157,8 +1151,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('sparkURIScheme')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
@@ -1195,8 +1187,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('hdfsURIScheme')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)

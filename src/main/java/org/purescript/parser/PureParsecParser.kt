@@ -542,9 +542,6 @@ class PureParsecParser {
         parseTypeSynonymDeclaration,
         (optional(attempt(many1(ident))))
         .then(optional(attempt(parseArrayBinder)))
-        .then(optional(attempt(
-            indented(`@`).then(indented(braces(commaSep(recordLabel))))
-        )).`as`(NamedBinder))
         .then(optional(attempt(parsePatternMatchObject)))
         .then(optional(attempt(parseRowPatternBinder)))
         .then(attempt(manyOrEmpty(binderAtom)))
