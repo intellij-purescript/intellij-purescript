@@ -998,9 +998,6 @@ class PureParsecParser {
                 attempt(char.`as`(StringBinder)),
                 attempt(string.`as`(StringBinder)),
                 attempt(number.`as`(NumberBinder)),
-                attempt(
-                    braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
-                ),
                 attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
                 attempt(indented(braces(commaSep(lexeme(idents)))).`as`(Binder)),
                 attempt(parens(binder))
