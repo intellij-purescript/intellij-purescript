@@ -15,7 +15,6 @@ import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
 import org.purescript.parser.Combinators.same
-import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
@@ -117,6 +116,8 @@ class PureParsecParser {
         optional(lexeme("+").or(lexeme("-")))
         .then(lexeme(NATURAL).or(lexeme(FLOAT)))
 
+
+
     private val idents =
         choice(
             token(PSTokens.IDENT),
@@ -169,6 +170,8 @@ class PureParsecParser {
     private val properName: Parsec = lexeme(PROPER_NAME).`as`(ProperName)
     private val moduleName = lexeme(parseQualified(token(PROPER_NAME)))
     private val stringLiteral = attempt(lexeme(STRING))
+    private val recordLabel = lexeme(idents)
+
     private fun indentedList(p: Parsec): Parsec =
         mark(manyOrEmpty(untilSame(same(p))))
 
@@ -209,6 +212,7 @@ class PureParsecParser {
         indented(lexeme(lname.or(stringLiteral).`as`(GenericIdentifier))) +
             indented(dcolon) + p
 
+
     private val parseRowEnding =
         optional(
             indented(lexeme(PIPE)) +
@@ -224,7 +228,7 @@ class PureParsecParser {
                                     )
                                 ) +
                                     optional(
-                                        lexeme(idents).`as`(
+                                        recordLabel.`as`(
                                             GenericIdentifier
                                         )
                                     ) +
@@ -275,7 +279,7 @@ class PureParsecParser {
 
     private val parseForAll =
         forlall
-            .then(many1(indented(lexeme(idents).`as`(GenericIdentifier))))
+            .then(many1(indented(recordLabel.`as`(GenericIdentifier))))
             .then(indented(dot))
             .then(parseConstrainedType).`as`(PSElements.ForAll)
     private val ident =
@@ -284,10 +288,10 @@ class PureParsecParser {
 
     // Declarations.hs
     private val typeVarBinding =
-        lexeme(idents).`as`(GenericIdentifier)
+        recordLabel.`as`(GenericIdentifier)
             .or(
                 parens(
-                    lexeme(idents).`as`(GenericIdentifier)
+                    recordLabel.`as`(GenericIdentifier)
                         .then(indented(dcolon))
                         .then(indented(parseKind))
                 )
@@ -330,7 +334,7 @@ class PureParsecParser {
         indented(
             braces(
                 commaSep(
-                    lexeme(idents).or(lname).or(stringLiteral)
+                    recordLabel.or(lname).or(stringLiteral)
                         .then(optional(indented(eq.or(lexeme(OPERATOR)))))
                         .then(optional(indented(binder)))
                 )
@@ -352,7 +356,7 @@ class PureParsecParser {
                             indented(
                                 braces(
                                     commaSep(
-                                        lexeme(idents)
+                                        recordLabel
                                     )
                                 )
                             )
@@ -575,9 +579,7 @@ class PureParsecParser {
                                 indented(
                                     braces(
                                         commaSep(
-                                            lexeme(
-                                                idents
-                                            )
+                                            recordLabel
                                         )
                                     )
                                 )
@@ -640,9 +642,7 @@ class PureParsecParser {
                                 indented(
                                     braces(
                                         commaSep(
-                                            lexeme(
-                                                idents
-                                            )
+                                            recordLabel
                                         )
                                     )
                                 )
@@ -703,7 +703,7 @@ class PureParsecParser {
         optional(lexeme(LPAREN))
             .then(
                 many1(
-                    lexeme(idents).`as`(GenericIdentifier)
+                    recordLabel.`as`(GenericIdentifier)
                         .or(parseQualified(properName).`as`(TypeConstructor))
                 )
             )
@@ -770,7 +770,7 @@ class PureParsecParser {
                     optional(
                         attempt(
                             indented(`@`)
-                                .then(indented(braces(commaSep(lexeme(idents)))))
+                                .then(indented(braces(commaSep(recordLabel))))
                         )
                     ).`as`(NamedBinder)
                 )
@@ -819,7 +819,7 @@ class PureParsecParser {
         attempt(
             lexeme(PSTokens.TICK) +
                 properName.`as`(ProperName)
-                    .or(many1(lexeme(idents).`as`(ProperName))) +
+                    .or(many1(recordLabel.`as`(ProperName))) +
                 lexeme(PSTokens.TICK)
         ),
         parseArrayLiteral,
@@ -840,7 +840,7 @@ class PureParsecParser {
             .`as`(PSElements.Accessor)
     private val parseIdentInfix: Parsec =
         choice(
-            (lexeme(PSTokens.TICK) + parseQualified(lexeme(idents)))
+            (lexeme(PSTokens.TICK) + parseQualified(recordLabel))
                 .lexeme(PSTokens.TICK),
             parseQualified(lexeme(operator))
         ).`as`(PSElements.IdentInfix)
@@ -908,7 +908,7 @@ class PureParsecParser {
                 .then(manyOrEmpty(indented(binderAtom)))
         ).`as`(ConstructorBinder)
     private val parsePatternMatch =
-        indented(braces(commaSep(lexeme(idents)))).`as`(Binder)
+        indented(braces(commaSep(recordLabel))).`as`(Binder)
     private val parseCharBinder =
         char.`as`(StringBinder)
     private val parseBinderAtom = choice(
@@ -999,7 +999,7 @@ class PureParsecParser {
                 attempt(string.`as`(StringBinder)),
                 attempt(number.`as`(NumberBinder)),
                 attempt(squares(commaSep(expr)).`as`(ObjectBinder)),
-                attempt(braces(commaSep(lexeme(idents))).`as`(Binder)),
+                attempt(braces(commaSep(recordLabel)).`as`(Binder)),
                 attempt(parens(binder))
             ).`as`(Binder)
         )
