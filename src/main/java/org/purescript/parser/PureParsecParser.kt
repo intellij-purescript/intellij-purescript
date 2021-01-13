@@ -991,8 +991,8 @@ class PureParsecParser {
                     ident
                         .then(lexeme("@"))
                         .then(binderAtom)
-                        .`as`(NamedBinder)
-                ),
+
+                ).`as`(NamedBinder),
                 attempt(qualPropName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
                 attempt(char.`as`(StringBinder)),
