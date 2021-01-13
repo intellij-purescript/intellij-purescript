@@ -109,7 +109,8 @@ class PureParsecParser {
     private val string = lexeme(STRING)
     private val where = lexeme(WHERE)
 
-    private val `at` = lexeme("@")
+    @Suppress("PrivatePropertyName")
+    private val `@` = lexeme("@")
 
     private val number =
         optional(lexeme("+").or(lexeme("-")))
@@ -346,7 +347,7 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(at).then(
+                        indented(`@`).then(
                             indented(
                                 braces(
                                     commaSep(
@@ -568,7 +569,7 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(at)
+                        indented(`@`)
                             .then(
                                 indented(
                                     braces(
@@ -633,7 +634,7 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(at)
+                        indented(`@`)
                             .then(
                                 indented(
                                     braces(
@@ -767,7 +768,7 @@ class PureParsecParser {
                 .then(
                     optional(
                         attempt(
-                            indented(at)
+                            indented(`@`)
                                 .then(indented(braces(commaSep(lexeme(idents)))))
                         )
                     ).`as`(NamedBinder)
@@ -895,7 +896,7 @@ class PureParsecParser {
     private val parseNamedBinder =
         ident
             .then(
-                indented(at)
+                indented(`@`)
                     .then(indented(binder))
             )
             .`as`(NamedBinder)
@@ -990,7 +991,7 @@ class PureParsecParser {
             choice(
                 attempt(lexeme("_").`as`(PSElements.NullBinder)),
                 attempt(ident.`as`(VarBinder)),
-                attempt(ident + at + binderAtom).`as`(NamedBinder),
+                attempt(ident + `@` + binderAtom).`as`(NamedBinder),
                 attempt(qualPropName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
                 attempt(char.`as`(StringBinder)),
