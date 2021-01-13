@@ -292,19 +292,11 @@ class PureParsecParser {
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, indented(many1(guardedDeclExpr)))
 
-    private val parseValueDeclaration // this is for when used with LET
-        = optional(attempt(reserved(LPAREN)))
-        .then(optional(attempt(properName).`as`(Constructor)))
-        .then(optional(attempt(many1(ident))))
-        .then(optional(attempt(parseArrayBinder)))
+    private val parseValueDeclaration =
+        attempt(many1(ident))
         .then(optional(attempt(
-            indented(lexeme("@"))
-                .then(indented(braces(commaSep(lexeme(idents)))))
-        )).`as`(PSElements.NamedBinder)
-        ).then(optional(attempt(parsePatternMatchObject)))
-        .then(optional(attempt(parseRowPatternBinder)))
-        .then(optional(attempt(reserved(RPAREN))))
-        // ---------- end of LET stuff -----------
+            indented(lexeme("@")).then(indented(braces(commaSep(lexeme(idents)))))
+        )).`as`(PSElements.NamedBinder))
         .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
         .then(guardedDecl).`as`(ValueDeclaration)
     private val parseDeps =
