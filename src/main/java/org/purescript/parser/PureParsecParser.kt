@@ -540,60 +540,15 @@ class PureParsecParser {
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
-        optional(attempt(lexeme(LPAREN)))
-            .then(
-                optional(
-                    attempt(properName).`as`(Constructor)
-                )
-            )
-            .then(
-                optional(
-                    attempt(
-                        many1(
-                            ident
-                        )
-                    )
-                )
-            )
-            .then(optional(attempt(parseArrayBinder)))
-            .then(
-                optional(
-                    attempt(
-                        indented(`@`)
-                            .then(
-                                indented(
-                                    braces(
-                                        commaSep(
-                                            recordLabel
-                                        )
-                                    )
-                                )
-                            )
-                    )
-                ).`as`(NamedBinder)
-            ).then(
-                optional(
-                    attempt(parsePatternMatchObject)
-                )
-            )
-            .then(optional(attempt(parseRowPatternBinder)))
-            .then(
-                optional(
-                    attempt(
-                        lexeme(
-                            RPAREN
-                        )
-                    )
-                )
-            )
-            .then(
-                attempt(
-                    manyOrEmpty(
-                        binderAtom
-                    )
-                )
-            )
-            .then(guardedDecl).`as`(ValueDeclaration),
+        (optional(attempt(many1(ident))))
+        .then(optional(attempt(parseArrayBinder)))
+        .then(optional(attempt(
+            indented(`@`).then(indented(braces(commaSep(recordLabel))))
+        )).`as`(NamedBinder))
+        .then(optional(attempt(parsePatternMatchObject)))
+        .then(optional(attempt(parseRowPatternBinder)))
+        .then(attempt(manyOrEmpty(binderAtom)))
+        .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
         parseImportDeclaration,
