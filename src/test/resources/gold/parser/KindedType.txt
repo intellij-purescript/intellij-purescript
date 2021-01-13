@@ -431,8 +431,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('def')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSValueImpl(Value)

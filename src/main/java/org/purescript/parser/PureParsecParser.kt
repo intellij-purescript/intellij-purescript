@@ -349,23 +349,8 @@ class PureParsecParser {
 
     private val parseValueDeclaration =
         attempt(many1(ident))
-            .then(
-                optional(
-                    attempt(
-                        indented(`@`).then(
-                            indented(
-                                braces(
-                                    commaSep(
-                                        recordLabel
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ).`as`(NamedBinder)
-            )
-            .then(attempt(manyOrEmpty(binderAtom)))
-            .then(guardedDecl).`as`(ValueDeclaration)
+        .then(attempt(manyOrEmpty(binderAtom)))
+        .then(guardedDecl).`as`(ValueDeclaration)
     private val parseDeps =
         parens(
             commaSep1(

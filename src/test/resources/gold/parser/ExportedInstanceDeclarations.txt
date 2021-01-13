@@ -218,8 +218,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('foo')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSValueImpl(Value)
@@ -281,8 +279,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('foo')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSValueImpl(Value)
@@ -334,8 +330,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('notExported')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSValueImpl(Value)
@@ -390,8 +384,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('foo')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSValueImpl(Value)

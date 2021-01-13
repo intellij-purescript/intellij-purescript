@@ -156,8 +156,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('show')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PSBinderImpl(Binder)
             PsiElement(()('(')
             PSBinderImpl(Binder)

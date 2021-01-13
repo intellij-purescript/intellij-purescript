@@ -281,8 +281,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('xs')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PsiElement(whitespace)(' ')
           PSValueImpl(Value)
@@ -306,8 +304,6 @@ Purescript File
           PSIdentifierImpl(identifier)
             PsiElement(identifier)('uncons')
           PsiElement(whitespace)(' ')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PSBinderImpl(Binder)
             PsiElement(()('(')
             PSBinderImpl(Binder)
