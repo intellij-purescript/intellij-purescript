@@ -247,7 +247,7 @@ class PureParsecParser {
                 .then(indented(parseKind))
         ))
     private val binderAtom = ref()
-    private val parseBinderRef = ref()
+    private val binder = ref()
     private val expr = ref()
     private val parseLocalDeclarationRef = ref()
     private val parseGuard =
@@ -278,16 +278,16 @@ class PureParsecParser {
 
     // Some Binders - rest at the bottom
     private val parseArrayBinder =
-        squares(commaSep(parseBinderRef))
+        squares(commaSep(binder))
             .`as`(PSElements.ObjectBinder)
     private val parsePatternMatchObject =
         indented(braces(commaSep(
             lexeme(idents).or(lname).or(stringLiteral)
             .then(optional(indented(eq.or(lexeme(OPERATOR)))))
-            .then(optional(indented(parseBinderRef)))
+            .then(optional(indented(binder)))
         ))).`as`(Binder)
     private val parseRowPatternBinder =
-        indented(lexeme(OPERATOR)).then(indented(parseBinderRef))
+        indented(lexeme(OPERATOR)).then(indented(binder))
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, indented(many1(guardedDeclExpr)))
@@ -644,7 +644,7 @@ class PureParsecParser {
                 )).`as`(ValueDeclaration)
         )
     private val parseDoNotationBind: Parsec =
-        parseBinderRef
+        binder
         .then(indented(reserved(PSTokens.LARROW)).then(expr))
         .`as`(PSElements.DoNotationBind)
     private val doExpr = expr.`as`(PSElements.DoNotationValue)
@@ -718,7 +718,7 @@ class PureParsecParser {
     private val parseIdentifierAndBinder =
         lexeme(lname.or(stringLiteral))
         .then(indented(eq.or(lexeme(OPERATOR))))
-        .then(indented(parseBinderRef))
+        .then(indented(binder))
     private val parseObjectBinder =
         braces(commaSep(parseIdentifierAndBinder))
             .`as`(PSElements.ObjectBinder)
@@ -735,7 +735,7 @@ class PureParsecParser {
     private val parseNamedBinder =
         ident
             .then(indented(lexeme("@"))
-            .then(indented(parseBinderRef)))
+            .then(indented(binder)))
             .`as`(PSElements.NamedBinder)
     private val parseVarBinder = ident.`as`(PSElements.VarBinder)
     private val parseConstructorBinder =
@@ -762,7 +762,7 @@ class PureParsecParser {
         attempt(parseArrayBinder),
         attempt(parsePatternMatch),
         attempt(parseCharBinder),
-        attempt(parens(parseBinderRef))
+        attempt(parens(binder))
     ).`as`(PSElements.BinderAtom)
 
     private val type0 = ref()
@@ -815,9 +815,9 @@ class PureParsecParser {
         (parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr))
             .`as`(PSElements.Value)
         )
-        parseBinderRef.setRef(
+        binder.setRef(
             parseBinderAtom
-                .then(optional(lexeme(OPERATOR).then(parseBinderRef)))
+                .then(optional(lexeme(OPERATOR).then(binder)))
                 .`as`(Binder)
         )
         binderAtom.setRef(
@@ -833,7 +833,7 @@ class PureParsecParser {
                 attempt(parseArrayBinder),
                 attempt(parsePatternMatch),
                 attempt(parseCharBinder),
-                attempt(parens(parseBinderRef))
+                attempt(parens(binder))
             ).`as`(Binder)
         )
     }
