@@ -246,7 +246,7 @@ class PureParsecParser {
                 .then(indented(dcolon))
                 .then(indented(parseKind))
         ))
-    private val parseBinderNoParensRef = ref()
+    private val binderAtom = ref()
     private val parseBinderRef = ref()
     private val expr = ref()
     private val parseLocalDeclarationRef = ref()
@@ -297,7 +297,7 @@ class PureParsecParser {
         .then(optional(attempt(
             indented(lexeme("@")).then(indented(braces(commaSep(lexeme(idents)))))
         )).`as`(PSElements.NamedBinder))
-        .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
+        .then(attempt(manyOrEmpty(binderAtom)))
         .then(guardedDecl).`as`(ValueDeclaration)
     private val parseDeps =
         parens(commaSep1(
@@ -477,7 +477,7 @@ class PureParsecParser {
             .then(
                 attempt(
                     manyOrEmpty(
-                        parseBinderNoParensRef
+                        binderAtom
                     )
                 )
             )
@@ -543,7 +543,7 @@ class PureParsecParser {
             .then(
                 attempt(
                     manyOrEmpty(
-                        parseBinderNoParensRef
+                        binderAtom
                     )
                 )
             )
@@ -586,7 +586,7 @@ class PureParsecParser {
         reserved(PSTokens.BACKSLASH)
         .then(choice(
                 many1(typedIdent).`as`(Abs),
-                many1(indented(ident.or(parseBinderNoParensRef).`as`(Abs)))
+                many1(indented(ident.or(binderAtom).`as`(Abs)))
         ))
         .then(indented(reserved(ARROW)))
         .then(expr)
@@ -635,7 +635,7 @@ class PureParsecParser {
                 .then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
                 .then(optional(attempt(reserved(RPAREN))))
-                .then(attempt(manyOrEmpty(parseBinderNoParensRef)))
+                .then(attempt(manyOrEmpty(binderAtom)))
                 .then(choice(
                     attempt(indented(many1(
                         parseGuard + indented(eq + exprWhere)
@@ -741,7 +741,7 @@ class PureParsecParser {
     private val parseConstructorBinder =
         lexeme(
             parseQualified(properName).`as`(GenericIdentifier)
-            .then(manyOrEmpty(indented(parseBinderNoParensRef)))
+            .then(manyOrEmpty(indented(binderAtom)))
         ).`as`(PSElements.ConstructorBinder)
     private val parseNullaryConstructorBinder =
         lexeme(parseQualified(properName.`as`(ProperName)))
@@ -819,7 +819,7 @@ class PureParsecParser {
             .`as`(PSElements.Value)
         )
         parseBinderRef.setRef(parseBinder)
-        parseBinderNoParensRef.setRef(
+        binderAtom.setRef(
             choice(
                 attempt(parseNullBinder),
                 attempt(parseStringBinder),
