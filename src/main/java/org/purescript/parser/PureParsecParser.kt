@@ -1004,6 +1004,4 @@ class PureParsecParser {
             ).`as`(Binder)
         )
     }
-    private fun delim(start: Parsec, p: Parsec, sep:Parsec, end: Parsec): Parsec =
-        start + sepBy(p, sep) + end
 }
