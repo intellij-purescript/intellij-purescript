@@ -982,25 +982,23 @@ class PureParsecParser {
                     ident.then(indented(lexeme("@")).then(indented(binderAtom)))
                         .`as`(NamedBinder)
                 ),
-                attempt(lexeme(STRING).`as`(StringBinder)),
+                attempt(
+                    lexeme(parseQualified(properName.`as`(ProperName)))
+                        .`as`(ConstructorBinder)
+                ),
                 attempt(lexeme("true").or(lexeme("false")).`as`(BooleanBinder)),
+                attempt(lexeme(STRING).`as`(StringBinder)),
+                attempt(lexeme("'").`as`(StringBinder)),
                 attempt(
                     optional(lexeme("+").or(lexeme("-")))
                         .then(lexeme(NATURAL).or(lexeme(FLOAT)))
                         .`as`(NumberBinder)
                 ),
                 attempt(
-                    lexeme(parseQualified(properName.`as`(ProperName)))
-                        .`as`(ConstructorBinder)
-                ),
-                attempt(
-                    braces(commaSep(parseIdentifierAndBinder)).`as`(
-                        ObjectBinder
-                    )
+                    braces(commaSep(parseIdentifierAndBinder)).`as`(ObjectBinder)
                 ),
                 attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
                 attempt(indented(braces(commaSep(lexeme(idents)))).`as`(Binder)),
-                attempt(lexeme("'").`as`(StringBinder)),
                 attempt(parens(binder))
             ).`as`(Binder)
         )
