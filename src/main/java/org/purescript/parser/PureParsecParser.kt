@@ -542,7 +542,6 @@ class PureParsecParser {
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
         (optional(attempt(many1(ident))))
-        .then(optional(attempt(parseArrayBinder)))
         .then(optional(attempt(parsePatternMatchObject)))
         .then(optional(attempt(parseRowPatternBinder)))
         .then(attempt(manyOrEmpty(binderAtom)))
