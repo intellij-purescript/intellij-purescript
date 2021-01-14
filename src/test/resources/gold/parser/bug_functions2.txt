@@ -51,8 +51,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('fromURI')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PSBinderImpl(Binder)
           PsiElement(()('(')
           PSBinderImpl(Binder)
@@ -481,8 +479,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('uriScheme')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)

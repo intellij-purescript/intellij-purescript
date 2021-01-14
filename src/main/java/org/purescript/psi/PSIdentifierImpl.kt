@@ -8,9 +8,7 @@ import com.intellij.psi.PsiNamedElement
 // Identifier when it is in a parameter
 class PSIdentifierImpl(node: ASTNode) : PSPsiElement(node), ContainsIdentifier,
     PsiNamedElement {
-    override fun getName(): String {
-        return text
-    }
+    override fun getName(): String = text
 
     override fun setName(name: String): PsiElement? {
         return null

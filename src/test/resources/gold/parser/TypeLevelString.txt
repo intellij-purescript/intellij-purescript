@@ -18,8 +18,6 @@ Purescript File
             PsiElement(whitespace)('\n\n')
         PSTypeArgsImpl(TypeArgs)
           <empty list>
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeClassDeclarationImpl(TypeClassDeclaration)
         PsiElement(class)('class')
         PsiElement(whitespace)(' ')
@@ -34,8 +32,6 @@ Purescript File
             PsiElement(whitespace)('\n\n')
         PSImpliesImpl(Implies)
           <empty list>
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')

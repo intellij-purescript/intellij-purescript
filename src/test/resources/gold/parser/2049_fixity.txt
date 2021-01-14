@@ -9,8 +9,6 @@ Purescript File
         PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSFixityDeclarationImpl(FixityDeclaration)
         PSFixityImpl(Fixity)
           PsiElement(infixr)('infixr')

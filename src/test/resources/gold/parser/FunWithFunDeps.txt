@@ -10,8 +10,6 @@ Purescript File
         PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSImportDeclarationImpl(ImportDeclaration)
         PsiElement(import)('import')
         PsiElement(whitespace)(' ')
@@ -225,8 +223,6 @@ Purescript File
                 PsiElement())(')')
             PsiElement())(')')
             PsiElement(whitespace)('\n\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeClassDeclarationImpl(TypeClassDeclaration)
         PsiElement(class)('class')
         PsiElement(whitespace)(' ')
@@ -267,8 +263,6 @@ Purescript File
               PSIdentifierImpl(GenericIdentifier)
                 PsiElement(identifier)('o')
                 PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -297,8 +291,6 @@ Purescript File
           PSIdentifierImpl(GenericIdentifier)
             PsiElement(identifier)('r')
             PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -366,8 +358,6 @@ Purescript File
                 PsiElement(identifier)('o')
           PsiElement())(')')
           PsiElement(whitespace)('\n\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeClassDeclarationImpl(TypeClassDeclaration)
         PsiElement(class)('class')
         PsiElement(whitespace)(' ')
@@ -408,8 +398,6 @@ Purescript File
               PSIdentifierImpl(GenericIdentifier)
                 PsiElement(identifier)('o')
                 PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -440,8 +428,6 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Z')
                 PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
         PsiElement(instance)('instance')
         PsiElement(whitespace)(' ')
@@ -517,8 +503,6 @@ Purescript File
           PSIdentifierImpl(GenericIdentifier)
             PsiElement(identifier)('s')
             PsiElement(whitespace)('\n\n-- Foreign Vect\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PsiElement(foreign)('foreign')
       PsiElement(whitespace)(' ')
       PsiElement(import)('import')
@@ -553,8 +537,6 @@ Purescript File
                   PSProperName(ProperName)
                     PsiElement(proper name)('Type')
                     PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PsiElement(foreign)('foreign')
       PsiElement(whitespace)(' ')
       PsiElement(import)('import')
@@ -592,8 +574,6 @@ Purescript File
                     PSIdentifierImpl(GenericIdentifier)
                       PsiElement(identifier)('e')
                       PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PsiElement(foreign)('foreign')
       PsiElement(whitespace)(' ')
       PsiElement(import)('import')
@@ -666,8 +646,6 @@ Purescript File
                         PSIdentifierImpl(GenericIdentifier)
                           PsiElement(identifier)('e')
                           PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PsiElement(foreign)('foreign')
       PsiElement(whitespace)(' ')
       PsiElement(import)('import')
@@ -767,8 +745,6 @@ Purescript File
                           PSIdentifierImpl(GenericIdentifier)
                             PsiElement(identifier)('e')
                             PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PsiElement(foreign)('foreign')
       PsiElement(whitespace)(' ')
       PsiElement(import)('import')
@@ -865,8 +841,6 @@ Purescript File
                         PSIdentifierImpl(GenericIdentifier)
                           PsiElement(identifier)('t')
                           PsiElement(whitespace)('\n')
-      PSNamedBinderImpl(NamedBinder)
-        <empty list>
       PsiElement(foreign)('foreign')
       PsiElement(whitespace)(' ')
       PsiElement(import)('import')
@@ -925,8 +899,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('x')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
@@ -950,8 +922,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('fexample')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
@@ -1020,8 +990,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('fexample2')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
@@ -1055,8 +1023,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('fexample3')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
@@ -1105,8 +1071,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('fexample4')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
@@ -1125,8 +1089,6 @@ Purescript File
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('main')
         PsiElement(whitespace)(' ')
-        PSNamedBinderImpl(NamedBinder)
-          <empty list>
         PsiElement(=)('=')
         PsiElement(whitespace)(' ')
         PSValueImpl(Value)
