@@ -542,7 +542,6 @@ class PureParsecParser {
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
         (optional(attempt(many1(ident))))
-        .then(optional(attempt(parsePatternMatchObject)))
         .then(optional(attempt(parseRowPatternBinder)))
         .then(attempt(manyOrEmpty(binderAtom)))
         .then(guardedDecl).`as`(ValueDeclaration),
@@ -939,7 +938,7 @@ class PureParsecParser {
                 attempt(string.`as`(StringBinder)),
                 attempt(number.`as`(NumberBinder)),
                 attempt(squares(commaSep(expr)).`as`(ObjectBinder)),
-                attempt(braces(commaSep(recordBinder)).`as`(Binder)),
+                attempt(braces(commaSep(recordBinder))),
                 attempt(parens(binder))
             ).`as`(Binder)
         )
