@@ -926,7 +926,9 @@ class PureParsecParser {
         )
         val boolean = lexeme("true").or(lexeme("false"))
         val qualPropName = lexeme(parseQualified(properName.`as`(ProperName)))
-        val recordLabel = lexeme(idents)
+        val recordBinder =
+            lexeme(idents) +
+            optional(lexeme("=").or(lexeme(":") + binder))
         binderAtom.setRef(
             choice(
                 attempt(lexeme("_").`as`(PSElements.NullBinder)),
@@ -938,7 +940,7 @@ class PureParsecParser {
                 attempt(string.`as`(StringBinder)),
                 attempt(number.`as`(NumberBinder)),
                 attempt(squares(commaSep(expr)).`as`(ObjectBinder)),
-                attempt(braces(commaSep(recordLabel)).`as`(Binder)),
+                attempt(braces(commaSep(recordBinder)).`as`(Binder)),
                 attempt(parens(binder))
             ).`as`(Binder)
         )
