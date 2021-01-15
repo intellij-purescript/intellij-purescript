@@ -541,7 +541,7 @@ class PureParsecParser {
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
-        (optional(attempt(many1(ident))))
+        attempt(many1(ident))
         .then(optional(attempt(parseRowPatternBinder)))
         .then(attempt(manyOrEmpty(binderAtom)))
         .then(guardedDecl).`as`(ValueDeclaration),
