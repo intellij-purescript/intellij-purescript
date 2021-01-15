@@ -545,6 +545,7 @@ class PureParsecParser {
         .then(manyOrEmpty(
             attempt(ident + `@` + binder).`as`(NamedBinder)
             .or(ident.`as`(VarBinder))
+            .`as`(Binder)
         ))
         .then(manyOrEmpty(binderAtom))
         .then(guardedDecl).`as`(ValueDeclaration),
