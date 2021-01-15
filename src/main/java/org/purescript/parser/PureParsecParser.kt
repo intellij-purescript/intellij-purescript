@@ -543,7 +543,8 @@ class PureParsecParser {
         parseTypeSynonymDeclaration,
         attempt(ident)
         .then(manyOrEmpty(
-            attempt(ident + `@` + binder).`as`(NamedBinder).or(ident)
+            attempt(ident + `@` + binder).`as`(NamedBinder)
+            .or(ident.`as`(VarBinder))
         ))
         .then(manyOrEmpty(binderAtom))
         .then(guardedDecl).`as`(ValueDeclaration),
