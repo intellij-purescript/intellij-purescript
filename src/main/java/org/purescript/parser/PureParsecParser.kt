@@ -541,9 +541,8 @@ class PureParsecParser {
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
-        (optional(attempt(many1(ident))))
-        .then(optional(attempt(parseRowPatternBinder)))
-        .then(attempt(manyOrEmpty(binderAtom)))
+        attempt(ident)
+        .then(manyOrEmpty(binderAtom))
         .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
@@ -930,8 +929,8 @@ class PureParsecParser {
         binderAtom.setRef(
             choice(
                 attempt(lexeme("_").`as`(PSElements.NullBinder)),
-                attempt(ident.`as`(VarBinder)),
                 attempt(ident + `@` + binderAtom).`as`(NamedBinder),
+                attempt(ident.`as`(VarBinder)),
                 attempt(qualPropName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
                 attempt(char.`as`(StringBinder)),
