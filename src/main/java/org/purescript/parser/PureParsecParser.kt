@@ -542,8 +542,9 @@ class PureParsecParser {
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
         attempt(ident)
-        .then(manyOrEmpty(ident))
-        .then(optional(lexeme(OPERATOR).then(binder)))
+        .then(manyOrEmpty(
+            attempt(ident + lexeme(OPERATOR) + binder).or(ident)
+        ))
         .then(manyOrEmpty(binderAtom))
         .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
