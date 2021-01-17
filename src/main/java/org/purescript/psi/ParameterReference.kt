@@ -10,17 +10,17 @@ class ParameterReference (element: @NotNull PSPsiElement) : PsiReferenceBase<PSP
     TextRange.allOf(element.text.trim())
 ) {
 
-    override fun resolve(): PSIdentifierImpl? {
+    override fun resolve(): PSVarBinderImpl? {
         return element
             .parentOfType<PSValueDeclaration>(false)
-            ?.declaredIdentifiersInParameterList
+            ?.varBindersInParameters
             ?.get(element.text.trim())
     }
 
-    override fun getVariants(): Array<PSIdentifierImpl?> {
+    override fun getVariants(): Array<PSVarBinderImpl?> {
         return element
             .parentOfType<PSValueDeclaration>(false)
-            ?.declaredIdentifiersInParameterList
+            ?.varBindersInParameters
             ?.values
             ?.toTypedArray()
             ?: emptyArray()

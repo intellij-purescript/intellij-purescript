@@ -1,8 +1,9 @@
 package org.purescript.psi
 
-import com.intellij.psi.PsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.util.collectDescendantsOfType
 
 class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
     PsiNameIdentifierOwner {
@@ -19,19 +20,12 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
         return findChildByClass(PSIdentifierImpl::class.java)
     }
 
-    val declaredIdentifiersInParameterList: Map<String?, PSIdentifierImpl?>
+    val varBindersInParameters: Map<String, PSVarBinderImpl>
         get() {
-            val identifiers = findChildrenByClass(PSIdentifierImpl::class.java)
+            return collectDescendantsOfType<PSVarBinderImpl>()
                 .asSequence()
-                .drop(1)
-                .map { it.identifiers }
-            val childrenIdentifiers =
-                findChildrenByClass(DeclaresIdentifiers::class.java)
-                    .asSequence()
-                    .map { it.getDeclaredIdentifiers() }
-            return (identifiers + childrenIdentifiers)
-                .flatMap { it.asSequence() }
-                .map { Pair(it.key, it.value) }
+                .filterNotNull()
+                .map { Pair(it.name, it) }
                 .toMap()
         }
 }
