@@ -25,24 +25,6 @@ class ReferenceTest : PSLanguageParserTestBase() {
         assertNotNull(valueDeclarations["y"])
     }
 
-    fun testFindParametersForValueDeclaration() {
-        val file = createFile(
-            "Main.purs",
-            """
-                  module Main where
-                  fn x (z) (Just n) = x + y
-                  y = 2
-                  """.trimIndent()
-        ) as PSFile
-        val valueDeclarations = file.topLevelValueDeclarations
-        val fn = valueDeclarations["fn"]
-        val parameterDeclarations = fn!!.declaredIdentifiersInParameterList
-        assertContainsElements(parameterDeclarations.keys, "x", "z", "n")
-        assertDoesntContain(parameterDeclarations.keys, "fn", "y", "Just")
-        val x = parameterDeclarations["x"]
-        assertEquals("x", x!!.name)
-    }
-
     fun testFindVarBinderParametersForValueDeclaration() {
         val file = createFile(
             "Main.purs",

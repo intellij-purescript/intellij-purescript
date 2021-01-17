@@ -28,19 +28,4 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
                 .map { Pair(it.name, it) }
                 .toMap()
         }
-    val declaredIdentifiersInParameterList: Map<String?, PSIdentifierImpl?>
-        get() {
-            val identifiers = findChildrenByClass(PSIdentifierImpl::class.java)
-                .asSequence()
-                .drop(1)
-                .map { it.identifiers }
-            val childrenIdentifiers =
-                findChildrenByClass(DeclaresIdentifiers::class.java)
-                    .asSequence()
-                    .map { it.getDeclaredIdentifiers() }
-            return (identifiers + childrenIdentifiers)
-                .flatMap { it.asSequence() }
-                .map { Pair(it.key, it.value) }
-                .toMap()
-        }
 }
