@@ -7,6 +7,7 @@ import org.purescript.parser.PSLanguageParserTestBase
 import org.purescript.psi.PSDataDeclarationImpl
 import org.purescript.psi.PSIdentifierImpl
 import org.purescript.psi.PSValueDeclaration
+import org.purescript.psi.PSVarBinderImpl
 
 class ReferenceTest : PSLanguageParserTestBase() {
     fun testFindTopLevelValueDeclarationWithName() {
@@ -39,6 +40,24 @@ class ReferenceTest : PSLanguageParserTestBase() {
         assertContainsElements(parameterDeclarations.keys, "x", "z", "n")
         assertDoesntContain(parameterDeclarations.keys, "fn", "y", "Just")
         val x = parameterDeclarations["x"]
+        assertEquals("x", x!!.name)
+    }
+
+    fun testFindVarBinderParametersForValueDeclaration() {
+        val file = createFile(
+            "Main.purs",
+            """
+                  module Main where
+                  fn x (z) (Just n) = x + y
+                  y = 2
+                  """.trimIndent()
+        ) as PSFile
+        val valueDeclarations = file.topLevelValueDeclarations
+        val fn:PSValueDeclaration = valueDeclarations["fn"]!!
+        val varBinders:Map<String, PSVarBinderImpl> = fn.varBindersInParameterList
+        assertContainsElements(varBinders.keys, "x", "z", "n")
+        assertDoesntContain(varBinders.keys, "fn", "y", "Just")
+        val x = varBinders["x"]
         assertEquals("x", x!!.name)
     }
 
