@@ -20,7 +20,7 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
         return findChildByClass(PSIdentifierImpl::class.java)
     }
 
-    val varBindersInParameterList: Map<String, PSVarBinderImpl>
+    val varBindersInParameters: Map<String, PSVarBinderImpl>
         get() {
             return collectDescendantsOfType<PSVarBinderImpl>()
                 .asSequence()

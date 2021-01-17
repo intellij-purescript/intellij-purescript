@@ -54,7 +54,7 @@ class ReferenceTest : PSLanguageParserTestBase() {
         ) as PSFile
         val valueDeclarations = file.topLevelValueDeclarations
         val fn:PSValueDeclaration = valueDeclarations["fn"]!!
-        val varBinders:Map<String, PSVarBinderImpl> = fn.varBindersInParameterList
+        val varBinders:Map<String, PSVarBinderImpl> = fn.varBindersInParameters
         assertContainsElements(varBinders.keys, "x", "z", "n")
         assertDoesntContain(varBinders.keys, "fn", "y", "Just")
         val x = varBinders["x"]

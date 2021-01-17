@@ -16,7 +16,7 @@ class LightFindUsageTest : BasePlatformTestCase() {
     fun `test find usage simple parameter`() {
         val main = myFixture.configureByFile("Main.purs") as PSFile
         val fn = main.topLevelValueDeclarations["fn"]!!
-        val x = fn.declaredIdentifiersInParameterList["x"]!!
+        val x = fn.varBindersInParameters["x"]!!
         val usages = myFixture.findUsages(x)
         assertNotEmpty(usages)
     }

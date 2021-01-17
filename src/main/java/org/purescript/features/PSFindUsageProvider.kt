@@ -7,11 +7,12 @@ import org.purescript.psi.PSIdentifierImpl
 import org.purescript.psi.PSValueDeclaration
 import org.jetbrains.annotations.Nls
 import org.purescript.file.PSFile
+import org.purescript.psi.PSVarBinderImpl
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
         return (psiElement is PSValueDeclaration
-                || psiElement is PSIdentifierImpl)
+                || psiElement is PSVarBinderImpl)
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
@@ -19,12 +20,11 @@ class PSFindUsageProvider : FindUsagesProvider {
     }
 
     override fun getType(element: PsiElement): @Nls String {
-        if (element is PSValueDeclaration) {
-            return "value"
-        } else if (element is PSIdentifierImpl) {
-            return "parameter"
+        return when (element) {
+            is PSValueDeclaration -> "value"
+            is PSVarBinderImpl -> "parameter"
+            else -> "unknown"
         }
-        return "unknown"
     }
 
     override fun getDescriptiveName(element: PsiElement): @Nls String {
