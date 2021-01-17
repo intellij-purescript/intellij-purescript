@@ -35,7 +35,7 @@ class ReferenceTest : PSLanguageParserTestBase() {
                   """.trimIndent()
         ) as PSFile
         val valueDeclarations = file.topLevelValueDeclarations
-        val fn:PSValueDeclaration = valueDeclarations["fn"]!!
+        val fn:PSValueDeclaration = valueDeclarations["fn"]!!.first()
         val varBinders:Map<String, PSVarBinderImpl> = fn.varBindersInParameters
         assertContainsElements(varBinders.keys, "x", "z", "n")
         assertDoesntContain(varBinders.keys, "fn", "y", "Just")

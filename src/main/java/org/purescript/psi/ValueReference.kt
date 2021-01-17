@@ -13,13 +13,14 @@ class ValueReference(element: @NotNull PSPsiElement) : PsiReferenceBase<PSPsiEle
 
     override fun resolve(): PSValueDeclaration? {
         val file = myElement?.containingFile as PSFile
-        return file.topLevelValueDeclarations[myElement.text.trim()]
+        return file.topLevelValueDeclarations[myElement.text.trim()]?.first()
     }
 
     override fun getVariants(): Array<PsiNamedElement> {
         return (myElement?.containingFile as PSFile)
             .topLevelValueDeclarations
             .values
+            .flatten()
             .toTypedArray()
     }
 
