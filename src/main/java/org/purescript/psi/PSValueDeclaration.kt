@@ -16,10 +16,16 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
+        val parameters = findChildrenByClass(PSBinderImpl::class.java)
+        val parameterList = parameters
+            .asSequence()
+            .map { it.text.trim() }
+            .joinToString(" ")
+        val presentableText = "$name $parameterList"
         val fileName = this.containingFile.name
         return object : ItemPresentation {
             override fun getPresentableText(): String {
-                return name
+                return presentableText
             }
 
             override fun getLocationString(): String {
