@@ -14,7 +14,7 @@ class PSFindUsageProviderTest : PSLanguageParserTestBase() {
                 |x = 1
             """.trimMargin()
         ) as PSFile
-        val x = file.topLevelValueDeclarations["x"]!!
+        val x = file.topLevelValueDeclarations["x"]!!.first()
         TestCase.assertEquals("Main.x", provider.getDescriptiveName(x))
     }
 
@@ -26,7 +26,7 @@ class PSFindUsageProviderTest : PSLanguageParserTestBase() {
                 |x = 1
             """.trimMargin()
         ) as PSFile
-        val x = file.topLevelValueDeclarations["x"]!!
+        val x = file.topLevelValueDeclarations["x"]!!.first()
         TestCase.assertEquals("Main.x", provider.getNodeText(x, true))
     }
 }

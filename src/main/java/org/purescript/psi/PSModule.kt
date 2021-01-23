@@ -19,10 +19,10 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     }
 
 
-    val topLevelValueDeclarations: Map<String, PSValueDeclaration>
+    val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
         get() = PsiTreeUtil
             .findChildrenOfType(this, PSValueDeclaration::class.java)
             .asSequence()
-            .map { Pair(it.name, it) }
-            .toMap()
+            .filterNotNull()
+            .groupBy { it.name }
 }

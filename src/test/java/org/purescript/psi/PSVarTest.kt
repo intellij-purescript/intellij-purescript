@@ -1,6 +1,7 @@
 package org.purescript.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.findDescendantOfType
 import junit.framework.TestCase
 import org.purescript.file.PSFile
@@ -19,8 +20,24 @@ class PSVarTest : PSLanguageParserTestBase() {
         ) as PSFile
         val psVar = file.getVarByName("y")!!
         val valueReference = psVar.referenceOfType(ValueReference::class.java)
-        val valueDeclaration = valueReference.resolve()!!
+        val valueDeclaration = valueReference.resolve()!! as PsiNamedElement
         TestCase.assertEquals("y", valueDeclaration.name)
+    }
+
+    fun `test var can resolve to top level with multiple definitions`() {
+        val file = createFile(
+            "Main.purs",
+            """
+            module Main where
+            x = y 1
+            y 1 = 1
+            y _ = 2
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclarations = valueReference.multiResolve(true)
+        TestCase.assertEquals(2, valueDeclarations.size)
     }
 
     fun `test var can see all value declarations`() {

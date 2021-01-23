@@ -20,7 +20,7 @@ class PSFile(viewProvider: FileViewProvider) :
     val module: PSModule
         get() = program.module
 
-    val topLevelValueDeclarations: Map<String, PSValueDeclaration>
+    val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
         get() = module.topLevelValueDeclarations
 
     private val program: PSProgram
