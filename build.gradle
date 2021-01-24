@@ -13,6 +13,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 sourceCompatibility = javaVersion
@@ -92,7 +93,8 @@ intellij {
 }
 
 dependencies {
-	testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation 'com.github.ballerina-platform:lsp4intellij:0.94.2'
 }
 
 // Intellij config
