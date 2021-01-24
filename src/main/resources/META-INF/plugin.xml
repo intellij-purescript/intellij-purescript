@@ -9,11 +9,17 @@
       Features:<br>
       <ul>
         <li>Syntax highlight</li>
+        <li>Language server support:<ul>
+          <li>Annotations</li>
+          <li>Intentions</li>
+        </ul></li>
         <li>Find usage of top level declarations</li>
         <li>Find usage of parameters</li>
         <li>Autocomplete of top level declarations</li>
         <li>Autocomplete of parameters</li>
       </ul>
+      for LSP to work you need to have purescript language server installed in
+      the projects node_modules
     ]]></description>
 
   <change-notes><![CDATA[
@@ -30,6 +36,18 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
+    <!-- LSP server support START-->
+    <postStartupActivity
+        implementation="org.purescript.PSStartupActivity"
+        id="PSStartupActivity"
+    />
+    <externalAnnotator
+        id="LSPAnnotator"
+        language="Purescript"
+        implementationClass="org.wso2.lsp4intellij.contributors.annotator.LSPAnnotator"
+    />
+    <!-- LSP server support END-->
+
     <lang.findUsagesProvider
         language="Purescript"
         implementationClass="org.purescript.features.PSFindUsageProvider"
@@ -74,5 +92,10 @@
   <actions>
     <!-- Add your actions here -->
   </actions>
-
+  <!-- Language Server support -->
+  <application-components>
+    <component>
+      <implementation-class>org.wso2.lsp4intellij.IntellijLanguageClient</implementation-class>
+    </component>
+  </application-components>
 </idea-plugin>
