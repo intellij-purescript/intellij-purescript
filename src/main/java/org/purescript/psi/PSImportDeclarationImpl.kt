@@ -7,7 +7,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     val importName: String
         get() = findChildByClass(PSProperName::class.java)?.text?.trim() ?: ""
 
-    override fun getReference(): PsiReference? {
+    override fun getReference(): PsiReference {
         return ModuleReference(this)
     }
 }

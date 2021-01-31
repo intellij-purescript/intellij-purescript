@@ -16,7 +16,7 @@ class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImp
             myElement.project,
             myElement.importName + ".purs",
             GlobalSearchScope.allScope(myElement.project)
-        ).first() as PSFile?
+        ).firstOrNull() as? PSFile
         return psFile?.module
     }
 
