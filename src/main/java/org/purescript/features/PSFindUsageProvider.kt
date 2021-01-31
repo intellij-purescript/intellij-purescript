@@ -3,16 +3,22 @@ package org.purescript.features
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
-import org.purescript.psi.PSIdentifierImpl
 import org.purescript.psi.PSValueDeclaration
 import org.jetbrains.annotations.Nls
 import org.purescript.file.PSFile
+import org.purescript.psi.PSModule
 import org.purescript.psi.PSVarBinderImpl
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return (psiElement is PSValueDeclaration
-                || psiElement is PSVarBinderImpl)
+        return when (psiElement) {
+            is PSValueDeclaration, is PSVarBinderImpl, is PSModule -> {
+                true
+            }
+            else -> {
+                false
+            }
+        }
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
@@ -23,6 +29,7 @@ class PSFindUsageProvider : FindUsagesProvider {
         return when (element) {
             is PSValueDeclaration -> "value"
             is PSVarBinderImpl -> "parameter"
+            is PSModule -> "module"
             else -> "unknown"
         }
     }
