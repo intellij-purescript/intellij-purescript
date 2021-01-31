@@ -14,7 +14,7 @@ class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImp
     override fun resolve(): PSModule? {
         val psFile = FilenameIndex.getFilesByName(
             myElement.project,
-            myElement.importName + ".purs",
+            myElement.importName.split(".").last() + ".purs",
             GlobalSearchScope.allScope(myElement.project)
         ).firstOrNull() as? PSFile
         return psFile?.module

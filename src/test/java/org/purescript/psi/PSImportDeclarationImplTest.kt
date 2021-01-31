@@ -6,7 +6,7 @@ import org.purescript.file.PSFile
 
 class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
-    fun `test var can resolve to module next to this one on file system`() {
+    fun `test resolve to module in root directory`() {
         val mainFile = myFixture.configureByText(
             "Main.purs",
             """
@@ -40,5 +40,27 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         val psModule = psImportDeclaration.reference.resolve()
         TestCase.assertNull(psModule)
+    }
+
+
+    fun `test resolve to module in subdirectory`() {
+        val mainFile = myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            import Bar.Foo
+            """.trimIndent()
+        ) as PSFile
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Bar.Foo where
+            """.trimIndent()
+        )
+        val psImportDeclaration = mainFile.module.getImportDeclarationByName("Bar.Foo")!!
+
+        val psModule = psImportDeclaration.reference.resolve()!! as PSModule
+
+        TestCase.assertEquals("Bar.Foo", psModule.name)
     }
 }
