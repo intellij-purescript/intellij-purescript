@@ -11,7 +11,7 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     }
 
     override fun setName(name: String): PsiElement? {
-        return null;
+        return null
     }
 
     override fun getNameIdentifier(): PSProperName {
@@ -21,7 +21,7 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
         return findChildrenByClass(PSImportDeclarationImpl::class.java)
             .asSequence()
-            .find { it.importName == name }
+            .find { it.name ?: "" == name }
     }
 
 
