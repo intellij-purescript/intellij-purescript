@@ -18,6 +18,12 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
         return findChildByClass(PSProperName::class.java)!!
     }
 
+    fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
+        return findChildrenByClass(PSImportDeclarationImpl::class.java)
+            .asSequence()
+            .find { it.importName == name }
+    }
+
 
     val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
         get() = PsiTreeUtil
