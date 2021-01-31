@@ -17,7 +17,7 @@ class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImp
             myElement.importName.split(".").last() + ".purs",
             GlobalSearchScope.allScope(myElement.project)
         ).filterIsInstance<PSFile>()
-            .firstOrNull { it.module.name.trim() == myElement.importName.trim() }
+            .firstOrNull { it.module.name == myElement.importName }
         return psFile?.module
     }
 
