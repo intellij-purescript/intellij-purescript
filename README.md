@@ -14,7 +14,7 @@ This plugin is still in the **early stages of development** so only has a handfu
 
 Visit [intellij-purescript.github.io] to find documentation about installation and features.
 
-![example](https://github.com/intellij-purescript/intellij-purescript/raw/master/.README/ex1.png)
+![example](.README/ex1.png)
 
 
 ### Dev
