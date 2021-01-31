@@ -12,7 +12,7 @@ Purescript File
             PsiElement(proper name)('Query')
           PsiElement(.)('.')
           PsiElement(proper name)('HalogenM')
-        PsiElement(whitespace)(' ')
+      PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSImportDeclarationImpl(ImportDeclaration)

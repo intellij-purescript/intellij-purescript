@@ -16,7 +16,7 @@ Purescript File
             PsiElement(proper name)('Interpreter')
           PsiElement(.)('.')
           PsiElement(proper name)('Affjax')
-        PsiElement(whitespace)('\n  ')
+      PsiElement(whitespace)('\n  ')
       PsiElement(()('(')
       PsiElement(whitespace)(' ')
       PSPositionedDeclarationRefImpl(PositionedDeclarationRef)

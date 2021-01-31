@@ -16,7 +16,7 @@ Purescript File
             PsiElement(proper name)('Couchbase')
           PsiElement(.)('.')
           PsiElement(proper name)('Gen')
-        PsiElement(whitespace)(' ')
+      PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSImportDeclarationImpl(ImportDeclaration)

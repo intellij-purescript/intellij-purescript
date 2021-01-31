@@ -15,7 +15,7 @@ Purescript File
             PsiElement(proper name)('Driver')
           PsiElement(.)('.')
           PsiElement(proper name)('Eval')
-        PsiElement(whitespace)(' ')
+      PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSImportDeclarationImpl(ImportDeclaration)

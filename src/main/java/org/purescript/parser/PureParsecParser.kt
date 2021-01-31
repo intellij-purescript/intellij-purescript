@@ -608,7 +608,7 @@ class PureParsecParser {
             .then(guardedDecl).`as`(ValueDeclaration)
     )
     private val parseModule = lexeme(MODULE)
-        .then(indented(lexeme(moduleName)).`as`(PSElements.pModuleName))
+        .then(indented(lexeme(moduleName.`as`(PSElements.pModuleName))))
         .then(optional(parens(commaSep1(parseDeclarationRef))))
         .then(lexeme(WHERE))
         .then(indentedList(decl))

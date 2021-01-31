@@ -9,7 +9,7 @@ Purescript File
             PsiElement(proper name)('Halogen')
           PsiElement(.)('.')
           PsiElement(proper name)('Component')
-        PsiElement(whitespace)('\n  ')
+      PsiElement(whitespace)('\n  ')
       PsiElement(()('(')
       PsiElement(whitespace)(' ')
       PSPositionedDeclarationRefImpl(PositionedDeclarationRef)

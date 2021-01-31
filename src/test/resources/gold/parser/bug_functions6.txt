@@ -13,7 +13,7 @@ Purescript File
             PsiElement(proper name)('Util')
           PsiElement(.)('.')
           PsiElement(proper name)('FS')
-        PsiElement(whitespace)(' ')
+      PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSImportDeclarationImpl(ImportDeclaration)

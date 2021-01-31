@@ -13,7 +13,7 @@ Purescript File
             PsiElement(proper name)('HTML')
           PsiElement(.)('.')
           PsiElement(proper name)('Properties')
-        PsiElement(whitespace)('\n  ')
+      PsiElement(whitespace)('\n  ')
       PsiElement(()('(')
       PsiElement(whitespace)(' ')
       PSPositionedDeclarationRefImpl(PositionedDeclarationRef)

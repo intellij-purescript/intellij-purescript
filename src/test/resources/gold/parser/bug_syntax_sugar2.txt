@@ -12,7 +12,7 @@ Purescript File
             PsiElement(proper name)('VDom')
           PsiElement(.)('.')
           PsiElement(proper name)('Driver')
-        PsiElement(whitespace)('\n  ')
+      PsiElement(whitespace)('\n  ')
       PsiElement(()('(')
       PsiElement(whitespace)(' ')
       PSPositionedDeclarationRefImpl(PositionedDeclarationRef)

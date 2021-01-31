@@ -7,7 +7,7 @@ Purescript File
       PSProperName(ModuleName)
         PSProperName(Qualified)
           PsiElement(proper name)('Main')
-        PsiElement(whitespace)('\n  ')
+      PsiElement(whitespace)('\n  ')
       PsiElement(()('(')
       PsiElement(whitespace)(' ')
       PSPositionedDeclarationRefImpl(PositionedDeclarationRef)
