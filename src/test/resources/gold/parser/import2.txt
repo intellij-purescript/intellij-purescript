@@ -18,7 +18,7 @@ Purescript File
               PsiElement(proper name)('Data')
             PsiElement(.)('.')
             PsiElement(proper name)('Management')
-          PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
         PsiElement(()('(')
         PSPositionedDeclarationRefImpl(PositionedDeclarationRef)
           PSProperName(ProperName)

@@ -168,7 +168,7 @@ class PureParsecParser {
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = lexeme(PROPER_NAME).`as`(ProperName)
-    private val moduleName = lexeme(parseQualified(token(PROPER_NAME)))
+    private val moduleName = parseQualified(token(PROPER_NAME))
     private val stringLiteral = attempt(lexeme(STRING))
 
     private fun indentedList(p: Parsec): Parsec =
@@ -414,7 +414,7 @@ class PureParsecParser {
             ident.`as`(PSElements.ValueRef),
             lexeme(PSTokens.TYPE)
                 .then(optional(parens(operator))),
-            lexeme(PSTokens.MODULE).then(moduleName)
+            lexeme(PSTokens.MODULE).then(lexeme(moduleName))
                 .`as`(importModuleName),
             lexeme(PSTokens.CLASS)
                 .then(parseQualified(properName).`as`(pClassName)),
@@ -524,12 +524,12 @@ class PureParsecParser {
         optional(indented(parens(commaSep(parseDeclarationRef))))
     private val parseImportDeclaration =
         lexeme(IMPORT)
-            .then(indented(moduleName).`as`(importModuleName))
+            .then(lexeme(indented(moduleName).`as`(importModuleName)))
             .then(optional(lexeme(HIDING)).then(importDeclarationType))
             .then(
                 optional(
                     lexeme(AS)
-                        .then(moduleName)
+                        .then(lexeme(moduleName))
                         .`as`(importModuleName)
                 )
             )
@@ -610,7 +610,7 @@ class PureParsecParser {
             .then(guardedDecl).`as`(ValueDeclaration)
     )
     private val parseModule = lexeme(PSTokens.MODULE)
-        .then(indented(moduleName).`as`(PSElements.pModuleName))
+        .then(indented(lexeme(moduleName)).`as`(PSElements.pModuleName))
         .then(optional(parens(commaSep1(parseDeclarationRef))))
         .then(lexeme(WHERE))
         .then(indentedList(decl))

@@ -16,7 +16,7 @@ Purescript File
         PSProperName(ImportModuleName)
           PSProperName(Qualified)
             PsiElement(proper name)('Prelude')
-          PsiElement(whitespace)('\n\n')
+        PsiElement(whitespace)('\n\n')
       PSValueDeclaration(ValueDeclaration)
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('f')

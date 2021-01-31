@@ -24,7 +24,7 @@ Purescript File
               PsiElement(proper name)('Eff')
             PsiElement(.)('.')
             PsiElement(proper name)('Console')
-          PsiElement(whitespace)('\n\n')
+        PsiElement(whitespace)('\n\n')
       PSTypeClassDeclarationImpl(TypeClassDeclaration)
         PsiElement(class)('class')
         PsiElement(whitespace)(' ')

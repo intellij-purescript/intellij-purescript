@@ -21,7 +21,7 @@ Purescript File
               PsiElement(proper name)('Array')
             PsiElement(.)('.')
             PsiElement(proper name)('Partial')
-          PsiElement(whitespace)(' ')
+        PsiElement(whitespace)(' ')
         PSProperName(ImportModuleName)
           PsiElement(as)('as')
           PsiElement(whitespace)(' ')
