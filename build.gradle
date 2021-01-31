@@ -87,7 +87,7 @@ intellij {
     }
 
     patchPluginXml {
-        sinceBuild '202.6397'
+        sinceBuild '203'
     }
 
 }
