@@ -18,6 +18,10 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
         return findChildByClass(PSProperName::class.java)!!
     }
 
+    override fun getTextOffset(): Int {
+        return this.nameIdentifier.textRangeInParent.startOffset
+    }
+
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
         return findChildrenByClass(PSImportDeclarationImpl::class.java)
             .asSequence()
