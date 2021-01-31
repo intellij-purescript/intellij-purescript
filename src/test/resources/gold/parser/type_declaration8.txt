@@ -6,7 +6,7 @@ Purescript File
       PSProperName(ModuleName)
         PSProperName(Qualified)
           PsiElement(proper name)('Main')
-        PsiElement(whitespace)(' ')
+      PsiElement(whitespace)(' ')
       PsiElement(where)('where')
       PsiElement(whitespace)('\n\n')
       PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)

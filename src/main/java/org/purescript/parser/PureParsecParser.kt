@@ -65,6 +65,7 @@ import org.purescript.psi.PSTokens
 import org.purescript.psi.PSTokens.Companion.ARROW
 import org.purescript.psi.PSTokens.Companion.AS
 import org.purescript.psi.PSTokens.Companion.BANG
+import org.purescript.psi.PSTokens.Companion.CLASS
 import org.purescript.psi.PSTokens.Companion.COMMA
 import org.purescript.psi.PSTokens.Companion.DARROW
 import org.purescript.psi.PSTokens.Companion.DATA
@@ -82,6 +83,7 @@ import org.purescript.psi.PSTokens.Companion.INSTANCE
 import org.purescript.psi.PSTokens.Companion.LDARROW
 import org.purescript.psi.PSTokens.Companion.LET
 import org.purescript.psi.PSTokens.Companion.LPAREN
+import org.purescript.psi.PSTokens.Companion.MODULE
 import org.purescript.psi.PSTokens.Companion.NATURAL
 import org.purescript.psi.PSTokens.Companion.NEWTYPE
 import org.purescript.psi.PSTokens.Companion.OPERATOR
@@ -137,10 +139,10 @@ class PureParsecParser {
             token(PSTokens.INFIXL),
             token(PSTokens.INFIXR),
             token(PSTokens.INFIX),
-            token(PSTokens.CLASS),
+            token(CLASS),
             token(DERIVE),
             token(INSTANCE),
-            token(PSTokens.MODULE),
+            token(MODULE),
             token(PSTokens.CASE),
             token(PSTokens.OF),
             token(PSTokens.IF),
@@ -168,7 +170,7 @@ class PureParsecParser {
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = lexeme(PROPER_NAME).`as`(ProperName)
-    private val moduleName = lexeme(parseQualified(token(PROPER_NAME)))
+    private val moduleName = parseQualified(token(PROPER_NAME))
     private val stringLiteral = attempt(lexeme(STRING))
 
     private fun indentedList(p: Parsec): Parsec =
@@ -409,15 +411,11 @@ class PureParsecParser {
         .`as`(PSElements.FixityDeclaration)
     private val parseDeclarationRef =
         choice(
-            lexeme("kind")
-                .then(parseQualified(properName).`as`(pClassName)),
+            lexeme("kind").then(parseQualified(properName).`as`(pClassName)),
             ident.`as`(PSElements.ValueRef),
-            lexeme(PSTokens.TYPE)
-                .then(optional(parens(operator))),
-            lexeme(PSTokens.MODULE).then(moduleName)
-                .`as`(importModuleName),
-            lexeme(PSTokens.CLASS)
-                .then(parseQualified(properName).`as`(pClassName)),
+            lexeme(PSTokens.TYPE).then(optional(parens(operator))),
+            lexeme(MODULE).then(lexeme(moduleName)).`as`(importModuleName),
+            lexeme(CLASS).then(parseQualified(properName).`as`(pClassName)),
             properName.`as`(ProperName)
                 .then(
                     optional(
@@ -433,7 +431,7 @@ class PureParsecParser {
                 )
         ).`as`(PSElements.PositionedDeclarationRef)
     private val parseTypeClassDeclaration =
-        lexeme(PSTokens.CLASS)
+        lexeme(CLASS)
             .then(
                 optional(
                     indented(
@@ -524,12 +522,12 @@ class PureParsecParser {
         optional(indented(parens(commaSep(parseDeclarationRef))))
     private val parseImportDeclaration =
         lexeme(IMPORT)
-            .then(indented(moduleName).`as`(importModuleName))
+            .then(lexeme(indented(moduleName).`as`(importModuleName)))
             .then(optional(lexeme(HIDING)).then(importDeclarationType))
             .then(
                 optional(
                     lexeme(AS)
-                        .then(moduleName)
+                        .then(lexeme(moduleName))
                         .`as`(importModuleName)
                 )
             )
@@ -609,8 +607,8 @@ class PureParsecParser {
             )
             .then(guardedDecl).`as`(ValueDeclaration)
     )
-    private val parseModule = lexeme(PSTokens.MODULE)
-        .then(indented(moduleName).`as`(PSElements.pModuleName))
+    private val parseModule = lexeme(MODULE)
+        .then(indented(lexeme(moduleName.`as`(PSElements.pModuleName))))
         .then(optional(parens(commaSep1(parseDeclarationRef))))
         .then(lexeme(WHERE))
         .then(indentedList(decl))

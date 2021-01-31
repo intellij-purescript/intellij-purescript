@@ -12,5 +12,5 @@ Purescript File
             PsiElement(proper name)('Structure')
           PsiElement(.)('.')
           PsiElement(proper name)('Main')
-        PsiElement(whitespace)(' ')
+      PsiElement(whitespace)(' ')
       PsiElement(where)('where')

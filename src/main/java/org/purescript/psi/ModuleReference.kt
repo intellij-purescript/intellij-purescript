@@ -8,16 +8,16 @@ import org.purescript.file.PSFile
 
 class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImportDeclarationImpl>(
     element,
-    TextRange.allOf(element.text.trim()),
+    element.importName?.textRangeInParent ?: TextRange.allOf(element.text.trim()) ,
     false
 ) {
     override fun resolve(): PSModule? {
         val psFile = FilenameIndex.getFilesByName(
             myElement.project,
-            myElement.importName.split(".").last() + ".purs",
+            (myElement.name ?: "").split(".").last() + ".purs",
             GlobalSearchScope.allScope(myElement.project)
         ).filterIsInstance<PSFile>()
-            .firstOrNull { it.module.name == myElement.importName }
+            .firstOrNull { it.module.name == myElement.getName() ?: "" }
         return psFile?.module
     }
 

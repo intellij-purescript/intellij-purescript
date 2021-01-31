@@ -11,17 +11,21 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     }
 
     override fun setName(name: String): PsiElement? {
-        return null;
+        return null
     }
 
     override fun getNameIdentifier(): PSProperName {
         return findChildByClass(PSProperName::class.java)!!
     }
 
+    override fun getTextOffset(): Int {
+        return this.nameIdentifier.textRangeInParent.startOffset
+    }
+
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
         return findChildrenByClass(PSImportDeclarationImpl::class.java)
             .asSequence()
-            .find { it.importName == name }
+            .find { it.name ?: "" == name }
     }
 
 
