@@ -3,14 +3,15 @@ package org.purescript.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.findDescendantOfType
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
 
-class PSVarTest : PSLanguageParserTestBase() {
+class PSVarTest : BasePlatformTestCase() {
 
     fun `test var can resolve to top level`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -25,7 +26,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var can resolve to top level with multiple definitions`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -41,7 +42,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var can see all value declarations`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -56,7 +57,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var can resolve to parameter`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -70,7 +71,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var see all parameters`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
