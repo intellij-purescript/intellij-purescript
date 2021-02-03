@@ -1,12 +1,12 @@
 package org.purescript.psi
 
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
-import org.purescript.parser.PSLanguageParserTestBase
 
-class PSModuleTest : PSLanguageParserTestBase() {
+class PSModuleTest : BasePlatformTestCase() {
     fun `test one word name`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """module Main where"""
         ) as PSFile
@@ -14,7 +14,7 @@ class PSModuleTest : PSLanguageParserTestBase() {
     }
 
     fun `test two word name`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """module My.Main where"""
         ) as PSFile
