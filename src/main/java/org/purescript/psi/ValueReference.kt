@@ -3,17 +3,16 @@ package org.purescript.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
-import org.jetbrains.annotations.NotNull
 import org.purescript.file.PSFile
 
-class ValueReference(element: @NotNull PSPsiElement) : PsiReferenceBase.Poly<PSPsiElement?>(
+class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     element,
     TextRange.allOf(element.text.trim()),
     false
 ) {
 
     override fun getVariants(): Array<PsiNamedElement> {
-        return (myElement?.containingFile as PSFile)
+        return (myElement.containingFile as PSFile)
             .topLevelValueDeclarations
             .values
             .flatten()
@@ -21,10 +20,24 @@ class ValueReference(element: @NotNull PSPsiElement) : PsiReferenceBase.Poly<PSP
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val name = myElement?.text?.trim()
-        val file = myElement?.containingFile as PSFile?
+        val name = myElement.text.trim()
+        val file = myElement.containingFile as PSFile
+        val module = file.module
+        val importedModules = module
+            .importDeclarations
+            .asSequence()
+            .map { ModuleReference(it).resolve() }
+            .filterNotNull()
+        val localDeclarations = module
+            .topLevelValueDeclarations
+            .getOrDefault(name, emptyList())
+            .asSequence()
+        val importedDeclarations = importedModules
+            .map { it.exportedValueDeclarations[name] }
+            .filterNotNull()
+            .flatMap { it.asSequence() }
         val declarations =
-            file?.topLevelValueDeclarations?.get(name) ?: listOf()
+            (importedDeclarations + localDeclarations).filterNotNull().toList()
         return createResults(declarations)
     }
 

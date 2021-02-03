@@ -3,14 +3,15 @@ package org.purescript.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.findDescendantOfType
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
 
-class PSVarTest : PSLanguageParserTestBase() {
+class PSVarTest : BasePlatformTestCase() {
 
     fun `test var can resolve to top level`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -25,7 +26,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var can resolve to top level with multiple definitions`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -41,7 +42,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var can see all value declarations`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -55,8 +56,52 @@ class PSVarTest : PSLanguageParserTestBase() {
         assertContainsElements(names, "x", "y")
     }
 
+    fun `test var can resolve to imported files`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib (y) where
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclaration = valueReference.multiResolve(false).first().element as PsiNamedElement
+        TestCase.assertEquals("y", valueDeclaration.name)
+    }
+
+    fun `test var can only resolve exported values`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib where
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclarations = valueReference.multiResolve(false)
+        TestCase.assertEquals(0, valueDeclarations.size)
+    }
+
     fun `test var can resolve to parameter`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -70,7 +115,7 @@ class PSVarTest : PSLanguageParserTestBase() {
     }
 
     fun `test var see all parameters`() {
-        val file = createFile(
+        val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
