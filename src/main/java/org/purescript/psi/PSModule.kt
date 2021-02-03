@@ -23,11 +23,13 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     }
 
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
-        return findChildrenByClass(PSImportDeclarationImpl::class.java)
+        return importDeclarations
             .asSequence()
             .find { it.name ?: "" == name }
     }
 
+    val importDeclarations: Array<PSImportDeclarationImpl> get() =
+        findChildrenByClass(PSImportDeclarationImpl::class.java)
 
     val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
         get() = PsiTreeUtil

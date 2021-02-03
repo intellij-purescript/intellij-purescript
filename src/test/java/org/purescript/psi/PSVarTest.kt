@@ -56,6 +56,28 @@ class PSVarTest : BasePlatformTestCase() {
         assertContainsElements(names, "x", "y")
     }
 
+    fun `test var can resolve to imported files`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib (y) where
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclaration = valueReference.multiResolve(false).first().element as PsiNamedElement
+        TestCase.assertEquals("y", valueDeclaration.name)
+    }
+
     fun `test var can resolve to parameter`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
