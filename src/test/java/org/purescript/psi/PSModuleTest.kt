@@ -20,4 +20,33 @@ class PSModuleTest : BasePlatformTestCase() {
         ) as PSFile
         TestCase.assertEquals("My.Main", file.module.name)
     }
+    fun `test be able to find no exported names`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """module My.Main where"""
+        ) as PSFile
+        TestCase.assertEquals(0, file.module.exportedNames.size)
+    }
+    fun `test be able to find one exported names`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module My.Main (x) where
+            x  =1
+            """.trimIndent()
+        ) as PSFile
+        TestCase.assertEquals(1, file.module.exportedNames.size)
+    }
+
+    fun `test be able to find two exported names`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """module My.Main (x, y) where
+               x = 1
+               y = 2
+            """.trimIndent()
+        ) as PSFile
+        TestCase.assertEquals(2, file.module.exportedNames.size)
+        assertContainsElements(file.module.exportedNames, "x", "y")
+    }
 }

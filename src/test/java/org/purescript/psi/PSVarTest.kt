@@ -78,6 +78,28 @@ class PSVarTest : BasePlatformTestCase() {
         TestCase.assertEquals("y", valueDeclaration.name)
     }
 
+    fun `test var can only resolve exported values`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib where
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclarations = valueReference.multiResolve(false)
+        TestCase.assertEquals(0, valueDeclarations.size)
+    }
+
     fun `test var can resolve to parameter`() {
         val file = myFixture.addFileToProject(
             "Main.purs",

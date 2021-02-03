@@ -27,11 +27,11 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
         val modules = importDeclarations
             .asSequence()
             .map { ModuleReference(it).resolve() }
-            .filterNotNull() +
-            sequenceOf(module).filterNotNull()
-        val declarations = modules
-            .flatMap { it.topLevelValueDeclarations[name]?.asSequence() ?: sequenceOf() }
             .filterNotNull()
+        val declarations =
+            ( modules.flatMap { it.exportedValueDeclarations[name]?.asSequence() ?: sequenceOf() } +
+              (module?.topLevelValueDeclarations?.get(name)?.asSequence() ?: sequenceOf())
+            ).filterNotNull()
             .toList()
         return createResults(declarations)
     }
