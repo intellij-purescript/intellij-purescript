@@ -21,18 +21,23 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val name = myElement.text.trim()
-        val file = myElement.containingFile as? PSFile
-        val module = file?.module
-        val importDeclarations = module?.importDeclarations ?: arrayOf()
-        val modules = importDeclarations
+        val file = myElement.containingFile as PSFile
+        val module = file.module
+        val importedModules = module
+            .importDeclarations
             .asSequence()
             .map { ModuleReference(it).resolve() }
             .filterNotNull()
+        val localDeclarations = module
+            .topLevelValueDeclarations
+            .getOrDefault(name, emptyList())
+            .asSequence()
+        val importedDeclarations = importedModules
+            .map { it.exportedValueDeclarations[name] }
+            .filterNotNull()
+            .flatMap { it.asSequence() }
         val declarations =
-            ( modules.flatMap { it.exportedValueDeclarations[name]?.asSequence() ?: sequenceOf() } +
-              (module?.topLevelValueDeclarations?.get(name)?.asSequence() ?: sequenceOf())
-            ).filterNotNull()
-            .toList()
+            (importedDeclarations + localDeclarations).filterNotNull().toList()
         return createResults(declarations)
     }
 
