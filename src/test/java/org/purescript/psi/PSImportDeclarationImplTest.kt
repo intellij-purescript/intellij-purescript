@@ -100,6 +100,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             import Foo hiding (x)
             import Bar
             import Buz (x)
+            import Fuz (hiding)
             """.trimIndent()
         ) as PSFile
 
@@ -111,6 +112,9 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
         val buz = mainFile.module.getImportDeclarationByName("Buz")!!
         assertFalse(buz.isHiding)
         assertContainsElements(buz.namedImports, "x")
+        val fuz = mainFile.module.getImportDeclarationByName("Fuz")!!
+        assertFalse(fuz.isHiding)
+        assertContainsElements(fuz.namedImports, "hiding")
     }
 
 }

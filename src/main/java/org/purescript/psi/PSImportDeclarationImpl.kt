@@ -1,9 +1,12 @@
 package org.purescript.psi
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.anyDescendantOfType
+import com.intellij.psi.util.collectDescendantsOfType
+import com.intellij.psi.util.findDescendantOfType
 
 class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
@@ -16,7 +19,9 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             .toList()
 
     val isHiding: Boolean get() =
-        anyDescendantOfType<LeafPsiElement> { it.text.trim() == "hiding" }
+        anyDescendantOfType<LeafPsiElement>({ it !is PSPositionedDeclarationRefImpl })
+            { it.text.trim() == "hiding"}
+
 
     val importName get() = findChildByClass(PSProperName::class.java)
 
