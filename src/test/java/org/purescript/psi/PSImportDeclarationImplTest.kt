@@ -91,4 +91,30 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         TestCase.assertEquals("Bar.Foo", psModule.name)
     }
+
+    fun `test knows about imported names`() {
+        val mainFile = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Foo hiding (x)
+            import Bar
+            import Buz (x)
+            import Fuz (hiding)
+            """.trimIndent()
+        ) as PSFile
+
+        val foo = mainFile.module.getImportDeclarationByName("Foo")!!
+        assertTrue(foo.isHiding)
+        assertContainsElements(foo.namedImports, "x")
+        val bar = mainFile.module.getImportDeclarationByName("Bar")!!
+        assertDoesntContain(bar.namedImports, "x")
+        val buz = mainFile.module.getImportDeclarationByName("Buz")!!
+        assertFalse(buz.isHiding)
+        assertContainsElements(buz.namedImports, "x")
+        val fuz = mainFile.module.getImportDeclarationByName("Fuz")!!
+        assertFalse(fuz.isHiding)
+        assertContainsElements(fuz.namedImports, "hiding")
+    }
+
 }
