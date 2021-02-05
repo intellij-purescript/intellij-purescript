@@ -122,6 +122,29 @@ class PSVarTest : BasePlatformTestCase() {
         TestCase.assertEquals(0, valueDeclarations.size)
     }
 
+    fun `test var can resolve imported values when hiding others`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib (y, z) where
+            y = 1
+            z = 2
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib hiding (z)
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclarations = valueReference.multiResolve(false)
+        TestCase.assertEquals(1, valueDeclarations.size)
+    }
+
     fun `test var can resolve to parameter`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
