@@ -145,6 +145,51 @@ class PSVarTest : BasePlatformTestCase() {
         TestCase.assertEquals(1, valueDeclarations.size)
     }
 
+    fun `test var can only resolve imported named values when they are named`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib (y, z) where
+            y = 1
+            z = 2
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib (z)
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclarations = valueReference.multiResolve(false)
+        TestCase.assertEquals(0, valueDeclarations.size)
+    }
+    fun `test var can resolve imported named values when they are named`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib (y, z) where
+            y = 1
+            z = 2
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib (y)
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclarations = valueReference.multiResolve(false)
+        TestCase.assertEquals(1, valueDeclarations.size)
+    }
+
     fun `test var can resolve to parameter`() {
         val file = myFixture.addFileToProject(
             "Main.purs",

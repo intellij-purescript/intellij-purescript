@@ -33,4 +33,13 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     override fun getReference(): PsiReference {
         return ModuleReference(this)
     }
+
+
+    fun isNotHidingName(name: String): Boolean {
+        return when {
+            isHiding -> name !in namedImports
+            namedImports.isNotEmpty() -> name in namedImports
+            else -> true
+        }
+    }
 }

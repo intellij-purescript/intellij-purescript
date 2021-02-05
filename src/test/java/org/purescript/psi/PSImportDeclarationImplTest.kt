@@ -107,11 +107,15 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
         val foo = mainFile.module.getImportDeclarationByName("Foo")!!
         assertTrue(foo.isHiding)
         assertContainsElements(foo.namedImports, "x")
+
         val bar = mainFile.module.getImportDeclarationByName("Bar")!!
+        assertFalse(bar.isHiding)
         assertDoesntContain(bar.namedImports, "x")
+
         val buz = mainFile.module.getImportDeclarationByName("Buz")!!
         assertFalse(buz.isHiding)
         assertContainsElements(buz.namedImports, "x")
+
         val fuz = mainFile.module.getImportDeclarationByName("Fuz")!!
         assertFalse(fuz.isHiding)
         assertContainsElements(fuz.namedImports, "hiding")
