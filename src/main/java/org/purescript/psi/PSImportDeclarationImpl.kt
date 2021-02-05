@@ -9,12 +9,20 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
     override fun getName() = importName?.name
 
+    /** the names that are imported or hidden
+     *
+     * `import Lib (namedImports)`
+     * */
     val namedImports: List<String> get() =
         findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
             .asSequence()
             .map { it.text.trim() }
             .toList()
 
+    /** is the import statement a hiding
+     *
+     * `import Lib hiding (x)`
+     * */
     val isHiding: Boolean get() =
         anyDescendantOfType<LeafPsiElement>({ it !is PSPositionedDeclarationRefImpl })
             { it.text.trim() == "hiding"}
@@ -24,5 +32,14 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
     override fun getReference(): PsiReference {
         return ModuleReference(this)
+    }
+
+
+    fun isNotHidingName(name: String): Boolean {
+        return when {
+            isHiding -> name !in namedImports
+            namedImports.isNotEmpty() -> name in namedImports
+            else -> true
+        }
     }
 }
