@@ -26,6 +26,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
         val importedModules = module
             .importDeclarations
             .asSequence()
+            .filter { !it.isHiding }
             .map { ModuleReference(it).resolve() }
             .filterNotNull()
         val localDeclarations = module
