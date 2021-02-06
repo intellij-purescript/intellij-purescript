@@ -36,6 +36,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
+    <internalFileTemplate name="Purescript Module"/>
     <!-- LSP server support START-->
     <postStartupActivity
         implementation="org.purescript.PSStartupActivity"
@@ -90,7 +91,12 @@
   </extensions>
 
   <actions>
-    <!-- Add your actions here -->
+    <action id="Purescript.NewFile"
+            class="org.purescript.ide.actions.CreateFileAction"
+            text="Purescript File"
+            description="Create new Purescript file">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+    </action>
   </actions>
   <!-- Language Server support -->
   <application-components>
