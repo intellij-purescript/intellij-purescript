@@ -76,7 +76,7 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
     }
 
     companion object {
-        const val TITLE = "New Purescript File"
+        const val TITLE = "Purescript File"
 
         internal val NAME_VALIDATOR = object : InputValidatorEx {
             override fun checkInput(inputString: String?): Boolean =
