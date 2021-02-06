@@ -6,7 +6,11 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 /**
  * The method called for creating the file, [com.intellij.ide.fileTemplates.ui.CreateFromTemplateDialog.create],
- * actually changes the name of the file when running as a unit test. Files are always called `Purescript Module.purs`
+ * actually changes behaviour when running as a unit test.
+ * In particular, the name of the file is different.
+ *
+ * In our case, files are always called `Purescript Module.purs`,
+ * and that means that we cannot test that the file is named correctly.
  */
 const val fileName = "Purescript Module.purs"
 
