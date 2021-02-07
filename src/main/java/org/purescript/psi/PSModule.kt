@@ -4,6 +4,8 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.siblings
 
 class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     override fun getName(): String {
@@ -46,4 +48,24 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .asSequence()
             .map { it.text.trim() }
             .toList()
+
+    val docComments: List<PsiElement>
+        get() = parent.siblings(forward = false, withSelf = false)
+            .filter { it.elementType == PSTokens.DOC_COMMENT }
+            .toList()
+            .reversed()
+
+    fun getDocString(): String {
+        return docComments.map { it.text }
+            .map { it.trim() }
+            .map { it.removePrefix("-- |") }
+            .map {
+                if (it.isBlank()) {
+                    "<br/><br/>"
+                } else {
+                    it
+                }
+            }
+            .joinToString(" ") { it.trim() }
+    }
 }

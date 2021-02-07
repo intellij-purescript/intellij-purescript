@@ -82,6 +82,7 @@ charControl = "^" [:uppercase:]
 {whitespace}+                  { return WS; }
 
 "{-"                           { yybegin(COMMENT); comment_nesting = 1; return MLCOMMENT; }
+"--" " "* "|" [^\n]*           { return DOC_COMMENT; }
 "--" [^\n]*                    { return SLCOMMENT; }
 
 "data"                         { return DATA; }

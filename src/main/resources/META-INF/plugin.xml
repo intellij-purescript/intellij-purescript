@@ -37,6 +37,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <internalFileTemplate name="Purescript Module"/>
+    <lang.documentationProvider language="Purescript" implementationClass="org.purescript.features.PurescriptDocumentationProvider"/>
     <!-- LSP server support START-->
     <postStartupActivity
         implementation="org.purescript.PSStartupActivity"
