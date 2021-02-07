@@ -51,7 +51,6 @@ class PSModuleTest : BasePlatformTestCase() {
     }
 
     fun `test finds doc comment`() {
-
         val file = myFixture.addFileToProject(
             "Main.purs",
             """-- | This is
@@ -59,6 +58,8 @@ class PSModuleTest : BasePlatformTestCase() {
                module My.Main (x, y) where
             """.trimIndent()
         ) as PSFile
+
         TestCase.assertEquals(2, file.module.docComments.size)
+        TestCase.assertEquals("-- | This is", file.module.docComments[0].text)
     }
 }
