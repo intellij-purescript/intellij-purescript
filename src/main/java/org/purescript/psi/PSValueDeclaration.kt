@@ -5,6 +5,7 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.collectDescendantsOfType
+import com.intellij.psi.util.elementType
 import javax.swing.Icon
 
 class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
@@ -45,6 +46,17 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
     override fun getNameIdentifier(): PsiElement? {
         return findChildByClass(PSIdentifierImpl::class.java)
     }
+
+    val docComments:List<PsiElement>
+        get() = generateSequence(prevSibling) {
+            when (it) {
+                !is PSValueDeclaration -> it.prevSibling
+                else -> null
+            }
+        }
+            .filter { it.elementType == PSTokens.DOC_COMMENT}
+            .toList()
+            .reversed()
 
     val varBindersInParameters: Map<String, PSVarBinderImpl>
         get() {

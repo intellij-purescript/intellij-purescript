@@ -99,7 +99,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         } else if (type == PSElements.TypeSynonymDeclaration) {
             PSTypeSynonymDeclarationImpl(node)
         } else if (type == PSElements.ValueDeclaration) {
-            PSValueDeclaration(node)
+            PSValueDeclaration(node,)
         } else if (type == PSElements.ExternDataDeclaration) {
             PSExternDataDeclarationImpl(node)
         } else if (type == PSElements.ExternInstanceDeclaration) {
