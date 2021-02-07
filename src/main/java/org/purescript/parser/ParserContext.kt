@@ -86,7 +86,7 @@ class ParserContext(private val builder: PsiBuilder) {
     fun whiteSpace() {
         while (!builder.eof()) {
             val type = builder.tokenType
-            if (type === PSTokens.WS) {
+            if (type === PSTokens.WS || type === PSTokens.DOC_COMMENT) {
                 advance()
             } else {
                 break

@@ -49,4 +49,16 @@ class PSModuleTest : BasePlatformTestCase() {
         TestCase.assertEquals(2, file.module.exportedNames.size)
         assertContainsElements(file.module.exportedNames, "x", "y")
     }
+
+    fun `test finds doc comment`() {
+
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """-- | This is
+               -- | main
+               module My.Main (x, y) where
+            """.trimIndent()
+        ) as PSFile
+        TestCase.assertEquals(2, file.module.docComments.size)
+    }
 }

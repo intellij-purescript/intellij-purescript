@@ -13,6 +13,8 @@ interface PSTokens {
         @kotlin.jvm.JvmField
         val SLCOMMENT = PSElementType("line comment")
         @kotlin.jvm.JvmField
+        val DOC_COMMENT = PSElementType("doc comment")
+        @kotlin.jvm.JvmField
         val DATA = PSElementType("data")
         @kotlin.jvm.JvmField
         val NEWTYPE = PSElementType("newtype")
