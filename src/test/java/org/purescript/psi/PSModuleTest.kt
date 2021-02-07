@@ -61,5 +61,6 @@ class PSModuleTest : BasePlatformTestCase() {
 
         TestCase.assertEquals(2, file.module.docComments.size)
         TestCase.assertEquals("-- | This is", file.module.docComments[0].text)
+        TestCase.assertEquals("-- | main", file.module.docComments[1].text)
     }
 }
