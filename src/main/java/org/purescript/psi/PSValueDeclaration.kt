@@ -47,6 +47,18 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
         return findChildByClass(PSIdentifierImpl::class.java)
     }
 
+    val documentation: String get() =
+        docComments
+            .map{ it.text.trim()}
+            .map {it.removePrefix("-- |")}
+            .map {
+                if (it.isBlank()) {
+                    "<br/><br/>"
+                } else {
+                    it
+                }
+            }
+            .joinToString(" ") {it.trim()}
     val docComments:List<PsiElement>
         get() = generateSequence(prevSibling) {
             when (it) {
