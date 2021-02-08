@@ -2,7 +2,6 @@ Purescript File
   PSProgram(Program)
     PSModule(Module)
       PsiElement(module)('module')
-      PsiElement(whitespace)(' ')
       PSProperName(ModuleName)
         PSProperName(Qualified)
           PSProperName(ProperName)
@@ -12,5 +11,4 @@ Purescript File
             PsiElement(proper name)('Structure')
           PsiElement(.)('.')
           PsiElement(proper name)('Main')
-      PsiElement(whitespace)(' ')
       PsiElement(where)('where')

@@ -95,6 +95,11 @@ class ParserContext(private val builder: PsiBuilder) {
     }
 
     fun advance() {
+        trackColumn()
+        builder.advanceLexer()
+    }
+
+    fun trackColumn() {
         val text = builder.tokenText
         if (text != null) {
             val type = builder.tokenType
@@ -110,7 +115,6 @@ class ParserContext(private val builder: PsiBuilder) {
                 column += text.length
             }
         }
-        builder.advanceLexer()
     }
 
     fun addUntilToken(token: IElementType) {
@@ -164,8 +168,6 @@ class ParserContext(private val builder: PsiBuilder) {
     }
 
     fun start(): PsiBuilder.Marker {
-        // Consume all the white spaces.
-        builder.eof()
         return PureMarker(builder.mark())
     }
 
