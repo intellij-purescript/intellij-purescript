@@ -32,7 +32,7 @@ abstract class Parsec {
     }
 
     fun lexeme(type: IElementType): Parsec {
-        return then(Combinators.lexeme(Combinators.token(type)))
+        return then(Combinators.token(type))
     }
 
     fun or(next: Parsec): Parsec {

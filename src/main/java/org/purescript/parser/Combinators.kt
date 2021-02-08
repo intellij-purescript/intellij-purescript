@@ -73,42 +73,6 @@ object Combinators {
         }
     }
 
-    fun lexeme(text: String): Parsec {
-        return lexeme(token(text))
-    }
-
-    fun lexeme(p: Parsec): Parsec {
-        return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                val info = p.parse(context)
-                if (info.success) {
-                    context.whiteSpace()
-                }
-                return info
-            }
-
-            public override fun calcName(): String {
-                return p.name + " ws*"
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return p.canBeEmpty()
-            }
-        }
-    }
-
-    fun lexeme(type: IElementType): Parsec {
-        return lexeme(token(type))
-    }
-
     fun seq(p1: Parsec, p2: Parsec): Parsec {
         return object : Parsec() {
             override fun parse(context: ParserContext): ParserInfo {
@@ -353,22 +317,22 @@ object Combinators {
     fun parens(pInit: Parsec): Parsec {
         var p = pInit
         p = until(p, PSTokens.RPAREN)
-        return lexeme(PSTokens.LPAREN).then(indented(p))
-            .then(indented(lexeme(PSTokens.RPAREN)))
+        return token(PSTokens.LPAREN).then(indented(p))
+            .then(indented(token(PSTokens.RPAREN)))
     }
 
     fun squares(pInit: Parsec): Parsec {
         var p = pInit
         p = until(p, PSTokens.RPAREN)
-        return lexeme(PSTokens.LBRACK).then(indented(p))
-            .then(indented(lexeme(PSTokens.RBRACK)))
+        return token(PSTokens.LBRACK).then(indented(p))
+            .then(indented(token(PSTokens.RBRACK)))
     }
 
     fun braces(pInit: Parsec): Parsec {
         var p = pInit
         p = until(p, PSTokens.RPAREN)
-        return lexeme(PSTokens.LCURLY).then(indented(p))
-            .then(indented(lexeme(PSTokens.RCURLY)))
+        return token(PSTokens.LCURLY).then(indented(p))
+            .then(indented(token(PSTokens.RCURLY)))
     }
 
     fun indented(p: Parsec): Parsec {
@@ -455,7 +419,7 @@ object Combinators {
     fun sepBy1(p: Parsec, sep: IElementType): Parsec {
         var p = p
         p = until(p, sep)
-        return p.then(attempt(manyOrEmpty(lexeme(sep).then(p))))
+        return p.then(attempt(manyOrEmpty(token(sep).then(p))))
     }
 
     fun commaSep1(p: Parsec): Parsec {
@@ -467,7 +431,7 @@ object Combinators {
     }
 
     fun commaSep(p: Parsec): Parsec {
-        return sepBy(p, lexeme(PSTokens.COMMA))
+        return sepBy(p, token(PSTokens.COMMA))
     }
 
     fun ref(): ParsecRef {

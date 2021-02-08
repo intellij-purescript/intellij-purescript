@@ -31,11 +31,15 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     }
 
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.EMPTY
+        return TokenSet.create(PSTokens.WS)
     }
 
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.EMPTY
+        return TokenSet.create(
+            PSTokens.DOC_COMMENT,
+            PSTokens.MLCOMMENT,
+            PSTokens.SLCOMMENT,
+        )
     }
 
     override fun getStringLiteralElements(): TokenSet {
