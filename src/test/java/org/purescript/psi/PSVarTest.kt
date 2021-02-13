@@ -2,11 +2,10 @@ package org.purescript.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.util.findDescendantOfType
+import com.intellij.psi.SyntaxTraverser
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
-import org.purescript.parser.PSLanguageParserTestBase
 
 class PSVarTest : BasePlatformTestCase() {
 
@@ -222,7 +221,10 @@ class PSVarTest : BasePlatformTestCase() {
 private fun PsiElement.getVarByName(
     name: String
 ): PSVar? {
-    return this.findDescendantOfType({ true }, { it.text.trim() == name})
+    return SyntaxTraverser
+        .psiTraverser(this)
+        .filterIsInstance(PSVar::class.java)
+        .firstOrNull { it.text.trim() == name }
 }
 
 private fun <T> PsiElement.referenceOfType(

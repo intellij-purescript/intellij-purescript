@@ -2,8 +2,8 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
+import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.util.anyDescendantOfType
 
 class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
@@ -24,8 +24,10 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      * `import Lib hiding (x)`
      * */
     val isHiding: Boolean get() =
-        anyDescendantOfType<LeafPsiElement>({ it !is PSPositionedDeclarationRefImpl })
-            { it.text.trim() == "hiding"}
+        SyntaxTraverser.psiTraverser(this)
+            .expand { it !is PSPositionedDeclarationRefImpl }
+            .filterIsInstance(LeafPsiElement::class.java)
+            .any { it.text.trim() == "hiding" }
 
 
     val importName get() = findChildByClass(PSProperName::class.java)

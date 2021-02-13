@@ -5,7 +5,7 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.util.collectDescendantsOfType
+import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.elementType
 import javax.swing.Icon
 
@@ -61,11 +61,10 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
             .reversed()
 
     val varBindersInParameters: Map<String, PSVarBinderImpl>
-        get() {
-            return collectDescendantsOfType<PSVarBinderImpl>()
-                .asSequence()
-                .filterNotNull()
-                .map { Pair(it.name, it) }
-                .toMap()
-        }
+        get() = SyntaxTraverser.psiTraverser(this)
+            .filterIsInstance(PSVarBinderImpl::class.java)
+            .asSequence()
+            .filterNotNull()
+            .map { Pair(it.name, it) }
+            .toMap()
 }
