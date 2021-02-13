@@ -1,6 +1,7 @@
 package org.purescript.psi
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.PsiTreeUtil
@@ -49,9 +50,10 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .map { it.text.trim() }
             .toList()
 
-    val docComments: List<PsiElement>
+    val docComments: List<PsiComment>
         get() = parent.siblings(forward = false, withSelf = false)
             .filter { it.elementType == PSTokens.DOC_COMMENT }
+            .filterIsInstance(PsiComment::class.java)
             .toList()
             .reversed()
 
