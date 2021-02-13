@@ -55,17 +55,4 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .toList()
             .reversed()
 
-    fun getDocString(): String {
-        return docComments.map { it.text }
-            .map { it.trim() }
-            .map { it.removePrefix("-- |") }
-            .map {
-                if (it.isBlank()) {
-                    "<br/><br/>"
-                } else {
-                    it
-                }
-            }
-            .joinToString(" ") { it.trim() }
-    }
 }

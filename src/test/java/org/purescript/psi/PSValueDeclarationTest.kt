@@ -22,6 +22,5 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
         TestCase.assertEquals(2, docComments.size)
         TestCase.assertEquals("-- | This is",  docComments[0].text)
         TestCase.assertEquals("-- | main",  docComments[1].text)
-        TestCase.assertEquals("This is main",  main.documentation)
     }
 }
