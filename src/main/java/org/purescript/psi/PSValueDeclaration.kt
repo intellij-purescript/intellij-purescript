@@ -2,6 +2,7 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.collectDescendantsOfType
@@ -47,19 +48,7 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
         return findChildByClass(PSIdentifierImpl::class.java)
     }
 
-    val documentation: String get() =
-        docComments
-            .map{ it.text.trim()}
-            .map {it.removePrefix("-- |")}
-            .map {
-                if (it.isBlank()) {
-                    "<br/><br/>"
-                } else {
-                    it
-                }
-            }
-            .joinToString(" ") {it.trim()}
-    val docComments:List<PsiElement>
+    val docComments:List<PsiComment>
         get() = generateSequence(prevSibling) {
             when (it) {
                 !is PSValueDeclaration -> it.prevSibling
@@ -67,6 +56,7 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
             }
         }
             .filter { it.elementType == PSTokens.DOC_COMMENT}
+            .filterIsInstance(PsiComment::class.java)
             .toList()
             .reversed()
 
