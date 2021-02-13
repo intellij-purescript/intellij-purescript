@@ -12,6 +12,18 @@ class PSDocumentationProviderTest : TestCase() {
                     "-- | main",
                 )
             )
-        assertEquals("This is main", documentation)
+        assertEquals("<p>This is\nmain</p>", documentation)
+    }
+
+    fun `test converts doc comments to paragraphs`() {
+        val documentation =
+            PSDocumentationProvider().docCommentsToDocstring(
+                listOf(
+                    "-- | This is",
+                    "-- | ",
+                    "-- | main",
+                )
+            )
+        assertEquals("<p>This is</p>\n\n<p>main</p>", documentation)
     }
 }

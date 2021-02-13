@@ -1,8 +1,8 @@
 package org.purescript.features
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
-import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSValueDeclaration
 
@@ -19,16 +19,12 @@ class PSDocumentationProvider: AbstractDocumentationProvider() {
         }
     }
 
-    fun docCommentsToDocstring(commentText: List<String>) =
-        commentText
+    fun docCommentsToDocstring(commentText: List<String>): String {
+        val processor = MarkdownProcessor()
+        val markdown = commentText
             .map { it.trim() }
             .map { it.removePrefix("-- |") }
-            .map {
-                if (it.isBlank()) {
-                    "<br/><br/>"
-                } else {
-                    it
-                }
-            }
-            .joinToString(" ") { it.trim() }
+            .joinToString("\n") { it.trim() }
+        return processor.markdown(markdown).trim()
+    }
 }
