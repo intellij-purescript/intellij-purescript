@@ -1,19 +1,29 @@
 package org.purescript.features
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
+import com.intellij.lang.documentation.DocumentationMarkup.*
 import com.intellij.psi.PsiElement
 import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSValueDeclaration
 
-class PSDocumentationProvider: AbstractDocumentationProvider() {
-    override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
+class PSDocumentationProvider : AbstractDocumentationProvider() {
+    override fun generateDoc(
+        element: PsiElement?,
+        originalElement: PsiElement?
+    ): String? {
         return when (element) {
             is PSModule -> {
-                docCommentsToDocstring(element.docComments.map {it.text})
+                layout(
+                    element.name,
+                    docCommentsToDocstring(element.docComments.map { it.text })
+                )
             }
             is PSValueDeclaration -> {
-                docCommentsToDocstring(element.docComments.map {it.text})
+                layout(
+                    element.name,
+                    docCommentsToDocstring(element.docComments.map { it.text })
+                )
             }
             else -> null
         }
@@ -26,5 +36,10 @@ class PSDocumentationProvider: AbstractDocumentationProvider() {
             .map { it.removePrefix("-- |") }
             .joinToString("\n") { it.trim() }
         return processor.markdown(markdown).trim()
+    }
+
+    fun layout(definition: String, mainDescription: String): String {
+        return DEFINITION_START + definition + DEFINITION_END +
+            CONTENT_START + mainDescription + CONTENT_END
     }
 }
