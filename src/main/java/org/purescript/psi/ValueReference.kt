@@ -12,14 +12,10 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 
     override fun getVariants(): Array<PSValueDeclaration> {
         val currentModule = myElement.module
-
-        val localValues: Sequence<PSValueDeclaration> =
-            currentModule.valueDeclarations
-
-        val importedValues: Sequence<PSValueDeclaration> =
-            currentModule.importedValueDeclarations
-
-        return (localValues + importedValues).toList().toTypedArray()
+        return (
+            currentModule.valueDeclarations +
+                currentModule.importedValueDeclarations
+            ).toList().toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
