@@ -12,15 +12,16 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 ) {
 
     override fun getVariants(): Array<PSValueDeclaration> {
+        val currentModule = myElement.module
         val localValueDeclarations: Sequence<PSValueDeclaration> =
-            (myElement.containingFile as PSFile)
+            currentModule
                 .topLevelValueDeclarations
                 .values
                 .flatten()
                 .asSequence()
 
         val importEverythingNames: Sequence<PSValueDeclaration> =
-            myElement.module
+            currentModule
                 .importDeclarations
                 .asSequence()
                 .filter { it.namedImports.isEmpty() }
@@ -29,7 +30,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                 .flatMap { it.exportedValueDeclarations.values.flatten() }
 
         val importWithHidesNames: Sequence<PSValueDeclaration> =
-            myElement.module
+            currentModule
                 .importDeclarations
                 .asSequence()
                 .filter { it.isHiding }
@@ -47,7 +48,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                 }
 
 
-        val importWithNames: Sequence<PSValueDeclaration> = myElement.module
+        val importWithNames: Sequence<PSValueDeclaration> = currentModule
             .importDeclarations
             .asSequence()
             .filter { !it.isHiding }
