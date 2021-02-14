@@ -14,7 +14,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
         val currentModule = myElement.module
 
         val localValues: Sequence<PSValueDeclaration> =
-            currentModule.valueDeclarations.asSequence()
+            currentModule.valueDeclarations
 
         val importedValues: Sequence<PSValueDeclaration> =
             currentModule.importedValueDeclarations
