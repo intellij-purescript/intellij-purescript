@@ -11,18 +11,43 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     false
 ) {
 
-    override fun getVariants(): Array<PsiNamedElement> {
-        return (myElement.containingFile as PSFile)
+    override fun getVariants(): Array<String> {
+        val localValueDeclarations = (myElement.containingFile as PSFile)
             .topLevelValueDeclarations
-            .values
-            .flatten()
+            .keys
+
+        val importEverythingNames = myElement.module
+            .importDeclarations
+            .asSequence()
+            .filter { it.namedImports.isEmpty()}
+            .map { ModuleReference(it).resolve()}
+            .filterNotNull()
+            .flatMap {it.exportedValueDeclarations.keys}
+            .toSet()
+
+        val importWithHidesNames = myElement.module
+            .importDeclarations
+            .asSequence()
+            .filter { it.isHiding }
+            .flatMap {
+                (ModuleReference(it).resolve()?.exportedValueDeclarations?.keys
+                    ?: setOf()) subtract (it.namedImports.toSet())
+            }
+            .toSet()
+
+        val importWithNames = myElement.module
+            .importDeclarations
+            .asSequence()
+            .flatMap { if (it.isHiding) setOf()  else  it.namedImports.toSet() }
+            .toSet()
+
+        return (localValueDeclarations + importWithNames + importEverythingNames + importWithHidesNames)
             .toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val name = myElement.text.trim()
-        val file = myElement.containingFile as PSFile
-        val module = file.module
+        val module = myElement.module
         val importedModules = module
             .importDeclarations
             .asSequence()

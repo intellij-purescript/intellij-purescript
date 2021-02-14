@@ -40,7 +40,7 @@ class PSVarTest : BasePlatformTestCase() {
         TestCase.assertEquals(2, valueDeclarations.size)
     }
 
-    fun `test var can see all value declarations`() {
+    fun `test var can see variants for all value declarations in file`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
             """
@@ -51,8 +51,52 @@ class PSVarTest : BasePlatformTestCase() {
         ) as PSFile
         val psVar = file.getVarByName("y")!!
         val valueReference = psVar.referenceOfType(ValueReference::class.java)
-        val names = valueReference.variants.map { it.name }
+        val names = valueReference.variants.toList()
         assertContainsElements(names, "x", "y")
+    }
+
+    fun `test var can see variants for all value declarations in imported modules`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            
+            import Foo
+            import Bar hiding (w)
+            import Baz (k)
+            
+            x = y
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        myFixture.addFileToProject(
+            "Foo.purs",
+            """
+            module Foo (z) where
+            z = 1
+            """.trimIndent()
+        )
+        myFixture.addFileToProject(
+            "Bar.purs",
+            """
+            module Bar (w, q) where
+            w = 1
+            q = 1
+            """.trimIndent()
+        )
+        myFixture.addFileToProject(
+            "Baz.purs",
+            """
+            module Baz (k, p) where
+            k = 1
+            p = 1
+            """.trimIndent()
+        )
+        val psVar = file.getVarByName("y")!!
+        val valueReference = psVar.referenceOfType(ValueReference::class.java)
+        val names = valueReference.variants.toList()
+        assertContainsElements(names, "z", "q", "k")
+        assertDoesntContain(names, "w", "p")
     }
 
     fun `test var can resolve to imported files`() {
