@@ -11,38 +11,66 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     false
 ) {
 
-    override fun getVariants(): Array<String> {
-        val localValueDeclarations = (myElement.containingFile as PSFile)
-            .topLevelValueDeclarations
-            .keys
+    override fun getVariants(): Array<PSValueDeclaration> {
+        val localValueDeclarations: Sequence<PSValueDeclaration> =
+            (myElement.containingFile as PSFile)
+                .topLevelValueDeclarations
+                .values
+                .flatten()
+                .asSequence()
 
-        val importEverythingNames = myElement.module
+        val importEverythingNames: Sequence<PSValueDeclaration> =
+            myElement.module
+                .importDeclarations
+                .asSequence()
+                .filter { it.namedImports.isEmpty() }
+                .map { ModuleReference(it).resolve() }
+                .filterNotNull()
+                .flatMap { it.exportedValueDeclarations.values.flatten() }
+
+        val importWithHidesNames: Sequence<PSValueDeclaration> =
+            myElement.module
+                .importDeclarations
+                .asSequence()
+                .filter { it.isHiding }
+                .flatMap { import ->
+                    val module = ModuleReference(import).resolve()
+                    if (module == null) {
+                        listOf()
+                    } else {
+                        val exportedNames =
+                            module.exportedValueDeclarations.keys
+                        val keys =
+                            exportedNames subtract (import.namedImports.toSet())
+                        module.exportedValueDeclarations.filterKeys { it in keys }.values.flatten()
+                    }
+                }
+
+
+        val importWithNames: Sequence<PSValueDeclaration> = myElement.module
             .importDeclarations
             .asSequence()
-            .filter { it.namedImports.isEmpty()}
-            .map { ModuleReference(it).resolve()}
-            .filterNotNull()
-            .flatMap {it.exportedValueDeclarations.keys}
-            .toSet()
-
-        val importWithHidesNames = myElement.module
-            .importDeclarations
-            .asSequence()
-            .filter { it.isHiding }
-            .flatMap {
-                (ModuleReference(it).resolve()?.exportedValueDeclarations?.keys
-                    ?: setOf()) subtract (it.namedImports.toSet())
+            .filter { !it.isHiding }
+            .filter { it.namedImports.isNotEmpty() }
+            .flatMap { import ->
+                val keys = import.namedImports.toSet()
+                val module = ModuleReference(import).resolve()
+                if (module == null) {
+                    listOf()
+                } else {
+                    module
+                        .exportedValueDeclarations
+                        .filterKeys { it in keys }
+                        .values.flatten()
+                }
             }
-            .toSet()
 
-        val importWithNames = myElement.module
-            .importDeclarations
-            .asSequence()
-            .flatMap { if (it.isHiding) setOf()  else  it.namedImports.toSet() }
-            .toSet()
-
-        return (localValueDeclarations + importWithNames + importEverythingNames + importWithHidesNames)
-            .toTypedArray()
+        return (
+            localValueDeclarations +
+                importWithNames +
+                importEverythingNames +
+                importWithHidesNames
+            ).toList().toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
@@ -51,7 +79,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
         val importedModules = module
             .importDeclarations
             .asSequence()
-            .filter { it.isNotHidingName(name)}
+            .filter { it.isNotHidingName(name) }
             .map { ModuleReference(it).resolve() }
             .filterNotNull()
         val localDeclarations = module
