@@ -45,7 +45,10 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     val exportedValueDeclarationsByName: Map<String, List<PSValueDeclaration>> get() =
         valueDeclarationsByName.filterKeys { it in exportedNames }
 
-    val exportedValueDeclarations get() = exportedValueDeclarationsByName.values.flatten()
+    val exportedValueDeclarations: List<PSValueDeclaration> get() =
+        valueDeclarations
+            .filter { it.name in exportedNames}
+            .toList()
 
     fun exportedValuesExcluding(names :Set<String> ): List<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name !in names }
