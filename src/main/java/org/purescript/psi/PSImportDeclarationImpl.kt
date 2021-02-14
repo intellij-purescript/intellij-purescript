@@ -36,6 +36,8 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         return ModuleReference(this)
     }
 
+    val importedModule get(): PSModule? = ModuleReference(this).resolve()
+
 
     fun isNotHidingName(name: String): Boolean {
         return when {

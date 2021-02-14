@@ -24,7 +24,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                 .importDeclarations
                 .asSequence()
                 .filter { it.namedImports.isEmpty() }
-                .map { ModuleReference(it).resolve() }
+                .map { it.importedModule }
                 .filterNotNull()
                 .flatMap { it.exportedValueDeclarations.values.flatten() }
 
@@ -34,7 +34,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                 .asSequence()
                 .filter { it.isHiding }
                 .flatMap { import ->
-                    val module = ModuleReference(import).resolve()
+                    val module = import.importedModule
                     if (module == null) {
                         listOf()
                     } else {
@@ -54,7 +54,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
             .filter { it.namedImports.isNotEmpty() }
             .flatMap { import ->
                 val keys = import.namedImports.toSet()
-                val module = ModuleReference(import).resolve()
+                val module = import.importedModule
                 if (module == null) {
                     listOf()
                 } else {
