@@ -23,7 +23,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                 .filter { it.namedImports.isEmpty() }
                 .map { it.importedModule }
                 .filterNotNull()
-                .flatMap { it.exportedValueDeclarations.values.flatten() }
+                .flatMap { it.exportedValueDeclarations }
 
         val importWithHidesNames: Sequence<PSValueDeclaration> =
             importDeclarations
@@ -35,10 +35,10 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                         listOf()
                     } else {
                         val exportedNames =
-                            module.exportedValueDeclarations.keys
+                            module.exportedValueDeclarationsByName.keys
                         val keys =
                             exportedNames subtract (import.namedImports.toSet())
-                        module.exportedValueDeclarations.filterKeys { it in keys }.values.flatten()
+                        module.exportedValueDeclarationsByName.filterKeys { it in keys }.values.flatten()
                     }
                 }
 
@@ -54,7 +54,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                     listOf()
                 } else {
                     module
-                        .exportedValueDeclarations
+                        .exportedValueDeclarationsByName
                         .filterKeys { it in keys }
                         .values.flatten()
                 }
@@ -82,7 +82,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
             .getOrDefault(name, emptyList())
             .asSequence()
         val importedDeclarations = importedModules
-            .map { it.exportedValueDeclarations[name] }
+            .map { it.exportedValueDeclarationsByName[name] }
             .filterNotNull()
             .flatMap { it.asSequence() }
         val declarations =
