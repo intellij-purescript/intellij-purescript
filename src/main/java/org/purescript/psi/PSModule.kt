@@ -70,4 +70,7 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .toList()
             .reversed()
 
+    val importedValueDeclarations get() =
+        importDeclarations.asSequence().flatMap { it.importedValues }
+
 }
