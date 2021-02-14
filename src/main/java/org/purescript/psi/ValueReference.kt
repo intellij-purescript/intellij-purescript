@@ -14,46 +14,13 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
         val currentModule = myElement.module
         val importDeclarations = currentModule.importDeclarations
 
-        val localValueDeclarations: Sequence<PSValueDeclaration> =
+        val localValues: Sequence<PSValueDeclaration> =
             currentModule.valueDeclarations.asSequence()
 
-        val importEverythingNames: Sequence<PSValueDeclaration> =
-            importDeclarations
-                .asSequence()
-                .filter { it.namedImports.isEmpty() }
-                .map { it.importedModule }
-                .filterNotNull()
-                .flatMap { it.exportedValueDeclarations }
+        val importedValues: Sequence<PSValueDeclaration> =
+            importDeclarations.asSequence().flatMap { it.importedValues }
 
-        val importWithHidesNames: Sequence<PSValueDeclaration> =
-            importDeclarations
-                .asSequence()
-                .filter { it.isHiding }
-                .flatMap {
-                    it
-                        .importedModule
-                        ?.exportedValuesExcluding(it.namedImports.toSet())
-                        ?: listOf()
-                }
-
-
-        val importWithNames: Sequence<PSValueDeclaration> = importDeclarations
-            .asSequence()
-            .filter { !it.isHiding }
-            .filter { it.namedImports.isNotEmpty() }
-            .flatMap {
-                it
-                    .importedModule
-                    ?.exportedValuesMatching(it.namedImports.toSet())
-                    ?: listOf()
-            }
-
-        return (
-            localValueDeclarations +
-                importWithNames +
-                importEverythingNames +
-                importWithHidesNames
-            ).toList().toTypedArray()
+        return (localValues + importedValues).toList().toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
