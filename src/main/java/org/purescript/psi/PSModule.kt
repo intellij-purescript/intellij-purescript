@@ -45,15 +45,13 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     val exportedValueDeclarationsByName: Map<String, List<PSValueDeclaration>> get() =
         valueDeclarationsByName.filterKeys { it in exportedNames }
 
-    val exportedValueDeclarations: List<PSValueDeclaration> get() =
-        valueDeclarations
-            .filter { it.name in exportedNames}
-            .toList()
+    val exportedValueDeclarations get() =
+        valueDeclarations.filter { it.name in exportedNames}
 
-    fun exportedValuesExcluding(names :Set<String> ): List<PSValueDeclaration> {
+    fun exportedValuesExcluding(names :Set<String> ): Sequence<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name !in names }
     }
-    fun exportedValuesMatching(names :Set<String> ): List<PSValueDeclaration> {
+    fun exportedValuesMatching(names :Set<String> ): Sequence<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name in names }
     }
 

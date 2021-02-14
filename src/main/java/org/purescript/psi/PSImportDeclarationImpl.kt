@@ -38,7 +38,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
     private val importedModule get(): PSModule? = ModuleReference(this).resolve()
 
-    val importedValues get(): List<PSValueDeclaration> =
+    val importedValues get(): Sequence<PSValueDeclaration> =
         when {
             isHiding -> {
                 importedModule?.exportedValuesExcluding(namedImports.toSet())
@@ -49,7 +49,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             else -> {
                 importedModule?.exportedValueDeclarations
             }
-        }?: listOf()
+        }?: sequenceOf()
 
 
     fun isNotHidingName(name: String): Boolean {
