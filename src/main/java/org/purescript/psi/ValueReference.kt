@@ -34,8 +34,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                     if (module == null) {
                         listOf()
                     } else {
-                        val keys = import.namedImports.toSet()
-                        module.exportedValueDeclarationsByName.filterKeys { it !in keys }.values.flatten()
+                        module.exportedValuesExcluding(import.namedImports.toSet())
                     }
                 }
 

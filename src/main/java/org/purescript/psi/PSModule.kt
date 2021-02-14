@@ -47,6 +47,10 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     val exportedValueDeclarations get() = exportedValueDeclarationsByName.values.flatten()
 
+    fun exportedValuesExcluding(names :Set<String> ): List<PSValueDeclaration> {
+        return exportedValueDeclarations.filter { it.name !in names }
+    }
+
     val exportedNames: List<String> get() =
         findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
             .asSequence()
