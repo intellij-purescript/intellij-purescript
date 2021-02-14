@@ -3,7 +3,6 @@ package org.purescript.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
-import org.purescript.file.PSFile
 
 class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     element,
@@ -17,7 +16,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 
         val localValueDeclarations: Sequence<PSValueDeclaration> =
             currentModule
-                .topLevelValueDeclarations
+                .valueDeclarationsByName
                 .values
                 .flatten()
                 .asSequence()
@@ -83,7 +82,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
             .map { ModuleReference(it).resolve() }
             .filterNotNull()
         val localDeclarations = module
-            .topLevelValueDeclarations
+            .valueDeclarationsByName
             .getOrDefault(name, emptyList())
             .asSequence()
         val importedDeclarations = importedModules
