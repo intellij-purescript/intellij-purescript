@@ -40,19 +40,48 @@ class PSVarTest : BasePlatformTestCase() {
         TestCase.assertEquals(2, valueDeclarations.size)
     }
 
-    fun `test var can see all value declarations`() {
+    fun `test var can see variants for all value declarations`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
+            
+            import Foo
+            import Bar hiding (w)
+            import Baz (k)
+            
             x = y
             y = 1
             """.trimIndent()
         ) as PSFile
+        myFixture.addFileToProject(
+            "Foo.purs",
+            """
+            module Foo (z) where
+            z = 1
+            """.trimIndent()
+        )
+        myFixture.addFileToProject(
+            "Bar.purs",
+            """
+            module Bar (w, q) where
+            w = 1
+            q = 1
+            """.trimIndent()
+        )
+        myFixture.addFileToProject(
+            "Baz.purs",
+            """
+            module Baz (k, p) where
+            k = 1
+            p = 1
+            """.trimIndent()
+        )
         val psVar = file.getVarByName("y")!!
         val valueReference = psVar.referenceOfType(ValueReference::class.java)
-        val names = valueReference.variants.map { it.name }
-        assertContainsElements(names, "x", "y")
+        val names = valueReference.variants.map { it.name }.toList()
+        assertContainsElements(names, "z", "q", "k", "x", "y")
+        assertDoesntContain(names, "w", "p")
     }
 
     fun `test var can resolve to imported files`() {
@@ -72,8 +101,11 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
-        val valueDeclaration = valueReference.multiResolve(false).first().element as PsiNamedElement
+        val valueReference: ValueReference =
+            psVar.referenceOfType(ValueReference::class.java)
+        val valueDeclaration = valueReference
+            .multiResolve(false)
+            .first().element as PsiNamedElement
         TestCase.assertEquals("y", valueDeclaration.name)
     }
 
@@ -94,7 +126,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference: ValueReference =
+            psVar.referenceOfType(ValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
     }
@@ -116,7 +149,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference: ValueReference =
+            psVar.referenceOfType(ValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
     }
@@ -139,7 +173,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference: ValueReference =
+            psVar.referenceOfType(ValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(1, valueDeclarations.size)
     }
@@ -162,10 +197,12 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference: ValueReference =
+            psVar.referenceOfType(ValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
     }
+
     fun `test var can resolve imported named values when they are named`() {
         myFixture.addFileToProject(
             "Lib.purs",
@@ -184,7 +221,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference: ValueReference =
+            psVar.referenceOfType(ValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(1, valueDeclarations.size)
     }
@@ -198,7 +236,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val parameterReference = psVar.referenceOfType(ParameterReference::class.java)
+        val parameterReference =
+            psVar.referenceOfType(ParameterReference::class.java)
         val identifier = parameterReference.resolve()!!
         TestCase.assertEquals("y", identifier.name)
     }
@@ -212,7 +251,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val parameterReference = psVar.referenceOfType(ParameterReference::class.java)
+        val parameterReference =
+            psVar.referenceOfType(ParameterReference::class.java)
         val names = parameterReference.variants.map { it?.name }
         assertContainsElements(names, "z", "y")
     }
