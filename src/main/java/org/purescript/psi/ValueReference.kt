@@ -41,17 +41,11 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
             .asSequence()
             .filter { !it.isHiding }
             .filter { it.namedImports.isNotEmpty() }
-            .flatMap { import ->
-                val keys = import.namedImports.toSet()
-                val module = import.importedModule
-                if (module == null) {
-                    listOf()
-                } else {
-                    module
-                        .exportedValueDeclarationsByName
-                        .filterKeys { it in keys }
-                        .values.flatten()
-                }
+            .flatMap {
+                it
+                    .importedModule
+                    ?.exportedValuesMatching(it.namedImports.toSet())
+                    ?: listOf()
             }
 
         return (
