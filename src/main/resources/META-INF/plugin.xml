@@ -13,10 +13,22 @@
           <li>Annotations</li>
           <li>Intentions</li>
         </ul></li>
-        <li>Find usage of top level declarations</li>
-        <li>Find usage of parameters</li>
-        <li>Autocomplete of top level declarations</li>
-        <li>Autocomplete of parameters</li>
+        <li>Find usage of:<ul>
+          <li>top level declarations</li>
+          <li>parameters</li>
+          <li>imported value declarations:<ul>
+            <li>Not imported with `as`</li>
+            <li>not exported with `module`</li>
+          </ul></li>
+        </ul></li>
+        <li>Autocomplete of:<ul>
+          <li>top level declarations</li>
+          <li>parameters</li>
+          <li>imported value declarations:<ul>
+            <li>Not imported with `as`</li>
+            <li>not exported with `module`</li>
+          </ul></li>
+        </ul></li>
       </ul>
       for LSP to work you need to have purescript language server installed in
       the projects node_modules
