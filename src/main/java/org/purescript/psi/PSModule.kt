@@ -34,12 +34,13 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     val importDeclarations: Array<PSImportDeclarationImpl> get() =
         findChildrenByClass(PSImportDeclarationImpl::class.java)
 
+    val valueDeclarations get() = PsiTreeUtil
+        .findChildrenOfType(this, PSValueDeclaration::class.java)
+        .asSequence()
+        .filterNotNull()
+
     val valueDeclarationsByName: Map<String, List<PSValueDeclaration>> get() =
-        PsiTreeUtil
-            .findChildrenOfType(this, PSValueDeclaration::class.java)
-            .asSequence()
-            .filterNotNull()
-            .groupBy { it.name }
+        valueDeclarations.groupBy { it.name }
 
     val exportedValueDeclarations: Map<String, List<PSValueDeclaration>> get() =
         valueDeclarationsByName.filterKeys { it in exportedNames }
