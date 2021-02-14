@@ -36,7 +36,20 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         return ModuleReference(this)
     }
 
-    val importedModule get(): PSModule? = ModuleReference(this).resolve()
+    private val importedModule get(): PSModule? = ModuleReference(this).resolve()
+
+    val importedValues get(): Sequence<PSValueDeclaration> =
+        when {
+            isHiding -> {
+                importedModule?.exportedValuesExcluding(namedImports.toSet())
+            }
+            namedImports.isNotEmpty() -> {
+                importedModule?.exportedValuesMatching(namedImports.toSet())
+            }
+            else -> {
+                importedModule?.exportedValueDeclarations
+            }
+        }?: sequenceOf()
 
 
     fun isNotHidingName(name: String): Boolean {
