@@ -3,7 +3,6 @@ package org.purescript.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
-import org.purescript.file.PSFile
 
 class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     element,
@@ -12,29 +11,26 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 ) {
 
     override fun getVariants(): Array<PSValueDeclaration> {
+        val currentModule = myElement.module
+        val importDeclarations = currentModule.importDeclarations
+
         val localValueDeclarations: Sequence<PSValueDeclaration> =
-            (myElement.containingFile as PSFile)
-                .topLevelValueDeclarations
-                .values
-                .flatten()
-                .asSequence()
+            currentModule.valueDeclarations.asSequence()
 
         val importEverythingNames: Sequence<PSValueDeclaration> =
-            myElement.module
-                .importDeclarations
+            importDeclarations
                 .asSequence()
                 .filter { it.namedImports.isEmpty() }
-                .map { ModuleReference(it).resolve() }
+                .map { it.importedModule }
                 .filterNotNull()
                 .flatMap { it.exportedValueDeclarations.values.flatten() }
 
         val importWithHidesNames: Sequence<PSValueDeclaration> =
-            myElement.module
-                .importDeclarations
+            importDeclarations
                 .asSequence()
                 .filter { it.isHiding }
                 .flatMap { import ->
-                    val module = ModuleReference(import).resolve()
+                    val module = import.importedModule
                     if (module == null) {
                         listOf()
                     } else {
@@ -47,14 +43,13 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
                 }
 
 
-        val importWithNames: Sequence<PSValueDeclaration> = myElement.module
-            .importDeclarations
+        val importWithNames: Sequence<PSValueDeclaration> = importDeclarations
             .asSequence()
             .filter { !it.isHiding }
             .filter { it.namedImports.isNotEmpty() }
             .flatMap { import ->
                 val keys = import.namedImports.toSet()
-                val module = ModuleReference(import).resolve()
+                val module = import.importedModule
                 if (module == null) {
                     listOf()
                 } else {
@@ -83,7 +78,7 @@ class ValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
             .map { ModuleReference(it).resolve() }
             .filterNotNull()
         val localDeclarations = module
-            .topLevelValueDeclarations
+            .valueDeclarationsByName
             .getOrDefault(name, emptyList())
             .asSequence()
         val importedDeclarations = importedModules

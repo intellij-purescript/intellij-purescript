@@ -17,7 +17,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
 
-        val main = file.module.topLevelValueDeclarations["main"]!!.first()
+        val main = file.module.valueDeclarationsByName["main"]!!.first()
         val docComments = main.docComments
         TestCase.assertEquals(2, docComments.size)
         TestCase.assertEquals("-- | This is",  docComments[0].text)
