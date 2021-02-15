@@ -32,7 +32,7 @@ class PSModuleTest : BasePlatformTestCase() {
             "Main.purs",
             """
             module My.Main (x) where
-            x  =1
+            x  = 1
             """.trimIndent()
         ) as PSFile
         TestCase.assertEquals(1, file.module.exportedNames.size)
@@ -48,6 +48,19 @@ class PSModuleTest : BasePlatformTestCase() {
         ) as PSFile
         TestCase.assertEquals(2, file.module.exportedNames.size)
         assertContainsElements(file.module.exportedNames, "x", "y")
+    }
+
+    fun `test do not count module export as exported names`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """module My.Main (x, module Y) where
+               
+               import Y
+               
+               x = 1
+            """.trimIndent()
+        ) as PSFile
+        TestCase.assertEquals(1, file.module.exportedNames.size)
     }
 
     fun `test finds doc comment`() {
