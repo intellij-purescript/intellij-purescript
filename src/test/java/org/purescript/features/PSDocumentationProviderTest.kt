@@ -39,7 +39,7 @@ class PSDocumentationProviderTest : TestCase() {
         assertEquals(
             """<pre><code>
 instance functorF :: Functor F where
-map = liftM1
+  map = liftM1
 </code></pre>""", documentation)
     }
 

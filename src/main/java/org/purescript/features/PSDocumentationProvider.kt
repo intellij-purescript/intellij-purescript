@@ -33,11 +33,15 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
     fun docCommentsToDocstring(commentText: List<String>): String {
         val processor = MarkdownProcessor()
         val lines = commentText
-            .map { it.trim() }
-            .map { it.removePrefix("-- |").trim() }
+            .joinToString("\n") { it.trim().removePrefix("-- |") }
+            .trimIndent()
+            .lines()
             .toMutableList()
+
         replaceCodeBlock(lines)
-        val markdown = lines.joinToString("\n") { it.trim() }
+
+        val markdown = lines.joinToString("\n")
+
         return processor.markdown(markdown).trim()
     }
 
