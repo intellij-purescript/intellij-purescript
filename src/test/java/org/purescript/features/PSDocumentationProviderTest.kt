@@ -1,6 +1,5 @@
 package org.purescript.features
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 
 class PSDocumentationProviderTest : TestCase() {
@@ -26,4 +25,22 @@ class PSDocumentationProviderTest : TestCase() {
             )
         assertEquals("<p>This is</p>\n\n<p>main</p>", documentation)
     }
+
+    fun `test converts doc comments with code blocks`() {
+        val documentation =
+            PSDocumentationProvider().docCommentsToDocstring(
+                listOf(
+                    "-- | ```purescript",
+                    "-- | instance functorF :: Functor F where",
+                    "-- |   map = liftM1",
+                    "-- | ```",
+                )
+            )
+        assertEquals(
+            """<pre><code>
+instance functorF :: Functor F where
+  map = liftM1
+</code></pre>""", documentation)
+    }
+
 }
