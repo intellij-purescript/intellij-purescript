@@ -33,7 +33,6 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     val exportDeclarations: Array<PSPositionedDeclarationRefImpl> get() =
         findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-
     val importDeclarations: Array<PSImportDeclarationImpl> get() =
         findChildrenByClass(PSImportDeclarationImpl::class.java)
 
@@ -54,9 +53,16 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     fun exportedValuesExcluding(names :Set<String> ): Sequence<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name !in names }
     }
+
     fun exportedValuesMatching(names :Set<String> ): Sequence<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name in names }
     }
+    val reexportedModuleNames: List<String> get() =
+        findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
+            .asSequence()
+            .filter { it.isModuleExport }
+            .map { it.text.removePrefix("module").trim() }
+            .toList()
 
     val exportedNames: List<String> get() =
         findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
