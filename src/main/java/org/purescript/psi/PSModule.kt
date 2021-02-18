@@ -31,6 +31,9 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .find { it.name ?: "" == name }
     }
 
+    val foreignValueDeclarations: Array<PSForeignValueDeclaration> get() =
+        findChildrenByClass(PSForeignValueDeclaration::class.java)
+
     val exportDeclarations: Array<PSPositionedDeclarationRefImpl> get() =
         findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
 
@@ -89,5 +92,7 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     val importedValueDeclarations get() =
         importDeclarations.asSequence().flatMap { it.importedValues }
+
+
 
 }

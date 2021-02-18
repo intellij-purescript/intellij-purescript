@@ -1,6 +1,7 @@
 package org.purescript.psi
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
 import org.purescript.file.PSFile
 
 class PSModuleTest : BasePlatformTestCase() {
@@ -88,5 +89,17 @@ class PSModuleTest : BasePlatformTestCase() {
         assertEquals(2, file.module.docComments.size)
         assertEquals("-- | This is", file.module.docComments[0].text)
         assertEquals("-- | main", file.module.docComments[1].text)
+    }
+
+    fun `test finds foreign value declarations`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """ module Main (split) where
+                
+                -- | Returns the substrings of the second string separated
+                foreign import split :: Pattern -> String -> Array String
+            """.trimIndent()
+        ) as PSFile
+        TestCase.assertEquals(1, file.module.foreignValueDeclarations.size)
     }
 }
