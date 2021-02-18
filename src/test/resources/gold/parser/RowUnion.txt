@@ -38,7 +38,7 @@ Purescript File
             PsiElement(proper name)('Console')
       PsiElement(foreign)('foreign')
       PsiElement(import)('import')
-      PSExternDeclarationImpl(ExternDeclaration)
+      PSForeignValueDeclaration(ForeignValueDeclaration)
         PSIdentifierImpl(identifier)
           PsiElement(identifier)('merge')
         PsiElement(::)('::')

@@ -15,7 +15,6 @@ import org.purescript.file.PSFile
 import org.purescript.file.PSFileStubType
 import org.purescript.lexer.PSLexer
 import org.purescript.psi.*
-import org.purescript.psi.PSASTWrapperElement
 
 class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createLexer(project: Project): Lexer {
@@ -108,8 +107,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSExternDataDeclarationImpl(node)
         } else if (type == PSElements.ExternInstanceDeclaration) {
             PSExternInstanceDeclarationImpl(node)
-        } else if (type == PSElements.ExternDeclaration) {
-            PSExternDeclarationImpl(node)
+        } else if (type == PSElements.ForeignValueDeclaration) {
+            PSForeignValueDeclaration(node)
         } else if (type == PSElements.FixityDeclaration) {
             PSFixityDeclarationImpl(node)
         } else if (type == PSElements.PositionedDeclarationRef) {
