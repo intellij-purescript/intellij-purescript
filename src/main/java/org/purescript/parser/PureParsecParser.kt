@@ -371,7 +371,7 @@ class PureParsecParser {
                             .then(optional(stringLiteral.`as`(PSElements.JSRaw)))
                             .then(indented(token(DCOLON)))
                             .then(type)
-                            .`as`(PSElements.ExternDeclaration)
+                            .`as`(PSElements.ForeignValueDeclaration)
                     )
                 )
             )

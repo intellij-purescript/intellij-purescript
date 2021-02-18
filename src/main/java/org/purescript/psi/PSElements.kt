@@ -60,7 +60,7 @@ interface PSElements {
         val ExternInstanceDeclaration =
             PSElementType("ExternInstanceDeclaration")
         @kotlin.jvm.JvmField
-        val ExternDeclaration = PSElementType("ExternDeclaration")
+        val ForeignValueDeclaration = PSElementType("ForeignValueDeclaration")
         @kotlin.jvm.JvmField
         val FixityDeclaration = PSElementType("FixityDeclaration")
         @kotlin.jvm.JvmField
