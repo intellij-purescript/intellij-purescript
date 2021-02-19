@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.elementType
+import org.purescript.parser.PSTokens
 import javax.swing.Icon
 
 class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),

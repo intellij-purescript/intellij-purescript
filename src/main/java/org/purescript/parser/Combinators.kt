@@ -1,7 +1,7 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
-import org.purescript.psi.PSTokens
+import org.purescript.parser.PSTokens
 import java.util.*
 
 object Combinators {

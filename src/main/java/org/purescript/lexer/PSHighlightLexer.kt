@@ -4,7 +4,7 @@ import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.LookAheadLexer
 import com.intellij.lexer.MergingLexerAdapter
 import com.intellij.psi.tree.TokenSet
-import org.purescript.psi.PSTokens
+import org.purescript.parser.PSTokens
 
 class PSHighlightLexer : LookAheadLexer(
     MergingLexerAdapter(

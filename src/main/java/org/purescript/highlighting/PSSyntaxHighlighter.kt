@@ -8,8 +8,8 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSHighlightLexer
-import org.purescript.psi.PSElements
-import org.purescript.psi.PSTokens
+import org.purescript.parser.PSElements
+import org.purescript.parser.PSTokens
 import java.util.*
 
 class PSSyntaxHighlighter : SyntaxHighlighterBase() {

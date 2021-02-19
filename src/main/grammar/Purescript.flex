@@ -2,7 +2,7 @@ package org.purescript.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import static org.purescript.psi.PSTokens.*;
+import static org.purescript.parser.PSTokens.*;
 
 %%
 

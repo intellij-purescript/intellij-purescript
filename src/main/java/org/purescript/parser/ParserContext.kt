@@ -6,7 +6,7 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.lang.WhitespacesAndCommentsBinder
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.Stack
-import org.purescript.psi.PSTokens
+import org.purescript.parser.PSTokens
 import java.util.*
 
 class ParserContext(private val builder: PsiBuilder) {

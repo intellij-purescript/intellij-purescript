@@ -3,6 +3,7 @@ package org.purescript.psi
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.impl.source.tree.LeafElement
+import org.purescript.parser.PSElements
 
 class PSASTWrapperElement(astNode: ASTNode?) : ASTWrapperPsiElement(
     astNode!!

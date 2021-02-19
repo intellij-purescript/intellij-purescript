@@ -2,8 +2,8 @@ package org.purescript.parser
 
 import com.intellij.lang.*
 import com.intellij.psi.tree.IElementType
-import org.purescript.psi.PSTokens
-import org.purescript.psi.PSElements
+import org.purescript.parser.PSTokens
+import org.purescript.parser.PSElements
 
 class PureParser : PsiParser, PSTokens, PSElements {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {

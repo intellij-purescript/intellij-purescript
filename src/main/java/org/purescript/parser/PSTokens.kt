@@ -1,6 +1,7 @@
-package org.purescript.psi
+package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
+import org.purescript.psi.PSElementType
 
 interface PSTokens {
     companion object {

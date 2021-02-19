@@ -2,7 +2,7 @@ package org.purescript.lexer
 
 import com.intellij.lexer.*
 import com.intellij.psi.tree.TokenSet
-import org.purescript.psi.PSTokens
+import org.purescript.parser.PSTokens
 
 class PSLexer : LookAheadLexer(
     MergingLexerAdapter(

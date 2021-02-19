@@ -1,4 +1,6 @@
-package org.purescript.psi
+package org.purescript.parser
+
+import org.purescript.psi.PSElementType
 
 interface PSElements {
     companion object {

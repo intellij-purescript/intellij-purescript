@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
+import org.purescript.parser.PSTokens
 
 class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
     override fun getName(): String {

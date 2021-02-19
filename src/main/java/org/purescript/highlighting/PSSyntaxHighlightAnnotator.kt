@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
-import org.purescript.psi.PSElements
+import org.purescript.parser.PSElements
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
