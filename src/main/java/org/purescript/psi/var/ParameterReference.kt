@@ -1,9 +1,12 @@
-package org.purescript.psi
+package org.purescript.psi.`var`
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentOfType
 import org.jetbrains.annotations.NotNull
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.PSValueDeclaration
+import org.purescript.psi.PSVarBinderImpl
 
 class ParameterReference (element: @NotNull PSPsiElement) : PsiReferenceBase<PSPsiElement?>(
     element,

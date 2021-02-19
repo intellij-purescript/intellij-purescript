@@ -1,4 +1,4 @@
-package org.purescript.psi
+package org.purescript.psi.`var`
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
@@ -288,22 +288,22 @@ class PSVarTest : BasePlatformTestCase() {
         val names = parameterReference.variants.map { it?.name }
         assertContainsElements(names, "z", "y")
     }
-}
 
-private fun PsiElement.getVarByName(
-    name: String
-): PSVar? {
-    return SyntaxTraverser
-        .psiTraverser(this)
-        .filterIsInstance(PSVar::class.java)
-        .firstOrNull { it.text.trim() == name }
-}
+    private fun PsiElement.getVarByName(
+        name: String
+    ): PSVar? {
+        return SyntaxTraverser
+            .psiTraverser(this)
+            .filterIsInstance(PSVar::class.java)
+            .firstOrNull { it.text.trim() == name }
+    }
 
-private fun <T> PsiElement.referenceOfType(
-    referenceType: Class<T>
-): T {
-    return this
-        .references
-        .filterIsInstance(referenceType)
-        .first()
+    private fun <T> PsiElement.referenceOfType(
+        referenceType: Class<T>
+    ): T {
+        return this
+            .references
+            .filterIsInstance(referenceType)
+            .first()
+    }
 }

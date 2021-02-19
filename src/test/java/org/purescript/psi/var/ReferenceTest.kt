@@ -1,4 +1,4 @@
-package org.purescript
+package org.purescript.psi.`var`
 
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
