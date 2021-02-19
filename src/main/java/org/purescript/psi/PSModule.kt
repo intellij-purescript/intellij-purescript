@@ -34,57 +34,67 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
-    val foreignValueDeclarations: Array<PSForeignValueDeclaration> get() =
-        findChildrenByClass(PSForeignValueDeclaration::class.java)
+    val foreignValueDeclarations: Array<PSForeignValueDeclaration>
+        get() =
+            findChildrenByClass(PSForeignValueDeclaration::class.java)
 
-    val exportDeclarations: Array<PSPositionedDeclarationRefImpl> get() =
-        findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
+    val exportDeclarations: Array<PSPositionedDeclarationRefImpl>
+        get() =
+            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
 
-    val importDeclarations: Array<PSImportDeclarationImpl> get() =
-        findChildrenByClass(PSImportDeclarationImpl::class.java)
+    val importDeclarations: Array<PSImportDeclarationImpl>
+        get() =
+            findChildrenByClass(PSImportDeclarationImpl::class.java)
 
     val valueDeclarations: Sequence<PSValueDeclaration>
         get() = PsiTreeUtil
-        .findChildrenOfType(this, PSValueDeclaration::class.java)
-        .asSequence()
-        .filterNotNull()
-
-    val valueDeclarationsByName: Map<String, List<PSValueDeclaration>> get() =
-        valueDeclarations.groupBy { it.name }
-
-    val exportedValueDeclarations get() =
-        valueDeclarations.filter { it.name in exportedNames} +
-            valuesFromReexportedModules
-
-    val exportedValueDeclarationsByName: Map<String, List<PSValueDeclaration>> get() =
-        exportedValueDeclarations.groupBy { it.name }
-
-    private val valuesFromReexportedModules get() =
-        importDeclarations
-            .filter { it.name in reexportedModuleNames}
-            .flatMap { it.importedValues }
+            .findChildrenOfType(this, PSValueDeclaration::class.java)
             .asSequence()
+            .filterNotNull()
 
-    fun exportedValuesExcluding(names :Set<String> ): Sequence<PSValueDeclaration> {
+    val valueDeclarationsByName: Map<String, List<PSValueDeclaration>>
+        get() =
+            valueDeclarations.groupBy { it.name }
+
+    val exportedValueDeclarations
+        get() =
+            valueDeclarations.filter { it.name in exportedNames } +
+                valuesFromReexportedModules
+
+    val exportedValueDeclarationsByName: Map<String, List<PSValueDeclaration>>
+        get() =
+            exportedValueDeclarations.groupBy { it.name }
+
+    private val valuesFromReexportedModules
+        get() =
+            importDeclarations
+                .filter { it.name in reexportedModuleNames }
+                .flatMap { it.importedValues }
+                .asSequence()
+
+    fun exportedValuesExcluding(names: Set<String>): Sequence<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name !in names }
     }
 
-    fun exportedValuesMatching(names :Set<String> ): Sequence<PSValueDeclaration> {
+    fun exportedValuesMatching(names: Set<String>): Sequence<PSValueDeclaration> {
         return exportedValueDeclarations.filter { it.name in names }
     }
-    val reexportedModuleNames: List<String> get() =
-        findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-            .asSequence()
-            .filter { it.isModuleExport }
-            .map { it.text.removePrefix("module").trim() }
-            .toList()
 
-    val exportedNames: List<String> get() =
-        findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-            .asSequence()
-            .filter { !it.isModuleExport }
-            .map { it.text.trim() }
-            .toList()
+    val reexportedModuleNames: List<String>
+        get() =
+            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
+                .asSequence()
+                .filter { it.isModuleExport }
+                .map { it.text.removePrefix("module").trim() }
+                .toList()
+
+    val exportedNames: List<String>
+        get() =
+            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
+                .asSequence()
+                .filter { !it.isModuleExport }
+                .map { it.text.trim() }
+                .toList()
 
     val docComments: List<PsiComment>
         get() = parent.siblings(forward = false, withSelf = false)
@@ -93,9 +103,7 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .toList()
             .reversed()
 
-    val importedValueDeclarations get() =
-        importDeclarations.asSequence().flatMap { it.importedValues }
-
-
-
+    val importedValueDeclarations
+        get() =
+            importDeclarations.asSequence().flatMap { it.importedValues }
 }
