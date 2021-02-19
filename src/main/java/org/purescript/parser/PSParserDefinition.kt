@@ -62,6 +62,22 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSProgram(node)
         } else if (type == PSElements.Module) {
             PSModule(node)
+        } else if (type == PSElements.ExportList) {
+            PSExportList(node)
+        } else if (type == PSElements.ExportedClass) {
+            PSExportedClass(node)
+        } else if (type == PSElements.ExportedData) {
+            PSExportedData(node)
+        } else if (type == PSElements.ExportedKind) {
+            PSExportedKind(node)
+        } else if (type == PSElements.ExportedModule) {
+            PSExportedModule(node)
+        } else if (type == PSElements.ExportedOperator) {
+            PSExportedOperator(node)
+        } else if (type == PSElements.ExportedType) {
+            PSExportedType(node)
+        } else if (type == PSElements.ExportedValue) {
+            PSExportedValue(node)
         } else if (type == PSElements.Star) {
             PSStarImpl(node)
         } else if (type == PSElements.Bang) {
