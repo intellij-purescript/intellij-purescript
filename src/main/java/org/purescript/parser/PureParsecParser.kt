@@ -607,18 +607,20 @@ class PureParsecParser {
             .`as`(PSElements.ExportedType)
     private val exportedValue =
         ident.`as`(PSElements.ExportedValue)
-    private val exportedItem =
-        choice(
-            exportedClass,
-            exportedData,
-            exportedKind,
-            exportedModule,
-            exportedOperator,
-            exportedType,
-            exportedValue,
-        )
-    private val exportList = parens(commaSep1(exportedItem))
-        .`as`(PSElements.ExportList)
+    private val exportList =
+        parens(
+            commaSep1(
+                choice(
+                    exportedClass,
+                    exportedData,
+                    exportedKind,
+                    exportedModule,
+                    exportedOperator,
+                    exportedType,
+                    exportedValue,
+                )
+            )
+        ).`as`(PSElements.ExportList)
     private val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
