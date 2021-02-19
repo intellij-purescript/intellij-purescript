@@ -18,7 +18,6 @@ import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
-import org.purescript.parser.PSElements
 import org.purescript.parser.PSElements.Companion.Abs
 import org.purescript.parser.PSElements.Companion.ArrayLiteral
 import org.purescript.parser.PSElements.Companion.Bang
@@ -60,7 +59,6 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSElements.Companion.qualifiedModuleName
-import org.purescript.parser.PSTokens
 import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
