@@ -77,6 +77,7 @@ import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.INSTANCE
+import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -90,6 +91,7 @@ import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.TRUE
+import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
 class PureParsecParser {
@@ -582,9 +584,46 @@ class PureParsecParser {
             )
             .then(guardedDecl).`as`(ValueDeclaration)
     )
+    private val exportedClass =
+        token(CLASS)
+            .then(properName)
+            .`as`(PSElements.ExportedClass)
+    private val exportedData =
+        properName.`as`(PSElements.ExportedData)
+    private val exportedKind =
+        token(KIND)
+            .then(properName)
+            .`as`(PSElements.ExportedKind)
+    private val exportedModule =
+        token(MODULE)
+            .then(parseQualified(properName))
+            .`as`(PSElements.ExportedModule)
+    private val exportedOperator =
+        parens(operator)
+            .`as`(PSElements.ExportedOperator)
+    private val exportedType =
+        token(TYPE)
+            .then(parens(operator))
+            .`as`(PSElements.ExportedType)
+    private val exportedValue =
+        ident.`as`(PSElements.ExportedValue)
+    private val exportedItem =
+        choice(
+            exportedClass,
+            exportedData,
+            exportedKind,
+            exportedModule,
+            exportedOperator,
+            exportedType,
+            exportedValue,
+        )
+    private val exportList = parens(commaSep1(exportedItem))
+        .`as`(PSElements.ExportList)
     private val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
-        .then(optional(parens(commaSep1(parseDeclarationRef))))
+        .then(optional(exportList))
+//      TODO [simonolander] remove
+//      .then(optional(parens(commaSep1(parseDeclarationRef))))
         .then(token(WHERE))
         .then(indentedList(decl))
         .`as`(PSElements.Module)
