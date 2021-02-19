@@ -13,6 +13,22 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val Module = PSElementType("Module")
         @kotlin.jvm.JvmField
+        val ExportList = PSElementType("ExportList")
+        @kotlin.jvm.JvmField
+        val ExportedClass = PSElementType("ExportedClass")
+        @kotlin.jvm.JvmField
+        val ExportedData = PSElementType("ExportedData")
+        @kotlin.jvm.JvmField
+        val ExportedKind = PSElementType("ExportedKind")
+        @kotlin.jvm.JvmField
+        val ExportedModule = PSElementType("ExportedModule")
+        @kotlin.jvm.JvmField
+        val ExportedOperator = PSElementType("ExportedOperator")
+        @kotlin.jvm.JvmField
+        val ExportedType = PSElementType("ExportedType")
+        @kotlin.jvm.JvmField
+        val ExportedValue = PSElementType("ExportedValue")
+        @kotlin.jvm.JvmField
         val Star = PSElementType("Star")
         @kotlin.jvm.JvmField
         val Bang = PSElementType("Bang")
