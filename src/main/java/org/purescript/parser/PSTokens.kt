@@ -34,6 +34,8 @@ interface PSTokens {
         @kotlin.jvm.JvmField
         val CLASS = PSElementType("class")
         @kotlin.jvm.JvmField
+        val KIND = PSElementType("kind")
+        @kotlin.jvm.JvmField
         val INSTANCE = PSElementType("instance")
         @kotlin.jvm.JvmField
         val DERIVE = PSElementType("derive")
