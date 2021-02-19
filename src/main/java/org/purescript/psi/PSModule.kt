@@ -32,6 +32,8 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .find { it.name ?: "" == name }
     }
 
+    val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
+
     val foreignValueDeclarations: Array<PSForeignValueDeclaration> get() =
         findChildrenByClass(PSForeignValueDeclaration::class.java)
 
