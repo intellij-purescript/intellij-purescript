@@ -19,7 +19,7 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference = psVar.referenceOfType(LocalValueReference::class.java)
         val valueDeclaration = valueReference.resolve()!! as PsiNamedElement
         TestCase.assertEquals("y", valueDeclaration.name)
     }
@@ -35,7 +35,7 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference = psVar.referenceOfType(LocalValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(true)
         TestCase.assertEquals(2, valueDeclarations.size)
     }
@@ -78,9 +78,9 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         val psVar = file.getVarByName("y")!!
-        val valueReference = psVar.referenceOfType(ValueReference::class.java)
+        val valueReference = psVar.referenceOfType(ImportedValueReference::class.java)
         val names = valueReference.variants.map { it.name }.toList()
-        assertContainsElements(names, "z", "q", "k", "x", "y")
+        assertContainsElements(names, "z", "q", "k")
         assertDoesntContain(names, "w", "p")
     }
 
@@ -101,8 +101,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclaration = valueReference
             .multiResolve(false)
             .first().element as PsiNamedElement
@@ -133,8 +133,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclaration = valueReference
             .multiResolve(false)
             .first().element as PsiNamedElement
@@ -158,8 +158,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
     }
@@ -181,8 +181,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
     }
@@ -205,8 +205,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(1, valueDeclarations.size)
     }
@@ -229,8 +229,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
     }
@@ -253,8 +253,8 @@ class PSVarTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val psVar = file.getVarByName("y")!!
-        val valueReference: ValueReference =
-            psVar.referenceOfType(ValueReference::class.java)
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(1, valueDeclarations.size)
     }

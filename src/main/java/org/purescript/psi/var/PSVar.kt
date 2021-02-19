@@ -9,8 +9,9 @@ import org.purescript.psi.PSPsiElement
 class PSVar(node: ASTNode) : PSPsiElement(node) {
     override fun getReferences(): Array<PsiReference> {
         return arrayOf(
-            ValueReference(this),
-            ParameterReference(this)
+            ParameterReference(this),
+            LocalValueReference(this),
+            ImportedValueReference(this)
         )
     }
 
