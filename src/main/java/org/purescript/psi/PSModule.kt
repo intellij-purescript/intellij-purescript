@@ -32,6 +32,13 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
             .find { it.name ?: "" == name }
     }
 
+    /**
+     * The export list in the module signature. If the export list is null,
+     * the module implicitly exports all its members.
+     *
+     * Example: `(foo, bar)` in
+     * ```module FooBar (foo, bar) where```
+     */
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
     val foreignValueDeclarations: Array<PSForeignValueDeclaration>
