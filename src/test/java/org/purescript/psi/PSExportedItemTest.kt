@@ -22,6 +22,22 @@ class PSExportedItemTest : BasePlatformTestCase() {
         TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedData)
     }
 
+    fun `test parses exported data with all members`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """module Main (Foo(..)) where"""
+        ) as PSFile
+        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedData)
+    }
+
+    fun `test parses exported data with Some members`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """module Main (Foo(Bar, Baz)) where"""
+        ) as PSFile
+        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedData)
+    }
+
     fun `test parses exported kind`() {
         val file = myFixture.addFileToProject(
             "Main.purs",

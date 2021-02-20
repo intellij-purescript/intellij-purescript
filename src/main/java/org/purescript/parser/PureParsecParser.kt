@@ -589,7 +589,18 @@ class PureParsecParser {
             .then(properName)
             .`as`(PSElements.ExportedClass)
     private val exportedData =
-        properName.`as`(PSElements.ExportedData)
+        properName
+            .then(
+                optional(
+                    parens(
+                        choice(
+                            dot.then(dot),
+                            commaSep1(properName)
+                        )
+                    )
+                )
+            )
+            .`as`(PSElements.ExportedData)
     private val exportedKind =
         token(KIND)
             .then(properName)
