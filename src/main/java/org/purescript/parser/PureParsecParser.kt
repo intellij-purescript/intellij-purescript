@@ -29,6 +29,8 @@ import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DoNotationLet
+import org.purescript.parser.PSElements.Companion.ExportedDataMember
+import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
@@ -67,6 +69,7 @@ import org.purescript.parser.PSTokens.Companion.COMMA
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
+import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.EQ
@@ -106,6 +109,7 @@ class PureParsecParser {
     private val char = token("'")
     private val dcolon = token(DCOLON)
     private val dot = token(DOT)
+    private val ddot = token(DDOT)
     private val eq = token(EQ)
     private val string = token(STRING)
     private val where = token(WHERE)
@@ -594,10 +598,10 @@ class PureParsecParser {
                 optional(
                     parens(
                         choice(
-                            dot.then(dot),
-                            commaSep1(properName)
+                            ddot,
+                            commaSep1(properName.`as`(ExportedDataMember))
                         )
-                    )
+                    ).`as`(ExportedDataMemberList)
                 )
             )
             .`as`(PSElements.ExportedData)

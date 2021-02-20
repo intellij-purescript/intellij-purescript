@@ -68,6 +68,10 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSExportedClass(node)
         } else if (type == PSElements.ExportedData) {
             PSExportedData(node)
+        } else if (type == PSElements.ExportedDataMember) {
+            PSExportedDataMember(node)
+        } else if (type == PSElements.ExportedDataMemberList) {
+            PSExportedDataMemberList(node)
         } else if (type == PSElements.ExportedKind) {
             PSExportedKind(node)
         } else if (type == PSElements.ExportedModule) {

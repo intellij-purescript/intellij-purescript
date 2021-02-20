@@ -19,7 +19,9 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (Foo) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedData)
+        val exportedData = file.module.exportList!!.exportedItems.single() as PSExportedData
+
+        TestCase.assertNull(exportedData.dataMemberList)
     }
 
     fun `test parses exported data with all members`() {
@@ -27,15 +29,25 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (Foo(..)) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedData)
+        val exportedData = file.module.exportList!!.exportedItems.single() as PSExportedData
+        val dataMemberList = exportedData.dataMemberList
+
+        TestCase.assertNotNull(exportedData.dataMemberList)
+        TestCase.assertNotNull(dataMemberList!!.doubleDot)
+        TestCase.assertTrue(dataMemberList.dataMembers.isEmpty())
     }
 
-    fun `test parses exported data with Some members`() {
+    fun `test parses exported data with some members`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
             """module Main (Foo(Bar, Baz)) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedData)
+        val exportedData = file.module.exportList!!.exportedItems.single() as PSExportedData
+        val dataMemberList = exportedData.dataMemberList
+
+        TestCase.assertNotNull(exportedData.dataMemberList)
+        TestCase.assertNull(dataMemberList!!.doubleDot)
+        TestCase.assertEquals(2, dataMemberList.dataMembers.size)
     }
 
     fun `test parses exported kind`() {

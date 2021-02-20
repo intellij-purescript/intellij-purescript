@@ -19,6 +19,10 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val ExportedData = PSElementType("ExportedData")
         @kotlin.jvm.JvmField
+        val ExportedDataMember = PSElementType("ExportedDataMember")
+        @kotlin.jvm.JvmField
+        val ExportedDataMemberList = PSElementType("ExportedDataMemberList")
+        @kotlin.jvm.JvmField
         val ExportedKind = PSElementType("ExportedKind")
         @kotlin.jvm.JvmField
         val ExportedModule = PSElementType("ExportedModule")
