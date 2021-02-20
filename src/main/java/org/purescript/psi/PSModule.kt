@@ -45,10 +45,6 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
         get() =
             findChildrenByClass(PSForeignValueDeclaration::class.java)
 
-    val exportDeclarations: Array<PSPositionedDeclarationRefImpl>
-        get() =
-            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-
     val importDeclarations: Array<PSImportDeclarationImpl>
         get() =
             findChildrenByClass(PSImportDeclarationImpl::class.java)
