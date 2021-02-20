@@ -7,9 +7,15 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
+import org.purescript.features.DocCommentOwner
 import org.purescript.parser.PSTokens
 
-class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
+
+class PSModule(node: ASTNode) :
+    PSPsiElement(node),
+    PsiNameIdentifierOwner,
+    DocCommentOwner
+    {
     override fun getName(): String {
         return nameIdentifier.name
     }
@@ -98,7 +104,7 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
                 ?.toList()
                 ?: emptyList()
 
-    val docComments: List<PsiComment>
+    override val docComments: List<PsiComment>
         get() = parent.siblings(forward = false, withSelf = false)
             .filter { it.elementType == PSTokens.DOC_COMMENT }
             .filterIsInstance(PsiComment::class.java)

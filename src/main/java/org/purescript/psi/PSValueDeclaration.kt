@@ -7,11 +7,15 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.elementType
+import org.purescript.features.DocCommentOwner
 import org.purescript.parser.PSTokens
 import javax.swing.Icon
 
-class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
-    PsiNameIdentifierOwner {
+class PSValueDeclaration(node: ASTNode) :
+    PSPsiElement(node),
+    PsiNameIdentifierOwner,
+    DocCommentOwner
+{
     override fun getName(): String {
         return findChildByClass(PSIdentifierImpl::class.java)!!
             .name
@@ -49,7 +53,7 @@ class PSValueDeclaration(node: ASTNode) : PSPsiElement(node),
         return findChildByClass(PSIdentifierImpl::class.java)
     }
 
-    val docComments:List<PsiComment>
+    override val docComments:List<PsiComment>
         get() = generateSequence(prevSibling) {
             when (it) {
                 !is PSValueDeclaration -> it.prevSibling
