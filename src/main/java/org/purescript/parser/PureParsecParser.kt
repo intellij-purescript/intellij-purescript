@@ -18,7 +18,6 @@ import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
-import org.purescript.parser.PSElements
 import org.purescript.parser.PSElements.Companion.Abs
 import org.purescript.parser.PSElements.Companion.ArrayLiteral
 import org.purescript.parser.PSElements.Companion.Bang
@@ -30,6 +29,8 @@ import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DoNotationLet
+import org.purescript.parser.PSElements.Companion.ExportedDataMember
+import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
@@ -60,7 +61,6 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSElements.Companion.qualifiedModuleName
-import org.purescript.parser.PSTokens
 import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -69,6 +69,7 @@ import org.purescript.parser.PSTokens.Companion.COMMA
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
+import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.EQ
@@ -79,6 +80,7 @@ import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.INSTANCE
+import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -92,6 +94,7 @@ import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.TRUE
+import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
 class PureParsecParser {
@@ -106,6 +109,7 @@ class PureParsecParser {
     private val char = token("'")
     private val dcolon = token(DCOLON)
     private val dot = token(DOT)
+    private val ddot = token(DDOT)
     private val eq = token(EQ)
     private val string = token(STRING)
     private val where = token(WHERE)
@@ -125,6 +129,7 @@ class PureParsecParser {
             token(HIDING),
             token(FORALL),
             token(PSTokens.QUALIFIED),
+            token(KIND),
         )
     private val lname = choice(
         token(PSTokens.IDENT),
@@ -138,6 +143,7 @@ class PureParsecParser {
         token(PSTokens.INFIX),
         token(CLASS),
         token(DERIVE),
+        token(KIND),
         token(INSTANCE),
         token(MODULE),
         token(PSTokens.CASE),
@@ -584,9 +590,59 @@ class PureParsecParser {
             )
             .then(guardedDecl).`as`(ValueDeclaration)
     )
+    private val exportedClass =
+        token(CLASS)
+            .then(properName)
+            .`as`(PSElements.ExportedClass)
+    private val exportedData =
+        properName
+            .then(
+                optional(
+                    parens(
+                        choice(
+                            ddot,
+                            commaSep1(properName.`as`(ExportedDataMember))
+                        )
+                    ).`as`(ExportedDataMemberList)
+                )
+            )
+            .`as`(PSElements.ExportedData)
+    private val exportedKind =
+        token(KIND)
+            .then(properName)
+            .`as`(PSElements.ExportedKind)
+    private val exportedModule =
+        token(MODULE)
+            .then(parseQualified(properName))
+            .`as`(PSElements.ExportedModule)
+    private val exportedOperator =
+        parens(operator)
+            .`as`(PSElements.ExportedOperator)
+    private val exportedType =
+        token(TYPE)
+            .then(parens(operator))
+            .`as`(PSElements.ExportedType)
+    private val exportedValue =
+        ident.`as`(PSElements.ExportedValue)
+    private val exportList =
+        parens(
+            commaSep1(
+                choice(
+                    exportedClass,
+                    exportedData,
+                    exportedKind,
+                    exportedModule,
+                    exportedOperator,
+                    exportedType,
+                    exportedValue,
+                )
+            )
+        ).`as`(PSElements.ExportList)
     private val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
-        .then(optional(parens(commaSep1(parseDeclarationRef))))
+        .then(optional(exportList))
+//      TODO [simonolander] remove
+//      .then(optional(parens(commaSep1(parseDeclarationRef))))
         .then(token(WHERE))
         .then(indentedList(decl))
         .`as`(PSElements.Module)

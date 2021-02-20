@@ -56,7 +56,7 @@ Purescript File
             PSRowImpl(Row)
               PSIdentifierImpl(GenericIdentifier)
                 PSIdentifierImpl(identifier)
-                  PsiElement(identifier)('kind')
+                  PsiElement(kind)('kind')
               PsiElement(::)('::')
               PSTypeImpl(Type)
                 PSTypeAtomImpl(TypeAtom)
