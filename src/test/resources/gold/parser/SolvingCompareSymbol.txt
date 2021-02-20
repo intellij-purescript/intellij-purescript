@@ -84,7 +84,7 @@ Purescript File
           PsiElement())(')')
         PsiElement(,)(',')
         PSPositionedDeclarationRefImpl(PositionedDeclarationRef)
-          PsiElement(identifier)('kind')
+          PsiElement(kind)('kind')
           PSProperName(ClassName)
             PSProperName(Qualified)
               PSProperName(ProperName)
