@@ -5,10 +5,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.siblings
 import org.purescript.features.DocCommentOwner
-import org.purescript.parser.PSTokens
 
 
 class PSModule(node: ASTNode) :
@@ -105,11 +102,7 @@ class PSModule(node: ASTNode) :
                 ?: emptyList()
 
     override val docComments: List<PsiComment>
-        get() = parent.siblings(forward = false, withSelf = false)
-            .filter { it.elementType == PSTokens.DOC_COMMENT }
-            .filterIsInstance(PsiComment::class.java)
-            .toList()
-            .reversed()
+        get() = parent.getDocComments()
 
     val importedValueDeclarations
         get() =

@@ -4,10 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.elementType
 import org.purescript.features.DocCommentOwner
-import org.purescript.parser.PSTokens
 
 class PSForeignValueDeclaration(node: ASTNode) :
     PSPsiElement(node),
@@ -27,12 +24,5 @@ class PSForeignValueDeclaration(node: ASTNode) :
     }
 
     override val docComments: List<PsiComment>
-        get() =
-            generateSequence(prevSibling) { it.prevSibling }
-                .dropWhile { it !is PsiComment && it !is DocCommentOwner }
-                .takeWhile { it is PsiComment || it is PsiWhiteSpace }
-                .filter { it.elementType == PSTokens.DOC_COMMENT}
-                .filterIsInstance(PsiComment::class.java)
-                .toList()
-                .reversed()
+        get() = this.getDocComments()
 }

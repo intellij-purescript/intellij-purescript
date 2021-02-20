@@ -6,9 +6,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.SyntaxTraverser
-import com.intellij.psi.util.elementType
 import org.purescript.features.DocCommentOwner
-import org.purescript.parser.PSTokens
 import javax.swing.Icon
 
 class PSValueDeclaration(node: ASTNode) :
@@ -54,16 +52,7 @@ class PSValueDeclaration(node: ASTNode) :
     }
 
     override val docComments:List<PsiComment>
-        get() = generateSequence(prevSibling) {
-            when (it) {
-                !is PSValueDeclaration -> it.prevSibling
-                else -> null
-            }
-        }
-            .filter { it.elementType == PSTokens.DOC_COMMENT}
-            .filterIsInstance(PsiComment::class.java)
-            .toList()
-            .reversed()
+        get() = this.getDocComments()
 
     val varBindersInParameters: Map<String, PSVarBinderImpl>
         get() = SyntaxTraverser.psiTraverser(this)
