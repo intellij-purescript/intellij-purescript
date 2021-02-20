@@ -89,11 +89,10 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     val reexportedModuleNames: List<String>
         get() =
-            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-                .asSequence()
-                .filter { it.isModuleExport }
-                .map { it.text.removePrefix("module").trim() }
-                .toList()
+            exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
+                ?.map { it.text.removePrefix("module").trim() }
+                ?.toList()
+                ?: emptyList()
 
     val exportedNames: List<String>
         get() =
