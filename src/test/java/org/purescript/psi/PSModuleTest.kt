@@ -20,6 +20,7 @@ class PSModuleTest : BasePlatformTestCase() {
         ) as PSFile
         assertEquals("My.Main", file.module.name)
     }
+
     fun `test be able to find no exported names`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
@@ -27,6 +28,7 @@ class PSModuleTest : BasePlatformTestCase() {
         ) as PSFile
         assertEquals(0, file.module.exportedNames.size)
     }
+
     fun `test be able to find one exported names`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
@@ -74,7 +76,7 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         assertEquals(1, file.module.reexportedModuleNames.size)
-        assertContainsElements(file.module.reexportedModuleNames,"Y")
+        assertContainsElements(file.module.reexportedModuleNames, "Y")
     }
 
     fun `test finds doc comment`() {
