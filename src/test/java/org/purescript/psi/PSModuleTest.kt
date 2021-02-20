@@ -88,7 +88,6 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
 
-        assertEquals(2, file.module.docComments.size)
         assertEquals("-- | This is", file.module.docComments[0].text)
         assertEquals("-- | main", file.module.docComments[1].text)
     }

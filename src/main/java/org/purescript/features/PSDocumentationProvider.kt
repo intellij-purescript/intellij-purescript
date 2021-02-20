@@ -3,31 +3,22 @@ package org.purescript.features
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
-import org.purescript.psi.PSModule
-import org.purescript.psi.PSValueDeclaration
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(
         element: PsiElement?,
         originalElement: PsiElement?
     ): String? {
-        return when (element) {
-            is PSModule -> {
-                layout(
-                    element.name,
-                    docCommentsToDocstring(element.docComments.map { it.text })
-                )
-            }
-            is PSValueDeclaration -> {
-                layout(
-                    element.name,
-                    docCommentsToDocstring(element.docComments.map { it.text })
-                )
-            }
-            else -> null
+        if (element is DocCommentOwner && element is PsiNamedElement) {
+            return layout(
+                element.name?: "unknown",
+                docCommentsToDocstring(element.docComments.map { it.text })
+            )
         }
+        return null
     }
 
     fun docCommentsToDocstring(commentText: List<String>): String {

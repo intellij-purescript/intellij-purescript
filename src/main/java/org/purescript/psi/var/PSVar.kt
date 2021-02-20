@@ -11,8 +11,13 @@ class PSVar(node: ASTNode) : PSPsiElement(node) {
         return arrayOf(
             ParameterReference(this),
             LocalValueReference(this),
+            LocalForeignValueReference(this),
             ImportedValueReference(this)
         )
+    }
+
+    override fun getName(): String {
+        return text
     }
 
     val module: PSModule get() = (containingFile as PSFile).module
