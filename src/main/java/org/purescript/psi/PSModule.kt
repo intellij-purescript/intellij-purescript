@@ -96,11 +96,11 @@ class PSModule(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     val exportedNames: List<String>
         get() =
-            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-                .asSequence()
-                .filter { !it.isModuleExport }
-                .map { it.text.trim() }
-                .toList()
+            exportList?.exportedItems
+                ?.filter { it !is PSExportedModule }
+                ?.map { it.text.trim() }
+                ?.toList()
+                ?: emptyList()
 
     val docComments: List<PsiComment>
         get() = parent.siblings(forward = false, withSelf = false)
