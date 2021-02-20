@@ -129,6 +129,7 @@ class PureParsecParser {
             token(HIDING),
             token(FORALL),
             token(PSTokens.QUALIFIED),
+            token(KIND),
         )
     private val lname = choice(
         token(PSTokens.IDENT),
@@ -142,6 +143,7 @@ class PureParsecParser {
         token(PSTokens.INFIX),
         token(CLASS),
         token(DERIVE),
+        token(KIND),
         token(INSTANCE),
         token(MODULE),
         token(PSTokens.CASE),
