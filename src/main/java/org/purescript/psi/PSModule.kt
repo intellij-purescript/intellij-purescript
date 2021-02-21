@@ -67,10 +67,6 @@ class PSModule(node: ASTNode) :
             valueDeclarations.filter { it.name in exportedNames } +
                 valuesFromReexportedModules
 
-    val exportedValueDeclarationsByName: Map<String, List<PSValueDeclaration>>
-        get() =
-            exportedValueDeclarations.groupBy { it.name }
-
     private val valuesFromReexportedModules
         get() =
             importDeclarations
@@ -104,7 +100,4 @@ class PSModule(node: ASTNode) :
     override val docComments: List<PsiComment>
         get() = parent.getDocComments()
 
-    val importedValueDeclarations
-        get() =
-            importDeclarations.asSequence().flatMap { it.importedValues }
-}
+    }

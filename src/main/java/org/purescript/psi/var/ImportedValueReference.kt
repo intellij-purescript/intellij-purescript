@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
-import org.purescript.psi.ModuleReference
 
 class ImportedValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     element,
@@ -15,23 +14,15 @@ class ImportedValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 
     override fun getVariants(): Array<PsiNamedElement> {
         val currentModule = myElement.module
-        return currentModule.importedValueDeclarations.toList().toTypedArray()
+        return currentModule.importDeclarations
+            .flatMap { it.importedValues }
+            .toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val name = myElement.text.trim()
-        val module = myElement.module
         return createResults(
-            module
-                .importDeclarations
-                .asSequence()
-                .filter { it.isNotHidingName(name) }
-                .map { ModuleReference(it).resolve() }
-                .filterNotNull()
-                .map { it.exportedValueDeclarationsByName[name] }
-                .filterNotNull()
-                .flatMap { it.asSequence() }
-                .filterNotNull()
+            variants
+                .filter { it.name == myElement.name }
                 .toList()
         )
     }
