@@ -13,7 +13,9 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
 ) {
 
     override fun getVariants(): Array<PsiNamedElement> {
-        return myElement.module.valueDeclarations.toList().toTypedArray()
+        return myElement.module.valueDeclarations.toList()
+            .distinctBy { it.name }
+            .toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {

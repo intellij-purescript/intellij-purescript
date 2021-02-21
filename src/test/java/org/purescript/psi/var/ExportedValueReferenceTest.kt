@@ -54,7 +54,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
         TestCase.assertFalse(exportedValue.reference.isReferenceTo(barDeclaration))
     }
 
-    fun `test suggests value declarations`() {
+    fun `test completes exported values`() {
         myFixture.configureByText(
             "Main.purs",
             """
