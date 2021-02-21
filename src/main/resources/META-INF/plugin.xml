@@ -101,6 +101,15 @@
             language="Purescript"
             implementationClass="org.purescript.features.PSPairedBraceMatcher"/>
 
+    <!-- Inspections -->
+
+    <localInspection
+            language="Purescript" groupName="Purescript"
+            displayName="Unresolved reference"
+            enabledByDefault="true" level="ERROR"
+            implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
+    />
+
   </extensions>
 
   <actions>

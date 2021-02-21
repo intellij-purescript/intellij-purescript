@@ -25,7 +25,7 @@ class PSExportedValue(node: ASTNode) : PSExportedItem(node) {
 
     override fun getName() = identifier.name
 
-    override fun getReference(): PsiReference {
+    override fun getReference(): ExportedValueReference {
         return ExportedValueReference(this)
     }
 }
