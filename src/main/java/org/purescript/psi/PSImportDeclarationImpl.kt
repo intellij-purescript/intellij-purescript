@@ -59,13 +59,4 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
                     importedModule?.exportedValueDeclarations?.asSequence()
                 }
             } ?: sequenceOf()
-
-
-    fun isNotHidingName(name: String): Boolean {
-        return when {
-            isHiding -> name !in namedImports
-            namedImports.isNotEmpty() -> name in namedImports
-            else -> true
-        }
-    }
 }
