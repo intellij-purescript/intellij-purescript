@@ -4,7 +4,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.features.DocCommentOwner
 
 
@@ -52,24 +51,13 @@ class PSModule(node: ASTNode) :
         get() =
             findChildrenByClass(PSImportDeclarationImpl::class.java)
 
-    val valueDeclarations: Sequence<PSValueDeclaration>
-        get() = PsiTreeUtil
-            .findChildrenOfType(this, PSValueDeclaration::class.java)
-            .asSequence()
-            .filterNotNull()
-
-    val valueDeclarationsByName: Map<String, List<PSValueDeclaration>>
-        get() =
-            valueDeclarations.groupBy { it.name }
+    val valueDeclarations: Array<PSValueDeclaration>
+        get() = findChildrenByClass(PSValueDeclaration::class.java)
 
     val exportedValueDeclarations
         get() =
             valueDeclarations.filter { it.name in exportedNames } +
                 valuesFromReexportedModules
-
-    val exportedValueDeclarationsByName: Map<String, List<PSValueDeclaration>>
-        get() =
-            exportedValueDeclarations.groupBy { it.name }
 
     private val valuesFromReexportedModules
         get() =
@@ -78,15 +66,7 @@ class PSModule(node: ASTNode) :
                 .flatMap { it.importedValues }
                 .asSequence()
 
-    fun exportedValuesExcluding(names: Set<String>): Sequence<PSValueDeclaration> {
-        return exportedValueDeclarations.filter { it.name !in names }
-    }
-
-    fun exportedValuesMatching(names: Set<String>): Sequence<PSValueDeclaration> {
-        return exportedValueDeclarations.filter { it.name in names }
-    }
-
-    val reexportedModuleNames: List<String>
+        val reexportedModuleNames: List<String>
         get() =
             exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
                 ?.map { it.text.removePrefix("module").trim() }
@@ -104,7 +84,4 @@ class PSModule(node: ASTNode) :
     override val docComments: List<PsiComment>
         get() = parent.getDocComments()
 
-    val importedValueDeclarations
-        get() =
-            importDeclarations.asSequence().flatMap { it.importedValues }
-}
+    }

@@ -18,14 +18,9 @@ class LocalValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val name = myElement.text.trim()
-        val module = myElement.module
         return createResults(
-            module
-                .valueDeclarationsByName
-                .getOrDefault(name, emptyList())
-                .asSequence()
-                .filterNotNull()
+            variants
+                .filter { it.name == myElement.name }
                 .toList()
         )
     }
