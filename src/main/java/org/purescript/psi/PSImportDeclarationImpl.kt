@@ -42,21 +42,23 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
     val importedValues
         get(): Sequence<PSValueDeclaration> =
-            when {
-                isHiding -> {
-                    importedModule
-                        ?.exportedValueDeclarations
-                        ?.filter { it.name !in namedImports.toSet() }
-                        ?.asSequence()
-                }
-                namedImports.isNotEmpty() -> {
-                    importedModule
-                        ?.exportedValueDeclarations
-                        ?.filter { it.name in namedImports.toSet() }
-                        ?.asSequence()
-                }
-                else -> {
-                    importedModule?.exportedValueDeclarations?.asSequence()
+            importedModule?.let { importedModule ->
+                when {
+                    isHiding -> {
+                        importedModule
+                            .exportedValueDeclarations
+                            .filter { it.name !in namedImports.toSet() }
+                            .asSequence()
+                    }
+                    namedImports.isNotEmpty() -> {
+                        importedModule
+                            .exportedValueDeclarations
+                            .filter { it.name in namedImports.toSet() }
+                            .asSequence()
+                    }
+                    else -> {
+                        importedModule.exportedValueDeclarations.asSequence()
+                    }
                 }
             } ?: sequenceOf()
 }
