@@ -58,10 +58,6 @@ class PSModule(node: ASTNode) :
             .asSequence()
             .filterNotNull()
 
-    val valueDeclarationsByName: Map<String, List<PSValueDeclaration>>
-        get() =
-            valueDeclarations.groupBy { it.name }
-
     val exportedValueDeclarations
         get() =
             valueDeclarations.filter { it.name in exportedNames } +

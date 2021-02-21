@@ -21,7 +21,7 @@ class PSFile(viewProvider: FileViewProvider) :
         get() = program.module
 
     val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
-        get() = module.valueDeclarationsByName
+        get() = module.valueDeclarations.groupBy { it.name }
 
     private val program: PSProgram
         get() = findChildByClass(PSProgram::class.java)!!
