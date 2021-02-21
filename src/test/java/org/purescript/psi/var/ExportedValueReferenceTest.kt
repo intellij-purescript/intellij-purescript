@@ -12,7 +12,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (foo) where
                foo = 3
-            """.trimMargin()
+            """.trimIndent()
         ) as PSFile
         val exportedValue = file.module.exportList!!.exportedItems.single() as PSExportedValue
         val declaredValue = file.module.valueDeclarations.single()
@@ -26,7 +26,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (foo) where
                bar = 3
-            """.trimMargin()
+            """.trimIndent()
         ) as PSFile
         val exportedValue = file.module.exportList!!.exportedItems.single() as PSExportedValue
         val resolvedReference = exportedValue.reference.resolve()
@@ -41,7 +41,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
                foo true = 3
                foo false = 4
                bar false = 4
-            """.trimMargin()
+            """.trimIndent()
         ) as PSFile
         val exportedValue = file.module.exportList!!.exportedItems.single() as PSExportedValue
         val valueDeclarations = file.module.valueDeclarations.toList()
@@ -52,5 +52,18 @@ class PSExportedItemTest : BasePlatformTestCase() {
         TestCase.assertTrue(exportedValue.reference.isReferenceTo(firstFooDeclaration))
         TestCase.assertTrue(exportedValue.reference.isReferenceTo(secondFooDeclaration))
         TestCase.assertFalse(exportedValue.reference.isReferenceTo(barDeclaration))
+    }
+
+    fun `test suggests value declarations`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main (f<caret>) where
+                f1 = 1
+                f2 = 2
+                bar = 3
+            """.trimIndent()
+        ) as PSFile
+        myFixture.testCompletionVariants("Main.purs", "f1", "f2")
     }
 }
