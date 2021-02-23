@@ -6,6 +6,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.features.DocCommentOwner
 
+/**
+ * A foreign value import declaration, e.g.
+ *
+ * ```
+ * foreign import xor :: Int -> Int -> Int
+ * ```
+ */
 class PSForeignValueDeclaration(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,

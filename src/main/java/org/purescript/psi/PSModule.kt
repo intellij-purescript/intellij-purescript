@@ -38,6 +38,9 @@ class PSModule(node: ASTNode) :
      */
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
+    /**
+     * The foreign values declared in this module
+     */
     val foreignValueDeclarations: Array<PSForeignValueDeclaration>
         get() =
             findChildrenByClass(PSForeignValueDeclaration::class.java)
