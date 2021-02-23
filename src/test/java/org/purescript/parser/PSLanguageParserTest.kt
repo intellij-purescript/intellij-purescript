@@ -143,4 +143,7 @@ class PSLanguageParserTest : PSLanguageParserTestBase() {
     fun testbug_functions6() = doTest(true, true)
     fun testbug_abs1() = doTest(true, true)
     fun testbug_import1() = doTest(true, true)
+
+    // Small regression tests
+    fun testNewline() = doTest(true, true)
 }
