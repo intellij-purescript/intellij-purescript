@@ -641,8 +641,6 @@ class PureParsecParser {
     private val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
-//      TODO [simonolander] remove
-//      .then(optional(parens(commaSep1(parseDeclarationRef))))
         .then(token(WHERE))
         .then(indentedList(decl))
         .`as`(PSElements.Module)
