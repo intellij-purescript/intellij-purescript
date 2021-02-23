@@ -815,13 +815,7 @@ class PureParsecParser {
                     parseAccessor,
                     attempt(
                         indented(
-                            braces(
-                                commaSep1(
-                                    indented(
-                                        parsePropertyUpdate
-                                    )
-                                )
-                            )
+                            braces(commaSep1(indented(parsePropertyUpdate)))
                         )
                     ),
                     indented(dcolon + type)
