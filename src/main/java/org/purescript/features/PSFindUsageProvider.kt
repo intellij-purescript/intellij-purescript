@@ -10,16 +10,10 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSVarBinderImpl
 
 class PSFindUsageProvider : FindUsagesProvider {
-    override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return when (psiElement) {
-            is PSValueDeclaration, is PSVarBinderImpl, is PSModule -> {
-                true
-            }
-            else -> {
-                false
-            }
-        }
-    }
+    override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
+        psiElement is PSValueDeclaration
+            || psiElement is PSVarBinderImpl
+            || psiElement is PSModule
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null
