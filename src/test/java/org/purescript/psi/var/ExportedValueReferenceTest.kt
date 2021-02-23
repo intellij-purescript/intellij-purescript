@@ -92,4 +92,16 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val exportedValue = file.module.exportList!!.exportedItems.single()
         TestCase.assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
     }
+
+    fun `test finds usage of foreign value`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (foo) where
+                foreign import <caret>foo :: Int
+            """.trimIndent()
+        ) as PSFile
+        val exportedValue = file.module.exportList!!.exportedItems.single()
+        TestCase.assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
+    }
 }

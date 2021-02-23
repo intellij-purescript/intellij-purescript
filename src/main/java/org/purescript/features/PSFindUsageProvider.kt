@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.PSValueDeclaration
 import org.jetbrains.annotations.Nls
 import org.purescript.file.PSFile
+import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSVarBinderImpl
 
@@ -14,6 +15,7 @@ class PSFindUsageProvider : FindUsagesProvider {
         psiElement is PSValueDeclaration
             || psiElement is PSVarBinderImpl
             || psiElement is PSModule
+            || psiElement is PSForeignValueDeclaration
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null
