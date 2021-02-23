@@ -26,4 +26,16 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test doesn't report exported value resolving to foreign value`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo (foo) where
+            foreign import foo :: Int
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }

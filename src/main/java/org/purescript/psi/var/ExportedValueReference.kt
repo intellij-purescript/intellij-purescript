@@ -13,13 +13,21 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
 ) {
 
     override fun getVariants(): Array<PsiNamedElement> {
-        return myElement.module.valueDeclarations.toList()
+        return candidates.toList()
             .distinctBy { it.name }
             .toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        return myElement.module.valueDeclarations.filter { it.name == myElement.name }
-            .let { createResults(*it.toList().toTypedArray()) }
+        return createResults(*candidates.filter { it.name == myElement.name }.toTypedArray())
     }
+
+    private val candidates: Array<PsiNamedElement>
+        get() =
+            myElement.module.run {
+                arrayOf(
+                    *valueDeclarations,
+                    *foreignValueDeclarations
+                )
+            }
 }

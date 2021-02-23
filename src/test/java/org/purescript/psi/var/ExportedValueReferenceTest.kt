@@ -54,6 +54,20 @@ class PSExportedItemTest : BasePlatformTestCase() {
         TestCase.assertFalse(exportedValue.reference.isReferenceTo(barDeclaration))
     }
 
+    fun `test resolves to foreign values`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """module Main (foo) where
+               foreign import foo :: Int
+            """.trimIndent()
+        ) as PSFile
+        val module = file.module
+        val exportedValue = module.exportList!!.exportedItems.single() as PSExportedValue
+        val foreignValueDeclaration = module.foreignValueDeclarations.single()
+
+        TestCase.assertTrue(exportedValue.reference.isReferenceTo(foreignValueDeclaration))
+    }
+
     fun `test completes exported values`() {
         myFixture.configureByText(
             "Main.purs",
