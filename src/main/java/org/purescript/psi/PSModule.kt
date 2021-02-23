@@ -34,11 +34,7 @@ class PSModule(node: ASTNode) :
     }
 
     /**
-     * The export list in the module signature. If the export list is null,
-     * the module implicitly exports all its members.
-     *
-     * Example: `(foo, bar)` in
-     * ```module FooBar (foo, bar) where```
+     * If the export list is null, this module implicitly exports all its members.
      */
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
