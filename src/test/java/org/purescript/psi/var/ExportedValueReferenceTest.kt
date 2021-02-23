@@ -80,4 +80,16 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         ) as PSFile
         myFixture.testCompletionVariants("Main.purs", "f1", "f2")
     }
+
+    fun `test finds usage of declared value`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (foo) where
+                <caret>foo = 3
+            """.trimIndent()
+        ) as PSFile
+        val exportedValue = file.module.exportList!!.exportedItems.single()
+        TestCase.assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
+    }
 }
