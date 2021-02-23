@@ -5,7 +5,7 @@ import junit.framework.TestCase
 import org.purescript.file.PSFile
 import org.purescript.psi.PSExportedValue
 
-class PSExportedItemTest : BasePlatformTestCase() {
+class ExportedValueReferenceTest : BasePlatformTestCase() {
 
     fun `test resolves to declared value`() {
         val file = myFixture.addFileToProject(
