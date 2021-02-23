@@ -104,4 +104,28 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val exportedValue = file.module.exportList!!.exportedItems.single()
         TestCase.assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
     }
+
+    fun `test does not find usage if caret is misplaced`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (foo) where
+                <caret>foreign import foo :: Int
+            """.trimIndent()
+        )
+        assertThrows<AssertionError>(AssertionError::class.java, "Cannot find referenced element") {
+            myFixture.testFindUsages("Foo.purs")
+        }
+    }
+
+    fun `test does not find usage of foreign value that's not used`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (bar) where
+                foreign import <caret>foo :: Int
+            """.trimIndent()
+        )
+        TestCase.assertTrue(myFixture.testFindUsages("Foo.purs").isEmpty())
+    }
 }
