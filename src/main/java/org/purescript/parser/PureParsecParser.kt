@@ -833,12 +833,7 @@ class PureParsecParser {
                 indented(indexersAndAccessors)
                     .or(attempt(indented(dcolon) + type))
             )
-    private val parsePrefixRef = ref()
-    private val parsePrefix =
-        choice(
-            parseValuePostFix,
-            indented(token("-")).then(parsePrefixRef).`as`(UnaryMinus)
-        ).`as`(PrefixValue)
+    private val parsePrefix = ref()
 
     // Binder
     private val parseIdentifierAndBinder =
@@ -944,7 +939,12 @@ class PureParsecParser {
                 .then(parseConstrainedType).`as`(PSElements.ForAll)
         )
         parseLocalDeclarationRef.setRef(parseLocalDeclaration)
-        parsePrefixRef.setRef(parsePrefix)
+        parsePrefix.setRef(
+            choice(
+                parseValuePostFix,
+                indented(token("-")).then(parsePrefix).`as`(UnaryMinus)
+            ).`as`(PrefixValue)
+        )
         expr.setRef(
             (parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr))
                 .`as`(PSElements.Value)
