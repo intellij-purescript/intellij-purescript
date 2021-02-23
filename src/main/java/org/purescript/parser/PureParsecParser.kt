@@ -651,7 +651,6 @@ class PureParsecParser {
         token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
     private val parseNumericLiteral =
         token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
-    private val parseStringLiteral = token(STRING).`as`(StringLiteral)
 
     private val parseCharLiteral = char.`as`(StringLiteral)
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
@@ -778,7 +777,7 @@ class PureParsecParser {
     private val parseValueAtom = choice(
         attempt(parseTypeHole),
         attempt(parseNumericLiteral),
-        attempt(parseStringLiteral),
+        attempt(token(STRING).`as`(StringLiteral)),
         attempt(parseBooleanLiteral),
         attempt(
             token(PSTokens.TICK) +
