@@ -651,7 +651,6 @@ class PureParsecParser {
         token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
     private val parseNumericLiteral =
         token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
-    private val parseStringLiteral = token(STRING).`as`(StringLiteral)
 
     private val parseCharLiteral = char.`as`(StringLiteral)
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
@@ -778,7 +777,7 @@ class PureParsecParser {
     private val parseValueAtom = choice(
         attempt(parseTypeHole),
         attempt(parseNumericLiteral),
-        attempt(parseStringLiteral),
+        attempt(token(STRING).`as`(StringLiteral)),
         attempt(parseBooleanLiteral),
         attempt(
             token(PSTokens.TICK) +
@@ -815,13 +814,7 @@ class PureParsecParser {
                     parseAccessor,
                     attempt(
                         indented(
-                            braces(
-                                commaSep1(
-                                    indented(
-                                        parsePropertyUpdate
-                                    )
-                                )
-                            )
+                            braces(commaSep1(indented(parsePropertyUpdate)))
                         )
                     ),
                     indented(dcolon + type)
@@ -833,12 +826,7 @@ class PureParsecParser {
                 indented(indexersAndAccessors)
                     .or(attempt(indented(dcolon) + type))
             )
-    private val parsePrefixRef = ref()
-    private val parsePrefix =
-        choice(
-            parseValuePostFix,
-            indented(token("-")).then(parsePrefixRef).`as`(UnaryMinus)
-        ).`as`(PrefixValue)
+    private val parsePrefix = ref()
 
     // Binder
     private val parseIdentifierAndBinder =
@@ -944,7 +932,12 @@ class PureParsecParser {
                 .then(parseConstrainedType).`as`(PSElements.ForAll)
         )
         parseLocalDeclarationRef.setRef(parseLocalDeclaration)
-        parsePrefixRef.setRef(parsePrefix)
+        parsePrefix.setRef(
+            choice(
+                parseValuePostFix,
+                indented(token("-")).then(parsePrefix).`as`(UnaryMinus)
+            ).`as`(PrefixValue)
+        )
         expr.setRef(
             (parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr))
                 .`as`(PSElements.Value)
