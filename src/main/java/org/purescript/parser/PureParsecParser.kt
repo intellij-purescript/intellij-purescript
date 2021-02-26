@@ -510,19 +510,46 @@ class PureParsecParser {
                         )
                     )
             ).`as`(TypeInstanceDeclaration)
-    private val importDeclarationType =
-        optional(indented(parens(commaSep(parseDeclarationRef))))
+//    private val importDeclarationType =
+//        optional(indented(parens(commaSep(parseDeclarationRef))))
+    private val importedDataMembers = parens(
+        choice(
+            ddot,
+            commaSep(properName.`as`(PSElements.ImportedDataMember))
+        )
+    ).`as`(PSElements.ImportedDataMemberList)
+    private val importedItem =
+        choice(
+            token(TYPE).then(parens(operator)).`as`(PSElements.ImportedType),
+            token(CLASS).then(properName).`as`(PSElements.ImportedClass),
+            token(KIND).then(properName).`as`(PSElements.ImportedKind),
+            parens(operator).`as`(PSElements.ImportedOperator),
+            ident.`as`(PSElements.ImportedValue),
+            properName.then(optional(importedDataMembers)).`as`(PSElements.ImportedData),
+        )
+    private val importList =
+        optional(token(HIDING))
+            .then(indented(parens(commaSep1(importedItem))))
+            .`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
             .then(indented(moduleName).`as`(importModuleName))
-            .then(optional(token(HIDING)).then(importDeclarationType))
+            .then(optional(importList))
+//            .then(optional(token(HIDING)).then(importDeclarationType))
             .then(
                 optional(
                     token(AS)
                         .then(moduleName)
-                        .`as`(importModuleName)
+                        .`as`(PSElements.ImportAlias)
                 )
             )
+//            .then(
+//                optional(
+//                    token(AS)
+//                        .then(moduleName)
+//                        .`as`(importModuleName)
+//                )
+//            )
             .`as`(PSElements.ImportDeclaration)
     private val decl = choice(
         (dataHead + optional(eq + sepBy1(dataCtor, PIPE)))

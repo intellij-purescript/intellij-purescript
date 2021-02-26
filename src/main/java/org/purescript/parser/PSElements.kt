@@ -86,6 +86,26 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val ImportDeclaration = PSElementType("ImportDeclaration")
         @kotlin.jvm.JvmField
+        val ImportAlias = PSElementType("ImportAlias")
+        @kotlin.jvm.JvmField
+        val ImportList = PSElementType("ImportList")
+        @kotlin.jvm.JvmField
+        val ImportedClass = PSElementType("ImportedClass")
+        @kotlin.jvm.JvmField
+        val ImportedData = PSElementType("ImportedData")
+        @kotlin.jvm.JvmField
+        val ImportedDataMemberList = PSElementType("ImportedDataMemberList")
+        @kotlin.jvm.JvmField
+        val ImportedDataMember = PSElementType("ImportedDataMember")
+        @kotlin.jvm.JvmField
+        val ImportedKind = PSElementType("ImportedKind")
+        @kotlin.jvm.JvmField
+        val ImportedOperator = PSElementType("ImportedOperator")
+        @kotlin.jvm.JvmField
+        val ImportedType = PSElementType("ImportedType")
+        @kotlin.jvm.JvmField
+        val ImportedValue = PSElementType("ImportedValue")
+        @kotlin.jvm.JvmField
         val PositionedDeclarationRef = PSElementType("PositionedDeclarationRef")
         @kotlin.jvm.JvmField
         val TypeClassDeclaration = PSElementType("TypeClassDeclaration")
