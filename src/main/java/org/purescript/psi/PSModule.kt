@@ -10,8 +10,7 @@ import org.purescript.features.DocCommentOwner
 class PSModule(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,
-    DocCommentOwner
-    {
+    DocCommentOwner {
     override fun getName(): String {
         return nameIdentifier.name
     }
@@ -35,14 +34,13 @@ class PSModule(node: ASTNode) :
     }
 
     /**
-     * The export list in the module signature. If the export list is null,
-     * the module implicitly exports all its members.
-     *
-     * Example: `(foo, bar)` in
-     * ```module FooBar (foo, bar) where```
+     * If the export list is null, this module implicitly exports all its members.
      */
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
+    /**
+     * The foreign values declared in this module
+     */
     val foreignValueDeclarations: Array<PSForeignValueDeclaration>
         get() =
             findChildrenByClass(PSForeignValueDeclaration::class.java)
@@ -66,7 +64,7 @@ class PSModule(node: ASTNode) :
                 .flatMap { it.importedValues }
                 .asSequence()
 
-        val reexportedModuleNames: List<String>
+    val reexportedModuleNames: List<String>
         get() =
             exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
                 ?.map { it.text.removePrefix("module").trim() }
@@ -84,4 +82,4 @@ class PSModule(node: ASTNode) :
     override val docComments: List<PsiComment>
         get() = parent.getDocComments()
 
-    }
+}
