@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import org.purescript.psi.PSExportedModule
 import org.purescript.psi.PSExportedValue
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
@@ -18,6 +19,15 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                             holder.registerProblem(
                                 element,
                                 "Unresolved reference '${element.name}'",
+                                ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
+                            )
+                        }
+                    }
+                    is PSExportedModule -> {
+                        if (element.reference.multiResolve(false).isEmpty()) {
+                            holder.registerProblem(
+                                element,
+                                "Unresolved module '${element.name}'",
                                 ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
                             )
                         }

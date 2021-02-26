@@ -1,9 +1,12 @@
 package org.purescript.psi
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.siblings
+import org.purescript.parser.PSTokens
 
 class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
@@ -38,7 +41,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         return ModuleReference(this)
     }
 
-    private val importedModule get(): PSModule? = ModuleReference(this).resolve()
+    val importedModule get(): PSModule? = ModuleReference(this).resolve()
 
     val importedValues
         get(): Sequence<PSValueDeclaration> =
