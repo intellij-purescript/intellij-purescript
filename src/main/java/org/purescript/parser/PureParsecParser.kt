@@ -130,6 +130,9 @@ class PureParsecParser {
             token(PSTokens.QUALIFIED),
             token(KIND),
         )
+    private val case = token(PSTokens.CASE)
+    private val of = token(PSTokens.OF)
+
     private val lname = choice(
         token(PSTokens.IDENT),
         token(DATA),
@@ -145,8 +148,8 @@ class PureParsecParser {
         token(KIND),
         token(INSTANCE),
         token(MODULE),
-        token(PSTokens.CASE),
-        token(PSTokens.OF),
+        case,
+        of,
         token(PSTokens.IF),
         token(PSTokens.THEN),
         token(PSTokens.ELSE),
@@ -703,11 +706,10 @@ class PureParsecParser {
                     )
                 )
             ).`as`(CaseAlternative)
-    private val parseCase = token(PSTokens.CASE)
-        .then(commaSep1(expr.or(parseTypeWildcard)))
-        .then(indented(token(PSTokens.OF)))
-        .then(indented(indentedList(mark(parseCaseAlternative))))
-        .`as`(PSElements.Case)
+    private val parseCase =
+        (case + commaSep1(expr.or(parseTypeWildcard)) + indented(of))
+            .then(indented(indentedList(mark(parseCaseAlternative))))
+            .`as`(PSElements.Case)
     private val parseIfThenElse = token(PSTokens.IF)
         .then(indented(expr))
         .then(indented(token(PSTokens.THEN)))
