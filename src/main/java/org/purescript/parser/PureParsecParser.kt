@@ -130,6 +130,9 @@ class PureParsecParser {
             token(PSTokens.QUALIFIED),
             token(KIND),
         )
+    private val case = token(PSTokens.CASE)
+    private val of = token(PSTokens.OF)
+
     private val lname = choice(
         token(PSTokens.IDENT),
         token(DATA),
@@ -145,8 +148,8 @@ class PureParsecParser {
         token(KIND),
         token(INSTANCE),
         token(MODULE),
-        token(PSTokens.CASE),
-        token(PSTokens.OF),
+        case,
+        of,
         token(PSTokens.IF),
         token(PSTokens.THEN),
         token(PSTokens.ELSE),
@@ -200,7 +203,7 @@ class PureParsecParser {
     // Types.hs
     private val type = ref()
     private val parseForAll = ref()
-    private val parseTypeWildcard = token("_")
+    private val `_` = token("_")
     private val parseTypeVariable: Parsec =
         guard(
             idents,
@@ -219,7 +222,7 @@ class PureParsecParser {
         optional(
             indented(token(PIPE)) +
                 indented(
-                    attempt(parseTypeWildcard)
+                    attempt(`_`)
                         .or(
                             attempt(
                                 optional(
@@ -247,13 +250,15 @@ class PureParsecParser {
         )
     private val parseRow: Parsec =
         commaSep(parseNameAndType(type)).then(parseRowEnding).`as`(Row)
+    private val arrow = token(ARROW)
+
     private val typeAtom: Parsec =
         indented(
             choice(
                 attempt(squares(optional(type))),
-                attempt(parens(token(ARROW))),
+                attempt(parens(arrow)),
                 attempt(braces(parseRow).`as`(PSElements.ObjectType)),
-                attempt(parseTypeWildcard),
+                attempt(`_`),
                 attempt(parseForAll),
                 attempt(parseTypeVariable),
                 attempt(parseTypeConstructor),
@@ -679,7 +684,7 @@ class PureParsecParser {
                     many1(indented(ident.or(binderAtom).`as`(Abs)))
                 )
             )
-            .then(indented(token(ARROW)))
+            .then(indented(arrow))
             .then(expr)
     private val parseVar =
         attempt(
@@ -693,21 +698,15 @@ class PureParsecParser {
         ).`as`(PSElements.Var)
     private val parseConstructor =
         parseQualified(properName).`as`(Constructor)
-    private val parseCaseAlternative =
-        commaSep1(expr.or(parseTypeWildcard))
-            .then(
-                indented(
-                    choice(
-                        many1(parseGuard + indented(token(ARROW) + expr)),
-                        token(ARROW).then(expr)
-                    )
-                )
-            ).`as`(CaseAlternative)
-    private val parseCase = token(PSTokens.CASE)
-        .then(commaSep1(expr.or(parseTypeWildcard)))
-        .then(indented(token(PSTokens.OF)))
-        .then(indented(indentedList(mark(parseCaseAlternative))))
-        .`as`(PSElements.Case)
+
+    private val binder1 = expr.or(`_`)
+
+    private val guardedCaseExpr = parseGuard + indented(arrow + exprWhere)
+    private val guardedCase =
+        indented(choice(arrow + exprWhere, many1(guardedCaseExpr)))
+    private val caseBranch =
+        (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
+
     private val parseIfThenElse = token(PSTokens.IF)
         .then(indented(expr))
         .then(indented(token(PSTokens.THEN)))
@@ -790,7 +789,8 @@ class PureParsecParser {
         parseAbs,
         attempt(parseConstructor),
         attempt(parseVar),
-        parseCase,
+        (case + commaSep1(expr) + of + indentedList(caseBranch))
+            .`as`(PSElements.Case),
         parseIfThenElse,
         doBlock,
         parseLet,
@@ -881,7 +881,6 @@ class PureParsecParser {
     private val type3 = ref()
     private val type4 = ref()
     private val type5 = ref()
-    private val arrow = token(ARROW)
     private val darrow = token(DARROW)
     private val qualOp = choice(
         operator,
@@ -914,7 +913,7 @@ class PureParsecParser {
                 .then(
                     optional(
                         choice(
-                            token(ARROW),
+                            arrow,
                             token(DARROW),
                             token(PSTokens.OPTIMISTIC),
                             token(OPERATOR)
