@@ -203,7 +203,7 @@ class PureParsecParser {
     // Types.hs
     private val type = ref()
     private val parseForAll = ref()
-    private val parseTypeWildcard = token("_")
+    private val `_` = token("_")
     private val parseTypeVariable: Parsec =
         guard(
             idents,
@@ -222,7 +222,7 @@ class PureParsecParser {
         optional(
             indented(token(PIPE)) +
                 indented(
-                    attempt(parseTypeWildcard)
+                    attempt(`_`)
                         .or(
                             attempt(
                                 optional(
@@ -256,7 +256,7 @@ class PureParsecParser {
                 attempt(squares(optional(type))),
                 attempt(parens(token(ARROW))),
                 attempt(braces(parseRow).`as`(PSElements.ObjectType)),
-                attempt(parseTypeWildcard),
+                attempt(`_`),
                 attempt(parseForAll),
                 attempt(parseTypeVariable),
                 attempt(parseTypeConstructor),
@@ -697,7 +697,7 @@ class PureParsecParser {
     private val parseConstructor =
         parseQualified(properName).`as`(Constructor)
     private val parseCaseAlternative =
-        commaSep1(expr.or(parseTypeWildcard))
+        commaSep1(expr.or(`_`))
             .then(
                 indented(
                     choice(
@@ -707,7 +707,7 @@ class PureParsecParser {
                 )
             ).`as`(CaseAlternative)
     private val parseCase =
-        (case + commaSep1(expr.or(parseTypeWildcard)) + indented(of))
+        (case + commaSep1(expr.or(`_`)) + indented(of))
             .then(indented(indentedList(mark(parseCaseAlternative))))
             .`as`(PSElements.Case)
     private val parseIfThenElse = token(PSTokens.IF)
