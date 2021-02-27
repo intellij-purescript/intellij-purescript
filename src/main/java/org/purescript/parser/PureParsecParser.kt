@@ -702,7 +702,7 @@ class PureParsecParser {
     private val binder1 = expr.or(`_`)
     private val guardedCaseExpr = parseGuard + indented(arrow + expr)
     private val guardedCase =
-        indented(choice(arrow.then(expr), many1(guardedCaseExpr)))
+        indented(choice(arrow + expr, many1(guardedCaseExpr)))
 
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
