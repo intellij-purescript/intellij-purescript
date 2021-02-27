@@ -4,7 +4,6 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import org.purescript.psi.PSModule
-import org.purescript.psi.PSProgram
 import org.purescript.psi.PSValueDeclaration
 
 class PSFile(viewProvider: FileViewProvider) :
@@ -18,11 +17,9 @@ class PSFile(viewProvider: FileViewProvider) :
     }
 
     val module: PSModule
-        get() = program.module
+        get() = findChildByClass(PSModule::class.java)!!
 
     val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
         get() = module.valueDeclarations.groupBy { it.name }
 
-    private val program: PSProgram
-        get() = findChildByClass(PSProgram::class.java)!!
 }

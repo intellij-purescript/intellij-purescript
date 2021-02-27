@@ -41,7 +41,6 @@ import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
 import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.PrefixValue
-import org.purescript.parser.PSElements.Companion.Program
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.Row
@@ -638,13 +637,12 @@ class PureParsecParser {
                 )
             )
         ).`as`(PSElements.ExportList)
-    private val parseModule = token(MODULE)
+    val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
         .then(token(WHERE))
         .then(indentedList(decl))
         .`as`(PSElements.Module)
-    val program: Parsec = indentedList(parseModule).`as`(Program)
 
     // Literals
     private val parseBooleanLiteral =

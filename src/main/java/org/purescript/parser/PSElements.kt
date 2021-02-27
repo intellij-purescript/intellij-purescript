@@ -9,8 +9,6 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val ProperName = PSElementType("ProperName")
         @kotlin.jvm.JvmField
-        val Program = PSElementType("Program")
-        @kotlin.jvm.JvmField
         val Module = PSElementType("Module")
         @kotlin.jvm.JvmField
         val ExportList = PSElementType("ExportList")
