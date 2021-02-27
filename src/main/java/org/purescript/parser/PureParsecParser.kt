@@ -696,7 +696,7 @@ class PureParsecParser {
         ).`as`(PSElements.Var)
     private val parseConstructor =
         parseQualified(properName).`as`(Constructor)
-    private val parseCaseAlternative =
+    private val caseBranch =
         commaSep1(expr.or(`_`))
             .then(
                 indented(
@@ -708,7 +708,7 @@ class PureParsecParser {
             ).`as`(CaseAlternative)
     private val parseCase =
         (case + commaSep1(expr.or(`_`)) + indented(of))
-            .then(indented(indentedList(mark(parseCaseAlternative))))
+            .then(indentedList(caseBranch))
             .`as`(PSElements.Case)
     private val parseIfThenElse = token(PSTokens.IF)
         .then(indented(expr))
