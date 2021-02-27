@@ -700,12 +700,13 @@ class PureParsecParser {
         parseQualified(properName).`as`(Constructor)
 
     private val binder1 = expr.or(`_`)
-    private val guardedCaseExpr = parseGuard + indented(arrow + expr)
-    private val guardedCase =
-        indented(choice(arrow + expr, many1(guardedCaseExpr)))
 
+    private val guardedCaseExpr = parseGuard + indented(arrow + exprWhere)
+    private val guardedCase =
+        indented(choice(arrow + exprWhere, many1(guardedCaseExpr)))
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
+
     private val parseIfThenElse = token(PSTokens.IF)
         .then(indented(expr))
         .then(indented(token(PSTokens.THEN)))
