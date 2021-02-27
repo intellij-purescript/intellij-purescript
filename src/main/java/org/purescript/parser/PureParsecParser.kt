@@ -539,7 +539,6 @@ class PureParsecParser {
             .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
-        parseImportDeclaration,
         parseTypeClassDeclaration,
         parseTypeInstanceDeclaration
     )
@@ -642,11 +641,15 @@ class PureParsecParser {
                 )
             )
         ).`as`(PSElements.ExportList)
+
+    private val moduleDecl = choice(parseImportDeclaration, decl)
+    private val moduleDecls = indentedList(moduleDecl)
+
     val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
         .then(token(WHERE))
-        .then(indentedList(decl))
+        .then(moduleDecls)
         .`as`(PSElements.Module)
 
     // Literals
