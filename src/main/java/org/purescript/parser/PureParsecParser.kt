@@ -250,11 +250,13 @@ class PureParsecParser {
         )
     private val parseRow: Parsec =
         commaSep(parseNameAndType(type)).then(parseRowEnding).`as`(Row)
+    private val arrow = token(ARROW)
+
     private val typeAtom: Parsec =
         indented(
             choice(
                 attempt(squares(optional(type))),
-                attempt(parens(token(ARROW))),
+                attempt(parens(arrow)),
                 attempt(braces(parseRow).`as`(PSElements.ObjectType)),
                 attempt(`_`),
                 attempt(parseForAll),
@@ -682,7 +684,7 @@ class PureParsecParser {
                     many1(indented(ident.or(binderAtom).`as`(Abs)))
                 )
             )
-            .then(indented(token(ARROW)))
+            .then(indented(arrow))
             .then(expr)
     private val parseVar =
         attempt(
@@ -698,9 +700,9 @@ class PureParsecParser {
         parseQualified(properName).`as`(Constructor)
 
     private val binder1 = expr.or(`_`)
-    private val guardedCaseExpr = parseGuard + indented(token(ARROW) + expr)
+    private val guardedCaseExpr = parseGuard + indented(arrow + expr)
     private val guardedCase =
-        indented(choice(token(ARROW).then(expr), many1(guardedCaseExpr)))
+        indented(choice(arrow.then(expr), many1(guardedCaseExpr)))
 
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
@@ -878,7 +880,6 @@ class PureParsecParser {
     private val type3 = ref()
     private val type4 = ref()
     private val type5 = ref()
-    private val arrow = token(ARROW)
     private val darrow = token(DARROW)
     private val qualOp = choice(
         operator,
@@ -911,7 +912,7 @@ class PureParsecParser {
                 .then(
                     optional(
                         choice(
-                            token(ARROW),
+                            arrow,
                             token(DARROW),
                             token(PSTokens.OPTIMISTIC),
                             token(OPERATOR)
