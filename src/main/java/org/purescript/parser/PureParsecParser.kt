@@ -788,7 +788,7 @@ class PureParsecParser {
         parseAbs,
         attempt(parseConstructor),
         attempt(parseVar),
-        (case + commaSep1(expr) + indented(of) + indentedList(caseBranch))
+        (case + commaSep1(expr) + of + indentedList(caseBranch))
             .`as`(PSElements.Case),
         parseIfThenElse,
         doBlock,
