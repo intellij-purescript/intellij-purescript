@@ -706,9 +706,6 @@ class PureParsecParser {
                     )
                 )
             ).`as`(CaseAlternative)
-    private val parseCase =
-        (case + commaSep1(expr) + indented(of) + indentedList(caseBranch))
-            .`as`(PSElements.Case)
     private val parseIfThenElse = token(PSTokens.IF)
         .then(indented(expr))
         .then(indented(token(PSTokens.THEN)))
@@ -791,7 +788,8 @@ class PureParsecParser {
         parseAbs,
         attempt(parseConstructor),
         attempt(parseVar),
-        parseCase,
+        (case + commaSep1(expr) + indented(of) + indentedList(caseBranch))
+            .`as`(PSElements.Case),
         parseIfThenElse,
         doBlock,
         parseLet,
