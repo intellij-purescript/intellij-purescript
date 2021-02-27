@@ -147,4 +147,7 @@ class PSLanguageParserTest : PSLanguageParserTestBase() {
     // Small regression tests
     fun testNewline() = doTest(true, true)
     fun testSnuglyCaseWithWhere() = doTest(true, true)
+
+    // instances
+    fun testElseInstance() = doTest(true, true)
 }

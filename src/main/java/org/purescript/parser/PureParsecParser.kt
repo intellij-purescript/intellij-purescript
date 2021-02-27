@@ -14,6 +14,7 @@ import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
 import org.purescript.parser.Combinators.same
+import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
@@ -539,7 +540,6 @@ class PureParsecParser {
             .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
-        parseImportDeclaration,
         parseTypeClassDeclaration,
         parseTypeInstanceDeclaration
     )
@@ -642,11 +642,20 @@ class PureParsecParser {
                 )
             )
         ).`as`(PSElements.ExportList)
+
+    private val elseDecl = token("else")
+    private val moduleDecl =
+        choice(
+            parseImportDeclaration,
+            sepBy(decl, elseDecl)
+        )
+    private val moduleDecls = indentedList(moduleDecl)
+
     val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
         .then(token(WHERE))
-        .then(indentedList(decl))
+        .then(moduleDecls)
         .`as`(PSElements.Module)
 
     // Literals
