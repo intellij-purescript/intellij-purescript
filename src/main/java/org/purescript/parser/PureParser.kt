@@ -9,9 +9,7 @@ class PureParser : PsiParser, PSTokens, PSElements {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         // builder.setDebugMode(true);
         val context = ParserContext(builder)
-        builder.setWhitespaceSkippedCallback({ type, start, end ->
-            context.trackColumn()
-        })
+        builder.setWhitespaceSkippedCallback { _, _, _ -> context.trackColumn() }
         val mark = context.start()
         context.whiteSpace()
         // Creating a new instance here allows hot swapping while debugging.
