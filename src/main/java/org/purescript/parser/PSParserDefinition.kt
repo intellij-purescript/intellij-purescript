@@ -58,8 +58,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSDataDeclarationImpl(node)
         } else if (type == PSElements.Binder) {
             PSBinderImpl(node)
-        } else if (type == PSElements.Program) {
-            PSProgram(node)
         } else if (type == PSElements.Module) {
             PSModule(node)
         } else if (type == PSElements.ExportList) {

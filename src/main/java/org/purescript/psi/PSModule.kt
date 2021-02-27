@@ -80,6 +80,6 @@ class PSModule(node: ASTNode) :
                 ?: emptyList()
 
     override val docComments: List<PsiComment>
-        get() = parent.getDocComments()
+        get() = getDocComments()
 
 }
