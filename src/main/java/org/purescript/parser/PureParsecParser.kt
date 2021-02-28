@@ -906,7 +906,6 @@ class PureParsecParser {
                     .`as`(ObjectBinder),
                 attempt(squares(commaSep(binder))).`as`(ObjectBinder),
                 attempt(indented(braces(commaSep(idents)))).`as`(Binder),
-                attempt(char).`as`(StringBinder),
                 binderAtom
             ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
