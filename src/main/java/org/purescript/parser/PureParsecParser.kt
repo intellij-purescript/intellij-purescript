@@ -894,7 +894,6 @@ class PureParsecParser {
             choice(
                 `_`.`as`(PSElements.NullBinder),
                 string.`as`(StringBinder),
-                boolean.`as`(BooleanBinder),
                 attempt(
                     parseQualified(properName).`as`(GenericIdentifier)
                         .then(manyOrEmpty(indented(binderAtom)))
