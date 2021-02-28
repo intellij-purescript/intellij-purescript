@@ -539,61 +539,6 @@ class PureParsecParser {
         parseTypeClassDeclaration,
         parseTypeInstanceDeclaration
     )
-    private val parseLocalDeclaration = choice(
-        attempt(parseTypeDeclaration),
-        // this is for when used with LET
-        optional(attempt(token(LPAREN)))
-            .then(
-                optional(
-                    attempt(properName).`as`(Constructor)
-                )
-            )
-            .then(
-                optional(
-                    attempt(
-                        many1(
-                            ident
-                        )
-                    )
-                )
-            )
-            .then(optional(
-                attempt(
-                    squares(commaSep(binder))
-                        .`as`(ObjectBinder)
-                )))
-            .then(
-                optional(
-                    attempt(
-                        indented(`@`)
-                            .then(
-                                indented(
-                                    braces(
-                                        commaSep(
-                                            idents
-                                        )
-                                    )
-                                )
-                            )
-                    )
-                ).`as`(NamedBinder)
-            ).then(
-                optional(
-                    attempt(parsePatternMatchObject)
-                )
-            )
-            .then(optional(attempt(parseRowPatternBinder)))
-            .then(optional(attempt(token(RPAREN))))
-            // ---------- end of LET stuff -----------
-            .then(
-                attempt(
-                    manyOrEmpty(
-                        binderAtom
-                    )
-                )
-            )
-            .then(guardedDecl).`as`(ValueDeclaration)
-    )
     private val exportedClass =
         token(CLASS)
             .then(properName)
@@ -898,7 +843,66 @@ class PureParsecParser {
                 .then(indented(dot))
                 .then(parseConstrainedType).`as`(PSElements.ForAll)
         )
-        parseLocalDeclarationRef.setRef(parseLocalDeclaration)
+        parseLocalDeclarationRef.setRef(
+            choice(
+                attempt(parseTypeDeclaration),
+                // this is for when used with LET
+                optional(attempt(token(LPAREN)))
+                    .then(
+                        optional(
+                            attempt(properName).`as`(Constructor)
+                        )
+                    )
+                    .then(
+                        optional(
+                            attempt(
+                                many1(
+                                    ident
+                                )
+                            )
+                        )
+                    )
+                    .then(
+                        optional(
+                            attempt(
+                                squares(commaSep(binder))
+                                    .`as`(ObjectBinder)
+                            )
+                        )
+                    )
+                    .then(
+                        optional(
+                            attempt(
+                                indented(`@`)
+                                    .then(
+                                        indented(
+                                            braces(
+                                                commaSep(
+                                                    idents
+                                                )
+                                            )
+                                        )
+                                    )
+                            )
+                        ).`as`(NamedBinder)
+                    ).then(
+                        optional(
+                            attempt(parsePatternMatchObject)
+                        )
+                    )
+                    .then(optional(attempt(parseRowPatternBinder)))
+                    .then(optional(attempt(token(RPAREN))))
+                    // ---------- end of LET stuff -----------
+                    .then(
+                        attempt(
+                            manyOrEmpty(
+                                binderAtom
+                            )
+                        )
+                    )
+                    .then(guardedDecl).`as`(ValueDeclaration)
+            )
+        )
         parsePrefix.setRef(
             choice(
                 parseValuePostFix,
