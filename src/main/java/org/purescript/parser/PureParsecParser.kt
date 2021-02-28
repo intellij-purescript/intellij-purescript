@@ -868,20 +868,6 @@ class PureParsecParser {
         indented(braces(commaSep(idents))).`as`(Binder)
     private val parseCharBinder =
         char.`as`(StringBinder)
-    private val parseBinderAtom = choice(
-        attempt(parseNullBinder),
-        attempt(parseStringBinder),
-        attempt(parseBooleanBinder),
-        attempt(parseNumberBinder),
-        attempt(parseNamedBinder),
-        attempt(parseVarBinder),
-        attempt(parseConstructorBinder),
-        attempt(parseObjectBinder),
-        attempt(parseArrayBinder),
-        attempt(parsePatternMatch),
-        attempt(parseCharBinder),
-        attempt(parens(binder))
-    ).`as`(PSElements.BinderAtom)
 
     private val type0 = ref()
     private val type1 = ref()
@@ -948,9 +934,20 @@ class PureParsecParser {
                 .`as`(PSElements.Value)
         )
         binder.setRef(
-            parseBinderAtom
-                .then(optional(token(OPERATOR).then(binder)))
-                .`as`(Binder)
+            choice(
+                attempt(parseNullBinder),
+                attempt(parseStringBinder),
+                attempt(parseBooleanBinder),
+                attempt(parseNumberBinder),
+                attempt(parseNamedBinder),
+                attempt(parseVarBinder),
+                attempt(parseConstructorBinder),
+                attempt(parseObjectBinder),
+                attempt(parseArrayBinder),
+                attempt(parsePatternMatch),
+                attempt(parseCharBinder),
+                attempt(parens(binder))
+            ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
         val boolean = token("true").or(token("false"))
         val qualPropName = parseQualified(properName.`as`(ProperName))
