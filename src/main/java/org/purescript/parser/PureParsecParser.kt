@@ -902,8 +902,6 @@ class PureParsecParser {
                     parseQualified(properName).`as`(GenericIdentifier)
                         .then(manyOrEmpty(indented(binderAtom)))
                 ).`as`(ConstructorBinder),
-                attempt(braces(commaSep(parseIdentifierAndBinder)))
-                    .`as`(ObjectBinder),
                 binderAtom
             ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
