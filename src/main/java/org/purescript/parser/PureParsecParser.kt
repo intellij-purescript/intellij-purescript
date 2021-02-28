@@ -960,7 +960,7 @@ class PureParsecParser {
                 optional(token("=").or(token(":") + binder))
         binderAtom.setRef(
             choice(
-                attempt(token("_").`as`(PSElements.NullBinder)),
+                attempt(`_`.`as`(PSElements.NullBinder)),
                 attempt(ident + `@` + binderAtom).`as`(NamedBinder),
                 attempt(ident.`as`(VarBinder)),
                 attempt(qualPropName.`as`(ConstructorBinder)),
