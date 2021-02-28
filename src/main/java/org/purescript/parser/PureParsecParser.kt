@@ -114,7 +114,7 @@ class PureParsecParser {
     private val string = token(STRING)
     private val where = token(WHERE)
 
-    @Suppress("PrivatePropertyName")
+    @Suppress("PrivatePropertyName", "unused")
     private val `@` = token("@")
 
     private val number =
