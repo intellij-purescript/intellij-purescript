@@ -886,7 +886,7 @@ class PureParsecParser {
                 .`as`(PSElements.Value)
         )
         val boolean = token("true").or(token("false"))
-        val qualPropName = parseQualified(properName.`as`(ProperName))
+        val qualPropName = parseQualified(properName)
         val recordBinder =
             idents +
                 optional(token("=").or(token(":") + binder))
