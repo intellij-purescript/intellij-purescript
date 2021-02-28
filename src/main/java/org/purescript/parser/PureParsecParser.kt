@@ -297,7 +297,7 @@ class PureParsecParser {
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()
-    private val parseLocalDeclarationRef = ref()
+    private val parseLocalDeclaration = ref()
     private val parseGuard =
         (token(PIPE) + indented(commaSep(expr))).`as`(Guard)
     private val dataHead =
@@ -322,7 +322,7 @@ class PureParsecParser {
             .then(indented(eq) + (type))
             .`as`(PSElements.TypeSynonymDeclaration)
     private val exprWhere =
-        expr + optional(where + indentedList1(parseLocalDeclarationRef))
+        expr + optional(where + indentedList1(parseLocalDeclaration))
 
     private val parsePatternMatchObject =
         indented(
@@ -669,7 +669,7 @@ class PureParsecParser {
         .then(indented(expr))
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
-        .then(indented(indentedList1(parseLocalDeclarationRef)))
+        .then(indented(indentedList1(parseLocalDeclaration)))
         .then(indented(token(PSTokens.IN)))
         .then(expr)
         .`as`(PSElements.Let)
@@ -843,7 +843,7 @@ class PureParsecParser {
                 .then(indented(dot))
                 .then(parseConstrainedType).`as`(PSElements.ForAll)
         )
-        parseLocalDeclarationRef.setRef(
+        parseLocalDeclaration.setRef(
             choice(
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
