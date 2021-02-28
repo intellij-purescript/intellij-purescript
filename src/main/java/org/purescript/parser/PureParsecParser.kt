@@ -911,7 +911,7 @@ class PureParsecParser {
         )
         binder.setRef(
             choice(
-                attempt(`_`.`as`(PSElements.NullBinder)),
+                `_`.`as`(PSElements.NullBinder),
                 attempt(token(STRING).`as`(StringBinder)),
                 attempt(token("true").or(token("false")).`as`(BooleanBinder)),
                 attempt(
