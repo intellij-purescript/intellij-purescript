@@ -886,6 +886,10 @@ class PureParsecParser {
                 .`as`(PSElements.Value)
         )
         val boolean = token("true").or(token("false"))
+        val qualPropName = parseQualified(properName.`as`(ProperName))
+        val recordBinder =
+            idents +
+                optional(token("=").or(token(":") + binder))
         binder.setRef(
             choice(
                 `_`.`as`(PSElements.NullBinder),
@@ -906,10 +910,6 @@ class PureParsecParser {
                 binderAtom
             ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
-        val qualPropName = parseQualified(properName.`as`(ProperName))
-        val recordBinder =
-            idents +
-                optional(token("=").or(token(":") + binder))
         binderAtom.setRef(
             choice(
                 attempt(`_`.`as`(PSElements.NullBinder)),
