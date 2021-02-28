@@ -176,7 +176,7 @@ class PureParsecParser {
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
     private val moduleName = parseQualified(token(PROPER_NAME))
-    private val stringLiteral = attempt(token(STRING))
+    private val stringLiteral = attempt(string)
 
     private fun indentedList(p: Parsec): Parsec =
         mark(manyOrEmpty(untilSame(same(p))))
@@ -481,7 +481,7 @@ class PureParsecParser {
                             )
                         )
                     )
-                    .then(manyOrEmpty(indented(typeAtom).or(token(STRING))))
+                    .then(manyOrEmpty(indented(typeAtom).or(string)))
                     .then(
                         optional(
                             indented(token(DARROW))
@@ -787,7 +787,7 @@ class PureParsecParser {
     private val parseValueAtom = choice(
         attempt(parseTypeHole),
         attempt(parseNumericLiteral),
-        attempt(token(STRING).`as`(StringLiteral)),
+        attempt(string.`as`(StringLiteral)),
         attempt(parseBooleanLiteral),
         attempt(
             token(PSTokens.TICK) +
@@ -912,7 +912,7 @@ class PureParsecParser {
         binder.setRef(
             choice(
                 `_`.`as`(PSElements.NullBinder),
-                token(STRING).`as`(StringBinder),
+                string.`as`(StringBinder),
                 token("true").or(token("false")).`as`(BooleanBinder),
                 optional(token("+").or(token("-")))
                     .then(token(NATURAL).or(token(FLOAT)))
