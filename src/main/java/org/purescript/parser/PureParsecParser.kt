@@ -520,10 +520,10 @@ class PureParsecParser {
     ).`as`(PSElements.ImportedDataMemberList)
     private val importedItem =
         choice(
-            token(TYPE).then(parens(operator)).`as`(PSElements.ImportedType),
+            token(TYPE).then(parens(operator.`as`(Identifier))).`as`(PSElements.ImportedType),
             token(CLASS).then(properName).`as`(PSElements.ImportedClass),
             token(KIND).then(properName).`as`(PSElements.ImportedKind),
-            parens(operator).`as`(PSElements.ImportedOperator),
+            parens(operator.`as`(Identifier)).`as`(PSElements.ImportedOperator),
             ident.`as`(PSElements.ImportedValue),
             properName.then(optional(importedDataMembers)).`as`(PSElements.ImportedData),
         )
