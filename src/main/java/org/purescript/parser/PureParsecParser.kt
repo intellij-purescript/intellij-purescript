@@ -970,7 +970,7 @@ class PureParsecParser {
                 attempt(squares(commaSep(expr)).`as`(ObjectBinder)),
                 attempt(braces(commaSep(recordBinder))),
                 attempt(parens(binder))
-            ).`as`(Binder)
+            )
         )
     }
 }
