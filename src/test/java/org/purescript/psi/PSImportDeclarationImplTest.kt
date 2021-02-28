@@ -121,4 +121,94 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
         assertContainsElements(fuz.namedImports, "hiding")
     }
 
+    fun `test parses import declaration children`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Adam
+                import Adam.Nested
+                import Adam.Aliased as A
+                import Bertil ()
+                import Bertil.Nested ()
+                import Bertil.Aliased () as B
+                import Caesar hiding ()
+                import Caesar.Nested hiding ()
+                import Caesar.Aliased hiding () as C
+            """.trimIndent()
+        ) as PSFile
+        val importDeclarations = file.module.importDeclarations
+
+        // import Adam
+        importDeclarations[0].run {
+            assertEquals("Adam", importName!!.name)
+            assertNull(importList)
+            assertFalse(isHiding)
+            assertNull(importAlias)
+        }
+
+        // import Adam.Nested
+        importDeclarations[1].run {
+            assertEquals("Adam.Nested", importName!!.name)
+            assertNull(importList)
+            assertFalse(isHiding)
+            assertNull(importAlias)
+        }
+
+        // import Adam.Aliased as A
+        importDeclarations[2].run {
+            assertEquals("Adam.Aliased", importName!!.name)
+            assertNull(importList)
+            assertFalse(isHiding)
+            assertEquals("A", importAlias!!.name)
+        }
+
+        // import Bertil (b)
+        importDeclarations[3].run {
+            assertEquals("Bertil", importName!!.name)
+            assertNotNull(importList)
+            assertFalse(isHiding)
+            assertNull(importAlias)
+        }
+
+        // import Bertil.Nested (b)
+        importDeclarations[4].run {
+            assertEquals("Bertil.Nested", importName!!.name)
+            assertNotNull(importList)
+            assertFalse(isHiding)
+            assertNull(importAlias)
+        }
+
+        // import Bertil.Aliased (b) as B
+        importDeclarations[5].run {
+            assertEquals("Bertil.Aliased", importName!!.name)
+            assertNotNull(importList)
+            assertFalse(isHiding)
+            assertEquals("B", importAlias!!.name)
+        }
+
+        // import Caesar hiding (c)
+        importDeclarations[6].run {
+            assertEquals("Caesar", importName!!.name)
+            assertNotNull(importList)
+            assertTrue(isHiding)
+            assertNull(importAlias)
+        }
+
+        // import Caesar.Nested hiding (c)
+        importDeclarations[7].run {
+            assertEquals("Caesar.Nested", importName!!.name)
+            assertNotNull(importList)
+            assertTrue(isHiding)
+            assertNull(importAlias)
+        }
+
+        // import Caesar.Aliased hiding (c) as C
+        importDeclarations[8].run {
+            assertEquals("Caesar.Aliased", importName!!.name)
+            assertNotNull(importList)
+            assertTrue(isHiding)
+            assertEquals("C", importAlias!!.name)
+        }
+    }
 }

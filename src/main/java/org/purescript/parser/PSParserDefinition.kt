@@ -54,6 +54,26 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSIdentifierImpl(node)
         } else if (type == PSElements.ImportDeclaration) {
             PSImportDeclarationImpl(node)
+        } else if (type == PSElements.ImportAlias) {
+            PSImportAlias(node)
+        } else if (type == PSElements.ImportList) {
+            PSImportList(node)
+        } else if (type == PSElements.ImportedClass) {
+            PSImportedClass(node)
+        } else if (type == PSElements.ImportedData) {
+            PSImportedData(node)
+        } else if (type == PSElements.ImportedDataMember) {
+            PSImportedDataMember(node)
+        } else if (type == PSElements.ImportedDataMemberList) {
+            PSImportedDataMemberList(node)
+        } else if (type == PSElements.ImportedKind) {
+            PSImportedKind(node)
+        } else if (type == PSElements.ImportedOperator) {
+            PSImportedOperator(node)
+        } else if (type == PSElements.ImportedType) {
+            PSImportedType(node)
+        } else if (type == PSElements.ImportedValue) {
+            PSImportedValue(node)
         } else if (type == PSElements.DataDeclaration) {
             PSDataDeclarationImpl(node)
         } else if (type == PSElements.Binder) {

@@ -10,18 +10,44 @@ import org.purescript.parser.PSTokens
 
 class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
+    /**
+     * The identifier specifying module being imported, e.g.
+     *
+     * `Foo.Bar` in
+     * ```
+     * import Foo.Bar as Bar
+     * ```
+     */
+    val importName get() = findChildByClass(PSProperName::class.java)
+
+    /**
+     * The import list of this import declaration.
+     * It being null implies that all items are imported.
+     */
+    val importList: PSImportList?
+        get() =
+            findChildByClass(PSImportList::class.java)
+
+    /**
+     * The import alias of this import declaration,
+     * if it has one.
+     */
+    val importAlias: PSImportAlias?
+        get() =
+            findChildByClass(PSImportAlias::class.java)
+
     override fun getName() = importName?.name
 
-    /** the names that are imported or hidden
+    /** the names that are exposed or hidden
      *
      * `import Lib (namedImports)`
      * */
     val namedImports: List<String>
         get() =
-            findChildrenByClass(PSPositionedDeclarationRefImpl::class.java)
-                .asSequence()
-                .map { it.text.trim() }
-                .toList()
+            importList
+                ?.importedItems
+                ?.map { it.name }
+                ?: emptyList()
 
     /** is the import statement a hiding
      *
@@ -29,13 +55,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      * */
     val isHiding: Boolean
         get() =
-            SyntaxTraverser.psiTraverser(this)
-                .expand { it !is PSPositionedDeclarationRefImpl }
-                .filterIsInstance(LeafPsiElement::class.java)
-                .any { it.text.trim() == "hiding" }
-
-
-    val importName get() = findChildByClass(PSProperName::class.java)
+            importList?.isHiding ?: false
 
     override fun getReference(): PsiReference {
         return ModuleReference(this)

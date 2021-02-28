@@ -15,7 +15,7 @@ Purescript File
       PSProperName(ImportModuleName)
         PSProperName(Qualified)
           PsiElement(proper name)('Prelude')
-      PSProperName(ImportModuleName)
+      PSImportAlias(ImportAlias)
         PsiElement(as)('as')
         PSProperName(Qualified)
           PsiElement(proper name)('P')
