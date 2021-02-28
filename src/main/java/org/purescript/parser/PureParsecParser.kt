@@ -510,8 +510,6 @@ class PureParsecParser {
                         )
                     )
             ).`as`(TypeInstanceDeclaration)
-//    private val importDeclarationType =
-//        optional(indented(parens(commaSep(parseDeclarationRef))))
     private val importedDataMembers = parens(
         choice(
             ddot,
@@ -535,7 +533,6 @@ class PureParsecParser {
         token(IMPORT)
             .then(indented(moduleName).`as`(importModuleName))
             .then(optional(importList))
-//            .then(optional(token(HIDING)).then(importDeclarationType))
             .then(
                 optional(
                     token(AS)
@@ -543,13 +540,6 @@ class PureParsecParser {
                         .`as`(PSElements.ImportAlias)
                 )
             )
-//            .then(
-//                optional(
-//                    token(AS)
-//                        .then(moduleName)
-//                        .`as`(importModuleName)
-//                )
-//            )
             .`as`(PSElements.ImportDeclaration)
     private val decl = choice(
         (dataHead + optional(eq + sepBy1(dataCtor, PIPE)))
