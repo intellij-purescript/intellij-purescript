@@ -921,18 +921,12 @@ class PureParsecParser {
                 attempt(
                     parseQualified(properName).`as`(GenericIdentifier)
                         .then(manyOrEmpty(indented(binderAtom)))
-                        .`as`(ConstructorBinder)
-                ),
-                attempt(
-                    braces(commaSep(parseIdentifierAndBinder))
-                        .`as`(ObjectBinder)
-                ),
-                attempt(
-                    squares(commaSep(binder))
-                        .`as`(ObjectBinder)
-                ),
-                attempt(indented(braces(commaSep(idents))).`as`(Binder)),
-                attempt(char.`as`(StringBinder)),
+                ).`as`(ConstructorBinder),
+                attempt(braces(commaSep(parseIdentifierAndBinder)))
+                    .`as`(ObjectBinder),
+                attempt(squares(commaSep(binder))).`as`(ObjectBinder),
+                attempt(indented(braces(commaSep(idents)))).`as`(Binder),
+                attempt(char).`as`(StringBinder),
                 attempt(parens(binder))
             ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
