@@ -843,8 +843,7 @@ class PureParsecParser {
     private val parseObjectBinder =
         braces(commaSep(parseIdentifierAndBinder))
             .`as`(ObjectBinder)
-    private val parseNullBinder = token("_")
-        .`as`(PSElements.NullBinder)
+    private val parseNullBinder = `_`.`as`(PSElements.NullBinder)
     private val parseStringBinder =
         token(STRING).`as`(StringBinder)
     private val parseBooleanBinder =
@@ -960,7 +959,7 @@ class PureParsecParser {
                 optional(token("=").or(token(":") + binder))
         binderAtom.setRef(
             choice(
-                attempt(token("_").`as`(PSElements.NullBinder)),
+                attempt(`_`.`as`(PSElements.NullBinder)),
                 attempt(ident + `@` + binderAtom).`as`(NamedBinder),
                 attempt(ident.`as`(VarBinder)),
                 attempt(qualPropName.`as`(ConstructorBinder)),
