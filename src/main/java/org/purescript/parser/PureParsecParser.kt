@@ -724,7 +724,7 @@ class PureParsecParser {
         .then(indented(expr))
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
-        .then(indented(indentedList1(parseLocalDeclaration)))
+        .then(indented(indentedList1(parseLocalDeclarationRef)))
         .then(indented(token(PSTokens.IN)))
         .then(expr)
         .`as`(PSElements.Let)
