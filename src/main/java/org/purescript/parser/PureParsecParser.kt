@@ -801,12 +801,6 @@ class PureParsecParser {
             )
     private val parsePrefix = ref()
 
-    // Binder
-    private val parseIdentifierAndBinder =
-        lname.or(stringLiteral)
-            .then(indented(eq.or(token(OPERATOR))))
-            .then(indented(binder))
-
     private val type0 = ref()
     private val type1 = ref()
     private val type2 = ref()
