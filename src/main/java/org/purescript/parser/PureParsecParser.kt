@@ -903,7 +903,7 @@ class PureParsecParser {
                 attempt(squares(commaSep(binder))).`as`(ObjectBinder),
                 attempt(indented(braces(commaSep(idents)))).`as`(Binder),
                 attempt(char).`as`(StringBinder),
-                attempt(parens(binder))
+                binderAtom
             ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
         val qualPropName = parseQualified(properName.`as`(ProperName))
