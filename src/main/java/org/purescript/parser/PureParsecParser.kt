@@ -890,15 +890,17 @@ class PureParsecParser {
         val recordBinder =
             idents +
                 optional(token("=").or(token(":") + binder))
-        binder.setRef(
-            sepBy1(choice(
-                attempt(
-                    parseQualified(properName).`as`(GenericIdentifier)
-                        .then(manyOrEmpty(indented(binderAtom)))
-                ).`as`(ConstructorBinder),
-                binderAtom
-            ), token(OPERATOR))
+        val binder2 = choice(
+            attempt(
+                parseQualified(properName).`as`(GenericIdentifier)
+                    .then(manyOrEmpty(indented(binderAtom)))
+            ).`as`(ConstructorBinder),
+            binderAtom
         )
+        val binder1 = sepBy1(
+            binder2, token(OPERATOR)
+        )
+        binder.setRef(binder1)
         binderAtom.setRef(
             choice(
                 attempt(`_`.`as`(PSElements.NullBinder)),
