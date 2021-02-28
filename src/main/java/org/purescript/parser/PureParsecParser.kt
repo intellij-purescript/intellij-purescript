@@ -897,7 +897,7 @@ class PureParsecParser {
                         .then(manyOrEmpty(indented(binderAtom)))
                 ).`as`(ConstructorBinder),
                 binderAtom
-            ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
+            ).then(optional(token(OPERATOR).then(binder)))
         )
         binderAtom.setRef(
             choice(
