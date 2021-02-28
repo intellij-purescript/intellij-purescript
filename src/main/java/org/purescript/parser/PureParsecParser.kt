@@ -915,9 +915,7 @@ class PureParsecParser {
                 `_`.`as`(PSElements.NullBinder),
                 string.`as`(StringBinder),
                 boolean.`as`(BooleanBinder),
-                optional(token("+").or(token("-")))
-                    .then(token(NATURAL).or(token(FLOAT)))
-                    .`as`(NumberBinder),
+                number.`as`(NumberBinder),
                 attempt(
                     ident.then(indented(`@`).then(indented(binder)))
                         .`as`(NamedBinder)
