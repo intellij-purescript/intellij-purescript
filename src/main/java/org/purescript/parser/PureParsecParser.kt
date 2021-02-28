@@ -892,9 +892,8 @@ class PureParsecParser {
                 optional(token("=").or(token(":") + binder))
         val binder2 = choice(
             attempt(
-                parseQualified(properName).`as`(ProperName)
-                    .then(manyOrEmpty(indented(binderAtom)))
-            ).`as`(ConstructorBinder),
+                qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(indented(binderAtom)))
+            ),
             binderAtom
         )
         val binder1 = sepBy1(
