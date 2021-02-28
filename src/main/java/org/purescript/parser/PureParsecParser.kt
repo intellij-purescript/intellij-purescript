@@ -324,10 +324,6 @@ class PureParsecParser {
     private val exprWhere =
         expr + optional(where + indentedList1(parseLocalDeclarationRef))
 
-    // Some Binders - rest at the bottom
-    private val parseArrayBinder =
-        squares(commaSep(binder))
-            .`as`(ObjectBinder)
     private val parsePatternMatchObject =
         indented(
             braces(
@@ -561,7 +557,11 @@ class PureParsecParser {
                     )
                 )
             )
-            .then(optional(attempt(parseArrayBinder)))
+            .then(optional(
+                attempt(
+                    squares(commaSep(binder))
+                        .`as`(ObjectBinder)
+                )))
             .then(
                 optional(
                     attempt(
@@ -734,7 +734,11 @@ class PureParsecParser {
             optional(attempt(token(LPAREN)))
                 .then(optional(attempt(properName).`as`(Constructor)))
                 .then(optional(attempt(many1(ident))))
-                .then(optional(attempt(parseArrayBinder)))
+                .then(optional(
+                    attempt(
+                        squares(commaSep(binder))
+                            .`as`(ObjectBinder)
+                    )))
                 .then(
                     optional(
                         attempt(
@@ -840,34 +844,6 @@ class PureParsecParser {
         lname.or(stringLiteral)
             .then(indented(eq.or(token(OPERATOR))))
             .then(indented(binder))
-    private val parseObjectBinder =
-        braces(commaSep(parseIdentifierAndBinder))
-            .`as`(ObjectBinder)
-    private val parseNullBinder = `_`.`as`(PSElements.NullBinder)
-    private val parseStringBinder =
-        token(STRING).`as`(StringBinder)
-    private val parseBooleanBinder =
-        token("true").or(token("false")).`as`(BooleanBinder)
-    private val parseNumberBinder =
-        optional(token("+").or(token("-")))
-            .then(token(NATURAL).or(token(FLOAT)))
-            .`as`(NumberBinder)
-    private val parseNamedBinder =
-        ident
-            .then(
-                indented(`@`)
-                    .then(indented(binder))
-            )
-            .`as`(NamedBinder)
-    private val parseVarBinder = ident.`as`(VarBinder)
-    private val parseConstructorBinder =
-        parseQualified(properName).`as`(GenericIdentifier)
-            .then(manyOrEmpty(indented(binderAtom)))
-            .`as`(ConstructorBinder)
-    private val parsePatternMatch =
-        indented(braces(commaSep(idents))).`as`(Binder)
-    private val parseCharBinder =
-        char.`as`(StringBinder)
 
     private val type0 = ref()
     private val type1 = ref()
@@ -935,17 +911,34 @@ class PureParsecParser {
         )
         binder.setRef(
             choice(
-                attempt(parseNullBinder),
-                attempt(parseStringBinder),
-                attempt(parseBooleanBinder),
-                attempt(parseNumberBinder),
-                attempt(parseNamedBinder),
-                attempt(parseVarBinder),
-                attempt(parseConstructorBinder),
-                attempt(parseObjectBinder),
-                attempt(parseArrayBinder),
-                attempt(parsePatternMatch),
-                attempt(parseCharBinder),
+                attempt(`_`.`as`(PSElements.NullBinder)),
+                attempt(token(STRING).`as`(StringBinder)),
+                attempt(token("true").or(token("false")).`as`(BooleanBinder)),
+                attempt(
+                    optional(token("+").or(token("-")))
+                        .then(token(NATURAL).or(token(FLOAT)))
+                        .`as`(NumberBinder)
+                ),
+                attempt(
+                    ident.then(indented(`@`).then(indented(binder)))
+                        .`as`(NamedBinder)
+                ),
+                attempt(ident.`as`(VarBinder)),
+                attempt(
+                    parseQualified(properName).`as`(GenericIdentifier)
+                        .then(manyOrEmpty(indented(binderAtom)))
+                        .`as`(ConstructorBinder)
+                ),
+                attempt(
+                    braces(commaSep(parseIdentifierAndBinder))
+                        .`as`(ObjectBinder)
+                ),
+                attempt(
+                    squares(commaSep(binder))
+                        .`as`(ObjectBinder)
+                ),
+                attempt(indented(braces(commaSep(idents))).`as`(Binder)),
+                attempt(char.`as`(StringBinder)),
                 attempt(parens(binder))
             ).then(optional(token(OPERATOR).then(binder))).`as`(Binder)
         )
