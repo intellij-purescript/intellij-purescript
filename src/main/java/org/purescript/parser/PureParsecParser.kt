@@ -912,13 +912,11 @@ class PureParsecParser {
         binder.setRef(
             choice(
                 `_`.`as`(PSElements.NullBinder),
-                attempt(token(STRING).`as`(StringBinder)),
-                attempt(token("true").or(token("false")).`as`(BooleanBinder)),
-                attempt(
-                    optional(token("+").or(token("-")))
-                        .then(token(NATURAL).or(token(FLOAT)))
-                        .`as`(NumberBinder)
-                ),
+                token(STRING).`as`(StringBinder),
+                token("true").or(token("false")).`as`(BooleanBinder),
+                optional(token("+").or(token("-")))
+                    .then(token(NATURAL).or(token(FLOAT)))
+                    .`as`(NumberBinder),
                 attempt(
                     ident.then(indented(`@`).then(indented(binder)))
                         .`as`(NamedBinder)
