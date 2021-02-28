@@ -265,7 +265,7 @@ Purescript File
           PsiElement(identifier)('unwrap')
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)
-          PSIdentifierImpl(GenericIdentifier)
+          PSProperName(ProperName)
             PSProperName(Qualified)
               PSProperName(ProperName)
                 PsiElement(proper name)('RecordNewtype')

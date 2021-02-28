@@ -112,7 +112,7 @@ Purescript File
           PsiElement(identifier)('show')
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)
-          PSIdentifierImpl(GenericIdentifier)
+          PSProperName(ProperName)
             PSProperName(Qualified)
               PSProperName(ProperName)
                 PsiElement(proper name)('Box')

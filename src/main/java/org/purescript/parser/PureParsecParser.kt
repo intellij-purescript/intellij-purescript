@@ -892,7 +892,7 @@ class PureParsecParser {
                 optional(token("=").or(token(":") + binder))
         val binder2 = choice(
             attempt(
-                parseQualified(properName).`as`(GenericIdentifier)
+                parseQualified(properName).`as`(ProperName)
                     .then(manyOrEmpty(indented(binderAtom)))
             ).`as`(ConstructorBinder),
             binderAtom

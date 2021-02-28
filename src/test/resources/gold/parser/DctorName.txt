@@ -262,7 +262,7 @@ Purescript File
         PsiElement(identifier)('h')
       PsiElement(()('(')
       PSConstructorBinderImpl(ConstructorBinder)
-        PSIdentifierImpl(GenericIdentifier)
+        PSProperName(ProperName)
           PSProperName(Qualified)
             PSProperName(ProperName)
               PsiElement(proper name)('Bar'')

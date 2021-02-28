@@ -138,7 +138,7 @@ Purescript File
           PsiElement(identifier)('s')
       PsiElement(()('(')
       PSConstructorBinderImpl(ConstructorBinder)
-        PSIdentifierImpl(GenericIdentifier)
+        PSProperName(ProperName)
           PSProperName(Qualified)
             PSProperName(ProperName)
               PsiElement(proper name)('State')

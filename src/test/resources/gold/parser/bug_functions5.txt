@@ -3842,7 +3842,7 @@ Purescript File
           <empty list>
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)
-          PSIdentifierImpl(GenericIdentifier)
+          PSProperName(ProperName)
             PSProperName(Qualified)
               PSProperName(ProperName)
                 PsiElement(proper name)('Tuple')
