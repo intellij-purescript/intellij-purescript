@@ -138,7 +138,7 @@ class PureParsecParser {
         token(PSTokens.IDENT),
         token(DATA),
         token(NEWTYPE),
-        token(PSTokens.TYPE),
+        token(TYPE),
         token(FOREIGN),
         token(IMPORT),
         token(PSTokens.INFIXL),
@@ -169,7 +169,7 @@ class PureParsecParser {
         choice(
             token(OPERATOR),
             token(DOT),
-            token(PSTokens.DDOT),
+            token(DDOT),
             token(PSTokens.LARROW),
             token(LDARROW),
             token(PSTokens.OPTIMISTIC)
@@ -316,7 +316,7 @@ class PureParsecParser {
             manyOrEmpty(indented(typeVarBinding))
                 .`as`(TypeArgs)
     private val parseTypeSynonymDeclaration =
-        token(PSTokens.TYPE)
+        token(TYPE)
             .then(token(PROPER_NAME).`as`(TypeConstructor))
             .then(manyOrEmpty(indented(typeVarBinding)))
             .then(indented(eq) + (type))
@@ -392,7 +392,7 @@ class PureParsecParser {
             PSElements.Fixity
         )
     private val parseFixityDeclaration = parseFixity
-        .then(optional(token(PSTokens.TYPE)))
+        .then(optional(token(TYPE)))
         .then(
             parseQualified(properName).`as`(PSElements.pModuleName)
                 .or(ident.`as`(ProperName))
@@ -404,7 +404,7 @@ class PureParsecParser {
         choice(
             token("kind").then(parseQualified(properName).`as`(pClassName)),
             ident.`as`(PSElements.ValueRef),
-            token(PSTokens.TYPE).then(optional(parens(operator))),
+            token(TYPE).then(optional(parens(operator))),
             token(MODULE).then(moduleName).`as`(importModuleName),
             token(CLASS).then(parseQualified(properName).`as`(pClassName)),
             properName.`as`(ProperName)
@@ -413,7 +413,7 @@ class PureParsecParser {
                         parens(
                             optional(
                                 choice(
-                                    token(PSTokens.DDOT),
+                                    token(DDOT),
                                     commaSep1(properName.`as`(TypeConstructor))
                                 )
                             )
