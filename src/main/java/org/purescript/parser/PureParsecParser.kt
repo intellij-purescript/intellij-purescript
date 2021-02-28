@@ -848,16 +848,13 @@ class PureParsecParser {
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
                 optional(attempt(token(LPAREN)))
-                    .then(
-                        optional(
-                            attempt(properName).`as`(Constructor)
-                        )
-                    )
+                    .then(optional(attempt(properName).`as`(Constructor)))
+                    .then(optional(attempt(many1(ident))))
                     .then(
                         optional(
                             attempt(
-                                many1(
-                                    ident
+                                squares(commaSep(binder)).`as`(
+                                    ObjectBinder
                                 )
                             )
                         )
@@ -865,41 +862,16 @@ class PureParsecParser {
                     .then(
                         optional(
                             attempt(
-                                squares(commaSep(binder))
-                                    .`as`(ObjectBinder)
-                            )
-                        )
-                    )
-                    .then(
-                        optional(
-                            attempt(
                                 indented(`@`)
-                                    .then(
-                                        indented(
-                                            braces(
-                                                commaSep(
-                                                    idents
-                                                )
-                                            )
-                                        )
-                                    )
+                                    .then(indented(braces(commaSep(idents))))
                             )
                         ).`as`(NamedBinder)
-                    ).then(
-                        optional(
-                            attempt(parsePatternMatchObject)
-                        )
                     )
+                    .then(optional(attempt(parsePatternMatchObject)))
                     .then(optional(attempt(parseRowPatternBinder)))
                     .then(optional(attempt(token(RPAREN))))
                     // ---------- end of LET stuff -----------
-                    .then(
-                        attempt(
-                            manyOrEmpty(
-                                binderAtom
-                            )
-                        )
-                    )
+                    .then(attempt(manyOrEmpty(binderAtom)))
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
