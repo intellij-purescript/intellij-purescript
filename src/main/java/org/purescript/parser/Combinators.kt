@@ -1,8 +1,6 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
-import org.purescript.parser.PSTokens
-import java.util.*
 
 object Combinators {
 
@@ -428,6 +426,10 @@ object Combinators {
 
     fun sepBy(p: Parsec, sep: Parsec): Parsec {
         return optional(p.then(manyOrEmpty(sep.then(p))))
+    }
+
+    fun sepBy1(p: Parsec, sep: Parsec): Parsec {
+        return p.then(manyOrEmpty(sep.then(p)))
     }
 
     fun commaSep(p: Parsec): Parsec {

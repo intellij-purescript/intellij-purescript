@@ -891,13 +891,13 @@ class PureParsecParser {
             idents +
                 optional(token("=").or(token(":") + binder))
         binder.setRef(
-            choice(
+            sepBy1(choice(
                 attempt(
                     parseQualified(properName).`as`(GenericIdentifier)
                         .then(manyOrEmpty(indented(binderAtom)))
                 ).`as`(ConstructorBinder),
                 binderAtom
-            ).then(optional(token(OPERATOR).then(binder)))
+            ), token(OPERATOR))
         )
         binderAtom.setRef(
             choice(
