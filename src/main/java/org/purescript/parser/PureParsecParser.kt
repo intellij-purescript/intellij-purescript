@@ -897,7 +897,6 @@ class PureParsecParser {
                 boolean.`as`(BooleanBinder),
                 number.`as`(NumberBinder),
                 attempt(ident + `@` + binder).`as`(NamedBinder),
-                attempt(ident.`as`(VarBinder)),
                 attempt(
                     parseQualified(properName).`as`(GenericIdentifier)
                         .then(manyOrEmpty(indented(binderAtom)))
