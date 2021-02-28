@@ -635,7 +635,7 @@ class PureParsecParser {
             .then(
                 choice(
                     many1(typedIdent).`as`(Abs),
-                    many1(indented(ident.or(binderAtom).`as`(Abs)))
+                    many1(indented(binderAtom).`as`(Abs))
                 )
             )
             .then(indented(arrow))
