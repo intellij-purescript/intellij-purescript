@@ -204,6 +204,8 @@ class PureParsecParser {
     // Types.hs
     private val type = ref()
     private val parseForAll = ref()
+
+    @Suppress("PrivatePropertyName")
     private val `_` = token("_")
     private val parseTypeVariable: Parsec =
         guard(
