@@ -622,27 +622,8 @@ class PureParsecParser {
             .`as`(ObjectBinderField)
     private val parseObjectLiteral =
         braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
-    private val typedIdent =
-        optional(token(LPAREN))
-            .then(
-                many1(
-                    idents.`as`(GenericIdentifier)
-                        .or(parseQualified(properName).`as`(TypeConstructor))
-                )
-            )
-            .then(optional(indented(dcolon).then(indented(type))))
-            .then(optional(parseObjectLiteral))
-            .then(optional(token(RPAREN)))
-    private val parseAbs =
-        token(PSTokens.BACKSLASH)
-            .then(
-                choice(
-                    many1(typedIdent).`as`(Abs),
-                    many1(indented(binderAtom).`as`(Abs))
-                )
-            )
-            .then(indented(arrow))
-            .then(expr)
+    private val backslash = token(PSTokens.BACKSLASH)
+    private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
     private val parseVar =
         attempt(
             manyOrEmpty(
@@ -742,7 +723,7 @@ class PureParsecParser {
         parseCharLiteral,
         attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
         attempt(parseObjectLiteral),
-        parseAbs,
+        abs,
         attempt(parseConstructor),
         attempt(parseVar),
         (case + commaSep1(expr) + of + indentedList(caseBranch))
@@ -889,7 +870,7 @@ class PureParsecParser {
             binderAtom
         )
         val binder1 = sepBy1(binder2, token(OPERATOR))
-        binder.setRef(binder1)
+        binder.setRef(binder1 + optional(dcolon + type))
         binderAtom.setRef(
             choice(
                 attempt(`_`.`as`(PSElements.NullBinder)),
