@@ -712,11 +712,9 @@ class PureParsecParser {
             token(LET)
                 .then(indented(indentedList1(letBinding)))
                 .`as`(DoNotationLet),
-            attempt(
-                binder
-                    .then(indented(token(PSTokens.LARROW)).then(expr))
-                    .`as`(PSElements.DoNotationBind)
-            ),
+            attempt(binder + indented(token(PSTokens.LARROW)) + expr)
+                .`as`(PSElements.DoNotationBind)
+            ,
             attempt(expr.`as`(PSElements.DoNotationValue))
         )
     private val doBlock =
