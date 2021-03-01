@@ -168,12 +168,14 @@ class PureParsecParser {
         token(HIDING),
         token(AS)
     ).`as`(Identifier)
+    private val larrow = token(LARROW)
+
     private val operator =
         choice(
             token(OPERATOR),
             token(DOT),
             token(DDOT),
-            token(LARROW),
+            larrow,
             token(LDARROW),
             token(PSTokens.OPTIMISTIC)
         )
@@ -715,7 +717,7 @@ class PureParsecParser {
             token(LET)
                 .then(indented(indentedList1(letBinding)))
                 .`as`(DoNotationLet),
-            attempt(binder + indented(token(LARROW)) + expr)
+            attempt(binder + indented(larrow) + expr)
                 .`as`(DoNotationBind)
             ,
             attempt(expr.`as`(DoNotationValue))
