@@ -636,8 +636,8 @@ class PureParsecParser {
     private val parseAbs =
         (
             token(PSTokens.BACKSLASH) +
-            choice(many1(typedIdent), many1(indented(binderAtom))) +
-            indented(arrow) + expr
+            choice(many1(typedIdent), many1(binderAtom)) +
+            arrow + expr
         ).`as`(Abs)
     private val parseVar =
         attempt(
