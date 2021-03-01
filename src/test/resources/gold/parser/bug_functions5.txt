@@ -3646,7 +3646,7 @@ Purescript File
                 PSAbsImpl(Abs)
                   PsiElement(\)('\')
                   PsiElement(()('(')
-                  PSIdentifierImpl(GenericIdentifier)
+                  PSNullBinderImpl(NullBinder)
                     PsiElement(identifier)('_')
                   PsiElement(::)('∷')
                   PSTypeImpl(Type)

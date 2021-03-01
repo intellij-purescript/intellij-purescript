@@ -622,21 +622,10 @@ class PureParsecParser {
             .`as`(ObjectBinderField)
     private val parseObjectLiteral =
         braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
-    private val typedIdent =
-        optional(token(LPAREN))
-            .then(
-                many1(
-                    idents.`as`(GenericIdentifier)
-                        .or(parseQualified(properName).`as`(TypeConstructor))
-                )
-            )
-            .then(optional(indented(dcolon).then(indented(type))))
-            .then(optional(parseObjectLiteral))
-            .then(optional(token(RPAREN)))
     private val parseAbs =
         (
             token(PSTokens.BACKSLASH) +
-            choice(many1(typedIdent), many1(binderAtom)) +
+            many1(binderAtom) +
             arrow + expr
         ).`as`(Abs)
     private val parseVar =
