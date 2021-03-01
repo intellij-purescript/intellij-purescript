@@ -885,7 +885,7 @@ class PureParsecParser {
             binderAtom
         )
         val binder1 = sepBy1(binder2, token(OPERATOR))
-        binder.setRef(binder1)
+        binder.setRef(binder1 + optional(dcolon + type))
         binderAtom.setRef(
             choice(
                 attempt(`_`.`as`(PSElements.NullBinder)),
