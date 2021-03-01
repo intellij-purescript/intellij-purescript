@@ -623,11 +623,7 @@ class PureParsecParser {
     private val parseObjectLiteral =
         braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
     private val parseAbs =
-        (
-            token(PSTokens.BACKSLASH) +
-            many1(binderAtom) +
-            arrow + expr
-        ).`as`(Abs)
+        (token(PSTokens.BACKSLASH) + many1(binderAtom) + arrow + expr).`as`(Abs)
     private val parseVar =
         attempt(
             manyOrEmpty(
