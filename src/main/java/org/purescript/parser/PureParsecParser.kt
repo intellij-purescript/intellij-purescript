@@ -29,7 +29,9 @@ import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
+import org.purescript.parser.PSElements.Companion.DoNotationBind
 import org.purescript.parser.PSElements.Companion.DoNotationLet
+import org.purescript.parser.PSElements.Companion.DoNotationValue
 import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
@@ -81,6 +83,7 @@ import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
+import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -165,12 +168,14 @@ class PureParsecParser {
         token(HIDING),
         token(AS)
     ).`as`(Identifier)
+    private val larrow = token(LARROW)
+
     private val operator =
         choice(
             token(OPERATOR),
             token(DOT),
             token(DDOT),
-            token(PSTokens.LARROW),
+            larrow,
             token(LDARROW),
             token(PSTokens.OPTIMISTIC)
         )
@@ -204,6 +209,8 @@ class PureParsecParser {
     // Types.hs
     private val type = ref()
     private val parseForAll = ref()
+
+    @Suppress("PrivatePropertyName")
     private val `_` = token("_")
     private val parseTypeVariable: Parsec =
         guard(
@@ -400,27 +407,6 @@ class PureParsecParser {
         .then(token(AS))
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
-    private val parseDeclarationRef =
-        choice(
-            token("kind").then(parseQualified(properName).`as`(pClassName)),
-            ident.`as`(PSElements.ValueRef),
-            token(TYPE).then(optional(parens(operator))),
-            token(MODULE).then(moduleName).`as`(importModuleName),
-            token(CLASS).then(parseQualified(properName).`as`(pClassName)),
-            properName.`as`(ProperName)
-                .then(
-                    optional(
-                        parens(
-                            optional(
-                                choice(
-                                    token(DDOT),
-                                    commaSep1(properName.`as`(TypeConstructor))
-                                )
-                            )
-                        )
-                    )
-                )
-        ).`as`(PSElements.PositionedDeclarationRef)
     private val parseTypeClassDeclaration =
         token(CLASS)
             .then(
@@ -726,18 +712,13 @@ class PureParsecParser {
                     )
                 ).`as`(ValueDeclaration)
         )
-    private val parseDoNotationBind: Parsec =
-        binder
-            .then(indented(token(PSTokens.LARROW)).then(expr))
-            .`as`(PSElements.DoNotationBind)
-    private val doExpr = expr.`as`(PSElements.DoNotationValue)
     private val doStatement =
         choice(
             token(LET)
                 .then(indented(indentedList1(letBinding)))
                 .`as`(DoNotationLet),
-            attempt(parseDoNotationBind),
-            attempt(doExpr)
+            attempt(binder + larrow + expr).`as`(DoNotationBind),
+            attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
         token(PSTokens.DO)
@@ -800,12 +781,6 @@ class PureParsecParser {
                     .or(attempt(indented(dcolon) + type))
             )
     private val parsePrefix = ref()
-
-    // Binder
-    private val parseIdentifierAndBinder =
-        lname.or(stringLiteral)
-            .then(indented(eq.or(token(OPERATOR))))
-            .then(indented(binder))
 
     private val type0 = ref()
     private val type1 = ref()
@@ -913,9 +888,7 @@ class PureParsecParser {
             ),
             binderAtom
         )
-        val binder1 = sepBy1(
-            binder2, token(OPERATOR)
-        )
+        val binder1 = sepBy1(binder2, token(OPERATOR))
         binder.setRef(binder1)
         binderAtom.setRef(
             choice(
