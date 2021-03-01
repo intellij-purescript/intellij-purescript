@@ -888,9 +888,7 @@ class PureParsecParser {
             ),
             binderAtom
         )
-        val binder1 = sepBy1(
-            binder2, token(OPERATOR)
-        )
+        val binder1 = sepBy1(binder2, token(OPERATOR))
         binder.setRef(binder1)
         binderAtom.setRef(
             choice(
