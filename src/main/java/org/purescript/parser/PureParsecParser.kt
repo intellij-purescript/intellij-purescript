@@ -29,7 +29,9 @@ import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
+import org.purescript.parser.PSElements.Companion.DoNotationBind
 import org.purescript.parser.PSElements.Companion.DoNotationLet
+import org.purescript.parser.PSElements.Companion.DoNotationValue
 import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
@@ -81,6 +83,7 @@ import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
+import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -170,7 +173,7 @@ class PureParsecParser {
             token(OPERATOR),
             token(DOT),
             token(DDOT),
-            token(PSTokens.LARROW),
+            token(LARROW),
             token(LDARROW),
             token(PSTokens.OPTIMISTIC)
         )
@@ -712,10 +715,10 @@ class PureParsecParser {
             token(LET)
                 .then(indented(indentedList1(letBinding)))
                 .`as`(DoNotationLet),
-            attempt(binder + indented(token(PSTokens.LARROW)) + expr)
-                .`as`(PSElements.DoNotationBind)
+            attempt(binder + indented(token(LARROW)) + expr)
+                .`as`(DoNotationBind)
             ,
-            attempt(expr.`as`(PSElements.DoNotationValue))
+            attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
         token(PSTokens.DO)
