@@ -402,27 +402,6 @@ class PureParsecParser {
         .then(token(AS))
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
-    private val parseDeclarationRef =
-        choice(
-            token("kind").then(parseQualified(properName).`as`(pClassName)),
-            ident.`as`(PSElements.ValueRef),
-            token(TYPE).then(optional(parens(operator))),
-            token(MODULE).then(moduleName).`as`(importModuleName),
-            token(CLASS).then(parseQualified(properName).`as`(pClassName)),
-            properName.`as`(ProperName)
-                .then(
-                    optional(
-                        parens(
-                            optional(
-                                choice(
-                                    token(DDOT),
-                                    commaSep1(properName.`as`(TypeConstructor))
-                                )
-                            )
-                        )
-                    )
-                )
-        ).`as`(PSElements.PositionedDeclarationRef)
     private val parseTypeClassDeclaration =
         token(CLASS)
             .then(
