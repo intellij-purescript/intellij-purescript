@@ -82,7 +82,7 @@ class PSModule(node: ASTNode) :
 
             explicitlyExportedItems.filterIsInstance<PSExportedModule>()
                 .mapNotNull { it.importDeclaration }
-                .flatMapTo(exportedValueDeclarations) { it.importedValues }
+                .flatMapTo(exportedValueDeclarations) { it.importedValueDeclarations }
 
             return exportedValueDeclarations
         }
@@ -91,7 +91,7 @@ class PSModule(node: ASTNode) :
         get() =
             importDeclarations
                 .filter { it.name in reexportedModuleNames }
-                .flatMap { it.importedValues }
+                .flatMap { it.importedValueDeclarations }
                 .asSequence()
 
     val reexportedModuleNames: List<String>

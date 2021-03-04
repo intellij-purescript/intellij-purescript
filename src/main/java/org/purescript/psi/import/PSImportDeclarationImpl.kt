@@ -67,7 +67,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
     val importedModule get(): PSModule? = ModuleReference(this).resolve()
 
-    val importedValues
+    val importedValueDeclarations
         get(): Sequence<PSValueDeclaration> =
             importedModule?.let { importedModule ->
                 when {
