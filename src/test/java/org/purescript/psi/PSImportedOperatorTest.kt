@@ -3,6 +3,7 @@ package org.purescript.psi
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
+import org.purescript.psi.import.PSImportedOperator
 
 
 class PSImportedOperatorTest : BasePlatformTestCase() {

@@ -1,12 +1,8 @@
-package org.purescript.psi
+package org.purescript.psi.import
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.psi.SyntaxTraverser
-import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.util.siblings
-import org.purescript.parser.PSTokens
+import org.purescript.psi.*
 
 class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 

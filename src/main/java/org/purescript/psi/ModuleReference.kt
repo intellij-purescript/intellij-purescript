@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.file.PSFile
+import org.purescript.psi.import.PSImportDeclarationImpl
 
 class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImportDeclarationImpl>(
     element,
