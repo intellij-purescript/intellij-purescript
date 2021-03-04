@@ -12,7 +12,7 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node) {
 class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
     private val properName: PSProperName
         get() =
-        findNotNullChildByClass(PSProperName::class.java)
+            findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
 }
@@ -20,7 +20,7 @@ class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
 class PSImportedData(node: ASTNode) : PSImportedItem(node) {
     private val properName: PSProperName
         get() =
-        findNotNullChildByClass(PSProperName::class.java)
+            findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
 }
@@ -28,7 +28,7 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
 class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
     private val properName: PSProperName
         get() =
-        findNotNullChildByClass(PSProperName::class.java)
+            findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
 }
@@ -36,7 +36,7 @@ class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
 class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
     private val identifier: PSIdentifierImpl
         get() =
-        findNotNullChildByClass(PSIdentifierImpl::class.java)
+            findNotNullChildByClass(PSIdentifierImpl::class.java)
 
     override fun getName(): String = identifier.name
 }
@@ -44,7 +44,7 @@ class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
 class PSImportedType(node: ASTNode) : PSImportedItem(node) {
     private val identifier: PSIdentifierImpl
         get() =
-        findNotNullChildByClass(PSIdentifierImpl::class.java)
+            findNotNullChildByClass(PSIdentifierImpl::class.java)
 
     override fun getName(): String = identifier.name
 }
@@ -52,7 +52,7 @@ class PSImportedType(node: ASTNode) : PSImportedItem(node) {
 class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
     private val identifier: PSIdentifierImpl
         get() =
-        findNotNullChildByClass(PSIdentifierImpl::class.java)
+            findNotNullChildByClass(PSIdentifierImpl::class.java)
 
     override fun getName(): String = identifier.name
 }
