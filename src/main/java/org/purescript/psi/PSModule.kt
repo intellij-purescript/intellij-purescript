@@ -87,13 +87,6 @@ class PSModule(node: ASTNode) :
             return exportedValueDeclarations
         }
 
-    private val valuesFromReexportedModules
-        get() =
-            importDeclarations
-                .filter { it.name in reexportedModuleNames }
-                .flatMap { it.importedValueDeclarations }
-                .asSequence()
-
     val reexportedModuleNames: List<String>
         get() =
             exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
