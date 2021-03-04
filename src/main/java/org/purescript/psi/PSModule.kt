@@ -12,6 +12,7 @@ class PSModule(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,
     DocCommentOwner {
+
     override fun getName(): String {
         return nameIdentifier.name
     }
@@ -46,13 +47,24 @@ class PSModule(node: ASTNode) :
         get() =
             findChildrenByClass(PSForeignValueDeclaration::class.java)
 
+    /**
+     * All import declarations in this module
+     */
     val importDeclarations: Array<PSImportDeclarationImpl>
         get() =
             findChildrenByClass(PSImportDeclarationImpl::class.java)
 
+    /**
+     * All values declared in this module
+     */
     val valueDeclarations: Array<PSValueDeclaration>
         get() = findChildrenByClass(PSValueDeclaration::class.java)
 
+    /**
+     * All the value declarations that this module exports, including
+     * both values this module declares and values that this module
+     * re-exports from other modules.
+     */
     val exportedValueDeclarations: List<PSValueDeclaration>
         get() {
             val explicitlyExportedItems = exportList?.exportedItems
