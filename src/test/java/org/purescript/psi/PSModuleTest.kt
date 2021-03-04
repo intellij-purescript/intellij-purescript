@@ -103,4 +103,158 @@ class PSModuleTest : BasePlatformTestCase() {
         ) as PSFile
         TestCase.assertEquals(1, file.module.foreignValueDeclarations.size)
     }
+
+    fun `test exported value declarations (exports all)`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                a = 1
+                b = 2
+            """.trimIndent()
+        ) as PSFile
+        val actualExportedValueDeclarationNames = file.module.exportedValueDeclarations.map { it.name }
+        assertContainsElements(actualExportedValueDeclarationNames, "a", "b")
+    }
+
+    fun `test exported value declarations (exports some)`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (b) where
+                a = 1
+                b = 2
+            """.trimIndent()
+        ) as PSFile
+        val actualExportedValueDeclarationNames = file.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(actualExportedValueDeclarationNames, "b")
+    }
+
+    fun `test exported value declarations (re-export entire module)`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                a = 1
+                b = 2
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar) where
+                import Bar
+            """.trimIndent()
+        ) as PSFile
+        val actualExportedValueDeclarationNames = file.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(actualExportedValueDeclarationNames, "a", "b")
+    }
+
+    fun `test exported value declarations (re-export some of module)`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (a, b) where
+                a = 1
+                b = 2
+                c = 3
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar) where
+                import Bar (a)
+            """.trimIndent()
+        ) as PSFile
+        val actualExportedValueDeclarationNames = file.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(actualExportedValueDeclarationNames, "a")
+    }
+
+    fun `test exported value declarations (hiding some of re-exported module)`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (a, b) where
+                a = 1
+                b = 2
+                c = 3
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar) where
+                import Bar hiding (a)
+            """.trimIndent()
+        ) as PSFile
+        val actualExportedValueDeclarationNames = file.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(actualExportedValueDeclarationNames, "b")
+    }
+
+    fun `test exported value declarations (nested re-exported module)`() {
+        myFixture.configureByText(
+            "Qux.purs",
+            """
+                module Qux where
+                a = 1
+                b = 2
+                c = 3
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (module Qux) where
+                import Qux
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar) where
+                import Bar
+            """.trimIndent()
+        ) as PSFile
+        val actualExportedValueDeclarationNames = file.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(actualExportedValueDeclarationNames, "a", "b", "c")
+    }
+
+    fun `test exported value declarations (combination)`() {
+        val qux = myFixture.configureByText(
+            "Qux.purs",
+            """
+                module Qux (a, b) where
+                a = 1
+                b = 2
+                c = 3
+            """.trimIndent()
+        ) as PSFile
+        val quxExportedValueDeclarationNames = qux.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(quxExportedValueDeclarationNames, "a", "b")
+
+        val bar = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (module Qux, d) where
+                import Qux hiding (b)
+                d = 4
+                e = 5
+            """.trimIndent()
+        ) as PSFile
+        val barExportedValueDeclarationNames = bar.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(barExportedValueDeclarationNames, "a", "d")
+
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar, g) where
+                import Bar (a)
+                f = 6
+                g = 7
+            """.trimIndent()
+        ) as PSFile
+        val fooExportedValueDeclarationNames = foo.module.exportedValueDeclarations.map { it.name }
+        assertSameElements(fooExportedValueDeclarationNames, "a", "g")
+    }
 }

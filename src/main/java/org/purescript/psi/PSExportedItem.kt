@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import org.purescript.file.PSFile
 import org.purescript.psi.`var`.ExportedModuleReference
 import org.purescript.psi.`var`.ExportedValueReference
+import org.purescript.psi.import.PSImportDeclarationImpl
 
 sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
     val module: PSModule get() = (containingFile as PSFile).module
@@ -20,6 +21,11 @@ class PSExportedType(node: ASTNode) : PSExportedItem(node)
 
 class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
     val qualifiedIdentifier = findNotNullChildByClass(PSProperName::class.java)
+
+    val importDeclaration : PSImportDeclarationImpl? get() =
+        module.importDeclarations.singleOrNull {
+            it.name == qualifiedIdentifier.name
+        }
 
     override fun getName(): String = qualifiedIdentifier.name
 

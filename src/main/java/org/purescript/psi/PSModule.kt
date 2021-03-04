@@ -53,10 +53,27 @@ class PSModule(node: ASTNode) :
     val valueDeclarations: Array<PSValueDeclaration>
         get() = findChildrenByClass(PSValueDeclaration::class.java)
 
-    val exportedValueDeclarations
-        get() =
-            valueDeclarations.filter { it.name in exportedNames } +
-                valuesFromReexportedModules
+    val exportedValueDeclarations: List<PSValueDeclaration>
+        get() {
+            val explicitlyExportedItems = exportList?.exportedItems
+                ?: return valueDeclarations.toList()
+
+            val explicitlyExportedValueNames = explicitlyExportedItems
+                .filterIsInstance<PSExportedValue>()
+                .map { it.name }
+                .toSet()
+
+            val exportedValueDeclarations = mutableListOf<PSValueDeclaration>()
+            valueDeclarations.filterTo(exportedValueDeclarations) {
+                it.name in explicitlyExportedValueNames
+            }
+
+            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                .mapNotNull { it.importDeclaration?.importedValues }
+                .flatMapTo(exportedValueDeclarations) { it }
+
+            return exportedValueDeclarations
+        }
 
     private val valuesFromReexportedModules
         get() =
