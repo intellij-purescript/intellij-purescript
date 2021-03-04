@@ -90,7 +90,7 @@ class PSModule(node: ASTNode) :
     val reexportedModuleNames: List<String>
         get() =
             exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
-                ?.map { it.text.removePrefix("module").trim() }
+                ?.map { it.name }
                 ?.toList()
                 ?: emptyList()
 
