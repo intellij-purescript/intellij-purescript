@@ -5,12 +5,14 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.import.PSImportDeclarationImpl
 
 
 class PSModule(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,
     DocCommentOwner {
+
     override fun getName(): String {
         return nameIdentifier.name
     }
@@ -45,29 +47,50 @@ class PSModule(node: ASTNode) :
         get() =
             findChildrenByClass(PSForeignValueDeclaration::class.java)
 
+    /**
+     * All import declarations in this module
+     */
     val importDeclarations: Array<PSImportDeclarationImpl>
         get() =
             findChildrenByClass(PSImportDeclarationImpl::class.java)
 
+    /**
+     * All values declared in this module
+     */
     val valueDeclarations: Array<PSValueDeclaration>
         get() = findChildrenByClass(PSValueDeclaration::class.java)
 
-    val exportedValueDeclarations
-        get() =
-            valueDeclarations.filter { it.name in exportedNames } +
-                valuesFromReexportedModules
+    /**
+     * All the value declarations that this module exports, including
+     * both values this module declares and values that this module
+     * re-exports from other modules.
+     */
+    val exportedValueDeclarations: List<PSValueDeclaration>
+        get() {
+            val explicitlyExportedItems = exportList?.exportedItems
+                ?: return valueDeclarations.toList()
 
-    private val valuesFromReexportedModules
-        get() =
-            importDeclarations
-                .filter { it.name in reexportedModuleNames }
-                .flatMap { it.importedValues }
-                .asSequence()
+            val explicitlyExportedValueNames = explicitlyExportedItems
+                .filterIsInstance<PSExportedValue>()
+                .map { it.name }
+                .toSet()
+
+            val exportedValueDeclarations = mutableListOf<PSValueDeclaration>()
+            valueDeclarations.filterTo(exportedValueDeclarations) {
+                it.name in explicitlyExportedValueNames
+            }
+
+            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                .mapNotNull { it.importDeclaration }
+                .flatMapTo(exportedValueDeclarations) { it.importedValueDeclarations }
+
+            return exportedValueDeclarations
+        }
 
     val reexportedModuleNames: List<String>
         get() =
             exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
-                ?.map { it.text.removePrefix("module").trim() }
+                ?.map { it.name }
                 ?.toList()
                 ?: emptyList()
 

@@ -15,7 +15,7 @@ class ImportedValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
     override fun getVariants(): Array<PsiNamedElement> {
         val currentModule = myElement.module
         return currentModule.importDeclarations
-            .flatMap { it.importedValues }
+            .flatMap { it.importedValueDeclarations }
             .toTypedArray()
     }
 

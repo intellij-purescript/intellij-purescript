@@ -145,8 +145,9 @@ class PSVarTest : BasePlatformTestCase() {
         myFixture.addFileToProject(
             "Lib.purs",
             """
-            module Lib where
+            module Lib (z) where
             y = 1
+            z = 2
             """.trimIndent()
         ) as PSFile
         val file = myFixture.addFileToProject(
@@ -162,6 +163,30 @@ class PSVarTest : BasePlatformTestCase() {
             psVar.referenceOfType(ImportedValueReference::class.java)
         val valueDeclarations = valueReference.multiResolve(false)
         TestCase.assertEquals(0, valueDeclarations.size)
+    }
+
+    fun `test var can resolve exported values when exporting all`() {
+        myFixture.addFileToProject(
+            "Lib.purs",
+            """
+            module Lib where
+            y = 1
+            """.trimIndent()
+        ) as PSFile
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """
+            module Main where
+            import Lib
+            x = y
+            """.trimIndent()
+        ) as PSFile
+        val psVar = file.getVarByName("y")!!
+        val valueReference =
+            psVar.referenceOfType(ImportedValueReference::class.java)
+        val valueDeclaration = valueReference.multiResolve(false)
+            .single().element as PsiNamedElement
+        TestCase.assertEquals("y", valueDeclaration.name)
     }
 
     fun `test var can't resolve imported values when hidden`() {
