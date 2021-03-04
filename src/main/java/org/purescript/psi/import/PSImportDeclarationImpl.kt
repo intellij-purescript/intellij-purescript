@@ -4,6 +4,14 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import org.purescript.psi.*
 
+/**
+ * An import declaration, as found near the top a module.
+ *
+ * E.g.
+ * ```
+ * import Foo.Bar hiding (a, b, c) as FB
+ * ```
+ */
 class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
 
     /**

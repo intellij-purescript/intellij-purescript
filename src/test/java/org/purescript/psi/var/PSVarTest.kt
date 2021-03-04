@@ -145,8 +145,9 @@ class PSVarTest : BasePlatformTestCase() {
         myFixture.addFileToProject(
             "Lib.purs",
             """
-            module Lib where
+            module Lib (z) where
             y = 1
+            z = 2
             """.trimIndent()
         ) as PSFile
         val file = myFixture.addFileToProject(

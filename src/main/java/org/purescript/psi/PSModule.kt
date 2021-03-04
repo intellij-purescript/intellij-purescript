@@ -69,8 +69,8 @@ class PSModule(node: ASTNode) :
             }
 
             explicitlyExportedItems.filterIsInstance<PSExportedModule>()
-                .mapNotNull { it.importDeclaration?.importedValues }
-                .flatMapTo(exportedValueDeclarations) { it }
+                .mapNotNull { it.importDeclaration }
+                .flatMapTo(exportedValueDeclarations) { it.importedValues }
 
             return exportedValueDeclarations
         }
