@@ -4,6 +4,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.file.PSFile
 
 class ImportedValueReferenceTest : BasePlatformTestCase() {
+
     fun `test resolves value declarations`() {
         val bar = myFixture.configureByText(
             "Bar.purs",
@@ -146,5 +147,49 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.testCompletionVariants("Foo.purs", "fi", "fo")
+    }
+
+    fun `test finds value declaration usage`() {
+        val bar = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                bar = 3
+            """.trimIndent()
+        ) as PSFile
+        val declaration = bar.module.valueDeclarations.single()
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (bar)
+            """.trimIndent()
+        ) as PSFile
+        val importedValue =
+            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
+        val usage = myFixture.findUsages(declaration).single().element
+        assertEquals(importedValue, usage)
+    }
+
+    fun `test finds foreign value declaration usage`() {
+        val bar = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import bar :: Int
+            """.trimIndent()
+        ) as PSFile
+        val declaration = bar.module.foreignValueDeclarations.single()
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (bar)
+            """.trimIndent()
+        ) as PSFile
+        val importedValue =
+            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
+        val usage = myFixture.findUsages(declaration).single().element
+        assertEquals(importedValue, usage)
     }
 }
