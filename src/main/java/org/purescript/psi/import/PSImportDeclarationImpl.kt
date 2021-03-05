@@ -1,7 +1,6 @@
 package org.purescript.psi.import
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
 import org.purescript.psi.*
 
 /**
@@ -61,12 +60,21 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         get() =
             importList?.isHiding ?: false
 
-    override fun getReference(): PsiReference {
-        return ModuleReference(this)
-    }
+    /**
+     * Returns a reference to the [PSModule] that this declaration is
+     * importing from
+     */
+    override fun getReference(): ModuleReference =
+        ModuleReference(this)
 
-    val importedModule get(): PSModule? = ModuleReference(this).resolve()
+    /**
+     * The [PSModule] that this declaration is importing from
+     */
+    val importedModule get(): PSModule? = reference.resolve()
 
+    /**
+     * All [PSValueDeclaration] elements imported by this declaration
+     */
     val importedValueDeclarations
         get(): Sequence<PSValueDeclaration> =
             importedModule?.let { importedModule ->
@@ -88,4 +96,26 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
                     }
                 }
             } ?: sequenceOf()
+
+    /**
+     * All [PSForeignValueDeclaration] elements imported by this declaration
+     */
+    val importedForeignValueDeclarations: List<PSForeignValueDeclaration>
+        get() {
+            val exportedForeignValueDeclarations = importedModule?.exportedForeignValueDeclarations
+                ?: return emptyList()
+
+            val importedItems = importList?.importedItems
+                ?: return exportedForeignValueDeclarations
+
+            val importedValueNames = importedItems.filterIsInstance<PSImportedValue>()
+                .map { it.name }
+                .toSet()
+
+            return if (isHiding) {
+                exportedForeignValueDeclarations.filter { it.name !in importedValueNames }
+            } else {
+                exportedForeignValueDeclarations.filter { it.name in importedValueNames }
+            }
+        }
 }

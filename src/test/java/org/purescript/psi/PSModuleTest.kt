@@ -1,5 +1,6 @@
 package org.purescript.psi
 
+import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
@@ -257,4 +258,57 @@ class PSModuleTest : BasePlatformTestCase() {
         val fooExportedValueDeclarationNames = foo.module.exportedValueDeclarations.map { it.name }
         assertSameElements(fooExportedValueDeclarationNames, "a", "g")
     }
+
+    private fun PsiFile.exportedForeignValueDeclarationNames(): List<String> =
+        (this as PSFile).module.exportedForeignValueDeclarations.map { it.name!! }
+
+    fun `test exports all foreign values`() {
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                foreign import foo :: Int
+                foreign import bar :: Int
+            """.trimIndent()
+        ).exportedForeignValueDeclarationNames()
+        assertSameElements(foo, "foo", "bar")
+    }
+
+    fun `test exports some foreign values`() {
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (bar, qux) where
+                foreign import foo :: Int
+                foreign import bar :: Int
+                foreign import qux :: Int
+            """.trimIndent()
+        ).exportedForeignValueDeclarationNames()
+        assertSameElements(foo, "bar", "qux")
+    }
+
+    fun `test re-exports some foreign values`() {
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                foreign import foo :: Int
+                foreign import bar :: Int
+                foreign import qux :: Int
+            """.trimIndent()
+        ).exportedForeignValueDeclarationNames()
+
+        assertSameElements(foo, "foo", "bar", "qux")
+
+        val bar = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (module Foo) where
+                import Foo hiding (foo, bar)
+            """.trimIndent()
+        ).exportedForeignValueDeclarationNames()
+
+        assertSameElements(bar, "qux")
+    }
 }
+
