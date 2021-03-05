@@ -1,6 +1,7 @@
 package org.purescript.psi.import
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
 import org.purescript.file.PSFile
 
 class ImportedValueReferenceTest : BasePlatformTestCase() {
@@ -147,6 +148,32 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.testCompletionVariants("Foo.purs", "fi", "fo")
+    }
+
+    fun `test doesn't include duplicate completions`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                codePointAt :: Int -> String -> Maybe CodePoint
+                codePointAt n _ | n < 0 = Nothing
+                codePointAt 0 "" = Nothing
+                codePointAt 0 s = Just (unsafeCodePointAt0 s)
+                codePointAt n s = _codePointAt codePointAtFallback Just Nothing unsafeCodePointAt0 n s
+                codeFixForNoLookupShown = ""
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (code<caret>)
+            """.trimIndent()
+        )
+        assertEquals(
+            listOf("codePointAt", "codeFixForNoLookupShown").sorted(),
+            myFixture.getCompletionVariants("Foo.purs")!!.sorted()
+        )
     }
 
     fun `test finds value declaration usage`() {
