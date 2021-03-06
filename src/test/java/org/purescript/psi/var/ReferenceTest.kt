@@ -5,11 +5,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
 import org.purescript.psi.PSDataDeclarationImpl
-import org.purescript.psi.PSIdentifierImpl
+import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.PSVarBinderImpl
 
-class ReferenceTest : PSLanguageParserTestBase() {
+class ReferenceTest : PSLanguageParserTestBase("parser") {
     fun testFindTopLevelValueDeclarationWithName() {
         val file = createFile(
             "Main.purs",
@@ -55,11 +55,11 @@ class ReferenceTest : PSLanguageParserTestBase() {
                 """.trimIndent()
         ) as PSFile
         val elementAtCursor = file.findElementAt(38)
-        val psIdentifier = if (elementAtCursor is PSIdentifierImpl)
+        val psIdentifier = if (elementAtCursor is PSIdentifier)
             elementAtCursor
         else
             PsiTreeUtil.findFirstParent(elementAtCursor)
-            { it is PSIdentifierImpl } as PSIdentifierImpl
+            { it is PSIdentifier } as PSIdentifier
         val reference = psIdentifier.reference
         val resolved = reference!!.resolve()
         assertInstanceOf(resolved, PSDataDeclarationImpl::class.java)

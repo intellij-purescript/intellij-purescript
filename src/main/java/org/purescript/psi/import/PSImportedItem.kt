@@ -2,7 +2,7 @@ package org.purescript.psi.import
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.PsiTreeUtil
-import org.purescript.psi.PSIdentifierImpl
+import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 
@@ -39,25 +39,25 @@ class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
 }
 
 class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
-    private val identifier: PSIdentifierImpl
+    private val identifier: PSIdentifier
         get() =
-            findNotNullChildByClass(PSIdentifierImpl::class.java)
+            findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
 }
 
 class PSImportedType(node: ASTNode) : PSImportedItem(node) {
-    private val identifier: PSIdentifierImpl
+    private val identifier: PSIdentifier
         get() =
-            findNotNullChildByClass(PSIdentifierImpl::class.java)
+            findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
 }
 
 class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
-    internal val identifier: PSIdentifierImpl
+    val identifier: PSIdentifier
         get() =
-            findNotNullChildByClass(PSIdentifierImpl::class.java)
+            findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
 

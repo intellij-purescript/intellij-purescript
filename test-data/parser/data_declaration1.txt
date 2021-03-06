@@ -1,0 +1,14 @@
+Purescript File
+  PSModule(Module)
+    PsiElement(module)('module')
+    PSProperName(ModuleName)
+      PSProperName(Qualified)
+        PsiElement(proper name)('A')
+    PsiElement(where)('where')
+    PSDataDeclarationImpl(DataDeclaration)
+      PsiElement(data)('data')
+      PSIdentifier(TypeConstructor)
+        PSProperName(ProperName)
+          PsiElement(proper name)('User1')
+      PSTypeArgsImpl(TypeArgs)
+        <empty list>

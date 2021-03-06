@@ -4,7 +4,7 @@ import junit.framework.TestCase
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
 
-class PSFindUsageProviderTest : PSLanguageParserTestBase() {
+class PSFindUsageProviderTest : PSLanguageParserTestBase("parser") {
 
     fun `test descriptive name include module name`() {
         val provider = PSFindUsageProvider()

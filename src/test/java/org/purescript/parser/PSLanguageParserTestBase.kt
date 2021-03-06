@@ -8,10 +8,10 @@ import com.intellij.testFramework.TestDataFile
 import org.jetbrains.annotations.NonNls
 import java.io.File
 
-abstract class PSLanguageParserTestBase :
-    ParsingTestCase("parser", "purs", PSParserDefinition()) {
+abstract class PSLanguageParserTestBase(val dataPath: String) :
+    ParsingTestCase(dataPath, "purs", PSParserDefinition()) {
     override fun getTestDataPath(): String =
-        this.javaClass.classLoader.getResource("gold")!!.path
+        "test-data"
 
     override fun skipSpaces(): Boolean = true
 

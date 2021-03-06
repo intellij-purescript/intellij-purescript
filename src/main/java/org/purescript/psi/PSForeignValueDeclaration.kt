@@ -22,8 +22,8 @@ class PSForeignValueDeclaration(node: ASTNode) :
         return null
     }
 
-    override fun getNameIdentifier(): PSIdentifierImpl? {
-        return findChildByClass(PSIdentifierImpl::class.java)
+    override fun getNameIdentifier(): PSIdentifier? {
+        return findChildByClass(PSIdentifier::class.java)
     }
 
     override fun getName(): String? {
