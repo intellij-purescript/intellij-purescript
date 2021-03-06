@@ -6,7 +6,7 @@ Purescript File
         PsiElement(proper name)('Newline')
     PsiElement(where)('where')
     PSValueDeclaration(ValueDeclaration)
-      PSIdentifierImpl(identifier)
+      PSIdentifier(identifier)
         PsiElement(identifier)('newline')
       PsiElement(=)('=')
       PSValueImpl(Value)

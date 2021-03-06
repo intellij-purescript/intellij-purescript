@@ -15,7 +15,7 @@ class PSValueDeclaration(node: ASTNode) :
     DocCommentOwner
 {
     override fun getName(): String {
-        return findChildByClass(PSIdentifierImpl::class.java)!!
+        return findChildByClass(PSIdentifier::class.java)!!
             .name
     }
 
@@ -48,7 +48,7 @@ class PSValueDeclaration(node: ASTNode) :
     }
 
     override fun getNameIdentifier(): PsiElement? {
-        return findChildByClass(PSIdentifierImpl::class.java)
+        return findChildByClass(PSIdentifier::class.java)
     }
 
     override val docComments:List<PsiComment>

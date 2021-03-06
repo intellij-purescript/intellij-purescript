@@ -36,7 +36,7 @@ class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
 
 class PSExportedValue(node: ASTNode) : PSExportedItem(node) {
 
-    val identifier = findNotNullChildByClass(PSIdentifierImpl::class.java)
+    val identifier = findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName() = identifier.name
 

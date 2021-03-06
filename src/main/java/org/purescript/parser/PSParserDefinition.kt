@@ -52,7 +52,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         return if (type == PSElements.ProperName || type == PSElements.Qualified || type == PSElements.pClassName || type == PSElements.pModuleName || type == PSElements.importModuleName) {
             PSProperName(node)
         } else if (type == PSElements.Identifier || type == PSElements.GenericIdentifier || type == PSElements.TypeConstructor || type == PSElements.Constructor || type == PSElements.LocalIdentifier) {
-            PSIdentifierImpl(node)
+            PSIdentifier(node)
         } else if (type == PSElements.ImportDeclaration) {
             PSImportDeclarationImpl(node)
         } else if (type == PSElements.ImportAlias) {

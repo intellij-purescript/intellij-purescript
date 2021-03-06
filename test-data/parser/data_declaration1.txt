@@ -7,7 +7,7 @@ Purescript File
     PsiElement(where)('where')
     PSDataDeclarationImpl(DataDeclaration)
       PsiElement(data)('data')
-      PSIdentifierImpl(TypeConstructor)
+      PSIdentifier(TypeConstructor)
         PSProperName(ProperName)
           PsiElement(proper name)('User1')
       PSTypeArgsImpl(TypeArgs)

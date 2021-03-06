@@ -7,7 +7,7 @@ Purescript File
     PSExportList(ExportList)
       PsiElement(()('(')
       PSExportedValue(ExportedValue)
-        PSIdentifierImpl(identifier)
+        PSIdentifier(identifier)
           PsiElement(identifier)('main')
       PsiElement(,)(',')
       PSExportedModule(ExportedModule)
