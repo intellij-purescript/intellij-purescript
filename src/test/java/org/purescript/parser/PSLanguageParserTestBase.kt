@@ -11,7 +11,7 @@ import java.io.File
 abstract class PSLanguageParserTestBase :
     ParsingTestCase("parser", "purs", PSParserDefinition()) {
     override fun getTestDataPath(): String =
-        this.javaClass.classLoader.getResource("gold")!!.path
+        "src/test/resources/gold"
 
     override fun skipSpaces(): Boolean = true
 
