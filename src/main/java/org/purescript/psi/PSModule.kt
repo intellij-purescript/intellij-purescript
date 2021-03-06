@@ -61,6 +61,13 @@ class PSModule(node: ASTNode) :
             findChildrenByClass(PSForeignValueDeclaration::class.java)
 
     /**
+     * The newtype declarations in this module
+     */
+    val newTypeDeclarations: Array<PSNewTypeDeclarationImpl>
+        get() =
+            findChildrenByClass(PSNewTypeDeclarationImpl::class.java)
+
+    /**
      * All the value declarations that this module exports,
      * both directly and through re-exported modules
      */
