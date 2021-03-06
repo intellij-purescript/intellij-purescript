@@ -1,12 +1,17 @@
 package org.purescript.psi.import
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.psi.PSIdentifierImpl
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 
 sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node) {
     abstract override fun getName(): String
+
+    internal val importDeclaration: PSImportDeclarationImpl?
+        get() =
+            PsiTreeUtil.getParentOfType(this, PSImportDeclarationImpl::class.java)
 }
 
 class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
@@ -50,10 +55,13 @@ class PSImportedType(node: ASTNode) : PSImportedItem(node) {
 }
 
 class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
-    private val identifier: PSIdentifierImpl
+    internal val identifier: PSIdentifierImpl
         get() =
             findNotNullChildByClass(PSIdentifierImpl::class.java)
 
     override fun getName(): String = identifier.name
+
+    override fun getReference(): ImportedValueReference =
+        ImportedValueReference(this)
 }
 

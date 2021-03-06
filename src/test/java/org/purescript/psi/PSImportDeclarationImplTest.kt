@@ -22,7 +22,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
         )
         val psImportDeclaration = mainFile.module.getImportDeclarationByName("Foo")!!
 
-        val psModule = psImportDeclaration.reference.resolve()!! as PSModule
+        val psModule = psImportDeclaration.reference.resolve()!!
 
         TestCase.assertEquals("Foo", psModule.name)
     }
@@ -59,7 +59,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
         )
         val psImportDeclaration = mainFile.module.getImportDeclarationByName("Bar.Foo")!!
 
-        val psModule = psImportDeclaration.reference.resolve()!! as PSModule
+        val psModule = psImportDeclaration.reference.resolve()!!
 
         TestCase.assertEquals("Bar.Foo", psModule.name)
     }
@@ -87,7 +87,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
         val psImportDeclaration = mainFile.module.getImportDeclarationByName("Bar.Foo")!!
 
         val resolve = psImportDeclaration.reference.resolve()
-        val psModule = resolve!! as PSModule
+        val psModule = resolve!!
 
         TestCase.assertEquals("Bar.Foo", psModule.name)
     }

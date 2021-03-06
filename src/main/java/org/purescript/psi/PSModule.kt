@@ -61,9 +61,8 @@ class PSModule(node: ASTNode) :
         get() = findChildrenByClass(PSValueDeclaration::class.java)
 
     /**
-     * All the value declarations that this module exports, including
-     * both values this module declares and values that this module
-     * re-exports from other modules.
+     * All the value declarations that this module exports,
+     * both directly and through re-exported modules
      */
     val exportedValueDeclarations: List<PSValueDeclaration>
         get() {
@@ -85,6 +84,32 @@ class PSModule(node: ASTNode) :
                 .flatMapTo(exportedValueDeclarations) { it.importedValueDeclarations }
 
             return exportedValueDeclarations
+        }
+
+    /**
+     * All the foreign value declarations that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
+        get() {
+            val explicitlyExportedItems = exportList?.exportedItems
+                ?: return foreignValueDeclarations.toList()
+
+            val explicitlyExportedValueNames = explicitlyExportedItems
+                .filterIsInstance<PSExportedValue>()
+                .map { it.name }
+                .toSet()
+
+            val exportedForeignValueDeclarations = mutableListOf<PSForeignValueDeclaration>()
+            foreignValueDeclarations.filterTo(exportedForeignValueDeclarations) {
+                it.name in explicitlyExportedValueNames
+            }
+
+            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                .mapNotNull { it.importDeclaration }
+                .flatMapTo(exportedForeignValueDeclarations) { it.importedForeignValueDeclarations }
+
+            return exportedForeignValueDeclarations
         }
 
     val reexportedModuleNames: List<String>
