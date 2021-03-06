@@ -9,7 +9,7 @@ import org.purescript.psi.PSIdentifierImpl
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.PSVarBinderImpl
 
-class ReferenceTest : PSLanguageParserTestBase() {
+class ReferenceTest : PSLanguageParserTestBase("parser") {
     fun testFindTopLevelValueDeclarationWithName() {
         val file = createFile(
             "Main.purs",

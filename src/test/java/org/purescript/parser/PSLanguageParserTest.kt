@@ -1,6 +1,6 @@
 package org.purescript.parser
 
-class PSLanguageParserTest : PSLanguageParserTestBase() {
+class PSLanguageParserTest : PSLanguageParserTestBase("parser") {
     // modules
     fun testmodule1() = doTest(true, true)
     fun testmodule2() = doTest(true, true)
