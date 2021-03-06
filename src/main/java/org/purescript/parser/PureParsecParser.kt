@@ -568,11 +568,11 @@ class PureParsecParser {
             .then(parseQualified(properName))
             .`as`(PSElements.ExportedModule)
     private val exportedOperator =
-        parens(operator)
+        parens(operator.`as`(Identifier))
             .`as`(PSElements.ExportedOperator)
     private val exportedType =
         token(TYPE)
-            .then(parens(operator))
+            .then(parens(operator.`as`(Identifier)))
             .`as`(PSElements.ExportedType)
     private val exportedValue =
         ident.`as`(PSElements.ExportedValue)
