@@ -1,13 +1,50 @@
 package org.purescript.lexer
 
-import com.intellij.lang.impl.TokenSequence
 import com.intellij.lexer.EmptyLexer
+import com.intellij.psi.tree.IElementType
 import junit.framework.TestCase
 
 class LayoutLexerTest : TestCase() {
     fun testName() {
         val lexer = LayoutLexer(EmptyLexer())
-        val tokens = TokenSequence.performLexing("", lexer)
-        assertEquals(0, tokens.tokenCount)
+        val tokens = getTokens(lexer,"")
+        assertEquals(0, tokens.size)
     }
+
+    fun `test separator token for top level declaration`() {
+        val lexer = LayoutLexer(PSLexer())
+        val source = """
+                module Main where
+                f = 1
+            """.trimIndent()
+        val tokens = getTokens(lexer, source)
+        assertEquals(11, tokens.size)
+    }
+
+    fun `test do layout`() {
+        val lexer = LayoutLexer(PSLexer())
+        val tokens = getTokens(
+            lexer,
+            """
+                module Main where
+                
+                import Effect.Console (log)
+                
+                main = do
+                    log "Hello world"
+                    
+            """.trimIndent()
+        )
+        assertEquals(26, tokens.size)
+    }
+}
+
+private fun getTokens(lexer: LayoutLexer, source: String): List<IElementType> {
+    lexer.start(source)
+    val generator = generateSequence {
+        val tokenType = lexer.tokenType
+        lexer.advance()
+        tokenType
+    }
+    return generator.toList()
 }
