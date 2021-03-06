@@ -328,5 +328,19 @@ class PSModuleTest : BasePlatformTestCase() {
 
         assertSize(2, module.newTypeDeclarations)
     }
+
+    fun `test finds exported newtype declarations`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (Bar) where
+                newtype Foo = Foo Int
+                newtype Bar = Bar Int
+            """.trimIndent()
+        ).getModule()
+        val newTypeDeclaration = module.exportedNewTypeDeclarations.single()
+
+        assertEquals("Bar", newTypeDeclaration.name)
+    }
 }
 

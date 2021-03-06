@@ -11,7 +11,13 @@ sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
 }
 
 class PSExportedData(node: ASTNode) : PSExportedItem(node) {
-    val dataMemberList: PSExportedDataMemberList? = findChildByClass(PSExportedDataMemberList::class.java)
+    private val properName: PSProperName
+        get() = findNotNullChildByClass(PSProperName::class.java)
+
+    val dataMemberList: PSExportedDataMemberList?
+        get() = findChildByClass(PSExportedDataMemberList::class.java)
+
+    override fun getName(): String = properName.name
 }
 
 class PSExportedClass(node: ASTNode) : PSExportedItem(node)
@@ -22,10 +28,11 @@ class PSExportedType(node: ASTNode) : PSExportedItem(node)
 class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
     val qualifiedIdentifier = findNotNullChildByClass(PSProperName::class.java)
 
-    val importDeclaration : PSImportDeclarationImpl? get() =
-        module.importDeclarations.singleOrNull {
-            it.name == qualifiedIdentifier.name
-        }
+    val importDeclaration: PSImportDeclarationImpl?
+        get() =
+            module.importDeclarations.singleOrNull {
+                it.name == qualifiedIdentifier.name
+            }
 
     override fun getName(): String = qualifiedIdentifier.name
 
