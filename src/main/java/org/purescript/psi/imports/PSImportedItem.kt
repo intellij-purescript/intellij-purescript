@@ -1,7 +1,6 @@
-package org.purescript.psi.import
+package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSProperName

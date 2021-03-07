@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import org.purescript.psi.PSExportedModule
-import org.purescript.psi.import.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase.Poly<PSExportedModule>(
     exportedModule,

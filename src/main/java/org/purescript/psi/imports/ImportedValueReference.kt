@@ -1,4 +1,4 @@
-package org.purescript.psi.import
+package org.purescript.psi.imports
 
 import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiNamedElement

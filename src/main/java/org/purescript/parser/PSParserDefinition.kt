@@ -16,7 +16,7 @@ import org.purescript.file.PSFileStubType
 import org.purescript.lexer.PSLexer
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
-import org.purescript.psi.import.*
+import org.purescript.psi.imports.*
 
 class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createLexer(project: Project): Lexer {
