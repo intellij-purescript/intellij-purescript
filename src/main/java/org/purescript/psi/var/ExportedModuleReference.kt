@@ -18,7 +18,7 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val importDeclarations = candidates.filter { it.importName?.name == myElement.name }
+        val importDeclarations = candidates.filter { it.name == myElement.name }
         val modules = importDeclarations.mapNotNull { it.importedModule }
         return createResults(modules)
     }

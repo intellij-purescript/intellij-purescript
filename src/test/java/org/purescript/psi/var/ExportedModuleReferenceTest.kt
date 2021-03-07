@@ -50,11 +50,49 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
         TestCase.assertTrue(exportedModule.reference.isReferenceTo(fileBar.module))
     }
 
+    fun `test resolves to aliased imported module`() {
+        val fileFoo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module B) where
+                import Bar as B
+            """.trimIndent()
+        ) as PSFile
+        val fileBar = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+            """.trimIndent()
+        ) as PSFile
+        val exportedModule = fileFoo.module.exportList!!.exportedItems.single() as PSExportedModule
+
+        TestCase.assertTrue(exportedModule.reference.isReferenceTo(fileBar.module))
+    }
+
     fun `test does not resolve to module if not imported`() {
         val fileFoo = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo (module Bar) where
+            """.trimIndent()
+        ) as PSFile
+        val fileBar = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+            """.trimIndent()
+        ) as PSFile
+        val exportedModule = fileFoo.module.exportList!!.exportedItems.single() as PSExportedModule
+
+        TestCase.assertFalse(exportedModule.reference.isReferenceTo(fileBar.module))
+    }
+
+    fun `test does not resolve to aliased module using wrong name`() {
+        val fileFoo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar) where
+                import Bar as B
             """.trimIndent()
         ) as PSFile
         val fileBar = myFixture.configureByText(
