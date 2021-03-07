@@ -13,7 +13,7 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
 ) {
 
     override fun getVariants(): Array<String> {
-        return candidates.mapNotNull { it.importName?.name }
+        return candidates.mapNotNull { it.name }
             .toTypedArray()
     }
 

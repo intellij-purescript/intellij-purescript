@@ -19,6 +19,18 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
         myFixture.testCompletionVariants("Foo.purs", "Prelude", "Data.String")
     }
 
+    fun `test completes aliased import declaration`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module <caret>) where
+                import Prelude as P
+                import Data.String as DS
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "P", "DS")
+    }
+
     fun `test resolves to imported module`() {
         val fileFoo = myFixture.configureByText(
             "Foo.purs",
