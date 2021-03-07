@@ -29,6 +29,7 @@ class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
         return with(CodeFoldingSettings.getInstance()) {
             when (node.elementType) {
                 PSElements.ImportDeclaration -> COLLAPSE_IMPORTS
+                PSElements.ExportList -> COLLAPSE_FILE_HEADER
                 else -> false
             }
         }

@@ -16,4 +16,8 @@ class PurescriptFoldingBuilderTest : BasePlatformTestCase() {
     fun `test doesn't fold single import`() {
         myFixture.testFolding("$testDataPath/imports_single.purs")
     }
+
+    fun `test export list folds exported items`() {
+        myFixture.testFolding("$testDataPath/export_list.purs")
+    }
 }
