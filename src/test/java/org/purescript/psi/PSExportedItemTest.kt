@@ -11,7 +11,10 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (class Foo) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedClass)
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedClass)
+        TestCase.assertEquals("Foo", exportedItem.name)
     }
 
     fun `test parses exported data`() {
@@ -19,8 +22,12 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (Foo) where"""
         ) as PSFile
-        val exportedData = file.module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedItem = file.module.exportList!!.exportedItems.single()
 
+        TestCase.assertTrue(exportedItem is PSExportedData)
+        val exportedData = exportedItem as PSExportedData
+
+        TestCase.assertEquals("Foo", exportedItem.name)
         TestCase.assertNull(exportedData.dataMemberList)
     }
 
@@ -29,7 +36,12 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (Foo(..)) where"""
         ) as PSFile
-        val exportedData = file.module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedData)
+        val exportedData = exportedItem as PSExportedData
+
+        TestCase.assertEquals("Foo", exportedItem.name)
         val dataMemberList = exportedData.dataMemberList
 
         TestCase.assertNotNull(exportedData.dataMemberList)
@@ -42,7 +54,12 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (Foo(Bar, Baz)) where"""
         ) as PSFile
-        val exportedData = file.module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedData)
+        val exportedData = exportedItem as PSExportedData
+
+        TestCase.assertEquals("Foo", exportedItem.name)
         val dataMemberList = exportedData.dataMemberList
 
         TestCase.assertNotNull(exportedData.dataMemberList)
@@ -55,7 +72,10 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (kind Foo) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedKind)
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedKind)
+        TestCase.assertEquals("Foo", exportedItem.name)
     }
 
     fun `test parses exported module`() {
@@ -63,7 +83,10 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (module Foo) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedModule)
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedModule)
+        TestCase.assertEquals("Foo", exportedItem.name)
     }
 
     fun `test parses exported operator`() {
@@ -71,7 +94,10 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main ((<~>)) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedOperator)
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedOperator)
+        TestCase.assertEquals("<~>", exportedItem.name)
     }
 
     fun `test parses exported type`() {
@@ -79,7 +105,10 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (type (<<=>>)) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedType)
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedType)
+        TestCase.assertEquals("<<=>>", exportedItem.name)
     }
 
     fun `test parses exported value`() {
@@ -87,6 +116,9 @@ class PSExportedItemTest : BasePlatformTestCase() {
             "Main.purs",
             """module Main (foo) where"""
         ) as PSFile
-        TestCase.assertTrue(file.module.exportList!!.exportedItems.single() is PSExportedValue)
+        val exportedItem = file.module.exportList!!.exportedItems.single()
+
+        TestCase.assertTrue(exportedItem is PSExportedValue)
+        TestCase.assertEquals("foo", exportedItem.name)
     }
 }

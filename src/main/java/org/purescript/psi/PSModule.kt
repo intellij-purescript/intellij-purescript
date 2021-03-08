@@ -4,8 +4,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiNamedElement
 import org.purescript.features.DocCommentOwner
 import org.purescript.psi.import.PSImportDeclarationImpl
+import kotlin.reflect.KProperty1
 
 
 class PSModule(node: ASTNode) :
@@ -36,16 +38,41 @@ class PSModule(node: ASTNode) :
     }
 
     /**
+     * Helper method for retrieving various types of exported declarations.
+     *
+     * @param declarations The declarations of the wanted type in this module
+     * @param importedDeclarationProperty The property for the imported declarations in an [PSImportDeclarationImpl]
+     * @param exportedItemClass The class of the [PSExportedItem] to use when filtering the results
+     */
+    private fun <Declaration : PsiNamedElement> getExportedDeclarations(
+        declarations: Array<Declaration>,
+        importedDeclarationProperty: KProperty1<PSImportDeclarationImpl, List<Declaration>>,
+        exportedItemClass: Class<out PSExportedItem>
+    ): List<Declaration> {
+        val explicitlyExportedItems = exportList?.exportedItems
+            ?: return declarations.toList()
+
+        val explicitlyNames = explicitlyExportedItems
+            .filterIsInstance(exportedItemClass)
+            .map { it.name }
+            .toSet()
+
+        val exportedDeclarations = mutableListOf<Declaration>()
+        declarations.filterTo(exportedDeclarations) {
+            it.name in explicitlyNames
+        }
+
+        explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+            .mapNotNull { it.importDeclaration }
+            .flatMapTo(exportedDeclarations) { importedDeclarationProperty.get(it) }
+
+        return exportedDeclarations
+    }
+
+    /**
      * If the export list is null, this module implicitly exports all its members.
      */
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
-
-    /**
-     * The foreign values declared in this module
-     */
-    val foreignValueDeclarations: Array<PSForeignValueDeclaration>
-        get() =
-            findChildrenByClass(PSForeignValueDeclaration::class.java)
 
     /**
      * All import declarations in this module
@@ -61,56 +88,51 @@ class PSModule(node: ASTNode) :
         get() = findChildrenByClass(PSValueDeclaration::class.java)
 
     /**
+     * The foreign values declared in this module
+     */
+    val foreignValueDeclarations: Array<PSForeignValueDeclaration>
+        get() =
+            findChildrenByClass(PSForeignValueDeclaration::class.java)
+
+    /**
+     * The newtype declarations in this module
+     */
+    val newTypeDeclarations: Array<PSNewTypeDeclarationImpl>
+        get() =
+            findChildrenByClass(PSNewTypeDeclarationImpl::class.java)
+
+    /**
      * All the value declarations that this module exports,
      * both directly and through re-exported modules
      */
     val exportedValueDeclarations: List<PSValueDeclaration>
-        get() {
-            val explicitlyExportedItems = exportList?.exportedItems
-                ?: return valueDeclarations.toList()
-
-            val explicitlyExportedValueNames = explicitlyExportedItems
-                .filterIsInstance<PSExportedValue>()
-                .map { it.name }
-                .toSet()
-
-            val exportedValueDeclarations = mutableListOf<PSValueDeclaration>()
-            valueDeclarations.filterTo(exportedValueDeclarations) {
-                it.name in explicitlyExportedValueNames
-            }
-
-            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
-                .mapNotNull { it.importDeclaration }
-                .flatMapTo(exportedValueDeclarations) { it.importedValueDeclarations }
-
-            return exportedValueDeclarations
-        }
+        get() = getExportedDeclarations(
+            valueDeclarations,
+            PSImportDeclarationImpl::importedValueDeclarations,
+            PSExportedValue::class.java
+        )
 
     /**
      * All the foreign value declarations that this module exports,
      * both directly and through re-exported modules
      */
     val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
-        get() {
-            val explicitlyExportedItems = exportList?.exportedItems
-                ?: return foreignValueDeclarations.toList()
+        get() = getExportedDeclarations(
+            foreignValueDeclarations,
+            PSImportDeclarationImpl::importedForeignValueDeclarations,
+            PSExportedValue::class.java
+        )
 
-            val explicitlyExportedValueNames = explicitlyExportedItems
-                .filterIsInstance<PSExportedValue>()
-                .map { it.name }
-                .toSet()
-
-            val exportedForeignValueDeclarations = mutableListOf<PSForeignValueDeclaration>()
-            foreignValueDeclarations.filterTo(exportedForeignValueDeclarations) {
-                it.name in explicitlyExportedValueNames
-            }
-
-            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
-                .mapNotNull { it.importDeclaration }
-                .flatMapTo(exportedForeignValueDeclarations) { it.importedForeignValueDeclarations }
-
-            return exportedForeignValueDeclarations
-        }
+    /**
+     * All the newtype declarations that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
+        get() = getExportedDeclarations(
+            newTypeDeclarations,
+            PSImportDeclarationImpl::importedNewTypeDeclarations,
+            PSExportedData::class.java
+        )
 
     val reexportedModuleNames: List<String>
         get() =

@@ -1,6 +1,7 @@
 package org.purescript.psi.import
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSProperName
@@ -23,11 +24,13 @@ class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
 }
 
 class PSImportedData(node: ASTNode) : PSImportedItem(node) {
-    private val properName: PSProperName
+    internal val properName: PSProperName
         get() =
             findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
+
+    override fun getReference(): ImportedDataReference = ImportedDataReference(this)
 }
 
 class PSImportedKind(node: ASTNode) : PSImportedItem(node) {

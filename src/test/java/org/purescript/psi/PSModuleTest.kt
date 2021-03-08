@@ -6,6 +6,14 @@ import junit.framework.TestCase
 import org.purescript.file.PSFile
 
 class PSModuleTest : BasePlatformTestCase() {
+
+    private fun PsiFile.getModule(): PSModule =
+        (this as PSFile).module
+
+    private fun PsiFile.exportedForeignValueDeclarationNames(): List<String> =
+        getModule().exportedForeignValueDeclarations.map { it.name!! }
+
+
     fun `test one word name`() {
         val file = myFixture.addFileToProject(
             "Main.purs",
@@ -259,9 +267,6 @@ class PSModuleTest : BasePlatformTestCase() {
         assertSameElements(fooExportedValueDeclarationNames, "a", "g")
     }
 
-    private fun PsiFile.exportedForeignValueDeclarationNames(): List<String> =
-        (this as PSFile).module.exportedForeignValueDeclarations.map { it.name!! }
-
     fun `test exports all foreign values`() {
         val foo = myFixture.configureByText(
             "Foo.purs",
@@ -309,6 +314,33 @@ class PSModuleTest : BasePlatformTestCase() {
         ).exportedForeignValueDeclarationNames()
 
         assertSameElements(bar, "qux")
+    }
+
+    fun `test finds newtype declarations`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                newtype AppM a = AppM (ReaderT Env Aff a)
+                newtype ReplaceLeft r = ReplaceLeft { | r }
+            """.trimIndent()
+        ).getModule()
+
+        assertSize(2, module.newTypeDeclarations)
+    }
+
+    fun `test finds exported newtype declarations`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (Bar) where
+                newtype Foo = Foo Int
+                newtype Bar = Bar Int
+            """.trimIndent()
+        ).getModule()
+        val newTypeDeclaration = module.exportedNewTypeDeclarations.single()
+
+        assertEquals("Bar", newTypeDeclaration.name)
     }
 }
 

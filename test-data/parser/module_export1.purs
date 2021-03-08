@@ -1,2 +1,2 @@
-module Hello (main, module A, Label, User(..), Core(Main,Data)) where
+module Hello (main, module A, Label, User(..), Core(Main,Data), type (<~~), (~~>)) where
 

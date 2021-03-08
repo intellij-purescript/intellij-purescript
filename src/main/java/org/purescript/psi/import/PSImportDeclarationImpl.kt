@@ -1,7 +1,9 @@
 package org.purescript.psi.import
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
+import kotlin.reflect.KProperty1
 
 /**
  * An import declaration, as found near the top a module.
@@ -68,6 +70,33 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         ModuleReference(this)
 
     /**
+     * Helper method for retrieving various types of imported declarations.
+     *
+     * @param exportedDeclarationProperty The property for the exported declarations of the wanted type in the module
+     * @param importedItemClass The class of the [PSImportedItem] to use when filtering the results
+     */
+    private fun <T : PsiNamedElement> getImportedDeclarations(
+        exportedDeclarationProperty: KProperty1<PSModule, List<T>>,
+        importedItemClass: Class<out PSImportedItem>
+    ): List<T> {
+        val importedModule = importedModule ?: return emptyList()
+        val exportedDeclarations = exportedDeclarationProperty.get(importedModule)
+
+        val importedItems = importList?.importedItems
+            ?: return exportedDeclarations
+
+        val importedNames = importedItems.filterIsInstance(importedItemClass)
+            .map { it.name }
+            .toSet()
+
+        return if (isHiding) {
+            exportedDeclarations.filter { it.name !in importedNames }
+        } else {
+            exportedDeclarations.filter { it.name in importedNames }
+        }
+    }
+
+    /**
      * The [PSModule] that this declaration is importing from
      */
     val importedModule get(): PSModule? = reference.resolve()
@@ -75,47 +104,27 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     /**
      * All [PSValueDeclaration] elements imported by this declaration
      */
-    val importedValueDeclarations
-        get(): Sequence<PSValueDeclaration> =
-            importedModule?.let { importedModule ->
-                when {
-                    isHiding -> {
-                        importedModule
-                            .exportedValueDeclarations
-                            .filter { it.name !in namedImports.toSet() }
-                            .asSequence()
-                    }
-                    namedImports.isNotEmpty() -> {
-                        importedModule
-                            .exportedValueDeclarations
-                            .filter { it.name in namedImports.toSet() }
-                            .asSequence()
-                    }
-                    else -> {
-                        importedModule.exportedValueDeclarations.asSequence()
-                    }
-                }
-            } ?: sequenceOf()
+    val importedValueDeclarations: List<PSValueDeclaration>
+        get() = getImportedDeclarations(
+            PSModule::exportedValueDeclarations,
+            PSImportedValue::class.java
+        )
 
     /**
      * All [PSForeignValueDeclaration] elements imported by this declaration
      */
     val importedForeignValueDeclarations: List<PSForeignValueDeclaration>
-        get() {
-            val exportedForeignValueDeclarations = importedModule?.exportedForeignValueDeclarations
-                ?: return emptyList()
+        get() = getImportedDeclarations(
+            PSModule::exportedForeignValueDeclarations,
+            PSImportedValue::class.java
+        )
 
-            val importedItems = importList?.importedItems
-                ?: return exportedForeignValueDeclarations
-
-            val importedValueNames = importedItems.filterIsInstance<PSImportedValue>()
-                .map { it.name }
-                .toSet()
-
-            return if (isHiding) {
-                exportedForeignValueDeclarations.filter { it.name !in importedValueNames }
-            } else {
-                exportedForeignValueDeclarations.filter { it.name in importedValueNames }
-            }
-        }
+    /**
+     * All [PSNewTypeDeclarationImpl] elements imported by this declaration
+     */
+    val importedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
+        get() = getImportedDeclarations(
+            PSModule::exportedNewTypeDeclarations,
+            PSImportedData::class.java
+        )
 }

@@ -8,7 +8,7 @@ import org.purescript.psi.import.PSImportDeclarationImpl
 
 class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase.Poly<PSExportedModule>(
     exportedModule,
-    exportedModule.qualifiedIdentifier.textRangeInParent,
+    exportedModule.properName.textRangeInParent,
     false
 ) {
 
