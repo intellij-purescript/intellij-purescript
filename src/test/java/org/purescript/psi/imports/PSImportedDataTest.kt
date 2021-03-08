@@ -1,23 +1,22 @@
-package org.purescript.psi
+package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
-import org.purescript.psi.import.PSImportedValue
 
 
-class PSImportedValeTest : BasePlatformTestCase() {
+class PSImportedDataTest : BasePlatformTestCase() {
 
-    fun `test imported value has correct name`() {
+    fun `test imported data has correct name`() {
         val file = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
-                import Bar (qux)
+                import Bar (Qux)
             """.trimIndent()
         ) as PSFile
         val importDecl = file.module.importDeclarations.single()
-        val importedValue = importDecl.importList!!.importedItems.single() as PSImportedValue
-        TestCase.assertEquals("qux", importedValue.name)
+        val importedData = importDecl.importList!!.importedItems.single() as PSImportedData
+        TestCase.assertEquals("Qux", importedData.name)
     }
 }

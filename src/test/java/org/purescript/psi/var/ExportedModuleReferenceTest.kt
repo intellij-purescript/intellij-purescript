@@ -1,11 +1,19 @@
 package org.purescript.psi.`var`
 
+import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
 import org.purescript.psi.PSExportedModule
+import org.purescript.psi.PSModule
 
 class ExportedModuleReferenceTest : BasePlatformTestCase() {
+
+    private fun PsiFile.getModule(): PSModule =
+        (this as PSFile).module
+
+    private fun PsiFile.getExportedModule(): PSExportedModule =
+        getModule().exportList!!.exportedItems.single() as PSExportedModule
 
     fun `test completes imported modules`() {
         myFixture.configureByText(
@@ -19,52 +27,108 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
         myFixture.testCompletionVariants("Foo.purs", "Prelude", "Data.String")
     }
 
+    fun `test completes aliased import declaration`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module <caret>) where
+                import Prelude as P
+                import Data.String as DS
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "P", "DS")
+    }
+
     fun `test resolves to imported module`() {
-        val fileFoo = myFixture.configureByText(
+        val exportedModule = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo (module Bar) where
                 import Bar
             """.trimIndent()
-        ) as PSFile
-        val fileBar = myFixture.configureByText(
+        ).getExportedModule()
+        val module = myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
             """.trimIndent()
-        ) as PSFile
-        val exportedModule = fileFoo.module.exportList!!.exportedItems.single() as PSExportedModule
+        ).getModule()
 
-        TestCase.assertTrue(exportedModule.reference.isReferenceTo(fileBar.module))
+        TestCase.assertTrue(exportedModule.reference.isReferenceTo(module))
+    }
+
+    fun `test aliased exported module resolves to import declaration`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module B) where
+                import Bar as B
+            """.trimIndent()
+        )
+        val exportedModule = file.getExportedModule()
+        val importAlias = file.getModule().importDeclarations.single().importAlias!!
+
+        TestCase.assertTrue(exportedModule.reference.isReferenceTo(importAlias))
     }
 
     fun `test does not resolve to module if not imported`() {
-        val fileFoo = myFixture.configureByText(
+        val exportedModule = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo (module Bar) where
             """.trimIndent()
-        ) as PSFile
-        val fileBar = myFixture.configureByText(
+        ).getExportedModule()
+        val module = myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
             """.trimIndent()
-        ) as PSFile
-        val exportedModule = fileFoo.module.exportList!!.exportedItems.single() as PSExportedModule
+        ).getModule()
 
-        TestCase.assertFalse(exportedModule.reference.isReferenceTo(fileBar.module))
+        TestCase.assertFalse(exportedModule.reference.isReferenceTo(module))
+    }
+
+    fun `test does not resolve to aliased module using wrong name`() {
+        val exportedModule = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Bar) where
+                import Bar as B
+            """.trimIndent()
+        ).getExportedModule()
+        val module = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+            """.trimIndent()
+        ).getModule()
+
+        TestCase.assertFalse(exportedModule.reference.isReferenceTo(module))
     }
 
     fun `test does not resolve to module if it does not exist`() {
-        val fileFoo = myFixture.configureByText(
+        val exportedModule = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo (module Bar) where
             """.trimIndent()
-        ) as PSFile
-        val exportedModule = fileFoo.module.exportList!!.exportedItems.single() as PSExportedModule
+        ).getExportedModule()
 
-        TestCase.assertTrue(exportedModule.reference.multiResolve(false).isEmpty())
+        TestCase.assertNull(exportedModule.reference.resolve())
+    }
+
+    fun `test finds usage of import alias`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module B) where
+                import Bar as B
+            """.trimIndent()
+        )
+        val exportedModule = file.getExportedModule()
+        val importAlias = file.getModule().importDeclarations.single().importAlias!!
+        val usage = myFixture.findUsages(importAlias).single().element!!
+
+        TestCase.assertEquals(exportedModule, usage)
     }
 }

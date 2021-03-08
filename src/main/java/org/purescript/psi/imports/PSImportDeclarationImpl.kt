@@ -1,4 +1,4 @@
-package org.purescript.psi.import
+package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
@@ -41,7 +41,12 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         get() =
             findChildByClass(PSImportAlias::class.java)
 
-    override fun getName() = importName?.name
+    /**
+     * Either the name of the [PSImportAlias], if it exists,
+     * or the name of the module this declaration is importing from.
+     */
+    override fun getName() =
+        importAlias?.name ?: importName?.name
 
     /** the names that are exposed or hidden
      *

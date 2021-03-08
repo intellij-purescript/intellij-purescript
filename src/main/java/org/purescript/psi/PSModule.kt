@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import org.purescript.features.DocCommentOwner
-import org.purescript.psi.import.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclarationImpl
 import kotlin.reflect.KProperty1
 
 

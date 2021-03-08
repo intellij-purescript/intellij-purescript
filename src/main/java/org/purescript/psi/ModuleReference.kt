@@ -5,7 +5,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.file.PSFile
-import org.purescript.psi.import.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImportDeclarationImpl>(
     element,
@@ -13,13 +13,16 @@ class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImp
     false
 ) {
     override fun resolve(): PSModule? {
-        val psFile = FilenameIndex.getFilesByName(
+        val moduleName = element.importName?.name
+            ?: return null
+        val fileName = moduleName.split(".").last() + ".purs"
+        return FilenameIndex.getFilesByName(
             myElement.project,
-            (myElement.name ?: "").split(".").last() + ".purs",
+            fileName,
             GlobalSearchScope.allScope(myElement.project)
         ).filterIsInstance<PSFile>()
-            .firstOrNull { it.module.name == myElement.getName() ?: "" }
-        return psFile?.module
+            .map { it.module }
+            .firstOrNull { it.name == moduleName }
     }
 
 }

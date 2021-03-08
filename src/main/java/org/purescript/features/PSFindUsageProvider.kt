@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import org.jetbrains.annotations.Nls
 import org.purescript.file.PSFile
 import org.purescript.psi.*
+import org.purescript.psi.imports.PSImportAlias
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
@@ -14,6 +15,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSModule
             || psiElement is PSForeignValueDeclaration
             || psiElement is PSNewTypeDeclarationImpl
+            || psiElement is PSImportAlias
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null
@@ -25,6 +27,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSVarBinderImpl -> "parameter"
             is PSModule -> "module"
             is PSNewTypeDeclarationImpl -> "newtype"
+            is PSImportAlias -> "import alias"
             else -> "unknown"
         }
     }

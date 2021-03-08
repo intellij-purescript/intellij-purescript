@@ -24,7 +24,7 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                         }
                     }
                     is PSExportedModule -> {
-                        if (element.reference.multiResolve(false).isEmpty()) {
+                        if (element.reference.resolve() == null) {
                             holder.registerProblem(
                                 element,
                                 "Unresolved module '${element.name}'",
