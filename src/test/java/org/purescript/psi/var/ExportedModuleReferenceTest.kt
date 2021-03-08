@@ -116,4 +116,19 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
 
         TestCase.assertNull(exportedModule.reference.resolve())
     }
+
+    fun `test finds usage of import alias`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module B) where
+                import Bar as B
+            """.trimIndent()
+        )
+        val exportedModule = file.getExportedModule()
+        val importAlias = file.getModule().importDeclarations.single().importAlias!!
+        val usage = myFixture.findUsages(importAlias).single().element!!
+
+        TestCase.assertEquals(exportedModule, usage)
+    }
 }
