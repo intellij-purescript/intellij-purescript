@@ -57,22 +57,18 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
         TestCase.assertTrue(exportedModule.reference.isReferenceTo(module))
     }
 
-    fun `test resolves to aliased imported module`() {
-        val exportedModule = myFixture.configureByText(
+    fun `test aliased exported module resolves to import declaration`() {
+        val file = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo (module B) where
                 import Bar as B
             """.trimIndent()
-        ).getExportedModule()
-        val module = myFixture.configureByText(
-            "Bar.purs",
-            """
-                module Bar where
-            """.trimIndent()
-        ).getModule()
+        )
+        val exportedModule = file.getExportedModule()
+        val importAlias = file.getModule().importDeclarations.single().importAlias!!
 
-        TestCase.assertTrue(exportedModule.reference.isReferenceTo(module))
+        TestCase.assertTrue(exportedModule.reference.isReferenceTo(importAlias))
     }
 
     fun `test does not resolve to module if not imported`() {
@@ -118,6 +114,6 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExportedModule()
 
-        TestCase.assertTrue(exportedModule.reference.multiResolve(false).isEmpty())
+        TestCase.assertNull(exportedModule.reference.resolve())
     }
 }
