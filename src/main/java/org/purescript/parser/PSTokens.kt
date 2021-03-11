@@ -6,6 +6,8 @@ import org.purescript.psi.PSElementType
 interface PSTokens {
     companion object {
         @kotlin.jvm.JvmField
+        val LAYOUT_START = PSElementType("layout start")
+        @kotlin.jvm.JvmField
         val ERROR = PSElementType("error")
         @kotlin.jvm.JvmField
         val WS = PSElementType("whitespace")
