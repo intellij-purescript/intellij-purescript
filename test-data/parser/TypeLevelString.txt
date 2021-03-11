@@ -7,9 +7,8 @@ Purescript File
     PsiElement(where)('where')
     PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
-      PSIdentifier(TypeConstructor)
-        PSProperName(ProperName)
-          PsiElement(proper name)('Foo')
+      PSProperName(ProperName)
+        PsiElement(proper name)('Foo')
       PSTypeArgsImpl(TypeArgs)
         <empty list>
     PSTypeClassDeclarationImpl(TypeClassDeclaration)

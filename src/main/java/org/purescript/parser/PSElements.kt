@@ -69,6 +69,10 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val DataDeclaration = PSElementType("DataDeclaration")
         @kotlin.jvm.JvmField
+        val DataConstructorList = PSElementType("DataConstructorList")
+        @kotlin.jvm.JvmField
+        val DataConstructor = PSElementType("DataConstructor")
+        @kotlin.jvm.JvmField
         val TypeDeclaration = PSElementType("TypeDeclaration")
         @kotlin.jvm.JvmField
         val TypeSynonymDeclaration = PSElementType("TypeSynonymDeclaration")

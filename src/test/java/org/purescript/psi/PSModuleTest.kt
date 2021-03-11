@@ -101,6 +101,17 @@ class PSModuleTest : BasePlatformTestCase() {
         assertEquals("-- | main", file.module.docComments[1].text)
     }
 
+    fun `test finds data declarations`() {
+        val file = myFixture.addFileToProject(
+            "Main.purs",
+            """ module Main where
+                data Foo = Bar
+                data Qux a b = Baz (a -> b)
+            """.trimIndent()
+        ) as PSFile
+        assertSize(2, file.module.dataDeclarations)
+    }
+
     fun `test finds foreign value declarations`() {
         val file = myFixture.addFileToProject(
             "Main.purs",

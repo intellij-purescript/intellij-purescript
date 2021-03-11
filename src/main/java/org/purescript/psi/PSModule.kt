@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.PSImportDeclarationImpl
 import kotlin.reflect.KProperty1
 
@@ -14,7 +15,6 @@ class PSModule(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,
     DocCommentOwner {
-
     override fun getName(): String {
         return nameIdentifier.name
     }
@@ -75,31 +75,38 @@ class PSModule(node: ASTNode) :
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
     /**
-     * All import declarations in this module
+     * @return the [PSImportDeclarationImpl] elements in this module
      */
     val importDeclarations: Array<PSImportDeclarationImpl>
         get() =
             findChildrenByClass(PSImportDeclarationImpl::class.java)
 
     /**
-     * All values declared in this module
+     * @return the [PSValueDeclaration] elements in this module
      */
     val valueDeclarations: Array<PSValueDeclaration>
         get() = findChildrenByClass(PSValueDeclaration::class.java)
 
     /**
-     * The foreign values declared in this module
+     * @return the [PSForeignValueDeclaration] elements in this module
      */
     val foreignValueDeclarations: Array<PSForeignValueDeclaration>
         get() =
             findChildrenByClass(PSForeignValueDeclaration::class.java)
 
     /**
-     * The newtype declarations in this module
+     * @return the [PSNewTypeDeclarationImpl] elements in this module
      */
     val newTypeDeclarations: Array<PSNewTypeDeclarationImpl>
         get() =
             findChildrenByClass(PSNewTypeDeclarationImpl::class.java)
+
+    /**
+     * @return the [PSDataDeclaration] elements in this module
+     */
+    val dataDeclarations: Array<PSDataDeclaration>
+        get() =
+            findChildrenByClass(PSDataDeclaration::class.java)
 
     /**
      * All the value declarations that this module exports,
