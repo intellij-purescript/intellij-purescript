@@ -3,12 +3,22 @@ package org.purescript.lexer
 import com.intellij.lexer.EmptyLexer
 import com.intellij.psi.tree.IElementType
 import junit.framework.TestCase
+import org.purescript.parser.PSTokens
 
 class LayoutLexerTest : TestCase() {
     fun testName() {
         val lexer = LayoutLexer(EmptyLexer())
         val tokens = getTokens(lexer,"")
         assertEquals(0, tokens.size)
+    }
+
+    fun `test module where creates layout start`() {
+        val lexer = LayoutLexer(PSLexer())
+        val source = """
+                module Main where
+            """.trimIndent()
+        val tokens = getTokens(lexer, source)
+        assertTrue(tokens.toSet().contains(PSTokens.LAYOUT_START))
     }
 
     fun `test separator token for top level declaration`() {
@@ -18,7 +28,7 @@ class LayoutLexerTest : TestCase() {
                 f = 1
             """.trimIndent()
         val tokens = getTokens(lexer, source)
-        assertEquals(11, tokens.size)
+        assertEquals(12, tokens.size)
     }
 
     fun `test do layout`() {
@@ -35,7 +45,7 @@ class LayoutLexerTest : TestCase() {
                     
             """.trimIndent()
         )
-        assertEquals(26, tokens.size)
+        assertEquals(27, tokens.size)
     }
 }
 
