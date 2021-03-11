@@ -61,7 +61,7 @@ Purescript File
             PSTypeAtomImpl(TypeAtom)
               PSIdentifier(GenericIdentifier)
                 PsiElement(identifier)('a')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)

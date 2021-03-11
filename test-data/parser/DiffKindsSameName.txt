@@ -29,7 +29,7 @@ Purescript File
         PsiElement(as)('as')
         PSProperName(Qualified)
           PsiElement(proper name)('LibB')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)

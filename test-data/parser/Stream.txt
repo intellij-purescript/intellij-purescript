@@ -139,7 +139,7 @@ Purescript File
                       PSIdentifier(GenericIdentifier)
                         PsiElement(identifier)('s')
                 PsiElement(})('}')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)

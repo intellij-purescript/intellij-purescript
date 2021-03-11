@@ -450,7 +450,7 @@ Purescript File
             PsiElement(proper name)('RefLabel')
         PsiElement())(')')
     PsiComment(doc comment)('-- | The Halogen component algebra')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)
