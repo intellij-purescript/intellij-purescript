@@ -27,9 +27,7 @@ class PSModule(node: ASTNode) :
         return findChildByClass(PSProperName::class.java)!!
     }
 
-    override fun getTextOffset(): Int {
-        return this.nameIdentifier.textRangeInParent.startOffset
-    }
+    override fun getTextOffset(): Int = nameIdentifier.textOffset
 
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
         return importDeclarations
