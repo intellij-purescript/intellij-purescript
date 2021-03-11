@@ -5,7 +5,7 @@ Purescript File
       PSProperName(Qualified)
         PsiElement(proper name)('TypeLevelString')
     PsiElement(where)('where')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)

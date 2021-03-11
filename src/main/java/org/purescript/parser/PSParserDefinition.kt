@@ -16,6 +16,7 @@ import org.purescript.file.PSFileStubType
 import org.purescript.lexer.PSLexer
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
+import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.*
 
 class PSParserDefinition : ParserDefinition, PSTokens {
@@ -76,7 +77,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         } else if (type == PSElements.ImportedValue) {
             PSImportedValue(node)
         } else if (type == PSElements.DataDeclaration) {
-            PSDataDeclarationImpl(node)
+            PSDataDeclaration(node)
         } else if (type == PSElements.Binder) {
             PSBinderImpl(node)
         } else if (type == PSElements.Module) {

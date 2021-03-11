@@ -156,7 +156,7 @@ Purescript File
                 PsiElement(identifier)('f')
           PSStringLiteralImpl(StringLiteral)
             PsiElement(string)('"test"')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)

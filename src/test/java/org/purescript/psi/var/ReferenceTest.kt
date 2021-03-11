@@ -4,7 +4,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
-import org.purescript.psi.PSDataDeclarationImpl
+import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.PSVarBinderImpl
@@ -62,7 +62,7 @@ class ReferenceTest : PSLanguageParserTestBase("parser") {
             { it is PSIdentifier } as PSIdentifier
         val reference = psIdentifier.reference
         val resolved = reference!!.resolve()
-        assertInstanceOf(resolved, PSDataDeclarationImpl::class.java)
+        assertInstanceOf(resolved, PSDataDeclaration::class.java)
         assertEquals("A", (resolved as PsiNamedElement).name)
     }
 

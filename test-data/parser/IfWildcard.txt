@@ -51,7 +51,7 @@ Purescript File
           PSProperName(ProperName)
             PsiElement(proper name)('CONSOLE')
         PsiElement())(')')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)

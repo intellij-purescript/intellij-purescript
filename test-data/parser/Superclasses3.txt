@@ -236,7 +236,7 @@ Purescript File
                   PSProperName(Qualified)
                     PSIdentifier(identifier)
                       PsiElement(identifier)('w')
-    PSDataDeclarationImpl(DataDeclaration)
+    PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
       PSIdentifier(TypeConstructor)
         PSProperName(ProperName)
