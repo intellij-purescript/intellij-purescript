@@ -56,7 +56,7 @@ compileKotlin {
 }
 
 test {
-    // systemProperty "idea.tests.overwrite.data", "true"
+     systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
 }
 
 // take the version number defined in gradle build and use that in plugin.xml
