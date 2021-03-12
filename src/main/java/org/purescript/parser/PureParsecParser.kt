@@ -29,6 +29,8 @@ import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
+import org.purescript.parser.PSElements.Companion.DataConstructor
+import org.purescript.parser.PSElements.Companion.DataConstructorList
 import org.purescript.parser.PSElements.Companion.DoNotationBind
 import org.purescript.parser.PSElements.Companion.DoNotationLet
 import org.purescript.parser.PSElements.Companion.DoNotationValue
@@ -311,9 +313,10 @@ class PureParsecParser {
         token(DATA) +
             indented(properName).`as`(TypeConstructor) +
             manyOrEmpty(indented(typeVarBinding)).`as`(TypeArgs)
-
-    val dataCtor =
-        properName.`as`(TypeConstructor) + manyOrEmpty(indented(typeAtom))
+    private val dataCtor =
+        properName.`as`(TypeConstructor)
+            .then(manyOrEmpty(indented(typeAtom)))
+            .`as`(DataConstructor)
     private val parseTypeDeclaration =
         (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
             .`as`(PSElements.TypeDeclaration)
@@ -528,7 +531,7 @@ class PureParsecParser {
             )
             .`as`(PSElements.ImportDeclaration)
     private val decl = choice(
-        (dataHead + optional(eq + sepBy1(dataCtor, PIPE)))
+        (dataHead + optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList)))
             .`as`(PSElements.DataDeclaration),
         (newtypeHead + eq + properName.`as`(TypeConstructor) + typeAtom)
             .`as`(PSElements.NewtypeDeclaration),
@@ -663,11 +666,14 @@ class PureParsecParser {
             optional(attempt(token(LPAREN)))
                 .then(optional(attempt(properName).`as`(Constructor)))
                 .then(optional(attempt(many1(ident))))
-                .then(optional(
-                    attempt(
-                        squares(commaSep(binder))
-                            .`as`(ObjectBinder)
-                    )))
+                .then(
+                    optional(
+                        attempt(
+                            squares(commaSep(binder))
+                                .`as`(ObjectBinder)
+                        )
+                    )
+                )
                 .then(
                     optional(
                         attempt(

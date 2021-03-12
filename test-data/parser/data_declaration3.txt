@@ -12,7 +12,9 @@ Purescript File
           PsiElement(proper name)('User3')
       PSTypeArgsImpl(TypeArgs)
         <empty list>
-      PsiElement(=)('=')
-      PSIdentifier(TypeConstructor)
-        PSProperName(ProperName)
-          PsiElement(proper name)('NoOp2')
+      PSDataConstructorList(DataConstructorList)
+        PsiElement(=)('=')
+        PSDataConstructor(DataConstructor)
+          PSIdentifier(TypeConstructor)
+            PSProperName(ProperName)
+              PsiElement(proper name)('NoOp2')

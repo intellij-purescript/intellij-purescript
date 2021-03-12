@@ -16,6 +16,8 @@ import org.purescript.file.PSFileStubType
 import org.purescript.lexer.PSLexer
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
+import org.purescript.psi.data.PSDataConstructor
+import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.*
 
@@ -78,6 +80,10 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSImportedValue(node)
         } else if (type == PSElements.DataDeclaration) {
             PSDataDeclaration(node)
+        } else if (type == PSElements.DataConstructorList) {
+            PSDataConstructorList(node)
+        } else if (type == PSElements.DataConstructor) {
+            PSDataConstructor(node)
         } else if (type == PSElements.Binder) {
             PSBinderImpl(node)
         } else if (type == PSElements.Module) {
@@ -143,7 +149,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         } else if (type == PSElements.TypeSynonymDeclaration) {
             PSTypeSynonymDeclarationImpl(node)
         } else if (type == PSElements.ValueDeclaration) {
-            PSValueDeclaration(node,)
+            PSValueDeclaration(node)
         } else if (type == PSElements.ExternDataDeclaration) {
             PSExternDataDeclarationImpl(node)
         } else if (type == PSElements.ExternInstanceDeclaration) {
