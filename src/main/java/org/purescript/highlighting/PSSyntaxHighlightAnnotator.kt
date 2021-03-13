@@ -2,36 +2,49 @@ package org.purescript.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
-import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.lang.annotation.HighlightSeverity.INFORMATION
 import com.intellij.psi.PsiElement
-import org.purescript.parser.PSElements
+import org.purescript.highlighting.PSSyntaxHighlighter.Companion.IMPORT_REF
+import org.purescript.highlighting.PSSyntaxHighlighter.Companion.NUMBER
+import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_ANNOTATION_NAME
+import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_NAME
+import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_VARIABLE
+import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.GenericIdentifier
+import org.purescript.parser.PSElements.Companion.LocalIdentifier
+import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
+import org.purescript.parser.PSElements.Companion.TypeAnnotationName
+import org.purescript.parser.PSElements.Companion.TypeConstructor
+import org.purescript.parser.PSElements.Companion.ValueRef
+import org.purescript.parser.PSElements.Companion.pClassName
+import org.purescript.parser.PSElements.Companion.qualifiedModuleName
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.node.elementType) {
-            PSElements.ValueRef -> {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(PSSyntaxHighlighter.IMPORT_REF)
+            ValueRef -> {
+                holder.newSilentAnnotation(INFORMATION)
+                    .textAttributes(IMPORT_REF)
                     .create()
             }
-            PSElements.TypeAnnotationName -> {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(PSSyntaxHighlighter.TYPE_ANNOTATION_NAME)
+            TypeAnnotationName -> {
+                holder.newSilentAnnotation(INFORMATION)
+                    .textAttributes(TYPE_ANNOTATION_NAME)
                     .create()
             }
-            PSElements.PositionedDeclarationRef, PSElements.TypeConstructor, PSElements.pClassName -> {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(PSSyntaxHighlighter.TYPE_NAME)
+            PositionedDeclarationRef, TypeConstructor, pClassName -> {
+                holder.newSilentAnnotation(INFORMATION)
+                    .textAttributes(TYPE_NAME)
                     .create()
             }
-            PSElements.GenericIdentifier, PSElements.Constructor, PSElements.qualifiedModuleName -> {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(PSSyntaxHighlighter.TYPE_VARIABLE)
+            GenericIdentifier, Constructor, qualifiedModuleName -> {
+                holder.newSilentAnnotation(INFORMATION)
+                    .textAttributes(TYPE_VARIABLE)
                     .create()
             }
-            PSElements.LocalIdentifier -> {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(PSSyntaxHighlighter.NUMBER)
+            LocalIdentifier -> {
+                holder.newSilentAnnotation(INFORMATION)
+                    .textAttributes(NUMBER)
                     .create()
             }
         }
