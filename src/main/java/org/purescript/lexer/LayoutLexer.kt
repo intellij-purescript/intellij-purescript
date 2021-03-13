@@ -63,14 +63,16 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     override fun advance() {
         token = when {
-             token?.value == PSTokens.WHERE -> SourceToken(
-                range = token!!.range,
-                value = PSTokens.LAYOUT_START
-            )
+             token?.value == PSTokens.WHERE -> layoutStart()
             delegatedTokens.hasNext() -> delegatedTokens.next()
             else -> null
         }
     }
+
+    private fun layoutStart() = SourceToken(
+        range = SourceRange(token!!.range.start, token!!.range.start),
+        value = PSTokens.LAYOUT_START
+    )
 
     override fun getTokenType(): IElementType? {
         return token?.value
