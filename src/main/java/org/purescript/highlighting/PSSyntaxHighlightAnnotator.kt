@@ -3,47 +3,35 @@ package org.purescript.highlighting
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiElement
 import org.purescript.parser.PSElements
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (psiElement(PSElements.ValueRef).accepts(element)) {
+        if (element.node.elementType == PSElements.ValueRef) {
             val text = element.text
             holder.newAnnotation(HighlightSeverity.INFORMATION, text)
                 .textAttributes(PSSyntaxHighlighter.IMPORT_REF)
                 .create()
-        } else if (psiElement(PSElements.TypeAnnotationName)
-                .accepts(element)
-        ) {
+        } else if (element.node.elementType == PSElements.TypeAnnotationName) {
             holder.newAnnotation(HighlightSeverity.INFORMATION, element.text)
                 .textAttributes(PSSyntaxHighlighter.TYPE_ANNOTATION_NAME)
                 .create()
-        } else if (psiElement(PSElements.PositionedDeclarationRef)
-                .accepts(element)
-            || psiElement(PSElements.TypeConstructor)
-                .accepts(element)
-            || psiElement(PSElements.pClassName)
-                .accepts(element)
-        ) {
-//                || psiElement(PSElements.pModuleName).accepts(element))) {
+        } else if (element.node.elementType == PSElements.PositionedDeclarationRef
+            || element.node.elementType == PSElements.TypeConstructor
+            || element.node.elementType == PSElements.pClassName) {
             holder
                 .newAnnotation(HighlightSeverity.INFORMATION, element.text)
                 .textAttributes(PSSyntaxHighlighter.TYPE_NAME)
                 .create()
-        } else if (psiElement(PSElements.GenericIdentifier)
-                .accepts(element)
-            || psiElement(PSElements.Constructor)
-                .accepts(element)
-            || psiElement(PSElements.qualifiedModuleName)
-                .accepts(element)
+        } else if (element.node.elementType == PSElements.GenericIdentifier
+            || element.node.elementType == PSElements.Constructor
+            || element.node.elementType == PSElements.qualifiedModuleName
         ) {
             holder.newAnnotation(HighlightSeverity.INFORMATION, element.text)
                 .textAttributes(PSSyntaxHighlighter.TYPE_VARIABLE)
                 .create()
-        } else if (psiElement(PSElements.LocalIdentifier)
-                .accepts(element)
+        } else if (element.node.elementType == PSElements.LocalIdentifier
         ) {
             holder.newAnnotation(HighlightSeverity.INFORMATION, element.text)
                 .textAttributes(PSSyntaxHighlighter.NUMBER)
