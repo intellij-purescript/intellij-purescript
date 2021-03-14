@@ -2,6 +2,8 @@ package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.file.PSFile
+import org.purescript.getDataDeclaration
+import org.purescript.getImportedItem
 
 class ImportedDataReferenceTest : BasePlatformTestCase() {
 
@@ -14,16 +16,32 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val declaration = bar.module.newTypeDeclarations.single()
-        val foo = myFixture.configureByText(
+        val importedData = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (Bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedData
-        assertEquals(declaration, importedValue.reference.resolve())
+        ).getImportedItem() as PSImportedData
+        assertEquals(declaration, importedData.reference.resolve())
+    }
+
+    fun `test resolves data declarations`() {
+        val dataDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                data Bar = Bar Int
+            """.trimIndent()
+        ).getDataDeclaration()
+        val importedData = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Bar)
+            """.trimIndent()
+        ).getImportedItem() as PSImportedData
+        assertEquals(dataDeclaration, importedData.reference.resolve())
     }
 
     fun `test doesn't resolve non-existing newtype declarations`() {
@@ -33,16 +51,14 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
                 module Bar where
             """.trimIndent()
         )
-        val foo = myFixture.configureByText(
+        val importedData = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (Bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedData
-        assertNull(importedValue.reference.resolve())
+        ).getImportedItem() as PSImportedData
+        assertNull(importedData.reference.resolve())
     }
 
     fun `test doesn't resolve hidden newtype declarations`() {
@@ -54,16 +70,14 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
                 newtype Qux = Q Int
             """.trimIndent()
         )
-        val foo = myFixture.configureByText(
+        val importedData = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (Bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedData
-        assertNull(importedValue.reference.resolve())
+        ).getImportedItem() as PSImportedData
+        assertNull(importedData.reference.resolve())
     }
 
     fun `test completes newtype declarations`() {
@@ -86,6 +100,26 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
         myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
     }
 
+    fun `test completes data declarations`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (Bara, Bira) where
+                data Bara = Bara (Int -> Boolean)
+                data Bira = Bira Int | Borat String
+                data Bar = Bar Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (B<caret>)
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
+    }
+
     fun `test finds newtype declaration usage`() {
         val bar = myFixture.configureByText(
             "Bar.purs",
@@ -95,15 +129,14 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val declaration = bar.module.newTypeDeclarations.single()
-        val foo = myFixture.configureByText(
+        val importedData = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (Bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue = foo.module.importDeclarations.single().importList!!.importedItems.single()
+        ).getImportedItem()
         val usage = myFixture.findUsages(declaration).single().element
-        assertEquals(importedValue, usage)
+        assertEquals(importedData, usage)
     }
 }
