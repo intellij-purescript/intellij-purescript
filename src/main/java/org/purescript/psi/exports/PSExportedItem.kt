@@ -1,6 +1,7 @@
 package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiReference
 import org.purescript.file.PSFile
 import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSModule
@@ -15,13 +16,16 @@ sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
 }
 
 class PSExportedData(node: ASTNode) : PSExportedItem(node) {
-    private val properName: PSProperName
+    internal val properName: PSProperName
         get() = findNotNullChildByClass(PSProperName::class.java)
 
     val dataMemberList: PSExportedDataMemberList?
         get() = findChildByClass(PSExportedDataMemberList::class.java)
 
     override fun getName(): String = properName.name
+
+    override fun getReference(): PsiReference =
+        ExportedDataReference(this)
 }
 
 class PSExportedClass(node: ASTNode) : PSExportedItem(node) {
