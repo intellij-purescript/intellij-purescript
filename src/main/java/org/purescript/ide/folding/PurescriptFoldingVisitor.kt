@@ -34,7 +34,6 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
     }
 
     private fun visitExportList(exportList: PSExportList) {
-        val exportedItems = exportList.exportedItems
         val startOffset = exportList.startOffset + 1
         val endOffset = exportList.endOffset - 1
         if (startOffset >= endOffset) {
