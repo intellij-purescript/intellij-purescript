@@ -139,4 +139,23 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
         val usage = myFixture.findUsages(declaration).single().element
         assertEquals(importedData, usage)
     }
+
+    fun `test finds data declaration usage`() {
+        val dataDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                data Bar = Bar String
+            """.trimIndent()
+        ).getDataDeclaration()
+        val importedData = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Bar)
+            """.trimIndent()
+        ).getImportedItem()
+        val usage = myFixture.findUsages(dataDeclaration).single().element
+        assertEquals(importedData, usage)
+    }
 }
