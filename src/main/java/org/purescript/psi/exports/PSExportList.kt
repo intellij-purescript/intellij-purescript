@@ -1,6 +1,7 @@
-package org.purescript.psi
+package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
+import org.purescript.psi.PSPsiElement
 
 /**
  * The export list in the module signature.

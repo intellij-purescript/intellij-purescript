@@ -1,4 +1,4 @@
-package org.purescript.psi
+package org.purescript.psi.exports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase

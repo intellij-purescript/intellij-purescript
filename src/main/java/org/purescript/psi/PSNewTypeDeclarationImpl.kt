@@ -14,4 +14,6 @@ class PSNewTypeDeclarationImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdent
     override fun getNameIdentifier(): PsiElement = identifier
 
     override fun getName(): String = identifier.name
+
+    override fun getTextOffset(): Int = identifier.textOffset
 }

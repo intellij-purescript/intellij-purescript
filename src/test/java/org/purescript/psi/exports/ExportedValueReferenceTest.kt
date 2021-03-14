@@ -1,9 +1,8 @@
-package org.purescript.psi.`var`
+package org.purescript.psi.exports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
-import org.purescript.psi.PSExportedValue
 
 class ExportedValueReferenceTest : BasePlatformTestCase() {
 
