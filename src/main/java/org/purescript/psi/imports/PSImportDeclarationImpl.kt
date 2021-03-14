@@ -35,7 +35,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             findChildByClass(PSImportList::class.java)
 
     /**
-     * The import alias of this import declaration,
+     * @return the import alias of this import declaration,
      * if it has one.
      */
     val importAlias: PSImportAlias?
@@ -69,7 +69,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             importList?.isHiding ?: false
 
     /**
-     * Returns a reference to the [PSModule] that this declaration is
+     * @return a reference to the [PSModule] that this declaration is
      * importing from
      */
     override fun getReference(): ModuleReference =
@@ -80,11 +80,12 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      *
      * @param exportedDeclarationProperty The property for the exported declarations of the wanted type in the module
      * @param importedItemClass The class of the [PSImportedItem] to use when filtering the results
+     * @return the [Declaration] elements that this declaration imports
      */
-    private fun <T : PsiNamedElement> getImportedDeclarations(
-        exportedDeclarationProperty: KProperty1<PSModule, List<T>>,
+    private fun <Declaration : PsiNamedElement> getImportedDeclarations(
+        exportedDeclarationProperty: KProperty1<PSModule, List<Declaration>>,
         importedItemClass: Class<out PSImportedItem>
-    ): List<T> {
+    ): List<Declaration> {
         val importedModule = importedModule ?: return emptyList()
         val exportedDeclarations = exportedDeclarationProperty.get(importedModule)
 
@@ -103,12 +104,12 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     }
 
     /**
-     * The [PSModule] that this declaration is importing from
+     * @return the [PSModule] that this declaration is importing from
      */
     val importedModule get(): PSModule? = reference.resolve()
 
     /**
-     * All [PSValueDeclaration] elements imported by this declaration
+     * @return the [PSValueDeclaration] elements imported by this declaration
      */
     val importedValueDeclarations: List<PSValueDeclaration>
         get() = getImportedDeclarations(
@@ -117,7 +118,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         )
 
     /**
-     * All [PSForeignValueDeclaration] elements imported by this declaration
+     * @return the [PSForeignValueDeclaration] elements imported by this declaration
      */
     val importedForeignValueDeclarations: List<PSForeignValueDeclaration>
         get() = getImportedDeclarations(
@@ -126,7 +127,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         )
 
     /**
-     * All [PSNewTypeDeclarationImpl] elements imported by this declaration
+     * @return the [PSNewTypeDeclarationImpl] elements imported by this declaration
      */
     val importedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
         get() = getImportedDeclarations(
@@ -135,7 +136,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         )
 
     /**
-     * All [PSDataDeclaration] elements imported by this declaration
+     * @return the [PSDataDeclaration] elements imported by this declaration
      */
     val importedDataDeclarations: List<PSDataDeclaration>
         get() = getImportedDeclarations(
