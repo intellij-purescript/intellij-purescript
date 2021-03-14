@@ -5,6 +5,9 @@ import org.purescript.file.PSFile
 import org.purescript.psi.PSModule
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.exports.PSExportedData
+import org.purescript.psi.exports.PSExportedDataMember
+import org.purescript.psi.exports.PSExportedItem
 import org.purescript.psi.imports.PSImportDeclarationImpl
 import org.purescript.psi.imports.PSImportedItem
 
@@ -18,7 +21,7 @@ fun PsiFile.getDataDeclaration(): PSDataDeclaration {
 }
 
 fun PsiFile.getDataConstructor(): PSDataConstructor {
-    return getModule().dataDeclarations.single().dataConstructorList!!.dataConstructors.single()
+    return getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 }
 
 fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> {
@@ -35,4 +38,16 @@ fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl {
 
 fun PsiFile.getImportedItem(): PSImportedItem {
     return getImportDeclaration().importList!!.importedItems.single()
+}
+
+fun PsiFile.getExportedItem(): PSExportedItem {
+    return getModule().exportList!!.exportedItems.single()
+}
+
+fun PsiFile.getExportedData(): PSExportedData {
+    return getExportedItem() as PSExportedData
+}
+
+fun PsiFile.getExportedDataMember(): PSExportedDataMember {
+    return getExportedData().dataMemberList!!.dataMembers.single()
 }
