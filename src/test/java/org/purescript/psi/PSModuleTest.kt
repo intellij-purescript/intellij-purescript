@@ -4,11 +4,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
+import org.purescript.getExportedDataDeclarations
+import org.purescript.getModule
 
 class PSModuleTest : BasePlatformTestCase() {
-
-    private fun PsiFile.getModule(): PSModule =
-        (this as PSFile).module
 
     private fun PsiFile.exportedForeignValueDeclarationNames(): List<String> =
         getModule().exportedForeignValueDeclarations.map { it.name!! }
@@ -352,6 +351,19 @@ class PSModuleTest : BasePlatformTestCase() {
         val newTypeDeclaration = module.exportedNewTypeDeclarations.single()
 
         assertEquals("Bar", newTypeDeclaration.name)
+    }
+
+    fun `test finds exported data declarations`() {
+        val dataDeclaration = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (Bar(..)) where
+                data Foo = Foo Int
+                data Bar = Bar Int
+            """.trimIndent()
+        ).getExportedDataDeclarations().single()
+
+        assertEquals("Bar", dataDeclaration.name)
     }
 }
 

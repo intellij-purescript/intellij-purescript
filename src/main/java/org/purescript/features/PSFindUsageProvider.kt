@@ -3,9 +3,9 @@ package org.purescript.features
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
-import org.jetbrains.annotations.Nls
 import org.purescript.file.PSFile
 import org.purescript.psi.*
+import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.PSImportAlias
 
 class PSFindUsageProvider : FindUsagesProvider {
@@ -16,23 +16,25 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSForeignValueDeclaration
             || psiElement is PSNewTypeDeclarationImpl
             || psiElement is PSImportAlias
+            || psiElement is PSDataDeclaration
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null
     }
 
-    override fun getType(element: PsiElement): @Nls String {
+    override fun getType(element: PsiElement): String {
         return when (element) {
             is PSValueDeclaration -> "value"
             is PSVarBinderImpl -> "parameter"
             is PSModule -> "module"
             is PSNewTypeDeclarationImpl -> "newtype"
             is PSImportAlias -> "import alias"
+            is PSDataDeclaration -> "data"
             else -> "unknown"
         }
     }
 
-    override fun getDescriptiveName(element: PsiElement): @Nls String {
+    override fun getDescriptiveName(element: PsiElement): String {
         when (element) {
             is PSValueDeclaration -> {
                 val file = element.containingFile as PSFile
@@ -51,7 +53,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     override fun getNodeText(
         element: PsiElement,
         useFullName: Boolean
-    ): @Nls String {
+    ): String {
         if (useFullName) {
             return getDescriptiveName(element)
         } else if (element is PsiNamedElement) {
