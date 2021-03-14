@@ -41,6 +41,7 @@ class PSModule(node: ASTNode) :
      * @param declarations The declarations of the wanted type in this module
      * @param importedDeclarationProperty The property for the imported declarations in an [PSImportDeclarationImpl]
      * @param exportedItemClass The class of the [PSExportedItem] to use when filtering the results
+     * @return the [Declaration] element that this module exports
      */
     private fun <Declaration : PsiNamedElement> getExportedDeclarations(
         declarations: Array<Declaration>,
@@ -69,6 +70,7 @@ class PSModule(node: ASTNode) :
 
     /**
      * If the export list is null, this module implicitly exports all its members.
+     * @return the [PSExportList] in this module, if it exists
      */
     val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
 
@@ -107,7 +109,7 @@ class PSModule(node: ASTNode) :
             findChildrenByClass(PSDataDeclaration::class.java)
 
     /**
-     * All the value declarations that this module exports,
+     * @return the [PSValueDeclaration] that this module exports,
      * both directly and through re-exported modules
      */
     val exportedValueDeclarations: List<PSValueDeclaration>
@@ -118,7 +120,7 @@ class PSModule(node: ASTNode) :
         )
 
     /**
-     * All the foreign value declarations that this module exports,
+     * @return the [PSForeignValueDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
     val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
@@ -129,7 +131,7 @@ class PSModule(node: ASTNode) :
         )
 
     /**
-     * All the newtype declarations that this module exports,
+     * @return the [PSNewTypeDeclarationImpl] elements that this module exports,
      * both directly and through re-exported modules
      */
     val exportedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
@@ -140,7 +142,7 @@ class PSModule(node: ASTNode) :
         )
 
     /**
-     * All the data declarations that this module exports,
+     * @return the [PSDataDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
     val exportedDataDeclarations: List<PSDataDeclaration>
