@@ -3,6 +3,7 @@ package org.purescript.psi.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
+import org.purescript.psi.data.PSDataDeclaration
 import kotlin.reflect.KProperty1
 
 /**
@@ -130,6 +131,15 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     val importedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
         get() = getImportedDeclarations(
             PSModule::exportedNewTypeDeclarations,
+            PSImportedData::class.java
+        )
+
+    /**
+     * All [PSDataDeclaration] elements imported by this declaration
+     */
+    val importedDataDeclarations: List<PSDataDeclaration>
+        get() = getImportedDeclarations(
+            PSModule::exportedDataDeclarations,
             PSImportedData::class.java
         )
 }

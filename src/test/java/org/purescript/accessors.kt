@@ -18,3 +18,7 @@ fun PsiFile.getDataDeclaration(): PSDataDeclaration {
 fun PsiFile.getDataConstructor(): PSDataConstructor {
     return getModule().dataDeclarations.single().dataConstructorList!!.dataConstructors.single()
 }
+
+fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> {
+    return getModule().exportedDataDeclarations
+}

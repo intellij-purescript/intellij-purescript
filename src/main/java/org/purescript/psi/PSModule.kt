@@ -139,6 +139,17 @@ class PSModule(node: ASTNode) :
             PSExportedData::class.java
         )
 
+    /**
+     * All the data declarations that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedDataDeclarations: List<PSDataDeclaration>
+        get() = getExportedDeclarations(
+            dataDeclarations,
+            PSImportDeclarationImpl::importedDataDeclarations,
+            PSExportedData::class.java
+        )
+
     val reexportedModuleNames: List<String>
         get() =
             exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
