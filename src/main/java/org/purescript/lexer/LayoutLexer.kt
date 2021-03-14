@@ -3,27 +3,14 @@ package org.purescript.lexer
 import com.intellij.lexer.DelegateLexer
 import com.intellij.lexer.Lexer
 import com.intellij.psi.tree.IElementType
+import org.purescript.lexer.token.SourcePos
+import org.purescript.lexer.token.SourceRange
+import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
 
 enum class LayoutDelimiter {
     WHERE
 }
-
-data class SourcePos(
-    val line: Int,
-    val column: Int,
-    val offset: Int,
-)
-
-data class SourceRange(
-    val start: SourcePos,
-    val end: SourcePos
-)
-
-data class SourceToken(
-    val range: SourceRange,
-    val value: IElementType
-)
 
 data class LayoutStack(
     val sourcePos: SourcePos,
