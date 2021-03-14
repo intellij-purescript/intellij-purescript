@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
-import org.purescript.psi.PSExportList
+import org.purescript.psi.exports.PSExportList
 import org.purescript.psi.PSModule
 
 class PurescriptFoldingVisitor : PsiElementVisitor() {

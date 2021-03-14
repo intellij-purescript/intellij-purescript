@@ -1,8 +1,11 @@
-package org.purescript.psi
+package org.purescript.psi.exports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
+import org.purescript.psi.exports.PSExportedClass
+import org.purescript.psi.exports.PSExportedKind
+import org.purescript.psi.exports.PSExportedValue
 
 class PSExportListTest : BasePlatformTestCase() {
 

@@ -19,6 +19,7 @@ import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.exports.*
 import org.purescript.psi.imports.*
 
 class PSParserDefinition : ParserDefinition, PSTokens {

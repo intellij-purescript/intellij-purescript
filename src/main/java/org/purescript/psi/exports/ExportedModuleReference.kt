@@ -1,8 +1,7 @@
-package org.purescript.psi.`var`
+package org.purescript.psi.exports
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.psi.PSExportedModule
 import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase<PSExportedModule>(

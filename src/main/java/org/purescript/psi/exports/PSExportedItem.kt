@@ -1,9 +1,11 @@
-package org.purescript.psi
+package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
 import org.purescript.file.PSFile
-import org.purescript.psi.`var`.ExportedModuleReference
-import org.purescript.psi.`var`.ExportedValueReference
+import org.purescript.psi.PSIdentifier
+import org.purescript.psi.PSModule
+import org.purescript.psi.PSProperName
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.imports.PSImportDeclarationImpl
 
 sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {

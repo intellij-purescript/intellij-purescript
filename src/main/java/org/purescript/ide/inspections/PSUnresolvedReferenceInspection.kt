@@ -5,8 +5,8 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import org.purescript.psi.PSExportedModule
-import org.purescript.psi.PSExportedValue
+import org.purescript.psi.exports.PSExportedModule
+import org.purescript.psi.exports.PSExportedValue
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
