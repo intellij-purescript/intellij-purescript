@@ -51,7 +51,7 @@ Purescript File
       PSValueImpl(Value)
         PSNumericLiteralImpl(NumericLiteral)
           PsiElement(float)('1.0')
-    PSTypeClassDeclarationImpl(TypeClassDeclaration)
+    PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
       PSProperName(ClassName)
         PSProperName(ProperName)

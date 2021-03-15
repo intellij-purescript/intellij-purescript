@@ -5,7 +5,7 @@ Purescript File
       PSProperName(Qualified)
         PsiElement(proper name)('ElseInstance')
     PsiElement(where)('where')
-    PSTypeClassDeclarationImpl(TypeClassDeclaration)
+    PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
       PSProperName(ClassName)
         PSProperName(ProperName)

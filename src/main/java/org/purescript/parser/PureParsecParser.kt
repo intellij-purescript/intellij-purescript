@@ -58,7 +58,7 @@ import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.TypeArgs
-import org.purescript.parser.PSElements.Companion.TypeClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassDeclaration
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
@@ -444,7 +444,7 @@ class PureParsecParser {
                         )
                     )
                 )
-            ).`as`(TypeClassDeclaration)
+            ).`as`(ClassDeclaration)
     private val parseTypeInstanceDeclaration =
         optional(token(DERIVE))
             .then(optional(token(NEWTYPE)))

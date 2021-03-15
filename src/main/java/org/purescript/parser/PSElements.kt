@@ -112,7 +112,7 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val PositionedDeclarationRef = PSElementType("PositionedDeclarationRef")
         @kotlin.jvm.JvmField
-        val TypeClassDeclaration = PSElementType("TypeClassDeclaration")
+        val ClassDeclaration = PSElementType("ClassDeclaration")
         @kotlin.jvm.JvmField
         val TypeInstanceDeclaration = PSElementType("TypeInstanceDeclaration")
         @kotlin.jvm.JvmField

@@ -30,7 +30,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    PSTypeClassDeclarationImpl(TypeClassDeclaration)
+    PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
       PSProperName(ClassName)
         PSProperName(ProperName)

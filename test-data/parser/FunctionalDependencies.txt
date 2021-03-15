@@ -42,7 +42,7 @@ Purescript File
           PsiElement(identifier)('x')
         PSIdentifier(GenericIdentifier)
           PsiElement(identifier)('xs')
-    PSTypeClassDeclarationImpl(TypeClassDeclaration)
+    PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
       PSProperName(ClassName)
         PSProperName(ProperName)

@@ -35,7 +35,7 @@ Purescript File
             PsiElement(proper name)('Eff')
           PsiElement(.)('.')
           PsiElement(proper name)('Console')
-    PSTypeClassDeclarationImpl(TypeClassDeclaration)
+    PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
       PSProperName(ClassName)
         PSProperName(ProperName)

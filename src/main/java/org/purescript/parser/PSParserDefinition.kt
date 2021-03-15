@@ -163,8 +163,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSFixityDeclarationImpl(node)
         } else if (type == PSElements.PositionedDeclarationRef) {
             PSPositionedDeclarationRefImpl(node)
-        } else if (type == PSElements.TypeClassDeclaration) {
-            PSTypeClassDeclarationImpl(node)
+        } else if (type == PSElements.ClassDeclaration) {
+            PSClassDeclaration(node)
         } else if (type == PSElements.TypeInstanceDeclaration) {
             PSTypeInstanceDeclarationImpl(node)
         } else if (type == PSElements.NewtypeDeclaration) {
