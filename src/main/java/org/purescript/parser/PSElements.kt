@@ -124,6 +124,8 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val StringBinder = PSElementType("StringBinder")
         @kotlin.jvm.JvmField
+        val CharBinder = PSElementType("CharBinder")
+        @kotlin.jvm.JvmField
         val BooleanBinder = PSElementType("BooleanBinder")
         @kotlin.jvm.JvmField
         val NumberBinder = PSElementType("NumberBinder")
@@ -149,6 +151,8 @@ interface PSElements {
         val NumericLiteral = PSElementType("NumericLiteral")
         @kotlin.jvm.JvmField
         val StringLiteral = PSElementType("StringLiteral")
+        @kotlin.jvm.JvmField
+        val CharLiteral = PSElementType("CharLiteral")
         @kotlin.jvm.JvmField
         val ArrayLiteral = PSElementType("ArrayLiteral")
         @kotlin.jvm.JvmField

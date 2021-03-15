@@ -26,6 +26,8 @@ import org.purescript.parser.PSElements.Companion.Binder
 import org.purescript.parser.PSElements.Companion.BooleanBinder
 import org.purescript.parser.PSElements.Companion.BooleanLiteral
 import org.purescript.parser.PSElements.Companion.CaseAlternative
+import org.purescript.parser.PSElements.Companion.CharBinder
+import org.purescript.parser.PSElements.Companion.CharLiteral
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
@@ -69,6 +71,7 @@ import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
+import org.purescript.parser.PSTokens.Companion.CHAR
 import org.purescript.parser.PSTokens.Companion.CLASS
 import org.purescript.parser.PSTokens.Companion.COMMA
 import org.purescript.parser.PSTokens.Companion.DARROW
@@ -113,7 +116,7 @@ class PureParsecParser {
         ).`as`(Qualified)
 
     // tokens
-    private val char = token("'")
+    private val char = token(CHAR)
     private val dcolon = token(DCOLON)
     private val dot = token(DOT)
     private val ddot = token(DDOT)
@@ -618,7 +621,6 @@ class PureParsecParser {
     private val parseNumericLiteral =
         token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
-    private val parseCharLiteral = char.`as`(StringLiteral)
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val parseTypeHole = token("?").`as`(TypeHole)
     private val parseIdentifierAndValue =
@@ -725,6 +727,7 @@ class PureParsecParser {
         attempt(parseTypeHole),
         attempt(parseNumericLiteral),
         attempt(string.`as`(StringLiteral)),
+        attempt(char).`as`(CharLiteral),
         attempt(parseBooleanLiteral),
         attempt(
             token(PSTokens.TICK) +
@@ -733,7 +736,6 @@ class PureParsecParser {
                 token(PSTokens.TICK)
         ),
         parseArrayLiteral,
-        parseCharLiteral,
         attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
         attempt(parseObjectLiteral),
         abs,
@@ -892,7 +894,7 @@ class PureParsecParser {
                 attempt(ident.`as`(VarBinder)),
                 attempt(qualPropName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
-                attempt(char.`as`(StringBinder)),
+                attempt(char).`as`(CharBinder),
                 attempt(string.`as`(StringBinder)),
                 attempt(number.`as`(NumberBinder)),
                 attempt(squares(commaSep(expr)).`as`(ObjectBinder)),

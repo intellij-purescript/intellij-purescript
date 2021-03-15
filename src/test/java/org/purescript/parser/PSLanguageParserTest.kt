@@ -111,7 +111,7 @@ class PSLanguageParserTest : PSLanguageParserTestBase("parser") {
     fun testMutRec2() = doTest(true, true)
     fun testMutRec3() = doTest(true, true)
     fun testNewtypeInstance() = doTest(true, true)
-    fun testIntAndChar() = doTest(true, true)
+    fun testInt() = doTest(true, true)
     fun testNestedRecordUpdate() = doTest(true, true)
     fun testNestedRecordUpdateWildcards() = doTest(true, true)
     fun testPrimedTypeName() = doTest(true, true)
