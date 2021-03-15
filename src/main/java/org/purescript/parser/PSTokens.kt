@@ -56,6 +56,8 @@ interface PSTokens {
         @kotlin.jvm.JvmField
         val DO = PSElementType("do")
         @kotlin.jvm.JvmField
+        val ADO = PSElementType("ado")
+        @kotlin.jvm.JvmField
         val LET = PSElementType("let")
         @kotlin.jvm.JvmField
         val TRUE = PSElementType("true")
