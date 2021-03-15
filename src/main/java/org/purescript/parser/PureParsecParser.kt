@@ -867,7 +867,7 @@ class PureParsecParser {
         expr3.setRef(
             choice(
                 expr4,
-                indented(token("-")).then(expr3).`as`(UnaryMinus)
+                token("-").then(expr3).`as`(UnaryMinus)
             ).`as`(PrefixValue)
         )
         expr.setRef(
