@@ -159,6 +159,7 @@ interface PSTokens {
             THEN,
             ELSE,
             DO,
+            ADO,
             LET,
             TRUE,
             FALSE,
