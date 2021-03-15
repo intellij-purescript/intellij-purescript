@@ -624,9 +624,9 @@ class PureParsecParser {
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val parseTypeHole = token("?").`as`(TypeHole)
     private val parseIdentifierAndValue =
-        indented(lname.or(stringLiteral))
-            .then(optional(indented(token(OPERATOR).or(token(COMMA)))))
-            .then(optional(indented(expr)))
+        lname.or(stringLiteral)
+            .then(optional(token(OPERATOR).or(token(COMMA))))
+            .then(optional(expr))
             .`as`(ObjectBinderField)
     private val recordExpr =
         braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
