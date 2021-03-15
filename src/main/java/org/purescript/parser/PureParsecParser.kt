@@ -73,7 +73,6 @@ import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
 import org.purescript.parser.PSTokens.Companion.CHAR
 import org.purescript.parser.PSTokens.Companion.CLASS
-import org.purescript.parser.PSTokens.Companion.COMMA
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
@@ -623,13 +622,14 @@ class PureParsecParser {
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val parseTypeHole = token("?").`as`(TypeHole)
-    private val parseIdentifierAndValue =
-        indented(lname.or(stringLiteral))
-            .then(optional(indented(token(OPERATOR).or(token(COMMA)))))
-            .then(optional(indented(expr)))
-            .`as`(ObjectBinderField)
-    private val parseObjectLiteral =
-        braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
+    private val recordLabel =
+        choice(
+            attempt(lname + token(":")) + expr,
+            attempt(lname + token("=")) + expr,
+            lname ,
+        ).`as`(ObjectBinderField)
+    private val recordExpr =
+        braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
     private val parseVar =
@@ -723,32 +723,6 @@ class PureParsecParser {
         lname.or(stringLiteral)
             .then(optional(indented(eq)))
             .then(indented(expr))
-    private val parseValueAtom = choice(
-        attempt(parseTypeHole),
-        attempt(parseNumericLiteral),
-        attempt(string.`as`(StringLiteral)),
-        attempt(char).`as`(CharLiteral),
-        attempt(parseBooleanLiteral),
-        attempt(
-            token(PSTokens.TICK) +
-                properName.`as`(ProperName)
-                    .or(many1(idents.`as`(ProperName))) +
-                token(PSTokens.TICK)
-        ),
-        parseArrayLiteral,
-        attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-        attempt(parseObjectLiteral),
-        abs,
-        attempt(parseConstructor),
-        attempt(parseVar),
-        (case + commaSep1(expr) + of + indentedList(caseBranch))
-            .`as`(PSElements.Case),
-        parseIfThenElse,
-        doBlock,
-        adoBlock + token(IN) + expr,
-        parseLet,
-        parens(expr).`as`(PSElements.Parens)
-    )
     private val parseAccessor: Parsec =
         attempt(indented(token(DOT)).then(indented(lname.or(stringLiteral))))
             .`as`(PSElements.Accessor)
@@ -758,26 +732,6 @@ class PureParsecParser {
                 .lexeme(PSTokens.TICK),
             parseQualified(operator)
         ).`as`(PSElements.IdentInfix)
-    private val indexersAndAccessors =
-        parseValueAtom +
-            manyOrEmpty(
-                choice(
-                    parseAccessor,
-                    attempt(
-                        indented(
-                            braces(commaSep1(indented(parsePropertyUpdate)))
-                        )
-                    ),
-                    indented(dcolon + type)
-                )
-            )
-    private val parseValuePostFix =
-        indexersAndAccessors +
-            manyOrEmpty(
-                indented(indexersAndAccessors)
-                    .or(attempt(indented(dcolon) + type))
-            )
-    private val parsePrefix = ref()
 
     private val type0 = ref()
     private val type1 = ref()
@@ -864,16 +818,55 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
-        parsePrefix.setRef(
+        val expr5 = choice(
+            attempt(parseTypeHole),
+            attempt(parseNumericLiteral),
+            attempt(string.`as`(StringLiteral)),
+            attempt(char).`as`(CharLiteral),
+            attempt(parseBooleanLiteral),
+            attempt(
+                token(PSTokens.TICK) +
+                    properName.`as`(ProperName)
+                        .or(many1(idents.`as`(ProperName))) +
+                    token(PSTokens.TICK)
+            ),
+            parseArrayLiteral,
+            attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
+            attempt(recordExpr),
+            abs,
+            attempt(parseConstructor),
+            attempt(parseVar),
+            (case + commaSep1(expr) + of + indentedList(caseBranch))
+                .`as`(PSElements.Case),
+            parseIfThenElse,
+            doBlock,
+            adoBlock + token(IN) + expr,
+            parseLet,
+            parens(expr).`as`(PSElements.Parens)
+        )
+        val indexersAndAccessors =
+            expr5 +
+                manyOrEmpty(
+                    choice(
+                        parseAccessor,
+                        attempt(braces(commaSep1(parsePropertyUpdate))),
+                        dcolon + type
+                    )
+                )
+        val expr4 =
+            indexersAndAccessors +
+                manyOrEmpty(indented(indexersAndAccessors))
+        val expr3 =
             choice(
-                parseValuePostFix,
-                indented(token("-")).then(parsePrefix).`as`(UnaryMinus)
+                (many1(token("-")) + expr4).`as`(UnaryMinus),
+                expr4
             ).`as`(PrefixValue)
-        )
-        expr.setRef(
-            (parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr))
-                .`as`(PSElements.Value)
-        )
+
+        val expr1 =
+            (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
+            .`as`(PSElements.Value)
+
+        expr.setRef(expr1 + optional(dcolon + type))
         val boolean = token("true").or(token("false"))
         val qualPropName = parseQualified(properName)
         val recordBinder =
