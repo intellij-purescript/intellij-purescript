@@ -723,32 +723,6 @@ class PureParsecParser {
         lname.or(stringLiteral)
             .then(optional(indented(eq)))
             .then(indented(expr))
-    private val expr5 = choice(
-        attempt(parseTypeHole),
-        attempt(parseNumericLiteral),
-        attempt(string.`as`(StringLiteral)),
-        attempt(char).`as`(CharLiteral),
-        attempt(parseBooleanLiteral),
-        attempt(
-            token(PSTokens.TICK) +
-                properName.`as`(ProperName)
-                    .or(many1(idents.`as`(ProperName))) +
-                token(PSTokens.TICK)
-        ),
-        parseArrayLiteral,
-        attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-        attempt(recordExpr),
-        abs,
-        attempt(parseConstructor),
-        attempt(parseVar),
-        (case + commaSep1(expr) + of + indentedList(caseBranch))
-            .`as`(PSElements.Case),
-        parseIfThenElse,
-        doBlock,
-        adoBlock + token(IN) + expr,
-        parseLet,
-        parens(expr).`as`(PSElements.Parens)
-    )
     private val parseAccessor: Parsec =
         attempt(indented(token(DOT)).then(indented(lname.or(stringLiteral))))
             .`as`(PSElements.Accessor)
@@ -843,6 +817,32 @@ class PureParsecParser {
                     .then(attempt(manyOrEmpty(binderAtom)))
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
+        )
+        val expr5 = choice(
+            attempt(parseTypeHole),
+            attempt(parseNumericLiteral),
+            attempt(string.`as`(StringLiteral)),
+            attempt(char).`as`(CharLiteral),
+            attempt(parseBooleanLiteral),
+            attempt(
+                token(PSTokens.TICK) +
+                    properName.`as`(ProperName)
+                        .or(many1(idents.`as`(ProperName))) +
+                    token(PSTokens.TICK)
+            ),
+            parseArrayLiteral,
+            attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
+            attempt(recordExpr),
+            abs,
+            attempt(parseConstructor),
+            attempt(parseVar),
+            (case + commaSep1(expr) + of + indentedList(caseBranch))
+                .`as`(PSElements.Case),
+            parseIfThenElse,
+            doBlock,
+            adoBlock + token(IN) + expr,
+            parseLet,
+            parens(expr).`as`(PSElements.Parens)
         )
         val indexersAndAccessors =
             expr5 +
