@@ -859,20 +859,18 @@ class PureParsecParser {
         )
         val expr4 =
             indexersAndAccessors +
-                manyOrEmpty(
-                    indented(indexersAndAccessors)
-                        .or(attempt(indented(dcolon) + type))
-                )
+                manyOrEmpty(indented(indexersAndAccessors))
         val expr3 =
             choice(
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
                 expr4
             ).`as`(PrefixValue)
 
-        expr.setRef(
+        val expr1 =
             (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
-                .`as`(PSElements.Value)
-        )
+            .`as`(PSElements.Value)
+
+        expr.setRef(expr1 + optional(dcolon + type))
         val boolean = token("true").or(token("false"))
         val qualPropName = parseQualified(properName)
         val recordBinder =
