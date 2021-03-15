@@ -849,12 +849,8 @@ class PureParsecParser {
                 manyOrEmpty(
                     choice(
                         parseAccessor,
-                        attempt(
-                            indented(
-                                braces(commaSep1(indented(parsePropertyUpdate)))
-                            )
-                        ),
-                        indented(dcolon + type)
+                        attempt(braces(commaSep1(parsePropertyUpdate))),
+                        dcolon + type
                     )
                 )
         val expr4 =
