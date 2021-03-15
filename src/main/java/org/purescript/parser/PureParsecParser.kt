@@ -723,7 +723,7 @@ class PureParsecParser {
         lname.or(stringLiteral)
             .then(optional(indented(eq)))
             .then(indented(expr))
-    private val parseValueAtom = choice(
+    private val expr5 = choice(
         attempt(parseTypeHole),
         attempt(parseNumericLiteral),
         attempt(string.`as`(StringLiteral)),
@@ -845,7 +845,7 @@ class PureParsecParser {
             )
         )
         val indexersAndAccessors =
-            parseValueAtom +
+            expr5 +
                 manyOrEmpty(
                     choice(
                         parseAccessor,
