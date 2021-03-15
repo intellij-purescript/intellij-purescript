@@ -863,13 +863,12 @@ class PureParsecParser {
                     indented(indexersAndAccessors)
                         .or(attempt(indented(dcolon) + type))
                 )
-        val expr3 = ref()
-        expr3.setRef(
+        val expr3 =
             choice(
-                expr4,
-                token("-").then(expr3).`as`(UnaryMinus)
+                (many1(token("-")) + expr4).`as`(UnaryMinus),
+                expr4
             ).`as`(PrefixValue)
-        )
+
         expr.setRef(
             (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
                 .`as`(PSElements.Value)
