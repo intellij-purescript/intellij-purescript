@@ -771,7 +771,7 @@ class PureParsecParser {
                     indented(dcolon + type)
                 )
             )
-    private val parseValuePostFix =
+    private val expr4 =
         indexersAndAccessors +
             manyOrEmpty(
                 indented(indexersAndAccessors)
@@ -866,7 +866,7 @@ class PureParsecParser {
         val expr3 = ref()
         expr3.setRef(
             choice(
-                parseValuePostFix,
+                expr4,
                 indented(token("-")).then(expr3).`as`(UnaryMinus)
             ).`as`(PrefixValue)
         )
