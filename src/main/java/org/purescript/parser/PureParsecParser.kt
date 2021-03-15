@@ -73,7 +73,6 @@ import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
 import org.purescript.parser.PSTokens.Companion.CHAR
 import org.purescript.parser.PSTokens.Companion.CLASS
-import org.purescript.parser.PSTokens.Companion.COMMA
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
@@ -625,7 +624,7 @@ class PureParsecParser {
     private val parseTypeHole = token("?").`as`(TypeHole)
     private val parseIdentifierAndValue =
         lname
-            .then(optional(token(OPERATOR).or(token(COMMA))))
+            .then(optional(token(OPERATOR)))
             .then(optional(expr))
             .`as`(ObjectBinderField)
     private val recordExpr =
