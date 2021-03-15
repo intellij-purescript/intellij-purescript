@@ -18,6 +18,7 @@ import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
+import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
