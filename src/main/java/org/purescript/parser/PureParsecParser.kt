@@ -771,12 +771,6 @@ class PureParsecParser {
                     indented(dcolon + type)
                 )
             )
-    private val expr4 =
-        indexersAndAccessors +
-            manyOrEmpty(
-                indented(indexersAndAccessors)
-                    .or(attempt(indented(dcolon) + type))
-            )
 
     private val type0 = ref()
     private val type1 = ref()
@@ -863,6 +857,12 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
+        val expr4 =
+            indexersAndAccessors +
+                manyOrEmpty(
+                    indented(indexersAndAccessors)
+                        .or(attempt(indented(dcolon) + type))
+                )
         val expr3 = ref()
         expr3.setRef(
             choice(
