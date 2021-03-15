@@ -154,9 +154,10 @@ charControl = "^" [:uppercase:]
 "~>"                           {return OPTIMISTIC; }
 
 "0"({hexadecimal}|{octal}|{decimal})|{decimal} { return NATURAL; }
-{decimal}{fractExponent}       { return FLOAT; }
-"\"\"\""                       { yybegin(BLOCK_STRINGS); return STRING; }
-"\""                           { yybegin(STRINGS); return STRING; }
+{decimal}{fractExponent}                       { return FLOAT; }
+"\"\"\""                                       { yybegin(BLOCK_STRINGS); return STRING; }
+"\""                                           { yybegin(STRINGS); return STRING; }
+"'" ([^'] | "\\" {escapeCode} ) "'"               { return CHAR; }
 
 {identStart}{identLetter}*     { return IDENT; }
 {properName}                   { return PROPER_NAME; }

@@ -134,6 +134,8 @@ interface PSTokens {
         @kotlin.jvm.JvmField
         val STRING = PSElementType("string")
         @kotlin.jvm.JvmField
+        val CHAR = PSElementType("char")
+        @kotlin.jvm.JvmField
         val NATURAL = PSElementType("natural")
         @kotlin.jvm.JvmField
         val FLOAT = PSElementType("float")
