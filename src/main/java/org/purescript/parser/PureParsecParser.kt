@@ -628,7 +628,7 @@ class PureParsecParser {
             .then(optional(indented(token(OPERATOR).or(token(COMMA)))))
             .then(optional(indented(expr)))
             .`as`(ObjectBinderField)
-    private val parseObjectLiteral =
+    private val recordExpr =
         braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
@@ -737,7 +737,7 @@ class PureParsecParser {
         ),
         parseArrayLiteral,
         attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-        attempt(parseObjectLiteral),
+        attempt(recordExpr),
         abs,
         attempt(parseConstructor),
         attempt(parseVar),
