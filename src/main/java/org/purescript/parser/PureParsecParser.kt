@@ -622,13 +622,14 @@ class PureParsecParser {
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val parseTypeHole = token("?").`as`(TypeHole)
-    private val parseIdentifierAndValue =
-        lname
-            .then(optional(token(OPERATOR)))
-            .then(optional(expr))
-            .`as`(ObjectBinderField)
+    private val recordLabel =
+        choice(
+            attempt(lname + token(":")) + expr,
+            attempt(lname + token("=")) + expr,
+            lname ,
+        ).`as`(ObjectBinderField)
     private val recordExpr =
-        braces(commaSep(parseIdentifierAndValue)).`as`(PSElements.ObjectLiteral)
+        braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
     private val parseVar =
