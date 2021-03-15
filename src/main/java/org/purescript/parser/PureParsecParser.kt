@@ -758,19 +758,6 @@ class PureParsecParser {
                 .lexeme(PSTokens.TICK),
             parseQualified(operator)
         ).`as`(PSElements.IdentInfix)
-    private val indexersAndAccessors =
-        parseValueAtom +
-            manyOrEmpty(
-                choice(
-                    parseAccessor,
-                    attempt(
-                        indented(
-                            braces(commaSep1(indented(parsePropertyUpdate)))
-                        )
-                    ),
-                    indented(dcolon + type)
-                )
-            )
 
     private val type0 = ref()
     private val type1 = ref()
@@ -857,6 +844,19 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
+        val indexersAndAccessors =
+            parseValueAtom +
+                manyOrEmpty(
+                    choice(
+                        parseAccessor,
+                        attempt(
+                            indented(
+                                braces(commaSep1(indented(parsePropertyUpdate)))
+                            )
+                        ),
+                        indented(dcolon + type)
+                    )
+                )
         val expr4 =
             indexersAndAccessors +
                 manyOrEmpty(indented(indexersAndAccessors))
