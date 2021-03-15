@@ -863,15 +863,15 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
-        val parsePrefix = ref()
-        parsePrefix.setRef(
+        val expr3 = ref()
+        expr3.setRef(
             choice(
                 parseValuePostFix,
-                indented(token("-")).then(parsePrefix).`as`(UnaryMinus)
+                indented(token("-")).then(expr3).`as`(UnaryMinus)
             ).`as`(PrefixValue)
         )
         expr.setRef(
-            (parsePrefix + optional(attempt(indented(parseIdentInfix)) + expr))
+            (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
                 .`as`(PSElements.Value)
         )
         val boolean = token("true").or(token("false"))
