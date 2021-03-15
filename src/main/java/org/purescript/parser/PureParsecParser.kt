@@ -777,7 +777,6 @@ class PureParsecParser {
                 indented(indexersAndAccessors)
                     .or(attempt(indented(dcolon) + type))
             )
-    private val parsePrefix = ref()
 
     private val type0 = ref()
     private val type1 = ref()
@@ -864,6 +863,7 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
+        val parsePrefix = ref()
         parsePrefix.setRef(
             choice(
                 parseValuePostFix,
