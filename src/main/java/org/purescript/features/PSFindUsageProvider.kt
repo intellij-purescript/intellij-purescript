@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import org.purescript.file.PSFile
 import org.purescript.psi.*
+import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.PSImportAlias
 
@@ -17,6 +18,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSNewTypeDeclarationImpl
             || psiElement is PSImportAlias
             || psiElement is PSDataDeclaration
+            || psiElement is PSDataConstructor
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null
@@ -30,6 +32,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSNewTypeDeclarationImpl -> "newtype"
             is PSImportAlias -> "import alias"
             is PSDataDeclaration -> "data"
+            is PSDataConstructor -> "data constructor"
             else -> "unknown"
         }
     }
