@@ -65,6 +65,7 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSElements.Companion.qualifiedModuleName
+import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -161,6 +162,7 @@ class PureParsecParser {
         token(PSTokens.THEN),
         token(PSTokens.ELSE),
         token(PSTokens.DO),
+        token(ADO),
         token(LET),
         token(TRUE),
         token(FALSE),
