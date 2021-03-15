@@ -104,6 +104,7 @@ charControl = "^" [:uppercase:]
 "then"                         { return THEN; }
 "else"                         { return ELSE; }
 "do"                           { return DO; }
+"ado"                          { return ADO; }
 "let"                          { return LET; }
 "true"                         { return TRUE; }
 "false"                        { return FALSE; }

@@ -65,6 +65,7 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSElements.Companion.qualifiedModuleName
+import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -83,6 +84,7 @@ import org.purescript.parser.PSTokens.Companion.FORALL
 import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
+import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LARROW
@@ -160,6 +162,7 @@ class PureParsecParser {
         token(PSTokens.THEN),
         token(PSTokens.ELSE),
         token(PSTokens.DO),
+        token(ADO),
         token(LET),
         token(TRUE),
         token(FALSE),
@@ -710,6 +713,10 @@ class PureParsecParser {
     private val doBlock =
         token(PSTokens.DO)
             .then(indented(indentedList(mark(doStatement))))
+
+    private val adoBlock =
+        token(PSTokens.ADO)
+            .then(indented(indentedList(mark(doStatement))))
     private val parsePropertyUpdate =
         lname.or(stringLiteral)
             .then(optional(indented(eq)))
@@ -736,6 +743,7 @@ class PureParsecParser {
             .`as`(PSElements.Case),
         parseIfThenElse,
         doBlock,
+        adoBlock + token(IN) + expr,
         parseLet,
         parens(expr).`as`(PSElements.Parens)
     )
