@@ -825,6 +825,7 @@ class PureParsecParser {
             attempt(char).`as`(CharLiteral),
             squares(commaSep(expr)).`as`(ArrayLiteral),
             attempt(braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)),
+            parens(expr).`as`(PSElements.Parens),
             attempt(
                 tick +
                     properName.`as`(ProperName)
@@ -836,8 +837,7 @@ class PureParsecParser {
             parseIfThenElse,
             doBlock,
             adoBlock + token(IN) + expr,
-            parseLet,
-            parens(expr).`as`(PSElements.Parens)
+            parseLet
         )
         val indexersAndAccessors =
             expr5 +
