@@ -613,10 +613,8 @@ class PureParsecParser {
         .`as`(PSElements.Module)
 
     // Literals
-    private val boolean =
-        token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
-    private val number =
-        token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
+    private val boolean = token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
+    private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val parseTypeHole = token("?").`as`(TypeHole)
