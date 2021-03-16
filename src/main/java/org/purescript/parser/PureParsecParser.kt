@@ -61,6 +61,7 @@ import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.UnaryMinus
+import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
@@ -102,6 +103,7 @@ import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.STRING
+import org.purescript.parser.PSTokens.Companion.TICK
 import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
@@ -728,8 +730,8 @@ class PureParsecParser {
             .`as`(PSElements.Accessor)
     private val parseIdentInfix: Parsec =
         choice(
-            (token(PSTokens.TICK) + parseQualified(idents))
-                .lexeme(PSTokens.TICK),
+            (token(TICK) + parseQualified(idents))
+                .lexeme(TICK),
             parseQualified(operator)
         ).`as`(PSElements.IdentInfix)
 
@@ -825,10 +827,10 @@ class PureParsecParser {
             attempt(char).`as`(CharLiteral),
             attempt(parseBooleanLiteral),
             attempt(
-                token(PSTokens.TICK) +
+                token(TICK) +
                     properName.`as`(ProperName)
                         .or(many1(idents.`as`(ProperName))) +
-                    token(PSTokens.TICK)
+                    token(TICK)
             ),
             parseArrayLiteral,
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
@@ -864,7 +866,7 @@ class PureParsecParser {
 
         val expr1 =
             (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
-            .`as`(PSElements.Value)
+            .`as`(Value)
 
         expr.setRef(expr1 + optional(dcolon + type))
         val boolean = token("true").or(token("false"))
