@@ -638,7 +638,7 @@ class PureParsecParser {
                 )
             ).then(ident).`as`(Qualified)
         ).`as`(PSElements.Var)
-    private val parseConstructor =
+    private val qualProperName =
         parseQualified(properName).`as`(Constructor)
 
     private val binder1 = expr.or(`_`)
@@ -820,7 +820,7 @@ class PureParsecParser {
             attempt(hole),
             attempt(number),
             attempt(qualIdent),
-            attempt(parseConstructor),
+            attempt(qualProperName),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
             attempt(boolean),
