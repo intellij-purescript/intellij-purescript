@@ -628,7 +628,7 @@ class PureParsecParser {
         braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
-    private val parseVar =
+    private val qualIdent =
         attempt(
             manyOrEmpty(
                 attempt(
@@ -819,7 +819,7 @@ class PureParsecParser {
         val expr5 = choice(
             attempt(hole),
             attempt(number),
-            attempt(parseVar),
+            attempt(qualIdent),
             attempt(parseConstructor),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
