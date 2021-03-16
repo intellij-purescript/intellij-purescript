@@ -717,9 +717,6 @@ class PureParsecParser {
         lname.or(stringLiteral)
             .then(optional(indented(eq)))
             .then(indented(expr))
-    private val parseAccessor: Parsec =
-        attempt(indented(token(DOT)).then(indented(lname.or(stringLiteral))))
-            .`as`(PSElements.Accessor)
     private val parseIdentInfix: Parsec =
         choice(
             (token(TICK) + parseQualified(idents))
@@ -846,7 +843,11 @@ class PureParsecParser {
             expr5 +
                 manyOrEmpty(
                     choice(
-                        parseAccessor,
+                        attempt(
+                            indented(token(DOT))
+                                .then(indented(lname.or(stringLiteral)))
+                        )
+                            .`as`(PSElements.Accessor),
                         attempt(braces(commaSep1(parsePropertyUpdate))),
                         dcolon + type
                     )
