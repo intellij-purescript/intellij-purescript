@@ -624,8 +624,6 @@ class PureParsecParser {
             attempt(lname + token("=")) + expr,
             lname ,
         ).`as`(ObjectBinderField)
-    private val recordExpr =
-        braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
     private val qualIdent =
@@ -832,7 +830,7 @@ class PureParsecParser {
             ),
             squares(commaSep(expr)).`as`(ArrayLiteral),
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-            attempt(recordExpr),
+            attempt(braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)),
             abs,
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
