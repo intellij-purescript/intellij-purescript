@@ -820,6 +820,7 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
+        val tick = token(TICK)
         val expr5 = choice(
             attempt(parseTypeHole),
             attempt(parseNumericLiteral),
@@ -827,10 +828,10 @@ class PureParsecParser {
             attempt(char).`as`(CharLiteral),
             attempt(parseBooleanLiteral),
             attempt(
-                token(TICK) +
+                tick +
                     properName.`as`(ProperName)
                         .or(many1(idents.`as`(ProperName))) +
-                    token(TICK)
+                    tick
             ),
             parseArrayLiteral,
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
