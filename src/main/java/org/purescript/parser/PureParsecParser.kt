@@ -819,6 +819,8 @@ class PureParsecParser {
         val expr5 = choice(
             attempt(hole),
             attempt(number),
+            attempt(parseVar),
+            attempt(parseConstructor),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
             attempt(boolean),
@@ -832,8 +834,6 @@ class PureParsecParser {
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
             attempt(recordExpr),
             abs,
-            attempt(parseConstructor),
-            attempt(parseVar),
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
             doBlock,
