@@ -25,6 +25,7 @@ import org.purescript.parser.PSElements.Companion.Bang
 import org.purescript.parser.PSElements.Companion.Binder
 import org.purescript.parser.PSElements.Companion.BooleanBinder
 import org.purescript.parser.PSElements.Companion.BooleanLiteral
+import org.purescript.parser.PSElements.Companion.Case
 import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.CharBinder
 import org.purescript.parser.PSElements.Companion.CharLiteral
@@ -61,6 +62,7 @@ import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.UnaryMinus
+import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
@@ -102,6 +104,7 @@ import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.STRING
+import org.purescript.parser.PSTokens.Companion.TICK
 import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
@@ -125,11 +128,6 @@ class PureParsecParser {
 
     @Suppress("PrivatePropertyName", "unused")
     private val `@` = token("@")
-
-    private val number =
-        optional(token("+").or(token("-")))
-            .then(token(NATURAL).or(token(FLOAT)))
-
 
     private val idents =
         choice(
@@ -615,24 +613,20 @@ class PureParsecParser {
         .`as`(PSElements.Module)
 
     // Literals
-    private val parseBooleanLiteral =
-        token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
-    private val parseNumericLiteral =
-        token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
+    private val boolean = token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
+    private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
-    private val parseTypeHole = token("?").`as`(TypeHole)
+    private val hole = token("?").`as`(TypeHole)
     private val recordLabel =
         choice(
             attempt(lname + token(":")) + expr,
             attempt(lname + token("=")) + expr,
             lname ,
         ).`as`(ObjectBinderField)
-    private val recordExpr =
-        braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
-    private val parseVar =
+    private val qualIdent =
         attempt(
             manyOrEmpty(
                 attempt(
@@ -642,7 +636,7 @@ class PureParsecParser {
                 )
             ).then(ident).`as`(Qualified)
         ).`as`(PSElements.Var)
-    private val parseConstructor =
+    private val qualProperName =
         parseQualified(properName).`as`(Constructor)
 
     private val binder1 = expr.or(`_`)
@@ -723,13 +717,10 @@ class PureParsecParser {
         lname.or(stringLiteral)
             .then(optional(indented(eq)))
             .then(indented(expr))
-    private val parseAccessor: Parsec =
-        attempt(indented(token(DOT)).then(indented(lname.or(stringLiteral))))
-            .`as`(PSElements.Accessor)
     private val parseIdentInfix: Parsec =
         choice(
-            (token(PSTokens.TICK) + parseQualified(idents))
-                .lexeme(PSTokens.TICK),
+            (token(TICK) + parseQualified(idents))
+                .lexeme(TICK),
             parseQualified(operator)
         ).`as`(PSElements.IdentInfix)
 
@@ -742,6 +733,7 @@ class PureParsecParser {
     private val darrow = token(DARROW)
     private val qualOp = choice(
         operator,
+        parseQualified(operator),
         token("<="),
         token("-"),
         token("#"),
@@ -818,39 +810,45 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
-        val expr5 = choice(
-            attempt(parseTypeHole),
-            attempt(parseNumericLiteral),
+        val tick = token(TICK)
+        val exprAtom = choice(
+            attempt(hole),
+            attempt(number),
+            attempt(qualIdent),
+            attempt(qualProperName),
+            attempt(boolean),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
-            attempt(parseBooleanLiteral),
+            squares(commaSep(expr)).`as`(ArrayLiteral),
+            attempt(braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)),
+            parens(expr).`as`(PSElements.Parens),
+        )
+        val expr5 = choice(
+            attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
+            exprAtom,
             attempt(
-                token(PSTokens.TICK) +
+                tick +
                     properName.`as`(ProperName)
                         .or(many1(idents.`as`(ProperName))) +
-                    token(PSTokens.TICK)
+                    tick
             ),
-            parseArrayLiteral,
-            attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-            attempt(recordExpr),
             abs,
-            attempt(parseConstructor),
-            attempt(parseVar),
-            (case + commaSep1(expr) + of + indentedList(caseBranch))
-                .`as`(PSElements.Case),
+            (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + token(IN) + expr,
-            parseLet,
-            parens(expr).`as`(PSElements.Parens)
+            parseLet
         )
         val indexersAndAccessors =
             expr5 +
                 manyOrEmpty(
                     choice(
-                        parseAccessor,
-                        attempt(braces(commaSep1(parsePropertyUpdate))),
-                        dcolon + type
+                        attempt(
+                            indented(token(DOT))
+                                .then(indented(lname.or(stringLiteral)))
+                        )
+                            .`as`(PSElements.Accessor),
+                        attempt(braces(commaSep1(parsePropertyUpdate)))
                     )
                 )
         val expr4 =
@@ -862,11 +860,10 @@ class PureParsecParser {
                 expr4
             ).`as`(PrefixValue)
 
-        val expr1 =
-            (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
-            .`as`(PSElements.Value)
+        val expr1 = expr3 + optional(attempt(indented(parseIdentInfix)) + expr)
 
-        expr.setRef(expr1 + optional(dcolon + type))
+
+        expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
         val boolean = token("true").or(token("false"))
         val qualPropName = parseQualified(properName)
         val recordBinder =
@@ -876,7 +873,8 @@ class PureParsecParser {
             attempt(
                 qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(indented(binderAtom)))
             ),
-            binderAtom
+            attempt(token("-") + number).`as`(NumberBinder),
+            binderAtom,
         )
         val binder1 = sepBy1(binder2, token(OPERATOR))
         binder.setRef(binder1 + optional(dcolon + type))
