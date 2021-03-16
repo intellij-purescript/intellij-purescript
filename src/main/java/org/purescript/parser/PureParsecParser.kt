@@ -618,7 +618,7 @@ class PureParsecParser {
         .`as`(PSElements.Module)
 
     // Literals
-    private val parseBooleanLiteral =
+    private val boolean =
         token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
     private val parseNumericLiteral =
         token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
@@ -827,7 +827,7 @@ class PureParsecParser {
             attempt(parseNumericLiteral),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
-            attempt(parseBooleanLiteral),
+            attempt(boolean),
             attempt(
                 tick +
                     properName.`as`(ProperName)
