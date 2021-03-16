@@ -738,6 +738,7 @@ class PureParsecParser {
     private val darrow = token(DARROW)
     private val qualOp = choice(
         operator,
+        parseQualified(operator),
         token("<="),
         token("-"),
         token("#"),
