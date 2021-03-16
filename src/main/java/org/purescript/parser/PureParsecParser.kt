@@ -25,6 +25,7 @@ import org.purescript.parser.PSElements.Companion.Bang
 import org.purescript.parser.PSElements.Companion.Binder
 import org.purescript.parser.PSElements.Companion.BooleanBinder
 import org.purescript.parser.PSElements.Companion.BooleanLiteral
+import org.purescript.parser.PSElements.Companion.Case
 import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.CharBinder
 import org.purescript.parser.PSElements.Companion.CharLiteral
@@ -839,8 +840,7 @@ class PureParsecParser {
             abs,
             attempt(parseConstructor),
             attempt(parseVar),
-            (case + commaSep1(expr) + of + indentedList(caseBranch))
-                .`as`(PSElements.Case),
+            (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + token(IN) + expr,
