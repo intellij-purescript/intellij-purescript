@@ -129,11 +129,6 @@ class PureParsecParser {
     @Suppress("PrivatePropertyName", "unused")
     private val `@` = token("@")
 
-    private val number =
-        optional(token("+").or(token("-")))
-            .then(token(NATURAL).or(token(FLOAT)))
-
-
     private val idents =
         choice(
             token(PSTokens.IDENT),
@@ -620,7 +615,7 @@ class PureParsecParser {
     // Literals
     private val boolean =
         token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
-    private val parseNumericLiteral =
+    private val number =
         token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
@@ -824,7 +819,7 @@ class PureParsecParser {
         val tick = token(TICK)
         val expr5 = choice(
             attempt(parseTypeHole),
-            attempt(parseNumericLiteral),
+            attempt(number),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
             attempt(boolean),
@@ -879,7 +874,8 @@ class PureParsecParser {
             attempt(
                 qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(indented(binderAtom)))
             ),
-            binderAtom
+            attempt(token("-") + number).`as`(NumberBinder),
+            binderAtom,
         )
         val binder1 = sepBy1(binder2, token(OPERATOR))
         binder.setRef(binder1 + optional(dcolon + type))
