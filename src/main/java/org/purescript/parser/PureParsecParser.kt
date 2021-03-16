@@ -617,7 +617,7 @@ class PureParsecParser {
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
-    private val parseTypeHole = token("?").`as`(TypeHole)
+    private val hole = token("?").`as`(TypeHole)
     private val recordLabel =
         choice(
             attempt(lname + token(":")) + expr,
@@ -817,7 +817,7 @@ class PureParsecParser {
         )
         val tick = token(TICK)
         val expr5 = choice(
-            attempt(parseTypeHole),
+            attempt(hole),
             attempt(number),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
