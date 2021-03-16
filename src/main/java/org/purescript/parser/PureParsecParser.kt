@@ -848,8 +848,7 @@ class PureParsecParser {
                                 .then(indented(lname.or(stringLiteral)))
                         )
                             .`as`(PSElements.Accessor),
-                        attempt(braces(commaSep1(parsePropertyUpdate))),
-                        dcolon + type
+                        attempt(braces(commaSep1(parsePropertyUpdate)))
                     )
                 )
         val expr4 =
@@ -861,11 +860,10 @@ class PureParsecParser {
                 expr4
             ).`as`(PrefixValue)
 
-        val expr1 =
-            (expr3 + optional(attempt(indented(parseIdentInfix)) + expr))
-            .`as`(Value)
+        val expr1 = expr3 + optional(attempt(indented(parseIdentInfix)) + expr)
 
-        expr.setRef(expr1 + optional(dcolon + type))
+
+        expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
         val boolean = token("true").or(token("false"))
         val qualPropName = parseQualified(properName)
         val recordBinder =
