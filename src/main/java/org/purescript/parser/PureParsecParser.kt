@@ -834,7 +834,7 @@ class PureParsecParser {
                         .or(many1(idents.`as`(ProperName))) +
                     tick
             ),
-            parseArrayLiteral,
+            squares(commaSep(expr)).`as`(ArrayLiteral),
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
             attempt(recordExpr),
             abs,
