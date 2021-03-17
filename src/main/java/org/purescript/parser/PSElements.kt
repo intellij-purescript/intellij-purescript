@@ -178,8 +178,6 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val UnaryMinus = PSElementType("UnaryMinus")
         @kotlin.jvm.JvmField
-        val PrefixValue = PSElementType("PrefixValue")
-        @kotlin.jvm.JvmField
         val Accessor = PSElementType("Accessor")
         @kotlin.jvm.JvmField
         val DoNotationLet = PSElementType("DoNotationLet")
@@ -197,8 +195,6 @@ interface PSElements {
         val pModuleName = PSElementType("ModuleName")
         @kotlin.jvm.JvmField
         val importModuleName = PSElementType("ImportModuleName")
-        @kotlin.jvm.JvmField
-        val qualifiedModuleName = PSElementType("QualifiedModuleName")
         @kotlin.jvm.JvmField
         val pClassName = PSElementType("ClassName")
         @kotlin.jvm.JvmField

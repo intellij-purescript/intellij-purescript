@@ -211,8 +211,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSObjectLiteralImpl(node)
         } else if (type == PSElements.Abs) {
             PSAbsImpl(node)
-        } else if (type == PSElements.IdentInfix) {
-            PSIdentInfixImpl(node)
         } else if (type == PSElements.Var) {
             PSVar(node)
             //
@@ -230,8 +228,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSParensImpl(node)
         } else if (type == PSElements.UnaryMinus) {
             PSUnaryMinusImpl(node)
-        } else if (type == PSElements.PrefixValue) {
-            PSPrefixValueImpl(node)
         } else if (type == PSElements.Accessor) {
             PSAccessorImpl(node)
         } else if (type == PSElements.DoNotationLet) {
