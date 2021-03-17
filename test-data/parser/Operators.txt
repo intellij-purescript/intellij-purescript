@@ -636,7 +636,7 @@ Purescript File
       PSValueImpl(Value)
         PSVar(Var)
           PSProperName(Qualified)
-            PSASTWrapperElement(QualifiedModuleName)
+            PSProperName(ProperName)
               PsiElement(proper name)('Other')
             PsiElement(.)('.')
             PSIdentifier(identifier)

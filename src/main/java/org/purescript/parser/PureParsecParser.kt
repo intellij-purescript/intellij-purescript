@@ -69,7 +69,6 @@ import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
-import org.purescript.parser.PSElements.Companion.qualifiedModuleName
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
@@ -627,16 +626,6 @@ class PureParsecParser {
         ).`as`(ObjectBinderField)
     private val backslash = token(PSTokens.BACKSLASH)
     private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
-    private val qualIdent =
-        attempt(
-            manyOrEmpty(
-                attempt(
-                    token(PROPER_NAME)
-                        .`as`(qualifiedModuleName)
-                        .then(token(DOT))
-                )
-            ).then(ident).`as`(Qualified)
-        ).`as`(PSElements.Var)
 
     private val binder1 = expr.or(`_`)
 
@@ -810,7 +799,7 @@ class PureParsecParser {
         val tick = token(TICK)
         val exprAtom = choice(
             attempt(hole),
-            attempt(qualIdent),
+            attempt(parseQualified(ident)).`as`(PSElements.Var),
             parseQualified(properName).`as`(Constructor),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
