@@ -714,10 +714,6 @@ class PureParsecParser {
     private val adoBlock =
         token(PSTokens.ADO)
             .then(indented(indentedList(mark(doStatement))))
-    private val parsePropertyUpdate =
-        lname.or(stringLiteral)
-            .then(optional(indented(eq)))
-            .then(indented(expr))
     private val parseIdentInfix: Parsec =
         choice(
             (token(TICK) + parseQualified(idents))
@@ -812,6 +808,10 @@ class PureParsecParser {
             )
         )
         val label = lname.or(stringLiteral)
+        val parsePropertyUpdate =
+            lname.or(stringLiteral)
+                .then(optional(indented(eq)))
+                .then(indented(expr))
         val tick = token(TICK)
         val exprAtom = choice(
             attempt(hole),
