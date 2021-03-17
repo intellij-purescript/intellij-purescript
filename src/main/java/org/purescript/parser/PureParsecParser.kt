@@ -827,9 +827,10 @@ class PureParsecParser {
         )
         val exprBacktick = properName.`as`(ProperName)
             .or(many1(idents.`as`(ProperName)))
+        val expr7 = exprAtom + manyOrEmpty((token(DOT) + label).`as`(Accessor))
         val expr5 = choice(
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-            exprAtom + manyOrEmpty((token(DOT) + label).`as`(Accessor)),
+            expr7,
             attempt(tick + exprBacktick + tick),
             abs,
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
