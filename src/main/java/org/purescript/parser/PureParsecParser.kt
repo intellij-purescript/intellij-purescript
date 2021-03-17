@@ -624,7 +624,6 @@ class PureParsecParser {
             lname ,
         ).`as`(ObjectBinderField)
     private val backslash = token(PSTokens.BACKSLASH)
-    private val abs = (backslash + many1(binderAtom) + arrow + expr).`as`(Abs)
 
     private val binder1 = expr.or(`_`)
 
@@ -815,7 +814,7 @@ class PureParsecParser {
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
             expr7,
             attempt(tick + exprBacktick + tick),
-            abs,
+            (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
             doBlock,
