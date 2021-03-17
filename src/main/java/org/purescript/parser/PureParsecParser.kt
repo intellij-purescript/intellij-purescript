@@ -829,14 +829,7 @@ class PureParsecParser {
             .or(many1(idents.`as`(ProperName)))
         val expr5 = choice(
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-            exprAtom +
-                manyOrEmpty(
-                    attempt(
-                        indented(token(DOT))
-                            .then(indented(label))
-                    )
-                        .`as`(Accessor)
-                ),
+            exprAtom + manyOrEmpty(attempt(token(DOT) + label).`as`(Accessor)),
             attempt(tick + exprBacktick + tick),
             abs,
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
