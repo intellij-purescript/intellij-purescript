@@ -819,7 +819,7 @@ class PureParsecParser {
             attempt(string.`as`(StringLiteral)),
             attempt(number),
             squares(commaSep(expr)).`as`(ArrayLiteral),
-            attempt(braces(commaSep(recordLabel)).`as`(ObjectLiteral)),
+            braces(commaSep(recordLabel)).`as`(ObjectLiteral),
             parens(expr).`as`(PSElements.Parens),
         )
         val exprBacktick = properName.`as`(ProperName)
