@@ -616,7 +616,6 @@ class PureParsecParser {
     private val boolean = token(TRUE).or(token(FALSE))
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
-    private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
     private val hole = token("?").`as`(TypeHole)
     private val recordLabel =
         choice(
