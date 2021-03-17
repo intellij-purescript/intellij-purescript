@@ -841,12 +841,13 @@ class PureParsecParser {
             adoBlock + token(IN) + expr,
             parseLet
         )
+        val label = lname.or(stringLiteral)
         val indexersAndAccessors =
             expr5 +
                 manyOrEmpty(
                         attempt(
                             indented(token(DOT))
-                                .then(indented(lname.or(stringLiteral)))
+                                .then(indented(label))
                         )
                             .`as`(Accessor)
                 )
