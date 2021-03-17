@@ -48,6 +48,7 @@ import org.purescript.parser.PSElements.Companion.NumberBinder
 import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
 import org.purescript.parser.PSElements.Companion.ObjectBinderField
+import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.PrefixValue
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
@@ -820,7 +821,7 @@ class PureParsecParser {
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
             squares(commaSep(expr)).`as`(ArrayLiteral),
-            attempt(braces(commaSep(recordLabel)).`as`(PSElements.ObjectLiteral)),
+            attempt(braces(commaSep(recordLabel)).`as`(ObjectLiteral)),
             parens(expr).`as`(PSElements.Parens),
         )
         val expr5 = choice(
