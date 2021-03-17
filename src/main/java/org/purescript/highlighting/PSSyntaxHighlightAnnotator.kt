@@ -17,7 +17,6 @@ import org.purescript.parser.PSElements.Companion.TypeAnnotationName
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.ValueRef
 import org.purescript.parser.PSElements.Companion.pClassName
-import org.purescript.parser.PSElements.Companion.qualifiedModuleName
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -37,7 +36,7 @@ class PSSyntaxHighlightAnnotator : Annotator {
                     .textAttributes(TYPE_NAME)
                     .create()
             }
-            GenericIdentifier, Constructor, qualifiedModuleName -> {
+            GenericIdentifier, Constructor -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_VARIABLE)
                     .create()
