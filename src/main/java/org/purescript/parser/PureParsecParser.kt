@@ -699,12 +699,6 @@ class PureParsecParser {
     private val adoBlock =
         token(ADO)
             .then(indented(indentedList(mark(doStatement))))
-    private val parseIdentInfix: Parsec =
-        choice(
-            (token(TICK) + parseQualified(idents))
-                .lexeme(TICK),
-            parseQualified(operator)
-        ).`as`(PSElements.IdentInfix)
 
     private val type0 = ref()
     private val type1 = ref()
@@ -829,7 +823,14 @@ class PureParsecParser {
             )
 
         val expr2 = expr3
-        val expr1 = expr2 + optional(attempt(indented(parseIdentInfix)) + expr)
+        val expr1 = expr2 + optional(attempt(
+            indented(
+                choice(
+                    (token(TICK) + parseQualified(idents))
+                        .lexeme(TICK),
+                    parseQualified(operator)
+                ).`as`(PSElements.IdentInfix)
+            )) + expr)
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
