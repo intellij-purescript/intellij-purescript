@@ -812,6 +812,7 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
+        val label = lname.or(stringLiteral)
         val tick = token(TICK)
         val exprAtom = choice(
             attempt(hole),
@@ -827,7 +828,14 @@ class PureParsecParser {
         )
         val expr5 = choice(
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
-            exprAtom,
+            exprAtom +
+                manyOrEmpty(
+                    attempt(
+                        indented(token(DOT))
+                            .then(indented(label))
+                    )
+                        .`as`(Accessor)
+                ),
             attempt(
                 tick +
                     properName.`as`(ProperName)
@@ -841,16 +849,7 @@ class PureParsecParser {
             adoBlock + token(IN) + expr,
             parseLet
         )
-        val label = lname.or(stringLiteral)
-        val indexersAndAccessors =
-            expr5 +
-                manyOrEmpty(
-                        attempt(
-                            indented(token(DOT))
-                                .then(indented(label))
-                        )
-                            .`as`(Accessor)
-                )
+        val indexersAndAccessors = expr5
         val expr4 =
             indexersAndAccessors +
                 manyOrEmpty(indented(indexersAndAccessors))
