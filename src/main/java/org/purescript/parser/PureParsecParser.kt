@@ -849,10 +849,7 @@ class PureParsecParser {
             adoBlock + token(IN) + expr,
             parseLet
         )
-        val indexersAndAccessors = expr5
-        val expr4 =
-            indexersAndAccessors +
-                manyOrEmpty(indented(indexersAndAccessors))
+        val expr4 = expr5 + manyOrEmpty(indented(expr5))
         val expr3 =
             choice(
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
@@ -869,7 +866,9 @@ class PureParsecParser {
                 optional(token("=").or(token(":") + binder))
         val binder2 = choice(
             attempt(
-                qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(indented(binderAtom)))
+                qualPropName
+                    .`as`(ConstructorBinder)
+                    .then(manyOrEmpty(indented(binderAtom)))
             ),
             attempt(token("-") + number).`as`(NumberBinder),
             binderAtom,
