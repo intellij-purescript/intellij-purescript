@@ -20,6 +20,7 @@ import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
 import org.purescript.parser.Combinators.untilSame
 import org.purescript.parser.PSElements.Companion.Abs
+import org.purescript.parser.PSElements.Companion.Accessor
 import org.purescript.parser.PSElements.Companion.ArrayLiteral
 import org.purescript.parser.PSElements.Companion.Bang
 import org.purescript.parser.PSElements.Companion.Binder
@@ -848,7 +849,7 @@ class PureParsecParser {
                             indented(token(DOT))
                                 .then(indented(lname.or(stringLiteral)))
                         )
-                            .`as`(PSElements.Accessor),
+                            .`as`(Accessor),
                         attempt(braces(commaSep1(parsePropertyUpdate)))
                     )
                 )
