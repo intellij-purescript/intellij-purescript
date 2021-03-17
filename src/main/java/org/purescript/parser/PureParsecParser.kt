@@ -816,7 +816,7 @@ class PureParsecParser {
             attempt(qualProperName),
             attempt(boolean).`as`(BooleanLiteral),
             attempt(char).`as`(CharLiteral),
-            attempt(string.`as`(StringLiteral)),
+            string.`as`(StringLiteral),
             number,
             squares(commaSep(expr)).`as`(ArrayLiteral),
             braces(commaSep(recordLabel)).`as`(ObjectLiteral),
