@@ -43,7 +43,6 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
-import org.purescript.parser.PSElements.Companion.IdentInfix
 import org.purescript.parser.PSElements.Companion.Identifier
 import org.purescript.parser.PSElements.Companion.NamedBinder
 import org.purescript.parser.PSElements.Companion.NumberBinder
@@ -823,10 +822,8 @@ class PureParsecParser {
                 expr4
             )
 
-        val expr2 = expr3 +
-            optional((tick + parseQualified(idents) + tick).`as`(IdentInfix) + expr)
-        val expr1 = expr2 +
-            optional(parseQualified(operator).`as`(IdentInfix) + expr)
+        val expr2 = expr3 + optional((tick + parseQualified(idents) + tick) + expr)
+        val expr1 = expr2 + optional(parseQualified(operator) + expr)
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))

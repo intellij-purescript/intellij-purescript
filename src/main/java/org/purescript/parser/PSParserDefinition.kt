@@ -211,8 +211,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSObjectLiteralImpl(node)
         } else if (type == PSElements.Abs) {
             PSAbsImpl(node)
-        } else if (type == PSElements.IdentInfix) {
-            PSIdentInfixImpl(node)
         } else if (type == PSElements.Var) {
             PSVar(node)
             //
