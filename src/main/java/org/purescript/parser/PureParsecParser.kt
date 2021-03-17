@@ -825,6 +825,8 @@ class PureParsecParser {
             attempt(braces(commaSep(recordLabel)).`as`(ObjectLiteral)),
             parens(expr).`as`(PSElements.Parens),
         )
+        val exprBacktick = properName.`as`(ProperName)
+            .or(many1(idents.`as`(ProperName)))
         val expr5 = choice(
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
             exprAtom +
@@ -835,12 +837,7 @@ class PureParsecParser {
                     )
                         .`as`(Accessor)
                 ),
-            attempt(
-                tick +
-                    properName.`as`(ProperName)
-                        .or(many1(idents.`as`(ProperName))) +
-                    tick
-            ),
+            attempt(tick + exprBacktick + tick),
             abs,
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
