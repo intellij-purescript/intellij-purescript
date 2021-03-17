@@ -10,6 +10,5 @@ Purescript File
         PsiElement(identifier)('newline')
       PsiElement(=)('=')
       PSValueImpl(Value)
-        PSPrefixValueImpl(PrefixValue)
-          PSStringLiteralImpl(StringLiteral)
-            PsiElement(string)('"\n"')
+        PSStringLiteralImpl(StringLiteral)
+          PsiElement(string)('"\n"')

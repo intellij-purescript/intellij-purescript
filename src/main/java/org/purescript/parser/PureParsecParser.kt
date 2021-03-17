@@ -50,7 +50,6 @@ import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
 import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
-import org.purescript.parser.PSElements.Companion.PrefixValue
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.Row
@@ -854,7 +853,7 @@ class PureParsecParser {
             choice(
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
                 expr4
-            ).`as`(PrefixValue)
+            )
 
         val expr1 = expr3 + optional(attempt(indented(parseIdentInfix)) + expr)
 
