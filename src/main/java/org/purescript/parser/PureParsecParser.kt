@@ -166,7 +166,7 @@ class PureParsecParser {
         token(LET),
         token(TRUE),
         token(FALSE),
-        token(PSTokens.IN),
+        token(IN),
         token(WHERE),
         token(FORALL),
         token(PSTokens.QUALIFIED),
@@ -643,7 +643,7 @@ class PureParsecParser {
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
         .then(indented(indentedList1(parseLocalDeclaration)))
-        .then(indented(token(PSTokens.IN)))
+        .then(indented(token(IN)))
         .then(expr)
         .`as`(PSElements.Let)
     private val letBinding =
@@ -698,7 +698,7 @@ class PureParsecParser {
             .then(indented(indentedList(mark(doStatement))))
 
     private val adoBlock =
-        token(PSTokens.ADO)
+        token(ADO)
             .then(indented(indentedList(mark(doStatement))))
     private val parseIdentInfix: Parsec =
         choice(
