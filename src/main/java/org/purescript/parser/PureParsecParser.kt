@@ -812,12 +812,12 @@ class PureParsecParser {
         val tick = token(TICK)
         val exprAtom = choice(
             attempt(hole),
-            attempt(number),
             attempt(qualIdent),
             attempt(qualProperName),
             attempt(boolean).`as`(BooleanLiteral),
-            attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
+            attempt(string.`as`(StringLiteral)),
+            attempt(number),
             squares(commaSep(expr)).`as`(ArrayLiteral),
             attempt(braces(commaSep(recordLabel)).`as`(ObjectLiteral)),
             parens(expr).`as`(PSElements.Parens),
