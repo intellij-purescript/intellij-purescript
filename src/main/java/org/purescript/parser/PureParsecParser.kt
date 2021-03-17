@@ -613,7 +613,7 @@ class PureParsecParser {
         .`as`(PSElements.Module)
 
     // Literals
-    private val boolean = token(TRUE).or(token(FALSE)).`as`(BooleanLiteral)
+    private val boolean = token(TRUE).or(token(FALSE))
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val parseArrayLiteral = squares(commaSep(expr)).`as`(ArrayLiteral)
@@ -816,7 +816,7 @@ class PureParsecParser {
             attempt(number),
             attempt(qualIdent),
             attempt(qualProperName),
-            attempt(boolean),
+            attempt(boolean).`as`(BooleanLiteral),
             attempt(string.`as`(StringLiteral)),
             attempt(char).`as`(CharLiteral),
             squares(commaSep(expr)).`as`(ArrayLiteral),
@@ -864,7 +864,6 @@ class PureParsecParser {
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
-        val boolean = token("true").or(token("false"))
         val qualPropName = parseQualified(properName)
         val recordBinder =
             idents +
