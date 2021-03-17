@@ -852,7 +852,8 @@ class PureParsecParser {
                 expr4
             )
 
-        val expr1 = expr3 + optional(attempt(indented(parseIdentInfix)) + expr)
+        val expr2 = expr3
+        val expr1 = expr2 + optional(attempt(indented(parseIdentInfix)) + expr)
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
