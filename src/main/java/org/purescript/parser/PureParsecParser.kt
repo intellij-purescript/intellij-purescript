@@ -844,14 +844,11 @@ class PureParsecParser {
         val indexersAndAccessors =
             expr5 +
                 manyOrEmpty(
-                    choice(
                         attempt(
                             indented(token(DOT))
                                 .then(indented(lname.or(stringLiteral)))
                         )
-                            .`as`(Accessor),
-                        attempt(braces(commaSep1(parsePropertyUpdate)))
-                    )
+                            .`as`(Accessor)
                 )
         val expr4 =
             indexersAndAccessors +
