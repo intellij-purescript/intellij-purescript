@@ -34,6 +34,10 @@ abstract class Parsec {
         return Combinators.choice(this, next)
     }
 
+    fun sepBy1(next: Parsec): Parsec {
+        return Combinators.sepBy1(this, next)
+    }
+
     fun `as`(node: IElementType): SymbolicParsec {
         return SymbolicParsec(this, node)
     }
