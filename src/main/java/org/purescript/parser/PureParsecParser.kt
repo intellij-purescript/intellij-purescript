@@ -822,8 +822,8 @@ class PureParsecParser {
                 expr4
             )
 
-        val expr2 = expr3 + optional((tick + parseQualified(idents) + tick) + expr)
-        val expr1 = expr2 + optional(parseQualified(operator) + expr)
+        val expr2 = expr3 + optional(many1(tick + parseQualified(idents) + tick + expr3))
+        val expr1 = expr2 + optional(many1(parseQualified(operator) + expr))
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
