@@ -822,7 +822,7 @@ class PureParsecParser {
                 expr4
             )
 
-        val expr2 = expr3 + optional(many1(tick + parseQualified(idents) + tick + expr3))
+        val expr2 = expr3.sepBy1(tick + parseQualified(idents) + tick)
         val expr1 = expr2.sepBy1(parseQualified(operator))
 
 
