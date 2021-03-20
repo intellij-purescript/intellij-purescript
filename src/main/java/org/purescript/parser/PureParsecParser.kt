@@ -414,7 +414,8 @@ class PureParsecParser {
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
 
-    private val fundeps = token(PIPE).then(indented(commaSep1(type)))
+    private val fundep = type
+    private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
     private val parseTypeClassDeclaration =
         token(CLASS)
             .then(
