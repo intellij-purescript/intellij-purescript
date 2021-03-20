@@ -421,7 +421,7 @@ class PureParsecParser {
     private val constraints = indented(
         choice(
             parens(commaSep1(constraint)),
-            commaSep1(constraint)
+            constraint
         )
     )
 
