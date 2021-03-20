@@ -416,12 +416,11 @@ class PureParsecParser {
 
     private val fundep = type
     private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
-    private val classSuper = optional(attempt(indented(
+    private val constraints = indented(
         choice(
             parens(
                 commaSep1(
-                    parseQualified(properName)
-                        .`as`(pClassName)
+                    parseQualified(properName).`as`(pClassName)
                         .then(manyOrEmpty(typeAtom))
                 )
             ),
@@ -431,7 +430,9 @@ class PureParsecParser {
             )
         )
     )
-        .then(token(LDARROW).`as`(pImplies))))
+
+    private val classSuper =
+        optional(attempt(constraints + token(LDARROW).`as`(pImplies)))
 
     private val classHead = token(CLASS)
         .then(classSuper)
