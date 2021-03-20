@@ -1,7 +1,6 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
-import java.util.*
 
 abstract class Parsec {
     var name: String? = null
@@ -31,12 +30,12 @@ abstract class Parsec {
         return this + next
     }
 
-    fun lexeme(type: IElementType): Parsec {
-        return then(Combinators.token(type))
-    }
-
     fun or(next: Parsec): Parsec {
         return Combinators.choice(this, next)
+    }
+
+    fun sepBy1(next: Parsec): Parsec {
+        return Combinators.sepBy1(this, next)
     }
 
     fun `as`(node: IElementType): SymbolicParsec {
