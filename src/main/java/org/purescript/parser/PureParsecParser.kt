@@ -421,12 +421,12 @@ class PureParsecParser {
             parens(
                 commaSep1(
                     parseQualified(properName)
-                        .`as`(TypeConstructor)
+                        .`as`(pClassName)
                         .then(manyOrEmpty(typeAtom))
                 )
             ),
             commaSep1(
-                parseQualified(properName).`as`(TypeConstructor)
+                parseQualified(properName).`as`(pClassName)
                     .then(manyOrEmpty(typeAtom))
             )
         )

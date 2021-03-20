@@ -53,7 +53,7 @@ Purescript File
           PsiElement(float)('1.0')
     PSTypeClassDeclarationImpl(TypeClassDeclaration)
       PsiElement(class)('class')
-      PSIdentifier(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Show')

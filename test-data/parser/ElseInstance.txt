@@ -7,7 +7,7 @@ Purescript File
     PsiElement(where)('where')
     PSTypeClassDeclarationImpl(TypeClassDeclaration)
       PsiElement(class)('class')
-      PSIdentifier(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Show')

@@ -139,7 +139,7 @@ Purescript File
             PsiElement(string)('")"')
     PSTypeClassDeclarationImpl(TypeClassDeclaration)
       PsiElement(class)('class')
-      PSIdentifier(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Monad')
