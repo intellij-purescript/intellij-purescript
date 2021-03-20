@@ -36,8 +36,6 @@ Purescript File
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('NullaryTypeClass')
-      PSImpliesImpl(Implies)
-        <empty list>
       PsiElement(where)('where')
       PSTypeDeclarationImpl(TypeDeclaration)
         PSTypeAnnotationNameImpl(TypeAnnotationName)
@@ -80,8 +78,6 @@ Purescript File
       PSTypeAtomImpl(TypeAtom)
         PSIdentifier(GenericIdentifier)
           PsiElement(identifier)('b')
-      PSImpliesImpl(Implies)
-        <empty list>
       PsiElement(where)('where')
       PSTypeDeclarationImpl(TypeDeclaration)
         PSTypeAnnotationNameImpl(TypeAnnotationName)

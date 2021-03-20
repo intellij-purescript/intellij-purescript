@@ -282,8 +282,6 @@ Purescript File
                   PSProperName(ProperName)
                     PsiElement(proper name)('Type')
         PsiElement())(')')
-      PSImpliesImpl(Implies)
-        <empty list>
       PsiElement(where)('where')
       PSTypeDeclarationImpl(TypeDeclaration)
         PSTypeAnnotationNameImpl(TypeAnnotationName)

@@ -45,8 +45,6 @@ Purescript File
                   PSProperName(ProperName)
                     PsiElement(proper name)('Symbol')
         PsiElement())(')')
-      PSImpliesImpl(Implies)
-        <empty list>
     PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(GenericIdentifier)

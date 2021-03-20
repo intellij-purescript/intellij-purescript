@@ -431,7 +431,7 @@ class PureParsecParser {
             )
         )
     )
-        .then(optional(token(LDARROW)).`as`(pImplies))
+        .then(optional(token(LDARROW).`as`(pImplies)))
 
     private val classHead = token(CLASS)
         .then(constraints)

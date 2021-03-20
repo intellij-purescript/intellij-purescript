@@ -843,8 +843,6 @@ Purescript File
                   PSProperName(ProperName)
                     PsiElement(proper name)('Type')
         PsiElement())(')')
-      PSImpliesImpl(Implies)
-        <empty list>
     PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(GenericIdentifier)

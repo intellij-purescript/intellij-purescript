@@ -14,8 +14,6 @@ Purescript File
       PSTypeAtomImpl(TypeAtom)
         PSIdentifier(GenericIdentifier)
           PsiElement(identifier)('a')
-      PSImpliesImpl(Implies)
-        <empty list>
       PsiElement(where)('where')
       PSTypeDeclarationImpl(TypeDeclaration)
         PSTypeAnnotationNameImpl(TypeAnnotationName)
