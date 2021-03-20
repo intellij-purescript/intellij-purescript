@@ -416,28 +416,30 @@ class PureParsecParser {
 
     private val fundep = type
     private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
-    private val parseTypeClassDeclaration =
-        token(CLASS)
-            .then(
-                indented(
-                    choice(
-                        parens(
-                            commaSep1(
-                                parseQualified(properName)
-                                    .`as`(TypeConstructor)
-                                    .then(manyOrEmpty(typeAtom))
-                            )
-                        ),
+    private val classHead = token(CLASS)
+        .then(
+            indented(
+                choice(
+                    parens(
                         commaSep1(
-                            parseQualified(properName).`as`(TypeConstructor)
+                            parseQualified(properName)
+                                .`as`(TypeConstructor)
                                 .then(manyOrEmpty(typeAtom))
                         )
+                    ),
+                    commaSep1(
+                        parseQualified(properName).`as`(TypeConstructor)
+                            .then(manyOrEmpty(typeAtom))
                     )
                 )
-                    .then(optional(token(LDARROW)).`as`(pImplies))
-            ).then(optional(indented(properName.`as`(pClassName))))
-            .then(optional(manyOrEmpty(indented(typeVarBinding))))
-            .then(optional(fundeps))
+            )
+                .then(optional(token(LDARROW)).`as`(pImplies))
+        ).then(optional(indented(properName.`as`(pClassName))))
+        .then(optional(manyOrEmpty(indented(typeVarBinding))))
+        .then(optional(fundeps))
+
+    private val parseTypeClassDeclaration =
+        classHead
             .then(
                 optional(
                     attempt(
