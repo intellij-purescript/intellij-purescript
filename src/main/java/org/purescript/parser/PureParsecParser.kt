@@ -413,30 +413,29 @@ class PureParsecParser {
         .then(token(AS))
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
+
+    private val fundep = type
+    private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
+    private val constraint =
+        parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))
+    private val constraints = indented(
+        choice(
+            parens(commaSep1(constraint)),
+            constraint
+        )
+    )
+
+    private val classSuper =
+        optional(attempt(constraints + token(LDARROW).`as`(pImplies)))
+
+    private val classHead = token(CLASS)
+        .then(classSuper)
+        .then(optional(indented(properName.`as`(pClassName))))
+        .then(optional(manyOrEmpty(indented(typeVarBinding))))
+        .then(optional(fundeps))
+
     private val parseTypeClassDeclaration =
-        token(CLASS)
-            .then(
-                optional(
-                    indented(
-                        choice(
-                            parens(
-                                commaSep1(
-                                    parseQualified(properName)
-                                        .`as`(TypeConstructor)
-                                        .then(manyOrEmpty(typeAtom))
-                                )
-                            ),
-                            commaSep1(
-                                parseQualified(properName).`as`(TypeConstructor)
-                                    .then(manyOrEmpty(typeAtom))
-                            )
-                        )
-                    )
-                        .then(optional(token(LDARROW)).`as`(pImplies))
-                )
-            ).then(optional(indented(properName.`as`(pClassName))))
-            .then(optional(manyOrEmpty(indented(typeVarBinding))))
-            .then(optional(token(PIPE).then(indented(commaSep1(type)))))
+        classHead
             .then(
                 optional(
                     attempt(
