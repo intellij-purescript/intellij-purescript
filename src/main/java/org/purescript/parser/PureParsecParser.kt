@@ -419,24 +419,22 @@ class PureParsecParser {
     private val parseTypeClassDeclaration =
         token(CLASS)
             .then(
-                optional(
-                    indented(
-                        choice(
-                            parens(
-                                commaSep1(
-                                    parseQualified(properName)
-                                        .`as`(TypeConstructor)
-                                        .then(manyOrEmpty(typeAtom))
-                                )
-                            ),
+                indented(
+                    choice(
+                        parens(
                             commaSep1(
-                                parseQualified(properName).`as`(TypeConstructor)
+                                parseQualified(properName)
+                                    .`as`(TypeConstructor)
                                     .then(manyOrEmpty(typeAtom))
                             )
+                        ),
+                        commaSep1(
+                            parseQualified(properName).`as`(TypeConstructor)
+                                .then(manyOrEmpty(typeAtom))
                         )
                     )
-                        .then(optional(token(LDARROW)).`as`(pImplies))
                 )
+                    .then(optional(token(LDARROW)).`as`(pImplies))
             ).then(optional(indented(properName.`as`(pClassName))))
             .then(optional(manyOrEmpty(indented(typeVarBinding))))
             .then(optional(fundeps))
