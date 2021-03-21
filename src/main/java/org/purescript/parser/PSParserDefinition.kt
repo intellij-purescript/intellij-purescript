@@ -29,6 +29,7 @@ import org.purescript.parser.PSElements.Companion.CharLiteral
 import org.purescript.parser.PSElements.Companion.ClassConstraint
 import org.purescript.parser.PSElements.Companion.ClassConstraintList
 import org.purescript.parser.PSElements.Companion.ClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
@@ -119,6 +120,7 @@ import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassConstraintList
 import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.classes.PSClassFunctionalDependencyList
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
@@ -208,6 +210,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ClassDeclaration -> PSClassDeclaration(node)
             ClassConstraintList -> PSClassConstraintList(node)
             ClassConstraint -> PSClassConstraint(node)
+            ClassFunctionalDependencyList -> PSClassFunctionalDependencyList(node)
             TypeInstanceDeclaration -> PSTypeInstanceDeclarationImpl(node)
             NewtypeDeclaration -> PSNewTypeDeclarationImpl(node)
             Guard -> PSGuardImpl(node)

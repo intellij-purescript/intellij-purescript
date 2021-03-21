@@ -3,6 +3,7 @@ package org.purescript
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
 import org.purescript.psi.PSModule
+import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.PSExportedData
@@ -50,4 +51,12 @@ fun PsiFile.getExportedData(): PSExportedData {
 
 fun PsiFile.getExportedDataMember(): PSExportedDataMember {
     return getExportedData().dataMemberList!!.dataMembers.single()
+}
+
+fun PsiFile.getClassDeclarations(): Array<PSClassDeclaration> {
+    return getModule().classDeclarations
+}
+
+fun PsiFile.getClassDeclaration(): PSClassDeclaration {
+    return getModule().classDeclarations.single()
 }

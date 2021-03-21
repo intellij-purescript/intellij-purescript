@@ -29,8 +29,8 @@ class PSClassDeclaration(node: ASTNode) :
     internal val typeVariables: Array<PSTypeVarImpl>
         get() = findChildrenByClass(PSTypeVarImpl::class.java)
 
-    internal val functionalDependencyList: Array<PSClassFunctionalDependencyList>
-        get() = findChildrenByClass(PSClassFunctionalDependencyList::class.java)
+    internal val functionalDependencyList: PSClassFunctionalDependencyList?
+        get() = findChildByClass(PSClassFunctionalDependencyList::class.java)
 
     override fun getName(): String = properName.name
 

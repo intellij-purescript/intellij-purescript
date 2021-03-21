@@ -61,6 +61,7 @@ import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.ClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
@@ -436,7 +437,7 @@ class PureParsecParser {
         .then(classSuper)
         .then(optional(indented(properName.`as`(pClassName))))
         .then(optional(manyOrEmpty(indented(typeVarBinding))))
-        .then(optional(fundeps))
+        .then(optional(fundeps.`as`(ClassFunctionalDependencyList)))
 
     private val classDeclaration =
         classHead

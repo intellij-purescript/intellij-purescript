@@ -173,6 +173,9 @@ interface PSElements {
         val ClassConstraint = PSElementType("ClassConstraint")
 
         @kotlin.jvm.JvmField
+        val ClassFunctionalDependencyList = PSElementType("ClassFunctionalDependencyList")
+
+        @kotlin.jvm.JvmField
         val TypeInstanceDeclaration = PSElementType("TypeInstanceDeclaration")
 
         @kotlin.jvm.JvmField
