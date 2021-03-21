@@ -56,7 +56,7 @@ Purescript File
       PSProperName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Show')
-      PSIdentifier(GenericIdentifier)
+      PSTypeVarName(TypeVarName)
         PsiElement(identifier)('a')
       PsiElement(where)('where')
       PSTypeDeclarationImpl(TypeDeclaration)

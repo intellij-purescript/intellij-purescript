@@ -2218,7 +2218,7 @@ Purescript File
         PSProperName(ProperName)
           PsiElement(proper name)('List')
       PSTypeArgsImpl(TypeArgs)
-        PSIdentifier(GenericIdentifier)
+        PSTypeVarName(TypeVarName)
           PsiElement(identifier)('a')
       PSDataConstructorList(DataConstructorList)
         PsiElement(=)('=')

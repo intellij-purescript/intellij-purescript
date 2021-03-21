@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSTypeVarImpl
+import org.purescript.psi.typevar.PSTypeVarBinding
 
 /**
  * A class declaration, e.g.
@@ -26,8 +27,8 @@ class PSClassDeclaration(node: ASTNode) :
     internal val properName: PSProperName
         get() = findNotNullChildByClass(PSProperName::class.java)
 
-    internal val typeVariables: Array<PSTypeVarImpl>
-        get() = findChildrenByClass(PSTypeVarImpl::class.java)
+    internal val typeVarBindings: Array<PSTypeVarBinding>
+        get() = findChildrenByClass(PSTypeVarBinding::class.java)
 
     internal val functionalDependencyList: PSClassFunctionalDependencyList?
         get() = findChildByClass(PSClassFunctionalDependencyList::class.java)

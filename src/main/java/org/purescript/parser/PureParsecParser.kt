@@ -65,6 +65,8 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.TypeVarKinded
+import org.purescript.parser.PSElements.Companion.TypeVarName
 import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
@@ -301,14 +303,14 @@ class PureParsecParser {
 
     // Declarations.hs
     private val typeVarBinding =
-        idents.`as`(GenericIdentifier)
-            .or(
-                parens(
-                    idents.`as`(GenericIdentifier)
-                        .then(indented(dcolon))
-                        .then(indented(parseKind))
-                )
-            )
+        choice(
+            idents.`as`(TypeVarName),
+            parens(
+                idents.`as`(GenericIdentifier)
+                    .then(indented(dcolon))
+                    .then(indented(parseKind))
+            ).`as`(TypeVarKinded)
+        )
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()

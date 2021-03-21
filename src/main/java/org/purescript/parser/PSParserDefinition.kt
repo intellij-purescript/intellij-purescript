@@ -103,6 +103,8 @@ import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVar
+import org.purescript.parser.PSElements.Companion.TypeVarKinded
+import org.purescript.parser.PSElements.Companion.TypeVarName
 import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
@@ -126,6 +128,8 @@ import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.*
+import org.purescript.psi.typevar.PSTypeVarKinded
+import org.purescript.psi.typevar.PSTypeVarName
 
 class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createLexer(project: Project): Lexer {
@@ -198,6 +202,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             Row -> PSRowImpl(node)
             ObjectType -> PSObjectTypeImpl(node)
             TypeVar -> PSTypeVarImpl(node)
+            TypeVarName -> PSTypeVarName(node)
+            TypeVarKinded -> PSTypeVarKinded(node)
             TypeAtom -> PSTypeAtomImpl(node)
             TypeDeclaration -> PSTypeDeclarationImpl(node)
             TypeSynonymDeclaration -> PSTypeSynonymDeclarationImpl(node)

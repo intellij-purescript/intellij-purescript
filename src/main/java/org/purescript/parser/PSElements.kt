@@ -86,6 +86,12 @@ interface PSElements {
         val TypeVar = PSElementType("TypeVar")
 
         @kotlin.jvm.JvmField
+        val TypeVarName = PSElementType("TypeVarName")
+
+        @kotlin.jvm.JvmField
+        val TypeVarKinded = PSElementType("TypeVarKinded")
+
+        @kotlin.jvm.JvmField
         val TypeConstructor = PSElementType("TypeConstructor")
 
         @kotlin.jvm.JvmField

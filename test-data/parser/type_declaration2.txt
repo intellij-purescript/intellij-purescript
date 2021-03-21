@@ -9,7 +9,7 @@ Purescript File
       PsiElement(type)('type')
       PSIdentifier(TypeConstructor)
         PsiElement(proper name)('Woo')
-      PSIdentifier(GenericIdentifier)
+      PSTypeVarName(TypeVarName)
         PsiElement(identifier)('a')
       PsiElement(=)('=')
       PSTypeImpl(Type)
