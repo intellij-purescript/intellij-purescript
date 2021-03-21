@@ -434,7 +434,7 @@ class PureParsecParser {
         .then(optional(manyOrEmpty(indented(typeVarBinding))))
         .then(optional(fundeps))
 
-    private val parseTypeClassDeclaration =
+    private val classDeclaration =
         classHead
             .then(
                 optional(
@@ -544,7 +544,7 @@ class PureParsecParser {
             .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
-        parseTypeClassDeclaration,
+        classDeclaration,
         parseTypeInstanceDeclaration
     )
     private val exportedClass =
