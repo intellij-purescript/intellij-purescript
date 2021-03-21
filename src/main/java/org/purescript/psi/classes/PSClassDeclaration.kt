@@ -33,6 +33,9 @@ class PSClassDeclaration(node: ASTNode) :
     internal val functionalDependencyList: PSClassFunctionalDependencyList?
         get() = findChildByClass(PSClassFunctionalDependencyList::class.java)
 
+    internal val classMemberList: PSClassMemberList?
+        get() = findChildByClass(PSClassMemberList::class.java)
+
     override fun getName(): String = properName.name
 
     override fun setName(name: String): PsiElement? = null

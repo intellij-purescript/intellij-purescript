@@ -18,6 +18,7 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertNull(classDeclaration.classConstraintList)
         assertNull(classDeclaration.functionalDependencyList)
         assertEmpty(classDeclaration.typeVarBindings)
+        assertNull(classDeclaration.classMemberList)
     }
 
     fun `test parses empty class declaration with type var bindings`() {
@@ -33,6 +34,7 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertNull(classDeclaration.classConstraintList)
         assertNull(classDeclaration.functionalDependencyList)
         assertSize(3, classDeclaration.typeVarBindings)
+        assertNull(classDeclaration.classMemberList)
     }
 
     fun `test parses empty class with single constraint`() {
@@ -48,6 +50,7 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertNotNull(classDeclaration.classConstraintList)
         assertNull(classDeclaration.functionalDependencyList)
         assertSize(1, classDeclaration.typeVarBindings)
+        assertNull(classDeclaration.classMemberList)
     }
 
     fun `test parses empty class with multiple constraints`() {
@@ -63,6 +66,7 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertNotNull(classDeclaration.classConstraintList)
         assertNull(classDeclaration.functionalDependencyList)
         assertSize(2, classDeclaration.typeVarBindings)
+        assertNull(classDeclaration.classMemberList)
     }
 
     fun `test parses empty class with functional dependencies`() {
@@ -78,5 +82,24 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertNull(classDeclaration.classConstraintList)
         assertNotNull(classDeclaration.functionalDependencyList)
         assertSize(2, classDeclaration.typeVarBindings)
+        assertNull(classDeclaration.classMemberList)
+    }
+
+    fun `test parses class with class members`() {
+        val classDeclaration = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Bar where
+                    foo :: Int
+                    bar :: String
+            """.trimIndent()
+        ).getClassDeclaration()
+
+        assertEquals("Bar", classDeclaration.name)
+        assertNull(classDeclaration.classConstraintList)
+        assertNull(classDeclaration.functionalDependencyList)
+        assertEmpty(classDeclaration.typeVarBindings)
+        assertNotNull(classDeclaration.classMemberList)
     }
 }
