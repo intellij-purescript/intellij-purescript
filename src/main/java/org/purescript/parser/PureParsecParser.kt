@@ -30,6 +30,8 @@ import org.purescript.parser.PSElements.Companion.Case
 import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.CharBinder
 import org.purescript.parser.PSElements.Companion.CharLiteral
+import org.purescript.parser.PSElements.Companion.ClassConstraint
+import org.purescript.parser.PSElements.Companion.ClassConstraintList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
@@ -418,6 +420,7 @@ class PureParsecParser {
     private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
     private val constraint =
         parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))
+            .`as`(ClassConstraint)
     private val constraints = indented(
         choice(
             parens(commaSep1(constraint)),
@@ -426,7 +429,8 @@ class PureParsecParser {
     )
 
     private val classSuper =
-        optional(attempt(constraints + token(LDARROW).`as`(pImplies)))
+        optional(attempt(constraints + token(LDARROW).`as`(pImplies))
+            .`as`(ClassConstraintList))
 
     private val classHead = token(CLASS)
         .then(classSuper)

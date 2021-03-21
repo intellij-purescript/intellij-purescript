@@ -114,6 +114,10 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val ClassDeclaration = PSElementType("ClassDeclaration")
         @kotlin.jvm.JvmField
+        val ClassConstraintList = PSElementType("ClassConstraintList")
+        @kotlin.jvm.JvmField
+        val ClassConstraint = PSElementType("ClassConstraint")
+        @kotlin.jvm.JvmField
         val TypeInstanceDeclaration = PSElementType("TypeInstanceDeclaration")
         @kotlin.jvm.JvmField
         val NewtypeDeclaration = PSElementType("NewtypeDeclaration")

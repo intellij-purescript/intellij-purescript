@@ -18,6 +18,8 @@ import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
+import org.purescript.psi.classes.PSClassConstraint
+import org.purescript.psi.classes.PSClassConstraintList
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
@@ -166,6 +168,10 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSPositionedDeclarationRefImpl(node)
         } else if (type == PSElements.ClassDeclaration) {
             PSClassDeclaration(node)
+        } else if (type == PSElements.ClassConstraintList) {
+            PSClassConstraintList(node)
+        } else if (type == PSElements.ClassConstraint) {
+            PSClassConstraint(node)
         } else if (type == PSElements.TypeInstanceDeclaration) {
             PSTypeInstanceDeclarationImpl(node)
         } else if (type == PSElements.NewtypeDeclaration) {
