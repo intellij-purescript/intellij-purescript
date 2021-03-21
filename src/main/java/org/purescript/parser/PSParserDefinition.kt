@@ -122,9 +122,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSRowKindImpl(node)
         } else if (type == PSElements.FunKind) {
             PSFunKindImpl(node)
-
-//        } else if (type.equals(PSElements.Qualified)) {
-//            return new PSQualifiedImpl(node);
         } else if (type == PSElements.Type) {
             PSTypeImpl(node)
         } else if (type == PSElements.TypeArgs) {
@@ -141,9 +138,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSObjectTypeImpl(node)
         } else if (type == PSElements.TypeVar) {
             PSTypeVarImpl(node)
-
-//        } else if (type.equals(PSElements.TypeConstructor)) {
-//            return new PSTypeConstructorImpl(node);
         } else if (type == PSElements.TypeAtom) {
             PSTypeAtomImpl(node)
         } else if (type == PSElements.GenericIdentifier) {
@@ -220,9 +214,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSAbsImpl(node)
         } else if (type == PSElements.Var) {
             PSVar(node)
-            //
-//        } else if (type.equals(PSElements.Constructor)) {
-//            return new PSConstructorImpl(node);
         } else if (type == PSElements.Case) {
             PSCaseImpl(node)
         } else if (type == PSElements.CaseAlternative) {
@@ -249,18 +240,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSFixityImpl(node)
         } else if (type == PSElements.JSRaw) {
             PSJSRawImpl(node)
-
-//        } else if (type.equals(PSElements.pModuleName)) {
-//            return new PSModuleNameImpl(node);
-//
-//        } else if (type.equals(PSElements.importModuleName)) {
-//            return new PSImportModuleNameImpl(node);
-//
-//        } else if (type.equals(PSElements.qualifiedModuleName)) {
-//            return new PSQualifiedModuleNameImpl(node);
-//
-//        } else if (type.equals(PSElements.pClassName)) {
-//            return new PSClassNameImpl(node);
         } else if (type == PSElements.pImplies) {
             PSImpliesImpl(node)
         } else if (type == PSElements.TypeHole) {
