@@ -22,4 +22,7 @@ import org.purescript.psi.PSTypeVarImpl
  * ```
  */
 class PSClassMemberList(node: ASTNode) : PSPsiElement(node) {
+
+    val classMembers: Array<PSClassMember>
+        get() = findChildrenByClass(PSClassMember::class.java)
 }
