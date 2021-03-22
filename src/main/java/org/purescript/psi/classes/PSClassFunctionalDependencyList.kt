@@ -14,4 +14,10 @@ import org.purescript.psi.PSPsiElement
  * ```
  */
 class PSClassFunctionalDependencyList(node: ASTNode) : PSPsiElement(node) {
+
+    /**
+     * @return the [PSClassFunctionalDependency] elements contained in this list
+     */
+    val functionalDependencies: Array<PSClassFunctionalDependency>
+        get() = findChildrenByClass(PSClassFunctionalDependency::class.java)
 }

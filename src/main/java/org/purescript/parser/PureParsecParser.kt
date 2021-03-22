@@ -61,6 +61,7 @@ import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.ClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
 import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
@@ -421,7 +422,7 @@ class PureParsecParser {
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
 
-    private val fundep = type
+    private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
     private val constraint =
         parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))

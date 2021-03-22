@@ -182,6 +182,9 @@ interface PSElements {
         val ClassFunctionalDependencyList = PSElementType("ClassFunctionalDependencyList")
 
         @kotlin.jvm.JvmField
+        val ClassFunctionalDependency = PSElementType("ClassFunctionalDependency")
+
+        @kotlin.jvm.JvmField
         val ClassMember = PSElementType("ClassMember")
 
         @kotlin.jvm.JvmField
