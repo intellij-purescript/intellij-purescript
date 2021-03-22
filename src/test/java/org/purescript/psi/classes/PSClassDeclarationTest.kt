@@ -102,4 +102,22 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertEmpty(classDeclaration.typeVarBindings)
         assertNotNull(classDeclaration.classMemberList)
     }
+
+    fun `test parses class with everything`() {
+        val classDeclaration = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class (Qux a b, Muk c) <= Bar a b c | a -> b, c b -> a where
+                    foo :: Int
+                    bar :: String
+            """.trimIndent()
+        ).getClassDeclaration()
+
+        assertEquals("Bar", classDeclaration.name)
+        assertNotNull(classDeclaration.classConstraintList)
+        assertSize(3, classDeclaration.typeVarBindings)
+        assertNotNull(classDeclaration.functionalDependencyList)
+        assertNotNull(classDeclaration.classMemberList)
+    }
 }
