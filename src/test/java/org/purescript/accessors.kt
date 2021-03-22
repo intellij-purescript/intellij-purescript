@@ -3,6 +3,7 @@ package org.purescript
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
 import org.purescript.psi.PSModule
+import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -64,4 +65,8 @@ fun PsiFile.getClassDeclaration(): PSClassDeclaration {
 
 fun PsiFile.getClassMember(): PSClassMember {
     return getModule().classDeclarations.single().classMembers.single()
+}
+
+fun PsiFile.getClassConstraint(): PSClassConstraint {
+    return getModule().classDeclarations.single().classConstraints.single()
 }

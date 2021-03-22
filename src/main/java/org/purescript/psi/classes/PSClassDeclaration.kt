@@ -37,7 +37,14 @@ class PSClassDeclaration(node: ASTNode) :
 
     /**
      * @return the [PSClassMember] elements in this declaration,
-     * or an empty array if [classMemberList] is null
+     * or an empty array if [classConstraintList] is null.
+     */
+    val classConstraints: Array<PSClassConstraint>
+        get() = classConstraintList?.classConstraints ?: emptyArray()
+
+    /**
+     * @return the [PSClassMember] elements in this declaration,
+     * or an empty array if [classMemberList] is null.
      */
     val classMembers: Array<PSClassMember>
         get() = classMemberList?.classMembers ?: emptyArray()
