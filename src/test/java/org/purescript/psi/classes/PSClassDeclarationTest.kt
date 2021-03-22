@@ -120,4 +120,23 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
         assertNotNull(classDeclaration.functionalDependencyList)
         assertNotNull(classDeclaration.classMemberList)
     }
+
+    fun `test parses class with kinded type variables`() {
+        val classDeclaration = myFixture.configureByText(
+            "Record.purs",
+            """
+                module Data.Codec.Argonaut.Record where
+                -- | The class used to enable the building of `Record` codecs by providing a
+                -- | record of codecs.
+                class RowListCodec (rl ∷ RL.RowList) (ri ∷ # Type) (ro ∷ # Type) | rl → ri ro where
+                    rowListCodec ∷ RLProxy rl → Record ri → CA.JPropCodec (Record ro)
+            """.trimIndent()
+        ).getClassDeclaration()
+
+        assertEquals("RowListCodec", classDeclaration.name)
+        assertNull(classDeclaration.classConstraintList)
+        assertSize(3, classDeclaration.typeVarBindings)
+        assertNotNull(classDeclaration.functionalDependencyList)
+        assertNotNull(classDeclaration.classMemberList)
+    }
 }
