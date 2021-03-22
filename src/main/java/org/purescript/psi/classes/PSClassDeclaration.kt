@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSTypeVarImpl
 import org.purescript.psi.typevar.PSTypeVarBinding
 
 /**
@@ -19,8 +18,8 @@ import org.purescript.psi.typevar.PSTypeVarBinding
  */
 class PSClassDeclaration(node: ASTNode) :
     PSPsiElement(node),
-    PsiNameIdentifierOwner
-{
+    PsiNameIdentifierOwner {
+
     internal val classConstraintList: PSClassConstraintList?
         get() = findChildByClass(PSClassConstraintList::class.java)
 
@@ -35,6 +34,13 @@ class PSClassDeclaration(node: ASTNode) :
 
     internal val classMemberList: PSClassMemberList?
         get() = findChildByClass(PSClassMemberList::class.java)
+
+    /**
+     * @return the [PSClassMember] elements in this declaration,
+     * or an empty array if [classMemberList] is null
+     */
+    val classMembers: Array<PSClassMember>
+        get() = classMemberList?.classMembers ?: emptyArray()
 
     override fun getName(): String = properName.name
 

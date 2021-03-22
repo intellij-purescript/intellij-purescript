@@ -444,7 +444,7 @@ class PureParsecParser {
         .then(optional(fundeps.`as`(ClassFunctionalDependencyList)))
 
     private val classMember =
-        (idents + dcolon + type).`as`(ClassMember)
+        (idents.`as`(Identifier) + dcolon + type).`as`(ClassMember)
 
     private val classDeclaration =
         classHead
