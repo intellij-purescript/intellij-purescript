@@ -14,4 +14,10 @@ import org.purescript.psi.PSPsiElement
  * ```
  */
 class PSClassConstraintList(node: ASTNode) : PSPsiElement(node) {
+
+    /**
+     * @return the [PSClassConstraint] elements in this list
+     */
+    val classConstraints: Array<PSClassConstraint>
+        get() = findChildrenByClass(PSClassConstraint::class.java)
 }
