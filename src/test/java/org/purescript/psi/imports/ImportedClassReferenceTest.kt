@@ -1,6 +1,7 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
 import org.purescript.getClassDeclaration
 import org.purescript.getImportedClass
 
@@ -82,5 +83,25 @@ class ImportedClassReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
+    }
+
+    fun `test finds usage of class declarations`() {
+        val importedClass = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (class Qux)
+            """.trimIndent()
+        ).getImportedClass()
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                class <caret>Qux
+            """.trimIndent()
+        )
+        val usageInfo = myFixture.testFindUsages("Bar.purs").single()
+
+        assertEquals(importedClass, usageInfo.element)
     }
 }
