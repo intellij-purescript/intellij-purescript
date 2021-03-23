@@ -28,11 +28,14 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node) {
  * ```
  */
 class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
-    private val properName: PSProperName
+    internal val properName: PSProperName
         get() =
             findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
+
+    override fun getReference(): ImportedClassReference =
+        ImportedClassReference(this)
 }
 
 /**

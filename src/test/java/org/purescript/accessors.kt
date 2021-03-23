@@ -12,6 +12,7 @@ import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedDataMember
 import org.purescript.psi.exports.PSExportedItem
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportedClass
 import org.purescript.psi.imports.PSImportedItem
 
 
@@ -41,6 +42,10 @@ fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl {
 
 fun PsiFile.getImportedItem(): PSImportedItem {
     return getImportDeclaration().importList!!.importedItems.single()
+}
+
+fun PsiFile.getImportedClass(): PSImportedClass {
+    return getImportedItem() as PSImportedClass
 }
 
 fun PsiFile.getExportedItem(): PSExportedItem {
