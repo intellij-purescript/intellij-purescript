@@ -1,14 +1,12 @@
 package org.purescript.psi.imports
 
-import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
+import org.purescript.getImportDeclaration
+import org.purescript.getImportDeclarations
 
 class PSImportDeclarationImplTest : BasePlatformTestCase() {
-
-    private fun PsiFile.getImportDeclarations(): Array<PSImportDeclarationImpl> =
-        (this as PSFile).module.importDeclarations
 
     fun `test resolve to module in root directory`() {
         val mainFile = myFixture.addFileToProject(
@@ -216,26 +214,26 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
     }
 
     fun `test uses alias name if exists`() {
-        val importDeclarations = myFixture.configureByText(
+        val importDeclaration = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Foo.Bar as FB
             """.trimIndent()
-        ).getImportDeclarations()
+        ).getImportDeclaration()
 
-        assertEquals("FB", importDeclarations.single().name)
+        assertEquals("FB", importDeclaration.name)
     }
 
     fun `test module name if alias doesn't exist`() {
-        val importDeclarations = myFixture.configureByText(
+        val importDeclaration = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Foo.Bar
             """.trimIndent()
-        ).getImportDeclarations()
+        ).getImportDeclaration()
 
-        assertEquals("Foo.Bar", importDeclarations.single().name)
+        assertEquals("Foo.Bar", importDeclaration.name)
     }
 }
