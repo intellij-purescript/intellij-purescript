@@ -2,8 +2,10 @@ package org.purescript
 
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
+import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSNewTypeDeclarationImpl
+import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
@@ -12,10 +14,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedDataMember
 import org.purescript.psi.exports.PSExportedItem
-import org.purescript.psi.imports.PSImportDeclarationImpl
-import org.purescript.psi.imports.PSImportedClass
-import org.purescript.psi.imports.PSImportedData
-import org.purescript.psi.imports.PSImportedItem
+import org.purescript.psi.imports.*
 
 
 fun PsiFile.getModule(): PSModule {
@@ -42,6 +41,22 @@ fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl {
     return getImportDeclarations().single()
 }
 
+fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> {
+    return getModule().valueDeclarations
+}
+
+fun PsiFile.getValueDeclaration(): PSValueDeclaration {
+    return getValueDeclarations().single()
+}
+
+fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> {
+    return getModule().foreignValueDeclarations
+}
+
+fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration {
+    return getForeignValueDeclarations().single()
+}
+
 fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> {
     return getModule().newTypeDeclarations
 }
@@ -60,6 +75,10 @@ fun PsiFile.getImportedClass(): PSImportedClass {
 
 fun PsiFile.getImportedData(): PSImportedData {
     return getImportedItem() as PSImportedData
+}
+
+fun PsiFile.getImportedValue(): PSImportedValue {
+    return getImportedItem() as PSImportedValue
 }
 
 fun PsiFile.getExportedItem(): PSExportedItem {

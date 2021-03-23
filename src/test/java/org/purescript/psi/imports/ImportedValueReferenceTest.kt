@@ -1,29 +1,28 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.file.PSFile
+import org.purescript.getForeignValueDeclaration
+import org.purescript.getImportedValue
+import org.purescript.getValueDeclaration
 
 class ImportedValueReferenceTest : BasePlatformTestCase() {
 
     fun `test resolves value declarations`() {
-        val bar = myFixture.configureByText(
+        val valueDeclaration = myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
                 bar = ""
             """.trimIndent()
-        ) as PSFile
-        val declaration = bar.module.valueDeclarations.single()
-        val foo = myFixture.configureByText(
+        ).getValueDeclaration()
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
-        assertEquals(declaration, importedValue.reference.resolve())
+        ).getImportedValue()
+        assertEquals(valueDeclaration, importedValue.reference.resolve())
     }
 
     fun `test doesn't resolve non-existing value declarations`() {
@@ -34,15 +33,13 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
                 qux = ""
             """.trimIndent()
         )
-        val foo = myFixture.configureByText(
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
+        ).getImportedValue()
         assertNull(importedValue.reference.resolve())
     }
 
@@ -55,36 +52,32 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
                 qux = ""
             """.trimIndent()
         )
-        val foo = myFixture.configureByText(
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
+        ).getImportedValue()
         assertNull(importedValue.reference.resolve())
     }
+
     fun `test resolves foreign value declarations`() {
-        val bar = myFixture.configureByText(
+        val foreignValueDeclaration = myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
                 foreign import bar :: Boolean
             """.trimIndent()
-        ) as PSFile
-        val declaration = bar.module.foreignValueDeclarations.single()
-        val foo = myFixture.configureByText(
+        ).getForeignValueDeclaration()
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
-        assertEquals(declaration, importedValue.reference.resolve())
+        ).getImportedValue()
+        assertEquals(foreignValueDeclaration, importedValue.reference.resolve())
     }
 
     fun `test doesn't resolve non-existing foreign value declarations`() {
@@ -95,15 +88,13 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
                 foreign import qux :: Int -> Int
             """.trimIndent()
         )
-        val foo = myFixture.configureByText(
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
+        ).getImportedValue()
         assertNull(importedValue.reference.resolve())
     }
 
@@ -116,15 +107,13 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
                 foreign import qux :: Int
             """.trimIndent()
         )
-        val foo = myFixture.configureByText(
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
+        ).getImportedValue()
         assertNull(importedValue.reference.resolve())
     }
 
@@ -176,46 +165,40 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
     }
 
     fun `test finds value declaration usage`() {
-        val bar = myFixture.configureByText(
+        val valueDeclaration = myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
                 bar = 3
             """.trimIndent()
-        ) as PSFile
-        val declaration = bar.module.valueDeclarations.single()
-        val foo = myFixture.configureByText(
+        ).getValueDeclaration()
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
-        val usage = myFixture.findUsages(declaration).single().element
+        ).getImportedValue()
+        val usage = myFixture.findUsages(valueDeclaration).single().element
         assertEquals(importedValue, usage)
     }
 
     fun `test finds foreign value declaration usage`() {
-        val bar = myFixture.configureByText(
+        val foreignValueDeclaration = myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
                 foreign import bar :: Int
             """.trimIndent()
-        ) as PSFile
-        val declaration = bar.module.foreignValueDeclarations.single()
-        val foo = myFixture.configureByText(
+        ).getForeignValueDeclaration()
+        val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar (bar)
             """.trimIndent()
-        ) as PSFile
-        val importedValue =
-            foo.module.importDeclarations.single().importList!!.importedItems.single() as PSImportedValue
-        val usage = myFixture.findUsages(declaration).single().element
+        ).getImportedValue()
+        val usage = myFixture.findUsages(foreignValueDeclaration).single().element
         assertEquals(importedValue, usage)
     }
 }
