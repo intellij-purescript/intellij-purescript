@@ -17,94 +17,71 @@ import org.purescript.psi.exports.PSExportedItem
 import org.purescript.psi.imports.*
 
 
-fun PsiFile.getModule(): PSModule {
-    return (this as PSFile).module
-}
+fun PsiFile.getModule(): PSModule =
+    (this as PSFile).module
 
-fun PsiFile.getDataDeclaration(): PSDataDeclaration {
-    return getModule().dataDeclarations.single()
-}
+fun PsiFile.getDataDeclaration(): PSDataDeclaration =
+    getModule().dataDeclarations.single()
 
-fun PsiFile.getDataConstructor(): PSDataConstructor {
-    return getDataDeclaration().dataConstructorList!!.dataConstructors.single()
-}
+fun PsiFile.getDataConstructor(): PSDataConstructor =
+    getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
-fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> {
-    return getModule().exportedDataDeclarations
-}
+fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> =
+    getModule().exportedDataDeclarations
 
-fun PsiFile.getImportDeclarations(): Array<PSImportDeclarationImpl> {
-    return getModule().importDeclarations
-}
+fun PsiFile.getImportDeclarations(): Array<PSImportDeclarationImpl> =
+    getModule().importDeclarations
 
-fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl {
-    return getImportDeclarations().single()
-}
+fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl =
+    getImportDeclarations().single()
 
-fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> {
-    return getModule().valueDeclarations
-}
+fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
+    getModule().valueDeclarations
 
-fun PsiFile.getValueDeclaration(): PSValueDeclaration {
-    return getValueDeclarations().single()
-}
+fun PsiFile.getValueDeclaration(): PSValueDeclaration =
+    getValueDeclarations().single()
 
-fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> {
-    return getModule().foreignValueDeclarations
-}
+fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
+    getModule().foreignValueDeclarations
 
-fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration {
-    return getForeignValueDeclarations().single()
-}
+fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration =
+    getForeignValueDeclarations().single()
 
-fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> {
-    return getModule().newTypeDeclarations
-}
+fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> =
+    getModule().newTypeDeclarations
 
-fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclarationImpl {
-    return getNewTypeDeclarations().single()
-}
+fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclarationImpl =
+    getNewTypeDeclarations().single()
 
-fun PsiFile.getImportedItem(): PSImportedItem {
-    return getImportDeclaration().importList!!.importedItems.single()
-}
+fun PsiFile.getImportedItem(): PSImportedItem =
+    getImportDeclaration().importList!!.importedItems.single()
 
-fun PsiFile.getImportedClass(): PSImportedClass {
-    return getImportedItem() as PSImportedClass
-}
+fun PsiFile.getImportedClass(): PSImportedClass =
+    getImportedItem() as PSImportedClass
 
-fun PsiFile.getImportedData(): PSImportedData {
-    return getImportedItem() as PSImportedData
-}
+fun PsiFile.getImportedData(): PSImportedData =
+    getImportedItem() as PSImportedData
 
-fun PsiFile.getImportedValue(): PSImportedValue {
-    return getImportedItem() as PSImportedValue
-}
+fun PsiFile.getImportedValue(): PSImportedValue =
+    getImportedItem() as PSImportedValue
 
-fun PsiFile.getExportedItem(): PSExportedItem {
-    return getModule().exportList!!.exportedItems.single()
-}
+fun PsiFile.getExportedItem(): PSExportedItem =
+    getModule().exportList!!.exportedItems.single()
 
-fun PsiFile.getExportedData(): PSExportedData {
-    return getExportedItem() as PSExportedData
-}
+fun PsiFile.getExportedData(): PSExportedData =
+    getExportedItem() as PSExportedData
 
-fun PsiFile.getExportedDataMember(): PSExportedDataMember {
-    return getExportedData().dataMemberList!!.dataMembers.single()
-}
+fun PsiFile.getExportedDataMember(): PSExportedDataMember =
+    getExportedData().dataMemberList!!.dataMembers.single()
 
-fun PsiFile.getClassDeclarations(): Array<PSClassDeclaration> {
-    return getModule().classDeclarations
-}
+fun PsiFile.getClassDeclarations(): Array<PSClassDeclaration> =
+    getModule().classDeclarations
 
-fun PsiFile.getClassDeclaration(): PSClassDeclaration {
-    return getModule().classDeclarations.single()
-}
+fun PsiFile.getClassDeclaration(): PSClassDeclaration =
+    getClassDeclarations().single()
 
-fun PsiFile.getClassMember(): PSClassMember {
-    return getModule().classDeclarations.single().classMembers.single()
-}
+fun PsiFile.getClassMember(): PSClassMember =
+    getClassDeclaration().classMembers.single()
 
-fun PsiFile.getClassConstraint(): PSClassConstraint {
-    return getModule().classDeclarations.single().classConstraints.single()
-}
+fun PsiFile.getClassConstraint(): PSClassConstraint =
+    getClassDeclaration().classConstraints.single()
