@@ -4,6 +4,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.file.PSFile
+import org.purescript.getClassDeclarations
+import org.purescript.getExportedClassDeclarations
 import org.purescript.getExportedDataDeclarations
 import org.purescript.getModule
 
@@ -364,6 +366,33 @@ class PSModuleTest : BasePlatformTestCase() {
         ).getExportedDataDeclarations().single()
 
         assertEquals("Bar", dataDeclaration.name)
+    }
+
+    fun `test finds class declarations`() {
+        val classDeclarations = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Class1
+                class Class2
+            """.trimIndent()
+        ).getClassDeclarations()
+
+        assertSize(2, classDeclarations)
+    }
+
+    fun `test finds exported class declarations`() {
+        val exportedClassDeclarations = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (class Class1, class Class2) where
+                class Class1
+                class Class2
+                class Class3
+            """.trimIndent()
+        ).getExportedClassDeclarations()
+
+        assertSize(2, exportedClassDeclarations)
     }
 }
 
