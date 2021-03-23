@@ -6,6 +6,9 @@ import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 
+/**
+ * Any element that can occur in a [PSImportList]
+ */
 sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node) {
     abstract override fun getName(): String
 
@@ -14,6 +17,16 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node) {
             PsiTreeUtil.getParentOfType(this, PSImportDeclarationImpl::class.java)
 }
 
+/**
+ * An imported class declaration, e.g.
+ * ```
+ * class Newtype
+ * ```
+ * in
+ * ```
+ * import Data.Newtype (class Newtype)
+ * ```
+ */
 class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
     private val properName: PSProperName
         get() =
@@ -22,6 +35,16 @@ class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
     override fun getName(): String = properName.name
 }
 
+/**
+ * An imported data, type, or newtype declaration, e.g.
+ * ```
+ * Maybe(..)
+ * ```
+ * in
+ * ```
+ * import Data.Maybe (Maybe(..))
+ * ```
+ */
 class PSImportedData(node: ASTNode) : PSImportedItem(node) {
     internal val properName: PSProperName
         get() =
@@ -32,6 +55,16 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
     override fun getReference(): ImportedDataReference = ImportedDataReference(this)
 }
 
+/**
+ * An imported kind declaration, e.g.
+ * ```
+ * kind Boolean
+ * ```
+ * in
+ * ```
+ * import Type.Data.Boolean (kind Boolean)
+ * ```
+ */
 class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
     private val properName: PSProperName
         get() =
@@ -40,6 +73,16 @@ class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
     override fun getName(): String = properName.name
 }
 
+/**
+ * An imported infix operator declaration, e.g.
+ * ```
+ * (==)
+ * ```
+ * in
+ * ```
+ * import Data.Eq ((==))
+ * ```
+ */
 class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
     private val identifier: PSIdentifier
         get() =
@@ -48,6 +91,16 @@ class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
     override fun getName(): String = identifier.name
 }
 
+/**
+ * An imported infix type operator declaration, e.g.
+ * ```
+ * type (~>)
+ * ```
+ * in
+ * ```
+ * import Prelude (type (~>))
+ * ```
+ */
 class PSImportedType(node: ASTNode) : PSImportedItem(node) {
     private val identifier: PSIdentifier
         get() =
@@ -56,6 +109,16 @@ class PSImportedType(node: ASTNode) : PSImportedItem(node) {
     override fun getName(): String = identifier.name
 }
 
+/**
+ * An imported value or class member declaration, e.g.
+ * ```
+ * show
+ * ```
+ * in
+ * ```
+ * import Prelude (show)
+ * ```
+ */
 class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
     val identifier: PSIdentifier
         get() =
@@ -66,4 +129,3 @@ class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
     override fun getReference(): ImportedValueReference =
         ImportedValueReference(this)
 }
-
