@@ -29,6 +29,9 @@ fun PsiFile.getDataConstructor(): PSDataConstructor =
 fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> =
     getModule().exportedDataDeclarations
 
+fun PsiFile.getExportedClassDeclarations(): List<PSClassDeclaration> =
+    getModule().exportedClassDeclarations
+
 fun PsiFile.getImportDeclarations(): Array<PSImportDeclarationImpl> =
     getModule().importDeclarations
 
