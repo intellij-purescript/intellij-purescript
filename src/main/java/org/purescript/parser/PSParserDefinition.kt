@@ -14,15 +14,122 @@ import com.intellij.psi.tree.TokenSet
 import org.purescript.file.PSFile
 import org.purescript.file.PSFileStubType
 import org.purescript.lexer.PSLexer
+import org.purescript.parser.PSElements.Companion.Abs
+import org.purescript.parser.PSElements.Companion.Accessor
+import org.purescript.parser.PSElements.Companion.ArrayLiteral
+import org.purescript.parser.PSElements.Companion.Bang
+import org.purescript.parser.PSElements.Companion.Binder
+import org.purescript.parser.PSElements.Companion.BinderAtom
+import org.purescript.parser.PSElements.Companion.BooleanBinder
+import org.purescript.parser.PSElements.Companion.BooleanLiteral
+import org.purescript.parser.PSElements.Companion.Case
+import org.purescript.parser.PSElements.Companion.CaseAlternative
+import org.purescript.parser.PSElements.Companion.CharBinder
+import org.purescript.parser.PSElements.Companion.CharLiteral
+import org.purescript.parser.PSElements.Companion.ClassConstraint
+import org.purescript.parser.PSElements.Companion.ClassConstraintList
+import org.purescript.parser.PSElements.Companion.ClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
+import org.purescript.parser.PSElements.Companion.ClassMember
+import org.purescript.parser.PSElements.Companion.ClassMemberList
+import org.purescript.parser.PSElements.Companion.ConstrainedType
+import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.ConstructorBinder
+import org.purescript.parser.PSElements.Companion.DataConstructor
+import org.purescript.parser.PSElements.Companion.DataConstructorList
+import org.purescript.parser.PSElements.Companion.DataDeclaration
+import org.purescript.parser.PSElements.Companion.DoNotationBind
+import org.purescript.parser.PSElements.Companion.DoNotationLet
+import org.purescript.parser.PSElements.Companion.DoNotationValue
+import org.purescript.parser.PSElements.Companion.ExportList
+import org.purescript.parser.PSElements.Companion.ExportedClass
+import org.purescript.parser.PSElements.Companion.ExportedData
+import org.purescript.parser.PSElements.Companion.ExportedDataMember
+import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
+import org.purescript.parser.PSElements.Companion.ExportedKind
+import org.purescript.parser.PSElements.Companion.ExportedModule
+import org.purescript.parser.PSElements.Companion.ExportedOperator
+import org.purescript.parser.PSElements.Companion.ExportedType
+import org.purescript.parser.PSElements.Companion.ExportedValue
+import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
+import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.Fixity
+import org.purescript.parser.PSElements.Companion.FixityDeclaration
+import org.purescript.parser.PSElements.Companion.ForAll
+import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
+import org.purescript.parser.PSElements.Companion.FunKind
+import org.purescript.parser.PSElements.Companion.GenericIdentifier
+import org.purescript.parser.PSElements.Companion.Guard
+import org.purescript.parser.PSElements.Companion.Identifier
+import org.purescript.parser.PSElements.Companion.IfThenElse
+import org.purescript.parser.PSElements.Companion.ImportAlias
+import org.purescript.parser.PSElements.Companion.ImportDeclaration
+import org.purescript.parser.PSElements.Companion.ImportList
+import org.purescript.parser.PSElements.Companion.ImportedClass
+import org.purescript.parser.PSElements.Companion.ImportedData
+import org.purescript.parser.PSElements.Companion.ImportedDataMember
+import org.purescript.parser.PSElements.Companion.ImportedDataMemberList
+import org.purescript.parser.PSElements.Companion.ImportedKind
+import org.purescript.parser.PSElements.Companion.ImportedOperator
+import org.purescript.parser.PSElements.Companion.ImportedType
+import org.purescript.parser.PSElements.Companion.ImportedValue
+import org.purescript.parser.PSElements.Companion.JSRaw
+import org.purescript.parser.PSElements.Companion.Let
+import org.purescript.parser.PSElements.Companion.LocalIdentifier
+import org.purescript.parser.PSElements.Companion.Module
+import org.purescript.parser.PSElements.Companion.NamedBinder
+import org.purescript.parser.PSElements.Companion.NewtypeDeclaration
+import org.purescript.parser.PSElements.Companion.NullBinder
+import org.purescript.parser.PSElements.Companion.NumberBinder
+import org.purescript.parser.PSElements.Companion.NumericLiteral
+import org.purescript.parser.PSElements.Companion.ObjectBinder
+import org.purescript.parser.PSElements.Companion.ObjectBinderField
+import org.purescript.parser.PSElements.Companion.ObjectLiteral
+import org.purescript.parser.PSElements.Companion.ObjectType
+import org.purescript.parser.PSElements.Companion.Parens
+import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
+import org.purescript.parser.PSElements.Companion.ProperName
+import org.purescript.parser.PSElements.Companion.Qualified
+import org.purescript.parser.PSElements.Companion.Row
+import org.purescript.parser.PSElements.Companion.RowKind
+import org.purescript.parser.PSElements.Companion.Star
+import org.purescript.parser.PSElements.Companion.StringBinder
+import org.purescript.parser.PSElements.Companion.StringLiteral
+import org.purescript.parser.PSElements.Companion.Type
+import org.purescript.parser.PSElements.Companion.TypeAnnotationName
+import org.purescript.parser.PSElements.Companion.TypeArgs
+import org.purescript.parser.PSElements.Companion.TypeAtom
+import org.purescript.parser.PSElements.Companion.TypeConstructor
+import org.purescript.parser.PSElements.Companion.TypeDeclaration
+import org.purescript.parser.PSElements.Companion.TypeHole
+import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
+import org.purescript.parser.PSElements.Companion.TypeVar
+import org.purescript.parser.PSElements.Companion.TypeVarKinded
+import org.purescript.parser.PSElements.Companion.TypeVarName
+import org.purescript.parser.PSElements.Companion.UnaryMinus
+import org.purescript.parser.PSElements.Companion.Value
+import org.purescript.parser.PSElements.Companion.ValueDeclaration
+import org.purescript.parser.PSElements.Companion.ValueRef
+import org.purescript.parser.PSElements.Companion.Var
+import org.purescript.parser.PSElements.Companion.VarBinder
+import org.purescript.parser.PSElements.Companion.importModuleName
+import org.purescript.parser.PSElements.Companion.pClassName
+import org.purescript.parser.PSElements.Companion.pImplies
+import org.purescript.parser.PSElements.Companion.pModuleName
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
+import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.*
+import org.purescript.psi.typevar.PSTypeVarKinded
+import org.purescript.psi.typevar.PSTypeVarName
 
 class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createLexer(project: Project): Lexer {
@@ -53,215 +160,106 @@ class PSParserDefinition : ParserDefinition, PSTokens {
         return PSTokens.kStrings
     }
 
-    override fun createElement(node: ASTNode): PsiElement {
-        val type = node.elementType
-        return if (type == PSElements.ProperName || type == PSElements.Qualified || type == PSElements.pClassName || type == PSElements.pModuleName || type == PSElements.importModuleName) {
-            PSProperName(node)
-        } else if (type == PSElements.Identifier || type == PSElements.GenericIdentifier || type == PSElements.TypeConstructor || type == PSElements.Constructor || type == PSElements.LocalIdentifier) {
-            PSIdentifier(node)
-        } else if (type == PSElements.ImportDeclaration) {
-            PSImportDeclarationImpl(node)
-        } else if (type == PSElements.ImportAlias) {
-            PSImportAlias(node)
-        } else if (type == PSElements.ImportList) {
-            PSImportList(node)
-        } else if (type == PSElements.ImportedClass) {
-            PSImportedClass(node)
-        } else if (type == PSElements.ImportedData) {
-            PSImportedData(node)
-        } else if (type == PSElements.ImportedDataMember) {
-            PSImportedDataMember(node)
-        } else if (type == PSElements.ImportedDataMemberList) {
-            PSImportedDataMemberList(node)
-        } else if (type == PSElements.ImportedKind) {
-            PSImportedKind(node)
-        } else if (type == PSElements.ImportedOperator) {
-            PSImportedOperator(node)
-        } else if (type == PSElements.ImportedType) {
-            PSImportedType(node)
-        } else if (type == PSElements.ImportedValue) {
-            PSImportedValue(node)
-        } else if (type == PSElements.DataDeclaration) {
-            PSDataDeclaration(node)
-        } else if (type == PSElements.DataConstructorList) {
-            PSDataConstructorList(node)
-        } else if (type == PSElements.DataConstructor) {
-            PSDataConstructor(node)
-        } else if (type == PSElements.Binder) {
-            PSBinderImpl(node)
-        } else if (type == PSElements.Module) {
-            PSModule(node)
-        } else if (type == PSElements.ExportList) {
-            PSExportList(node)
-        } else if (type == PSElements.ExportedClass) {
-            PSExportedClass(node)
-        } else if (type == PSElements.ExportedData) {
-            PSExportedData(node)
-        } else if (type == PSElements.ExportedDataMember) {
-            PSExportedDataMember(node)
-        } else if (type == PSElements.ExportedDataMemberList) {
-            PSExportedDataMemberList(node)
-        } else if (type == PSElements.ExportedKind) {
-            PSExportedKind(node)
-        } else if (type == PSElements.ExportedModule) {
-            PSExportedModule(node)
-        } else if (type == PSElements.ExportedOperator) {
-            PSExportedOperator(node)
-        } else if (type == PSElements.ExportedType) {
-            PSExportedType(node)
-        } else if (type == PSElements.ExportedValue) {
-            PSExportedValue(node)
-        } else if (type == PSElements.Star) {
-            PSStarImpl(node)
-        } else if (type == PSElements.Bang) {
-            PSBangImpl(node)
-        } else if (type == PSElements.RowKind) {
-            PSRowKindImpl(node)
-        } else if (type == PSElements.FunKind) {
-            PSFunKindImpl(node)
-
-//        } else if (type.equals(PSElements.Qualified)) {
-//            return new PSQualifiedImpl(node);
-        } else if (type == PSElements.Type) {
-            PSTypeImpl(node)
-        } else if (type == PSElements.TypeArgs) {
-            PSTypeArgsImpl(node)
-        } else if (type == PSElements.TypeAnnotationName) {
-            PSTypeAnnotationNameImpl(node)
-        } else if (type == PSElements.ForAll) {
-            PSForAllImpl(node)
-        } else if (type == PSElements.ConstrainedType) {
-            PSConstrainedTypeImpl(node)
-        } else if (type == PSElements.Row) {
-            PSRowImpl(node)
-        } else if (type == PSElements.ObjectType) {
-            PSObjectTypeImpl(node)
-        } else if (type == PSElements.TypeVar) {
-            PSTypeVarImpl(node)
-
-//        } else if (type.equals(PSElements.TypeConstructor)) {
-//            return new PSTypeConstructorImpl(node);
-        } else if (type == PSElements.TypeAtom) {
-            PSTypeAtomImpl(node)
-        } else if (type == PSElements.GenericIdentifier) {
-            PSGenericIdentifierImpl(node)
-        } else if (type == PSElements.LocalIdentifier) {
-            PSLocalIdentifierImpl(node)
-        } else if (type == PSElements.TypeDeclaration) {
-            PSTypeDeclarationImpl(node)
-        } else if (type == PSElements.TypeSynonymDeclaration) {
-            PSTypeSynonymDeclarationImpl(node)
-        } else if (type == PSElements.ValueDeclaration) {
-            PSValueDeclaration(node)
-        } else if (type == PSElements.ExternDataDeclaration) {
-            PSExternDataDeclarationImpl(node)
-        } else if (type == PSElements.ExternInstanceDeclaration) {
-            PSExternInstanceDeclarationImpl(node)
-        } else if (type == PSElements.ForeignValueDeclaration) {
-            PSForeignValueDeclaration(node)
-        } else if (type == PSElements.FixityDeclaration) {
-            PSFixityDeclarationImpl(node)
-        } else if (type == PSElements.PositionedDeclarationRef) {
-            PSPositionedDeclarationRefImpl(node)
-        } else if (type == PSElements.TypeClassDeclaration) {
-            PSTypeClassDeclarationImpl(node)
-        } else if (type == PSElements.TypeInstanceDeclaration) {
-            PSTypeInstanceDeclarationImpl(node)
-        } else if (type == PSElements.NewtypeDeclaration) {
-            PSNewTypeDeclarationImpl(node)
-        } else if (type == PSElements.Guard) {
-            PSGuardImpl(node)
-        } else if (type == PSElements.NullBinder) {
-            PSNullBinderImpl(node)
-        } else if (type == PSElements.StringBinder) {
-            PSStringBinderImpl(node)
-        }  else if (type == PSElements.CharBinder) {
-            PSCharBinder(node)
-        } else if (type == PSElements.BooleanBinder) {
-            PSBooleanBinderImpl(node)
-        } else if (type == PSElements.NumberBinder) {
-            PSNumberBinderImpl(node)
-        } else if (type == PSElements.NamedBinder) {
-            PSNamedBinderImpl(node)
-        } else if (type == PSElements.VarBinder) {
-            PSVarBinderImpl(node)
-        } else if (type == PSElements.ConstructorBinder) {
-            PSConstructorBinderImpl(node)
-        } else if (type == PSElements.ObjectBinder) {
-            PSObjectBinderImpl(node)
-        } else if (type == PSElements.ObjectBinderField) {
-            PSObjectBinderFieldImpl(node)
-        } else if (type == PSElements.BinderAtom) {
-            PSBinderAtomImpl(node)
-        } else if (type == PSElements.Binder) {
-            PSBinderImpl(node)
-        } else if (type == PSElements.ValueRef) {
-            PSValueRefImpl(node)
-        } else if (type == PSElements.BooleanLiteral) {
-            PSBooleanLiteralImpl(node)
-        } else if (type == PSElements.NumericLiteral) {
-            PSNumericLiteralImpl(node)
-        } else if (type == PSElements.StringLiteral) {
-            PSStringLiteralImpl(node)
-        } else if (type == PSElements.CharLiteral) {
-            PSCharLiteral(node)
-        } else if (type == PSElements.ArrayLiteral) {
-            PSArrayLiteralImpl(node)
-        } else if (type == PSElements.ObjectLiteral) {
-            PSObjectLiteralImpl(node)
-        } else if (type == PSElements.Abs) {
-            PSAbsImpl(node)
-        } else if (type == PSElements.Var) {
-            PSVar(node)
-            //
-//        } else if (type.equals(PSElements.Constructor)) {
-//            return new PSConstructorImpl(node);
-        } else if (type == PSElements.Case) {
-            PSCaseImpl(node)
-        } else if (type == PSElements.CaseAlternative) {
-            PSCaseAlternativeImpl(node)
-        } else if (type == PSElements.IfThenElse) {
-            PSIfThenElseImpl(node)
-        } else if (type == PSElements.Let) {
-            PSLetImpl(node)
-        } else if (type == PSElements.Parens) {
-            PSParensImpl(node)
-        } else if (type == PSElements.UnaryMinus) {
-            PSUnaryMinusImpl(node)
-        } else if (type == PSElements.Accessor) {
-            PSAccessorImpl(node)
-        } else if (type == PSElements.DoNotationLet) {
-            PSDoNotationLetImpl(node)
-        } else if (type == PSElements.DoNotationBind) {
-            PSDoNotationBindImpl(node)
-        } else if (type == PSElements.DoNotationValue) {
-            PSDoNotationValueImpl(node)
-        } else if (type == PSElements.Value) {
-            PSValueImpl(node)
-        } else if (type == PSElements.Fixity) {
-            PSFixityImpl(node)
-        } else if (type == PSElements.JSRaw) {
-            PSJSRawImpl(node)
-
-//        } else if (type.equals(PSElements.pModuleName)) {
-//            return new PSModuleNameImpl(node);
-//
-//        } else if (type.equals(PSElements.importModuleName)) {
-//            return new PSImportModuleNameImpl(node);
-//
-//        } else if (type.equals(PSElements.qualifiedModuleName)) {
-//            return new PSQualifiedModuleNameImpl(node);
-//
-//        } else if (type.equals(PSElements.pClassName)) {
-//            return new PSClassNameImpl(node);
-        } else if (type == PSElements.pImplies) {
-            PSImpliesImpl(node)
-        } else if (type == PSElements.TypeHole) {
-            PSTypeHoleImpl(node)
-        } else {
-            PSASTWrapperElement(node)
+    override fun createElement(node: ASTNode): PsiElement =
+        when (node.elementType) {
+            ProperName, Qualified, pClassName, pModuleName, importModuleName -> PSProperName(node)
+            Identifier, GenericIdentifier, TypeConstructor, Constructor, LocalIdentifier -> PSIdentifier(node)
+            ImportDeclaration -> PSImportDeclarationImpl(node)
+            ImportAlias -> PSImportAlias(node)
+            ImportList -> PSImportList(node)
+            ImportedClass -> PSImportedClass(node)
+            ImportedData -> PSImportedData(node)
+            ImportedDataMember -> PSImportedDataMember(node)
+            ImportedDataMemberList -> PSImportedDataMemberList(node)
+            ImportedKind -> PSImportedKind(node)
+            ImportedOperator -> PSImportedOperator(node)
+            ImportedType -> PSImportedType(node)
+            ImportedValue -> PSImportedValue(node)
+            DataDeclaration -> PSDataDeclaration(node)
+            DataConstructorList -> PSDataConstructorList(node)
+            DataConstructor -> PSDataConstructor(node)
+            Binder -> PSBinderImpl(node)
+            Module -> PSModule(node)
+            ExportList -> PSExportList(node)
+            ExportedClass -> PSExportedClass(node)
+            ExportedData -> PSExportedData(node)
+            ExportedDataMember -> PSExportedDataMember(node)
+            ExportedDataMemberList -> PSExportedDataMemberList(node)
+            ExportedKind -> PSExportedKind(node)
+            ExportedModule -> PSExportedModule(node)
+            ExportedOperator -> PSExportedOperator(node)
+            ExportedType -> PSExportedType(node)
+            ExportedValue -> PSExportedValue(node)
+            Star -> PSStarImpl(node)
+            Bang -> PSBangImpl(node)
+            RowKind -> PSRowKindImpl(node)
+            FunKind -> PSFunKindImpl(node)
+            Type -> PSTypeImpl(node)
+            TypeArgs -> PSTypeArgsImpl(node)
+            TypeAnnotationName -> PSTypeAnnotationNameImpl(node)
+            ForAll -> PSForAllImpl(node)
+            ConstrainedType -> PSConstrainedTypeImpl(node)
+            Row -> PSRowImpl(node)
+            ObjectType -> PSObjectTypeImpl(node)
+            TypeVar -> PSTypeVarImpl(node)
+            TypeVarName -> PSTypeVarName(node)
+            TypeVarKinded -> PSTypeVarKinded(node)
+            TypeAtom -> PSTypeAtomImpl(node)
+            TypeDeclaration -> PSTypeDeclarationImpl(node)
+            TypeSynonymDeclaration -> PSTypeSynonymDeclarationImpl(node)
+            ValueDeclaration -> PSValueDeclaration(node)
+            ExternDataDeclaration -> PSExternDataDeclarationImpl(node)
+            ExternInstanceDeclaration -> PSExternInstanceDeclarationImpl(node)
+            ForeignValueDeclaration -> PSForeignValueDeclaration(node)
+            FixityDeclaration -> PSFixityDeclarationImpl(node)
+            PositionedDeclarationRef -> PSPositionedDeclarationRefImpl(node)
+            ClassDeclaration -> PSClassDeclaration(node)
+            ClassConstraintList -> PSClassConstraintList(node)
+            ClassConstraint -> PSClassConstraint(node)
+            ClassFunctionalDependencyList -> PSClassFunctionalDependencyList(node)
+            ClassFunctionalDependency -> PSClassFunctionalDependency(node)
+            ClassMemberList -> PSClassMemberList(node)
+            ClassMember -> PSClassMember(node)
+            TypeInstanceDeclaration -> PSTypeInstanceDeclarationImpl(node)
+            NewtypeDeclaration -> PSNewTypeDeclarationImpl(node)
+            Guard -> PSGuardImpl(node)
+            NullBinder -> PSNullBinderImpl(node)
+            StringBinder -> PSStringBinderImpl(node)
+            CharBinder -> PSCharBinder(node)
+            BooleanBinder -> PSBooleanBinderImpl(node)
+            NumberBinder -> PSNumberBinderImpl(node)
+            NamedBinder -> PSNamedBinderImpl(node)
+            VarBinder -> PSVarBinderImpl(node)
+            ConstructorBinder -> PSConstructorBinderImpl(node)
+            ObjectBinder -> PSObjectBinderImpl(node)
+            ObjectBinderField -> PSObjectBinderFieldImpl(node)
+            BinderAtom -> PSBinderAtomImpl(node)
+            ValueRef -> PSValueRefImpl(node)
+            BooleanLiteral -> PSBooleanLiteralImpl(node)
+            NumericLiteral -> PSNumericLiteralImpl(node)
+            StringLiteral -> PSStringLiteralImpl(node)
+            CharLiteral -> PSCharLiteral(node)
+            ArrayLiteral -> PSArrayLiteralImpl(node)
+            ObjectLiteral -> PSObjectLiteralImpl(node)
+            Abs -> PSAbsImpl(node)
+            Var -> PSVar(node)
+            Case -> PSCaseImpl(node)
+            CaseAlternative -> PSCaseAlternativeImpl(node)
+            IfThenElse -> PSIfThenElseImpl(node)
+            Let -> PSLetImpl(node)
+            Parens -> PSParensImpl(node)
+            UnaryMinus -> PSUnaryMinusImpl(node)
+            Accessor -> PSAccessorImpl(node)
+            DoNotationLet -> PSDoNotationLetImpl(node)
+            DoNotationBind -> PSDoNotationBindImpl(node)
+            DoNotationValue -> PSDoNotationValueImpl(node)
+            Value -> PSValueImpl(node)
+            Fixity -> PSFixityImpl(node)
+            JSRaw -> PSJSRawImpl(node)
+            pImplies -> PSImpliesImpl(node)
+            TypeHole -> PSTypeHoleImpl(node)
+            else -> PSASTWrapperElement(node)
         }
-    }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return PSFile(viewProvider)

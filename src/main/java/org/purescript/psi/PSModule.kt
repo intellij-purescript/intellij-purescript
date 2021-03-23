@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclarationImpl
@@ -108,6 +109,13 @@ class PSModule(node: ASTNode) :
     val dataDeclarations: Array<PSDataDeclaration>
         get() =
             findChildrenByClass(PSDataDeclaration::class.java)
+
+    /**
+     * @return the [PSClassDeclaration] elements in this module
+     */
+    val classDeclarations: Array<PSClassDeclaration>
+        get() =
+            findChildrenByClass(PSClassDeclaration::class.java)
 
     /**
      * @return the [PSValueDeclaration] that this module exports,

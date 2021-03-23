@@ -30,6 +30,8 @@ import org.purescript.parser.PSElements.Companion.Case
 import org.purescript.parser.PSElements.Companion.CaseAlternative
 import org.purescript.parser.PSElements.Companion.CharBinder
 import org.purescript.parser.PSElements.Companion.CharLiteral
+import org.purescript.parser.PSElements.Companion.ClassConstraint
+import org.purescript.parser.PSElements.Companion.ClassConstraintList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
@@ -58,10 +60,16 @@ import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.TypeArgs
-import org.purescript.parser.PSElements.Companion.TypeClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
+import org.purescript.parser.PSElements.Companion.ClassMember
+import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.TypeVarKinded
+import org.purescript.parser.PSElements.Companion.TypeVarName
 import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
@@ -298,14 +306,14 @@ class PureParsecParser {
 
     // Declarations.hs
     private val typeVarBinding =
-        idents.`as`(GenericIdentifier)
-            .or(
-                parens(
-                    idents.`as`(GenericIdentifier)
-                        .then(indented(dcolon))
-                        .then(indented(parseKind))
-                )
-            )
+        choice(
+            idents.`as`(TypeVarName),
+            parens(
+                idents.`as`(GenericIdentifier)
+                    .then(indented(dcolon))
+                    .then(indented(parseKind))
+            ).`as`(TypeVarKinded)
+        )
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()
@@ -414,10 +422,11 @@ class PureParsecParser {
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
 
-    private val fundep = type
+    private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
     private val constraint =
         parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))
+            .`as`(ClassConstraint)
     private val constraints = indented(
         choice(
             parens(commaSep1(constraint)),
@@ -426,25 +435,29 @@ class PureParsecParser {
     )
 
     private val classSuper =
-        optional(attempt(constraints + token(LDARROW).`as`(pImplies)))
+        optional(attempt(constraints + token(LDARROW).`as`(pImplies))
+            .`as`(ClassConstraintList))
 
     private val classHead = token(CLASS)
         .then(classSuper)
         .then(optional(indented(properName.`as`(pClassName))))
         .then(optional(manyOrEmpty(indented(typeVarBinding))))
-        .then(optional(fundeps))
+        .then(optional(fundeps.`as`(ClassFunctionalDependencyList)))
 
-    private val parseTypeClassDeclaration =
+    private val classMember =
+        (idents.`as`(Identifier) + dcolon + type).`as`(ClassMember)
+
+    private val classDeclaration =
         classHead
             .then(
                 optional(
                     attempt(
-                        indented(token(WHERE)).then(
-                            indentedList(parseTypeDeclaration)
-                        )
+                        indented(token(WHERE))
+                            .then(indentedList(classMember))
+                            .`as`(ClassMemberList)
                     )
                 )
-            ).`as`(TypeClassDeclaration)
+            ).`as`(ClassDeclaration)
     private val parseTypeInstanceDeclaration =
         optional(token(DERIVE))
             .then(optional(token(NEWTYPE)))
@@ -544,7 +557,7 @@ class PureParsecParser {
             .then(guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
-        parseTypeClassDeclaration,
+        classDeclaration,
         parseTypeInstanceDeclaration
     )
     private val exportedClass =

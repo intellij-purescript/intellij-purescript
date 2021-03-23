@@ -641,7 +641,7 @@ Purescript File
       PsiElement(type)('type')
       PSIdentifier(TypeConstructor)
         PsiElement(proper name)('M')
-      PSIdentifier(GenericIdentifier)
+      PSTypeVarName(TypeVarName)
         PsiElement(identifier)('r')
       PsiElement(=)('=')
       PSTypeImpl(Type)
