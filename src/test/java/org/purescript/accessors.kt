@@ -3,6 +3,7 @@ package org.purescript
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
 import org.purescript.psi.PSModule
+import org.purescript.psi.PSNewTypeDeclarationImpl
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
@@ -13,6 +14,7 @@ import org.purescript.psi.exports.PSExportedDataMember
 import org.purescript.psi.exports.PSExportedItem
 import org.purescript.psi.imports.PSImportDeclarationImpl
 import org.purescript.psi.imports.PSImportedClass
+import org.purescript.psi.imports.PSImportedData
 import org.purescript.psi.imports.PSImportedItem
 
 
@@ -40,12 +42,24 @@ fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl {
     return getImportDeclarations().single()
 }
 
+fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> {
+    return getModule().newTypeDeclarations
+}
+
+fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclarationImpl {
+    return getNewTypeDeclarations().single()
+}
+
 fun PsiFile.getImportedItem(): PSImportedItem {
     return getImportDeclaration().importList!!.importedItems.single()
 }
 
 fun PsiFile.getImportedClass(): PSImportedClass {
     return getImportedItem() as PSImportedClass
+}
+
+fun PsiFile.getImportedData(): PSImportedData {
+    return getImportedItem() as PSImportedData
 }
 
 fun PsiFile.getExportedItem(): PSExportedItem {
