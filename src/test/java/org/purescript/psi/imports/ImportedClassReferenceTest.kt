@@ -63,4 +63,24 @@ class ImportedClassReferenceTest : BasePlatformTestCase() {
 
         assertNull(importedClass.reference.resolve())
     }
+
+    fun `test completes class declarations`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (class Bara, class Bira) where
+                class Bara
+                class Bira
+                class Bar
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (class B<caret>)
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
+    }
 }
