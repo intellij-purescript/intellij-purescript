@@ -1,11 +1,7 @@
 package org.purescript.psi.`var`
 
-import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.file.PSFile
 import org.purescript.parser.PSLanguageParserTestBase
-import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.PSIdentifier
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.PSVarBinderImpl
 
@@ -42,28 +38,4 @@ class ReferenceTest : PSLanguageParserTestBase("parser") {
         val x = varBinders["x"]
         assertEquals("x", x!!.name)
     }
-
-    @Suppress("unused")
-    fun ignoreTestIdentifierCanResolveToTypeConstructor() {
-        val file = createFile(
-                "Main.purs",
-                """
-                module Data where
-                data A = A
-                func :: A -> A
-                func a = a
-                """.trimIndent()
-        ) as PSFile
-        val elementAtCursor = file.findElementAt(38)
-        val psIdentifier = if (elementAtCursor is PSIdentifier)
-            elementAtCursor
-        else
-            PsiTreeUtil.findFirstParent(elementAtCursor)
-            { it is PSIdentifier } as PSIdentifier
-        val reference = psIdentifier.reference
-        val resolved = reference!!.resolve()
-        assertInstanceOf(resolved, PSDataDeclaration::class.java)
-        assertEquals("A", (resolved as PsiNamedElement).name)
-    }
-
 }
