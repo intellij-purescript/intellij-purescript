@@ -5,9 +5,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 
 class PSNewTypeDeclarationImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
-    private val identifier: PSIdentifier
+    private val identifier: PSProperName
         get() =
-            findNotNullChildByClass(PSIdentifier::class.java)
+            findNotNullChildByClass(PSProperName::class.java)
 
     override fun setName(name: String): PsiElement? = null
 

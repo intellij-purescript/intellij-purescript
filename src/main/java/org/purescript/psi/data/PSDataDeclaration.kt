@@ -3,7 +3,7 @@ package org.purescript.psi.data
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import org.purescript.psi.PSIdentifier
+import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 
 /**
@@ -18,10 +18,10 @@ class PSDataDeclaration(node: ASTNode) :
     PsiNameIdentifierOwner {
 
     /**
-     * @return the [PSIdentifier] that identifies this declaration
+     * @return the [PSProperName] that identifies this declaration
      */
-    internal val identifier: PSIdentifier
-        get() = findNotNullChildByClass(PSIdentifier::class.java)
+    internal val identifier: PSProperName
+        get() = findNotNullChildByClass(PSProperName::class.java)
 
     /**
      * @return the [PSDataConstructorList] in this declaration,
@@ -34,7 +34,7 @@ class PSDataDeclaration(node: ASTNode) :
         return null
     }
 
-    override fun getNameIdentifier(): PSIdentifier = identifier
+    override fun getNameIdentifier(): PSProperName = identifier
 
     override fun getName(): String = nameIdentifier.name
 

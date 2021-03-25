@@ -32,6 +32,11 @@ import org.purescript.parser.PSElements.Companion.CharBinder
 import org.purescript.parser.PSElements.Companion.CharLiteral
 import org.purescript.parser.PSElements.Companion.ClassConstraint
 import org.purescript.parser.PSElements.Companion.ClassConstraintList
+import org.purescript.parser.PSElements.Companion.ClassDeclaration
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
+import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
+import org.purescript.parser.PSElements.Companion.ClassMember
+import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.Constructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
@@ -60,11 +65,6 @@ import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.TypeArgs
-import org.purescript.parser.PSElements.Companion.ClassDeclaration
-import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
-import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
-import org.purescript.parser.PSElements.Companion.ClassMember
-import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
@@ -322,10 +322,10 @@ class PureParsecParser {
         (token(PIPE) + indented(commaSep(expr))).`as`(Guard)
     private val dataHead =
         token(DATA) +
-            indented(properName).`as`(TypeConstructor) +
+            indented(properName) +
             manyOrEmpty(indented(typeVarBinding)).`as`(TypeArgs)
     private val dataCtor =
-        properName.`as`(TypeConstructor)
+        properName
             .then(manyOrEmpty(indented(typeAtom)))
             .`as`(DataConstructor)
     private val parseTypeDeclaration =
@@ -333,7 +333,7 @@ class PureParsecParser {
             .`as`(PSElements.TypeDeclaration)
     private val newtypeHead =
         token(NEWTYPE) +
-            indented(properName).`as`(TypeConstructor) +
+            indented(properName) +
             manyOrEmpty(indented(typeVarBinding))
                 .`as`(TypeArgs)
     private val parseTypeSynonymDeclaration =

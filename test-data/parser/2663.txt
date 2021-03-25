@@ -45,7 +45,7 @@ Purescript File
             PSConstrainedTypeImpl(ConstrainedType)
               PSTypeImpl(Type)
                 PSTypeAtomImpl(TypeAtom)
-                  PSIdentifier(TypeConstructor)
+                  PSTypeConstructor(TypeConstructor)
                     PSProperName(Qualified)
                       PSProperName(ProperName)
                         PsiElement(proper name)('Warn')

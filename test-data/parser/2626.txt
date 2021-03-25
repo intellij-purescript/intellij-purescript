@@ -127,7 +127,7 @@ Purescript File
             PsiElement(->)('->')
             PSTypeImpl(Type)
               PSTypeAtomImpl(TypeAtom)
-                PSIdentifier(TypeConstructor)
+                PSTypeConstructor(TypeConstructor)
                   PSProperName(Qualified)
                     PSProperName(ProperName)
                       PsiElement(proper name)('Int')
