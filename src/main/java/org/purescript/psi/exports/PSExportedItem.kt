@@ -1,17 +1,12 @@
 package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
-import org.purescript.file.PSFile
 import org.purescript.psi.PSIdentifier
-import org.purescript.psi.PSModule
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.imports.PSImportDeclarationImpl
 
 sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
-    val module: PSModule get() = (containingFile as PSFile).module
-
     abstract override fun getName(): String
 }
 

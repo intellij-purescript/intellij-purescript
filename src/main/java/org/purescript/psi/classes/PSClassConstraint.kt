@@ -1,6 +1,7 @@
 package org.purescript.psi.classes
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiReference
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSTypeAtomImpl
@@ -31,4 +32,7 @@ class PSClassConstraint(node: ASTNode) : PSPsiElement(node) {
         get() = findChildrenByClass(PSTypeAtomImpl::class.java)
 
     override fun getName(): String = identifier.name
+
+    override fun getReference(): PsiReference =
+        ClassConstraintReference(this)
 }
