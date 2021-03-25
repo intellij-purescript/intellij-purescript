@@ -232,8 +232,6 @@ class PureParsecParser {
             "not `forall`"
         )
             .`as`(GenericIdentifier)
-    private val parseTypeConstructor: Parsec =
-        parseQualified(properName).`as`(TypeConstructor)
 
     private fun parseNameAndType(p: Parsec): Parsec =
         indented(lname.or(stringLiteral).`as`(GenericIdentifier)) +
@@ -282,7 +280,7 @@ class PureParsecParser {
                 attempt(`_`),
                 attempt(parseForAll),
                 attempt(parseTypeVariable),
-                attempt(parseTypeConstructor),
+                attempt(parseQualified(properName).`as`(TypeConstructor)),
                 attempt(parens(parseRow)),
                 attempt(parens(type))
             )
