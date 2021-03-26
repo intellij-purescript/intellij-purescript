@@ -13,6 +13,7 @@ import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FORALL
+import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.OF
 import org.purescript.parser.PSTokens.Companion.STRING
@@ -31,6 +32,7 @@ val ddot = token(DDOT)
 val dot = token(DOT)
 val eq = token(EQ)
 val forall = token(FORALL)
+val `in` = token(IN)
 val larrow = token(LARROW)
 val of = token(OF)
 val string = token(STRING)

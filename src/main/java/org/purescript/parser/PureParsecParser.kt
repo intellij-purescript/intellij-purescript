@@ -88,7 +88,6 @@ import org.purescript.parser.PSTokens.Companion.FLOAT
 import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
-import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LDARROW
@@ -151,7 +150,7 @@ class PureParsecParser {
         token(LET),
         token(TRUE),
         token(FALSE),
-        token(IN),
+        `in`,
         token(WHERE),
         forall,
         token(PSTokens.QUALIFIED),
@@ -623,7 +622,7 @@ class PureParsecParser {
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
         .then(indented(indentedList1(parseLocalDeclaration)))
-        .then(indented(token(IN)))
+        .then(indented(`in`))
         .then(expr)
         .`as`(PSElements.Let)
     private val letBinding =
@@ -791,7 +790,7 @@ class PureParsecParser {
             (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
             doBlock,
-            adoBlock + token(IN) + expr,
+            adoBlock + `in` + expr,
             parseLet
         )
         val expr4 = expr5 + manyOrEmpty(indented(expr5))
