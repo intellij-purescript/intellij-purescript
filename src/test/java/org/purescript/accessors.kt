@@ -1,6 +1,7 @@
 package org.purescript
 
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.collectDescendantsOfType
 import org.purescript.file.PSFile
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
@@ -15,6 +16,7 @@ import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedDataMember
 import org.purescript.psi.exports.PSExportedItem
 import org.purescript.psi.imports.*
+import org.purescript.psi.typeconstructor.PSTypeConstructor
 
 
 fun PsiFile.getModule(): PSModule =
@@ -88,3 +90,6 @@ fun PsiFile.getClassMember(): PSClassMember =
 
 fun PsiFile.getClassConstraint(): PSClassConstraint =
     getClassDeclaration().classConstraints.single()
+
+fun PsiFile.getTypeConstructor(): PSTypeConstructor =
+    collectDescendantsOfType<PSTypeConstructor>().single()
