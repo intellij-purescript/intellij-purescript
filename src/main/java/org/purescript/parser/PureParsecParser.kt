@@ -79,7 +79,6 @@ import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DERIVE
@@ -92,7 +91,6 @@ import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
-import org.purescript.parser.PSTokens.Companion.LPAREN
 import org.purescript.parser.PSTokens.Companion.MODULE
 import org.purescript.parser.PSTokens.Companion.NATURAL
 import org.purescript.parser.PSTokens.Companion.NEWTYPE
@@ -265,7 +263,7 @@ class PureParsecParser {
                         parseQualified(properName).`as`(TypeConstructor) +
                             indented(manyOrEmpty(typeAtom))
                     )
-                ) + token(DARROW)
+                ) + darrow
             )
         ).then(indented(type)).`as`(ConstrainedType)
 
@@ -341,7 +339,7 @@ class PureParsecParser {
                 parseQualified(properName).`as`(TypeConstructor)
                     .then(manyOrEmpty(typeAtom))
             )
-        ).then(indented(token(DARROW)))
+        ).then(indented(darrow))
     private val parseExternDeclaration =
         token(FOREIGN)
             .then(indented(token(IMPORT)))
@@ -444,7 +442,7 @@ class PureParsecParser {
                                     )
                                 )
                                 .then(optional(token(RPAREN)))
-                                .then(optional(indented(token(DARROW))))
+                                .then(optional(indented(darrow)))
                         )
                     )
                     .then(
@@ -457,7 +455,7 @@ class PureParsecParser {
                     .then(manyOrEmpty(indented(typeAtom).or(string)))
                     .then(
                         optional(
-                            indented(token(DARROW))
+                            indented(darrow)
                                 .then(optional(lparen))
                                 .then(
                                     parseQualified(properName).`as`(
@@ -719,7 +717,7 @@ class PureParsecParser {
                     optional(
                         choice(
                             arrow,
-                            token(DARROW),
+                            darrow,
                             token(PSTokens.OPTIMISTIC),
                             token(OPERATOR)
                         )
