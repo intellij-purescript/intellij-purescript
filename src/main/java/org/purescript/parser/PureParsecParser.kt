@@ -79,7 +79,6 @@ import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.CLASS
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
@@ -139,7 +138,7 @@ class PureParsecParser {
         token(PSTokens.INFIXL),
         token(PSTokens.INFIXR),
         token(PSTokens.INFIX),
-        token(CLASS),
+        `class`,
         token(DERIVE),
         token(KIND),
         token(INSTANCE),
@@ -411,7 +410,7 @@ class PureParsecParser {
         optional(attempt(constraints + token(LDARROW).`as`(pImplies))
             .`as`(ClassConstraintList))
 
-    private val classHead = token(CLASS)
+    private val classHead = `class`
         .then(classSuper)
         .then(optional(indented(properName.`as`(pClassName))))
         .then(optional(manyOrEmpty(indented(typeVarBinding))))
@@ -496,7 +495,7 @@ class PureParsecParser {
     private val importedItem =
         choice(
             token(TYPE).then(parens(operator.`as`(Identifier))).`as`(PSElements.ImportedType),
-            token(CLASS).then(properName).`as`(PSElements.ImportedClass),
+            `class`.then(properName).`as`(PSElements.ImportedClass),
             token(KIND).then(properName).`as`(PSElements.ImportedKind),
             parens(operator.`as`(Identifier)).`as`(PSElements.ImportedOperator),
             ident.`as`(PSElements.ImportedValue),
@@ -534,7 +533,7 @@ class PureParsecParser {
         parseTypeInstanceDeclaration
     )
     private val exportedClass =
-        token(CLASS)
+        `class`
             .then(properName)
             .`as`(PSElements.ExportedClass)
     private val exportedData =
