@@ -80,7 +80,6 @@ import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
 import org.purescript.parser.PSTokens.Companion.DERIVE
-import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FLOAT
 import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
@@ -96,7 +95,6 @@ import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
-import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
@@ -144,7 +142,7 @@ class PureParsecParser {
         token(ADO),
         token(LET),
         `true`,
-        token(FALSE),
+        `false`,
         `in`,
         token(WHERE),
         forall,
@@ -589,7 +587,7 @@ class PureParsecParser {
         .`as`(PSElements.Module)
 
     // Literals
-    private val boolean = `true`.or(token(FALSE))
+    private val boolean = `true`.or(`false`)
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val hole = token("?").`as`(TypeHole)
