@@ -13,6 +13,7 @@ import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DO
 import org.purescript.parser.PSTokens.Companion.DOT
+import org.purescript.parser.PSTokens.Companion.ELSE
 import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FORALL
@@ -40,6 +41,7 @@ val dcolon = token(DCOLON)
 val ddot = token(DDOT)
 val `do` = token(DO)
 val dot = token(DOT)
+val `else` = token(ELSE)
 val eq = token(EQ)
 val `false` = token(FALSE)
 val forall = token(FORALL)

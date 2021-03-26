@@ -136,7 +136,7 @@ class PureParsecParser {
         of,
         `if`,
         token(PSTokens.THEN),
-        token(PSTokens.ELSE),
+        `else`,
         `do`,
         token(ADO),
         token(LET),
@@ -609,7 +609,7 @@ class PureParsecParser {
         .then(indented(expr))
         .then(indented(token(PSTokens.THEN)))
         .then(indented(expr))
-        .then(indented(token(PSTokens.ELSE)))
+        .then(indented(`else`))
         .then(indented(expr))
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
