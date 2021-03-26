@@ -78,10 +78,8 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
-import org.purescript.parser.PSTokens.Companion.ARROW
 import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.CHAR
 import org.purescript.parser.PSTokens.Companion.CLASS
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
@@ -89,7 +87,6 @@ import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.DOT
-import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FLOAT
 import org.purescript.parser.PSTokens.Companion.FORALL
@@ -99,7 +96,6 @@ import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
-import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -111,8 +107,6 @@ import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
-import org.purescript.parser.PSTokens.Companion.STRING
-import org.purescript.parser.PSTokens.Companion.TICK
 import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
@@ -126,16 +120,6 @@ class PureParsecParser {
         ).`as`(Qualified)
 
     // tokens
-    private val char = token(CHAR)
-    private val dcolon = token(DCOLON)
-    private val dot = token(DOT)
-    private val ddot = token(DDOT)
-    private val eq = token(EQ)
-    private val string = token(STRING)
-    private val where = token(WHERE)
-
-    @Suppress("PrivatePropertyName", "unused")
-    private val `@` = token("@")
 
     private val idents =
         choice(
@@ -146,8 +130,6 @@ class PureParsecParser {
             token(PSTokens.QUALIFIED),
             token(KIND),
         )
-    private val case = token(PSTokens.CASE)
-    private val of = token(PSTokens.OF)
 
     private val lname = choice(
         token(PSTokens.IDENT),
@@ -181,7 +163,6 @@ class PureParsecParser {
         token(HIDING),
         token(AS)
     ).`as`(Identifier)
-    private val larrow = token(LARROW)
 
     private val operator =
         choice(
@@ -223,8 +204,6 @@ class PureParsecParser {
     private val type = ref()
     private val parseForAll = ref()
 
-    @Suppress("PrivatePropertyName")
-    private val `_` = token("_")
     private val parseTypeVariable: Parsec =
         guard(
             idents,
@@ -269,7 +248,6 @@ class PureParsecParser {
         )
     private val parseRow: Parsec =
         commaSep(parseNameAndType(type)).then(parseRowEnding).`as`(Row)
-    private val arrow = token(ARROW)
 
     private val typeAtom: Parsec =
         indented(
@@ -296,7 +274,6 @@ class PureParsecParser {
                 ) + token(DARROW)
             )
         ).then(indented(type)).`as`(ConstrainedType)
-    private val forall = token(FORALL)
 
     private val ident =
         idents.`as`(Identifier)
@@ -633,7 +610,6 @@ class PureParsecParser {
             attempt(lname + token("=")) + expr,
             lname ,
         ).`as`(ObjectBinderField)
-    private val backslash = token(PSTokens.BACKSLASH)
 
     private val binder1 = expr.or(`_`)
 
@@ -716,7 +692,6 @@ class PureParsecParser {
     private val type3 = ref()
     private val type4 = ref()
     private val type5 = ref()
-    private val darrow = token(DARROW)
     private val qualOp = choice(
         operator,
         parseQualified(operator),
@@ -798,7 +773,6 @@ class PureParsecParser {
         )
         val label = lname.or(stringLiteral)
         val parsePropertyUpdate = label + optional(indented(eq)) + indented(expr)
-        val tick = token(TICK)
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
