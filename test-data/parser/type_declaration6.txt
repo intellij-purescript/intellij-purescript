@@ -38,9 +38,8 @@ Purescript File
                     PSProperName(ProperName)
                       PsiElement(proper name)('CONSOLE')
             PsiElement(|)('|')
-            PSTypeVarImpl(TypeVar)
-              PSTypeConstructor(TypeConstructor)
-                <empty list>
-              PSIdentifier(GenericIdentifier)
-                PsiElement(identifier)('eff')
+            PSTypeImpl(Type)
+              PSTypeAtomImpl(TypeAtom)
+                PSIdentifier(GenericIdentifier)
+                  PsiElement(identifier)('eff')
           PsiElement())(')')

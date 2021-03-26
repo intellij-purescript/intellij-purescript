@@ -198,42 +198,15 @@ class PureParsecParser {
         )
             .`as`(GenericIdentifier)
 
-    private fun parseNameAndType(p: Parsec): Parsec =
+    private val rowLabel =
         indented(lname.or(stringLiteral).`as`(GenericIdentifier)) +
-            indented(dcolon) + p
+            indented(dcolon) + type
 
-    private val parseRowEnding =
-        optional(
-            indented(pipe) +
-                indented(
-                    attempt(`_`)
-                        .or(
-                            attempt(
-                                optional(
-                                    manyOrEmpty(properName).`as`(
-                                        TypeConstructor
-                                    )
-                                ) +
-                                    optional(
-                                        idents.`as`(
-                                            GenericIdentifier
-                                        )
-                                    ) +
-                                    optional(
-                                        indented(
-                                            lname.or(
-                                                stringLiteral
-                                            )
-                                        )
-                                    ) +
-                                    optional(indented(dcolon)) +
-                                    optional(type)
-                            ).`as`(PSElements.TypeVar)
-                        )
-                )
-        )
     private val parseRow: Parsec =
-        commaSep(parseNameAndType(type)).then(parseRowEnding).`as`(Row)
+        choice (
+            pipe + type,
+            commaSep(rowLabel) + optional(indented(pipe) + type)
+        ).`as`(Row)
 
     private val typeAtom: Parsec =
         indented(
