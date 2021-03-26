@@ -436,7 +436,7 @@ class PureParsecParser {
                                             .then(manyOrEmpty(typeAtom))
                                     )
                                 )
-                                .then(optional(token(RPAREN)))
+                                .then(optional(rparen))
                                 .then(optional(indented(darrow)))
                         )
                     )
@@ -458,7 +458,7 @@ class PureParsecParser {
                                     )
                                 )
                                 .then(manyOrEmpty(typeAtom))
-                                .then(optional(token(RPAREN)))
+                                .then(optional(rparen))
                         )
                     )
                     .then(
@@ -642,7 +642,7 @@ class PureParsecParser {
                 )
                 .then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
-                .then(optional(attempt(token(RPAREN))))
+                .then(optional(attempt(rparen)))
                 .then(attempt(manyOrEmpty(binderAtom)))
                 .then(
                     choice(
@@ -752,7 +752,7 @@ class PureParsecParser {
                     )
                     .then(optional(attempt(parsePatternMatchObject)))
                     .then(optional(attempt(parseRowPatternBinder)))
-                    .then(optional(attempt(token(RPAREN))))
+                    .then(optional(attempt(rparen)))
                     // ---------- end of LET stuff -----------
                     .then(attempt(manyOrEmpty(binderAtom)))
                     .then(guardedDecl).`as`(ValueDeclaration)
