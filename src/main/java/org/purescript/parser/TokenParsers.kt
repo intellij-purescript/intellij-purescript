@@ -11,6 +11,7 @@ import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DDOT
+import org.purescript.parser.PSTokens.Companion.DO
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FALSE
@@ -37,6 +38,7 @@ val data = token(DATA)
 val darrow = token(DARROW)
 val dcolon = token(DCOLON)
 val ddot = token(DDOT)
+val `do` = token(DO)
 val dot = token(DOT)
 val eq = token(EQ)
 val `false` = token(FALSE)

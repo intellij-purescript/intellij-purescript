@@ -93,7 +93,6 @@ import org.purescript.parser.PSTokens.Companion.NEWTYPE
 import org.purescript.parser.PSTokens.Companion.OPERATOR
 import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
-import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
@@ -138,7 +137,7 @@ class PureParsecParser {
         `if`,
         token(PSTokens.THEN),
         token(PSTokens.ELSE),
-        token(PSTokens.DO),
+        `do`,
         token(ADO),
         token(LET),
         `true`,
@@ -666,7 +665,7 @@ class PureParsecParser {
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        token(PSTokens.DO)
+        `do`
             .then(indented(indentedList(mark(doStatement))))
 
     private val adoBlock =
