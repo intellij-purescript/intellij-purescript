@@ -89,7 +89,6 @@ import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FLOAT
-import org.purescript.parser.PSTokens.Companion.FORALL
 import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
@@ -126,7 +125,7 @@ class PureParsecParser {
             token(PSTokens.IDENT),
             token(AS),
             token(HIDING),
-            token(FORALL),
+            forall,
             token(PSTokens.QUALIFIED),
             token(KIND),
         )
@@ -158,7 +157,7 @@ class PureParsecParser {
         token(FALSE),
         token(IN),
         token(WHERE),
-        token(FORALL),
+        forall,
         token(PSTokens.QUALIFIED),
         token(HIDING),
         token(AS)
