@@ -15,6 +15,7 @@ import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FORALL
 import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.LARROW
+import org.purescript.parser.PSTokens.Companion.LPAREN
 import org.purescript.parser.PSTokens.Companion.OF
 import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.TICK
@@ -34,6 +35,7 @@ val eq = token(EQ)
 val forall = token(FORALL)
 val `in` = token(IN)
 val larrow = token(LARROW)
+val lparen = token(LPAREN)
 val of = token(OF)
 val string = token(STRING)
 val tick = token(TICK)

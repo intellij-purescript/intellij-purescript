@@ -435,7 +435,7 @@ class PureParsecParser {
                     .then(ident.`as`(GenericIdentifier).then(indented(dcolon)))
                     .then(
                         optional(
-                            optional(token(LPAREN))
+                            optional(lparen)
                                 .then(
                                     commaSep1(
                                         parseQualified(properName)
@@ -458,7 +458,7 @@ class PureParsecParser {
                     .then(
                         optional(
                             indented(token(DARROW))
-                                .then(optional(token(LPAREN)))
+                                .then(optional(lparen))
                                 .then(
                                     parseQualified(properName).`as`(
                                         TypeConstructor
@@ -628,7 +628,7 @@ class PureParsecParser {
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
-            optional(attempt(token(LPAREN)))
+            optional(attempt(lparen))
                 .then(optional(attempt(properName).`as`(Constructor)))
                 .then(optional(attempt(many1(ident))))
                 .then(
@@ -737,7 +737,7 @@ class PureParsecParser {
             choice(
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
-                optional(attempt(token(LPAREN)))
+                optional(attempt(lparen))
                     .then(optional(attempt(properName).`as`(Constructor)))
                     .then(optional(attempt(many1(ident))))
                     .then(
