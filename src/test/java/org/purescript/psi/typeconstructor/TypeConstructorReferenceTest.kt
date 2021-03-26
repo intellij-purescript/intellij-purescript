@@ -1,11 +1,10 @@
-package org.purescript.psi.data
+package org.purescript.psi.typeconstructor
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.file.PSFile
 
-class DataDeclarationReferenceTest : BasePlatformTestCase(){
+class TypeConstructorReferenceTest : BasePlatformTestCase() {
 
-    fun testDataCanFindUsages() {
+    fun `test finds usages from data declaration`() {
         myFixture.configureByText(
             "Main.purs",
             """
@@ -15,7 +14,7 @@ class DataDeclarationReferenceTest : BasePlatformTestCase(){
                 func :: A -> A
                 func a = a
                 """.trimIndent()
-        ) as PSFile
+        )
         val usageInfo = myFixture.testFindUsages("Main.purs")
         assertEquals(2, usageInfo.size)
     }
