@@ -2,6 +2,7 @@ package org.purescript.parser
 
 import org.purescript.parser.Combinators.token
 import org.purescript.parser.PSTokens.Companion.ARROW
+import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BACKSLASH
 import org.purescript.parser.PSTokens.Companion.CASE
 import org.purescript.parser.PSTokens.Companion.CHAR
@@ -17,6 +18,7 @@ import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.TICK
 import org.purescript.parser.PSTokens.Companion.WHERE
 
+val `as` = token(AS)
 val arrow = token(ARROW)
 val backslash = token(BACKSLASH)
 val case = token(CASE)

@@ -78,7 +78,6 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
-import org.purescript.parser.PSTokens.Companion.AS
 import org.purescript.parser.PSTokens.Companion.BANG
 import org.purescript.parser.PSTokens.Companion.CLASS
 import org.purescript.parser.PSTokens.Companion.DARROW
@@ -123,7 +122,7 @@ class PureParsecParser {
     private val idents =
         choice(
             token(PSTokens.IDENT),
-            token(AS),
+            `as`,
             token(HIDING),
             forall,
             token(PSTokens.QUALIFIED),
@@ -160,7 +159,7 @@ class PureParsecParser {
         forall,
         token(PSTokens.QUALIFIED),
         token(HIDING),
-        token(AS)
+        `as`
     ).`as`(Identifier)
 
     private val operator =
@@ -392,7 +391,7 @@ class PureParsecParser {
             parseQualified(properName).`as`(PSElements.pModuleName)
                 .or(ident.`as`(ProperName))
         )
-        .then(token(AS))
+        .then(`as`)
         .then(operator)
         .`as`(PSElements.FixityDeclaration)
 
@@ -513,7 +512,7 @@ class PureParsecParser {
             .then(optional(importList))
             .then(
                 optional(
-                    token(AS)
+                    `as`
                         .then(moduleName)
                         .`as`(PSElements.ImportAlias)
                 )
