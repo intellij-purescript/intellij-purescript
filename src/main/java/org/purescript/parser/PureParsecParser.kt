@@ -82,9 +82,7 @@ import org.purescript.parser.PSTokens.Companion.BANG
 import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
-import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DERIVE
-import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FLOAT
 import org.purescript.parser.PSTokens.Companion.FOREIGN
@@ -112,7 +110,7 @@ class PureParsecParser {
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
-                attempt(token(PROPER_NAME).`as`(ProperName) + token(DOT))
+                attempt(token(PROPER_NAME).`as`(ProperName) + dot)
             ) + p
         ).`as`(Qualified)
 
@@ -164,8 +162,8 @@ class PureParsecParser {
     private val operator =
         choice(
             token(OPERATOR),
-            token(DOT),
-            token(DDOT),
+            dot,
+            ddot,
             larrow,
             token(LDARROW),
             token(PSTokens.OPTIMISTIC)
@@ -784,7 +782,7 @@ class PureParsecParser {
         )
         val exprBacktick = properName.`as`(ProperName)
             .or(many1(idents.`as`(ProperName)))
-        val expr7 = exprAtom + manyOrEmpty((token(DOT) + label).`as`(Accessor))
+        val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
         val expr5 = choice(
             attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
             expr7,
