@@ -20,6 +20,7 @@ import org.purescript.parser.PSTokens.Companion.FORALL
 import org.purescript.parser.PSTokens.Companion.IF
 import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.INFIX
+import org.purescript.parser.PSTokens.Companion.INFIXL
 import org.purescript.parser.PSTokens.Companion.INFIXR
 import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
@@ -51,6 +52,7 @@ val forall = token(FORALL)
 val `if` = token(IF)
 val `in` = token(IN)
 val infix = token(INFIX)
+val infixl = token(INFIXL)
 val infixr = token(INFIXR)
 val larrow = token(LARROW)
 val ldarrow = token(LDARROW)
