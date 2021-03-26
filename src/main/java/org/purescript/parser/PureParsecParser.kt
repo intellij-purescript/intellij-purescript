@@ -143,7 +143,7 @@ class PureParsecParser {
         token(PSTokens.DO),
         token(ADO),
         token(LET),
-        token(TRUE),
+        `true`,
         token(FALSE),
         `in`,
         token(WHERE),
@@ -589,7 +589,7 @@ class PureParsecParser {
         .`as`(PSElements.Module)
 
     // Literals
-    private val boolean = token(TRUE).or(token(FALSE))
+    private val boolean = `true`.or(token(FALSE))
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val hole = token("?").`as`(TypeHole)

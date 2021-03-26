@@ -22,6 +22,7 @@ import org.purescript.parser.PSTokens.Companion.LPAREN
 import org.purescript.parser.PSTokens.Companion.OF
 import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.TICK
+import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
 val `as` = token(AS)
@@ -45,6 +46,7 @@ val lparen = token(LPAREN)
 val of = token(OF)
 val string = token(STRING)
 val tick = token(TICK)
+val `true` = token(TRUE)
 val where = token(WHERE)
 
 @Suppress("ObjectPropertyName")
