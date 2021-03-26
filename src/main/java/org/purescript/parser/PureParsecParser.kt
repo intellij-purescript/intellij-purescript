@@ -125,7 +125,7 @@ class PureParsecParser {
 
     private val lname = choice(
         token(PSTokens.IDENT),
-        token(DATA),
+        data,
         token(NEWTYPE),
         token(TYPE),
         token(FOREIGN),
@@ -288,7 +288,7 @@ class PureParsecParser {
     private val parseGuard =
         (token(PIPE) + indented(commaSep(expr))).`as`(Guard)
     private val dataHead =
-        token(DATA) +
+        data +
             indented(properName) +
             manyOrEmpty(indented(typeVarBinding)).`as`(TypeArgs)
     private val dataCtor =
@@ -346,7 +346,7 @@ class PureParsecParser {
             .then(
                 indented(
                     choice(
-                        token(DATA)
+                        data
                             .then(
                                 indented(
                                     token(PROPER_NAME).`as`(

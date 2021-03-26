@@ -8,6 +8,7 @@ import org.purescript.parser.PSTokens.Companion.CASE
 import org.purescript.parser.PSTokens.Companion.CHAR
 import org.purescript.parser.PSTokens.Companion.CLASS
 import org.purescript.parser.PSTokens.Companion.DARROW
+import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DOT
@@ -27,6 +28,7 @@ val backslash = token(BACKSLASH)
 val case = token(CASE)
 val char = token(CHAR)
 val `class` = token(CLASS)
+val data = token(DATA)
 val darrow = token(DARROW)
 val dcolon = token(DCOLON)
 val ddot = token(DDOT)
