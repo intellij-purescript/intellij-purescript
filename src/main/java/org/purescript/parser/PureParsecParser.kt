@@ -204,7 +204,7 @@ class PureParsecParser {
 
     private val parseRowEnding =
         optional(
-            indented(token(PIPE)) +
+            indented(pipe) +
                 indented(
                     attempt(`_`)
                         .or(
@@ -280,7 +280,7 @@ class PureParsecParser {
     private val expr = ref()
     private val parseLocalDeclaration = ref()
     private val parseGuard =
-        (token(PIPE) + indented(commaSep(expr))).`as`(Guard)
+        (pipe + indented(commaSep(expr))).`as`(Guard)
     private val dataHead =
         data +
             indented(properName) +
@@ -384,7 +384,7 @@ class PureParsecParser {
         .`as`(PSElements.FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
-    private val fundeps = token(PIPE).then(indented(commaSep1(fundep)))
+    private val fundeps = pipe.then(indented(commaSep1(fundep)))
     private val constraint =
         parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))
             .`as`(ClassConstraint)

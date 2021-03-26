@@ -23,6 +23,7 @@ import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LPAREN
 import org.purescript.parser.PSTokens.Companion.OF
+import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.RPAREN
 import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.TICK
@@ -51,6 +52,7 @@ val larrow = token(LARROW)
 val ldarrow = token(LDARROW)
 val lparen = token(LPAREN)
 val of = token(OF)
+val pipe = token(PIPE)
 val rparen = token(RPAREN)
 val string = token(STRING)
 val tick = token(TICK)
