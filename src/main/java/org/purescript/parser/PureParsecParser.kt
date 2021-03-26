@@ -137,7 +137,7 @@ class PureParsecParser {
         token(MODULE),
         case,
         of,
-        token(PSTokens.IF),
+        `if`,
         token(PSTokens.THEN),
         token(PSTokens.ELSE),
         token(PSTokens.DO),
@@ -608,7 +608,7 @@ class PureParsecParser {
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
-    private val parseIfThenElse = token(PSTokens.IF)
+    private val parseIfThenElse = `if`
         .then(indented(expr))
         .then(indented(token(PSTokens.THEN)))
         .then(indented(expr))

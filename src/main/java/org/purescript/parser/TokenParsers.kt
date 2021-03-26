@@ -14,6 +14,7 @@ import org.purescript.parser.PSTokens.Companion.DDOT
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FORALL
+import org.purescript.parser.PSTokens.Companion.IF
 import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
@@ -36,6 +37,7 @@ val ddot = token(DDOT)
 val dot = token(DOT)
 val eq = token(EQ)
 val forall = token(FORALL)
+val `if` = token(IF)
 val `in` = token(IN)
 val larrow = token(LARROW)
 val ldarrow = token(LDARROW)
