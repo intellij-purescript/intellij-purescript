@@ -79,8 +79,6 @@ import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.DATA
-import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FLOAT
@@ -364,7 +362,7 @@ class PureParsecParser {
                             .`as`(PSElements.ExternInstanceDeclaration),
                         attempt(ident)
                             .then(optional(stringLiteral.`as`(PSElements.JSRaw)))
-                            .then(indented(token(DCOLON)))
+                            .then(indented(dcolon))
                             .then(type)
                             .`as`(PSElements.ForeignValueDeclaration)
                     )
