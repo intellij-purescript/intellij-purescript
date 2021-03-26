@@ -87,7 +87,6 @@ import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
-import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.MODULE
 import org.purescript.parser.PSTokens.Companion.NATURAL
@@ -160,7 +159,7 @@ class PureParsecParser {
             dot,
             ddot,
             larrow,
-            token(LDARROW),
+            ldarrow,
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
@@ -400,7 +399,7 @@ class PureParsecParser {
     )
 
     private val classSuper =
-        optional(attempt(constraints + token(LDARROW).`as`(pImplies))
+        optional(attempt(constraints + ldarrow.`as`(pImplies))
             .`as`(ClassConstraintList))
 
     private val classHead = `class`
