@@ -126,7 +126,7 @@ class PureParsecParser {
         token(IMPORT),
         token(PSTokens.INFIXL),
         token(PSTokens.INFIXR),
-        token(PSTokens.INFIX),
+        infix,
         `class`,
         token(DERIVE),
         token(KIND),
@@ -367,7 +367,7 @@ class PureParsecParser {
     private val parseAssociativity = choice(
         token(PSTokens.INFIXL),
         token(PSTokens.INFIXR),
-        token(PSTokens.INFIX)
+        infix
     )
     private val parseFixity =
         parseAssociativity.then(indented(token(NATURAL))).`as`(

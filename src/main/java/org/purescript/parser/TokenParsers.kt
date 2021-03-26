@@ -19,6 +19,7 @@ import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FORALL
 import org.purescript.parser.PSTokens.Companion.IF
 import org.purescript.parser.PSTokens.Companion.IN
+import org.purescript.parser.PSTokens.Companion.INFIX
 import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -48,6 +49,7 @@ val `false` = token(FALSE)
 val forall = token(FORALL)
 val `if` = token(IF)
 val `in` = token(IN)
+val infix = token(INFIX)
 val larrow = token(LARROW)
 val ldarrow = token(LDARROW)
 val lparen = token(LPAREN)
