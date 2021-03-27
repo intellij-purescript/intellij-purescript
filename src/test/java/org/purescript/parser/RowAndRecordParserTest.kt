@@ -7,6 +7,7 @@ class RowAndRecordParserTest : PSLanguageParserTestBase("row-and-record") {
     fun testRowPolyInstanceContext() = doTest(true, true)
     fun testRowsInInstanceContext() = doTest(true, true)
     fun testRowUnion() = doTest(true, true)
+    fun testRecordWithStringAsLabel() = doTest(true, true)
     fun testNestedRecordUpdate() = doTest(true, true)
     fun testNestedRecordUpdateWildcards() = doTest(true, true)
 }
