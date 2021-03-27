@@ -9,6 +9,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.PSImportAlias
+import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
@@ -21,6 +22,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSDataDeclaration
             || psiElement is PSDataConstructor
             || psiElement is PSClassDeclaration
+            || psiElement is PSTypeSynonymDeclaration
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null

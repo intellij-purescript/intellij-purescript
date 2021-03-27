@@ -1,10 +1,7 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.getDataDeclaration
-import org.purescript.getImportedData
-import org.purescript.getImportedItem
-import org.purescript.getNewTypeDeclaration
+import org.purescript.*
 
 class ImportedDataReferenceTest : BasePlatformTestCase() {
 
@@ -156,5 +153,62 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
         ).getImportedItem()
         val usage = myFixture.findUsages(dataDeclaration).single().element
         assertEquals(importedData, usage)
+    }
+
+    fun `test resolves type synonym declarations`() {
+        val typeSynonymDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                type Bar = Bar Int
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
+        val importedData = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Bar)
+            """.trimIndent()
+        ).getImportedData()
+        assertEquals(typeSynonymDeclaration, importedData.reference.resolve())
+    }
+
+    fun `test completes type synonym declarations`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (Bara, Bira) where
+                type Bara = Bara (Int -> Boolean)
+                type Bira = Bira Int
+                type Bar = Bar Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (B<caret>)
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
+    }
+
+    fun `test finds type synonym declaration usage`() {
+        val typeSynonymDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                type Bar = Bar String
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
+        val importedData = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Bar)
+            """.trimIndent()
+        ).getImportedItem()
+        val usageInfo = myFixture.findUsages(typeSynonymDeclaration).single()
+        assertEquals(importedData, usageInfo.element)
     }
 }

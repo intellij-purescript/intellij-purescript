@@ -19,7 +19,7 @@ class ImportedDataReference(element: PSImportedData) : PsiReferenceBase<PSImport
     private val candidates: List<PsiNamedElement>
         get() =
             element.importDeclaration?.importedModule
-                ?.run { exportedNewTypeDeclarations + exportedDataDeclarations }
+                ?.run { exportedNewTypeDeclarations + exportedDataDeclarations + exportedTypeSynonymDeclarations}
                 ?: emptyList()
 
 }
