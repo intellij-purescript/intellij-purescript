@@ -12,9 +12,8 @@ Purescript File
       PSTypeArgsImpl(TypeArgs)
         <empty list>
       PsiElement(=)('=')
-      PSTypeConstructor(TypeConstructor)
-        PSProperName(ProperName)
-          PsiElement(proper name)('Foo')
+      PSProperName(ProperName)
+        PsiElement(proper name)('Foo')
       PSTypeAtomImpl(TypeAtom)
         PsiElement(()('(')
         PSTypeImpl(Type)

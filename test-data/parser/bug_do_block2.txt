@@ -277,9 +277,8 @@ Purescript File
       PSTypeArgsImpl(TypeArgs)
         <empty list>
       PsiElement(=)('=')
-      PSTypeConstructor(TypeConstructor)
-        PSProperName(ProperName)
-          PsiElement(proper name)('Credentials')
+      PSProperName(ProperName)
+        PsiElement(proper name)('Credentials')
       PSTypeAtomImpl(TypeAtom)
         PSObjectTypeImpl(ObjectType)
           PsiElement({)('{')
