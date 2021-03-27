@@ -10,6 +10,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
 
@@ -109,6 +110,13 @@ class PSModule(node: ASTNode) :
     val dataDeclarations: Array<PSDataDeclaration>
         get() =
             findChildrenByClass(PSDataDeclaration::class.java)
+
+    /**
+     * @return the [PSTypeSynonymDeclaration] elements in this module
+     */
+    val typeSynonymDeclarations: Array<PSTypeSynonymDeclaration>
+        get() =
+            findChildrenByClass(PSTypeSynonymDeclaration::class.java)
 
     /**
      * @return the [PSClassDeclaration] elements in this module
