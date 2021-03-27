@@ -17,7 +17,7 @@ class PSExportedDataMemberTest : BasePlatformTestCase() {
     }
 
     fun `test finds parent exported data`() {
-        val module = myFixture.configureByText(
+        myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo (Bar(Qux)) where

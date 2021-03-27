@@ -486,7 +486,7 @@ class PureParsecParser {
     private val decl = choice(
         (dataHead + optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList)))
             .`as`(PSElements.DataDeclaration),
-        (newtypeHead + eq + properName.`as`(TypeConstructor) + typeAtom)
+        (newtypeHead + eq + properName + typeAtom)
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         parseTypeSynonymDeclaration,
