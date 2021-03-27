@@ -38,7 +38,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('Foo')

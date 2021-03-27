@@ -24,7 +24,7 @@ Purescript File
             PsiElement(proper name)('Eff')
           PsiElement(.)('.')
           PsiElement(proper name)('Console')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('T')

@@ -1318,7 +1318,7 @@ Purescript File
               PSProperName(Qualified)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('result')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('Renderer')

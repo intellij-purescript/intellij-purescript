@@ -105,7 +105,7 @@ Purescript File
         PsiElement(as)('as')
         PSProperName(Qualified)
           PsiElement(proper name)('URI')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('Host')

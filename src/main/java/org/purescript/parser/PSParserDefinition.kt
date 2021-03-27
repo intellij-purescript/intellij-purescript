@@ -208,7 +208,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             TypeVarKinded -> PSTypeVarKinded(node)
             TypeAtom -> PSTypeAtomImpl(node)
             TypeDeclaration -> PSTypeDeclarationImpl(node)
-            TypeSynonymDeclaration -> PSTypeSynonymDeclarationImpl(node)
+            TypeSynonymDeclaration -> PSTypeSynonymDeclaration(node)
             ValueDeclaration -> PSValueDeclaration(node)
             ExternDataDeclaration -> PSExternDataDeclarationImpl(node)
             ExternInstanceDeclaration -> PSExternInstanceDeclarationImpl(node)

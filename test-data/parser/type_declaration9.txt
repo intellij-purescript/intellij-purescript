@@ -5,7 +5,7 @@ Purescript File
       PSProperName(Qualified)
         PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('ALL')

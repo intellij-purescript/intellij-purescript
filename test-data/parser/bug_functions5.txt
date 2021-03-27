@@ -637,7 +637,7 @@ Purescript File
         PsiElement(as)('as')
         PSProperName(Qualified)
           PsiElement(proper name)('QT')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('M')

@@ -354,7 +354,7 @@ Purescript File
             PSProperName(Qualified)
               PSIdentifier(identifier)
                 PsiElement(identifier)('y')
-    PSTypeSynonymDeclarationImpl(TypeSynonymDeclaration)
+    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('MyString')
