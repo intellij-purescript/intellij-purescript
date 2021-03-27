@@ -150,6 +150,11 @@ class PureParsecParser {
         `as`
     ).`as`(Identifier)
 
+    private val label = choice(
+        string,
+        lname
+    )
+
     private val operator =
         choice(
             token(OPERATOR),
@@ -161,7 +166,6 @@ class PureParsecParser {
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
     private val moduleName = parseQualified(token(PROPER_NAME))
-    private val stringLiteral = attempt(string)
 
     private fun indentedList(p: Parsec): Parsec =
         mark(manyOrEmpty(untilSame(same(p))))
@@ -199,7 +203,7 @@ class PureParsecParser {
             .`as`(GenericIdentifier)
 
     private val rowLabel =
-        indented(lname.or(stringLiteral).`as`(GenericIdentifier)) +
+        indented(lname.or(attempt(string)).`as`(GenericIdentifier)) +
             indented(dcolon) + type
 
     private val parseRow: Parsec =
@@ -283,7 +287,7 @@ class PureParsecParser {
         indented(
             braces(
                 commaSep(
-                    idents.or(lname).or(stringLiteral)
+                    idents.or(lname).or(attempt(string))
                         .then(optional(indented(eq.or(token(OPERATOR)))))
                         .then(optional(indented(binder)))
                 )
@@ -330,7 +334,7 @@ class PureParsecParser {
                             .then(manyOrEmpty(indented(typeAtom)))
                             .`as`(PSElements.ExternInstanceDeclaration),
                         attempt(ident)
-                            .then(optional(stringLiteral.`as`(PSElements.JSRaw)))
+                            .then(optional(attempt(string).`as`(PSElements.JSRaw)))
                             .then(indented(dcolon))
                             .then(type)
                             .`as`(PSElements.ForeignValueDeclaration)
@@ -565,9 +569,9 @@ class PureParsecParser {
     private val hole = token("?").`as`(TypeHole)
     private val recordLabel =
         choice(
-            attempt(lname + token(":")) + expr,
-            attempt(lname + token("=")) + expr,
-            lname ,
+            attempt(label + token(":")) + expr,
+            attempt(label + token("=")) + expr,
+            label ,
         ).`as`(ObjectBinderField)
 
     private val binder1 = expr.or(`_`)
@@ -730,7 +734,6 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
-        val label = lname.or(stringLiteral)
         val parsePropertyUpdate = label + optional(indented(eq)) + indented(expr)
         val exprAtom = choice(
             attempt(hole),
