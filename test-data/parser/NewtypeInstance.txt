@@ -37,7 +37,7 @@ Purescript File
           PsiElement(proper name)('Console')
     PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ProperName)
         PsiElement(proper name)('MyString')
       PsiElement(=)('=')
       PSTypeImpl(Type)

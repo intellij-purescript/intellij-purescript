@@ -639,7 +639,7 @@ Purescript File
           PsiElement(proper name)('QT')
     PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ProperName)
         PsiElement(proper name)('M')
       PSTypeVarName(TypeVarName)
         PsiElement(identifier)('r')

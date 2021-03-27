@@ -68,6 +68,7 @@ import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
 import org.purescript.parser.PSElements.Companion.TypeVarName
 import org.purescript.parser.PSElements.Companion.UnaryMinus
@@ -274,12 +275,10 @@ class PureParsecParser {
             indented(properName) +
             manyOrEmpty(indented(typeVarBinding))
                 .`as`(TypeArgs)
-    private val parseTypeSynonymDeclaration =
-        token(TYPE)
-            .then(token(PROPER_NAME).`as`(TypeConstructor))
-            .then(manyOrEmpty(indented(typeVarBinding)))
-            .then(indented(eq) + (type))
-            .`as`(PSElements.TypeSynonymDeclaration)
+    private val typeHead =
+        token(TYPE) +
+            properName +
+            manyOrEmpty(indented(typeVarBinding))
     private val exprWhere =
         expr + optional(where + indentedList1(parseLocalDeclaration))
 
@@ -489,7 +488,7 @@ class PureParsecParser {
         (newtypeHead + eq + properName + typeAtom)
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
-        parseTypeSynonymDeclaration,
+        (typeHead + indented(eq) + type).`as`(TypeSynonymDeclaration),
         attempt(ident)
             .then(manyOrEmpty(binderAtom))
             .then(guardedDecl).`as`(ValueDeclaration),

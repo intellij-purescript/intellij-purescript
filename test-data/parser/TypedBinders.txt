@@ -894,7 +894,7 @@ Purescript File
           PsiElement())(')')
     PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ProperName)
         PsiElement(proper name)('Int1')
       PsiElement(=)('=')
       PSTypeImpl(Type)

@@ -1320,7 +1320,7 @@ Purescript File
                   PsiElement(identifier)('result')
     PSTypeSynonymDeclaration(TypeSynonymDeclaration)
       PsiElement(type)('type')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ProperName)
         PsiElement(proper name)('Renderer')
       PSTypeVarName(TypeVarName)
         PsiElement(identifier)('h')
