@@ -38,6 +38,8 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSDataDeclaration -> "data"
             is PSDataConstructor -> "data constructor"
             is PSClassDeclaration -> "class"
+            is PSForeignValueDeclaration -> "foreign value"
+            is PSTypeSynonymDeclaration -> "type synonym"
             else -> "unknown"
         }
     }
