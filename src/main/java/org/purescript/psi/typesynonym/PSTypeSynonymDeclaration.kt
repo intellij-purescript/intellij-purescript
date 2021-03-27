@@ -1,8 +1,10 @@
-package org.purescript.psi
+package org.purescript.psi.typesynonym
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.purescript.psi.PSProperName
+import org.purescript.psi.PSPsiElement
 
 /**
  * A type synonym declaration, e.g.
