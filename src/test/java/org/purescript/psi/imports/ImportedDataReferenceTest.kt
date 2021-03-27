@@ -26,24 +26,6 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
         assertEquals(newTypeDeclaration, importedData.reference.resolve())
     }
 
-    fun `test resolves data declarations`() {
-        val dataDeclaration = myFixture.configureByText(
-            "Bar.purs",
-            """
-                module Bar where
-                data Bar = Bar Int
-            """.trimIndent()
-        ).getDataDeclaration()
-        val importedData = myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                import Bar (Bar)
-            """.trimIndent()
-        ).getImportedData()
-        assertEquals(dataDeclaration, importedData.reference.resolve())
-    }
-
     fun `test doesn't resolve non-existing newtype declarations`() {
         myFixture.configureByText(
             "Bar.purs",
@@ -100,6 +82,43 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
         myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
     }
 
+    fun `test finds newtype declaration usage`() {
+        val newTypeDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                newtype Bar = Bar String
+            """.trimIndent()
+        ).getNewTypeDeclaration()
+        val importedData = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Bar)
+            """.trimIndent()
+        ).getImportedItem()
+        val usage = myFixture.findUsages(newTypeDeclaration).single().element
+        assertEquals(importedData, usage)
+    }
+
+    fun `test resolves data declarations`() {
+        val dataDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                data Bar = Bar Int
+            """.trimIndent()
+        ).getDataDeclaration()
+        val importedData = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Bar)
+            """.trimIndent()
+        ).getImportedData()
+        assertEquals(dataDeclaration, importedData.reference.resolve())
+    }
+
     fun `test completes data declarations`() {
         myFixture.configureByText(
             "Bar.purs",
@@ -118,25 +137,6 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.testCompletionVariants("Foo.purs", "Bara", "Bira")
-    }
-
-    fun `test finds newtype declaration usage`() {
-        val newTypeDeclaration = myFixture.configureByText(
-            "Bar.purs",
-            """
-                module Bar where
-                newtype Bar = Bar String
-            """.trimIndent()
-        ).getNewTypeDeclaration()
-        val importedData = myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                import Bar (Bar)
-            """.trimIndent()
-        ).getImportedItem()
-        val usage = myFixture.findUsages(newTypeDeclaration).single().element
-        assertEquals(importedData, usage)
     }
 
     fun `test finds data declaration usage`() {
