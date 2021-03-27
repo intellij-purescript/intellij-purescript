@@ -170,6 +170,17 @@ class PSModule(node: ASTNode) :
         )
 
     /**
+     * @return the [PSTypeSynonymDeclaration] elements that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
+        get() = getExportedDeclarations(
+            typeSynonymDeclarations,
+            PSImportDeclarationImpl::importedTypeSynonymDeclarations,
+            PSExportedData::class.java
+        )
+
+    /**
      * @return the [PSClassDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
