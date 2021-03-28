@@ -1,12 +1,12 @@
 package org.purescript.psi
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
-import org.purescript.file.PSFile
+import org.purescript.getModule
+import org.purescript.getValueDeclaration
 
 class PSValueDeclarationTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {
-        val file = myFixture.addFileToProject(
+        val valueDeclaration = myFixture.addFileToProject(
             "Main.purs",
             """-- | This is
                -- | main module
@@ -15,13 +15,11 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                -- | main
                main = 1
             """.trimIndent()
-        ) as PSFile
+        ).getValueDeclaration()
+        val docComments = valueDeclaration.docComments
 
-        val main =
-            file.module.valueDeclarations.find { it.name == "main"} !!
-        val docComments = main.docComments
-        TestCase.assertEquals(2, docComments.size)
-        TestCase.assertEquals("-- | This is",  docComments[0].text)
-        TestCase.assertEquals("-- | main",  docComments[1].text)
+        assertEquals(2, docComments.size)
+        assertEquals("-- | This is", docComments[0].text)
+        assertEquals("-- | main", docComments[1].text)
     }
 }

@@ -16,10 +16,15 @@ class PSFile(viewProvider: FileViewProvider) :
         return "Purescript File"
     }
 
-    val module: PSModule
-        get() = findChildByClass(PSModule::class.java)!!
+    /**
+     * @return the [PSModule] that this file contains,
+     * or null if the module couldn't be parsed
+     */
+    val module: PSModule?
+        get() = findChildByClass(PSModule::class.java)
 
     val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
-        get() = module.valueDeclarations.groupBy { it.name }
+        get() = module?.valueDeclarations?.groupBy { it.name }
+            ?: emptyMap()
 
 }

@@ -18,10 +18,10 @@ class ExportedDataReference(exportedData: PSExportedData) : PsiReferenceBase<PSE
 
     private val candidates: Array<PsiNamedElement>
         get() =
-            myElement.module.run {
+            myElement.module?.run {
                 arrayOf(
                     *dataDeclarations,
                     *newTypeDeclarations,
                 )
-            }
+            } ?: emptyArray()
 }

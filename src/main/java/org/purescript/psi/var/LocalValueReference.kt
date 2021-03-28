@@ -14,6 +14,7 @@ class LocalValueReference(element: PSVar) : PsiReferenceBase.Poly<PSVar>(
 
     override fun getVariants(): Array<PsiNamedElement> {
         val currentModule = myElement.module
+            ?: return emptyArray()
         return currentModule.valueDeclarations.toList().toTypedArray()
     }
 

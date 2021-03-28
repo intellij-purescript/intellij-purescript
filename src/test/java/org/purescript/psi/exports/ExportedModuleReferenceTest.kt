@@ -1,18 +1,11 @@
 package org.purescript.psi.exports
 
-import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
-import org.purescript.file.PSFile
-import org.purescript.psi.PSModule
+import org.purescript.getExportedModule
+import org.purescript.getImportDeclaration
+import org.purescript.getModule
 
 class ExportedModuleReferenceTest : BasePlatformTestCase() {
-
-    private fun PsiFile.getModule(): PSModule =
-        (this as PSFile).module
-
-    private fun PsiFile.getExportedModule(): PSExportedModule =
-        getModule().exportList!!.exportedItems.single() as PSExportedModule
 
     fun `test completes imported modules`() {
         myFixture.configureByText(
@@ -53,7 +46,7 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        TestCase.assertTrue(exportedModule.reference.isReferenceTo(module))
+        assertTrue(exportedModule.reference.isReferenceTo(module))
     }
 
     fun `test aliased exported module resolves to import declaration`() {
@@ -65,9 +58,9 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         val exportedModule = file.getExportedModule()
-        val importAlias = file.getModule().importDeclarations.single().importAlias!!
+        val importAlias = file.getImportDeclaration().importAlias!!
 
-        TestCase.assertTrue(exportedModule.reference.isReferenceTo(importAlias))
+        assertTrue(exportedModule.reference.isReferenceTo(importAlias))
     }
 
     fun `test does not resolve to module if not imported`() {
@@ -84,7 +77,7 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        TestCase.assertFalse(exportedModule.reference.isReferenceTo(module))
+        assertFalse(exportedModule.reference.isReferenceTo(module))
     }
 
     fun `test does not resolve to aliased module using wrong name`() {
@@ -102,7 +95,7 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        TestCase.assertFalse(exportedModule.reference.isReferenceTo(module))
+        assertFalse(exportedModule.reference.isReferenceTo(module))
     }
 
     fun `test does not resolve to module if it does not exist`() {
@@ -113,7 +106,7 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExportedModule()
 
-        TestCase.assertNull(exportedModule.reference.resolve())
+        assertNull(exportedModule.reference.resolve())
     }
 
     fun `test finds usage of import alias`() {
@@ -125,9 +118,9 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         val exportedModule = file.getExportedModule()
-        val importAlias = file.getModule().importDeclarations.single().importAlias!!
-        val usage = myFixture.findUsages(importAlias).single().element!!
+        val importAlias = file.getImportDeclaration().importAlias!!
+        val usageInfo = myFixture.findUsages(importAlias).single()
 
-        TestCase.assertEquals(exportedModule, usage)
+        assertEquals(exportedModule, usageInfo.element)
     }
 }

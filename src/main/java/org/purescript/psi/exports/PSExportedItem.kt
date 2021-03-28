@@ -60,7 +60,7 @@ class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
 
     val importDeclaration: PSImportDeclarationImpl?
         get() =
-            module.importDeclarations.singleOrNull {
+            module?.importDeclarations?.singleOrNull {
                 it.name == properName.name
             }
 

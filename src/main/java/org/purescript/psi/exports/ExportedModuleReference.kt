@@ -20,5 +20,5 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
 
     private val candidates: Array<PSImportDeclarationImpl>
         get() =
-            myElement.module.importDeclarations
+            myElement.module?.importDeclarations ?: emptyArray()
 }
