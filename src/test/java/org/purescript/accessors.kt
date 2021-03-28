@@ -15,6 +15,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedDataMember
 import org.purescript.psi.exports.PSExportedItem
+import org.purescript.psi.exports.PSExportedValue
 import org.purescript.psi.imports.*
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
@@ -76,6 +77,9 @@ fun PsiFile.getExportedItem(): PSExportedItem =
 
 fun PsiFile.getExportedData(): PSExportedData =
     getExportedItem() as PSExportedData
+
+fun PsiFile.getExportedValue(): PSExportedValue =
+    getExportedItem() as PSExportedValue
 
 fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()

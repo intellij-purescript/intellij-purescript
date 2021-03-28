@@ -1,8 +1,9 @@
 package org.purescript.psi.exports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
 import org.purescript.file.PSFile
+import org.purescript.getClassMember
+import org.purescript.getExportedValue
 
 class ExportedValueReferenceTest : BasePlatformTestCase() {
 
@@ -17,7 +18,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val declaredValue = file.module.valueDeclarations.single()
         val resolvedReference = exportedValue.reference.resolve()
 
-        TestCase.assertEquals(declaredValue, resolvedReference)
+        assertEquals(declaredValue, resolvedReference)
     }
 
     fun `test resolve fails when no declared value`() {
@@ -30,7 +31,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val exportedValue = file.module.exportList!!.exportedItems.single() as PSExportedValue
         val resolvedReference = exportedValue.reference.resolve()
 
-        TestCase.assertNull(resolvedReference)
+        assertNull(resolvedReference)
     }
 
     fun `test resolves to all declared values`() {
@@ -48,9 +49,9 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val secondFooDeclaration = valueDeclarations[1]
         val barDeclaration = valueDeclarations[2]
 
-        TestCase.assertTrue(exportedValue.reference.isReferenceTo(firstFooDeclaration))
-        TestCase.assertTrue(exportedValue.reference.isReferenceTo(secondFooDeclaration))
-        TestCase.assertFalse(exportedValue.reference.isReferenceTo(barDeclaration))
+        assertTrue(exportedValue.reference.isReferenceTo(firstFooDeclaration))
+        assertTrue(exportedValue.reference.isReferenceTo(secondFooDeclaration))
+        assertFalse(exportedValue.reference.isReferenceTo(barDeclaration))
     }
 
     fun `test resolves to foreign values`() {
@@ -64,7 +65,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val exportedValue = module.exportList!!.exportedItems.single() as PSExportedValue
         val foreignValueDeclaration = module.foreignValueDeclarations.single()
 
-        TestCase.assertTrue(exportedValue.reference.isReferenceTo(foreignValueDeclaration))
+        assertTrue(exportedValue.reference.isReferenceTo(foreignValueDeclaration))
     }
 
     fun `test completes exported values`() {
@@ -89,7 +90,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val exportedValue = file.module.exportList!!.exportedItems.single()
-        TestCase.assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
+        assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
     }
 
     fun `test finds usage of foreign value`() {
@@ -101,7 +102,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile
         val exportedValue = file.module.exportList!!.exportedItems.single()
-        TestCase.assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
+        assertEquals(exportedValue, myFixture.testFindUsages("Foo.purs").single().element)
     }
 
     fun `test does not find usage if caret is misplaced`() {
@@ -125,6 +126,46 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
                 foreign import <caret>foo :: Int
             """.trimIndent()
         )
-        TestCase.assertTrue(myFixture.testFindUsages("Foo.purs").isEmpty())
+        assertTrue(myFixture.testFindUsages("Foo.purs").isEmpty())
+    }
+
+    fun `test resolves to class members`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (bar) where
+                class Bar where
+                    bar :: Int
+            """.trimIndent()
+        ).run {
+            assertEquals(getClassMember(), getExportedValue().reference.resolve())
+        }
+    }
+
+    fun `test completes to class members`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (b<caret>) where
+                class Bar where
+                    bar :: Int
+                    bim :: Int
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "bar", "bim")
+    }
+
+    fun `test finds usages class members`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (bar) where
+                class Bar where
+                    bar :: Int
+            """.trimIndent()
+        ).run {
+            val usageInfo = myFixture.findUsages(getClassMember()).single()
+            assertEquals(getExportedValue(), usageInfo.element)
+        }
     }
 }

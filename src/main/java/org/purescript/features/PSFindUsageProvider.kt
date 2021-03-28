@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import org.purescript.file.PSFile
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.PSImportAlias
@@ -23,6 +24,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSDataConstructor
             || psiElement is PSClassDeclaration
             || psiElement is PSTypeSynonymDeclaration
+            || psiElement is PSClassMember
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null
@@ -40,6 +42,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSClassDeclaration -> "class"
             is PSForeignValueDeclaration -> "foreign value"
             is PSTypeSynonymDeclaration -> "type synonym"
+            is PSClassMember -> "class member"
             else -> "unknown"
         }
     }
