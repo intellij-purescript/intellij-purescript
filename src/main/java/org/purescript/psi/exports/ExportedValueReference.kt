@@ -12,8 +12,7 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
 ) {
 
     override fun getVariants(): Array<PsiNamedElement> {
-        return candidates.toList()
-            .distinctBy { it.name }
+        return candidates.distinctBy { it.name }
             .toTypedArray()
     }
 
@@ -21,12 +20,13 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
         return createResults(*candidates.filter { it.name == myElement.name }.toTypedArray())
     }
 
-    private val candidates: Array<PsiNamedElement>
+    private val candidates: List<PsiNamedElement>
         get() =
             myElement.module.run {
-                arrayOf(
+                listOf(
                     *valueDeclarations,
-                    *foreignValueDeclarations
+                    *foreignValueDeclarations,
+                    *classDeclarations.flatMap { it.classMembers.toList() }.toTypedArray()
                 )
             }
 }
