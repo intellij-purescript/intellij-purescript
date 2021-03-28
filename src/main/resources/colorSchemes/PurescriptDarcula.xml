@@ -24,13 +24,13 @@
 
     <option name="PS_TYPE_VARIABLE">
         <value>
-            <option name="FOREGROUND" value="#FF707F"/>
+            <option name="FOREGROUND" value="#BBB529"/>
         </value>
     </option>
 
     <option name="PS_UNDERSCORE">
         <value>
-            <option name="FOREGROUND" value="#FF707F"/>
+            <option name="FOREGROUND" value="#BBB529"/>
         </value>
     </option>
 
