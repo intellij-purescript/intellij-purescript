@@ -5,6 +5,7 @@ import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
 /**
@@ -142,6 +143,15 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     val importedDataDeclarations: List<PSDataDeclaration>
         get() = getImportedDeclarations(
             PSModule::exportedDataDeclarations,
+            PSImportedData::class.java
+        )
+
+    /**
+     * @return the [PSTypeSynonymDeclaration] elements imported by this declaration
+     */
+    val importedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
+        get() = getImportedDeclarations(
+            PSModule::exportedTypeSynonymDeclarations,
             PSImportedData::class.java
         )
 

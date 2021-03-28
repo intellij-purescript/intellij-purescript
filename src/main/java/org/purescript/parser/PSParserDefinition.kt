@@ -129,6 +129,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.*
 import org.purescript.psi.typeconstructor.PSTypeConstructor
+import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
@@ -208,7 +209,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             TypeVarKinded -> PSTypeVarKinded(node)
             TypeAtom -> PSTypeAtomImpl(node)
             TypeDeclaration -> PSTypeDeclarationImpl(node)
-            TypeSynonymDeclaration -> PSTypeSynonymDeclarationImpl(node)
+            TypeSynonymDeclaration -> PSTypeSynonymDeclaration(node)
             ValueDeclaration -> PSValueDeclaration(node)
             ExternDataDeclaration -> PSExternDataDeclarationImpl(node)
             ExternInstanceDeclaration -> PSExternInstanceDeclarationImpl(node)

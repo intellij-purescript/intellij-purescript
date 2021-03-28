@@ -3,11 +3,8 @@ package org.purescript.psi
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
+import org.purescript.*
 import org.purescript.file.PSFile
-import org.purescript.getClassDeclarations
-import org.purescript.getExportedClassDeclarations
-import org.purescript.getExportedDataDeclarations
-import org.purescript.getModule
 
 class PSModuleTest : BasePlatformTestCase() {
 
@@ -393,6 +390,33 @@ class PSModuleTest : BasePlatformTestCase() {
         ).getExportedClassDeclarations()
 
         assertSize(2, exportedClassDeclarations)
+    }
+
+    fun `test finds type synonym declarations`() {
+        val typeSynonymDeclarations = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                type T1 = Int
+                type T2 = String
+            """.trimIndent()
+        ).getTypeSynonymDeclarations()
+
+        assertSize(2, typeSynonymDeclarations)
+    }
+
+    fun `test finds exported type synonym declarations`() {
+        val exportedTypeSynonymDeclarations = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (Silver, Tail) where
+                type Silver = Int
+                type Stream = Boolean
+                type Tail = String
+            """.trimIndent()
+        ).getModule().exportedTypeSynonymDeclarations
+
+        assertSize(2, exportedTypeSynonymDeclarations)
     }
 }
 

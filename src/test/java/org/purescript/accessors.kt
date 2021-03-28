@@ -17,6 +17,7 @@ import org.purescript.psi.exports.PSExportedDataMember
 import org.purescript.psi.exports.PSExportedItem
 import org.purescript.psi.imports.*
 import org.purescript.psi.typeconstructor.PSTypeConstructor
+import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 
 fun PsiFile.getModule(): PSModule =
@@ -93,3 +94,9 @@ fun PsiFile.getClassConstraint(): PSClassConstraint =
 
 fun PsiFile.getTypeConstructor(): PSTypeConstructor =
     collectDescendantsOfType<PSTypeConstructor>().single()
+
+fun PsiFile.getTypeSynonymDeclarations(): Array<PSTypeSynonymDeclaration> =
+    getModule().typeSynonymDeclarations
+
+fun PsiFile.getTypeSynonymDeclaration(): PSTypeSynonymDeclaration =
+    getTypeSynonymDeclarations().single()
