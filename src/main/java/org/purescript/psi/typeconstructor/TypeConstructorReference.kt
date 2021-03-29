@@ -1,8 +1,7 @@
 package org.purescript.psi.typeconstructor
 
-import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.psi.PSPsiElement
 
 class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     PsiReferenceBase<PSTypeConstructor>(
@@ -11,19 +10,28 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         false
     ) {
 
-    override fun getVariants(): Array<Any> =
+    override fun getVariants(): Array<PsiNamedElement> =
         candidates.toTypedArray()
 
-    override fun resolve(): PsiElement? =
+    override fun resolve(): PsiNamedElement? =
         candidates.firstOrNull { it.name == myElement.name }
 
-    /*
-     * TODO [simonolander]
-     *  Add support for type declarations
+    /**
+     * Type constructors can reference any data, new type, or synonym declaration
+     * in the current module or any of the imported modules.
      */
-    private val candidates: List<PSPsiElement>
-        get() = myElement.module?.run {
-            dataDeclarations.toList() + newTypeDeclarations.toList() +
-                importDeclarations.flatMap { it.importedDataDeclarations + it.importedNewTypeDeclarations }
-        } ?: emptyList()
+    private val candidates: List<PsiNamedElement>
+        get() {
+            val module = element.module ?: return emptyList()
+            val candidates = mutableListOf<PsiNamedElement>()
+            candidates.addAll(module.dataDeclarations)
+            candidates.addAll(module.newTypeDeclarations)
+            candidates.addAll(module.typeSynonymDeclarations)
+            for (importDeclaration in module.importDeclarations) {
+                candidates.addAll(importDeclaration.importedDataDeclarations)
+                candidates.addAll(importDeclaration.importedNewTypeDeclarations)
+                candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
+            }
+            return candidates
+        }
 }
