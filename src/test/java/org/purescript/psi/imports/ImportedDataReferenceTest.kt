@@ -160,7 +160,7 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
             "Bar.purs",
             """
                 module Bar where
-                type Bar = Bar Int
+                type Bar = Int
             """.trimIndent()
         ).getTypeSynonymDeclaration()
         val importedData = myFixture.configureByText(
@@ -178,9 +178,9 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
             "Bar.purs",
             """
                 module Bar (Bara, Bira) where
-                type Bara = Bara (Int -> Boolean)
-                type Bira = Bira Int
-                type Bar = Bar Int
+                type Bara = (Int -> Boolean)
+                type Bira = Int
+                type Bar = Int
             """.trimIndent()
         )
         myFixture.configureByText(
@@ -198,7 +198,7 @@ class ImportedDataReferenceTest : BasePlatformTestCase() {
             "Bar.purs",
             """
                 module Bar where
-                type Bar = Bar String
+                type Bar = String
             """.trimIndent()
         ).getTypeSynonymDeclaration()
         val importedData = myFixture.configureByText(
