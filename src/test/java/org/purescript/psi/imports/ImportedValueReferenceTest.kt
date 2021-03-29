@@ -1,6 +1,7 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.purescript.getClassMember
 import org.purescript.getForeignValueDeclaration
 import org.purescript.getImportedValue
 import org.purescript.getValueDeclaration
@@ -200,5 +201,67 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
         ).getImportedValue()
         val usage = myFixture.findUsages(foreignValueDeclaration).single().element
         assertEquals(importedValue, usage)
+    }
+
+    fun `test resolves class member declarations`() {
+        val classMember = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Bar where
+                    foo :: Int
+            """.trimIndent()
+        ).getClassMember()
+        val importedValue = myFixture.configureByText(
+            "Qux.purs",
+            """
+                module Qux where
+                import Foo (foo)
+            """.trimIndent()
+        ).getImportedValue()
+
+        assertEquals(classMember, importedValue.reference.resolve())
+    }
+
+    fun `test completes class member declarations`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Bar where
+                    foo :: Int
+                    fum :: Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Qux.purs",
+            """
+                module Qux where
+                import Foo (f<caret>)
+            """.trimIndent()
+        )
+
+        myFixture.testCompletionVariants("Qux.purs", "foo", "fum")
+    }
+
+    fun `test finds usages of class member declarations`() {
+        val classMember = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Bar where
+                    foo :: Int
+            """.trimIndent()
+        ).getClassMember()
+        val importedValue = myFixture.configureByText(
+            "Qux.purs",
+            """
+                module Qux where
+                import Foo (foo)
+            """.trimIndent()
+        ).getImportedValue()
+        val usageInfo = myFixture.findUsages(classMember).single()
+
+        assertEquals(importedValue, usageInfo.element)
     }
 }
