@@ -2,27 +2,27 @@ package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
-import org.purescript.file.PSFile
 import org.purescript.getImportDeclaration
 import org.purescript.getImportDeclarations
+import org.purescript.getModule
 
 class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
     fun `test resolve to module in root directory`() {
-        val mainFile = myFixture.addFileToProject(
+        val module = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
             import Foo
             """.trimIndent()
-        ) as PSFile
+        ).getModule()
         myFixture.addFileToProject(
             "Foo.purs",
             """
             module Foo where
             """.trimIndent()
         )
-        val psImportDeclaration = mainFile.module.getImportDeclarationByName("Foo")!!
+        val psImportDeclaration = module.getImportDeclarationByName("Foo")!!
 
         val psModule = psImportDeclaration.reference.resolve()!!
 
@@ -30,15 +30,15 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
     }
 
     fun `test dont crash if module not found`() {
-        val mainFile = myFixture.addFileToProject(
+        val module = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
             import Foo
             """.trimIndent()
-        ) as PSFile
+        ).getModule()
 
-        val psImportDeclaration = mainFile.module.getImportDeclarationByName("Foo")!!
+        val psImportDeclaration = module.getImportDeclarationByName("Foo")!!
 
         val psModule = psImportDeclaration.reference.resolve()
         TestCase.assertNull(psModule)
@@ -46,20 +46,20 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
 
     fun `test resolve to module in subdirectory`() {
-        val mainFile = myFixture.addFileToProject(
+        val module = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
             import Bar.Foo
             """.trimIndent()
-        ) as PSFile
+        ).getModule()
         myFixture.addFileToProject(
             "Bar/Foo.purs",
             """
             module Bar.Foo where
             """.trimIndent()
         )
-        val psImportDeclaration = mainFile.module.getImportDeclarationByName("Bar.Foo")!!
+        val psImportDeclaration = module.getImportDeclarationByName("Bar.Foo")!!
 
         val psModule = psImportDeclaration.reference.resolve()!!
 
@@ -67,13 +67,13 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
     }
 
     fun `test resolve to module with correct module name when there is competing files`() {
-        val mainFile = myFixture.addFileToProject(
+        val module = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
             import Bar.Foo
             """.trimIndent()
-        ) as PSFile
+        ).getModule()
         myFixture.addFileToProject(
             "Bar/Foo.purs",
             """
@@ -86,7 +86,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             module Foo where
             """.trimIndent()
         )
-        val psImportDeclaration = mainFile.module.getImportDeclarationByName("Bar.Foo")!!
+        val psImportDeclaration = module.getImportDeclarationByName("Bar.Foo")!!
 
         val resolve = psImportDeclaration.reference.resolve()
         val psModule = resolve!!
@@ -95,7 +95,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
     }
 
     fun `test knows about imported names`() {
-        val mainFile = myFixture.addFileToProject(
+        val module = myFixture.addFileToProject(
             "Main.purs",
             """
             module Main where
@@ -104,21 +104,21 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             import Buz (x)
             import Fuz (hiding)
             """.trimIndent()
-        ) as PSFile
+        ).getModule()
 
-        val foo = mainFile.module.getImportDeclarationByName("Foo")!!
+        val foo = module.getImportDeclarationByName("Foo")!!
         assertTrue(foo.isHiding)
         assertContainsElements(foo.namedImports, "x")
 
-        val bar = mainFile.module.getImportDeclarationByName("Bar")!!
+        val bar = module.getImportDeclarationByName("Bar")!!
         assertFalse(bar.isHiding)
         assertDoesntContain(bar.namedImports, "x")
 
-        val buz = mainFile.module.getImportDeclarationByName("Buz")!!
+        val buz = module.getImportDeclarationByName("Buz")!!
         assertFalse(buz.isHiding)
         assertContainsElements(buz.namedImports, "x")
 
-        val fuz = mainFile.module.getImportDeclarationByName("Fuz")!!
+        val fuz = module.getImportDeclarationByName("Fuz")!!
         assertFalse(fuz.isHiding)
         assertContainsElements(fuz.namedImports, "hiding")
     }

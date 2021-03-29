@@ -21,7 +21,7 @@ class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImp
             fileName,
             GlobalSearchScope.allScope(myElement.project)
         ).filterIsInstance<PSFile>()
-            .map { it.module }
+            .mapNotNull { it.module }
             .firstOrNull { it.name == moduleName }
     }
 

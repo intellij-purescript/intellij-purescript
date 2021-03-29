@@ -22,11 +22,11 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
 
     private val candidates: List<PsiNamedElement>
         get() =
-            myElement.module.run {
+            myElement?.module?.run {
                 listOf(
                     *valueDeclarations,
                     *foreignValueDeclarations,
                     *classDeclarations.flatMap { it.classMembers.toList() }.toTypedArray()
                 )
-            }
+            } ?: emptyList()
 }

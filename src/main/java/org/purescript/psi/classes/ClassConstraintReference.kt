@@ -15,7 +15,7 @@ class ClassConstraintReference(classConstraint: PSClassConstraint) : PsiReferenc
         candidates.firstOrNull { it.name == myElement.name }
 
     private val candidates: List<PSClassDeclaration>
-        get() = myElement.module.run {
+        get() = myElement.module?.run {
             classDeclarations.toList() + importDeclarations.flatMap { it.importedClassDeclarations }
-        }
+        } ?: emptyList()
 }

@@ -12,17 +12,14 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.exports.PSExportedData
-import org.purescript.psi.exports.PSExportedDataMember
-import org.purescript.psi.exports.PSExportedItem
-import org.purescript.psi.exports.PSExportedValue
+import org.purescript.psi.exports.*
 import org.purescript.psi.imports.*
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 
 fun PsiFile.getModule(): PSModule =
-    (this as PSFile).module
+    (this as PSFile).module!!
 
 fun PsiFile.getDataDeclaration(): PSDataDeclaration =
     getModule().dataDeclarations.single()
@@ -72,14 +69,20 @@ fun PsiFile.getImportedData(): PSImportedData =
 fun PsiFile.getImportedValue(): PSImportedValue =
     getImportedItem() as PSImportedValue
 
+fun PsiFile.getExportedItems(): Array<PSExportedItem> =
+    getModule().exportList!!.exportedItems
+
 fun PsiFile.getExportedItem(): PSExportedItem =
-    getModule().exportList!!.exportedItems.single()
+    getExportedItems().single()
 
 fun PsiFile.getExportedData(): PSExportedData =
     getExportedItem() as PSExportedData
 
 fun PsiFile.getExportedValue(): PSExportedValue =
     getExportedItem() as PSExportedValue
+
+fun PsiFile.getExportedModule(): PSExportedModule =
+    getExportedItem() as PSExportedModule
 
 fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()

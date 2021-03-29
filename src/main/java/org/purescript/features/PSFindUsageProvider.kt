@@ -50,8 +50,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     override fun getDescriptiveName(element: PsiElement): String {
         when (element) {
             is PSValueDeclaration -> {
-                val file = element.containingFile as PSFile
-                return "${file.module.name}.${element.name}"
+                return "${element.module?.name}.${element.name}"
             }
             is PsiNamedElement -> {
                 val name = element.name

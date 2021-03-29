@@ -22,8 +22,8 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
      *  Add support for type declarations
      */
     private val candidates: List<PSPsiElement>
-        get() = myElement.module.run {
+        get() = myElement.module?.run {
             dataDeclarations.toList() + newTypeDeclarations.toList() +
                 importDeclarations.flatMap { it.importedDataDeclarations + it.importedNewTypeDeclarations }
-        }
+        } ?: emptyList()
 }

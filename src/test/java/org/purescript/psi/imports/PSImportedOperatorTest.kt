@@ -1,22 +1,19 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
-import org.purescript.file.PSFile
+import org.purescript.getImportedItem
 
 
 class PSImportedOperatorTest : BasePlatformTestCase() {
 
     fun `test imported operator has correct name`() {
-        val file = myFixture.configureByText(
+        val importedOperator = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
                 import Bar ((<|~|>))
             """.trimIndent()
-        ) as PSFile
-        val importDecl = file.module.importDeclarations.single()
-        val importedOperator = importDecl.importList!!.importedItems.single() as PSImportedOperator
-        TestCase.assertEquals("<|~|>", importedOperator.name)
+        ).getImportedItem() as PSImportedOperator
+        assertEquals("<|~|>", importedOperator.name)
     }
 }

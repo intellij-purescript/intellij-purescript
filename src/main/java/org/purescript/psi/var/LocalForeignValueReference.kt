@@ -11,7 +11,8 @@ class LocalForeignValueReference(element: PSVar) : PsiReferenceBase<PSVar>(
 ) {
 
     override fun getVariants(): Array<PSForeignValueDeclaration> {
-        return myElement.module.foreignValueDeclarations
+        return myElement.module?.foreignValueDeclarations
+            ?: emptyArray()
     }
 
     override fun resolve(): PSForeignValueDeclaration? {

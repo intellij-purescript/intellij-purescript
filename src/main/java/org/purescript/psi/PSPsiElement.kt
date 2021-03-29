@@ -9,5 +9,5 @@ abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
     /**
      * @return the [PSModule] containing this element
      */
-    val module: PSModule get() = (containingFile as PSFile).module
+    val module: PSModule? get() = (containingFile as? PSFile)?.module
 }
