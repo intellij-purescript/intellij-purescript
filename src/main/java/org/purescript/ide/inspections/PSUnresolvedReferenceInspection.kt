@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiReference
+import org.purescript.PSLanguage
 import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.exports.PSExportedValue
 import org.purescript.psi.imports.PSImportDeclarationImpl
@@ -16,8 +17,14 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                 super.visitElement(element)
                 when (element) {
                     is PSExportedValue -> visitReference(element.reference)
-                    is PSExportedModule -> visitReference(element.reference)
-                    is PSImportDeclarationImpl -> visitReference(element.reference)
+                    is PSExportedModule -> visitModuleReference(element.reference)
+                    is PSImportDeclarationImpl -> visitModuleReference(element.reference)
+                }
+            }
+
+            private fun visitModuleReference(reference: PsiReference) {
+                if (reference.canonicalText !in PSLanguage.BUILTIN_MODULES) {
+                    visitReference(reference)
                 }
             }
 

@@ -85,4 +85,32 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test doesn't report unresolved built-in modules`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo
+                ( module Prim
+                , module Prim.Boolean
+                , module Prim.Coerce
+                , module Prim.Ordering
+                , module Prim.Row
+                , module Prim.RowList
+                , module Prim.Symbol
+                , module Prim.TypeError
+                ) where
+            import Prim
+            import Prim.Boolean
+            import Prim.Coerce
+            import Prim.Ordering
+            import Prim.Row
+            import Prim.RowList
+            import Prim.Symbol
+            import Prim.TypeError
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
