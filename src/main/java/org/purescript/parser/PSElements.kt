@@ -266,7 +266,7 @@ interface PSElements {
         val Var = PSElementType("Var")
 
         @kotlin.jvm.JvmField
-        val Constructor = PSElementType("Constructor")
+        val ExpressionConstructor = PSElementType("ExpressionConstructor")
 
         @kotlin.jvm.JvmField
         val Case = PSElementType("Case")

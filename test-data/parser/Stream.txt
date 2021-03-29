@@ -204,7 +204,7 @@ Purescript File
           PsiElement(identifier)('xs')
         PsiElement(=)('=')
         PSValueImpl(Value)
-          PSIdentifier(Constructor)
+          PSIdentifier(ExpressionConstructor)
             PSProperName(Qualified)
               PSProperName(ProperName)
                 PsiElement(proper name)('Stream')

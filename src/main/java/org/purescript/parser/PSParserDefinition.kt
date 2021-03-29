@@ -34,7 +34,7 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
-import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
@@ -165,7 +165,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
             ProperName, Qualified, pClassName, pModuleName, importModuleName -> PSProperName(node)
-            Identifier, GenericIdentifier, Constructor, LocalIdentifier -> PSIdentifier(node)
+            Identifier, GenericIdentifier, ExpressionConstructor, LocalIdentifier -> PSIdentifier(node)
             TypeConstructor -> PSTypeConstructor(node)
             ImportDeclaration -> PSImportDeclarationImpl(node)
             ImportAlias -> PSImportAlias(node)

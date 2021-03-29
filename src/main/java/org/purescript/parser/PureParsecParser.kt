@@ -38,7 +38,7 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
-import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
@@ -597,7 +597,7 @@ class PureParsecParser {
         choice(
             attempt(parseTypeDeclaration),
             optional(attempt(lparen))
-                .then(optional(attempt(properName).`as`(Constructor)))
+                .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                 .then(optional(attempt(many1(ident))))
                 .then(
                     optional(
@@ -706,7 +706,7 @@ class PureParsecParser {
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
                 optional(attempt(lparen))
-                    .then(optional(attempt(properName).`as`(Constructor)))
+                    .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                     .then(optional(attempt(many1(ident))))
                     .then(
                         optional(
@@ -737,7 +737,7 @@ class PureParsecParser {
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
-            parseQualified(properName).`as`(Constructor),
+            parseQualified(properName).`as`(ExpressionConstructor),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),

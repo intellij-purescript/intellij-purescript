@@ -9,7 +9,7 @@ import org.purescript.highlighting.PSSyntaxHighlighter.Companion.NUMBER
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_ANNOTATION_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_VARIABLE
-import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.LocalIdentifier
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
@@ -36,7 +36,7 @@ class PSSyntaxHighlightAnnotator : Annotator {
                     .textAttributes(TYPE_NAME)
                     .create()
             }
-            GenericIdentifier, Constructor -> {
+            GenericIdentifier, ExpressionConstructor -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_VARIABLE)
                     .create()
