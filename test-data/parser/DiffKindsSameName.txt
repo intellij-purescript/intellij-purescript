@@ -77,7 +77,7 @@ Purescript File
         PsiElement(identifier)('bProxy')
       PsiElement(=)('=')
       PSValueImpl(Value)
-        PSIdentifier(ExpressionConstructor)
+        PSExpressionConstructor(ExpressionConstructor)
           PSProperName(Qualified)
             PSProperName(ProperName)
               PsiElement(proper name)('AProxy')

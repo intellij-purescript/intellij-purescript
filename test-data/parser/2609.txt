@@ -154,7 +154,7 @@ Purescript File
           PsiElement(of)('of')
           PSCaseAlternativeImpl(CaseAlternative)
             PSValueImpl(Value)
-              PSIdentifier(ExpressionConstructor)
+              PSExpressionConstructor(ExpressionConstructor)
                 PSProperName(Qualified)
                   PSProperName(ProperName)
                     PsiElement(proper name)('Bar'')

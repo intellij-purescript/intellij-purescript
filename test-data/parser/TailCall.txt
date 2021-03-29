@@ -298,7 +298,7 @@ Purescript File
                               PSProperName(ProperName)
                                 PsiElement(proper name)('C')
                             PsiElement(`)('`')
-                            PSIdentifier(ExpressionConstructor)
+                            PSExpressionConstructor(ExpressionConstructor)
                               PSProperName(Qualified)
                                 PSProperName(ProperName)
                                   PsiElement(proper name)('N')

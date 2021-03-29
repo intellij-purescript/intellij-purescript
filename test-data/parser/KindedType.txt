@@ -200,7 +200,7 @@ Purescript File
         PsiElement(identifier)('test3')
       PsiElement(=)('=')
       PSValueImpl(Value)
-        PSIdentifier(ExpressionConstructor)
+        PSExpressionConstructor(ExpressionConstructor)
           PSProperName(Qualified)
             PSProperName(ProperName)
               PsiElement(proper name)('Proxy')
