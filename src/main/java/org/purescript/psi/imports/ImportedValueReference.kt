@@ -21,7 +21,12 @@ class ImportedValueReference(element: PSImportedValue) : PsiReferenceBase.Poly<P
         get() {
             val module = element.importDeclaration?.importedModule
                 ?: return emptyList()
-
-            return module.exportedValueDeclarations + module.exportedForeignValueDeclarations
+            val candidates = mutableListOf<PsiNamedElement>()
+            candidates.addAll(module.exportedValueDeclarations)
+            candidates.addAll(module.exportedForeignValueDeclarations)
+            for (exportedClassDeclaration in module.exportedClassDeclarations) {
+                candidates.addAll(exportedClassDeclaration.classMembers)
+            }
+            return candidates
         }
 }
