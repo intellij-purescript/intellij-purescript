@@ -13,6 +13,7 @@ import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
+import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
@@ -107,3 +108,9 @@ fun PsiFile.getTypeSynonymDeclarations(): Array<PSTypeSynonymDeclaration> =
 
 fun PsiFile.getTypeSynonymDeclaration(): PSTypeSynonymDeclaration =
     getTypeSynonymDeclarations().single()
+
+fun PsiFile.getExpressionConstructors(): List<PSExpressionConstructor> =
+    collectDescendantsOfType()
+
+fun PsiFile.getExpressionConstructor(): PSExpressionConstructor =
+    getExpressionConstructors().single()
