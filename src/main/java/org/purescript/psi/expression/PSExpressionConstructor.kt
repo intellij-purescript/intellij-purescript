@@ -1,6 +1,7 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiReference
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
 
@@ -20,8 +21,11 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node) {
     /**
      * @return the [PSProperName] identifying this constructor
      */
-    private val identifier: PSProperName
+    internal val identifier: PSProperName
         get() = findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = identifier.name
+
+    override fun getReference(): ExpressionConstructorReference =
+        ExpressionConstructorReference(this)
 }

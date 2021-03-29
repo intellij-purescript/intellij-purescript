@@ -30,6 +30,14 @@ class PSDataDeclaration(node: ASTNode) :
     internal val dataConstructorList: PSDataConstructorList?
         get() = findChildByClass(PSDataConstructorList::class.java)
 
+    /**
+     * @return the [PSDataConstructor] elements belonging to this
+     * declaration, or an empty array if it's an empty declaration
+     */
+    val dataConstructors: Array<PSDataConstructor>
+        get() = dataConstructorList?.dataConstructors
+            ?: emptyArray()
+
     override fun setName(name: String): PsiElement? {
         return null
     }
