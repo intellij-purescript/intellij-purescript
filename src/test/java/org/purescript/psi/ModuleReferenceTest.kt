@@ -61,4 +61,21 @@ class ModuleReferenceTest : BasePlatformTestCase() {
 
         assertEquals(importDeclaration, usageInfo.element)
     }
+
+    fun `test completes modules`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import <caret>
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "Bar", "Foo")
+    }
 }
