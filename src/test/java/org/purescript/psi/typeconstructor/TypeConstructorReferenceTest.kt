@@ -1,10 +1,10 @@
 package org.purescript.psi.typeconstructor
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
 import org.purescript.getDataDeclaration
 import org.purescript.getNewTypeDeclaration
 import org.purescript.getTypeConstructor
+import org.purescript.getTypeSynonymDeclaration
 
 class TypeConstructorReferenceTest : BasePlatformTestCase() {
 
@@ -38,7 +38,7 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getTypeConstructor()
 
-        TestCase.assertEquals(dataDeclaration, typeConstructor.reference.resolve())
+        assertEquals(dataDeclaration, typeConstructor.reference.resolve())
     }
 
     fun `test completes data declarations`() {
@@ -95,7 +95,7 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
         ).getTypeConstructor()
         val usageInfo = myFixture.findUsages(dataDeclaration).single()
 
-        TestCase.assertEquals(typeConstructor, usageInfo.element)
+        assertEquals(typeConstructor, usageInfo.element)
     }
 
     fun `test resolves local newtype declarations`() {
@@ -128,7 +128,7 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getTypeConstructor()
 
-        TestCase.assertEquals(newtypeDeclaration, typeConstructor.reference.resolve())
+        assertEquals(newtypeDeclaration, typeConstructor.reference.resolve())
     }
 
     fun `test completes newtype declarations`() {
@@ -185,6 +185,97 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
         ).getTypeConstructor()
         val usageInfo = myFixture.findUsages(newtypeDeclaration).single()
 
-        TestCase.assertEquals(typeConstructor, usageInfo.element)
+        assertEquals(typeConstructor, usageInfo.element)
+    }
+
+    fun `test resolves local type synonym declarations`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                type Bar a = a
+                q :: Bar
+            """.trimIndent()
+        ).run {
+            assertEquals(getTypeSynonymDeclaration(), getTypeConstructor().reference.resolve())
+        }
+    }
+
+    fun `test resolves imported type synonym declarations`() {
+        val typeSynonymDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                type Qux = Int
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
+        val typeConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                a :: Qux
+            """.trimIndent()
+        ).getTypeConstructor()
+
+        assertEquals(typeSynonymDeclaration, typeConstructor.reference.resolve())
+    }
+
+    fun `test completes type synonym declarations`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                type Qux = Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                type Bum = Int
+                a :: <caret>
+            """.trimIndent()
+        )
+
+        myFixture.testCompletionVariants("Foo.purs", "Qux", "Bum")
+    }
+
+    fun `test finds usages from local type synonym declarations`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+                module Data where
+                type B = Int
+                type <caret>A = Int
+                func :: A -> A
+                func a = a
+                """.trimIndent()
+        )
+        val usageInfo = myFixture.testFindUsages("Main.purs")
+        
+        assertEquals(2, usageInfo.size)
+    }
+
+    fun `test finds usages from imported type synonym declarations`() {
+        val typeSynonymDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                type Qux = Int
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
+        val typeConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                a :: Qux
+            """.trimIndent()
+        ).getTypeConstructor()
+        val usageInfo = myFixture.findUsages(typeSynonymDeclaration).single()
+
+        assertEquals(typeConstructor, usageInfo.element)
     }
 }
