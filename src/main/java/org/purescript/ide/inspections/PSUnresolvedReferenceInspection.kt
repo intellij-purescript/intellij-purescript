@@ -1,12 +1,14 @@
 package org.purescript.ide.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiReference
+import org.purescript.PSLanguage
 import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.exports.PSExportedValue
+import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -14,24 +16,21 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
                 when (element) {
-                    is PSExportedValue -> {
-                        if (element.reference.multiResolve(false).isEmpty()) {
-                            holder.registerProblem(
-                                element,
-                                "Unresolved reference '${element.name}'",
-                                ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
-                            )
-                        }
-                    }
-                    is PSExportedModule -> {
-                        if (element.reference.resolve() == null) {
-                            holder.registerProblem(
-                                element,
-                                "Unresolved module '${element.name}'",
-                                ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
-                            )
-                        }
-                    }
+                    is PSExportedValue -> visitReference(element.reference)
+                    is PSExportedModule -> visitModuleReference(element.reference)
+                    is PSImportDeclarationImpl -> visitModuleReference(element.reference)
+                }
+            }
+
+            private fun visitModuleReference(reference: PsiReference) {
+                if (reference.canonicalText !in PSLanguage.BUILTIN_MODULES) {
+                    visitReference(reference)
+                }
+            }
+
+            private fun visitReference(reference: PsiReference) {
+                if (reference.resolve() == null) {
+                    holder.registerProblem(reference)
                 }
             }
         }
