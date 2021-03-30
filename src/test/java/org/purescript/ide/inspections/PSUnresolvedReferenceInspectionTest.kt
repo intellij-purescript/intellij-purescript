@@ -113,4 +113,31 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test doesn't report resolved expression constructors`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                newtype Bar = Qux Int
+                f = Qux 3
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test reports unresolved expression constructors`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = <error descr="Cannot resolve symbol 'Bar'">Bar</error> 3
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
