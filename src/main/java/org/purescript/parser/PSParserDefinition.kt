@@ -34,7 +34,7 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
-import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
@@ -79,6 +79,7 @@ import org.purescript.parser.PSElements.Companion.Let
 import org.purescript.parser.PSElements.Companion.LocalIdentifier
 import org.purescript.parser.PSElements.Companion.Module
 import org.purescript.parser.PSElements.Companion.NamedBinder
+import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NewtypeDeclaration
 import org.purescript.parser.PSElements.Companion.NullBinder
 import org.purescript.parser.PSElements.Companion.NumberBinder
@@ -127,7 +128,10 @@ import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
+import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
+import org.purescript.psi.newtype.PSNewTypeConstructor
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
@@ -165,7 +169,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
             ProperName, Qualified, pClassName, pModuleName, importModuleName -> PSProperName(node)
-            Identifier, GenericIdentifier, Constructor, LocalIdentifier -> PSIdentifier(node)
+            Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
+            ExpressionConstructor -> PSExpressionConstructor(node)
             TypeConstructor -> PSTypeConstructor(node)
             ImportDeclaration -> PSImportDeclarationImpl(node)
             ImportAlias -> PSImportAlias(node)
@@ -225,6 +230,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ClassMember -> PSClassMember(node)
             TypeInstanceDeclaration -> PSTypeInstanceDeclarationImpl(node)
             NewtypeDeclaration -> PSNewTypeDeclarationImpl(node)
+            NewTypeConstructor -> PSNewTypeConstructor(node)
             Guard -> PSGuardImpl(node)
             NullBinder -> PSNullBinderImpl(node)
             StringBinder -> PSStringBinderImpl(node)

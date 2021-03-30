@@ -158,7 +158,7 @@ Purescript File
           PsiElement(identifier)('f')
         PsiElement(=)('=')
         PSValueImpl(Value)
-          PSIdentifier(Constructor)
+          PSExpressionConstructor(ExpressionConstructor)
             PSProperName(Qualified)
               PSProperName(ProperName)
                 PsiElement(proper name)('S')

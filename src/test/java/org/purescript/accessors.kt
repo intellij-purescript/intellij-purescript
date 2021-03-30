@@ -5,7 +5,7 @@ import com.intellij.psi.util.collectDescendantsOfType
 import org.purescript.file.PSFile
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
-import org.purescript.psi.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
@@ -13,7 +13,9 @@ import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
+import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
+import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -56,6 +58,9 @@ fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> =
 
 fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclarationImpl =
     getNewTypeDeclarations().single()
+
+fun PsiFile.getNewTypeConstructor(): PSNewTypeConstructor =
+    getNewTypeDeclaration().newTypeConstructor
 
 fun PsiFile.getImportedItem(): PSImportedItem =
     getImportDeclaration().importList!!.importedItems.single()
@@ -107,3 +112,9 @@ fun PsiFile.getTypeSynonymDeclarations(): Array<PSTypeSynonymDeclaration> =
 
 fun PsiFile.getTypeSynonymDeclaration(): PSTypeSynonymDeclaration =
     getTypeSynonymDeclarations().single()
+
+fun PsiFile.getExpressionConstructors(): List<PSExpressionConstructor> =
+    collectDescendantsOfType()
+
+fun PsiFile.getExpressionConstructor(): PSExpressionConstructor =
+    getExpressionConstructors().single()

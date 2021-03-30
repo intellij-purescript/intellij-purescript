@@ -38,7 +38,7 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
-import org.purescript.parser.PSElements.Companion.Constructor
+import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
@@ -52,6 +52,7 @@ import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
 import org.purescript.parser.PSElements.Companion.Identifier
 import org.purescript.parser.PSElements.Companion.NamedBinder
+import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NumberBinder
 import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
@@ -485,7 +486,7 @@ class PureParsecParser {
     private val decl = choice(
         (dataHead + optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList)))
             .`as`(PSElements.DataDeclaration),
-        (newtypeHead + eq + properName + typeAtom)
+        (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         (typeHead + indented(eq) + type).`as`(TypeSynonymDeclaration),
@@ -597,7 +598,7 @@ class PureParsecParser {
         choice(
             attempt(parseTypeDeclaration),
             optional(attempt(lparen))
-                .then(optional(attempt(properName).`as`(Constructor)))
+                .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                 .then(optional(attempt(many1(ident))))
                 .then(
                     optional(
@@ -706,7 +707,7 @@ class PureParsecParser {
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
                 optional(attempt(lparen))
-                    .then(optional(attempt(properName).`as`(Constructor)))
+                    .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                     .then(optional(attempt(many1(ident))))
                     .then(
                         optional(
@@ -737,7 +738,7 @@ class PureParsecParser {
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
-            parseQualified(properName).`as`(Constructor),
+            parseQualified(properName).`as`(ExpressionConstructor),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),

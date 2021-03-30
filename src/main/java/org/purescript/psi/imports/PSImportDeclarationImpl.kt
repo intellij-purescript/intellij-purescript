@@ -5,6 +5,7 @@ import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
