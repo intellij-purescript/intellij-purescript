@@ -15,6 +15,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
+import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -57,6 +58,9 @@ fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> =
 
 fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclarationImpl =
     getNewTypeDeclarations().single()
+
+fun PsiFile.getNewTypeConstructor(): PSNewTypeConstructor =
+    getNewTypeDeclaration().newTypeConstructor
 
 fun PsiFile.getImportedItem(): PSImportedItem =
     getImportDeclaration().importList!!.importedItems.single()
