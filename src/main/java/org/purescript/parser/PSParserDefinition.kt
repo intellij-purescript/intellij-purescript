@@ -79,6 +79,7 @@ import org.purescript.parser.PSElements.Companion.Let
 import org.purescript.parser.PSElements.Companion.LocalIdentifier
 import org.purescript.parser.PSElements.Companion.Module
 import org.purescript.parser.PSElements.Companion.NamedBinder
+import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NewtypeDeclaration
 import org.purescript.parser.PSElements.Companion.NullBinder
 import org.purescript.parser.PSElements.Companion.NumberBinder
@@ -129,6 +130,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
+import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
@@ -228,6 +230,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ClassMember -> PSClassMember(node)
             TypeInstanceDeclaration -> PSTypeInstanceDeclarationImpl(node)
             NewtypeDeclaration -> PSNewTypeDeclarationImpl(node)
+            NewTypeConstructor -> PSNewTypeConstructor(node)
             Guard -> PSGuardImpl(node)
             NullBinder -> PSNullBinderImpl(node)
             StringBinder -> PSStringBinderImpl(node)

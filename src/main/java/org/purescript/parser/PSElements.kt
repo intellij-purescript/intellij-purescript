@@ -197,6 +197,9 @@ interface PSElements {
         val NewtypeDeclaration = PSElementType("NewtypeDeclaration")
 
         @kotlin.jvm.JvmField
+        val NewTypeConstructor = PSElementType("NewTypeConstructor")
+
+        @kotlin.jvm.JvmField
         val Guard = PSElementType("Guard")
 
         @kotlin.jvm.JvmField

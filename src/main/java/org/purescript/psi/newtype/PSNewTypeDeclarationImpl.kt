@@ -5,18 +5,21 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.PSProperName
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.data.PSDataConstructor
 
 class PSNewTypeDeclarationImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
+
+    /**
+     * @return the [PSProperName] that identifies this declaration
+     */
     private val identifier: PSProperName
         get() =
             findNotNullChildByClass(PSProperName::class.java)
 
     /**
-     * @return the [PSDataConstructor] defined by this declaration
+     * @return the [PSNewTypeConstructor] defined by this declaration
      */
-    val dataConstructor: PSDataConstructor
-        get() = findNotNullChildByClass(PSDataConstructor::class.java)
+    val newTypeConstructor: PSNewTypeConstructor
+        get() = findNotNullChildByClass(PSNewTypeConstructor::class.java)
 
     override fun setName(name: String): PsiElement? = null
 

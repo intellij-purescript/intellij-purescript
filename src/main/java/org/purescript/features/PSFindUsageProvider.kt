@@ -9,6 +9,7 @@ import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.PSImportAlias
+import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -19,6 +20,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSModule
             || psiElement is PSForeignValueDeclaration
             || psiElement is PSNewTypeDeclarationImpl
+            || psiElement is PSNewTypeConstructor
             || psiElement is PSImportAlias
             || psiElement is PSDataDeclaration
             || psiElement is PSDataConstructor
@@ -36,6 +38,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSVarBinderImpl -> "parameter"
             is PSModule -> "module"
             is PSNewTypeDeclarationImpl -> "newtype"
+            is PSNewTypeConstructor -> "newtype constructor"
             is PSImportAlias -> "import alias"
             is PSDataDeclaration -> "data"
             is PSDataConstructor -> "data constructor"

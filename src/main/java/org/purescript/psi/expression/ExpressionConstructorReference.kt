@@ -21,14 +21,14 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
             val module = element.module ?: return emptySequence()
             return sequence {
                 for (newTypeDeclaration in module.newTypeDeclarations) {
-                    yield(newTypeDeclaration.dataConstructor)
+                    yield(newTypeDeclaration.newTypeConstructor)
                 }
                 for (dataDeclaration in module.dataDeclarations) {
                     yieldAll(dataDeclaration.dataConstructors.iterator())
                 }
                 for (importDeclaration in module.importDeclarations) {
                     for (importedNewTypeDeclaration in importDeclaration.importedNewTypeDeclarations) {
-                        yield(importedNewTypeDeclaration.dataConstructor)
+                        yield(importedNewTypeDeclaration.newTypeConstructor)
                     }
                     for (importedDataDeclaration in importDeclaration.importedDataDeclarations) {
                         yieldAll(importedDataDeclaration.dataConstructors.iterator())

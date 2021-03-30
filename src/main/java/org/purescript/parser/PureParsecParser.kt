@@ -52,6 +52,7 @@ import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
 import org.purescript.parser.PSElements.Companion.Identifier
 import org.purescript.parser.PSElements.Companion.NamedBinder
+import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NumberBinder
 import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
@@ -485,7 +486,7 @@ class PureParsecParser {
     private val decl = choice(
         (dataHead + optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList)))
             .`as`(PSElements.DataDeclaration),
-        (newtypeHead + eq + properName + typeAtom)
+        (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         (typeHead + indented(eq) + type).`as`(TypeSynonymDeclaration),
