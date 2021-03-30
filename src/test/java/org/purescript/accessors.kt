@@ -5,7 +5,7 @@ import com.intellij.psi.util.collectDescendantsOfType
 import org.purescript.file.PSFile
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
-import org.purescript.psi.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration

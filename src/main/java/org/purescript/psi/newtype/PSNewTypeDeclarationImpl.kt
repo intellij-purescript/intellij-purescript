@@ -1,8 +1,10 @@
-package org.purescript.psi
+package org.purescript.psi.newtype
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.purescript.psi.PSProperName
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.data.PSDataConstructor
 
 class PSNewTypeDeclarationImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
