@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReference
 import org.purescript.PSLanguage
 import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.exports.PSExportedValue
+import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
@@ -19,6 +20,7 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                     is PSExportedValue -> visitReference(element.reference)
                     is PSExportedModule -> visitModuleReference(element.reference)
                     is PSImportDeclarationImpl -> visitModuleReference(element.reference)
+                    is PSExpressionConstructor -> visitReference(element.reference)
                 }
             }
 
