@@ -111,7 +111,8 @@
             enabledByDefault="true" level="ERROR"
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
     />
-
+    <!-- Indexes -->
+    <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex" />
   </extensions>
 
   <actions>
