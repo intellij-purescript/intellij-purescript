@@ -1,11 +1,10 @@
 package org.purescript.psi
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiComment
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.*
+import org.purescript.PSLanguage
 import org.purescript.features.DocCommentOwner
+import org.purescript.file.PSFile
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
@@ -24,7 +23,17 @@ class PSModule(node: ASTNode) :
     }
 
     override fun setName(name: String): PsiElement? {
-        return null
+        val psiFileFactory = PsiFileFactory.getInstance(project)
+        val file = psiFileFactory.createFileFromText(
+            PSLanguage.INSTANCE,
+            """
+                module $name where
+            """.trimIndent()
+        ) as PSFile
+        val newProperName = file.module?.nameIdentifier
+            ?: return null
+        nameIdentifier.replace(newProperName)
+        return this
     }
 
     override fun getNameIdentifier(): PSProperName {
