@@ -23,16 +23,9 @@ class PSModule(node: ASTNode) :
     }
 
     override fun setName(name: String): PsiElement? {
-        val psiFileFactory = PsiFileFactory.getInstance(project)
-        val file = psiFileFactory.createFileFromText(
-            PSLanguage.INSTANCE,
-            """
-                module $name where
-            """.trimIndent()
-        ) as PSFile
-        val newProperName = file.module?.nameIdentifier
+        val properName = PSPsiFactory(project).createQualifiedProperName(name)
             ?: return null
-        nameIdentifier.replace(newProperName)
+        nameIdentifier.replace(properName)
         return this
     }
 
