@@ -62,6 +62,25 @@ class ModuleReferenceTest : BasePlatformTestCase() {
         assertEquals(importDeclaration, usageInfo.element)
     }
 
+    fun `test finds usage of module in files not matchin its name`() {
+        myFixture.configureByText(
+            "BarModule.purs",
+            """
+                module <caret>Bar where
+            """.trimIndent()
+        )
+        val importDeclaration = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+            """.trimIndent()
+        ).getImportDeclaration()
+        val usageInfo = myFixture.testFindUsages("BarModule.purs").single()
+
+        assertEquals(importDeclaration, usageInfo.element)
+    }
+
     fun `test completes modules`() {
         myFixture.configureByText(
             "Bar.purs",
