@@ -7,6 +7,7 @@ import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
+import org.purescript.psi.PSElementType
 
 data class LayoutStack(
     val sourcePos: SourcePos,
@@ -74,6 +75,11 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
     }
 }
 
+fun lytToken(pos: SourcePos, value: PSElementType):SourceToken = SourceToken(
+    range = SourceRange(pos, pos),
+    value = value
+)
+
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var delegatedTokens: Iterator<SourceToken> =
@@ -112,10 +118,8 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         }
     }
 
-    private fun layoutStart() = SourceToken(
-        range = SourceRange(token!!.range.start, token!!.range.start),
-        value = PSTokens.LAYOUT_START
-    )
+    private fun layoutStart() =
+        lytToken(token!!.range.start, PSTokens.LAYOUT_START)
 
     override fun getTokenType(): IElementType? {
         return token?.value
