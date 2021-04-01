@@ -8,6 +8,10 @@ interface PSTokens {
         @kotlin.jvm.JvmField
         val LAYOUT_START = PSElementType("layout start")
         @kotlin.jvm.JvmField
+        val LAYOUT_SEP = PSElementType("layout separator")
+        @kotlin.jvm.JvmField
+        val LAYOUT_END = PSElementType("layout end")
+        @kotlin.jvm.JvmField
         val ERROR = PSElementType("error")
         @kotlin.jvm.JvmField
         val WS = PSElementType("whitespace")
