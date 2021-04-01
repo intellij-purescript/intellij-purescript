@@ -60,13 +60,7 @@ fun isIndented(lyt: LayoutDelimiter): Boolean = when(lyt) {
 }
 
 fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
-    stk == null -> {
-        false
-    }
-    stk.tail == null -> {
-        false
-    }
-    stk.tail.tail != null -> {
+    stk?.tail == null || stk.tail.tail != null -> {
         false
     }
     stk.tail.layoutDelimiter != LayoutDelimiter.Root -> {
