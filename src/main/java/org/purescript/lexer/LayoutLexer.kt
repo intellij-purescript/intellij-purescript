@@ -8,6 +8,12 @@ import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
 
+data class LayoutStack(
+    val sourcePos: SourcePos,
+    val layoutDelimiter: LayoutDelimiter,
+    val tail: LayoutStack?
+)
+
 enum class LayoutDelimiter {
     Root,
     TopDecl,
@@ -33,12 +39,15 @@ enum class LayoutDelimiter {
     Ado,
 }
 
-data class LayoutStack(
-    val sourcePos: SourcePos,
-    val layoutDelimiter: LayoutDelimiter,
-    val tail: LayoutStack?
-)
-
+fun isIndented(lyt: LayoutDelimiter): Boolean = when(lyt) {
+    LayoutDelimiter.Let -> true
+    LayoutDelimiter.LetStmt -> true
+    LayoutDelimiter.Where -> true
+    LayoutDelimiter.Of -> true
+    LayoutDelimiter.Do -> true
+    LayoutDelimiter.Ado -> true
+    else -> false
+}
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var delegatedTokens: Iterator<SourceToken> =
