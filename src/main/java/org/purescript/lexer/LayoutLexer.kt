@@ -59,19 +59,24 @@ fun isIndented(lyt: LayoutDelimiter): Boolean = when(lyt) {
     else -> false
 }
 
-fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean {
-    if (stk == null) {
-        return false
-    } else if (stk.tail == null) {
-        return false
-    }  else if (stk.tail.tail != null) {
-        return false
-    } else if (stk.tail.layoutDelimiter != LayoutDelimiter.Root) {
-        return false
-    } else if (stk.layoutDelimiter != LayoutDelimiter.Where) {
-        return false
-    } else {
-        return tokPos.column == stk.sourcePos.column
+fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
+    stk == null -> {
+        false
+    }
+    stk.tail == null -> {
+        false
+    }
+    stk.tail.tail != null -> {
+        false
+    }
+    stk.tail.layoutDelimiter != LayoutDelimiter.Root -> {
+        false
+    }
+    stk.layoutDelimiter != LayoutDelimiter.Where -> {
+        false
+    }
+    else -> {
+        tokPos.column == stk.sourcePos.column
     }
 }
 
