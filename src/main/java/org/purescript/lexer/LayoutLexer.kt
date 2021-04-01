@@ -58,6 +58,23 @@ fun isIndented(lyt: LayoutDelimiter): Boolean = when(lyt) {
     LayoutDelimiter.Ado -> true
     else -> false
 }
+
+fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean {
+    if (stk == null) {
+        return false
+    } else if (stk.tail == null) {
+        return false
+    }  else if (stk.tail.tail != null) {
+        return false
+    } else if (stk.tail.layoutDelimiter != LayoutDelimiter.Root) {
+        return false
+    } else if (stk.layoutDelimiter != LayoutDelimiter.Where) {
+        return false
+    } else {
+        return tokPos.column == stk.sourcePos.column
+    }
+}
+
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var delegatedTokens: Iterator<SourceToken> =
