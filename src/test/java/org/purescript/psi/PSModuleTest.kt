@@ -4,7 +4,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.*
-import org.purescript.file.PSFile
 
 class PSModuleTest : BasePlatformTestCase() {
 
@@ -417,6 +416,30 @@ class PSModuleTest : BasePlatformTestCase() {
         ).getModule().exportedTypeSynonymDeclarations
 
         assertSize(2, exportedTypeSynonymDeclarations)
+    }
+
+    fun `test rename simple`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module <caret>Foo where
+            """.trimIndent()
+        ).getModule()
+        myFixture.renameElementAtCaret("Bar")
+
+        assertEquals("Bar", module.name)
+    }
+
+    fun `test rename qualified`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module <caret>Foo where
+            """.trimIndent()
+        ).getModule()
+        myFixture.renameElementAtCaret("Foo.Bar")
+
+        assertEquals("Foo.Bar", module.name)
     }
 }
 
