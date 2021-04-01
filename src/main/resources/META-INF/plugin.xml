@@ -52,6 +52,7 @@
     <lang.documentationProvider language="Purescript" implementationClass="org.purescript.features.PSDocumentationProvider"/>
     <lang.foldingBuilder language="Purescript" implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
     <lang.refactoringSupport language="Purescript" implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
+    <lang.namesValidator language="Purescript" implementationClass="org.purescript.ide.refactoring.PSNamesValidator" />
 
     <!-- LSP server support START-->
     <postStartupActivity
