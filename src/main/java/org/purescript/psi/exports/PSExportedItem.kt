@@ -25,44 +25,40 @@ class PSExportedData(node: ASTNode) : PSExportedItem(node) {
 
 class PSExportedClass(node: ASTNode) : PSExportedItem(node) {
     private val properName: PSProperName
-        get() =
-            findNotNullChildByClass(PSProperName::class.java)
+        get() = findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
 }
 
 class PSExportedKind(node: ASTNode) : PSExportedItem(node) {
     private val properName: PSProperName
-        get() =
-            findNotNullChildByClass(PSProperName::class.java)
+        get() = findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
 }
 
 class PSExportedOperator(node: ASTNode) : PSExportedItem(node) {
     private val identifier: PSIdentifier
-        get() =
-            findNotNullChildByClass(PSIdentifier::class.java)
+        get() = findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
 }
 
 class PSExportedType(node: ASTNode) : PSExportedItem(node) {
     private val identifier: PSIdentifier
-        get() =
-            findNotNullChildByClass(PSIdentifier::class.java)
+        get() = findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
 }
 
 class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
-    val properName = findNotNullChildByClass(PSProperName::class.java)
+    val properName: PSProperName
+        get() = findNotNullChildByClass(PSProperName::class.java)
 
     val importDeclaration: PSImportDeclarationImpl?
-        get() =
-            module?.importDeclarations?.singleOrNull {
-                it.name == properName.name
-            }
+        get() = module?.importDeclarations?.singleOrNull {
+            it.name == properName.name
+        }
 
     override fun getName(): String = properName.name
 
@@ -73,7 +69,8 @@ class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
 
 class PSExportedValue(node: ASTNode) : PSExportedItem(node) {
 
-    val identifier = findNotNullChildByClass(PSIdentifier::class.java)
+    val identifier: PSIdentifier
+        get() = findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName() = identifier.name
 
