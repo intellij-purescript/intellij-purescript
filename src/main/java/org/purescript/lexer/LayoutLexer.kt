@@ -9,7 +9,28 @@ import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
 
 enum class LayoutDelimiter {
-    WHERE
+    Root,
+    TopDecl,
+    TopDeclH,
+    DeclGuar,
+    Case,
+    CaseBind,
+    CaseGuar,
+    LambdaBi,
+    Paren,
+    Brace,
+    Square,
+    If,
+    Then,
+    Property,
+    Forall,
+    Tick,
+    Let,
+    LetStmt,
+    Where,
+    Of,
+    Do,
+    Ado,
 }
 
 data class LayoutStack(
