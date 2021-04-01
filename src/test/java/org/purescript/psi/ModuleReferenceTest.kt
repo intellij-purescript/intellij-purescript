@@ -97,4 +97,19 @@ class ModuleReferenceTest : BasePlatformTestCase() {
         )
         myFixture.testCompletionVariants("Foo.purs", "Bar", "Foo")
     }
+
+    fun `test renames module`() {
+        val module = myFixture.configureByText("Foo.purs", "module Foo where").getModule()
+        val importDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                import <caret>Foo
+            """.trimIndent()
+        ).getImportDeclaration()
+        myFixture.renameElementAtCaret("Qux")
+
+        assertEquals("Qux", importDeclaration.name)
+        assertEquals("Qux", module.name)
+    }
 }
