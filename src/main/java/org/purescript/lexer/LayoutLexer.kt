@@ -567,6 +567,31 @@ fun insertLayout(
     return insert(LayoutState(stack, emptyList()))
 }
 
+data class TokenStep(
+    val token: SourceToken,
+    val pos: SourcePos,
+    val stack: LayoutStack?
+)
+
+typealias TokenStream = Sequence<TokenStep>
+
+fun unwindLayout(
+    pos: SourcePos,
+    eof: TokenStream,
+    stk: LayoutStack
+): TokenStream {
+    fun go(stk: LayoutStack?): TokenStream {
+        val (pos2, lyt, tl) = stk ?: return eof
+        if (lyt == LayoutDelimiter.Root) return eof
+        return if (isIndented(lyt)) {
+            sequenceOf(TokenStep(lytToken(pos, PSTokens.LAYOUT_END), pos, tl)) + go(tl)
+        } else {
+            go(tl)
+        }
+    }
+    return go(stk)
+}
+
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var delegatedTokens: Iterator<SourceToken> =
