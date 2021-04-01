@@ -129,9 +129,8 @@ fun insertLayout(
         }
     }
 
-    fun sepP(lytPos: SourcePos): Boolean {
-        TODO("Not yet implemented")
-    }
+    fun sepP(lytPos: SourcePos): Boolean =
+        tokPos.column == lytPos.column && tokPos.line != lytPos.line
 
     fun insertToken(token: SourceToken, state: LayoutState): LayoutState {
         val (stk, acc) = state
