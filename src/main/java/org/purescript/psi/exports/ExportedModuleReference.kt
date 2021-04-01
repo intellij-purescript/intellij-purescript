@@ -2,6 +2,7 @@ package org.purescript.psi.exports
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase<PSExportedModule>(
@@ -17,6 +18,13 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
     override fun resolve(): PsiElement? =
         candidates.firstOrNull { it.name == myElement.name }
             ?.run { importAlias ?: importedModule }
+
+    override fun handleElementRename(name: String): PsiElement? {
+        val newProperName = PSPsiFactory(element.project).createQualifiedProperName(name)
+            ?: return null
+        element.properName.replace(newProperName)
+        return element
+    }
 
     private val candidates: Array<PSImportDeclarationImpl>
         get() =

@@ -1,6 +1,7 @@
 package org.purescript.psi
 
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ModuleNameIndex.Companion.fileContainingModule
 import org.purescript.file.ModuleNameIndex.Companion.getAllModuleNames
@@ -18,5 +19,14 @@ class ModuleReference(element: PSImportDeclarationImpl) : PsiReferenceBase<PSImp
     override fun resolve(): PSModule? {
         val moduleName = element.importName?.name ?: return null
         return fileContainingModule(element.project, moduleName)?.module
+    }
+
+    override fun handleElementRename(name: String): PsiElement? {
+        val oldProperName = element.importName
+            ?: return null
+        val newProperName = PSPsiFactory(element.project).createQualifiedProperName(name)
+            ?: return null
+        oldProperName.replace(newProperName)
+        return element
     }
 }

@@ -123,4 +123,19 @@ class ExportedModuleReferenceTest : BasePlatformTestCase() {
 
         assertEquals(exportedModule, usageInfo.element)
     }
+
+    fun `test renames module`() {
+        val module = myFixture.configureByText("Foo.purs", "module Foo where").getModule()
+        val exportedModule = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (module <caret>Foo) where
+                import Foo
+            """.trimIndent()
+        ).getExportedModule()
+        myFixture.renameElementAtCaret("Qux")
+
+        assertEquals("Qux", exportedModule.name)
+        assertEquals("Qux", module.name)
+    }
 }
