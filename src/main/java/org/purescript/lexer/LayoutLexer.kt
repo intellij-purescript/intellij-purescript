@@ -39,6 +39,16 @@ enum class LayoutDelimiter {
     Ado,
 }
 
+fun currentIndent(stk: LayoutStack?): SourcePos? {
+    return stk?.let {
+        if (isIndented(it.layoutDelimiter)) {
+            it.sourcePos
+        } else {
+            currentIndent(it.tail)
+        }
+    }
+}
+
 fun isIndented(lyt: LayoutDelimiter): Boolean = when(lyt) {
     LayoutDelimiter.Let -> true
     LayoutDelimiter.LetStmt -> true
