@@ -606,7 +606,12 @@ fun consTokens(
     return tokens.foldRight(unit) { a, b ->
         val (tok, stk) = a
         val (pos, next) = b
-        tok.range.start to (sequenceOf(TokenStep(tok, pos, stk)) + next)
+        val tokenStep = TokenStep(tok, pos, stk)
+        val sequence = sequence {
+            yield(tokenStep)
+            yieldAll(next)
+        }
+        tok.range.start to sequence
     }
 }
 
