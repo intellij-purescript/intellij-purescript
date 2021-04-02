@@ -639,7 +639,7 @@ fun lex(
 
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
-    private var delegatedTokens: Iterator<TokenStep> =
+    private var tokensWithLayout: Iterator<TokenStep> =
         listOf<TokenStep>().iterator()
     private var token: SourceToken? = null
 
@@ -663,13 +663,13 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             delegate.advance()
             sourceToken
         }
-        delegatedTokens = lex(tokens).iterator()
+        tokensWithLayout = lex(tokens).iterator()
         advance()
     }
 
     override fun advance() {
         token = when {
-            delegatedTokens.hasNext() -> delegatedTokens.next().token
+            tokensWithLayout.hasNext() -> tokensWithLayout.next().token
             else -> null
         }
     }
