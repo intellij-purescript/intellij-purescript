@@ -594,26 +594,18 @@ fun lex(
         LayoutDelimiter.Root,
         null
     )
-
-    fun go(
-        stack: LayoutStack?,
-        startPos: SourcePos,
-        tokens: Iterator<SourceToken>
-    ): Sequence<SourceToken> {
-        if (!tokens.hasNext()) {
-            return unwindLayout(startPos, stack)
-        } else {
-            val posToken = tokens.next()
-            val nextStart = posToken.range.end
-            val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
-            val ts = toks.map { it.first }
-            return sequence {
-                yieldAll(ts)
-                yieldAll(go(nextStack, nextStart, tokens))
-            }
-        }
+    val acc = mutableListOf<SourceToken>()
+    var startPos = sourcePos
+    for (posToken in tokens) {
+        val nextStart = posToken.range.end
+        val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
+        val ts = toks.map { it.first }
+        acc += ts
+        stack = nextStack
+        startPos = nextStart
     }
-    return go(stack, sourcePos, tokens.iterator()).toList()
+    acc += unwindLayout(startPos, stack)
+    return acc
 }
 
 fun correctLineAndColumn(
