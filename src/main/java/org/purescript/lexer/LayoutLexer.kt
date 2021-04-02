@@ -594,19 +594,6 @@ fun unwindLayout(
     }
 }
 
-
-fun tokensToTokenStep(
-    tokens: List<Pair<SourceToken, LayoutStack?>>,
-    lastPos: SourcePos
-): List<TokenStep> {
-    val positions = tokens
-        .map { it.first.range.start }
-        .drop(1) + listOf(lastPos)
-    return tokens
-        .zip(positions)
-        .map { (token, start) -> TokenStep(token.first, start, token.second) }
-}
-
 fun lex(
     tokens: List<SourceToken>
 ): List<SourceToken> {

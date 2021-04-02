@@ -126,34 +126,6 @@ class LayoutLexerTest : TestCase() {
         )
         assertEquals(30, tokens.size)
     }
-
-
-    fun `test tokensToTokenStep returns the tokens as token steps`() {
-        val pos1 = posFromOffset(1)
-        val pos2 = posFromOffset(2)
-        val pos3 = posFromOffset(3)
-        val stack1 = LayoutStack(pos1, LayoutDelimiter.Root, null)
-        val stack2 = LayoutStack(pos2, LayoutDelimiter.Root, null)
-        val tail = listOf<TokenStep>()
-        val tokens = listOf(
-            lytToken(pos1, PSTokens.LAYOUT_START) to stack1,
-            lytToken(pos2, PSTokens.LAYOUT_END) to stack2,
-        )
-
-        val sequence = tokensToTokenStep(tokens, pos3)
-
-        val allExpected = listOf<TokenStep>(
-            TokenStep(tokens[0].first, pos2, stack1),
-            TokenStep(tokens[1].first, pos3, stack2),
-        )
-        val expected = allExpected.first()
-        val allActual = sequence.toList()
-        val actual = allActual.first()
-        assertEquals(expected.token, actual.token)
-        assertEquals(expected.stack, actual.stack)
-        assertEquals(expected.pos, actual.pos)
-        assertEquals(allExpected, allActual)
-    }
 }
 
 private fun getTokens(lexer: LayoutLexer, source: String): List<IElementType> {
