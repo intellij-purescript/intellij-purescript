@@ -132,7 +132,7 @@ class LayoutLexerTest : TestCase() {
             TokenStep(lytToken(pos, PSTokens.LAYOUT_END), pos, null),
         )
         val unit = pos to tail.asSequence()
-        val sequence = consTokens(emptyList(), unit)
+        val sequence = consTokens(emptyList(), unit.first, unit.second)
         assertEquals(tail, sequence.toList())
     }
 
@@ -149,7 +149,7 @@ class LayoutLexerTest : TestCase() {
         )
         val unit = pos3 to tail.asSequence()
 
-        val sequence = consTokens(tokens, unit)
+        val sequence = consTokens(tokens, unit.first, unit.second)
 
         val allExpected = listOf<TokenStep>(
             TokenStep(tokens[0].first, pos2, stack1),

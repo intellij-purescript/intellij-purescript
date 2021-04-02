@@ -597,19 +597,20 @@ fun unwindLayout(
 
 fun consTokens(
     tokens: List<Pair<SourceToken, LayoutStack?>>,
-    unit: Pair<SourcePos, Sequence<TokenStep>>
+    lastPos: SourcePos,
+    tail: Sequence<TokenStep>
 ): Sequence<TokenStep> {
-    val starts = tokens.map { it.first.range.start }.drop(1) + listOf(unit.first)
+    val starts = tokens.map { it.first.range.start }.drop(1) + listOf(lastPos)
     return sequence {
         yieldAll(tokens.zip(starts).map { (token, start) ->
             TokenStep(token.first, start, token.second)
         })
-        yieldAll(unit.second)
+        yieldAll(tail)
     }
 }
 
 fun lex(
-    tokens: Sequence<SourceToken>
+    tokens: List<SourceToken>
 ): TokenStream {
     val sourcePos = SourcePos(0, 0, 0)
     var stack: LayoutStack? = LayoutStack(
@@ -631,8 +632,7 @@ fun lex(
             val (nextStack, toks) = stack
                 .let { insertLayout(posToken, nextStart, it) }
             return go(nextStack, nextStart, tokens)
-                .let { nextStart to it }
-                .let { consTokens(toks, it) }
+                .let { consTokens(toks, nextStart, it) }
         }
     }
     return go(stack, sourcePos, tokens.iterator())
@@ -715,6 +715,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         this.tokens = getTokens(delegate)
             .runningFold(root, correctLineAndColumn(buffer))
             .drop(1)
+            .toList()
             .let(::lex)
             .map { it.token }
             .toList()
