@@ -584,13 +584,10 @@ fun unwindLayout(
         val (pos2, lyt, tl) = stk ?: return eof
         if (lyt == LayoutDelimiter.Root) return eof
         return if (isIndented(lyt)) {
-            sequenceOf(
-                TokenStep(
-                    lytToken(pos, PSTokens.LAYOUT_END),
-                    pos,
-                    tl
-                )
-            ) + go(tl)
+            sequence {
+                yield(TokenStep(lytToken(pos, PSTokens.LAYOUT_END), pos, tl))
+                yieldAll(go(tl))
+            }
         } else {
             go(tl)
         }
