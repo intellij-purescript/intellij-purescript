@@ -662,6 +662,22 @@ fun rangeFromOffsets(start: Int, end: Int): SourceRange {
     return SourceRange(posFromOffset(start), posFromOffset(end))
 }
 
+fun getTokens(lexer: Lexer): Sequence<SourceToken> {
+    return generateSequence {
+        val sourceToken: SourceToken? = lexer.tokenType?.let { value ->
+            SourceToken(
+                range = rangeFromOffsets(
+                    lexer.tokenStart,
+                    lexer.tokenEnd
+                ),
+                value = value
+            )
+        }
+        lexer.advance()
+        sourceToken
+    }
+}
+
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var tokensWithLayout: Iterator<TokenStep> =
@@ -675,19 +691,8 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         initialState: Int
     ) {
         super.start(buffer, startOffset, endOffset, initialState)
-        val tokens = generateSequence {
-            val sourceToken: SourceToken? = delegate.tokenType?.let { value ->
-                SourceToken(
-                    range = rangeFromOffsets(
-                        delegate.tokenStart,
-                        delegate.tokenEnd
-                    ),
-                    value = value
-                )
-            }
-            delegate.advance()
-            sourceToken
-        }
+        val lexer = delegate
+        val tokens = getTokens(lexer)
         tokensWithLayout = lex(tokens).iterator()
         advance()
     }

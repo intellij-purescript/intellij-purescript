@@ -7,13 +7,14 @@ import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
 
 class LayoutLexerTest : TestCase() {
+    private val psLexer = PSLexer()
+    private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
+
     fun testName() {
         val lexer = LayoutLexer(EmptyLexer())
         val tokens = getTokens(lexer, "")
         assertEquals(0, tokens.size)
     }
-
-    private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
 
     fun `test it sets correct column for first token`() {
         val module = SourceToken(rangeFromOffsets(0, 6), PSTokens.MODULE)
@@ -27,10 +28,10 @@ class LayoutLexerTest : TestCase() {
     }
 
     fun `test it sets correct line and column for second token`() {
-        val tokens = sequenceOf(
-            SourceToken(rangeFromOffsets(0, 6), PSTokens.MODULE),
-            SourceToken(rangeFromOffsets(6, 7), PSTokens.WS)
-        )
+        val source = "module "
+        psLexer.start(source)
+        val tokens = getTokens(psLexer)
+
         val corrected = tokens.runningFold(root, ::correctLineAndColumn).drop(1)
         val (_, second) = corrected.toList()
         val (start, end) = second.range
@@ -39,7 +40,7 @@ class LayoutLexerTest : TestCase() {
     }
 
     fun `test it calculate offset`() {
-        val lexer = LayoutLexer(PSLexer())
+        val lexer = LayoutLexer(psLexer)
         val source = """
                 module Main where
             """.trimIndent()
@@ -52,7 +53,7 @@ class LayoutLexerTest : TestCase() {
     }
 
     fun `test it calculates text`() {
-        val lexer = LayoutLexer(PSLexer())
+        val lexer = LayoutLexer(psLexer)
         val source = """
                 module Main where
             """.trimIndent()
@@ -63,7 +64,7 @@ class LayoutLexerTest : TestCase() {
     }
 
     fun `test module where creates layout start`() {
-        val lexer = LayoutLexer(PSLexer())
+        val lexer = LayoutLexer(psLexer)
         val source = """
                 module Main where
             """.trimIndent()
@@ -72,7 +73,7 @@ class LayoutLexerTest : TestCase() {
     }
 
     fun `test separator token for top level declaration`() {
-        val lexer = LayoutLexer(PSLexer())
+        val lexer = LayoutLexer(psLexer)
         val source = """
                 module Main where
                 f = 1
@@ -82,7 +83,7 @@ class LayoutLexerTest : TestCase() {
     }
 
     fun `test do layout`() {
-        val lexer = LayoutLexer(PSLexer())
+        val lexer = LayoutLexer(psLexer)
         val tokens = getTokens(
             lexer,
             """
