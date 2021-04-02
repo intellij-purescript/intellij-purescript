@@ -29,7 +29,8 @@ class LayoutLexerTest : TestCase() {
         val source = "module "
         psLexer.start(source)
         val tokens = getTokens(psLexer)
-        val corrected = tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
+        val corrected =
+            tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
         val (_, second) = corrected.toList()
         val (start, end) = second.range
         assertEquals(6, start.column)
@@ -45,9 +46,10 @@ class LayoutLexerTest : TestCase() {
         psLexer.start(source)
         val tokens = getTokens(psLexer)
 
-        val corrected = tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
+        val corrected =
+            tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
 
-        val (moduleKeyword, newline, moduleName, _ , where) =
+        val (moduleKeyword, newline, moduleName, _, where) =
             corrected.toList()
 
         val (newlineStart, newlineEnd) = newline.range

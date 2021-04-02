@@ -13,6 +13,7 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.file.PSFile
 import org.purescript.file.PSFileStubType
+import org.purescript.lexer.LayoutLexer
 import org.purescript.lexer.PSLexer
 import org.purescript.parser.PSElements.Companion.Abs
 import org.purescript.parser.PSElements.Companion.Accessor
@@ -34,7 +35,6 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
 import org.purescript.parser.PSElements.Companion.ConstrainedType
-import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
@@ -52,6 +52,7 @@ import org.purescript.parser.PSElements.Companion.ExportedModule
 import org.purescript.parser.PSElements.Companion.ExportedOperator
 import org.purescript.parser.PSElements.Companion.ExportedType
 import org.purescript.parser.PSElements.Companion.ExportedValue
+import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.Fixity
@@ -139,7 +140,7 @@ import org.purescript.psi.typevar.PSTypeVarName
 
 class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createLexer(project: Project): Lexer {
-        return PSLexer()
+        return LayoutLexer(PSLexer())
     }
 
     override fun createParser(project: Project): PsiParser {
@@ -159,6 +160,9 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSTokens.DOC_COMMENT,
             PSTokens.MLCOMMENT,
             PSTokens.SLCOMMENT,
+            PSTokens.LAYOUT_START,
+            PSTokens.LAYOUT_SEP,
+            PSTokens.LAYOUT_END,
         )
     }
 

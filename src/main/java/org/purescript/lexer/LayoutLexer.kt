@@ -567,78 +567,45 @@ fun insertLayout(
     return insert(LayoutState(stack, emptyList()))
 }
 
-data class TokenStep(
-    val token: SourceToken,
-    val pos: SourcePos,
-    val stack: LayoutStack?
-)
-
-typealias TokenStream = Sequence<TokenStep>
+fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
+    var stk = stkIn
+    return generateSequence {
+        val (_, lyt, tail) = stk ?: return@generateSequence null
+        stk = tail
+        lyt
+    }
+}
 
 fun unwindLayout(
     pos: SourcePos,
-    eof: TokenStream,
-    stk: LayoutStack?
-): TokenStream {
-    fun go(stk: LayoutStack?): TokenStream {
-        val (pos2, lyt, tl) = stk ?: return eof
-        if (lyt == LayoutDelimiter.Root) return eof
-        return if (isIndented(lyt)) {
-            sequenceOf(
-                TokenStep(
-                    lytToken(pos, PSTokens.LAYOUT_END),
-                    pos,
-                    tl
-                )
-            ) + go(tl)
-        } else {
-            go(tl)
-        }
-    }
-    return go(stk)
-}
-
-
-fun consTokens(
-    tokens: List<Pair<SourceToken, LayoutStack?>>,
-    unit: Pair<SourcePos, Sequence<TokenStep>>
-): Pair<SourcePos, Sequence<TokenStep>> {
-    return tokens.foldRight(unit) { a, b ->
-        val (tok, stk) = a
-        val (pos, next) = b
-        tok.range.start to (sequenceOf(TokenStep(tok, pos, stk)) + next)
-    }
+    stkIn: LayoutStack?
+): Sequence<SourceToken> {
+    return getTokensFromStack(stkIn)
+        .filter { isIndented(it) }
+        .map { lytToken(pos, PSTokens.LAYOUT_END) }
 }
 
 fun lex(
-    tokens: Sequence<SourceToken>
-): TokenStream {
+    tokens: List<SourceToken>
+): List<SourceToken> {
     val sourcePos = SourcePos(0, 0, 0)
     var stack: LayoutStack? = LayoutStack(
         sourcePos,
         LayoutDelimiter.Root,
         null
     )
-
-    fun go(
-        stack: LayoutStack?,
-        startPos: SourcePos,
-        tokens: Iterator<SourceToken>
-    ): TokenStream {
-        if (!tokens.hasNext()) {
-            return unwindLayout(startPos, sequenceOf(), stack)
-        } else {
-            val posToken = tokens.next()
-            val nextStart = posToken.range.end
-            val (nextStack, toks) = stack
-                .let { insertLayout(posToken, nextStart, it) }
-            return go(nextStack, nextStart, tokens)
-                .let { nextStart to it }
-                .let { consTokens(toks, it) }
-                .let { it.second }
-        }
+    val acc = mutableListOf<SourceToken>()
+    var startPos = sourcePos
+    for (posToken in tokens) {
+        val nextStart = posToken.range.end
+        val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
+        val ts = toks.map { it.first }
+        acc += ts
+        stack = nextStack
+        startPos = nextStart
     }
-    return go(stack, sourcePos, tokens.iterator())
+    acc += unwindLayout(startPos, stack)
+    return acc
 }
 
 fun correctLineAndColumn(
@@ -704,9 +671,8 @@ fun getTokens(lexer: Lexer): Sequence<SourceToken> {
 
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
-    private var tokensWithLayout: Iterator<TokenStep> =
-        listOf<TokenStep>().iterator()
-    private var token: SourceToken? = null
+    private var tokens: List<SourceToken> = listOf<SourceToken>()
+    private var index = 0;
     private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
 
     override fun start(
@@ -716,33 +682,27 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         initialState: Int
     ) {
         super.start(buffer, startOffset, endOffset, initialState)
-        val lexer = delegate
-        val tokens = getTokens(lexer)
+        this.tokens = getTokens(delegate)
             .runningFold(root, correctLineAndColumn(buffer))
             .drop(1)
-        tokensWithLayout = lex(tokens).iterator()
-        advance()
+            .toList()
+            .let(::lex)
+        index = 0
     }
 
     override fun advance() {
-        token = when {
-            tokensWithLayout.hasNext() -> tokensWithLayout.next().token
-            else -> null
-        }
+        index ++
     }
 
-    private fun layoutStart() =
-        lytToken(token!!.range.start, PSTokens.LAYOUT_START)
-
     override fun getTokenType(): IElementType? {
-        return token?.value
+        return tokens.getOrNull(index)?.value
     }
 
     override fun getTokenEnd(): Int {
-        return token?.range?.end?.offset ?: delegate.tokenEnd
+        return  tokens[index].range.end.offset
     }
 
     override fun getTokenStart(): Int {
-        return token?.range?.start?.offset ?: delegate.tokenStart
+        return tokens[index].range.start.offset
     }
 }
