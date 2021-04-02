@@ -70,3 +70,7 @@ val `@` = token("@")
 @Suppress("ObjectPropertyName")
 val `_` = token("_")
 
+val `L{` = token(PSTokens.LAYOUT_START)
+val `L-sep` = token(PSTokens.LAYOUT_SEP)
+val `L}` = token(PSTokens.LAYOUT_END)
+
