@@ -599,16 +599,13 @@ fun consTokens(
     tokens: List<Pair<SourceToken, LayoutStack?>>,
     unit: Pair<SourcePos, Sequence<TokenStep>>
 ): Sequence<TokenStep> {
-    return tokens.foldRight(unit) { a, b ->
-        val (tok, stk) = a
-        val (pos, next) = b
-        val tokenStep = TokenStep(tok, pos, stk)
-        val sequence = sequence {
-            yield(tokenStep)
-            yieldAll(next)
-        }
-        tok.range.start to sequence
-    }.second
+    val starts = tokens.map { it.first.range.start }.drop(1) + listOf(unit.first)
+    return sequence {
+        yieldAll(tokens.zip(starts).map { (token, start) ->
+            TokenStep(token.first, start, token.second)
+        })
+        yieldAll(unit.second)
+    }
 }
 
 fun lex(
