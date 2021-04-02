@@ -642,16 +642,40 @@ fun lex(
 }
 
 fun correctLineAndColumn(
-    previous: SourceToken,
-    current: SourceToken,
-): SourceToken {
-    val (start, end) = current.range
-    val newStart = SourcePos(start.line, start.offset, start.offset)
-    val newEnd = SourcePos(end.line, end.offset, end.offset)
-    return SourceToken(
-        range = SourceRange(newStart, newEnd),
-        value = current.value
-    )
+    source: CharSequence
+): (SourceToken, SourceToken) -> SourceToken {
+    fun go(
+        previous: SourceToken,
+        current: SourceToken,
+    ): SourceToken {
+        val (_, start) = previous.range
+        val (_, end) = current.range
+        // might be expensive
+        val subSequence = source
+            .subSequence(start.offset, end.offset)
+        val newlineIndex = subSequence
+            .lastIndexOf("\n")
+        val noNewline = newlineIndex == -1
+        val tokenLength = end.offset - start.offset
+        val newEnd = if (noNewline) {
+            SourcePos(
+                start.line,
+                start.column + tokenLength,
+                end.offset
+            )
+        } else {
+            SourcePos(
+                start.line + subSequence.count { it == '\n' },
+                tokenLength - newlineIndex - 1,
+                end.offset
+            )
+        }
+        return SourceToken(
+            range = SourceRange(start, newEnd),
+            value = current.value
+        )
+    }
+    return ::go
 }
 
 fun posFromOffset(offset: Int): SourcePos {
