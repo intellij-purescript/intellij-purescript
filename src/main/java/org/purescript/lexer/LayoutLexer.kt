@@ -680,4 +680,12 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
     override fun getTokenType(): IElementType? {
         return token?.value
     }
+
+    override fun getTokenEnd(): Int {
+        return token?.range?.end?.offset ?: delegate.tokenEnd
+    }
+
+    override fun getTokenStart(): Int {
+        return token?.range?.start?.offset ?: delegate.tokenStart
+    }
 }

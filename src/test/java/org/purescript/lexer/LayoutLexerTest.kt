@@ -12,6 +12,19 @@ class LayoutLexerTest : TestCase() {
         assertEquals(0, tokens.size)
     }
 
+    fun `test it calculate offset`() {
+        val lexer = LayoutLexer(PSLexer())
+        val source = """
+                module Main where
+            """.trimIndent()
+        lexer.start(source)
+        assertEquals(0, lexer.tokenStart)
+        assertEquals(6, lexer.tokenEnd)
+        lexer.advance()
+        assertEquals(6, lexer.tokenStart)
+        assertEquals(7, lexer.tokenEnd)
+    }
+
     fun `test module where creates layout start`() {
         val lexer = LayoutLexer(PSLexer())
         val source = """
