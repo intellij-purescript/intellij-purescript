@@ -266,22 +266,13 @@ fun insertLayout(
                     if (lyt == LayoutDelimiter.Do) true
                     else offsideEndP(lytPos, lyt)
 
-                if (stk == null) {
-                    return state
-                        .let { collapse(::whereP, it) }
-                        .let { insertToken(src, it) }
-                        .let { insertStart(LayoutDelimiter.Where, it) }
-                }
-
-                val (_, lyt, stk2) = stk
-
-                when (lyt) {
+                when (stk?.layoutDelimiter) {
                     LayoutDelimiter.TopDeclHead ->
-                        LayoutState(stk2, acc)
+                        LayoutState(stk.tail, acc)
                             .let { insertToken(src, it) }
                             .let { insertStart(LayoutDelimiter.Where, it) }
                     LayoutDelimiter.Property ->
-                        insertToken(src, LayoutState(stk2, acc))
+                        insertToken(src, LayoutState(stk.tail, acc))
                     else ->
                         state
                             .let { collapse(::whereP, it) }
