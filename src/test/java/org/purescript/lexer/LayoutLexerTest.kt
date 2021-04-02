@@ -28,7 +28,7 @@ class LayoutLexerTest : TestCase() {
                 f = 1
             """.trimIndent()
         val tokens = getTokens(lexer, source)
-        assertEquals(12, tokens.size)
+        assertEquals(13, tokens.size)
     }
 
     fun `test do layout`() {
@@ -45,7 +45,7 @@ class LayoutLexerTest : TestCase() {
                     
             """.trimIndent()
         )
-        assertEquals(27, tokens.size)
+        assertEquals(28, tokens.size)
     }
 }
 

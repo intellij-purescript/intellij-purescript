@@ -561,7 +561,7 @@ fun insertLayout(
                 .let { insertSep(it) }
                 .let { insertToken(src, it) }
 
-            else -> state
+            else -> insertDefault(state)
         }
     }
     return insert(LayoutState(stack, emptyList()))
@@ -639,8 +639,8 @@ fun lex(
 
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
-    private var delegatedTokens: Iterator<SourceToken> =
-        listOf<SourceToken>().iterator()
+    private var delegatedTokens: Iterator<TokenStep> =
+        listOf<TokenStep>().iterator()
     private var token: SourceToken? = null
 
     override fun start(
@@ -650,7 +650,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         initialState: Int
     ) {
         super.start(buffer, startOffset, endOffset, initialState)
-        delegatedTokens = generateSequence {
+        val tokens = generateSequence {
             val sourceToken: SourceToken? = delegate.tokenType?.let { value ->
                 SourceToken(
                     SourceRange(
@@ -663,14 +663,13 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             delegate.advance()
             sourceToken
         }
-            .iterator()
+        delegatedTokens = lex(tokens).iterator()
         advance()
     }
 
     override fun advance() {
         token = when {
-            token?.value == PSTokens.WHERE -> layoutStart()
-            delegatedTokens.hasNext() -> delegatedTokens.next()
+            delegatedTokens.hasNext() -> delegatedTokens.next().token
             else -> null
         }
     }
