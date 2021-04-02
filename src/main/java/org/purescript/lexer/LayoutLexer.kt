@@ -88,7 +88,7 @@ fun lytToken(pos: SourcePos, value: PSElementType): SourceToken = SourceToken(
 fun insertLayout(
     src: SourceToken,
     nextPos: SourcePos,
-    stack: LayoutStack
+    stack: LayoutStack?
 ): LayoutState {
     val range = src.range
     val tok = src.value
@@ -578,18 +578,63 @@ typealias TokenStream = Sequence<TokenStep>
 fun unwindLayout(
     pos: SourcePos,
     eof: TokenStream,
-    stk: LayoutStack
+    stk: LayoutStack?
 ): TokenStream {
     fun go(stk: LayoutStack?): TokenStream {
         val (pos2, lyt, tl) = stk ?: return eof
         if (lyt == LayoutDelimiter.Root) return eof
         return if (isIndented(lyt)) {
-            sequenceOf(TokenStep(lytToken(pos, PSTokens.LAYOUT_END), pos, tl)) + go(tl)
+            sequenceOf(
+                TokenStep(
+                    lytToken(pos, PSTokens.LAYOUT_END),
+                    pos,
+                    tl
+                )
+            ) + go(tl)
         } else {
             go(tl)
         }
     }
     return go(stk)
+}
+
+
+fun consTokens(
+    tokens: List<Pair<SourceToken, LayoutStack?>>,
+    unit: Pair<SourcePos, Sequence<TokenStep>>
+): Pair<SourcePos, Sequence<TokenStep>> {
+    return tokens.foldRight(unit) { a, b ->
+        val (tok, stk) = a
+        val (pos, next) = b
+        tok.range.start to (sequenceOf(TokenStep(tok, pos, stk)) + next)
+    }
+}
+
+fun lex(
+    tokens: Sequence<SourceToken>
+): TokenStream {
+    val sourcePos = SourcePos(0, 0, 0)
+    var stack: LayoutStack? = LayoutStack(
+        sourcePos,
+        LayoutDelimiter.Root,
+        null
+    )
+
+    fun go(stack: LayoutStack?, startPos: SourcePos, tokens: Iterator<SourceToken>): TokenStream {
+        if (!tokens.hasNext()) {
+            return unwindLayout(startPos, sequenceOf(), stack)
+        } else {
+            val posToken = tokens.next()
+            val nextStart = posToken.range.end
+            val (nextStack, toks) = stack
+                .let { insertLayout(posToken, nextStart, it) }
+            return go(nextStack, nextStart, tokens)
+                .let {  nextStart to it}
+                .let { consTokens(toks, it)}
+                .let { it.second }
+        }
+    }
+    return go(stack, sourcePos, tokens.iterator())
 }
 
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
