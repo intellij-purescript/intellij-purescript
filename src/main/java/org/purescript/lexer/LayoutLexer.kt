@@ -600,13 +600,22 @@ fun consTokens(
     lastPos: SourcePos,
     tail: Sequence<TokenStep>
 ): Sequence<TokenStep> {
-    val starts = tokens.map { it.first.range.start }.drop(1) + listOf(lastPos)
     return sequence {
-        yieldAll(tokens.zip(starts).map { (token, start) ->
-            TokenStep(token.first, start, token.second)
-        })
+        yieldAll(tokensToTokenStep(tokens, lastPos))
         yieldAll(tail)
     }
+}
+
+fun tokensToTokenStep(
+    tokens: List<Pair<SourceToken, LayoutStack?>>,
+    lastPos: SourcePos
+): List<TokenStep> {
+    val positions = tokens
+        .map { it.first.range.start }
+        .drop(1) + listOf(lastPos)
+    return tokens
+        .zip(positions)
+        .map { (token, start) -> TokenStep(token.first, start, token.second) }
 }
 
 fun lex(
