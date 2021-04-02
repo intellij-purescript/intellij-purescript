@@ -122,7 +122,7 @@ class LayoutLexerTest : TestCase() {
                     
             """.trimIndent()
         )
-        assertEquals(28, tokens.size)
+        assertEquals(30, tokens.size)
     }
 }
 

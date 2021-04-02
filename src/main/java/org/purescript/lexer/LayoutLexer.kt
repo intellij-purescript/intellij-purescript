@@ -707,6 +707,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
     private var tokensWithLayout: Iterator<TokenStep> =
         listOf<TokenStep>().iterator()
     private var token: SourceToken? = null
+    private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
 
     override fun start(
         buffer: CharSequence,
@@ -717,6 +718,8 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         super.start(buffer, startOffset, endOffset, initialState)
         val lexer = delegate
         val tokens = getTokens(lexer)
+            .runningFold(root, correctLineAndColumn(buffer))
+            .drop(1)
         tokensWithLayout = lex(tokens).iterator()
         advance()
     }
