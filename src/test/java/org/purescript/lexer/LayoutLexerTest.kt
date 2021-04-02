@@ -24,6 +24,16 @@ class LayoutLexerTest : TestCase() {
         assertEquals(6, lexer.tokenStart)
         assertEquals(7, lexer.tokenEnd)
     }
+    fun `test it calculates text`() {
+        val lexer = LayoutLexer(PSLexer())
+        val source = """
+                module Main where
+            """.trimIndent()
+        lexer.start(source)
+        assertEquals("module", lexer.tokenText)
+        lexer.advance()
+        assertEquals(" ", lexer.tokenText)
+    }
 
     fun `test module where creates layout start`() {
         val lexer = LayoutLexer(PSLexer())
