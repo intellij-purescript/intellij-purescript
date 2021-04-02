@@ -621,20 +621,21 @@ fun lex(
         stack: LayoutStack?,
         startPos: SourcePos,
         tokens: Iterator<SourceToken>
-    ): TokenStream {
+    ): Sequence<SourceToken> {
         if (!tokens.hasNext()) {
-            return unwindLayout(startPos, stack)
+            return unwindLayout(startPos, stack).map { it.token }
         } else {
             val posToken = tokens.next()
             val nextStart = posToken.range.end
             val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
+            val ts = toks.map { it.first }
             return sequence {
-                yieldAll(tokensToTokenStep(toks, nextStart))
+                yieldAll(ts)
                 yieldAll(go(nextStack, nextStart, tokens))
             }
         }
     }
-    return go(stack, sourcePos, tokens.iterator()).map { it.token }.toList()
+    return go(stack, sourcePos, tokens.iterator()).toList()
 }
 
 fun correctLineAndColumn(
