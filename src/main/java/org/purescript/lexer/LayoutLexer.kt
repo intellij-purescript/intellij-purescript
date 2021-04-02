@@ -629,10 +629,8 @@ fun lex(
         } else {
             val posToken = tokens.next()
             val nextStart = posToken.range.end
-            val (nextStack, toks) = stack
-                .let { insertLayout(posToken, nextStart, it) }
-            return go(nextStack, nextStart, tokens)
-                .let { consTokens(toks, nextStart, it) }
+            val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
+            return consTokens(toks, nextStart, go(nextStack, nextStart, tokens))
         }
     }
     return go(stack, sourcePos, tokens.iterator())
