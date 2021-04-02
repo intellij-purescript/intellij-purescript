@@ -598,7 +598,7 @@ fun unwindLayout(
 fun consTokens(
     tokens: List<Pair<SourceToken, LayoutStack?>>,
     unit: Pair<SourcePos, Sequence<TokenStep>>
-): Pair<SourcePos, Sequence<TokenStep>> {
+): Sequence<TokenStep> {
     return tokens.foldRight(unit) { a, b ->
         val (tok, stk) = a
         val (pos, next) = b
@@ -608,7 +608,7 @@ fun consTokens(
             yieldAll(next)
         }
         tok.range.start to sequence
-    }
+    }.second
 }
 
 fun lex(
@@ -636,7 +636,6 @@ fun lex(
             return go(nextStack, nextStart, tokens)
                 .let { nextStart to it }
                 .let { consTokens(toks, it) }
-                .let { it.second }
         }
     }
     return go(stack, sourcePos, tokens.iterator())
