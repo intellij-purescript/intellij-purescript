@@ -578,7 +578,7 @@ typealias TokenStream = Sequence<TokenStep>
 fun unwindLayout(
     pos: SourcePos,
     stkIn: LayoutStack?
-): TokenStream {
+): Sequence<SourceToken> {
     return sequence {
         var stk = stkIn;
         while (stk != null) {
@@ -586,8 +586,7 @@ fun unwindLayout(
             if (lyt == LayoutDelimiter.Root) break
             if (isIndented(lyt)) {
                 val token = lytToken(pos, PSTokens.LAYOUT_END)
-                val tokenStep = TokenStep(token, pos, tl)
-                yield(tokenStep)
+                yield(token)
             }
             stk = tl
         }
@@ -610,7 +609,7 @@ fun lex(
         tokens: Iterator<SourceToken>
     ): Sequence<SourceToken> {
         if (!tokens.hasNext()) {
-            return unwindLayout(startPos, stack).map { it.token }
+            return unwindLayout(startPos, stack)
         } else {
             val posToken = tokens.next()
             val nextStart = posToken.range.end
