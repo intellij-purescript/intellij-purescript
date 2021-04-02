@@ -567,22 +567,22 @@ fun insertLayout(
     return insert(LayoutState(stack, emptyList()))
 }
 
+fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
+    var stk = stkIn
+    return generateSequence {
+        val (_, lyt, tail) = stk ?: return@generateSequence null
+        stk = tail
+        lyt
+    }
+}
+
 fun unwindLayout(
     pos: SourcePos,
     stkIn: LayoutStack?
 ): Sequence<SourceToken> {
-    return sequence {
-        var stk = stkIn;
-        while (stk != null) {
-            var (_, lyt, tl) = stk
-            if (lyt == LayoutDelimiter.Root) break
-            if (isIndented(lyt)) {
-                val token = lytToken(pos, PSTokens.LAYOUT_END)
-                yield(token)
-            }
-            stk = tl
-        }
-    }
+    return getTokensFromStack(stkIn)
+        .filter { isIndented(it) }
+        .map { lytToken(pos, PSTokens.LAYOUT_END) }
 }
 
 fun lex(
