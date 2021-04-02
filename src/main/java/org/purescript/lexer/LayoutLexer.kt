@@ -620,7 +620,11 @@ fun lex(
         null
     )
 
-    fun go(stack: LayoutStack?, startPos: SourcePos, tokens: Iterator<SourceToken>): TokenStream {
+    fun go(
+        stack: LayoutStack?,
+        startPos: SourcePos,
+        tokens: Iterator<SourceToken>
+    ): TokenStream {
         if (!tokens.hasNext()) {
             return unwindLayout(startPos, sequenceOf(), stack)
         } else {
@@ -629,12 +633,33 @@ fun lex(
             val (nextStack, toks) = stack
                 .let { insertLayout(posToken, nextStart, it) }
             return go(nextStack, nextStart, tokens)
-                .let {  nextStart to it}
-                .let { consTokens(toks, it)}
+                .let { nextStart to it }
+                .let { consTokens(toks, it) }
                 .let { it.second }
         }
     }
     return go(stack, sourcePos, tokens.iterator())
+}
+
+fun correctLineAndColumn(
+    previous: SourceToken,
+    current: SourceToken,
+): SourceToken {
+    val (start, end) = current.range
+    val newStart = SourcePos(start.line, start.offset, start.offset)
+    val newEnd = SourcePos(end.line, end.offset, end.offset)
+    return SourceToken(
+        range = SourceRange(newStart, newEnd),
+        value = current.value
+    )
+}
+
+fun posFromOffset(offset: Int): SourcePos {
+    return SourcePos(0, 0, offset)
+}
+
+fun rangeFromOffsets(start: Int, end: Int): SourceRange {
+    return SourceRange(posFromOffset(start), posFromOffset(end))
 }
 
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
@@ -653,9 +678,9 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         val tokens = generateSequence {
             val sourceToken: SourceToken? = delegate.tokenType?.let { value ->
                 SourceToken(
-                    SourceRange(
-                        start = SourcePos(0, 0, delegate.tokenStart),
-                        end = SourcePos(0, 0, delegate.tokenEnd)
+                    range = rangeFromOffsets(
+                        delegate.tokenStart,
+                        delegate.tokenEnd
                     ),
                     value = value
                 )

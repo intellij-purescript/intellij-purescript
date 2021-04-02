@@ -3,13 +3,39 @@ package org.purescript.lexer
 import com.intellij.lexer.EmptyLexer
 import com.intellij.psi.tree.IElementType
 import junit.framework.TestCase
+import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
 
 class LayoutLexerTest : TestCase() {
     fun testName() {
         val lexer = LayoutLexer(EmptyLexer())
-        val tokens = getTokens(lexer,"")
+        val tokens = getTokens(lexer, "")
         assertEquals(0, tokens.size)
+    }
+
+    private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
+
+    fun `test it sets correct column for first token`() {
+        val module = SourceToken(rangeFromOffsets(0, 6), PSTokens.MODULE)
+        val first = correctLineAndColumn(
+            root,
+            module
+        )
+        val (start, end) = first.range
+        assertEquals(0, start.column)
+        assertEquals(6, end.column)
+    }
+
+    fun `test it sets correct line and column for second token`() {
+        val tokens = sequenceOf(
+            SourceToken(rangeFromOffsets(0, 6), PSTokens.MODULE),
+            SourceToken(rangeFromOffsets(6, 7), PSTokens.WS)
+        )
+        val corrected = tokens.runningFold(root, ::correctLineAndColumn).drop(1)
+        val (_, second) = corrected.toList()
+        val (start, end) = second.range
+        assertEquals(6, start.column)
+        assertEquals(7, end.column)
     }
 
     fun `test it calculate offset`() {
@@ -24,6 +50,7 @@ class LayoutLexerTest : TestCase() {
         assertEquals(6, lexer.tokenStart)
         assertEquals(7, lexer.tokenEnd)
     }
+
     fun `test it calculates text`() {
         val lexer = LayoutLexer(PSLexer())
         val source = """
