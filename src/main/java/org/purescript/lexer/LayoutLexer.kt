@@ -595,17 +595,6 @@ fun unwindLayout(
 }
 
 
-fun consTokens(
-    tokens: List<Pair<SourceToken, LayoutStack?>>,
-    lastPos: SourcePos,
-    tail: Sequence<TokenStep>
-): Sequence<TokenStep> {
-    return sequence {
-        yieldAll(tokensToTokenStep(tokens, lastPos))
-        yieldAll(tail)
-    }
-}
-
 fun tokensToTokenStep(
     tokens: List<Pair<SourceToken, LayoutStack?>>,
     lastPos: SourcePos
@@ -639,7 +628,10 @@ fun lex(
             val posToken = tokens.next()
             val nextStart = posToken.range.end
             val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
-            return consTokens(toks, nextStart, go(nextStack, nextStart, tokens))
+            return sequence {
+                yieldAll(tokensToTokenStep(toks, nextStart))
+                yieldAll(go(nextStack, nextStart, tokens))
+            }
         }
     }
     return go(stack, sourcePos, tokens.iterator())

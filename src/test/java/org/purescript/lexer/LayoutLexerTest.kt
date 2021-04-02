@@ -29,7 +29,8 @@ class LayoutLexerTest : TestCase() {
         val source = "module "
         psLexer.start(source)
         val tokens = getTokens(psLexer)
-        val corrected = tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
+        val corrected =
+            tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
         val (_, second) = corrected.toList()
         val (start, end) = second.range
         assertEquals(6, start.column)
@@ -45,9 +46,10 @@ class LayoutLexerTest : TestCase() {
         psLexer.start(source)
         val tokens = getTokens(psLexer)
 
-        val corrected = tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
+        val corrected =
+            tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
 
-        val (moduleKeyword, newline, moduleName, _ , where) =
+        val (moduleKeyword, newline, moduleName, _, where) =
             corrected.toList()
 
         val (newlineStart, newlineEnd) = newline.range
@@ -125,18 +127,8 @@ class LayoutLexerTest : TestCase() {
         assertEquals(30, tokens.size)
     }
 
-    fun `test constTokens returns the tail un altered`() {
-        val pos = posFromOffset(0)
-        val tail = listOf(
-            TokenStep(lytToken(pos, PSTokens.LAYOUT_START), pos, null),
-            TokenStep(lytToken(pos, PSTokens.LAYOUT_END), pos, null),
-        )
-        val unit = pos to tail.asSequence()
-        val sequence = consTokens(emptyList(), unit.first, unit.second)
-        assertEquals(tail, sequence.toList())
-    }
 
-    fun `test constTokens returns the tokens as token steps`() {
+    fun `test tokensToTokenStep returns the tokens as token steps`() {
         val pos1 = posFromOffset(1)
         val pos2 = posFromOffset(2)
         val pos3 = posFromOffset(3)
@@ -147,9 +139,8 @@ class LayoutLexerTest : TestCase() {
             lytToken(pos1, PSTokens.LAYOUT_START) to stack1,
             lytToken(pos2, PSTokens.LAYOUT_END) to stack2,
         )
-        val unit = pos3 to tail.asSequence()
 
-        val sequence = consTokens(tokens, unit.first, unit.second)
+        val sequence = tokensToTokenStep(tokens, pos3)
 
         val allExpected = listOf<TokenStep>(
             TokenStep(tokens[0].first, pos2, stack1),
