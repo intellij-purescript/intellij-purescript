@@ -609,7 +609,7 @@ fun tokensToTokenStep(
 
 fun lex(
     tokens: List<SourceToken>
-): TokenStream {
+): List<SourceToken> {
     val sourcePos = SourcePos(0, 0, 0)
     var stack: LayoutStack? = LayoutStack(
         sourcePos,
@@ -634,7 +634,7 @@ fun lex(
             }
         }
     }
-    return go(stack, sourcePos, tokens.iterator())
+    return go(stack, sourcePos, tokens.iterator()).map { it.token }.toList()
 }
 
 fun correctLineAndColumn(
@@ -716,8 +716,6 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             .drop(1)
             .toList()
             .let(::lex)
-            .map { it.token }
-            .toList()
         index = 0
     }
 
