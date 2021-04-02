@@ -567,14 +567,6 @@ fun insertLayout(
     return insert(LayoutState(stack, emptyList()))
 }
 
-data class TokenStep(
-    val token: SourceToken,
-    val pos: SourcePos,
-    val stack: LayoutStack?
-)
-
-typealias TokenStream = Sequence<TokenStep>
-
 fun unwindLayout(
     pos: SourcePos,
     stkIn: LayoutStack?
