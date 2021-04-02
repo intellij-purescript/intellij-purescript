@@ -97,7 +97,6 @@ import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.TYPE
-import org.purescript.parser.PSTokens.Companion.WHERE
 
 class PureParsecParser {
     private fun parseQualified(p: Parsec): Parsec =
@@ -145,7 +144,7 @@ class PureParsecParser {
         `true`,
         `false`,
         `in`,
-        token(WHERE),
+        where,
         forall,
         token(PSTokens.QUALIFIED),
         token(HIDING),
@@ -390,7 +389,7 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(token(WHERE))
+                        indented(where)
                             .then(indentedList(classMember))
                             .`as`(ClassMemberList)
                     )
@@ -440,7 +439,7 @@ class PureParsecParser {
                     .then(
                         optional(
                             attempt(
-                                indented(token(WHERE))
+                                indented(where)
                                     .then(
                                         indented(
                                             indentedList(
@@ -558,7 +557,7 @@ class PureParsecParser {
     val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
-        .then(token(WHERE))
+        .then(where)
         .then(moduleDecls)
         .`as`(PSElements.Module)
 
