@@ -1,9 +1,13 @@
 package org.purescript.psi.expression
 
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.SmartPointerManager
 
 class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
+    LocalQuickFixProvider,
     PsiReferenceBase<PSExpressionConstructor>(
         expressionConstructor,
         expressionConstructor.identifier.textRangeInParent,
@@ -36,4 +40,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
                 }
             }
         }
+
+    override fun getQuickFixes(): Array<LocalQuickFix> =
+        arrayOf(ImportExpressionConstructorQuickFix(SmartPointerManager.createPointer(element)))
 }
