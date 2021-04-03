@@ -97,7 +97,6 @@ import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.TYPE
-import org.purescript.parser.PSTokens.Companion.WHERE
 
 class PureParsecParser {
     private fun parseQualified(p: Parsec): Parsec =
@@ -145,7 +144,7 @@ class PureParsecParser {
         `true`,
         `false`,
         `in`,
-        token(WHERE),
+        where,
         forall,
         token(PSTokens.QUALIFIED),
         token(HIDING),
@@ -281,7 +280,7 @@ class PureParsecParser {
             properName +
             manyOrEmpty(indented(typeVarBinding))
     private val exprWhere =
-        expr + optional(where + indentedList1(parseLocalDeclaration))
+        expr + optional(where + optional(`L{`)+ indentedList1(parseLocalDeclaration))
 
     private val parsePatternMatchObject =
         indented(
@@ -390,7 +389,8 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(token(WHERE))
+                        indented(where)
+                            .then(optional(`L{`))
                             .then(indentedList(classMember))
                             .`as`(ClassMemberList)
                     )
@@ -440,7 +440,7 @@ class PureParsecParser {
                     .then(
                         optional(
                             attempt(
-                                indented(token(WHERE))
+                                indented(where).then(optional(`L{`))
                                     .then(
                                         indented(
                                             indentedList(
@@ -558,7 +558,8 @@ class PureParsecParser {
     val parseModule = token(MODULE)
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
-        .then(token(WHERE))
+        .then(where)
+        .then(optional(`L{`))
         .then(moduleDecls)
         .`as`(PSElements.Module)
 
@@ -589,7 +590,7 @@ class PureParsecParser {
         .then(indented(`else`))
         .then(indented(expr))
         .`as`(PSElements.IfThenElse)
-    private val parseLet = token(LET)
+    private val parseLet = token(LET).then(optional(`L{`))
         .then(indented(indentedList1(parseLocalDeclaration)))
         .then(indented(`in`))
         .then(expr)
@@ -635,18 +636,19 @@ class PureParsecParser {
         )
     private val doStatement =
         choice(
-            token(LET)
+            token(LET).then(optional(`L{`))
                 .then(indented(indentedList1(letBinding)))
                 .`as`(DoNotationLet),
             attempt(binder + larrow + expr).`as`(DoNotationBind),
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        `do`.or(parseQualified(`do`))
-            .then(indented(indentedList(mark(doStatement))))
+        `do`.or(parseQualified(`do`)) +
+            optional(`L{`) +
+            indented(indentedList(mark(doStatement)))
 
     private val adoBlock =
-        token(ADO)
+        token(ADO).then(optional(`L{`))
             .then(indented(indentedList(mark(doStatement))))
 
     private val type0 = ref()
@@ -755,7 +757,7 @@ class PureParsecParser {
             expr7,
             attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            (case + commaSep1(expr) + of + indentedList(caseBranch)).`as`(Case),
+            (case + commaSep1(expr) + of + optional(`L{`) + indentedList(caseBranch)).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + `in` + expr,
