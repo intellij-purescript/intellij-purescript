@@ -1,11 +1,11 @@
 package org.purescript
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.collectDescendantsOfType
+import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
@@ -16,8 +16,75 @@ import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
+
+
+/**
+ * This should be [com.intellij.psi.util.forEachDescendantOfType]
+ * but is currently missing from the EAP build
+ *
+ * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
+ */
+
+inline fun <reified T : PsiElement> PsiElement.forEachDescendantOfType(noinline action: (T) -> Unit) {
+    forEachDescendantOfType({ true }, action)
+}
+
+
+/**
+ * This should be [com.intellij.psi.util.forEachDescendantOfType]
+ * but is currently missing from the EAP build
+ *
+ * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
+ */
+inline fun <reified T : PsiElement> PsiElement.forEachDescendantOfType(
+    crossinline canGoInside: (PsiElement) -> Boolean,
+    noinline action: (T) -> Unit
+) {
+    this.accept(object : PsiRecursiveElementVisitor() {
+        override fun visitElement(element: PsiElement) {
+            if (canGoInside(element)) {
+                super.visitElement(element)
+            }
+
+            if (element is T) {
+                action(element)
+            }
+        }
+    })
+}
+
+
+/**
+ * This should be [com.intellij.psi.util.collectDescendantsOfType]
+ * but is currently missing from the EAP build
+ *
+ * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
+ */
+inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(noinline predicate: (T) -> Boolean = { true }): List<T> {
+    return collectDescendantsOfType({ true }, predicate)
+}
+
+/**
+ * This should be [com.intellij.psi.util.collectDescendantsOfType]
+ * but is currently missing from the EAP build
+ *
+ * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
+ */
+inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(
+    crossinline canGoInside: (PsiElement) -> Boolean,
+    noinline predicate: (T) -> Boolean = { true }
+): List<T> {
+    val result = ArrayList<T>()
+    forEachDescendantOfType<T>(canGoInside) {
+        if (predicate(it)) {
+            result.add(it)
+        }
+    }
+    return result
+}
 
 
 fun PsiFile.getModule(): PSModule =
