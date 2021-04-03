@@ -643,7 +643,7 @@ class PureParsecParser {
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        `do`.or(parseQualified(`do`)) +
+        parseQualified(`do`) +
             optional(`L{`) +
             indented(indentedList(mark(doStatement)))
 
