@@ -1,10 +1,12 @@
 package org.purescript.psi
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.*
-import org.purescript.PSLanguage
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiNamedElement
 import org.purescript.features.DocCommentOwner
-import org.purescript.file.PSFile
+import org.purescript.parser.PSTokens
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
@@ -40,6 +42,12 @@ class PSModule(node: ASTNode) :
             .asSequence()
             .find { it.name ?: "" == name }
     }
+
+    /**
+     * @return the where keyword in the module header
+     */
+    val whereKeyword : PsiElement
+        get() = findNotNullChildByType(PSTokens.WHERE)
 
     /**
      * Helper method for retrieving various types of exported declarations.
