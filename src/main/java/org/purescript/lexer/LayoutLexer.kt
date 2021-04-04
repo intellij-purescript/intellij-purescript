@@ -242,346 +242,370 @@ fun insertLayout(
     nextPos: SourcePos,
     stack: LayoutStack?
 ): LayoutState {
+    val tokenValue = src.value
+    val tokPos = src.range.start
+    val state = LayoutState(stack, emptyList())
+    val (stk, acc) = state
+    fun offsideEndP(
+        tokPos: SourcePos,
+        lytPos: SourcePos,
+        lyt: LayoutDelimiter
+    ): Boolean {
+        return isIndented(lyt) && tokPos.column <= lytPos.column
+    }
 
-    fun insert(
-        tokenValue: IElementType, tokPos: SourcePos, stack: LayoutStack?
-    ): LayoutState {
-        val state = LayoutState(stack, emptyList())
-        val (stk, acc) = state
-        fun offsideEndP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
-            return isIndented(lyt) && tokPos.column <= lytPos.column
+    fun indentedP(
+        tokPos: SourcePos,
+        ignore: SourcePos,
+        lyt: LayoutDelimiter
+    ): Boolean =
+        isIndented(lyt)
+
+    return when (tokenValue) {
+        PSTokens.DATA -> {
+            val state2 = insertDefault(src, tokPos, state)
+            if (isTopDecl(tokPos, state.stack)) {
+                pushStack(tokPos, LayoutDelimiter.TopDecl, state2)
+            } else {
+                popStack(state2) { it == LayoutDelimiter.Property }
+            }
         }
 
-        fun indentedP(tokPos:SourcePos, ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
-            isIndented(lyt)
-
-        return when (tokenValue) {
-            PSTokens.DATA -> {
-                val state2 = insertDefault(src, tokPos, state)
-                if (isTopDecl(tokPos, state.stack)) {
-                    pushStack(tokPos, LayoutDelimiter.TopDecl, state2)
-                } else {
-                    popStack(state2) { it == LayoutDelimiter.Property }
-                }
+        PSTokens.CLASS -> {
+            val state2 = insertDefault(src, tokPos, state)
+            if (isTopDecl(tokPos, state2.stack)) {
+                pushStack(tokPos, LayoutDelimiter.TopDeclHead, state2)
+            } else {
+                popStack(state2) { it == LayoutDelimiter.Property }
             }
+        }
 
-            PSTokens.CLASS -> {
-                val state2 = insertDefault(src, tokPos, state)
-                if (isTopDecl(tokPos, state2.stack)) {
-                    pushStack(tokPos, LayoutDelimiter.TopDeclHead, state2)
-                } else {
-                    popStack(state2) { it == LayoutDelimiter.Property }
-                }
-            }
+        PSTokens.WHERE -> {
+            fun whereP(
+                tokPos: SourcePos,
+                lytPos: SourcePos,
+                lyt: LayoutDelimiter
+            ): Boolean =
+                if (lyt == LayoutDelimiter.Do) true
+                else offsideEndP(tokPos, lytPos, lyt)
 
-            PSTokens.WHERE -> {
-                fun whereP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
-                    if (lyt == LayoutDelimiter.Do) true
-                    else offsideEndP(tokPos, lytPos, lyt)
-
-                when (stk?.layoutDelimiter) {
-                    LayoutDelimiter.TopDeclHead ->
-                        LayoutState(stk.tail, acc)
-                            .let { insertToken(src, it) }
-                            .let { insertStart(
-                                nextPos,
-                                LayoutDelimiter.Where,
-                                it
-                            ) }
-                    LayoutDelimiter.Property ->
-                        insertToken(src, LayoutState(stk.tail, acc))
-                    else ->
-                        state
-                            .let { collapse(tokPos, ::whereP, it) }
-                            .let { insertToken(src, it) }
-                            .let { insertStart(
-                                nextPos,
-                                LayoutDelimiter.Where,
-                                it
-                            ) }
-                }
-            }
-
-            PSTokens.IN -> {
-                fun inP(tokPos: SourcePos, ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
-                    when (lyt) {
-                        LayoutDelimiter.Let -> false
-                        LayoutDelimiter.Ado -> false
-                        else -> isIndented(lyt)
-                    }
-
-                val (stk, acc2) = collapse(tokPos, ::inP, state)
-                val (_, lyt, stk2) = stk ?: return state
-                    .let { insertDefault(src, tokPos, it) }
-                    .let { popStack(it) { it == LayoutDelimiter.Property } }
-                if (lyt == LayoutDelimiter.LetStmt && stk2?.layoutDelimiter == LayoutDelimiter.Ado) {
-                    return LayoutState(stk2.tail, acc2)
-                        .let { insertEnd(tokPos, it) }
-                        .let { insertEnd(tokPos, it) }
+            when (stk?.layoutDelimiter) {
+                LayoutDelimiter.TopDeclHead ->
+                    LayoutState(stk.tail, acc)
                         .let { insertToken(src, it) }
-                } else if (isIndented(lyt)) {
-                    return LayoutState(stk2, acc2)
-                        .let { insertEnd(tokPos, it) }
-                        .let { insertToken(src, it) }
-                } else {
-                    return state
-                        .let { insertDefault(src, tokPos, it) }
-                        .let { popStack(it) { it == LayoutDelimiter.Property } }
-                }
-            }
-
-            PSTokens.LET -> {
-                fun next(state: LayoutState): LayoutState {
-                    val (p, lyt, _) = state.stack ?: return insertStart(
-                        nextPos,
-                        LayoutDelimiter.Let,
-                        state
-                    )
-                    return when {
-                        lyt == LayoutDelimiter.Do && p.column == tokPos.column ->
-                            insertStart(nextPos, LayoutDelimiter.LetStmt, state)
-                        lyt == LayoutDelimiter.Ado && p.column == tokPos.column ->
-                            insertStart(nextPos, LayoutDelimiter.LetStmt, state)
-                        else -> insertStart(nextPos, LayoutDelimiter.Let, state)
-                    }
-                }
-
-                return insertKwProperty(src, tokPos, ::next, state)
-            }
-
-            PSTokens.DO ->
-                insertKwProperty(
-                    src,
-                    tokPos,
-                    { insertStart(nextPos, LayoutDelimiter.Do, it) },
-                    state
-                )
-
-            PSTokens.ADO ->
-                insertKwProperty(
-                    src,
-                    tokPos,
-                    { insertStart(nextPos, LayoutDelimiter.Ado, it) },
-                    state
-                )
-
-            PSTokens.CASE ->
-                insertKwProperty(
-                    src,
-                    tokPos,
-                    { pushStack(tokPos, LayoutDelimiter.Case, it) },
-                    state
-                )
-
-            PSTokens.OF -> {
-                val state2 = collapse(tokPos, ::indentedP, state)
-                return if (state2.stack?.layoutDelimiter == LayoutDelimiter.Case) {
-                    LayoutState(state2.stack.tail, state2.acc)
-                        .let { insertToken(src, it) }
-                        .let { insertStart(nextPos, LayoutDelimiter.Of, it) }
                         .let {
-                            pushStack(
+                            insertStart(
                                 nextPos,
-                                LayoutDelimiter.CaseBinders,
+                                LayoutDelimiter.Where,
                                 it
                             )
                         }
-                } else {
-                    state2
-                        .let { insertDefault(src, tokPos, it) }
-                        .let { popStack(it) { it == LayoutDelimiter.Property } }
-                }
+                LayoutDelimiter.Property ->
+                    insertToken(src, LayoutState(stk.tail, acc))
+                else ->
+                    state
+                        .let { collapse(tokPos, ::whereP, it) }
+                        .let { insertToken(src, it) }
+                        .let {
+                            insertStart(
+                                nextPos,
+                                LayoutDelimiter.Where,
+                                it
+                            )
+                        }
             }
+        }
 
-            PSTokens.IF ->
-                insertKwProperty(
-                    src,
-                    tokPos,
-                    { pushStack(tokPos, LayoutDelimiter.If, it) },
+        PSTokens.IN -> {
+            fun inP(
+                tokPos: SourcePos,
+                ignore: SourcePos,
+                lyt: LayoutDelimiter
+            ): Boolean =
+                when (lyt) {
+                    LayoutDelimiter.Let -> false
+                    LayoutDelimiter.Ado -> false
+                    else -> isIndented(lyt)
+                }
+
+            val (stk, acc2) = collapse(tokPos, ::inP, state)
+            val (_, lyt, stk2) = stk ?: return state
+                .let { insertDefault(src, tokPos, it) }
+                .let { popStack(it) { it == LayoutDelimiter.Property } }
+            if (lyt == LayoutDelimiter.LetStmt && stk2?.layoutDelimiter == LayoutDelimiter.Ado) {
+                return LayoutState(stk2.tail, acc2)
+                    .let { insertEnd(tokPos, it) }
+                    .let { insertEnd(tokPos, it) }
+                    .let { insertToken(src, it) }
+            } else if (isIndented(lyt)) {
+                return LayoutState(stk2, acc2)
+                    .let { insertEnd(tokPos, it) }
+                    .let { insertToken(src, it) }
+            } else {
+                return state
+                    .let { insertDefault(src, tokPos, it) }
+                    .let { popStack(it) { it == LayoutDelimiter.Property } }
+            }
+        }
+
+        PSTokens.LET -> {
+            fun next(state: LayoutState): LayoutState {
+                val (p, lyt, _) = state.stack ?: return insertStart(
+                    nextPos,
+                    LayoutDelimiter.Let,
                     state
                 )
+                return when {
+                    lyt == LayoutDelimiter.Do && p.column == tokPos.column ->
+                        insertStart(nextPos, LayoutDelimiter.LetStmt, state)
+                    lyt == LayoutDelimiter.Ado && p.column == tokPos.column ->
+                        insertStart(nextPos, LayoutDelimiter.LetStmt, state)
+                    else -> insertStart(nextPos, LayoutDelimiter.Let, state)
+                }
+            }
 
-            PSTokens.THEN -> {
-                val state2 = collapse(tokPos, ::indentedP, state)
-                if (state2.stack?.layoutDelimiter == LayoutDelimiter.If) {
-                    LayoutState(state2.stack.tail, state2.acc)
-                        .let { insertToken(src, it) }
-                        .let { pushStack(tokPos, LayoutDelimiter.Then, it) }
+            return insertKwProperty(src, tokPos, ::next, state)
+        }
+
+        PSTokens.DO ->
+            insertKwProperty(
+                src,
+                tokPos,
+                { insertStart(nextPos, LayoutDelimiter.Do, it) },
+                state
+            )
+
+        PSTokens.ADO ->
+            insertKwProperty(
+                src,
+                tokPos,
+                { insertStart(nextPos, LayoutDelimiter.Ado, it) },
+                state
+            )
+
+        PSTokens.CASE ->
+            insertKwProperty(
+                src,
+                tokPos,
+                { pushStack(tokPos, LayoutDelimiter.Case, it) },
+                state
+            )
+
+        PSTokens.OF -> {
+            val state2 = collapse(tokPos, ::indentedP, state)
+            return if (state2.stack?.layoutDelimiter == LayoutDelimiter.Case) {
+                LayoutState(state2.stack.tail, state2.acc)
+                    .let { insertToken(src, it) }
+                    .let { insertStart(nextPos, LayoutDelimiter.Of, it) }
+                    .let {
+                        pushStack(
+                            nextPos,
+                            LayoutDelimiter.CaseBinders,
+                            it
+                        )
+                    }
+            } else {
+                state2
+                    .let { insertDefault(src, tokPos, it) }
+                    .let { popStack(it) { it == LayoutDelimiter.Property } }
+            }
+        }
+
+        PSTokens.IF ->
+            insertKwProperty(
+                src,
+                tokPos,
+                { pushStack(tokPos, LayoutDelimiter.If, it) },
+                state
+            )
+
+        PSTokens.THEN -> {
+            val state2 = collapse(tokPos, ::indentedP, state)
+            if (state2.stack?.layoutDelimiter == LayoutDelimiter.If) {
+                LayoutState(state2.stack.tail, state2.acc)
+                    .let { insertToken(src, it) }
+                    .let { pushStack(tokPos, LayoutDelimiter.Then, it) }
+            } else {
+                insertDefault(src, tokPos, state)
+                    .let { popStack(it) { it == LayoutDelimiter.Property } }
+            }
+        }
+
+        PSTokens.ELSE -> {
+            val state2 = collapse(tokPos, ::indentedP, state)
+            if (state2.stack?.layoutDelimiter == LayoutDelimiter.Then) {
+                LayoutState(state2.stack.tail, state2.acc)
+                    .let { insertToken(src, it) }
+            } else {
+                val state3 = collapse(tokPos, ::offsideP, state)
+                if (isTopDecl(tokPos, state3.stack)) {
+                    insertToken(src, state3)
                 } else {
-                    insertDefault(src, tokPos, state)
+                    insertSep(tokPos, state3)
+                        .let { insertToken(src, it) }
                         .let { popStack(it) { it == LayoutDelimiter.Property } }
                 }
             }
+        }
 
-            PSTokens.ELSE -> {
-                val state2 = collapse(tokPos, ::indentedP, state)
-                if (state2.stack?.layoutDelimiter == LayoutDelimiter.Then) {
-                    LayoutState(state2.stack.tail, state2.acc)
-                        .let { insertToken(src, it) }
-                } else {
-                    val state3 = collapse(tokPos, ::offsideP, state)
-                    if (isTopDecl(tokPos, state3.stack)) {
-                        insertToken(src, state3)
-                    } else {
-                        insertSep(tokPos, state3)
-                            .let { insertToken(src, it) }
-                            .let { popStack(it) { it == LayoutDelimiter.Property } }
-                    }
+        PSTokens.FORALL -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
+
+        PSTokens.BACKSLASH -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
+
+        PSTokens.ARROW -> {
+            fun arrowP(
+                tokPos: SourcePos,
+                lytPos: SourcePos,
+                lyt: LayoutDelimiter
+            ): Boolean =
+                when (lyt) {
+                    LayoutDelimiter.Do -> true
+                    LayoutDelimiter.Of -> false
+                    else -> offsideEndP(tokPos, lytPos, lyt)
                 }
+
+            fun guardP(lyt: LayoutDelimiter): Boolean = when (lyt) {
+                LayoutDelimiter.CaseBinders -> true
+                LayoutDelimiter.CaseGuard -> true
+                LayoutDelimiter.LambdaBinders -> true
+                else -> false
             }
+            state
+                .let { collapse(tokPos, ::arrowP, it) }
+                .let { popStack(it, ::guardP) }
+                .let { insertToken(src, it) }
+        }
 
-            PSTokens.FORALL -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
-
-            PSTokens.BACKSLASH -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
-
-            PSTokens.ARROW -> {
-                fun arrowP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
-                    when (lyt) {
-                        LayoutDelimiter.Do -> true
-                        LayoutDelimiter.Of -> false
-                        else -> offsideEndP(tokPos, lytPos, lyt)
-                    }
-
-                fun guardP(lyt: LayoutDelimiter): Boolean = when (lyt) {
-                    LayoutDelimiter.CaseBinders -> true
-                    LayoutDelimiter.CaseGuard -> true
-                    LayoutDelimiter.LambdaBinders -> true
+        PSTokens.EQ -> {
+            fun equalsP(
+                tokPos: SourcePos,
+                ignore: SourcePos,
+                lyt: LayoutDelimiter
+            ): Boolean =
+                when (lyt) {
+                    LayoutDelimiter.Where -> true
+                    LayoutDelimiter.Let -> true
+                    LayoutDelimiter.LetStmt -> true
                     else -> false
                 }
+            val (stk2, acc2) = collapse(tokPos, ::equalsP, state)
+            when (stk2?.layoutDelimiter) {
+                LayoutDelimiter.DeclGuard -> LayoutState(stk2.tail, acc2)
+                    .let { insertToken(src, it) }
+                else -> insertDefault(src, tokPos, state)
+            }
+        }
+
+        PSTokens.PIPE -> {
+            val state2 = collapse(tokPos, ::offsideEndP, state)
+            val (stk, _) = state2
+            when (stk?.layoutDelimiter) {
+                LayoutDelimiter.Of -> state2
+                    .let {
+                        pushStack(tokPos, LayoutDelimiter.CaseGuard, it)
+                    }
+                    .let { insertToken(src, it) }
+                LayoutDelimiter.Let -> state2
+                    .let {
+                        pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
+                    }
+                    .let { insertToken(src, it) }
+                LayoutDelimiter.LetStmt -> state2
+                    .let {
+                        pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
+                    }
+                    .let { insertToken(src, it) }
+                LayoutDelimiter.Where -> state2
+                    .let {
+                        pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
+                    }
+                    .let { insertToken(src, it) }
+                else -> state.let { insertDefault(src, tokPos, it) }
+            }
+        }
+
+        PSTokens.TICK -> {
+            val state2 = collapse(tokPos, ::indentedP, state)
+            if (state2.stack?.layoutDelimiter == LayoutDelimiter.Tick) {
+                LayoutState(state2.stack.tail, state2.acc)
+                    .let { insertToken(src, it) }
+            } else {
                 state
-                    .let { collapse(tokPos, ::arrowP, it) }
-                    .let { popStack(it, ::guardP) }
+                    .let { insertDefault(src, tokPos, it) }
+                    .let { pushStack(tokPos, LayoutDelimiter.Tick, it) }
+            }
+        }
+
+        PSTokens.COMMA -> {
+            val state2 = collapse(tokPos, ::indentedP, state)
+            if (state2.stack?.layoutDelimiter == LayoutDelimiter.Brace) {
+                state2
+                    .let { insertToken(src, it) }
+                    .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
+            } else {
+                state2
                     .let { insertToken(src, it) }
             }
-
-            PSTokens.EQ -> {
-                fun equalsP(tokPos:SourcePos, ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
-                    when (lyt) {
-                        LayoutDelimiter.Where -> true
-                        LayoutDelimiter.Let -> true
-                        LayoutDelimiter.LetStmt -> true
-                        else -> false
-                    }
-                val (stk2, acc2) = collapse(tokPos, ::equalsP, state)
-                when (stk2?.layoutDelimiter) {
-                    LayoutDelimiter.DeclGuard -> LayoutState(stk2.tail, acc2)
-                        .let { insertToken(src, it) }
-                    else -> insertDefault(src, tokPos, state)
-                }
-            }
-
-            PSTokens.PIPE -> {
-                val state2 = collapse(tokPos, ::offsideEndP, state)
-                val (stk, _) = state2
-                when (stk?.layoutDelimiter) {
-                    LayoutDelimiter.Of -> state2
-                        .let {
-                            pushStack(tokPos, LayoutDelimiter.CaseGuard, it)
-                        }
-                        .let { insertToken(src, it) }
-                    LayoutDelimiter.Let -> state2
-                        .let {
-                            pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
-                        }
-                        .let { insertToken(src, it) }
-                    LayoutDelimiter.LetStmt -> state2
-                        .let {
-                            pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
-                        }
-                        .let { insertToken(src, it) }
-                    LayoutDelimiter.Where -> state2
-                        .let {
-                            pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
-                        }
-                        .let { insertToken(src, it) }
-                    else -> state.let { insertDefault(src, tokPos, it) }
-                }
-            }
-
-            PSTokens.TICK -> {
-                val state2 = collapse(tokPos, ::indentedP, state)
-                if (state2.stack?.layoutDelimiter == LayoutDelimiter.Tick) {
-                    LayoutState(state2.stack.tail, state2.acc)
-                        .let { insertToken(src, it) }
-                } else {
-                    state
-                        .let { insertDefault(src, tokPos, it) }
-                        .let { pushStack(tokPos, LayoutDelimiter.Tick, it) }
-                }
-            }
-
-            PSTokens.COMMA -> {
-                val state2 = collapse(tokPos, ::indentedP, state)
-                if (state2.stack?.layoutDelimiter == LayoutDelimiter.Brace) {
-                    state2
-                        .let { insertToken(src, it) }
-                        .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
-                } else {
-                    state2
-                        .let { insertToken(src, it) }
-                }
-            }
-
-            PSTokens.DOT -> {
-                val state2 = insertDefault(src, tokPos, state)
-                if (state2.stack?.layoutDelimiter == LayoutDelimiter.Forall) {
-                    LayoutState(state2.stack.tail, state2.acc)
-                } else {
-                    state2
-                        .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
-                }
-            }
-
-            PSTokens.LPAREN -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { pushStack(tokPos, LayoutDelimiter.Paren, it) }
-
-            PSTokens.LCURLY -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { pushStack(tokPos, LayoutDelimiter.Brace, it) }
-                .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
-
-            PSTokens.LBRACK -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { pushStack(tokPos, LayoutDelimiter.Square, it) }
-
-            PSTokens.RPAREN -> state
-                .let { collapse(tokPos, ::indentedP, it) }
-                .let { popStack(it) { it == LayoutDelimiter.Paren } }
-                .let { insertToken(src, it) }
-
-            PSTokens.RCURLY -> state
-                .let { collapse(tokPos, ::indentedP, it) }
-                .let { popStack(it) { it == LayoutDelimiter.Property } }
-                .let { popStack(it) { it == LayoutDelimiter.Brace } }
-                .let { insertToken(src, it) }
-
-            PSTokens.RBRACK -> state
-                .let { collapse(tokPos, ::indentedP, it) }
-                .let { popStack(it) { it == LayoutDelimiter.Square } }
-                .let { insertToken(src, it) }
-
-            PSTokens.STRING -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { popStack(it) { it == LayoutDelimiter.Property } }
-
-            PSTokens.IDENT -> state
-                .let { insertDefault(src, tokPos, it) }
-                .let { popStack(it) { it == LayoutDelimiter.Property } }
-
-            PSTokens.OPERATOR -> state
-                .let { collapse(tokPos, ::offsideP, it) }
-                .let { insertSep(tokPos, it) }
-                .let { insertToken(src, it) }
-
-            else -> insertDefault(src, tokPos, state)
         }
+
+        PSTokens.DOT -> {
+            val state2 = insertDefault(src, tokPos, state)
+            if (state2.stack?.layoutDelimiter == LayoutDelimiter.Forall) {
+                LayoutState(state2.stack.tail, state2.acc)
+            } else {
+                state2
+                    .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
+            }
+        }
+
+        PSTokens.LPAREN -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { pushStack(tokPos, LayoutDelimiter.Paren, it) }
+
+        PSTokens.LCURLY -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { pushStack(tokPos, LayoutDelimiter.Brace, it) }
+            .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
+
+        PSTokens.LBRACK -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { pushStack(tokPos, LayoutDelimiter.Square, it) }
+
+        PSTokens.RPAREN -> state
+            .let { collapse(tokPos, ::indentedP, it) }
+            .let { popStack(it) { it == LayoutDelimiter.Paren } }
+            .let { insertToken(src, it) }
+
+        PSTokens.RCURLY -> state
+            .let { collapse(tokPos, ::indentedP, it) }
+            .let { popStack(it) { it == LayoutDelimiter.Property } }
+            .let { popStack(it) { it == LayoutDelimiter.Brace } }
+            .let { insertToken(src, it) }
+
+        PSTokens.RBRACK -> state
+            .let { collapse(tokPos, ::indentedP, it) }
+            .let { popStack(it) { it == LayoutDelimiter.Square } }
+            .let { insertToken(src, it) }
+
+        PSTokens.STRING -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { popStack(it) { it == LayoutDelimiter.Property } }
+
+        PSTokens.IDENT -> state
+            .let { insertDefault(src, tokPos, it) }
+            .let { popStack(it) { it == LayoutDelimiter.Property } }
+
+        PSTokens.OPERATOR -> state
+            .let { collapse(tokPos, ::offsideP, it) }
+            .let { insertSep(tokPos, it) }
+            .let { insertToken(src, it) }
+
+        else -> insertDefault(src, tokPos, state)
     }
-    return insert(src.value, src.range.start, stack)
 }
 
 fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
