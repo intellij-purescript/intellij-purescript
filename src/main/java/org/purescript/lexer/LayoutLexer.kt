@@ -237,6 +237,17 @@ fun insertStart(
     }
 }
 
+fun offsideEndP(
+    tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter
+): Boolean {
+    return isIndented(lyt) && tokPos.column <= lytPos.column
+}
+
+fun indentedP(
+    tokPos: SourcePos, ignore: SourcePos, lyt: LayoutDelimiter
+): Boolean =
+    isIndented(lyt)
+
 fun insertLayout(
     src: SuperToken,
     nextPos: SourcePos,
@@ -246,20 +257,6 @@ fun insertLayout(
     val tokPos = src.range.start
     val state = LayoutState(stack, emptyList())
     val (stk, acc) = state
-    fun offsideEndP(
-        tokPos: SourcePos,
-        lytPos: SourcePos,
-        lyt: LayoutDelimiter
-    ): Boolean {
-        return isIndented(lyt) && tokPos.column <= lytPos.column
-    }
-
-    fun indentedP(
-        tokPos: SourcePos,
-        ignore: SourcePos,
-        lyt: LayoutDelimiter
-    ): Boolean =
-        isIndented(lyt)
 
     return when (tokenValue) {
         PSTokens.DATA -> {
