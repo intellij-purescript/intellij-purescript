@@ -12,6 +12,10 @@ abstract class PSLexerTestBase(val lexer: Lexer, val folder: String): LexerTestC
     fun getTestDataPath(): String = "test-data"
 
     override fun getPathToTestDataFile(extension: String?): String {
-        return getTestDataPath() + "/" + dirPath + "/" + super.getTestName(true) + extension
+        return getTestDataPath() + "/" + dirPath + "/" + super.getTestName(false) + extension
+    }
+
+    override fun getExpectedFileExtension(): String {
+        return ".lex.txt"
     }
 }
