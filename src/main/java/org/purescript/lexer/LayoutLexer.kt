@@ -100,18 +100,18 @@ fun insertLayout(
     stack: LayoutStack?
 ): LayoutState {
     val tokPos = src.range.start
-    fun offsideP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
+    fun offsideP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
         return isIndented(lyt) && tokPos.column < lytPos.column
     }
 
     fun collapse(
-        p: (SourcePos, LayoutDelimiter) -> Boolean,
+        p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean,
         state: LayoutState
     ): LayoutState {
         val (stack, acc) = state
         if (stack != null) {
             val (lytPos, lyt, tail) = stack
-            return if (p(lytPos, lyt)) {
+            return if (p(tokPos, lytPos, lyt)) {
                 val nextAcc = if (isIndented(lyt)) {
                     val pair = lytToken(tokPos, PSTokens.LAYOUT_END) to tail
                     snoc(acc, pair)
@@ -233,11 +233,11 @@ fun insertLayout(
 
     fun insert(state: LayoutState, tokenValue: IElementType): LayoutState {
         val (stk, acc) = state
-        fun offsideEndP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
+        fun offsideEndP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
             return isIndented(lyt) && tokPos.column <= lytPos.column
         }
 
-        fun indentedP(ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
+        fun indentedP(tokPos:SourcePos, ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
             isIndented(lyt)
 
         return when (tokenValue) {
@@ -260,9 +260,9 @@ fun insertLayout(
             }
 
             PSTokens.WHERE -> {
-                fun whereP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
+                fun whereP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
                     if (lyt == LayoutDelimiter.Do) true
-                    else offsideEndP(lytPos, lyt)
+                    else offsideEndP(tokPos, lytPos, lyt)
 
                 when (stk?.layoutDelimiter) {
                     LayoutDelimiter.TopDeclHead ->
@@ -280,7 +280,7 @@ fun insertLayout(
             }
 
             PSTokens.IN -> {
-                fun inP(ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
+                fun inP(tokPos: SourcePos, ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
                     when (lyt) {
                         LayoutDelimiter.Let -> false
                         LayoutDelimiter.Ado -> false
@@ -404,11 +404,11 @@ fun insertLayout(
                 .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
 
             PSTokens.ARROW -> {
-                fun arrowP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
+                fun arrowP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
                     when (lyt) {
                         LayoutDelimiter.Do -> true
                         LayoutDelimiter.Of -> false
-                        else -> offsideEndP(lytPos, lyt)
+                        else -> offsideEndP(tokPos, lytPos, lyt)
                     }
 
                 fun guardP(lyt: LayoutDelimiter): Boolean = when (lyt) {
@@ -424,7 +424,7 @@ fun insertLayout(
             }
 
             PSTokens.EQ -> {
-                fun equalsP(ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
+                fun equalsP(tokPos:SourcePos, ignore: SourcePos, lyt: LayoutDelimiter): Boolean =
                     when (lyt) {
                         LayoutDelimiter.Where -> true
                         LayoutDelimiter.Let -> true
