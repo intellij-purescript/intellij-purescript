@@ -128,7 +128,7 @@ fun insertLayout(
         }
     }
 
-    fun sepP(lytPos: SourcePos): Boolean =
+    fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
         tokPos.column == lytPos.column && tokPos.line != lytPos.line
 
     fun insertToken(token: SuperToken, state: LayoutState): LayoutState {
@@ -146,16 +146,16 @@ fun insertLayout(
         LayoutState(LayoutStack(lytPos, lyt, state.stack), state.acc)
 
     fun identSepP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
-        isIndented(lyt) && sepP(lytPos)
+        isIndented(lyt) && sepP(tokPos, lytPos)
 
     fun insertSep(state: LayoutState): LayoutState {
         val (stk, acc) = state
         val (lytPos, lyt, tail) = stk ?: return state
         val sepTok = lytToken(tokPos, PSTokens.LAYOUT_SEP)
         return when {
-            LayoutDelimiter.TopDecl == lyt && sepP(lytPos) ->
+            LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
                 insertToken(sepTok, LayoutState(tail, acc))
-            LayoutDelimiter.TopDeclHead == lyt && sepP(lytPos) ->
+            LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
                 insertToken(sepTok, LayoutState(tail, acc))
             identSepP(lytPos, lyt) -> when (lyt) {
                 LayoutDelimiter.Of -> pushStack(
