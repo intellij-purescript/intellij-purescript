@@ -99,9 +99,8 @@ fun insertLayout(
     nextPos: SourcePos,
     stack: LayoutStack?
 ): LayoutState {
-    val range = src.range
     val tok = src.value
-    val tokPos = range.start
+    val tokPos = src.range.start
     fun offsideP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
         return isIndented(lyt) && tokPos.column < lytPos.column
     }
