@@ -236,7 +236,9 @@ fun insertLayout(
         }
     }
 
-    fun insert(state: LayoutState, tokenValue: IElementType): LayoutState {
+    fun insert(
+        state: LayoutState, tokenValue: IElementType, tokPos: SourcePos
+    ): LayoutState {
         val (stk, acc) = state
         fun offsideEndP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
             return isIndented(lyt) && tokPos.column <= lytPos.column
@@ -558,7 +560,7 @@ fun insertLayout(
             else -> insertDefault(tokPos, state)
         }
     }
-    return insert(LayoutState(stack, emptyList()), src.value)
+    return insert(LayoutState(stack, emptyList()), src.value, tokPos)
 }
 
 fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
