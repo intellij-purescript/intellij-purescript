@@ -117,57 +117,88 @@ fun collapse(
         return state
     }
 }
+fun offsideP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
+    return isIndented(lyt) && tokPos.column < lytPos.column
+}
+
+
+fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
+    tokPos.column == lytPos.column && tokPos.line != lytPos.line
+
+fun insertToken(token: SuperToken, state: LayoutState): LayoutState {
+    val (stk, acc) = state
+    val acc2 = acc.toMutableList()
+    acc2 += token to stk
+    return LayoutState(stk, acc2)
+}
+
+fun pushStack(
+    lytPos: SourcePos,
+    lyt: LayoutDelimiter,
+    state: LayoutState
+): LayoutState =
+    LayoutState(LayoutStack(lytPos, lyt, state.stack), state.acc)
+
+fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
+    isIndented(lyt) && sepP(tokPos, lytPos)
+
+fun insertSep(tokPos: SourcePos, state: LayoutState): LayoutState {
+    val (stk, acc) = state
+    val (lytPos, lyt, tail) = stk ?: return state
+    val sepTok = lytToken(tokPos, PSTokens.LAYOUT_SEP)
+    return when {
+        LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
+            insertToken(sepTok, LayoutState(tail, acc))
+        LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
+            insertToken(sepTok, LayoutState(tail, acc))
+        identSepP(tokPos, lytPos, lyt) -> when (lyt) {
+            LayoutDelimiter.Of -> pushStack(
+                tokPos,
+                LayoutDelimiter.CaseBinders,
+                insertToken(sepTok, state)
+            )
+            else -> insertToken(sepTok, state)
+        }
+        else -> state
+    }
+}
+
+
+fun popStack(
+    state: LayoutState,
+    p: (LayoutDelimiter) -> Boolean
+): LayoutState {
+    val lyt = state.stack?.layoutDelimiter
+    return if (lyt != null && p(lyt)) {
+        LayoutState(state.stack.tail, state.acc)
+    } else {
+        state
+    }
+}
+
+fun find(
+    stack: LayoutStack?,
+    function: (LayoutStack) -> Boolean
+): LayoutStack? {
+    if (stack == null) {
+        return null
+    } else if (function(stack)) {
+        return stack
+    } else {
+        return find(stack.tail, function)
+    }
+}
+
+
+fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
+    insertToken(lytToken(tokPos, PSTokens.LAYOUT_END), state)
+
 
 fun insertLayout(
     src: SuperToken,
     nextPos: SourcePos,
     stack: LayoutStack?
 ): LayoutState {
-    fun offsideP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
-        return isIndented(lyt) && tokPos.column < lytPos.column
-    }
-
-
-    fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
-        tokPos.column == lytPos.column && tokPos.line != lytPos.line
-
-    fun insertToken(token: SuperToken, state: LayoutState): LayoutState {
-        val (stk, acc) = state
-        val acc2 = acc.toMutableList()
-        acc2 += token to stk
-        return LayoutState(stk, acc2)
-    }
-
-    fun pushStack(
-        lytPos: SourcePos,
-        lyt: LayoutDelimiter,
-        state: LayoutState
-    ): LayoutState =
-        LayoutState(LayoutStack(lytPos, lyt, state.stack), state.acc)
-
-    fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
-        isIndented(lyt) && sepP(tokPos, lytPos)
-
-    fun insertSep(tokPos: SourcePos, state: LayoutState): LayoutState {
-        val (stk, acc) = state
-        val (lytPos, lyt, tail) = stk ?: return state
-        val sepTok = lytToken(tokPos, PSTokens.LAYOUT_SEP)
-        return when {
-            LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
-                insertToken(sepTok, LayoutState(tail, acc))
-            LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
-                insertToken(sepTok, LayoutState(tail, acc))
-            identSepP(tokPos, lytPos, lyt) -> when (lyt) {
-                LayoutDelimiter.Of -> pushStack(
-                    tokPos,
-                    LayoutDelimiter.CaseBinders,
-                    insertToken(sepTok, state)
-                )
-                else -> insertToken(sepTok, state)
-            }
-            else -> state
-        }
-    }
 
     fun insertDefault(tokPos: SourcePos, state: LayoutState): LayoutState {
         return insertToken(
@@ -176,29 +207,16 @@ fun insertLayout(
         )
     }
 
-
-    fun popStack(
-        state: LayoutState,
-        p: (LayoutDelimiter) -> Boolean
+    fun insertKwProperty(
+        tokPos: SourcePos,
+        k: (LayoutState) -> LayoutState,
+        state: LayoutState
     ): LayoutState {
-        val lyt = state.stack?.layoutDelimiter
-        return if (lyt != null && p(lyt)) {
-            LayoutState(state.stack.tail, state.acc)
+        val state2 = insertDefault(tokPos, state)
+        return if (state.stack?.layoutDelimiter == LayoutDelimiter.Property) {
+            LayoutState(state2.stack?.tail, state2.acc)
         } else {
-            state
-        }
-    }
-
-    fun find(
-        stack: LayoutStack?,
-        function: (LayoutStack) -> Boolean
-    ): LayoutStack? {
-        if (stack == null) {
-            return null
-        } else if (function(stack)) {
-            return stack
-        } else {
-            return find(stack.tail, function)
+            k(state2)
         }
     }
 
@@ -219,23 +237,6 @@ fun insertLayout(
             )
         }
     }
-
-    fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
-        insertToken(lytToken(tokPos, PSTokens.LAYOUT_END), state)
-
-    fun insertKwProperty(
-        tokPos: SourcePos,
-        k: (LayoutState) -> LayoutState,
-        state: LayoutState
-    ): LayoutState {
-        val state2 = insertDefault(tokPos, state)
-        return if (state.stack?.layoutDelimiter == LayoutDelimiter.Property) {
-            LayoutState(state2.stack?.tail, state2.acc)
-        } else {
-            k(state2)
-        }
-    }
-
     fun insert(
         state: LayoutState, tokenValue: IElementType, tokPos: SourcePos
     ): LayoutState {
