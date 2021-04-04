@@ -94,39 +94,39 @@ fun <A> snoc(acc: List<A>, pair: A): List<A> {
     return acc2
 }
 
+fun collapse(
+    tokPos: SourcePos,
+    p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean,
+    state: LayoutState
+): LayoutState {
+    val (stack, acc) = state
+    if (stack != null) {
+        val (lytPos, lyt, tail) = stack
+        return if (p(tokPos, lytPos, lyt)) {
+            val nextAcc = if (isIndented(lyt)) {
+                val pair = lytToken(tokPos, PSTokens.LAYOUT_END) to tail
+                snoc(acc, pair)
+            } else {
+                acc
+            }
+            collapse(tokPos, p, LayoutState(tail, nextAcc))
+        } else {
+            state
+        }
+    } else {
+        return state
+    }
+}
+
 fun insertLayout(
     src: SuperToken,
     nextPos: SourcePos,
     stack: LayoutStack?
 ): LayoutState {
-    val tokPos = src.range.start
     fun offsideP(tokPos:SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean {
         return isIndented(lyt) && tokPos.column < lytPos.column
     }
 
-    fun collapse(
-        tokPos: SourcePos,
-        p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean,
-        state: LayoutState
-    ): LayoutState {
-        val (stack, acc) = state
-        if (stack != null) {
-            val (lytPos, lyt, tail) = stack
-            return if (p(tokPos, lytPos, lyt)) {
-                val nextAcc = if (isIndented(lyt)) {
-                    val pair = lytToken(tokPos, PSTokens.LAYOUT_END) to tail
-                    snoc(acc, pair)
-                } else {
-                    acc
-                }
-                collapse(tokPos, p, LayoutState(tail, nextAcc))
-            } else {
-                state
-            }
-        } else {
-            return state
-        }
-    }
 
     fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
         tokPos.column == lytPos.column && tokPos.line != lytPos.line
@@ -560,7 +560,7 @@ fun insertLayout(
             else -> insertDefault(tokPos, state)
         }
     }
-    return insert(LayoutState(stack, emptyList()), src.value, tokPos)
+    return insert(LayoutState(stack, emptyList()), src.value, src.range.start)
 }
 
 fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
