@@ -3,9 +3,9 @@ package org.purescript.lexer
 import com.intellij.lexer.Lexer
 import com.intellij.testFramework.LexerTestCase
 
-abstract class PSLexerTestBase(val lexer: Lexer, val folder: String): LexerTestCase() {
+abstract class PSLexerTestBase(val folder: String): LexerTestCase() {
     override fun createLexer(): Lexer {
-        return lexer
+        return LayoutLexer(PSLexer())
     }
 
     override fun getDirPath(): String = folder
