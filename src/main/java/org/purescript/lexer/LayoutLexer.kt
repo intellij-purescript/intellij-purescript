@@ -291,7 +291,7 @@ fun insertLayout(
 
                 val (stk, acc2) = collapse(tokPos, ::inP, state)
                 val (_, lyt, stk2) = stk ?: return state
-                    .let(::insertDefault)
+                    .let { insertDefault(tokPos, it) }
                     .let { popStack(it) { it == LayoutDelimiter.Property } }
                 if (lyt == LayoutDelimiter.LetStmt && stk2?.layoutDelimiter == LayoutDelimiter.Ado) {
                     return LayoutState(stk2.tail, acc2)
@@ -304,7 +304,7 @@ fun insertLayout(
                         .let { insertToken(src, it) }
                 } else {
                     return state
-                        .let(::insertDefault)
+                        .let { insertDefault(tokPos, it) }
                         .let { popStack(it) { it == LayoutDelimiter.Property } }
                 }
             }
@@ -363,7 +363,7 @@ fun insertLayout(
                         }
                 } else {
                     state2
-                        .let(::insertDefault)
+                        .let { insertDefault(tokPos, it) }
                         .let { popStack(it) { it == LayoutDelimiter.Property } }
                 }
             }
