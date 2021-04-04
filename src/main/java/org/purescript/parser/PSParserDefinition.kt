@@ -152,7 +152,11 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     }
 
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(PSTokens.WS)
+        return TokenSet.create(
+            PSTokens.WS,
+            PSTokens.LAYOUT_SEP,
+            PSTokens.LAYOUT_END,
+        )
     }
 
     override fun getCommentTokens(): TokenSet {
@@ -160,8 +164,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSTokens.DOC_COMMENT,
             PSTokens.MLCOMMENT,
             PSTokens.SLCOMMENT,
-            PSTokens.LAYOUT_SEP,
-            PSTokens.LAYOUT_END,
         )
     }
 
