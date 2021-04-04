@@ -51,4 +51,5 @@ abstract class Parsec {
     }
 
     protected abstract fun calcCanBeEmpty(): Boolean
+    fun sepBy(parsec: Parsec): Parsec = Combinators.sepBy(this, parsec)
 }
