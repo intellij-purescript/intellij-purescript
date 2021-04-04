@@ -221,6 +221,7 @@ fun insertLayout(
         insertToken(lytToken(tokPos, PSTokens.LAYOUT_END), state)
 
     fun insertKwProperty(
+        tokPos: SourcePos,
         k: (LayoutState) -> LayoutState,
         state: LayoutState
     ): LayoutState {
@@ -323,20 +324,26 @@ fun insertLayout(
                     }
                 }
 
-                return insertKwProperty(::next, state)
+                return insertKwProperty(tokPos, ::next, state)
             }
 
             PSTokens.DO ->
-                insertKwProperty({ insertStart(LayoutDelimiter.Do, it) }, state)
+                insertKwProperty(
+                    tokPos,
+                    { insertStart(LayoutDelimiter.Do, it) },
+                    state
+                )
 
             PSTokens.ADO ->
                 insertKwProperty(
+                    tokPos,
                     { insertStart(LayoutDelimiter.Ado, it) },
                     state
                 )
 
             PSTokens.CASE ->
                 insertKwProperty(
+                    tokPos,
                     { pushStack(tokPos, LayoutDelimiter.Case, it) },
                     state
                 )
@@ -363,6 +370,7 @@ fun insertLayout(
 
             PSTokens.IF ->
                 insertKwProperty(
+                    tokPos,
                     { pushStack(tokPos, LayoutDelimiter.If, it) },
                     state
                 )
