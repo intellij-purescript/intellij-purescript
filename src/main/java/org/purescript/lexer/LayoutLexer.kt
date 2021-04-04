@@ -210,6 +210,7 @@ fun insertLayout(
     }
 
     fun insertKwProperty(
+        src: SuperToken,
         tokPos: SourcePos,
         k: (LayoutState) -> LayoutState,
         state: LayoutState
@@ -332,11 +333,12 @@ fun insertLayout(
                     }
                 }
 
-                return insertKwProperty(tokPos, ::next, state)
+                return insertKwProperty(src, tokPos, ::next, state)
             }
 
             PSTokens.DO ->
                 insertKwProperty(
+                    src,
                     tokPos,
                     { insertStart(LayoutDelimiter.Do, it) },
                     state
@@ -344,6 +346,7 @@ fun insertLayout(
 
             PSTokens.ADO ->
                 insertKwProperty(
+                    src,
                     tokPos,
                     { insertStart(LayoutDelimiter.Ado, it) },
                     state
@@ -351,6 +354,7 @@ fun insertLayout(
 
             PSTokens.CASE ->
                 insertKwProperty(
+                    src,
                     tokPos,
                     { pushStack(tokPos, LayoutDelimiter.Case, it) },
                     state
@@ -378,6 +382,7 @@ fun insertLayout(
 
             PSTokens.IF ->
                 insertKwProperty(
+                    src,
                     tokPos,
                     { pushStack(tokPos, LayoutDelimiter.If, it) },
                     state
