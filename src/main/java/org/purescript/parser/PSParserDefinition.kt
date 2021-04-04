@@ -160,7 +160,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             PSTokens.DOC_COMMENT,
             PSTokens.MLCOMMENT,
             PSTokens.SLCOMMENT,
-            PSTokens.LAYOUT_START,
             PSTokens.LAYOUT_SEP,
             PSTokens.LAYOUT_END,
         )
