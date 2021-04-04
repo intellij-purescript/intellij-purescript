@@ -200,7 +200,9 @@ fun insertLayout(
     stack: LayoutStack?
 ): LayoutState {
 
-    fun insertDefault(tokPos: SourcePos, state: LayoutState): LayoutState {
+    fun insertDefault(
+        src: SuperToken, tokPos: SourcePos, state: LayoutState
+    ): LayoutState {
         return insertToken(
             src,
             insertSep(tokPos, collapse(tokPos, ::offsideP, state))
@@ -212,7 +214,7 @@ fun insertLayout(
         k: (LayoutState) -> LayoutState,
         state: LayoutState
     ): LayoutState {
-        val state2 = insertDefault(tokPos, state)
+        val state2 = insertDefault(src, tokPos, state)
         return if (state.stack?.layoutDelimiter == LayoutDelimiter.Property) {
             LayoutState(state2.stack?.tail, state2.acc)
         } else {
@@ -250,7 +252,7 @@ fun insertLayout(
 
         return when (tokenValue) {
             PSTokens.DATA -> {
-                val state2 = insertDefault(tokPos, state)
+                val state2 = insertDefault(src, tokPos, state)
                 if (isTopDecl(tokPos, state.stack)) {
                     pushStack(tokPos, LayoutDelimiter.TopDecl, state2)
                 } else {
@@ -259,7 +261,7 @@ fun insertLayout(
             }
 
             PSTokens.CLASS -> {
-                val state2 = insertDefault(tokPos, state)
+                val state2 = insertDefault(src, tokPos, state)
                 if (isTopDecl(tokPos, state2.stack)) {
                     pushStack(tokPos, LayoutDelimiter.TopDeclHead, state2)
                 } else {
@@ -297,7 +299,7 @@ fun insertLayout(
 
                 val (stk, acc2) = collapse(tokPos, ::inP, state)
                 val (_, lyt, stk2) = stk ?: return state
-                    .let { insertDefault(tokPos, it) }
+                    .let { insertDefault(src, tokPos, it) }
                     .let { popStack(it) { it == LayoutDelimiter.Property } }
                 if (lyt == LayoutDelimiter.LetStmt && stk2?.layoutDelimiter == LayoutDelimiter.Ado) {
                     return LayoutState(stk2.tail, acc2)
@@ -310,7 +312,7 @@ fun insertLayout(
                         .let { insertToken(src, it) }
                 } else {
                     return state
-                        .let { insertDefault(tokPos, it) }
+                        .let { insertDefault(src, tokPos, it) }
                         .let { popStack(it) { it == LayoutDelimiter.Property } }
                 }
             }
@@ -369,7 +371,7 @@ fun insertLayout(
                         }
                 } else {
                     state2
-                        .let { insertDefault(tokPos, it) }
+                        .let { insertDefault(src, tokPos, it) }
                         .let { popStack(it) { it == LayoutDelimiter.Property } }
                 }
             }
@@ -388,7 +390,7 @@ fun insertLayout(
                         .let { insertToken(src, it) }
                         .let { pushStack(tokPos, LayoutDelimiter.Then, it) }
                 } else {
-                    insertDefault(tokPos, state)
+                    insertDefault(src, tokPos, state)
                         .let { popStack(it) { it == LayoutDelimiter.Property } }
                 }
             }
@@ -411,11 +413,11 @@ fun insertLayout(
             }
 
             PSTokens.FORALL -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
 
             PSTokens.BACKSLASH -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
 
             PSTokens.ARROW -> {
@@ -450,7 +452,7 @@ fun insertLayout(
                 when (stk2?.layoutDelimiter) {
                     LayoutDelimiter.DeclGuard -> LayoutState(stk2.tail, acc2)
                         .let { insertToken(src, it) }
-                    else -> insertDefault(tokPos, state)
+                    else -> insertDefault(src, tokPos, state)
                 }
             }
 
@@ -478,7 +480,7 @@ fun insertLayout(
                             pushStack(tokPos, LayoutDelimiter.DeclGuard, it)
                         }
                         .let { insertToken(src, it) }
-                    else -> state.let { insertDefault(tokPos, it) }
+                    else -> state.let { insertDefault(src, tokPos, it) }
                 }
             }
 
@@ -489,7 +491,7 @@ fun insertLayout(
                         .let { insertToken(src, it) }
                 } else {
                     state
-                        .let { insertDefault(tokPos, it) }
+                        .let { insertDefault(src, tokPos, it) }
                         .let { pushStack(tokPos, LayoutDelimiter.Tick, it) }
                 }
             }
@@ -507,7 +509,7 @@ fun insertLayout(
             }
 
             PSTokens.DOT -> {
-                val state2 = insertDefault(tokPos, state)
+                val state2 = insertDefault(src, tokPos, state)
                 if (state2.stack?.layoutDelimiter == LayoutDelimiter.Forall) {
                     LayoutState(state2.stack.tail, state2.acc)
                 } else {
@@ -517,16 +519,16 @@ fun insertLayout(
             }
 
             PSTokens.LPAREN -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { pushStack(tokPos, LayoutDelimiter.Paren, it) }
 
             PSTokens.LCURLY -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { pushStack(tokPos, LayoutDelimiter.Brace, it) }
                 .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
 
             PSTokens.LBRACK -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { pushStack(tokPos, LayoutDelimiter.Square, it) }
 
             PSTokens.RPAREN -> state
@@ -546,11 +548,11 @@ fun insertLayout(
                 .let { insertToken(src, it) }
 
             PSTokens.STRING -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { popStack(it) { it == LayoutDelimiter.Property } }
 
             PSTokens.IDENT -> state
-                .let { insertDefault(tokPos, it) }
+                .let { insertDefault(src, tokPos, it) }
                 .let { popStack(it) { it == LayoutDelimiter.Property } }
 
             PSTokens.OPERATOR -> state
@@ -558,7 +560,7 @@ fun insertLayout(
                 .let { insertSep(tokPos, it) }
                 .let { insertToken(src, it) }
 
-            else -> insertDefault(tokPos, state)
+            else -> insertDefault(src, tokPos, state)
         }
     }
     return insert(LayoutState(stack, emptyList()), src.value, src.range.start)
