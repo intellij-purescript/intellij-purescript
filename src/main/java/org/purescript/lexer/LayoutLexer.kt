@@ -21,11 +21,12 @@ data class LayoutState(
 )
 
 data class SuperToken(
+    val qualified: List<SourceToken>,
     val token: SourceToken,
     val trailing: List<SourceToken>
 ) {
     val range get() = SourceRange(
-        token.range.start,
+        qualified.firstOrNull()?.range?.start ?: token.range.start,
         trailing.lastOrNull()?.range?.end ?: token.range.end
     )
     val value get() = token.value
@@ -80,7 +81,7 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
         tokPos.column == stk.sourcePos.column
     }
 }
-fun toSuper(token: SourceToken): SuperToken = SuperToken(token, emptyList())
+fun toSuper(token: SourceToken): SuperToken = SuperToken(emptyList(), token, emptyList())
 
 fun lytToken(pos: SourcePos, value: PSElementType): SuperToken =
     toSuper(SourceToken(
@@ -726,31 +727,49 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             .toList()
             .let { toSupers(it) }
             .let(::lex)
-            .flatMap { listOf(it.token, *it.trailing.toTypedArray()) }
+            .flatMap { listOf(
+                *it.qualified.toTypedArray(),
+                it.token,
+                *it.trailing.toTypedArray()
+            ) }
         index = 0
     }
 
     private fun toSupers(sourceTokens: List<SourceToken>): List<SuperToken> {
-        var trailing = mutableListOf<SourceToken>()
+        var qualified = mutableListOf<SourceToken>()
         var token:SourceToken? = null
+        var trailing = mutableListOf<SourceToken>()
         var superTokens = mutableListOf<SuperToken>()
         for (t in sourceTokens) {
             if (token == null) {
                 token = t
             } else {
                 when(t.value) {
-                    PSTokens.WS -> {
-                        trailing.add(t)
+                    PSTokens.WS -> trailing.add(t)
+                    PSTokens.DOT -> {
+                        qualified.add(token)
+                        token = null
+                        qualified.addAll(trailing)
+                        trailing = mutableListOf()
+                        qualified.add(t)
                     }
                     else -> {
-                        superTokens.add(SuperToken(token, trailing))
-                        trailing = mutableListOf<SourceToken>()
+                        superTokens.add(SuperToken(qualified, token, trailing))
+                        qualified = mutableListOf<SourceToken>()
                         token = t
+                        trailing = mutableListOf<SourceToken>()
                     }
                 }
             }
         }
-        if (token != null) superTokens.add(SuperToken(token, trailing))
+        if (token != null) superTokens.add(SuperToken(qualified, token, trailing))
+        else if (qualified.isNotEmpty()) superTokens.add(
+            SuperToken(
+                qualified.take(qualified.size - 1),
+                qualified.last(),
+                trailing
+            )
+        )
         return superTokens
     }
 
