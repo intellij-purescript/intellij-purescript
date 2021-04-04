@@ -145,7 +145,7 @@ fun insertLayout(
     ): LayoutState =
         LayoutState(LayoutStack(lytPos, lyt, state.stack), state.acc)
 
-    fun identSepP(lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
+    fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
         isIndented(lyt) && sepP(tokPos, lytPos)
 
     fun insertSep(state: LayoutState): LayoutState {
@@ -157,7 +157,7 @@ fun insertLayout(
                 insertToken(sepTok, LayoutState(tail, acc))
             LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
                 insertToken(sepTok, LayoutState(tail, acc))
-            identSepP(lytPos, lyt) -> when (lyt) {
+            identSepP(tokPos, lytPos, lyt) -> when (lyt) {
                 LayoutDelimiter.Of -> pushStack(
                     tokPos,
                     LayoutDelimiter.CaseBinders,
