@@ -1,7 +1,5 @@
 package org.purescript.lexer
 
-import com.intellij.lexer.EmptyLexer
-import com.intellij.psi.tree.IElementType
 import junit.framework.TestCase
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.PSTokens
@@ -9,12 +7,6 @@ import org.purescript.parser.PSTokens
 class LayoutLexerTest : TestCase() {
     private val psLexer = PSLexer()
     private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
-
-    fun testName() {
-        val lexer = LayoutLexer(EmptyLexer())
-        val tokens = getTokens(lexer, "")
-        assertEquals(0, tokens.size)
-    }
 
     fun `test it sets correct column for first token`() {
         val source = "module"
@@ -90,68 +82,4 @@ class LayoutLexerTest : TestCase() {
         lexer.advance()
         assertEquals(" ", lexer.tokenText)
     }
-
-    fun `test module where creates layout start`() {
-        val lexer = LayoutLexer(psLexer)
-        val source = """
-                module Main where
-            """.trimIndent()
-        val tokens = getTokens(lexer, source)
-        assertTrue(tokens.toSet().contains(PSTokens.LAYOUT_START))
-    }
-
-    fun `test separator token for top level declaration`() {
-        val lexer = LayoutLexer(psLexer)
-        val source = """
-                module Main where
-                f = 1
-            """.trimIndent()
-        val tokens = getTokens(lexer, source)
-        //assertEquals(13, tokens.size)
-        assertEquals(
-            """
-            module,
-            whitespace,
-            proper name,
-            whitespace,
-            where,
-            whitespace,
-            layout start,
-            identifier,
-            whitespace,
-            =,
-            whitespace,
-            natural,
-            layout end
-            """.trimIndent(),
-            tokens.joinToString(",\n") { it.toString() }
-        )
-    }
-
-    fun `test do layout`() {
-        val lexer = LayoutLexer(psLexer)
-        val tokens = getTokens(
-            lexer,
-            """
-                module Main where
-                
-                import Effect.Console (log)
-                
-                main = do
-                    log "Hello world"
-                    
-            """.trimIndent()
-        )
-        assertEquals(30, tokens.size)
-    }
-}
-
-private fun getTokens(lexer: LayoutLexer, source: String): List<IElementType> {
-    lexer.start(source)
-    val generator = generateSequence {
-        val tokenType = lexer.tokenType
-        lexer.advance()
-        tokenType
-    }
-    return generator.toList()
 }
