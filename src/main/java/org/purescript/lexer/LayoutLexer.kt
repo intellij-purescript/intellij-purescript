@@ -169,11 +169,11 @@ fun insertLayout(
         }
     }
 
-    fun insertDefault(sourcePos: SourcePos, state: LayoutState): LayoutState {
-        return insertToken(src, insertSep(
-            tokPos,
-            collapse(sourcePos, ::offsideP, state)
-        ))
+    fun insertDefault(tokPos: SourcePos, state: LayoutState): LayoutState {
+        return insertToken(
+            src,
+            insertSep(tokPos, collapse(tokPos, ::offsideP, state))
+        )
     }
 
 
