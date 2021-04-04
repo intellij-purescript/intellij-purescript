@@ -217,7 +217,7 @@ fun insertLayout(
         }
     }
 
-    fun insertEnd(state: LayoutState): LayoutState =
+    fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
         insertToken(lytToken(tokPos, PSTokens.LAYOUT_END), state)
 
     fun insertKwProperty(
@@ -294,12 +294,12 @@ fun insertLayout(
                     .let { popStack(it) { it == LayoutDelimiter.Property } }
                 if (lyt == LayoutDelimiter.LetStmt && stk2?.layoutDelimiter == LayoutDelimiter.Ado) {
                     return LayoutState(stk2.tail, acc2)
-                        .let { insertEnd(it) }
-                        .let { insertEnd(it) }
+                        .let { insertEnd(tokPos, it) }
+                        .let { insertEnd(tokPos, it) }
                         .let { insertToken(src, it) }
                 } else if (isIndented(lyt)) {
                     return LayoutState(stk2, acc2)
-                        .let { insertEnd(it) }
+                        .let { insertEnd(tokPos, it) }
                         .let { insertToken(src, it) }
                 } else {
                     return state
