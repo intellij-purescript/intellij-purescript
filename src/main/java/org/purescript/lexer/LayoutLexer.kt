@@ -148,7 +148,7 @@ fun insertLayout(
     fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boolean =
         isIndented(lyt) && sepP(tokPos, lytPos)
 
-    fun insertSep(state: LayoutState): LayoutState {
+    fun insertSep(tokPos: SourcePos, state: LayoutState): LayoutState {
         val (stk, acc) = state
         val (lytPos, lyt, tail) = stk ?: return state
         val sepTok = lytToken(tokPos, PSTokens.LAYOUT_SEP)
@@ -170,7 +170,10 @@ fun insertLayout(
     }
 
     fun insertDefault(sourcePos: SourcePos, state: LayoutState): LayoutState {
-        return insertToken(src, insertSep(collapse(sourcePos, ::offsideP, state)))
+        return insertToken(src, insertSep(
+            tokPos,
+            collapse(sourcePos, ::offsideP, state)
+        ))
     }
 
 
@@ -397,7 +400,7 @@ fun insertLayout(
                     if (isTopDecl(tokPos, state3.stack)) {
                         insertToken(src, state3)
                     } else {
-                        insertSep(state3)
+                        insertSep(tokPos, state3)
                             .let { insertToken(src, it) }
                             .let { popStack(it) { it == LayoutDelimiter.Property } }
                     }
@@ -549,7 +552,7 @@ fun insertLayout(
 
             PSTokens.OPERATOR -> state
                 .let { collapse(tokPos, ::offsideP, it) }
-                .let { insertSep(it) }
+                .let { insertSep(tokPos, it) }
                 .let { insertToken(src, it) }
 
             else -> insertDefault(tokPos, state)
