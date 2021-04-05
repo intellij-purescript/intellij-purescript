@@ -4,7 +4,12 @@ You can edit this file as you like.
 -}
 { name = "my-project"
 , dependencies =
-  [ "console", "effect", "psci-support", "purescript-language-cst-parser" ]
+  [ "console"
+  , "debug"
+  , "effect"
+  , "psci-support"
+  , "purescript-language-cst-parser"
+  ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }
