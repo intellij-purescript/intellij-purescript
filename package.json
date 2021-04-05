@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "spago": "spago"
+    "spago": "spago",
+    "test": "spago test"
   },
   "devDependencies": {
     "purescript": "^0.14.0",
