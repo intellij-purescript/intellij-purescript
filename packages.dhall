@@ -106,5 +106,27 @@ in  upstream
 -}
 let upstream =
       https://github.com/purescript/package-sets/releases/download/psc-0.14.0-20210402/packages.dhall sha256:0cfaa5de499bd629f5263daff3261144d9d348d38a451b7938a6f52054c3a086
-
-in  upstream
+let additions =
+    { purescript-language-cst-parser =
+        { dependencies =
+          [ "arrays"
+          , "const"
+          , "effect"
+          , "either"
+          , "foldable-traversable"
+          , "free"
+          , "functors"
+          , "maybe"
+          , "numbers"
+          , "ordered-collections"
+          , "strings"
+          , "transformers"
+          , "tuples"
+          , "typelevel-prelude"
+          ]
+        , repo =
+            "https://github.com/natefaubion/purescript-language-cst-parser.git"
+        , version = "v0.7.1"
+        }
+      }
+in  upstream // additions
