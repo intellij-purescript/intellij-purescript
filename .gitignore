@@ -33,3 +33,5 @@ proguard/
 .gradle/
 build/
 /node_modules/
+/.spago/
+/output/
