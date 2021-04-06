@@ -1,10 +1,11 @@
 package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.name.PSIdentifier
-import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.name.PSIdentifier
+import org.purescript.psi.name.PSModuleName
+import org.purescript.psi.name.PSProperName
 
 sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
     abstract override fun getName(): String
@@ -52,15 +53,15 @@ class PSExportedType(node: ASTNode) : PSExportedItem(node) {
 }
 
 class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
-    val properName: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    val moduleName: PSModuleName
+        get() = findNotNullChildByClass(PSModuleName::class.java)
 
     val importDeclaration: PSImportDeclarationImpl?
         get() = module?.importDeclarations?.singleOrNull {
-            it.name == properName.name
+            it.name == moduleName.name
         }
 
-    override fun getName(): String = properName.name
+    override fun getName(): String = moduleName.name
 
     override fun getReference(): ExportedModuleReference {
         return ExportedModuleReference(this)

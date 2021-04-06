@@ -4,11 +4,11 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class PSPsiFactoryTest : BasePlatformTestCase() {
 
-    fun `test create qualified proper name`() {
+    fun `test creates module name`() {
         with(PSPsiFactory(project)) {
-            assertEquals("Foo", createQualifiedProperName("Foo")!!.name)
-            assertEquals("Foo.Bar", createQualifiedProperName("Foo.Bar")!!.name)
-            assertNull(createQualifiedProperName("foo"))
+            assertEquals("Foo", createModuleName("Foo")!!.name)
+            assertEquals("Foo.Bar", createModuleName("Foo.Bar")!!.name)
+            assertNull(createModuleName("foo"))
         }
     }
 }

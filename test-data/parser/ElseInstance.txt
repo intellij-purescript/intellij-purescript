@@ -1,7 +1,7 @@
 Purescript File
   PSModule(Module)
     PsiElement(module)('module')
-    PSProperName(ModuleName)
+    PSModuleName(ModuleName)
       PsiElement(proper name)('ElseInstance')
     PsiElement(where)('where')
     PSClassDeclaration(ClassDeclaration)

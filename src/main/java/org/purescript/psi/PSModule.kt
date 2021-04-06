@@ -11,7 +11,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclarationImpl
-import org.purescript.psi.name.PSProperName
+import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
@@ -26,14 +26,14 @@ class PSModule(node: ASTNode) :
     }
 
     override fun setName(name: String): PsiElement? {
-        val properName = PSPsiFactory(project).createQualifiedProperName(name)
+        val properName = PSPsiFactory(project).createModuleName(name)
             ?: return null
         nameIdentifier.replace(properName)
         return this
     }
 
-    override fun getNameIdentifier(): PSProperName {
-        return findChildByClass(PSProperName::class.java)!!
+    override fun getNameIdentifier(): PSModuleName {
+        return findNotNullChildByClass(PSModuleName::class.java)
     }
 
     override fun getTextOffset(): Int = nameIdentifier.textOffset
@@ -47,7 +47,7 @@ class PSModule(node: ASTNode) :
     /**
      * @return the where keyword in the module header
      */
-    val whereKeyword : PsiElement
+    val whereKeyword: PsiElement
         get() = findNotNullChildByType(PSTokens.WHERE)
 
     /**

@@ -7,6 +7,7 @@ import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.purescript.PSLanguage
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
 
 
@@ -48,7 +49,7 @@ inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(
 
 class PSPsiFactory(private val project: Project) {
 
-    fun createQualifiedProperName(name: String): PSProperName? =
+    fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
     fun createImportDeclaration(moduleName: String): PSImportDeclarationImpl? =

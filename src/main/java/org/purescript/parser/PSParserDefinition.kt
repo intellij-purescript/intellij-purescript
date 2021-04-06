@@ -132,6 +132,7 @@ import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
+import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
@@ -175,7 +176,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, Qualified, pClassName, ModuleName, importModuleName -> PSProperName(node)
+            ProperName, Qualified, pClassName, importModuleName -> PSProperName(node)
+            ModuleName -> PSModuleName(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             TypeConstructor -> PSTypeConstructor(node)

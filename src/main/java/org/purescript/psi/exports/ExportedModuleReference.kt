@@ -7,7 +7,7 @@ import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase<PSExportedModule>(
     exportedModule,
-    exportedModule.properName.textRangeInParent,
+    exportedModule.moduleName.textRangeInParent,
     false
 ) {
     override fun getVariants(): Array<String> {
@@ -20,9 +20,9 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
             ?.run { importAlias ?: importedModule }
 
     override fun handleElementRename(name: String): PsiElement? {
-        val newProperName = PSPsiFactory(element.project).createQualifiedProperName(name)
+        val newProperName = PSPsiFactory(element.project).createModuleName(name)
             ?: return null
-        element.properName.replace(newProperName)
+        element.moduleName.replace(newProperName)
         return element
     }
 
