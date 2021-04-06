@@ -175,7 +175,6 @@ class PureParsecParser {
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
-    private val oldModuleName = parseQualified(token(PROPER_NAME)) // TODO Remove
 
     private fun indentedList(p: Parsec): Parsec =
         mark(manyOrEmpty(untilSame(same(p))))
