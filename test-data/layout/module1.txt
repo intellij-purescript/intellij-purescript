@@ -2,6 +2,5 @@ Purescript File
   PSModule(Module)
     PsiElement(module)('module')
     PSProperName(ModuleName)
-      PSProperName(Qualified)
-        PsiElement(proper name)('Main')
+      PsiElement(proper name)('Main')
     PsiElement(where)('where')

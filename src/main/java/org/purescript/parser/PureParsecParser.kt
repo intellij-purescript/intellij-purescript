@@ -566,7 +566,7 @@ class PureParsecParser {
     private val moduleDecls = indentedList(moduleDecl)
 
     val parseModule = token(MODULE)
-        .then(indented(oldModuleName.`as`(PSElements.ModuleName)))
+        .then(indented(moduleName))
         .then(optional(exportList))
         .then(where)
         .then(layout(moduleDecls))
