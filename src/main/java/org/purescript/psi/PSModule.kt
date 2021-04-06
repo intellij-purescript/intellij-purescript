@@ -11,6 +11,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.name.PSProperName
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1

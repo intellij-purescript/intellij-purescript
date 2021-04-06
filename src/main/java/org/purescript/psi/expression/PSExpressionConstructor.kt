@@ -1,8 +1,7 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
-import org.purescript.psi.PSProperName
+import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 
 /**

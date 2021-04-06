@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import org.purescript.psi.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.name.PSProperName
 
 /**
  * A type constructor is a PSI element that references one of the following PSI elements:

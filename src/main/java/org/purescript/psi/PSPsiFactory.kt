@@ -7,6 +7,7 @@ import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.purescript.PSLanguage
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.name.PSProperName
 
 
 /**

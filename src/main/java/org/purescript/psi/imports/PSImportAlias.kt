@@ -1,10 +1,9 @@
 package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import org.purescript.psi.PSProperName
+import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 
 /**
