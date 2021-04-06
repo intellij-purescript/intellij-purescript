@@ -10,4 +10,6 @@ class PSQualifiedProperName(node: ASTNode) : PSPsiElement(node) {
 
     val properName: PSProperName
         get() = findNotNullChildByClass(PSProperName::class.java)
+
+    override fun getName(): String = properName.name
 }

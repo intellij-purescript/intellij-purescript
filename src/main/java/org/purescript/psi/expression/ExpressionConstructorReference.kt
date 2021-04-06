@@ -10,7 +10,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
     LocalQuickFixProvider,
     PsiReferenceBase<PSExpressionConstructor>(
         expressionConstructor,
-        expressionConstructor.identifier.textRangeInParent,
+        expressionConstructor.qualifiedProperName.properName.textRangeInParent,
         false
     ) {
 

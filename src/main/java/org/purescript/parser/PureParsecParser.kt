@@ -61,6 +61,7 @@ import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
+import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
@@ -77,7 +78,6 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
-import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
@@ -106,8 +106,11 @@ class PureParsecParser {
     }
     private val moduleName =
         sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
+    private val qualifier =
+        many1(attempt(token(PROPER_NAME) + dot))
+            .`as`(ModuleName)
     private fun qualified(p: Parsec) =
-        attempt(moduleName + dot) + p
+        optional(qualifier) + p
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
@@ -747,7 +750,7 @@ class PureParsecParser {
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
-            parseQualified(properName).`as`(ExpressionConstructor),
+            attempt(qualified(properName).`as`(QualifiedProperName).`as`(ExpressionConstructor)),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),

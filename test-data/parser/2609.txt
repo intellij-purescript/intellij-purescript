@@ -145,7 +145,7 @@ Purescript File
           PSCaseAlternativeImpl(CaseAlternative)
             PSValueImpl(Value)
               PSExpressionConstructor(ExpressionConstructor)
-                PSProperName(Qualified)
+                PSQualifiedProperName(QualifiedProperName)
                   PSProperName(ProperName)
                     PsiElement(proper name)('Bar'')
               PSVar(Var)

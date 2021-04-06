@@ -41,6 +41,27 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         assertEquals(dataConstructor, expressionConstructor.reference.resolve())
     }
 
+    fun `test resolves alias imported data declaration constructors`() {
+        val dataDeclaration = myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                data Bar = Bar1 | Bar2 Int
+            """.trimIndent()
+        ).getDataDeclaration()
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup as H
+                f = H.Bar2 3
+            """.trimIndent()
+        ).getExpressionConstructor()
+        val dataConstructor = dataDeclaration.dataConstructors[1]
+
+        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+    }
+
     fun `test completes data declaration constructors`() {
         myFixture.configureByText(
             "Hup.purs",

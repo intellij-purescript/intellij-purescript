@@ -1,8 +1,8 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
+import org.purescript.psi.name.PSQualifiedProperName
 
 /**
  * A data constructor in an expression, e.g.
@@ -18,12 +18,12 @@ import org.purescript.psi.PSPsiElement
 class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node) {
 
     /**
-     * @return the [PSProperName] identifying this constructor
+     * @return the [PSQualifiedProperName] identifying this consgtructor
      */
-    internal val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    internal val qualifiedProperName: PSQualifiedProperName
+        get() = findNotNullChildByClass(PSQualifiedProperName::class.java)
 
-    override fun getName(): String = identifier.name
+    override fun getName(): String = qualifiedProperName.name
 
     override fun getReference(): ExpressionConstructorReference =
         ExpressionConstructorReference(this)

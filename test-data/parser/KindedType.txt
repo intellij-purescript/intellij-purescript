@@ -195,7 +195,7 @@ Purescript File
       PsiElement(=)('=')
       PSValueImpl(Value)
         PSExpressionConstructor(ExpressionConstructor)
-          PSProperName(Qualified)
+          PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Proxy')
     PSTypeSynonymDeclaration(TypeSynonymDeclaration)

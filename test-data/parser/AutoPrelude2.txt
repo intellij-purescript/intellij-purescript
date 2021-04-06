@@ -89,7 +89,7 @@ Purescript File
                     PSIdentifier(identifier)
                       PsiElement(identifier)('f')
                 PSExpressionConstructor(ExpressionConstructor)
-                  PSProperName(Qualified)
+                  PSQualifiedProperName(QualifiedProperName)
                     PSProperName(ProperName)
                       PsiElement(proper name)('P')
                 PSProperName(Qualified)
