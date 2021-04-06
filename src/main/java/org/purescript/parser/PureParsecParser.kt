@@ -361,8 +361,8 @@ class PureParsecParser {
     private val parseFixityDeclaration = parseFixity
         .then(optional(token(TYPE)))
         .then(
-            parseQualified(properName).`as`(PSElements.ModuleName)
-                .or(ident.`as`(ProperName))
+            // TODO Should use qualified proper name instead of module name
+            moduleName.or(ident.`as`(ProperName))
         )
         .then(`as`)
         .then(operator)
