@@ -5,6 +5,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.name.PSIdentifier
 
 /**
  * A foreign value import declaration, e.g.

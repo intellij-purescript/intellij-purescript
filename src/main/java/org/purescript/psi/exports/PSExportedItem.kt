@@ -1,7 +1,7 @@
 package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSIdentifier
+import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.imports.PSImportDeclarationImpl
