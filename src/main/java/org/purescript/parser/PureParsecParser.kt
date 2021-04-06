@@ -356,7 +356,7 @@ class PureParsecParser {
     private val parseFixityDeclaration = parseFixity
         .then(optional(token(TYPE)))
         .then(
-            parseQualified(properName).`as`(PSElements.pModuleName)
+            parseQualified(properName).`as`(PSElements.ModuleName)
                 .or(ident.`as`(ProperName))
         )
         .then(`as`)
@@ -563,7 +563,7 @@ class PureParsecParser {
     private val moduleDecls = indentedList(moduleDecl)
 
     val parseModule = token(MODULE)
-        .then(indented(moduleName.`as`(PSElements.pModuleName)))
+        .then(indented(moduleName.`as`(PSElements.ModuleName)))
         .then(optional(exportList))
         .then(where)
         .then(layout(moduleDecls))

@@ -135,7 +135,7 @@ class PSSyntaxHighlighter : SyntaxHighlighterBase() {
                 TokenSet.create(PSTokens.PROPER_NAME),
                 METHOD_DECLARATION
             )
-            fillMap(keys, TokenSet.create(PSElements.pModuleName), TYPE_NAME)
+            fillMap(keys, TokenSet.create(PSElements.ModuleName), TYPE_NAME)
             fillMap(keys, TokenSet.create(PSTokens.STRING_ESCAPED), KEYWORD)
             fillMap(keys, TokenSet.create(PSTokens.STRING_GAP), STRING_GAP)
             fillMap(

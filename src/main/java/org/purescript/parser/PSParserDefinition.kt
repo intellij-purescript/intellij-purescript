@@ -118,7 +118,7 @@ import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
-import org.purescript.parser.PSElements.Companion.pModuleName
+import org.purescript.parser.PSElements.Companion.ModuleName
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
@@ -174,7 +174,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, pClassName, pModuleName, importModuleName -> PSProperName(node)
+            ProperName, pClassName, ModuleName, importModuleName -> PSProperName(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             TypeConstructor -> PSTypeConstructor(node)

@@ -308,7 +308,7 @@ interface PSElements {
         val JSRaw = PSElementType("JavaScript")
 
         @kotlin.jvm.JvmField
-        val pModuleName = PSElementType("ModuleName")
+        val ModuleName = PSElementType("ModuleName")
 
         @kotlin.jvm.JvmField
         val importModuleName = PSElementType("ImportModuleName")
