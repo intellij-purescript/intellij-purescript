@@ -59,7 +59,6 @@ import org.purescript.parser.PSElements.Companion.ObjectBinder
 import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.ProperName
-import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
@@ -109,7 +108,7 @@ class PureParsecParser {
             manyOrEmpty(
                 attempt(token(PROPER_NAME).`as`(ProperName) + dot)
             ) + p
-        ).`as`(Qualified)
+        )
 
     // tokens
 
@@ -213,7 +212,7 @@ class PureParsecParser {
             indented(dcolon) + type
 
     private val parseRow: Parsec =
-        choice (
+        choice(
             pipe + type,
             commaSep(rowLabel) + optional(indented(pipe) + type)
         ).`as`(Row)
@@ -377,8 +376,10 @@ class PureParsecParser {
     )
 
     private val classSuper =
-        optional(attempt(constraints + ldarrow.`as`(pImplies))
-            .`as`(ClassConstraintList))
+        optional(
+            attempt(constraints + ldarrow.`as`(pImplies))
+                .`as`(ClassConstraintList)
+        )
 
     private val classHead = `class`
         .then(classSuper)
@@ -577,7 +578,7 @@ class PureParsecParser {
         choice(
             attempt(label + token(":")) + expr,
             attempt(label + token("=")) + expr,
-            label ,
+            label,
         ).`as`(ObjectBinderField)
 
     private val binder1 = expr.or(`_`)

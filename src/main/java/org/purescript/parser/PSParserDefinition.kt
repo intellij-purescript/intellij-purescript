@@ -92,7 +92,6 @@ import org.purescript.parser.PSElements.Companion.ObjectType
 import org.purescript.parser.PSElements.Companion.Parens
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
-import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
@@ -175,7 +174,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, Qualified, pClassName, pModuleName, importModuleName -> PSProperName(node)
+            ProperName, pClassName, pModuleName, importModuleName -> PSProperName(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             TypeConstructor -> PSTypeConstructor(node)
