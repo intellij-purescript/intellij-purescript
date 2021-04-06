@@ -51,6 +51,7 @@ import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
 import org.purescript.parser.PSElements.Companion.Identifier
+import org.purescript.parser.PSElements.Companion.ModuleName
 import org.purescript.parser.PSElements.Companion.NamedBinder
 import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NumberBinder
@@ -103,7 +104,10 @@ class PureParsecParser {
     private fun layout(p: Parsec): Parsec {
         return `L{` + p
     }
-
+    private val moduleName =
+        sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
+    private fun qualified(p: Parsec) =
+        attempt(moduleName + dot) + p
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
