@@ -483,12 +483,12 @@ class PureParsecParser {
             .`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
-            .then(indented(oldModuleName).`as`(importModuleName))
+            .then(indented(moduleName))
             .then(optional(importList))
             .then(
                 optional(
                     `as`
-                        .then(oldModuleName)
+                        .then(moduleName)
                         .`as`(PSElements.ImportAlias)
                 )
             )
