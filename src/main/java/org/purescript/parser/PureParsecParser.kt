@@ -171,7 +171,7 @@ class PureParsecParser {
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
-    private val moduleName = parseQualified(token(PROPER_NAME))
+    private val oldModuleName = parseQualified(token(PROPER_NAME)) // TODO Remove
 
     private fun indentedList(p: Parsec): Parsec =
         mark(manyOrEmpty(untilSame(same(p))))
@@ -479,12 +479,12 @@ class PureParsecParser {
             .`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
-            .then(indented(moduleName).`as`(importModuleName))
+            .then(indented(oldModuleName).`as`(importModuleName))
             .then(optional(importList))
             .then(
                 optional(
                     `as`
-                        .then(moduleName)
+                        .then(oldModuleName)
                         .`as`(PSElements.ImportAlias)
                 )
             )
@@ -562,7 +562,7 @@ class PureParsecParser {
     private val moduleDecls = indentedList(moduleDecl)
 
     val parseModule = token(MODULE)
-        .then(indented(moduleName.`as`(PSElements.ModuleName)))
+        .then(indented(oldModuleName.`as`(PSElements.ModuleName)))
         .then(optional(exportList))
         .then(where)
         .then(layout(moduleDecls))
