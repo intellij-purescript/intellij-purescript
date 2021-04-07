@@ -99,6 +99,11 @@ import org.purescript.parser.PSTokens.Companion.START
 import org.purescript.parser.PSTokens.Companion.TYPE
 
 class PureParsecParser {
+
+    private fun layout(p: Parsec): Parsec {
+        return `L{` + p
+    }
+
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
@@ -280,7 +285,7 @@ class PureParsecParser {
             properName +
             manyOrEmpty(indented(typeVarBinding))
     private val exprWhere =
-        expr + optional(where + `L{`+ indentedList1(parseLocalDeclaration))
+        expr + optional(where + layout(indentedList1(parseLocalDeclaration)))
 
     private val parsePatternMatchObject =
         indented(
@@ -390,8 +395,7 @@ class PureParsecParser {
                 optional(
                     attempt(
                         indented(where)
-                            .then(`L{`)
-                            .then(indentedList(classMember))
+                            .then(layout(indentedList(classMember)))
                             .`as`(ClassMemberList)
                     )
                 )
@@ -440,11 +444,13 @@ class PureParsecParser {
                     .then(
                         optional(
                             attempt(
-                                indented(where).then(`L{`)
+                                indented(where)
                                     .then(
-                                        indented(
-                                            indentedList(
-                                                parseValueDeclaration
+                                        layout(
+                                            indented(
+                                                indentedList(
+                                                    parseValueDeclaration
+                                                )
                                             )
                                         )
                                     )
@@ -559,8 +565,7 @@ class PureParsecParser {
         .then(indented(moduleName.`as`(PSElements.pModuleName)))
         .then(optional(exportList))
         .then(where)
-        .then(`L{`)
-        .then(moduleDecls)
+        .then(layout(moduleDecls))
         .`as`(PSElements.Module)
 
     // Literals
@@ -590,8 +595,8 @@ class PureParsecParser {
         .then(indented(`else`))
         .then(indented(expr))
         .`as`(PSElements.IfThenElse)
-    private val parseLet = token(LET).then(`L{`)
-        .then(indented(indentedList1(parseLocalDeclaration)))
+    private val parseLet = token(LET)
+        .then(layout(indented(indentedList1(parseLocalDeclaration))))
         .then(indented(`in`))
         .then(expr)
         .`as`(PSElements.Let)
@@ -636,20 +641,19 @@ class PureParsecParser {
         )
     private val doStatement =
         choice(
-            token(LET).then(`L{`)
-                .then(indented(indentedList1(letBinding)))
+            token(LET)
+                .then(layout(indented(indentedList1(letBinding))))
                 .`as`(DoNotationLet),
             attempt(binder + larrow + expr).`as`(DoNotationBind),
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
         parseQualified(`do`) +
-            `L{` +
-            indented(indentedList(mark(doStatement)))
+            layout(indented(indentedList(mark(doStatement))))
 
     private val adoBlock =
-        token(ADO).then(`L{`)
-            .then(indented(indentedList(mark(doStatement))))
+        token(ADO) +
+            layout(indented(indentedList(mark(doStatement))))
 
     private val type0 = ref()
     private val type1 = ref()
@@ -757,7 +761,7 @@ class PureParsecParser {
             expr7,
             attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            (case + commaSep1(expr) + of + `L{` + indentedList(caseBranch)).`as`(Case),
+            (case + commaSep1(expr) + of + layout(indentedList(caseBranch))).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + `in` + expr,
