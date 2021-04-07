@@ -7,6 +7,7 @@ You can edit this file as you like.
   [ "console"
   , "debug"
   , "effect"
+  , "node-fs-aff"
   , "psci-support"
   , "purescript-language-cst-parser"
   ]
