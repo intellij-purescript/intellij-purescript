@@ -29,7 +29,7 @@ data class Lexeme(
         token.range.start,
         trailingWhitespace.lastOrNull()?.range?.end ?: token.range.end
     )
-    val value get() = token.value
+    val value = token.value
 }
 
 data class SuperToken(
@@ -41,7 +41,7 @@ data class SuperToken(
         qualified.firstOrNull()?.range?.start ?: token.range.start,
         token.range.end
     )
-    val value get() = token.value
+    val value = token.value
 }
 
 enum class LayoutDelimiter {
@@ -459,9 +459,13 @@ fun insertLayout(
             }
         }
 
-        PSTokens.FORALL -> state
-            .let { insertDefault(src, tokPos, it) }
-            .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
+        PSTokens.FORALL ->
+            insertKwProperty(
+                src,
+                tokPos,
+                { pushStack(tokPos, LayoutDelimiter.Forall, it) },
+                state
+            )
 
         PSTokens.BACKSLASH -> state
             .let { insertDefault(src, tokPos, it) }
@@ -776,9 +780,10 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             if (lexeme == null) {
                 lexeme = l
             } else {
-                when(l.value) {
-                    PSTokens.WS -> throw Error("This should not happen")
-                    PSTokens.DOT -> {
+                when(l.value to l.trailingWhitespace.isNotEmpty()) {
+                    PSTokens.WS to true -> throw Error("This should not happen")
+                    PSTokens.WS to false -> throw Error("This should not happen")
+                    PSTokens.DOT to false -> {
                         // <lexeme><.>
                         qualified.add(lexeme)
                         qualified.add(l)
