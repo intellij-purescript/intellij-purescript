@@ -1,0 +1,7 @@
+module ('module')
+whitespace (' ')
+proper name ('Main')
+whitespace (' ')
+where ('where')
+layout start ('')
+layout end ('')
