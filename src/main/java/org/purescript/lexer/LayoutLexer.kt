@@ -20,16 +20,28 @@ data class LayoutState(
     val acc: List<Pair<SuperToken, LayoutStack?>>
 )
 
-data class SuperToken(
-    val qualified: List<SourceToken>,
+data class Lexeme(
     val token: SourceToken,
-    val trailing: List<SourceToken>
+    val trailingWhitespace: List<SourceToken>
 ) {
+    val tokens get () = listOf(token) + trailingWhitespace
+    val range get() = SourceRange(
+        token.range.start,
+        trailingWhitespace.lastOrNull()?.range?.end ?: token.range.end
+    )
+    val value = token.value
+}
+
+data class SuperToken(
+    val qualified: List<Lexeme>,
+    val token: Lexeme,
+) {
+    val tokens get() = qualified.flatMap { it.tokens} + token.tokens
     val range get() = SourceRange(
         qualified.firstOrNull()?.range?.start ?: token.range.start,
-        trailing.lastOrNull()?.range?.end ?: token.range.end
+        token.range.end
     )
-    val value get() = token.value
+    val value = token.value
 }
 
 enum class LayoutDelimiter {
@@ -81,13 +93,14 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
         tokPos.column == stk.sourcePos.column
     }
 }
-fun toSuper(token: SourceToken): SuperToken = SuperToken(emptyList(), token, emptyList())
+fun toSuper(token: Lexeme): SuperToken = SuperToken(emptyList(), token)
+fun toLexeme(token: SourceToken): Lexeme = Lexeme(token, emptyList())
 
 fun lytToken(pos: SourcePos, value: PSElementType): SuperToken =
-    toSuper(SourceToken(
+    toSuper(toLexeme(SourceToken(
     range = SourceRange(pos, pos),
     value = value
-    ))
+    )))
 
 fun <A> snoc(acc: List<A>, pair: A): List<A> {
     val acc2 = acc.toMutableList()
@@ -446,9 +459,13 @@ fun insertLayout(
             }
         }
 
-        PSTokens.FORALL -> state
-            .let { insertDefault(src, tokPos, it) }
-            .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
+        PSTokens.FORALL ->
+            insertKwProperty(
+                src,
+                tokPos,
+                { pushStack(tokPos, LayoutDelimiter.Forall, it) },
+                state
+            )
 
         PSTokens.BACKSLASH -> state
             .let { insertDefault(src, tokPos, it) }
@@ -727,49 +744,60 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             .toList()
             .let { toSupers(it) }
             .let(::lex)
-            .flatMap { listOf(
-                *it.qualified.toTypedArray(),
-                it.token,
-                *it.trailing.toTypedArray()
-            ) }
+            .flatMap { it.tokens}
         index = 0
     }
 
-    private fun toSupers(sourceTokens: List<SourceToken>): List<SuperToken> {
-        var qualified = mutableListOf<SourceToken>()
+    private fun toLexemes(sourceTokens: List<SourceToken>): List<Lexeme> {
         var token:SourceToken? = null
         var trailing = mutableListOf<SourceToken>()
-        var superTokens = mutableListOf<SuperToken>()
+        var lexemes = mutableListOf<Lexeme>()
         for (t in sourceTokens) {
             if (token == null) {
                 token = t
             } else {
                 when(t.value) {
                     PSTokens.WS -> trailing.add(t)
-                    PSTokens.DOT -> {
-                        qualified.add(token)
-                        token = null
-                        qualified.addAll(trailing)
-                        trailing = mutableListOf()
-                        qualified.add(t)
-                    }
                     else -> {
-                        superTokens.add(SuperToken(qualified, token, trailing))
-                        qualified = mutableListOf<SourceToken>()
+                        lexemes.add(Lexeme(token, trailing))
                         token = t
-                        trailing = mutableListOf<SourceToken>()
+                        trailing = mutableListOf()
                     }
                 }
             }
         }
-        if (token != null) superTokens.add(SuperToken(qualified, token, trailing))
-        else if (qualified.isNotEmpty()) superTokens.add(
-            SuperToken(
-                qualified.take(qualified.size - 1),
-                qualified.last(),
-                trailing
-            )
-        )
+        if (token != null) lexemes.add(Lexeme(token, trailing))
+        return lexemes
+
+    }
+
+    private fun toSupers(sourceTokens: List<SourceToken>): List<SuperToken> {
+        val lexemes = toLexemes(sourceTokens)
+        var qualified = mutableListOf<Lexeme>()
+        var lexeme:Lexeme? = null
+        var superTokens = mutableListOf<SuperToken>()
+        for (l in lexemes) {
+            if (lexeme == null) {
+                lexeme = l
+            } else {
+                when(l.value to l.trailingWhitespace.isNotEmpty()) {
+                    PSTokens.WS to true -> throw Error("This should not happen")
+                    PSTokens.WS to false -> throw Error("This should not happen")
+                    PSTokens.DOT to false -> {
+                        // <lexeme><.>
+                        qualified.add(lexeme)
+                        qualified.add(l)
+                        lexeme = null
+                    }
+                    else -> {
+                        superTokens.add(SuperToken(qualified, lexeme))
+                        qualified = mutableListOf()
+                        lexeme = l
+                    }
+                }
+            }
+        }
+        if (lexeme != null) superTokens.add(SuperToken(qualified, lexeme))
         return superTokens
     }
 
