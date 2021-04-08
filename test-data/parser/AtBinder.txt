@@ -1,9 +1,8 @@
 Purescript File
   PSModule(Module)
     PsiElement(module)('module')
-    PSProperName(ModuleName)
-      PSProperName(Qualified)
-        PsiElement(proper name)('AtBinder')
+    PSModuleName(ModuleName)
+      PsiElement(proper name)('AtBinder')
     PsiElement(where)('where')
     PSTypeDeclarationImpl(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)

@@ -26,7 +26,7 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
             return
         }
         val firstImportDeclaration = importDeclarations.first()
-        val startOffset = firstImportDeclaration.importName?.startOffset
+        val startOffset = firstImportDeclaration.moduleName?.startOffset
             ?: return
         val endOffset = importDeclarations.last().endOffset
         val descriptor = FoldingDescriptor(firstImportDeclaration, TextRange(startOffset, endOffset))

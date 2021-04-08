@@ -51,6 +51,7 @@ import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
 import org.purescript.parser.PSElements.Companion.Identifier
+import org.purescript.parser.PSElements.Companion.ModuleName
 import org.purescript.parser.PSElements.Companion.NamedBinder
 import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NumberBinder
@@ -60,6 +61,7 @@ import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
+import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
@@ -76,7 +78,6 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
-import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
@@ -103,7 +104,13 @@ class PureParsecParser {
     private fun layout(p: Parsec): Parsec {
         return `L{` + p
     }
-
+    private val moduleName =
+        sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
+    private val qualifier =
+        many1(attempt(token(PROPER_NAME) + dot))
+            .`as`(ModuleName)
+    private fun qualified(p: Parsec) =
+        optional(qualifier) + p
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
@@ -171,7 +178,6 @@ class PureParsecParser {
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
-    private val moduleName = parseQualified(token(PROPER_NAME))
 
     private fun indentedList(p: Parsec): Parsec =
         mark(manyOrEmpty(untilSame(same(p))))
@@ -357,8 +363,8 @@ class PureParsecParser {
     private val parseFixityDeclaration = parseFixity
         .then(optional(token(TYPE)))
         .then(
-            parseQualified(properName).`as`(PSElements.pModuleName)
-                .or(ident.`as`(ProperName))
+            // TODO Should use qualified proper name instead of module name
+            moduleName.or(ident.`as`(ProperName))
         )
         .then(`as`)
         .then(operator)
@@ -479,7 +485,7 @@ class PureParsecParser {
             .`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
-            .then(indented(moduleName).`as`(importModuleName))
+            .then(indented(moduleName))
             .then(optional(importList))
             .then(
                 optional(
@@ -527,7 +533,7 @@ class PureParsecParser {
             .`as`(PSElements.ExportedKind)
     private val exportedModule =
         token(MODULE)
-            .then(parseQualified(properName))
+            .then(moduleName)
             .`as`(PSElements.ExportedModule)
     private val exportedOperator =
         parens(operator.`as`(Identifier))
@@ -562,7 +568,7 @@ class PureParsecParser {
     private val moduleDecls = indentedList(moduleDecl)
 
     val parseModule = token(MODULE)
-        .then(indented(moduleName.`as`(PSElements.pModuleName)))
+        .then(indented(moduleName))
         .then(optional(exportList))
         .then(where)
         .then(layout(moduleDecls))
@@ -744,7 +750,7 @@ class PureParsecParser {
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
-            parseQualified(properName).`as`(ExpressionConstructor),
+            attempt(qualified(properName).`as`(QualifiedProperName).`as`(ExpressionConstructor)),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),

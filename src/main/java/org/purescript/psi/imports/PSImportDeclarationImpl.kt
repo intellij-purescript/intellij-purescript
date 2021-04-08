@@ -5,6 +5,7 @@ import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
@@ -27,7 +28,8 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      * import Foo.Bar as Bar
      * ```
      */
-    val importName get() = findChildByClass(PSProperName::class.java)
+    val moduleName: PSModuleName?
+        get() = findChildByClass(PSModuleName::class.java)
 
     /**
      * The import list of this import declaration.
@@ -50,7 +52,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      * or the name of the module this declaration is importing from.
      */
     override fun getName() =
-        importAlias?.name ?: importName?.name
+        importAlias?.name ?: moduleName?.name
 
     /** the names that are exposed or hidden
      *

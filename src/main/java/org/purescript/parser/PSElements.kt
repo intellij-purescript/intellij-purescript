@@ -4,11 +4,6 @@ import org.purescript.psi.PSElementType
 
 interface PSElements {
     companion object {
-        @kotlin.jvm.JvmField
-        val Identifier = PSElementType("identifier")
-
-        @kotlin.jvm.JvmField
-        val ProperName = PSElementType("ProperName")
 
         @kotlin.jvm.JvmField
         val Module = PSElementType("Module")
@@ -311,7 +306,25 @@ interface PSElements {
         val JSRaw = PSElementType("JavaScript")
 
         @kotlin.jvm.JvmField
-        val pModuleName = PSElementType("ModuleName")
+        val ModuleName = PSElementType("ModuleName")
+
+        @kotlin.jvm.JvmField
+        val Identifier = PSElementType("identifier")
+
+        @kotlin.jvm.JvmField
+        val ProperName = PSElementType("ProperName")
+
+        @kotlin.jvm.JvmField
+        val OperatorName = PSElementType("OperatorName")
+
+        @kotlin.jvm.JvmField
+        val QualifiedIdentifier = PSElementType("QualifiedIdentifier")
+
+        @kotlin.jvm.JvmField
+        val QualifiedProperName = PSElementType("QualifiedProperName")
+
+        @kotlin.jvm.JvmField
+        val QualifiedOperatorName = PSElementType("QualifiedOperatorName")
 
         @kotlin.jvm.JvmField
         val importModuleName = PSElementType("ImportModuleName")

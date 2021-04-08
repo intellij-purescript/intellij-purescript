@@ -1,9 +1,8 @@
 Purescript File
   PSModule(Module)
     PsiElement(module)('module')
-    PSProperName(ModuleName)
-      PSProperName(Qualified)
-        PsiElement(proper name)('Newline')
+    PSModuleName(ModuleName)
+      PsiElement(proper name)('Newline')
     PsiElement(where)('where')
     PSValueDeclaration(ValueDeclaration)
       PSIdentifier(identifier)

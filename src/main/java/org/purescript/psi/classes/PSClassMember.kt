@@ -3,7 +3,7 @@ package org.purescript.psi.classes
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import org.purescript.psi.PSIdentifier
+import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSTypeImpl
 

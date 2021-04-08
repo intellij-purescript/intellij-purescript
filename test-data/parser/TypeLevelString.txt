@@ -1,9 +1,8 @@
 Purescript File
   PSModule(Module)
     PsiElement(module)('module')
-    PSProperName(ModuleName)
-      PSProperName(Qualified)
-        PsiElement(proper name)('TypeLevelString')
+    PSModuleName(ModuleName)
+      PsiElement(proper name)('TypeLevelString')
     PsiElement(where)('where')
     PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')

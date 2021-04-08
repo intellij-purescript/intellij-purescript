@@ -119,7 +119,8 @@ import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
-import org.purescript.parser.PSElements.Companion.pModuleName
+import org.purescript.parser.PSElements.Companion.ModuleName
+import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
@@ -131,6 +132,10 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.*
+import org.purescript.psi.name.PSIdentifier
+import org.purescript.psi.name.PSModuleName
+import org.purescript.psi.name.PSProperName
+import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typeconstructor.PSTypeConstructor
@@ -173,7 +178,9 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, Qualified, pClassName, pModuleName, importModuleName -> PSProperName(node)
+            ProperName, Qualified, pClassName, importModuleName -> PSProperName(node)
+            ModuleName -> PSModuleName(node)
+            QualifiedProperName -> PSQualifiedProperName(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             TypeConstructor -> PSTypeConstructor(node)

@@ -1,9 +1,8 @@
 Purescript File
   PSModule(Module)
     PsiElement(module)('module')
-    PSProperName(ModuleName)
-      PSProperName(Qualified)
-        PsiElement(proper name)('MapSugar')
+    PSModuleName(ModuleName)
+      PsiElement(proper name)('MapSugar')
     PsiElement(where)('where')
     PSTypeDeclarationImpl(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)

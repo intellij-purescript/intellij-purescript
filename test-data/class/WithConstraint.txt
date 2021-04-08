@@ -1,9 +1,8 @@
 Purescript File
   PSModule(Module)
     PsiElement(module)('module')
-    PSProperName(ModuleName)
-      PSProperName(Qualified)
-        PsiElement(proper name)('WithConstraint')
+    PSModuleName(ModuleName)
+      PsiElement(proper name)('WithConstraint')
     PsiElement(where)('where')
     PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
