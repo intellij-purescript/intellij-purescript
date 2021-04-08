@@ -780,11 +780,12 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             if (lexeme == null) {
                 lexeme = l
             } else {
-                when(l.value to l.trailingWhitespace.isNotEmpty()) {
-                    PSTokens.WS to true -> throw Error("This should not happen")
-                    PSTokens.WS to false -> throw Error("This should not happen")
-                    PSTokens.DOT to false -> {
-                        // <lexeme><.>
+                when {
+                    lexeme.value == PSTokens.PROPER_NAME &&
+                        l.value  == PSTokens.DOT &&
+                        l.trailingWhitespace.isEmpty() &&
+                        lexeme.trailingWhitespace.isEmpty() -> {
+                        // <Proper Name><.>
                         qualified.add(lexeme)
                         qualified.add(l)
                         lexeme = null
