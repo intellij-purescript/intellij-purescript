@@ -1,16 +1,14 @@
 package org.purescript.parser
 
-import java.util.*
-
 class ParserInfo {
     val position: Int
-    val expected: LinkedHashSet<Parsec>
+    val expected: Set<Parsec>
     val errorMessage: String?
     val success: Boolean
 
     private constructor(
         position: Int,
-        expected: LinkedHashSet<Parsec>,
+        expected: Set<Parsec>,
         errorMessage: String?,
         success: Boolean
     ) {
@@ -23,13 +21,13 @@ class ParserInfo {
     constructor(position: Int, errorMessage: String?, b: Boolean) {
         this.position = position
         success = b
-        expected = LinkedHashSet()
+        expected = setOf()
         this.errorMessage = errorMessage
     }
 
     constructor(position: Int, expected: Parsec, success: Boolean) : this(
         position,
-        set<Parsec>(expected),
+        setOf(expected),
         null,
         success
     )
@@ -43,9 +41,9 @@ class ParserInfo {
 
     override fun toString(): String {
         if (errorMessage != null) return errorMessage
-        val expectedStrings = LinkedHashSet<String?>()
+        var expectedStrings: Set<String> = setOf()
         for (parsec in expected) {
-            expectedStrings.addAll(parsec.expectedName!!)
+            expectedStrings = expectedStrings + (parsec.expectedName!!)
         }
         val expected = expectedStrings.toTypedArray()
         if (expected.isNotEmpty()) {
@@ -64,11 +62,6 @@ class ParserInfo {
     }
 
     companion object {
-        private fun <T> set(obj: T): LinkedHashSet<T> {
-            val result = LinkedHashSet<T>()
-            result.add(obj)
-            return result
-        }
 
         fun merge(
             info1: ParserInfo,
@@ -98,14 +91,11 @@ class ParserInfo {
                     )
                 }
             } else {
-                val position = info1.position
-                val expected = LinkedHashSet<Parsec>()
-                expected.addAll(info1.expected)
-                expected.addAll(info2.expected)
                 ParserInfo(
-                    position,
-                    expected,
-                    if (info1.errorMessage == null) info2.errorMessage else info1.errorMessage + ";" + info2.errorMessage,
+                    info1.position,
+                    info1.expected + info2.expected,
+                    if (info1.errorMessage == null) info2.errorMessage
+                    else info1.errorMessage + ";" + info2.errorMessage,
                     success
                 )
             }

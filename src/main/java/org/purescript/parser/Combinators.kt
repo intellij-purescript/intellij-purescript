@@ -13,7 +13,7 @@ object Combinators {
             }
 
         public override fun calcName() = tokenType.toString()
-        override fun calcExpectedName() = hashSetOf(tokenType.toString())
+        override fun calcExpectedName() = setOf(tokenType.toString())
         override fun canStartWith(type: IElementType) = type === tokenType
         public override fun calcCanBeEmpty() = false
     }
@@ -28,7 +28,7 @@ object Combinators {
             }
 
         public override fun calcName() = "\"" + token + "\""
-        override fun calcExpectedName() = hashSetOf("\"" + token + "\"")
+        override fun calcExpectedName() = setOf("\"" + token + "\"")
 
         override fun canStartWith(type: IElementType) = true
         public override fun calcCanBeEmpty() = false
