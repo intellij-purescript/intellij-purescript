@@ -7,20 +7,9 @@ class ParsecRef : Parsec() {
     fun setRef(ref: Parsec) {
         this.ref = ref
     }
-
-    override fun parse(context: ParserContext): ParserInfo {
-        return ref!!.parse(context)
-    }
-
-    public override fun calcName(): String {
-        return ref!!.name!!
-    }
+    override fun parse(context: ParserContext) = ref!!.parse(context)
+    public override fun calcName() = ref!!.name!!
     override fun calcExpectedName() = ref!!.expectedName!!
-    override fun canStartWith(type: IElementType): Boolean {
-        return ref!!.canStartWith(type)
-    }
-
-    public override fun calcCanBeEmpty(): Boolean {
-        return ref!!.canBeEmpty()
-    }
+    override fun canStartWith(type: IElementType) = ref!!.canStartWith(type)
+    public override fun calcCanBeEmpty() = ref!!.canBeEmpty()
 }

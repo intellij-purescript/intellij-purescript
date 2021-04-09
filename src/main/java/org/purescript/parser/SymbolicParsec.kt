@@ -18,17 +18,8 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
         }
         return info
     }
-
-    public override fun calcName(): String {
-        return node.toString()
-    }
-
+    public override fun calcName() = node.toString()
     override fun calcExpectedName() = setOf(node.toString())
-    override fun canStartWith(type: IElementType): Boolean {
-        return ref.canStartWith(type)
-    }
-
-    public override fun calcCanBeEmpty(): Boolean {
-        return ref.canBeEmpty()
-    }
+    override fun canStartWith(type: IElementType) = ref.canStartWith(type)
+    public override fun calcCanBeEmpty() = ref.canBeEmpty()
 }
