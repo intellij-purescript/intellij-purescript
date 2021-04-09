@@ -4,22 +4,6 @@ import com.intellij.psi.tree.IElementType
 
 object Combinators {
 
-    private fun strings(name1: String): HashSet<String?> {
-        val result: HashSet<String?> = LinkedHashSet()
-        result.add(name1)
-        return result
-    }
-
-    private fun strings(
-        names1: HashSet<String?>,
-        names2: HashSet<String?>
-    ): HashSet<String?> {
-        val result: HashSet<String?> = LinkedHashSet()
-        result.addAll(names1)
-        result.addAll(names2)
-        return result
-    }
-
     fun token(tokenType: IElementType): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo =
             if (context.eat(tokenType)) {
@@ -29,7 +13,7 @@ object Combinators {
             }
 
         public override fun calcName() = tokenType.toString()
-        override fun calcExpectedName() = strings(tokenType.toString())
+        override fun calcExpectedName() = hashSetOf(tokenType.toString())
         override fun canStartWith(type: IElementType) = type === tokenType
         public override fun calcCanBeEmpty() = false
     }
@@ -44,7 +28,8 @@ object Combinators {
             }
 
         public override fun calcName() = "\"" + token + "\""
-        override fun calcExpectedName() = strings("\"" + token + "\"")
+        override fun calcExpectedName() = hashSetOf("\"" + token + "\"")
+
         override fun canStartWith(type: IElementType) = true
         public override fun calcCanBeEmpty() = false
     }
@@ -62,7 +47,7 @@ object Combinators {
         public override fun calcName() = "${p1.name} ${p2.name}"
         override fun calcExpectedName() =
             if (p1.canBeEmpty()) {
-                strings(p1.expectedName!!, p2.expectedName!!)
+                p1.expectedName!! + p2.expectedName!!
             } else {
                 p1.expectedName!!
             }
@@ -114,11 +99,10 @@ object Combinators {
             return sb.toString()
         }
 
-        override fun calcExpectedName(): HashSet<String?> {
-            val result: HashSet<String?> = LinkedHashSet()
-            result.addAll(head.expectedName!!)
+        override fun calcExpectedName(): Set<String> {
+            var result = head.expectedName!!
             for (parsec in tail) {
-                result.addAll(parsec.expectedName!!)
+                result = result + parsec.expectedName!!
             }
             return result
         }

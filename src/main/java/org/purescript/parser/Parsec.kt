@@ -11,7 +11,7 @@ abstract class Parsec {
             return field
         }
         private set
-    var expectedName: HashSet<String?>? = null
+    var expectedName: Set<String>? = null
         get() {
             if (field == null) {
                 field = calcExpectedName()
@@ -22,7 +22,7 @@ abstract class Parsec {
     private var canBeEmpty: Boolean? = null
     abstract fun parse(context: ParserContext): ParserInfo
     protected abstract fun calcName(): String
-    protected abstract fun calcExpectedName(): HashSet<String?>
+    protected abstract fun calcExpectedName(): Set<String>
     operator fun plus(other: Parsec): Parsec {
         return Combinators.seq(this, other)
     }
