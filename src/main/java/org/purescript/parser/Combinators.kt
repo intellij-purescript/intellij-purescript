@@ -237,21 +237,18 @@ object Combinators {
 
     fun optional(p: Parsec): Parsec {
         return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                return try {
-                    context.enterOptional()
-                    val position = context.position
-                    val info1 = p.parse(context)
-                    if (info1.success) {
-                        info1
-                    } else ParserInfo(
-                        info1.position,
-                        info1,
-                        context.position == position
-                    )
-                } finally {
-                    context.exitOptional()
+            override fun parse(context: ParserContext) = try {
+                context.enterOptional()
+                val position = context.position
+                val info1 = p.parse(context)
+                if (info1.success) {
+                    info1
+                } else {
+                    val success = context.position == position
+                    ParserInfo(info1.position, info1, success)
                 }
+            } finally {
+                context.exitOptional()
             }
 
             public override fun calcName(): String {
