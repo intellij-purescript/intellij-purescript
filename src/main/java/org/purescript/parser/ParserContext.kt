@@ -14,7 +14,6 @@ class ParserContext(private val builder: PsiBuilder) {
 
     private inner class PureMarker(private val marker: PsiBuilder.Marker) :
         PsiBuilder.Marker {
-
         override fun precede(): PsiBuilder.Marker = PureMarker(marker)
         override fun drop() = marker.drop()
         override fun rollbackTo() = marker.rollbackTo()
@@ -27,12 +26,9 @@ class ParserContext(private val builder: PsiBuilder) {
             before: PsiBuilder.Marker,
             errorMessage: String
         ) = marker.doneBefore(type, before, errorMessage)
-
         override fun error(message: String) = marker.error(message)
-
         override fun errorBefore(message: String, before: PsiBuilder.Marker) =
             marker.errorBefore(message, before)
-
         override fun setCustomEdgeTokenBinders(
             left: WhitespacesAndCommentsBinder?,
             right: WhitespacesAndCommentsBinder?
