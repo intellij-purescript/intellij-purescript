@@ -95,7 +95,7 @@ class ModuleReferenceTest : BasePlatformTestCase() {
                 import <caret>
             """.trimIndent()
         )
-        myFixture.testCompletionVariants("Foo.purs", "Bar", "Foo")
+        myFixture.testCompletionVariants("Foo.purs", "Bar")
     }
 
     fun `test renames module`() {

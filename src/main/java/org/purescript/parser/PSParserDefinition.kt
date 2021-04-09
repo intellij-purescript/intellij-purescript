@@ -79,6 +79,7 @@ import org.purescript.parser.PSElements.Companion.JSRaw
 import org.purescript.parser.PSElements.Companion.Let
 import org.purescript.parser.PSElements.Companion.LocalIdentifier
 import org.purescript.parser.PSElements.Companion.Module
+import org.purescript.parser.PSElements.Companion.ModuleName
 import org.purescript.parser.PSElements.Companion.NamedBinder
 import org.purescript.parser.PSElements.Companion.NewTypeConstructor
 import org.purescript.parser.PSElements.Companion.NewtypeDeclaration
@@ -93,6 +94,7 @@ import org.purescript.parser.PSElements.Companion.Parens
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
+import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
@@ -119,8 +121,6 @@ import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
-import org.purescript.parser.PSElements.Companion.ModuleName
-import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.psi.*
 import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
@@ -159,8 +159,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     override fun getWhitespaceTokens(): TokenSet {
         return TokenSet.create(
             PSTokens.WS,
-            PSTokens.LAYOUT_SEP,
-            PSTokens.LAYOUT_END,
         )
     }
 
