@@ -6,31 +6,12 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 
 class ParserContext(private val builder: PsiBuilder) {
-    private val recoverySet = HashMap<IElementType, Int?>()
     var isInAttempt = false
     private var inOptional = 0
     fun eof() = builder.eof()
 
     fun advance() = builder.advanceLexer()
 
-    fun addUntilToken(token: IElementType) {
-        var i = 0
-        if (recoverySet.containsKey(token)) {
-            i = recoverySet[token]!!
-        }
-        recoverySet[token] = i + 1
-    }
-
-    fun removeUntilToken(token: IElementType) {
-        val i = recoverySet[token]!!
-        if (i == 1) {
-            recoverySet.remove(token)
-        } else {
-            recoverySet[token] = i - 1
-        }
-    }
-
-    fun isUntilToken(token: IElementType) = recoverySet.containsKey(token)
     fun enterOptional() = inOptional++
     fun exitOptional() = inOptional--
     fun isInOptional() = inOptional > 0
