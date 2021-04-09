@@ -8,16 +8,13 @@ import org.purescript.parser.Combinators.commaSep1
 import org.purescript.parser.Combinators.guard
 import org.purescript.parser.Combinators.many1
 import org.purescript.parser.Combinators.manyOrEmpty
-import org.purescript.parser.Combinators.mark
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
-import org.purescript.parser.Combinators.same
 import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
-import org.purescript.parser.Combinators.untilSame
 import org.purescript.parser.PSElements.Companion.Abs
 import org.purescript.parser.PSElements.Companion.Accessor
 import org.purescript.parser.PSElements.Companion.ArrayLiteral
@@ -176,12 +173,6 @@ class PureParsecParser {
             token(PSTokens.OPTIMISTIC)
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
-
-    private fun indentedList(p: Parsec): Parsec =
-        mark(manyOrEmpty(untilSame(same(p))))
-
-    private fun indentedList1(p: Parsec): Parsec =
-        mark(many1(untilSame(same(p))))
 
     // Kinds.hs
     private val parseKind = ref()

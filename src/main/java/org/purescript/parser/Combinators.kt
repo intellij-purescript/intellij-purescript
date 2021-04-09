@@ -333,61 +333,6 @@ object Combinators {
             .then(token(PSTokens.RCURLY))
     }
 
-    fun same(p: Parsec): Parsec {
-        return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                return if (context.column == context.indentationLevel.peek()) {
-                    p.parse(context)
-                } else ParserInfo(context.position, this, false)
-            }
-
-            public override fun calcName(): String {
-                return "not indented (" + p.name + ")"
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return p.canBeEmpty()
-            }
-        }
-    }
-
-    fun mark(p: Parsec): Parsec {
-        return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                context.pushIndentationLevel()
-                return try {
-                    p.parse(context)
-                } finally {
-                    context.popIndentationLevel()
-                }
-            }
-
-            public override fun calcName(): String {
-                return "not indented (" + p.name + ")"
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return p.canBeEmpty()
-            }
-        }
-    }
-
     fun sepBy1(p: Parsec, sep: IElementType): Parsec {
         var p = p
         p = until(p, sep)
@@ -440,47 +385,6 @@ object Combinators {
                     start.drop()
                 }
                 return ParserInfo(info.position, info, !inAttempt)
-            }
-
-            public override fun calcName(): String {
-                return p.name!!
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return p.canBeEmpty()
-            }
-        }
-    }
-
-    fun untilSame(p: Parsec): Parsec {
-        return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                val position = context.position
-                val info = p.parse(context)
-                if (info.success || position == context.position) {
-                    return info
-                }
-                context.whiteSpace()
-                if (context.column <= context.lastIndentationLevel) {
-                    return info
-                }
-                val start = context.start()
-                while (!context.eof()) {
-                    if (context.column == context.indentationLevel.peek()) {
-                        break
-                    }
-                    context.advance()
-                }
-                start.error(info.toString())
-                return ParserInfo(context.position, info, true)
             }
 
             public override fun calcName(): String {
