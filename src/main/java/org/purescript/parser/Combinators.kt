@@ -250,23 +250,10 @@ object Combinators {
             } finally {
                 context.exitOptional()
             }
-
-            public override fun calcName(): String {
-                // TODO: avoid unnecessary parentheses.
-                return "(" + p.name + ")?"
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return true
-            }
+            public override fun calcName() = "(" + p.name + ")?"
+            override fun calcExpectedName() = p.expectedName!!
+            override fun canStartWith(type: IElementType) = p.canStartWith(type)
+            public override fun calcCanBeEmpty() = true
         }
     }
 
