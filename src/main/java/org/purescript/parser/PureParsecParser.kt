@@ -441,9 +441,7 @@ class PureParsecParser {
                 .`as`(PSElements.ImportedData),
         )
     private val importList =
-        optional(token(HIDING))
-            .then(parens(commaSep1(importedItem)))
-            .`as`(PSElements.ImportList)
+        optional(token(HIDING)).then(parens(commaSep(importedItem))).`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
             .then(moduleName)

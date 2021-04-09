@@ -1,16 +1,14 @@
 package org.purescript.parser
 
-import java.util.*
-
 class ParserInfo {
     val position: Int
-    val expected: LinkedHashSet<Parsec>
+    val expected: Set<Parsec>
     val errorMessage: String?
     val success: Boolean
 
     private constructor(
         position: Int,
-        expected: LinkedHashSet<Parsec>,
+        expected: Set<Parsec>,
         errorMessage: String?,
         success: Boolean
     ) {
@@ -23,13 +21,13 @@ class ParserInfo {
     constructor(position: Int, errorMessage: String?, b: Boolean) {
         this.position = position
         success = b
-        expected = LinkedHashSet()
+        expected = setOf()
         this.errorMessage = errorMessage
     }
 
     constructor(position: Int, expected: Parsec, success: Boolean) : this(
         position,
-        set<Parsec>(expected),
+        setOf(expected),
         null,
         success
     )
@@ -43,10 +41,8 @@ class ParserInfo {
 
     override fun toString(): String {
         if (errorMessage != null) return errorMessage
-        val expectedStrings = LinkedHashSet<String?>()
-        for (parsec in expected) {
-            expectedStrings.addAll(parsec.expectedName!!)
-        }
+        val expectedStrings: Set<String> = expected
+            .flatMapTo(mutableSetOf()) {it.expectedName ?: setOf()}
         val expected = expectedStrings.toTypedArray()
         if (expected.isNotEmpty()) {
             val sb = StringBuilder()
@@ -63,52 +59,36 @@ class ParserInfo {
         return "Error"
     }
 
-    companion object {
-        private fun <T> set(obj: T): LinkedHashSet<T> {
-            val result = LinkedHashSet<T>()
-            result.add(obj)
-            return result
-        }
-
-        fun merge(
-            info1: ParserInfo,
-            info2: ParserInfo,
-            success: Boolean
-        ): ParserInfo {
-            return if (info1.position < info2.position) {
-                if (success == info2.success) {
-                    info2
-                } else {
-                    ParserInfo(
-                        info2.position,
-                        info2.expected,
-                        info2.errorMessage,
-                        success
-                    )
-                }
-            } else if (info1.position > info2.position) {
-                if (success == info1.success) {
-                    info1
-                } else {
-                    ParserInfo(
-                        info1.position,
-                        info1.expected,
-                        info1.errorMessage,
-                        success
-                    )
-                }
+    fun merge(info2: ParserInfo, success: Boolean) =
+        if (position < info2.position) {
+            if (success == info2.success) {
+                info2
             } else {
-                val position = info1.position
-                val expected = LinkedHashSet<Parsec>()
-                expected.addAll(info1.expected)
-                expected.addAll(info2.expected)
                 ParserInfo(
-                    position,
-                    expected,
-                    if (info1.errorMessage == null) info2.errorMessage else info1.errorMessage + ";" + info2.errorMessage,
+                    info2.position,
+                    info2.expected,
+                    info2.errorMessage,
                     success
                 )
             }
+        } else if (position > info2.position) {
+            if (success == this.success) {
+                this
+            } else {
+                ParserInfo(
+                    position,
+                    expected,
+                    errorMessage,
+                    success
+                )
+            }
+        } else {
+            ParserInfo(
+                position,
+                expected + info2.expected,
+                if (errorMessage == null) info2.errorMessage
+                else errorMessage + ";" + info2.errorMessage,
+                success
+            )
         }
-    }
 }

@@ -1,7 +1,6 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
-import java.util.*
 
 class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
     Parsec() {
@@ -19,22 +18,8 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
         }
         return info
     }
-
-    public override fun calcName(): String {
-        return node.toString()
-    }
-
-    override fun calcExpectedName(): HashSet<String?> {
-        val result = HashSet<String?>()
-        result.add(node.toString())
-        return result
-    }
-
-    override fun canStartWith(type: IElementType): Boolean {
-        return ref.canStartWith(type)
-    }
-
-    public override fun calcCanBeEmpty(): Boolean {
-        return ref.canBeEmpty()
-    }
+    public override fun calcName() = node.toString()
+    override fun calcExpectedName() = setOf(node.toString())
+    override fun canStartWith(type: IElementType) = ref.canStartWith(type)
+    public override fun calcCanBeEmpty() = ref.canBeEmpty()
 }
