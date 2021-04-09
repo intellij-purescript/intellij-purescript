@@ -97,14 +97,11 @@ import org.purescript.parser.PSTokens.Companion.TYPE
 
 class PureParsecParser {
 
-    private val moduleName =
-        sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
+    private val moduleName = sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
     private val qualifier =
-        many1(attempt(token(PROPER_NAME) + dot))
-            .`as`(ModuleName)
+        many1(attempt(token(PROPER_NAME) + dot)).`as`(ModuleName)
 
-    private fun qualified(p: Parsec) =
-        optional(qualifier) + p
+    private fun qualified(p: Parsec) = optional(qualifier) + p
 
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
@@ -254,28 +251,18 @@ class PureParsecParser {
     private val binder = ref()
     private val expr = ref()
     private val parseLocalDeclaration = ref()
-    private val parseGuard =
-        (pipe + commaSep(expr)).`as`(Guard)
+    private val parseGuard = (pipe + commaSep(expr)).`as`(Guard)
     private val dataHead =
-        data +
-            properName +
-            manyOrEmpty(typeVarBinding).`as`(TypeArgs)
+        data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val dataCtor =
-        properName
-            .then(manyOrEmpty(typeAtom))
-            .`as`(DataConstructor)
+        properName.then(manyOrEmpty(typeAtom)).`as`(DataConstructor)
     private val parseTypeDeclaration =
         (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
             .`as`(PSElements.TypeDeclaration)
     private val newtypeHead =
-        token(NEWTYPE) +
-            properName +
-            manyOrEmpty(typeVarBinding)
-                .`as`(TypeArgs)
+        token(NEWTYPE) + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val typeHead =
-        token(TYPE) +
-            properName +
-            manyOrEmpty(typeVarBinding)
+        token(TYPE) + properName + manyOrEmpty(typeVarBinding)
     private val exprWhere =
         expr + optional(where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
 
@@ -288,8 +275,7 @@ class PureParsecParser {
             )
         )
             .`as`(Binder)
-    private val parseRowPatternBinder =
-        token(OPERATOR).then(binder)
+    private val parseRowPatternBinder = token(OPERATOR).then(binder)
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, many1(guardedDeclExpr))
@@ -312,11 +298,7 @@ class PureParsecParser {
             .then(
                 choice(
                     data
-                        .then(
-                            token(PROPER_NAME).`as`(
-                                TypeConstructor
-                            )
-                        )
+                        .then(token(PROPER_NAME).`as`(TypeConstructor))
                         .then(dcolon).then(parseKind)
                         .`as`(ExternDataDeclaration),
                     token(INSTANCE)
@@ -338,9 +320,7 @@ class PureParsecParser {
         infix
     )
     private val parseFixity =
-        parseAssociativity.then(token(NATURAL)).`as`(
-            PSElements.Fixity
-        )
+        parseAssociativity.then(token(NATURAL)).`as`(PSElements.Fixity)
     private val parseFixityDeclaration = parseFixity
         .then(optional(token(TYPE)))
         .then(
@@ -468,21 +448,12 @@ class PureParsecParser {
         token(IMPORT)
             .then(moduleName)
             .then(optional(importList))
-            .then(
-                optional(
-                    `as`
-                        .then(moduleName)
-                        .`as`(PSElements.ImportAlias)
-                )
-            )
+            .then(optional(`as`.then(moduleName).`as`(PSElements.ImportAlias)))
             .`as`(PSElements.ImportDeclaration)
     private val decl = choice(
-        (dataHead + optional(
-            (eq + sepBy1(dataCtor, PIPE)).`as`(
-                DataConstructorList
-            )
-        ))
-            .`as`(PSElements.DataDeclaration),
+        (dataHead +
+            optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
+            ).`as`(PSElements.DataDeclaration),
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
@@ -496,9 +467,7 @@ class PureParsecParser {
         parseTypeInstanceDeclaration
     )
     private val exportedClass =
-        `class`
-            .then(properName)
-            .`as`(PSElements.ExportedClass)
+        `class`.then(properName).`as`(PSElements.ExportedClass)
     private val exportedData =
         properName
             .then(
@@ -513,22 +482,15 @@ class PureParsecParser {
             )
             .`as`(PSElements.ExportedData)
     private val exportedKind =
-        token(KIND)
-            .then(properName)
-            .`as`(PSElements.ExportedKind)
+        token(KIND).then(properName).`as`(PSElements.ExportedKind)
     private val exportedModule =
-        token(MODULE)
-            .then(moduleName)
-            .`as`(PSElements.ExportedModule)
+        token(MODULE).then(moduleName).`as`(PSElements.ExportedModule)
     private val exportedOperator =
-        parens(operator.`as`(Identifier))
-            .`as`(PSElements.ExportedOperator)
+        parens(operator.`as`(Identifier)).`as`(PSElements.ExportedOperator)
     private val exportedType =
-        token(TYPE)
-            .then(parens(operator.`as`(Identifier)))
+        token(TYPE).then(parens(operator.`as`(Identifier)))
             .`as`(PSElements.ExportedType)
-    private val exportedValue =
-        ident.`as`(PSElements.ExportedValue)
+    private val exportedValue = ident.`as`(PSElements.ExportedValue)
     private val exportList =
         parens(
             commaSep1(
@@ -583,9 +545,7 @@ class PureParsecParser {
     private val qualPropName = parseQualified(properName)
     private val binder2 = choice(
         attempt(
-            qualPropName
-                .`as`(ConstructorBinder)
-                .then(manyOrEmpty(binderAtom))
+            qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(binderAtom))
         ),
         attempt(token("-") + number).`as`(NumberBinder),
         binderAtom,
@@ -622,19 +582,12 @@ class PureParsecParser {
                 .then(optional(attempt(many1(ident))))
                 .then(
                     optional(
-                        attempt(
-                            squares(commaSep(binder))
-                                .`as`(ObjectBinder)
-                        )
+                        attempt(squares(commaSep(binder)).`as`(ObjectBinder))
                     )
                 )
                 .then(
-                    optional(
-                        attempt(
-                            `@`
-                                .then(braces(commaSep(idents)))
-                        )
-                    ).`as`(NamedBinder)
+                    optional(attempt(`@`.then(braces(commaSep(idents)))))
+                        .`as`(NamedBinder)
                 )
                 .then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
@@ -642,19 +595,14 @@ class PureParsecParser {
                 .then(attempt(manyOrEmpty(binderAtom)))
                 .then(
                     choice(
-                        attempt(
-                            many1(
-                                parseGuard + (eq + exprWhere)
-                            )
-                        ),
+                        attempt(many1(parseGuard + (eq + exprWhere))),
                         attempt(eq + (exprWhere))
                     )
                 ).`as`(ValueDeclaration)
         )
     private val doStatement =
         choice(
-            token(LET)
-                .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
+            token(LET).then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
                 .`as`(DoNotationLet),
             attempt(binder + larrow + expr).`as`(DoNotationBind),
             attempt(expr.`as`(DoNotationValue))
@@ -683,11 +631,13 @@ class PureParsecParser {
         parseKind.setRef(
             (parseKindPrefix +
                 optional(
-                    arrow.or(
-                        optional(
-                            parseQualified(properName).`as`(TypeConstructor)
-                        )
-                    ) + optional(parseKind)
+                    arrow
+                        .or(
+                            optional(
+                                parseQualified(properName).`as`(TypeConstructor)
+                            )
+                        ) +
+                        optional(parseKind)
                 )).`as`(PSElements.FunKind)
         )
         type.setRef(
@@ -717,28 +667,20 @@ class PureParsecParser {
                 optional(attempt(lparen))
                     .then(
                         optional(
-                            attempt(properName).`as`(
-                                ExpressionConstructor
-                            )
+                            attempt(properName).`as`(ExpressionConstructor)
                         )
                     )
                     .then(optional(attempt(many1(ident))))
                     .then(
                         optional(
                             attempt(
-                                squares(commaSep(binder)).`as`(
-                                    ObjectBinder
-                                )
+                                squares(commaSep(binder)).`as`(ObjectBinder)
                             )
                         )
                     )
                     .then(
-                        optional(
-                            attempt(
-                                `@`
-                                    .then(braces(commaSep(idents)))
-                            )
-                        ).`as`(NamedBinder)
+                        optional(attempt(`@`.then(braces(commaSep(idents)))))
+                            .`as`(NamedBinder)
                     )
                     .then(optional(attempt(parsePatternMatchObject)))
                     .then(optional(attempt(parseRowPatternBinder)))
