@@ -312,30 +312,16 @@ object Combinators {
         }
     }
 
-    fun parens(pInit: Parsec): Parsec {
-        var p = pInit
-        p = until(p, PSTokens.RPAREN)
-        return token(PSTokens.LPAREN).then(p)
-            .then(token(PSTokens.RPAREN))
-    }
+    fun parens(p: Parsec) =
+        token(PSTokens.LPAREN).then(p).then(token(PSTokens.RPAREN))
 
-    fun squares(pInit: Parsec): Parsec {
-        var p = pInit
-        p = until(p, PSTokens.RPAREN)
-        return token(PSTokens.LBRACK).then(p)
-            .then(token(PSTokens.RBRACK))
-    }
+    fun squares(p: Parsec) =
+        token(PSTokens.LBRACK).then(p).then(token(PSTokens.RBRACK))
 
-    fun braces(pInit: Parsec): Parsec {
-        var p = pInit
-        p = until(p, PSTokens.RPAREN)
-        return token(PSTokens.LCURLY).then(p)
-            .then(token(PSTokens.RCURLY))
-    }
+    fun braces(p: Parsec) =
+        token(PSTokens.LCURLY).then(p).then(token(PSTokens.RCURLY))
 
     fun sepBy1(p: Parsec, sep: IElementType): Parsec {
-        var p = p
-        p = until(p, sep)
         return p.then(attempt(manyOrEmpty(token(sep).then(p))))
     }
 
@@ -357,52 +343,6 @@ object Combinators {
 
     fun ref(): ParsecRef {
         return ParsecRef()
-    }
-
-    fun until(p: Parsec, token: IElementType): Parsec {
-        return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                val startPosition = context.position
-                val inAttempt = context.isInAttempt
-                context.addUntilToken(token)
-                context.isInAttempt = false
-                val info = p.parse(context)
-                context.isInAttempt = inAttempt
-                if (info.success) {
-                    return info
-                }
-                val start = context.start()
-                while (!context.eof()) {
-                    if (context.isUntilToken(context.peek())) {
-                        break
-                    }
-                    context.advance()
-                }
-                context.removeUntilToken(token)
-                if (!context.isInOptional() || startPosition != context.position) {
-                    start.error(info.toString())
-                } else {
-                    start.drop()
-                }
-                return ParserInfo(info.position, info, !inAttempt)
-            }
-
-            public override fun calcName(): String {
-                return p.name!!
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return p.canBeEmpty()
-            }
-        }
     }
 
     fun guard(
