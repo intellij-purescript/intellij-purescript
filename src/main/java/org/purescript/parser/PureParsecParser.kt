@@ -586,11 +586,35 @@ class PureParsecParser {
             label ,
         ).`as`(ObjectBinderField)
 
-    private val binder1 = expr.or(`_`)
+    private val qualOp = choice(
+        operator,
+        parseQualified(operator),
+        token("<="),
+        token("-"),
+        token("#"),
+        token(":"),
+    )
+
+
+    private val qualPropName = parseQualified(properName)
+    private val binder2 = choice(
+        attempt(
+            qualPropName
+                .`as`(ConstructorBinder)
+                .then(manyOrEmpty(indented(binderAtom)))
+        ),
+        attempt(token("-") + number).`as`(NumberBinder),
+        binderAtom,
+    )
+    private val binder1 = binder2.sepBy1(token(OPERATOR))
 
     private val guardedCaseExpr = parseGuard + indented(arrow + exprWhere)
+
     private val guardedCase =
-        indented(choice(arrow + exprWhere, many1(guardedCaseExpr)))
+        indented(choice(
+            attempt(arrow + exprWhere),
+            manyOrEmpty(guardedCaseExpr)
+        ))
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
@@ -667,14 +691,6 @@ class PureParsecParser {
     private val type3 = ref()
     private val type4 = ref()
     private val type5 = ref()
-    private val qualOp = choice(
-        operator,
-        parseQualified(operator),
-        token("<="),
-        token("-"),
-        token("#"),
-        token(":"),
-    )
 
     init {
         type0.setRef(type1 + optional(dcolon + type0))
@@ -785,20 +801,9 @@ class PureParsecParser {
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
-        val qualPropName = parseQualified(properName)
         val recordBinder =
             idents +
                 optional(token("=").or(token(":") + binder))
-        val binder2 = choice(
-            attempt(
-                qualPropName
-                    .`as`(ConstructorBinder)
-                    .then(manyOrEmpty(indented(binderAtom)))
-            ),
-            attempt(token("-") + number).`as`(NumberBinder),
-            binderAtom,
-        )
-        val binder1 = sepBy1(binder2, token(OPERATOR))
         binder.setRef(binder1 + optional(dcolon + type))
         binderAtom.setRef(
             choice(
