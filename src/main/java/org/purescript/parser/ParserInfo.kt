@@ -63,12 +63,8 @@ class ParserInfo {
 
     companion object {
 
-        fun merge(
-            info1: ParserInfo,
-            info2: ParserInfo,
-            success: Boolean
-        ): ParserInfo {
-            return if (info1.position < info2.position) {
+        fun merge(info1: ParserInfo, info2: ParserInfo, success: Boolean) =
+            if (info1.position < info2.position) {
                 if (success == info2.success) {
                     info2
                 } else {
@@ -99,6 +95,5 @@ class ParserInfo {
                     success
                 )
             }
-        }
     }
 }
