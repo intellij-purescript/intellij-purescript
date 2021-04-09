@@ -87,6 +87,7 @@ import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.MODULE
+import org.purescript.parser.PSTokens.Companion.MODULE_PREFIX
 import org.purescript.parser.PSTokens.Companion.NATURAL
 import org.purescript.parser.PSTokens.Companion.NEWTYPE
 import org.purescript.parser.PSTokens.Companion.OPERATOR
@@ -97,18 +98,10 @@ import org.purescript.parser.PSTokens.Companion.TYPE
 
 class PureParsecParser {
 
-    private val moduleName = sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
-    private val qualifier =
-        many1(attempt(token(PROPER_NAME) + dot)).`as`(ModuleName)
-
+    private val moduleName =
+        (optional(token(MODULE_PREFIX)) + token(PROPER_NAME)).`as`(ModuleName)
+    private val qualifier = token(MODULE_PREFIX).`as`(ModuleName)
     private fun qualified(p: Parsec) = optional(qualifier) + p
-
-    private fun parseQualified(p: Parsec): Parsec =
-        attempt(
-            manyOrEmpty(
-                attempt(token(PROPER_NAME).`as`(ProperName) + dot)
-            ) + p
-        ).`as`(Qualified)
 
     // tokens
 
@@ -177,7 +170,7 @@ class PureParsecParser {
     private val parseKindAtom = choice(
         token("*").`as`(START).`as`(Star),
         token("!").`as`(BANG).`as`(Bang),
-        parseQualified(properName).`as`(TypeConstructor),
+        attempt(qualified(properName)).`as`(Qualified).`as`(TypeConstructor),
         parens(parseKind)
     )
     private val parseKindPrefix =
@@ -216,7 +209,11 @@ class PureParsecParser {
             attempt(`_`),
             attempt(parseForAll),
             attempt(parseTypeVariable),
-            attempt(parseQualified(properName).`as`(TypeConstructor)),
+            attempt(
+                attempt(qualified(properName))
+                    .`as`(Qualified)
+                    .`as`(TypeConstructor)
+            ),
             attempt(parens(parseRow)),
             attempt(parens(type))
         )
@@ -226,7 +223,9 @@ class PureParsecParser {
             attempt(
                 parens(
                     commaSep1(
-                        parseQualified(properName).`as`(TypeConstructor) +
+                        attempt(qualified(properName))
+                            .`as`(Qualified)
+                            .`as`(TypeConstructor) +
                             manyOrEmpty(typeAtom)
                     )
                 ) + darrow
@@ -288,7 +287,9 @@ class PureParsecParser {
     private val parseDeps =
         parens(
             commaSep1(
-                parseQualified(properName).`as`(TypeConstructor)
+                attempt(qualified(properName))
+                    .`as`(Qualified)
+                    .`as`(TypeConstructor)
                     .then(manyOrEmpty(typeAtom))
             )
         ).then(darrow)
@@ -304,7 +305,11 @@ class PureParsecParser {
                     token(INSTANCE)
                         .then(ident).then(dcolon)
                         .then(optional(parseDeps))
-                        .then(parseQualified(properName).`as`(pClassName))
+                        .then(
+                            attempt(qualified(properName))
+                                .`as`(Qualified)
+                                .`as`(pClassName)
+                        )
                         .then(manyOrEmpty(typeAtom))
                         .`as`(PSElements.ExternInstanceDeclaration),
                     attempt(ident)
@@ -334,7 +339,10 @@ class PureParsecParser {
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe.then(commaSep1(fundep))
     private val constraint =
-        parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))
+        attempt(qualified(properName))
+            .`as`(Qualified)
+            .`as`(pClassName)
+            .then(manyOrEmpty(typeAtom))
             .`as`(ClassConstraint)
     private val constraints = choice(
         parens(commaSep1(constraint)),
@@ -378,7 +386,8 @@ class PureParsecParser {
                             optional(lparen)
                                 .then(
                                     commaSep1(
-                                        parseQualified(properName)
+                                        attempt(qualified(properName))
+                                            .`as`(Qualified)
                                             .`as`(TypeConstructor)
                                             .then(manyOrEmpty(typeAtom))
                                     )
@@ -389,7 +398,7 @@ class PureParsecParser {
                     )
                     .then(
                         optional(
-                            parseQualified(properName).`as`(
+                            attempt(qualified(properName)).`as`(Qualified).`as`(
                                 pClassName
                             )
                         )
@@ -400,9 +409,11 @@ class PureParsecParser {
                             darrow
                                 .then(optional(lparen))
                                 .then(
-                                    parseQualified(properName).`as`(
-                                        TypeConstructor
-                                    )
+                                    attempt(qualified(properName))
+                                        .`as`(Qualified)
+                                        .`as`(
+                                            TypeConstructor
+                                        )
                                 )
                                 .then(manyOrEmpty(typeAtom))
                                 .then(optional(rparen))
@@ -441,7 +452,9 @@ class PureParsecParser {
                 .`as`(PSElements.ImportedData),
         )
     private val importList =
-        optional(token(HIDING)).then(parens(commaSep(importedItem))).`as`(PSElements.ImportList)
+        optional(token(HIDING))
+            .then(parens(commaSep(importedItem)))
+            .`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
             .then(moduleName)
@@ -532,7 +545,7 @@ class PureParsecParser {
 
     private val qualOp = choice(
         operator,
-        parseQualified(operator),
+        attempt(qualified(operator)).`as`(Qualified),
         token("<="),
         token("-"),
         token("#"),
@@ -540,7 +553,7 @@ class PureParsecParser {
     )
 
 
-    private val qualPropName = parseQualified(properName)
+    private val qualPropName = attempt(qualified(properName)).`as`(Qualified)
     private val binder2 = choice(
         attempt(
             qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(binderAtom))
@@ -606,7 +619,9 @@ class PureParsecParser {
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        parseQualified(`do`) + `L{` + (doStatement).sepBy1(`L-sep`) + `L}`
+        attempt(qualified(`do`)).`as`(Qualified) + `L{` + (doStatement).sepBy1(
+            `L-sep`
+        ) + `L}`
 
     private val adoBlock =
         token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
@@ -632,7 +647,9 @@ class PureParsecParser {
                     arrow
                         .or(
                             optional(
-                                parseQualified(properName).`as`(TypeConstructor)
+                                attempt(qualified(properName))
+                                    .`as`(Qualified)
+                                    .`as`(TypeConstructor)
                             )
                         ) +
                         optional(parseKind)
@@ -692,7 +709,7 @@ class PureParsecParser {
             label + optional(eq) + expr
         val exprAtom = choice(
             attempt(hole),
-            attempt(parseQualified(ident)).`as`(PSElements.Var),
+            attempt(attempt(qualified(ident)).`as`(Qualified)).`as`(PSElements.Var),
             attempt(
                 qualified(properName)
                     .`as`(QualifiedProperName)
@@ -728,8 +745,11 @@ class PureParsecParser {
                 expr4
             )
 
-        val expr2 = expr3.sepBy1(tick + parseQualified(idents) + tick)
-        val expr1 = expr2.sepBy1(parseQualified(operator))
+        val expr2 = expr3.sepBy1(
+            tick + attempt(qualified(idents)).`as`(
+                Qualified
+            ) + tick)
+        val expr1 = expr2.sepBy1(attempt(qualified(operator)).`as`(Qualified))
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))

@@ -11,6 +11,5 @@ Purescript File
     PSImportDeclarationImpl(ImportDeclaration)
       PsiElement(import)('import')
       PSModuleName(ModuleName)
-        PsiElement(proper name)('Effect')
-        PsiElement(.)('.')
+        PsiElement(module prefix)('Effect.')
         PsiElement(proper name)('Console')
