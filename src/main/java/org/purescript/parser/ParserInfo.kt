@@ -41,10 +41,8 @@ class ParserInfo {
 
     override fun toString(): String {
         if (errorMessage != null) return errorMessage
-        var expectedStrings: Set<String> = setOf()
-        for (parsec in expected) {
-            expectedStrings = expectedStrings + (parsec.expectedName!!)
-        }
+        val expectedStrings: Set<String> = expected
+            .flatMapTo(mutableSetOf()) {it.expectedName ?: setOf()}
         val expected = expectedStrings.toTypedArray()
         if (expected.isNotEmpty()) {
             val sb = StringBuilder()
