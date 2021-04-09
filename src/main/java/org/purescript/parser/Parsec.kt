@@ -23,25 +23,11 @@ abstract class Parsec {
     abstract fun parse(context: ParserContext): ParserInfo
     protected abstract fun calcName(): String
     protected abstract fun calcExpectedName(): Set<String>
-    operator fun plus(other: Parsec): Parsec {
-        return Combinators.seq(this, other)
-    }
-    fun then(next: Parsec): Parsec {
-        return this + next
-    }
-
-    fun or(next: Parsec): Parsec {
-        return Combinators.choice(this, next)
-    }
-
-    fun sepBy1(next: Parsec): Parsec {
-        return Combinators.sepBy1(this, next)
-    }
-
-    fun `as`(node: IElementType): SymbolicParsec {
-        return SymbolicParsec(this, node)
-    }
-
+    operator fun plus(other: Parsec) = Combinators.seq(this, other)
+    fun then(next: Parsec) = this + next
+    fun or(next: Parsec) = Combinators.choice(this, next)
+    fun sepBy1(next: Parsec) = Combinators.sepBy1(this, next)
+    fun `as`(node: IElementType) = SymbolicParsec(this, node)
     abstract fun canStartWith(type: IElementType): Boolean
     fun canBeEmpty(): Boolean {
         if (canBeEmpty == null) {
@@ -49,7 +35,6 @@ abstract class Parsec {
         }
         return canBeEmpty!!
     }
-
     protected abstract fun calcCanBeEmpty(): Boolean
-    fun sepBy(parsec: Parsec): Parsec = Combinators.sepBy(this, parsec)
+    fun sepBy(parsec: Parsec) = Combinators.sepBy(this, parsec)
 }
