@@ -315,48 +315,22 @@ object Combinators {
     fun parens(pInit: Parsec): Parsec {
         var p = pInit
         p = until(p, PSTokens.RPAREN)
-        return token(PSTokens.LPAREN).then(indented(p))
-            .then(indented(token(PSTokens.RPAREN)))
+        return token(PSTokens.LPAREN).then(p)
+            .then(token(PSTokens.RPAREN))
     }
 
     fun squares(pInit: Parsec): Parsec {
         var p = pInit
         p = until(p, PSTokens.RPAREN)
-        return token(PSTokens.LBRACK).then(indented(p))
-            .then(indented(token(PSTokens.RBRACK)))
+        return token(PSTokens.LBRACK).then(p)
+            .then(token(PSTokens.RBRACK))
     }
 
     fun braces(pInit: Parsec): Parsec {
         var p = pInit
         p = until(p, PSTokens.RPAREN)
-        return token(PSTokens.LCURLY).then(indented(p))
-            .then(indented(token(PSTokens.RCURLY)))
-    }
-
-    fun indented(p: Parsec): Parsec {
-        return object : Parsec() {
-            override fun parse(context: ParserContext): ParserInfo {
-                return if (context.column > context.indentationLevel.peek()) {
-                    p.parse(context)
-                } else ParserInfo(context.position, this, false)
-            }
-
-            public override fun calcName(): String {
-                return "indented (" + p.name + ")"
-            }
-
-            override fun calcExpectedName(): HashSet<String?> {
-                return p.expectedName!!
-            }
-
-            override fun canStartWith(type: IElementType): Boolean {
-                return p.canStartWith(type)
-            }
-
-            public override fun calcCanBeEmpty(): Boolean {
-                return p.canBeEmpty()
-            }
-        }
+        return token(PSTokens.LCURLY).then(p)
+            .then(token(PSTokens.RCURLY))
     }
 
     fun same(p: Parsec): Parsec {
