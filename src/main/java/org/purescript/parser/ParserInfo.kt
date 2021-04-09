@@ -61,39 +61,36 @@ class ParserInfo {
         return "Error"
     }
 
-    companion object {
-
-        fun merge(info1: ParserInfo, info2: ParserInfo, success: Boolean) =
-            if (info1.position < info2.position) {
-                if (success == info2.success) {
-                    info2
-                } else {
-                    ParserInfo(
-                        info2.position,
-                        info2.expected,
-                        info2.errorMessage,
-                        success
-                    )
-                }
-            } else if (info1.position > info2.position) {
-                if (success == info1.success) {
-                    info1
-                } else {
-                    ParserInfo(
-                        info1.position,
-                        info1.expected,
-                        info1.errorMessage,
-                        success
-                    )
-                }
+    fun merge(info2: ParserInfo, success: Boolean) =
+        if (position < info2.position) {
+            if (success == info2.success) {
+                info2
             } else {
                 ParserInfo(
-                    info1.position,
-                    info1.expected + info2.expected,
-                    if (info1.errorMessage == null) info2.errorMessage
-                    else info1.errorMessage + ";" + info2.errorMessage,
+                    info2.position,
+                    info2.expected,
+                    info2.errorMessage,
                     success
                 )
             }
-    }
+        } else if (position > info2.position) {
+            if (success == this.success) {
+                this
+            } else {
+                ParserInfo(
+                    position,
+                    expected,
+                    errorMessage,
+                    success
+                )
+            }
+        } else {
+            ParserInfo(
+                position,
+                expected + info2.expected,
+                if (errorMessage == null) info2.errorMessage
+                else errorMessage + ";" + info2.errorMessage,
+                success
+            )
+        }
 }

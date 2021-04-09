@@ -39,11 +39,12 @@ object Combinators {
             val info = p1.parse(context)
             return if (info.success) {
                 val info2 = p2.parse(context)
-                ParserInfo.merge(info, info2, info2.success)
+                info.merge(info2, info2.success)
             } else {
                 info
             }
         }
+
         public override fun calcName() = "${p1.name} ${p2.name}"
         override fun calcExpectedName() =
             if (p1.canBeEmpty()) {
@@ -51,15 +52,18 @@ object Combinators {
             } else {
                 p1.expectedName!!
             }
+
         override fun canStartWith(type: IElementType) =
             if (p1.canBeEmpty()) {
                 p1.canStartWith(type) || p2.canStartWith(type)
             } else {
                 p1.canStartWith(type)
             }
+
         public override fun calcCanBeEmpty() =
             p1.canBeEmpty() && p2.canBeEmpty()
     }
+
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val position = context.position
@@ -81,7 +85,7 @@ object Combinators {
                         ParserInfo(position, p2, false)
                     }
                 info =
-                    ParserInfo.merge(info, info2, info2.success)
+                    info.merge(info2, info2.success)
                 if (context.position > position || info.success) {
                     return info
                 }
@@ -141,29 +145,31 @@ object Combinators {
                 if (info.success) {
                     if (position == context.position) {
                         // TODO: this should not be allowed.
-                        return ParserInfo.merge(
-                            info,
+                        return info.merge(
                             ParserInfo(context.position, info, false),
                             false
                         )
                     }
-                } else return if (position == context.position) {
-                    ParserInfo.merge(
-                        info,
-                        ParserInfo(context.position, info, true),
-                        true
-                    )
                 } else {
-                    info
+                    return if (position == context.position) {
+                        info.merge(
+                            ParserInfo(context.position, info, true),
+                            true
+                        )
+                    } else {
+                        info
+                    }
                 }
             }
             return info
         }
+
         public override fun calcName() = "(" + p.name + ")*"
         override fun calcExpectedName() = p.expectedName!!
         override fun canStartWith(type: IElementType) = p.canStartWith(type)
         public override fun calcCanBeEmpty() = true
     }
+
     fun many1(p: Parsec) = p.then(manyOrEmpty(p))
     fun optional(p: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext) = try {
@@ -179,6 +185,7 @@ object Combinators {
         } finally {
             context.exitOptional()
         }
+
         public override fun calcName() = "(" + p.name + ")?"
         override fun calcExpectedName() = p.expectedName!!
         override fun canStartWith(type: IElementType) = p.canStartWith(type)
@@ -204,6 +211,7 @@ object Combinators {
                     ParserInfo(start, info, false)
                 }
             }
+
         public override fun calcName() = "try(" + p.name + ")"
         override fun calcExpectedName() = p.expectedName!!
         override fun canStartWith(type: IElementType) = p.canStartWith(type)
@@ -250,6 +258,7 @@ object Combinators {
             pack.rollbackTo()
             return info1
         }
+
         public override fun calcName() = p.name!!
         override fun calcExpectedName() = p.expectedName!!
         override fun canStartWith(type: IElementType) = p.canStartWith(type)
