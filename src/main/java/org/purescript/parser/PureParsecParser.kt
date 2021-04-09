@@ -101,19 +101,15 @@ import org.purescript.parser.PSTokens.Companion.TYPE
 
 class PureParsecParser {
 
-    private fun layout(p: Parsec): Parsec {
-        return choice(
-            attempt(`L{` + `L}`),
-            `L{` + p.sepBy1(`L-sep`) + `L}`,
-        )
-    }
     private val moduleName =
         sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
     private val qualifier =
         many1(attempt(token(PROPER_NAME) + dot))
             .`as`(ModuleName)
+
     private fun qualified(p: Parsec) =
         optional(qualifier) + p
+
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
@@ -222,7 +218,7 @@ class PureParsecParser {
             indented(dcolon) + type
 
     private val parseRow: Parsec =
-        choice (
+        choice(
             pipe + type,
             commaSep(rowLabel) + optional(indented(pipe) + type)
         ).`as`(Row)
@@ -294,7 +290,7 @@ class PureParsecParser {
             properName +
             manyOrEmpty(indented(typeVarBinding))
     private val exprWhere =
-        expr + optional(where + layout(parseLocalDeclaration))
+        expr + optional(where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
 
     private val parsePatternMatchObject =
         indented(
@@ -386,8 +382,10 @@ class PureParsecParser {
     )
 
     private val classSuper =
-        optional(attempt(constraints + ldarrow.`as`(pImplies))
-            .`as`(ClassConstraintList))
+        optional(
+            attempt(constraints + ldarrow.`as`(pImplies))
+                .`as`(ClassConstraintList)
+        )
 
     private val classHead = `class`
         .then(classSuper)
@@ -404,7 +402,7 @@ class PureParsecParser {
                 optional(
                     attempt(
                         indented(where)
-                            .then(layout((classMember)))
+                            .then(`L{` + (classMember).sepBy1(`L-sep`) + `L}`)
                             .`as`(ClassMemberList)
                     )
                 )
@@ -454,7 +452,9 @@ class PureParsecParser {
                         optional(
                             attempt(
                                 indented(where)
-                                    .then(layout(parseValueDeclaration))
+                                    .then(`L{` +
+                                        parseValueDeclaration.sepBy1(`L-sep`) +
+                                        `L}`)
                             )
                         )
                     )
@@ -467,12 +467,16 @@ class PureParsecParser {
     ).`as`(PSElements.ImportedDataMemberList)
     private val importedItem =
         choice(
-            token(TYPE).then(parens(operator.`as`(Identifier))).`as`(PSElements.ImportedType),
+            token(TYPE)
+                .then(parens(operator.`as`(Identifier)))
+                .`as`(PSElements.ImportedType),
             `class`.then(properName).`as`(PSElements.ImportedClass),
             token(KIND).then(properName).`as`(PSElements.ImportedKind),
             parens(operator.`as`(Identifier)).`as`(PSElements.ImportedOperator),
             ident.`as`(PSElements.ImportedValue),
-            properName.then(optional(importedDataMembers)).`as`(PSElements.ImportedData),
+            properName
+                .then(optional(importedDataMembers))
+                .`as`(PSElements.ImportedData),
         )
     private val importList =
         optional(token(HIDING))
@@ -491,7 +495,11 @@ class PureParsecParser {
             )
             .`as`(PSElements.ImportDeclaration)
     private val decl = choice(
-        (dataHead + optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList)))
+        (dataHead + optional(
+            (eq + sepBy1(dataCtor, PIPE)).`as`(
+                DataConstructorList
+            )
+        ))
             .`as`(PSElements.DataDeclaration),
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
@@ -560,13 +568,12 @@ class PureParsecParser {
             parseImportDeclaration,
             sepBy(decl, elseDecl)
         )
-    private val moduleDecls = moduleDecl.sepBy(`L-sep`)
 
     val parseModule = token(MODULE)
         .then(indented(moduleName))
         .then(optional(exportList))
         .then(where)
-        .then(layout(moduleDecls))
+        .then(`L{` + moduleDecl.sepBy(`L-sep`) + `L}`)
         .`as`(PSElements.Module)
 
     // Literals
@@ -578,7 +585,7 @@ class PureParsecParser {
         choice(
             attempt(label + token(":")) + expr,
             attempt(label + token("=")) + expr,
-            label ,
+            label,
         ).`as`(ObjectBinderField)
 
     private val qualOp = choice(
@@ -606,10 +613,12 @@ class PureParsecParser {
     private val guardedCaseExpr = parseGuard + indented(arrow + exprWhere)
 
     private val guardedCase =
-        indented(choice(
-            attempt(arrow + exprWhere),
-            manyOrEmpty(guardedCaseExpr)
-        ))
+        indented(
+            choice(
+                attempt(arrow + exprWhere),
+                manyOrEmpty(guardedCaseExpr)
+            )
+        )
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
@@ -621,7 +630,7 @@ class PureParsecParser {
         .then(indented(expr))
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
-        .then(layout(((parseLocalDeclaration))))
+        .then(`L{` + (parseLocalDeclaration).sepBy1(`L-sep`) + `L}`)
         .then(indented(`in`))
         .then(expr)
         .`as`(PSElements.Let)
@@ -667,18 +676,16 @@ class PureParsecParser {
     private val doStatement =
         choice(
             token(LET)
-                .then(layout(((letBinding))))
+                .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
                 .`as`(DoNotationLet),
             attempt(binder + larrow + expr).`as`(DoNotationBind),
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        parseQualified(`do`) +
-            layout((((doStatement))))
+        parseQualified(`do`) + `L{` + (doStatement).sepBy1(`L-sep`) + `L}`
 
     private val adoBlock =
-        token(ADO) +
-            layout((((doStatement))))
+        token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
     private val type0 = ref()
     private val type1 = ref()
@@ -730,7 +737,13 @@ class PureParsecParser {
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
                 optional(attempt(lparen))
-                    .then(optional(attempt(properName).`as`(ExpressionConstructor)))
+                    .then(
+                        optional(
+                            attempt(properName).`as`(
+                                ExpressionConstructor
+                            )
+                        )
+                    )
                     .then(optional(attempt(many1(ident))))
                     .then(
                         optional(
@@ -757,11 +770,16 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
-        val parsePropertyUpdate = label + optional(indented(eq)) + indented(expr)
+        val parsePropertyUpdate =
+            label + optional(indented(eq)) + indented(expr)
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
-            attempt(qualified(properName).`as`(QualifiedProperName).`as`(ExpressionConstructor)),
+            attempt(
+                qualified(properName)
+                    .`as`(QualifiedProperName)
+                    .`as`(ExpressionConstructor)
+            ),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),
@@ -778,7 +796,8 @@ class PureParsecParser {
             expr7,
             attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            (case + commaSep1(expr) + of + layout(caseBranch)).`as`(Case),
+            (case + commaSep1(expr) + of + `L{` +
+                caseBranch.sepBy1(`L-sep`) + `L}`).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + `in` + expr,
