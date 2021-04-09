@@ -5,4 +5,9 @@ class LayoutParserTest: PSLanguageParserTestBase("layout") {
     fun testmodule1() = doTest(true, true)
     fun testmodule2() = doTest(true, true)
     fun testmodule_export1() = doTest(true, true)
+
+    fun testSnuglyCaseWithWhere() = doTest(true, true)
+
+    fun testLarger() = doTest(true, true)
+
 }

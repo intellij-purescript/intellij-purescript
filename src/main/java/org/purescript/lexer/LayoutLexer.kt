@@ -275,7 +275,7 @@ fun insertLayout(
     return when (tokenValue) {
         PSTokens.DATA -> {
             val state2 = insertDefault(src, tokPos, state)
-            if (isTopDecl(tokPos, state.stack)) {
+            if (isTopDecl(tokPos, state2.stack)) {
                 pushStack(tokPos, LayoutDelimiter.TopDecl, state2)
             } else {
                 popStack(state2) { it == LayoutDelimiter.Property }
