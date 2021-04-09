@@ -6,19 +6,15 @@ import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.commaSep
 import org.purescript.parser.Combinators.commaSep1
 import org.purescript.parser.Combinators.guard
-import org.purescript.parser.Combinators.indented
 import org.purescript.parser.Combinators.many1
 import org.purescript.parser.Combinators.manyOrEmpty
-import org.purescript.parser.Combinators.mark
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
-import org.purescript.parser.Combinators.same
 import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
-import org.purescript.parser.Combinators.untilSame
 import org.purescript.parser.PSElements.Companion.Abs
 import org.purescript.parser.PSElements.Companion.Accessor
 import org.purescript.parser.PSElements.Companion.ArrayLiteral
@@ -101,16 +97,12 @@ import org.purescript.parser.PSTokens.Companion.TYPE
 
 class PureParsecParser {
 
-    private fun layout(p: Parsec): Parsec {
-        return `L{` + p
-    }
-    private val moduleName =
-        sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
+    private val moduleName = sepBy1(token(PROPER_NAME), dot).`as`(ModuleName)
     private val qualifier =
-        many1(attempt(token(PROPER_NAME) + dot))
-            .`as`(ModuleName)
-    private fun qualified(p: Parsec) =
-        optional(qualifier) + p
+        many1(attempt(token(PROPER_NAME) + dot)).`as`(ModuleName)
+
+    private fun qualified(p: Parsec) = optional(qualifier) + p
+
     private fun parseQualified(p: Parsec): Parsec =
         attempt(
             manyOrEmpty(
@@ -179,22 +171,14 @@ class PureParsecParser {
         )
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
 
-    private fun indentedList(p: Parsec): Parsec =
-        mark(manyOrEmpty(untilSame(same(p))))
-
-    private fun indentedList1(p: Parsec): Parsec =
-        mark(many1(untilSame(same(p))))
-
     // Kinds.hs
     private val parseKind = ref()
     private val parseKindPrefixRef = ref()
-    private val parseKindAtom = indented(
-        choice(
-            token("*").`as`(START).`as`(Star),
-            token("!").`as`(BANG).`as`(Bang),
-            parseQualified(properName).`as`(TypeConstructor),
-            parens(parseKind)
-        )
+    private val parseKindAtom = choice(
+        token("*").`as`(START).`as`(Star),
+        token("!").`as`(BANG).`as`(Bang),
+        parseQualified(properName).`as`(TypeConstructor),
+        parens(parseKind)
     )
     private val parseKindPrefix =
         choice(
@@ -215,40 +199,39 @@ class PureParsecParser {
             .`as`(GenericIdentifier)
 
     private val rowLabel =
-        indented(lname.or(attempt(string)).`as`(GenericIdentifier)) +
-            indented(dcolon) + type
+        lname.or(attempt(string)).`as`(GenericIdentifier) +
+            dcolon + type
 
     private val parseRow: Parsec =
-        choice (
+        choice(
             pipe + type,
-            commaSep(rowLabel) + optional(indented(pipe) + type)
+            commaSep(rowLabel) + optional(pipe + type)
         ).`as`(Row)
 
     private val typeAtom: Parsec =
-        indented(
-            choice(
-                attempt(squares(optional(type))),
-                attempt(parens(arrow)),
-                attempt(braces(parseRow).`as`(PSElements.ObjectType)),
-                attempt(`_`),
-                attempt(parseForAll),
-                attempt(parseTypeVariable),
-                attempt(parseQualified(properName).`as`(TypeConstructor)),
-                attempt(parens(parseRow)),
-                attempt(parens(type))
-            )
-        ).`as`(PSElements.TypeAtom)
+        choice(
+            attempt(squares(optional(type))),
+            attempt(parens(arrow)),
+            attempt(braces(parseRow).`as`(PSElements.ObjectType)),
+            attempt(`_`),
+            attempt(parseForAll),
+            attempt(parseTypeVariable),
+            attempt(parseQualified(properName).`as`(TypeConstructor)),
+            attempt(parens(parseRow)),
+            attempt(parens(type))
+        )
+            .`as`(PSElements.TypeAtom)
     private val parseConstrainedType: Parsec =
         optional(
             attempt(
                 parens(
                     commaSep1(
                         parseQualified(properName).`as`(TypeConstructor) +
-                            indented(manyOrEmpty(typeAtom))
+                            manyOrEmpty(typeAtom)
                     )
                 ) + darrow
             )
-        ).then(indented(type)).`as`(ConstrainedType)
+        ).then(type).`as`(ConstrainedType)
 
     private val ident =
         idents.`as`(Identifier)
@@ -260,54 +243,42 @@ class PureParsecParser {
             idents.`as`(TypeVarName),
             parens(
                 idents.`as`(GenericIdentifier)
-                    .then(indented(dcolon))
-                    .then(indented(parseKind))
+                    .then(dcolon)
+                    .then(parseKind)
             ).`as`(TypeVarKinded)
         )
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()
     private val parseLocalDeclaration = ref()
-    private val parseGuard =
-        (pipe + indented(commaSep(expr))).`as`(Guard)
+    private val parseGuard = (pipe + commaSep(expr)).`as`(Guard)
     private val dataHead =
-        data +
-            indented(properName) +
-            manyOrEmpty(indented(typeVarBinding)).`as`(TypeArgs)
+        data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val dataCtor =
-        properName
-            .then(manyOrEmpty(indented(typeAtom)))
-            .`as`(DataConstructor)
+        properName.then(manyOrEmpty(typeAtom)).`as`(DataConstructor)
     private val parseTypeDeclaration =
         (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
             .`as`(PSElements.TypeDeclaration)
     private val newtypeHead =
-        token(NEWTYPE) +
-            indented(properName) +
-            manyOrEmpty(indented(typeVarBinding))
-                .`as`(TypeArgs)
+        token(NEWTYPE) + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val typeHead =
-        token(TYPE) +
-            properName +
-            manyOrEmpty(indented(typeVarBinding))
+        token(TYPE) + properName + manyOrEmpty(typeVarBinding)
     private val exprWhere =
-        expr + optional(where + layout(indentedList1(parseLocalDeclaration)))
+        expr + optional(where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
 
     private val parsePatternMatchObject =
-        indented(
-            braces(
-                commaSep(
-                    idents.or(lname).or(attempt(string))
-                        .then(optional(indented(eq.or(token(OPERATOR)))))
-                        .then(optional(indented(binder)))
-                )
+        braces(
+            commaSep(
+                idents.or(lname).or(attempt(string))
+                    .then(optional(eq.or(token(OPERATOR))))
+                    .then(optional(binder))
             )
-        ).`as`(Binder)
-    private val parseRowPatternBinder =
-        indented(token(OPERATOR)).then(indented(binder))
+        )
+            .`as`(Binder)
+    private val parseRowPatternBinder = token(OPERATOR).then(binder)
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
-        choice(attempt(eq) + exprWhere, indented(many1(guardedDeclExpr)))
+        choice(attempt(eq) + exprWhere, many1(guardedDeclExpr))
 
 
     private val parseValueDeclaration =
@@ -320,35 +291,27 @@ class PureParsecParser {
                 parseQualified(properName).`as`(TypeConstructor)
                     .then(manyOrEmpty(typeAtom))
             )
-        ).then(indented(darrow))
+        ).then(darrow)
     private val parseExternDeclaration =
         token(FOREIGN)
-            .then(indented(token(IMPORT)))
+            .then(token(IMPORT))
             .then(
-                indented(
-                    choice(
-                        data
-                            .then(
-                                indented(
-                                    token(PROPER_NAME).`as`(
-                                        TypeConstructor
-                                    )
-                                )
-                            )
-                            .then(dcolon).then(parseKind)
-                            .`as`(ExternDataDeclaration),
-                        token(INSTANCE)
-                            .then(ident).then(indented(dcolon))
-                            .then(optional(parseDeps))
-                            .then(parseQualified(properName).`as`(pClassName))
-                            .then(manyOrEmpty(indented(typeAtom)))
-                            .`as`(PSElements.ExternInstanceDeclaration),
-                        attempt(ident)
-                            .then(optional(attempt(string).`as`(PSElements.JSRaw)))
-                            .then(indented(dcolon))
-                            .then(type)
-                            .`as`(PSElements.ForeignValueDeclaration)
-                    )
+                choice(
+                    data
+                        .then(token(PROPER_NAME).`as`(TypeConstructor))
+                        .then(dcolon).then(parseKind)
+                        .`as`(ExternDataDeclaration),
+                    token(INSTANCE)
+                        .then(ident).then(dcolon)
+                        .then(optional(parseDeps))
+                        .then(parseQualified(properName).`as`(pClassName))
+                        .then(manyOrEmpty(typeAtom))
+                        .`as`(PSElements.ExternInstanceDeclaration),
+                    attempt(ident)
+                        .then(optional(attempt(string).`as`(PSElements.JSRaw)))
+                        .then(dcolon)
+                        .then(type)
+                        .`as`(PSElements.ForeignValueDeclaration)
                 )
             )
     private val parseAssociativity = choice(
@@ -357,9 +320,7 @@ class PureParsecParser {
         infix
     )
     private val parseFixity =
-        parseAssociativity.then(indented(token(NATURAL))).`as`(
-            PSElements.Fixity
-        )
+        parseAssociativity.then(token(NATURAL)).`as`(PSElements.Fixity)
     private val parseFixityDeclaration = parseFixity
         .then(optional(token(TYPE)))
         .then(
@@ -371,25 +332,25 @@ class PureParsecParser {
         .`as`(PSElements.FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
-    private val fundeps = pipe.then(indented(commaSep1(fundep)))
+    private val fundeps = pipe.then(commaSep1(fundep))
     private val constraint =
         parseQualified(properName).`as`(pClassName).then(manyOrEmpty(typeAtom))
             .`as`(ClassConstraint)
-    private val constraints = indented(
-        choice(
-            parens(commaSep1(constraint)),
-            constraint
-        )
+    private val constraints = choice(
+        parens(commaSep1(constraint)),
+        constraint
     )
 
     private val classSuper =
-        optional(attempt(constraints + ldarrow.`as`(pImplies))
-            .`as`(ClassConstraintList))
+        optional(
+            attempt(constraints + ldarrow.`as`(pImplies))
+                .`as`(ClassConstraintList)
+        )
 
     private val classHead = `class`
         .then(classSuper)
-        .then(optional(indented(properName.`as`(pClassName))))
-        .then(optional(manyOrEmpty(indented(typeVarBinding))))
+        .then(optional(properName.`as`(pClassName)))
+        .then(optional(manyOrEmpty(typeVarBinding)))
         .then(optional(fundeps.`as`(ClassFunctionalDependencyList)))
 
     private val classMember =
@@ -400,8 +361,8 @@ class PureParsecParser {
             .then(
                 optional(
                     attempt(
-                        indented(where)
-                            .then(layout(indentedList(classMember)))
+                        where
+                            .then(`L{` + (classMember).sepBy1(`L-sep`) + `L}`)
                             .`as`(ClassMemberList)
                     )
                 )
@@ -411,7 +372,7 @@ class PureParsecParser {
             .then(optional(token(NEWTYPE)))
             .then(
                 token(INSTANCE)
-                    .then(ident.`as`(GenericIdentifier).then(indented(dcolon)))
+                    .then(ident.`as`(GenericIdentifier).then(dcolon))
                     .then(
                         optional(
                             optional(lparen)
@@ -423,20 +384,20 @@ class PureParsecParser {
                                     )
                                 )
                                 .then(optional(rparen))
-                                .then(optional(indented(darrow)))
+                                .then(optional(darrow))
                         )
                     )
                     .then(
                         optional(
-                            indented(parseQualified(properName)).`as`(
+                            parseQualified(properName).`as`(
                                 pClassName
                             )
                         )
                     )
-                    .then(manyOrEmpty(indented(typeAtom).or(string)))
+                    .then(manyOrEmpty(typeAtom.or(string)))
                     .then(
                         optional(
-                            indented(darrow)
+                            darrow
                                 .then(optional(lparen))
                                 .then(
                                     parseQualified(properName).`as`(
@@ -450,15 +411,11 @@ class PureParsecParser {
                     .then(
                         optional(
                             attempt(
-                                indented(where)
+                                where
                                     .then(
-                                        layout(
-                                            indented(
-                                                indentedList(
-                                                    parseValueDeclaration
-                                                )
-                                            )
-                                        )
+                                        `L{` +
+                                            parseValueDeclaration.sepBy1(`L-sep`) +
+                                            `L}`
                                     )
                             )
                         )
@@ -472,36 +429,35 @@ class PureParsecParser {
     ).`as`(PSElements.ImportedDataMemberList)
     private val importedItem =
         choice(
-            token(TYPE).then(parens(operator.`as`(Identifier))).`as`(PSElements.ImportedType),
+            token(TYPE)
+                .then(parens(operator.`as`(Identifier)))
+                .`as`(PSElements.ImportedType),
             `class`.then(properName).`as`(PSElements.ImportedClass),
             token(KIND).then(properName).`as`(PSElements.ImportedKind),
             parens(operator.`as`(Identifier)).`as`(PSElements.ImportedOperator),
             ident.`as`(PSElements.ImportedValue),
-            properName.then(optional(importedDataMembers)).`as`(PSElements.ImportedData),
+            properName
+                .then(optional(importedDataMembers))
+                .`as`(PSElements.ImportedData),
         )
     private val importList =
         optional(token(HIDING))
-            .then(indented(parens(commaSep1(importedItem))))
+            .then(parens(commaSep1(importedItem)))
             .`as`(PSElements.ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
-            .then(indented(moduleName))
+            .then(moduleName)
             .then(optional(importList))
-            .then(
-                optional(
-                    `as`
-                        .then(moduleName)
-                        .`as`(PSElements.ImportAlias)
-                )
-            )
+            .then(optional(`as`.then(moduleName).`as`(PSElements.ImportAlias)))
             .`as`(PSElements.ImportDeclaration)
     private val decl = choice(
-        (dataHead + optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList)))
-            .`as`(PSElements.DataDeclaration),
+        (dataHead +
+            optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
+            ).`as`(PSElements.DataDeclaration),
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
-        (typeHead + indented(eq) + type).`as`(TypeSynonymDeclaration),
+        (typeHead + eq + type).`as`(TypeSynonymDeclaration),
         attempt(ident)
             .then(manyOrEmpty(binderAtom))
             .then(guardedDecl).`as`(ValueDeclaration),
@@ -511,9 +467,7 @@ class PureParsecParser {
         parseTypeInstanceDeclaration
     )
     private val exportedClass =
-        `class`
-            .then(properName)
-            .`as`(PSElements.ExportedClass)
+        `class`.then(properName).`as`(PSElements.ExportedClass)
     private val exportedData =
         properName
             .then(
@@ -528,22 +482,15 @@ class PureParsecParser {
             )
             .`as`(PSElements.ExportedData)
     private val exportedKind =
-        token(KIND)
-            .then(properName)
-            .`as`(PSElements.ExportedKind)
+        token(KIND).then(properName).`as`(PSElements.ExportedKind)
     private val exportedModule =
-        token(MODULE)
-            .then(moduleName)
-            .`as`(PSElements.ExportedModule)
+        token(MODULE).then(moduleName).`as`(PSElements.ExportedModule)
     private val exportedOperator =
-        parens(operator.`as`(Identifier))
-            .`as`(PSElements.ExportedOperator)
+        parens(operator.`as`(Identifier)).`as`(PSElements.ExportedOperator)
     private val exportedType =
-        token(TYPE)
-            .then(parens(operator.`as`(Identifier)))
+        token(TYPE).then(parens(operator.`as`(Identifier)))
             .`as`(PSElements.ExportedType)
-    private val exportedValue =
-        ident.`as`(PSElements.ExportedValue)
+    private val exportedValue = ident.`as`(PSElements.ExportedValue)
     private val exportList =
         parens(
             commaSep1(
@@ -559,19 +506,18 @@ class PureParsecParser {
             )
         ).`as`(PSElements.ExportList)
 
-    private val elseDecl = token("else")
+    private val elseDecl = token("else") + optional(`L-sep`)
     private val moduleDecl =
         choice(
             parseImportDeclaration,
             sepBy(decl, elseDecl)
         )
-    private val moduleDecls = indentedList(moduleDecl)
 
     val parseModule = token(MODULE)
-        .then(indented(moduleName))
+        .then(moduleName)
         .then(optional(exportList))
         .then(where)
-        .then(layout(moduleDecls))
+        .then(`L{` + moduleDecl.sepBy(`L-sep`) + `L}`)
         .`as`(PSElements.Module)
 
     // Literals
@@ -583,7 +529,7 @@ class PureParsecParser {
         choice(
             attempt(label + token(":")) + expr,
             attempt(label + token("=")) + expr,
-            label ,
+            label,
         ).`as`(ObjectBinderField)
 
     private val qualOp = choice(
@@ -599,35 +545,33 @@ class PureParsecParser {
     private val qualPropName = parseQualified(properName)
     private val binder2 = choice(
         attempt(
-            qualPropName
-                .`as`(ConstructorBinder)
-                .then(manyOrEmpty(indented(binderAtom)))
+            qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(binderAtom))
         ),
         attempt(token("-") + number).`as`(NumberBinder),
         binderAtom,
     )
     private val binder1 = binder2.sepBy1(token(OPERATOR))
 
-    private val guardedCaseExpr = parseGuard + indented(arrow + exprWhere)
+    private val guardedCaseExpr = parseGuard + (arrow + exprWhere)
 
     private val guardedCase =
-        indented(choice(
+        choice(
             attempt(arrow + exprWhere),
             manyOrEmpty(guardedCaseExpr)
-        ))
+        )
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
     private val parseIfThenElse = `if`
-        .then(indented(expr))
-        .then(indented(token(PSTokens.THEN)))
-        .then(indented(expr))
-        .then(indented(`else`))
-        .then(indented(expr))
+        .then(expr)
+        .then(token(PSTokens.THEN))
+        .then(expr)
+        .then(`else`)
+        .then(expr)
         .`as`(PSElements.IfThenElse)
     private val parseLet = token(LET)
-        .then(layout(indented(indentedList1(parseLocalDeclaration))))
-        .then(indented(`in`))
+        .then(`L{` + (parseLocalDeclaration).sepBy1(`L-sep`) + `L}`)
+        .then(`in`)
         .then(expr)
         .`as`(PSElements.Let)
     private val letBinding =
@@ -638,19 +582,12 @@ class PureParsecParser {
                 .then(optional(attempt(many1(ident))))
                 .then(
                     optional(
-                        attempt(
-                            squares(commaSep(binder))
-                                .`as`(ObjectBinder)
-                        )
+                        attempt(squares(commaSep(binder)).`as`(ObjectBinder))
                     )
                 )
                 .then(
-                    optional(
-                        attempt(
-                            indented(`@`)
-                                .then(indented(braces(commaSep(idents))))
-                        )
-                    ).`as`(NamedBinder)
+                    optional(attempt(`@`.then(braces(commaSep(idents)))))
+                        .`as`(NamedBinder)
                 )
                 .then(optional(attempt(parsePatternMatchObject)))
                 .then(optional(attempt(parseRowPatternBinder)))
@@ -658,32 +595,23 @@ class PureParsecParser {
                 .then(attempt(manyOrEmpty(binderAtom)))
                 .then(
                     choice(
-                        attempt(
-                            indented(
-                                many1(
-                                    parseGuard + indented(eq + exprWhere)
-                                )
-                            )
-                        ),
-                        attempt(indented(eq + (exprWhere)))
+                        attempt(many1(parseGuard + (eq + exprWhere))),
+                        attempt(eq + (exprWhere))
                     )
                 ).`as`(ValueDeclaration)
         )
     private val doStatement =
         choice(
-            token(LET)
-                .then(layout(indented(indentedList1(letBinding))))
+            token(LET).then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
                 .`as`(DoNotationLet),
             attempt(binder + larrow + expr).`as`(DoNotationBind),
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        parseQualified(`do`) +
-            layout(indented(indentedList(mark(doStatement))))
+        parseQualified(`do`) + `L{` + (doStatement).sepBy1(`L-sep`) + `L}`
 
     private val adoBlock =
-        token(ADO) +
-            layout(indented(indentedList(mark(doStatement))))
+        token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
     private val type0 = ref()
     private val type1 = ref()
@@ -703,11 +631,13 @@ class PureParsecParser {
         parseKind.setRef(
             (parseKindPrefix +
                 optional(
-                    arrow.or(
-                        optional(
-                            parseQualified(properName).`as`(TypeConstructor)
-                        )
-                    ) + optional(parseKind)
+                    arrow
+                        .or(
+                            optional(
+                                parseQualified(properName).`as`(TypeConstructor)
+                            )
+                        ) +
+                        optional(parseKind)
                 )).`as`(PSElements.FunKind)
         )
         type.setRef(
@@ -726,8 +656,8 @@ class PureParsecParser {
         )
         parseForAll.setRef(
             forall
-                .then(many1(indented(idents.`as`(GenericIdentifier))))
-                .then(indented(dot))
+                .then(many1(idents.`as`(GenericIdentifier)))
+                .then(dot)
                 .then(parseConstrainedType).`as`(PSElements.ForAll)
         )
         parseLocalDeclaration.setRef(
@@ -735,24 +665,22 @@ class PureParsecParser {
                 attempt(parseTypeDeclaration),
                 // this is for when used with LET
                 optional(attempt(lparen))
-                    .then(optional(attempt(properName).`as`(ExpressionConstructor)))
+                    .then(
+                        optional(
+                            attempt(properName).`as`(ExpressionConstructor)
+                        )
+                    )
                     .then(optional(attempt(many1(ident))))
                     .then(
                         optional(
                             attempt(
-                                squares(commaSep(binder)).`as`(
-                                    ObjectBinder
-                                )
+                                squares(commaSep(binder)).`as`(ObjectBinder)
                             )
                         )
                     )
                     .then(
-                        optional(
-                            attempt(
-                                indented(`@`)
-                                    .then(indented(braces(commaSep(idents))))
-                            )
-                        ).`as`(NamedBinder)
+                        optional(attempt(`@`.then(braces(commaSep(idents)))))
+                            .`as`(NamedBinder)
                     )
                     .then(optional(attempt(parsePatternMatchObject)))
                     .then(optional(attempt(parseRowPatternBinder)))
@@ -762,11 +690,16 @@ class PureParsecParser {
                     .then(guardedDecl).`as`(ValueDeclaration)
             )
         )
-        val parsePropertyUpdate = label + optional(indented(eq)) + indented(expr)
+        val parsePropertyUpdate =
+            label + optional(eq) + expr
         val exprAtom = choice(
             attempt(hole),
             attempt(parseQualified(ident)).`as`(PSElements.Var),
-            attempt(qualified(properName).`as`(QualifiedProperName).`as`(ExpressionConstructor)),
+            attempt(
+                qualified(properName)
+                    .`as`(QualifiedProperName)
+                    .`as`(ExpressionConstructor)
+            ),
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),
@@ -779,17 +712,18 @@ class PureParsecParser {
             .or(many1(idents.`as`(ProperName)))
         val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
         val expr5 = choice(
-            attempt(indented(braces(commaSep1(indented(parsePropertyUpdate))))),
+            attempt(braces(commaSep1(parsePropertyUpdate))),
             expr7,
             attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            (case + commaSep1(expr) + of + layout(indentedList(caseBranch))).`as`(Case),
+            (case + commaSep1(expr) + of + `L{` +
+                caseBranch.sepBy1(`L-sep`) + `L}`).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + `in` + expr,
             parseLet
         )
-        val expr4 = expr5 + manyOrEmpty(indented(expr5))
+        val expr4 = expr5 + manyOrEmpty(expr5)
         val expr3 =
             choice(
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
