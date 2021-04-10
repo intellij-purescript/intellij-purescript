@@ -18,7 +18,7 @@ import org.purescript.psi.name.PSQualifiedProperName
 class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node) {
 
     /**
-     * @return the [PSQualifiedProperName] identifying this consgtructor
+     * @return the [PSQualifiedProperName] identifying this constructor
      */
     internal val qualifiedProperName: PSQualifiedProperName
         get() = findNotNullChildByClass(PSQualifiedProperName::class.java)
