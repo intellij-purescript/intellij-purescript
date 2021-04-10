@@ -24,18 +24,11 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
         get() {
             val module = element.module ?: return emptySequence()
             return sequence {
-                for (newTypeDeclaration in module.newTypeDeclarations) {
-                    yield(newTypeDeclaration.newTypeConstructor)
-                }
-                for (dataDeclaration in module.dataDeclarations) {
-                    yieldAll(dataDeclaration.dataConstructors.iterator())
-                }
-                yieldAll(module.importDeclarations.flatMap { it.importedNewTypeConstructors })
-                for (importDeclaration in module.importDeclarations) {
-                    for (importedDataDeclaration in importDeclaration.importedDataDeclarations) {
-                        yieldAll(importedDataDeclaration.dataConstructors.iterator())
-                    }
-                }
+                yieldAll(module.newTypeConstructors)
+                yieldAll(module.dataConstructors)
+                val importDeclarations = module.importDeclarations
+                yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
+                yieldAll(importDeclarations.flatMap { it.importedDataConstructors })
             }
         }
 

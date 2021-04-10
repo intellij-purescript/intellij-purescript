@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
@@ -197,6 +198,41 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             PSModule::exportedDataDeclarations,
             PSImportedData::class.java
         )
+
+    /**
+     * @return the [PSDataConstructor] elements imported by this declaration
+     */
+    val importedDataConstructors: List<PSDataConstructor>
+        get() {
+            val importedModule = importedModule ?: return emptyList()
+            val exportedDataConstructors = importedModule.exportedDataConstructors
+
+            val importedItems = importList?.importedItems
+                ?: return exportedDataConstructors
+
+            val importedDataConstructors = mutableListOf<PSDataConstructor>()
+            val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
+            if (isHiding) {
+                // TODO See todo in [importedNewTypeConstructors]
+                val hiddenDataConstructors = importedDataElements
+                    .filter { it.importsAll }
+                    .mapNotNull { it.dataDeclaration }
+                    .flatMap { it.dataConstructors.toList() }
+                exportedDataConstructors.filterTo(importedDataConstructors) { it !in hiddenDataConstructors }
+            } else {
+                for (importedData in importedDataElements) {
+                    val dataConstructors = importedData.dataDeclaration?.dataConstructors ?: continue
+                    if (importedData.importsAll) {
+                        importedDataConstructors.addAll(dataConstructors)
+                    } else {
+                        val importedDataConstructorNames = importedData.importedDataMembers.map { name }
+                        dataConstructors.filterTo(importedDataConstructors) { it.name in importedDataConstructorNames }
+                    }
+                }
+            }
+
+            return importedDataConstructors
+        }
 
     /**
      * @return the [PSTypeSynonymDeclaration] elements imported by this declaration

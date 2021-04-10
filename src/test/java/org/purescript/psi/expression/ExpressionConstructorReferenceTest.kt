@@ -184,7 +184,7 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         assertEquals(expressionConstructor, usageInfo.element)
     }
 
-    fun `test does not resolve imported expression constructor when constructor not exported`() {
+    fun `test does not resolve imported newtype constructor when constructor not exported`() {
         myFixture.configureByText(
             "Hup.purs",
             """
@@ -204,7 +204,7 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         assertNull(expressionConstructor.reference.resolve())
     }
 
-    fun `test does not resolve imported expression constructor when constructor not imported`() {
+    fun `test does not resolve imported newtype constructor when constructor not imported`() {
         myFixture.configureByText(
             "Hup.purs",
             """
@@ -217,6 +217,66 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
             """
                 module Foo where
                 import Hup (Bar)
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported data constructor when constructor not exported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup (Bar(Baz)) where
+                data Bar = Qux String | Baz
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported data constructor when constructor not imported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                data Bar = Qux String | Baz
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup (Baz)
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported data constructor when constructor is hidden`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                data Bar = Qux String | Baz
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup hiding (Bar(..))
                 f = Qux ""
             """.trimIndent()
         ).getExpressionConstructor()
