@@ -283,4 +283,24 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
 
         assertNull(expressionConstructor.reference.resolve())
     }
+
+    fun `test resolves imported data constructor with explicitly imported constructor`() {
+        val dataConstructor = myFixture.configureByText(
+            "Maybe.purs",
+            """
+                module Data.Maybe where
+                data Maybe a = Just a
+            """.trimIndent()
+        ).getDataConstructor()
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Data.Maybe (Maybe(Just))
+                f = Just 3
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+    }
 }

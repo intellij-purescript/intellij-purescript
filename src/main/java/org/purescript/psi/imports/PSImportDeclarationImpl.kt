@@ -225,7 +225,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
                     if (importedData.importsAll) {
                         importedDataConstructors.addAll(dataConstructors)
                     } else {
-                        val importedDataConstructorNames = importedData.importedDataMembers.map { name }
+                        val importedDataConstructorNames = importedData.importedDataMembers.map { it.name }
                         dataConstructors.filterTo(importedDataConstructors) { it.name in importedDataConstructorNames }
                     }
                 }
