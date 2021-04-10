@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 
 class ExportedDataMemberReference(exportedDataMember: PSExportedDataMember) : PsiReferenceBase<PSExportedDataMember>(
     exportedDataMember,
@@ -20,7 +21,7 @@ class ExportedDataMemberReference(exportedDataMember: PSExportedDataMember) : Ps
     private val candidates: Array<out PsiNamedElement>
         get() = when (val declaration = myElement.exportedData?.reference?.resolve()) {
             is PSDataDeclaration -> declaration.dataConstructorList?.dataConstructors ?: emptyArray()
+            is PSNewTypeDeclarationImpl -> arrayOf(declaration.newTypeConstructor)
             else -> emptyArray()
         }
-
 }
