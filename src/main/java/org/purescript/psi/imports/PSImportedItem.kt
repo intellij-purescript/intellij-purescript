@@ -2,9 +2,11 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.PsiTreeUtil
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 
 /**
  * Any element that can occur in a [PSImportList]
@@ -53,9 +55,25 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
         get() =
             findNotNullChildByClass(PSProperName::class.java)
 
+    internal val importedDataMemberList: PSImportedDataMemberList?
+        get() = findChildByClass(PSImportedDataMemberList::class.java)
+
+    val importsAll: Boolean
+        get() = importedDataMemberList?.doubleDot != null
+
+    val importedDataMembers: Array<PSImportedDataMember>
+        get() = importedDataMemberList?.dataMembers ?: emptyArray()
+
+    val newTypeDeclaration: PSNewTypeDeclarationImpl?
+        get() = reference.resolve() as? PSNewTypeDeclarationImpl
+
+    val dataDeclaration: PSDataDeclaration?
+        get() = reference.resolve() as? PSDataDeclaration
+
     override fun getName(): String = properName.name
 
-    override fun getReference(): ImportedDataReference = ImportedDataReference(this)
+    override fun getReference(): ImportedDataReference =
+        ImportedDataReference(this)
 }
 
 /**

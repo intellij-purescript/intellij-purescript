@@ -1,7 +1,10 @@
 package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.*
+import org.purescript.getDataConstructor
+import org.purescript.getDataDeclaration
+import org.purescript.getExpressionConstructor
+import org.purescript.getNewTypeConstructor
 
 class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
     fun `test resolves local data declaration constructors`() {
@@ -179,5 +182,45 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         val usageInfo = myFixture.findUsages(newTypeConstructor).single()
 
         assertEquals(expressionConstructor, usageInfo.element)
+    }
+
+    fun `test does not resolve imported expression constructor when constructor not exported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup (Bar) where
+                newtype Bar = Qux String
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported expression constructor when constructor not imported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                newtype Bar = Qux String
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup (Bar)
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
     }
 }

@@ -30,10 +30,8 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
                 for (dataDeclaration in module.dataDeclarations) {
                     yieldAll(dataDeclaration.dataConstructors.iterator())
                 }
+                yieldAll(module.importDeclarations.flatMap { it.importedNewTypeConstructors })
                 for (importDeclaration in module.importDeclarations) {
-                    for (importedNewTypeDeclaration in importDeclaration.importedNewTypeDeclarations) {
-                        yield(importedNewTypeDeclaration.newTypeConstructor)
-                    }
                     for (importedDataDeclaration in importDeclaration.importedDataDeclarations) {
                         yieldAll(importedDataDeclaration.dataConstructors.iterator())
                     }
