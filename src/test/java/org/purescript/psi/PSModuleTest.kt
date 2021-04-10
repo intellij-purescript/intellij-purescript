@@ -441,5 +441,61 @@ class PSModuleTest : BasePlatformTestCase() {
 
         assertEquals("Foo.Bar", module.name)
     }
+
+    fun `test finds newtype constructors`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                newtype A = B Int
+            """.trimIndent()
+        ).getModule()
+
+        assertSize(1, module.newTypeConstructors)
+    }
+
+    fun `test finds data constructors`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                data A
+                    = B
+                    | C
+                    | D
+            """.trimIndent()
+        ).getModule()
+
+        assertSize(3, module.dataConstructors)
+    }
+
+    fun `test finds exported newtype constructors`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (A(A), B(..), C) where
+                newtype A = A Int
+                newtype B = B Int
+                newtype C = C Int
+            """.trimIndent()
+        ).getModule()
+
+        assertSize(2, module.exportedNewTypeConstructors)
+    }
+
+    fun `test finds exported data constructors`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (A(B, C)) where
+                data A 
+                    = A Int
+                    | B Int
+                    | C Int
+            """.trimIndent()
+        ).getModule()
+
+        assertSize(2, module.exportedDataConstructors)
+    }
 }
 
