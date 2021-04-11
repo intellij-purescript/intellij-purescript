@@ -77,12 +77,16 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
         dir: PsiDirectory
     ): Properties {
         val filePath = Paths.get(dir.virtualFile.path)
-        val relativePath = dir
-            .project
-            .basePath
-            ?.let { Paths.get(it).toAbsolutePath() }
-            ?.relativize(filePath.toAbsolutePath())
-            ?: filePath
+        val relativePath = try {
+            dir
+                .project
+                .basePath
+                ?.let { Paths.get(it).toAbsolutePath() }
+                ?.relativize(filePath.toAbsolutePath())
+                ?: filePath
+        } catch (ignore: java.lang.IllegalArgumentException) {
+            filePath
+        }
         val moduleName = relativePath
             .reversed()
             .takeWhile { "$it" != "src" && "$it" != "test" }
@@ -128,7 +132,5 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
         name: String,
         templateName: String,
         dir: PsiDirectory
-    ): PsiFile? {
-        return createFile(name, templateName, dir)
-    }
+    ) = createFile(name, templateName, dir)
 }
