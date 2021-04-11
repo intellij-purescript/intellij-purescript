@@ -11,29 +11,31 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
-    val nameToImport: String?,
-    val hostModule: PSModule?
+    val nameToImport: String,
+    val hostModule: PSModule
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val hostModule = hostModule
-            ?: return
-        val expressionConstructorName = nameToImport
-            ?: return
-        val importedModule = getCandidateModules(project, expressionConstructorName).firstOrNull()
+        val importedModule = getCandidateModules(
+            project,
+            nameToImport
+        ).firstOrNull()
             ?: return
         val psiFactory = PSPsiFactory(project)
-        val importDeclaration = psiFactory.createImportDeclaration(importedModule.name)
-            ?: return
-        val lastImportDeclaration = hostModule.importDeclarations.lastOrNull()
-        val insertPosition = lastImportDeclaration ?: hostModule.whereKeyword
+        val importDeclaration =
+            psiFactory.createImportDeclaration(importedModule.name)
+                ?: return
+        val lastImportDeclaration =
+            this.hostModule.importDeclarations.lastOrNull()
+        val insertPosition =
+            lastImportDeclaration ?: this.hostModule.whereKeyword
         val newLine = psiFactory.createNewLine()
-        hostModule.addAfter(importDeclaration, insertPosition)
-        hostModule.addAfter(newLine, insertPosition)
+        this.hostModule.addAfter(importDeclaration, insertPosition)
+        this.hostModule.addAfter(newLine, insertPosition)
         if (lastImportDeclaration == null) {
-            hostModule.addAfter(newLine, insertPosition)
+            this.hostModule.addAfter(newLine, insertPosition)
         }
     }
 

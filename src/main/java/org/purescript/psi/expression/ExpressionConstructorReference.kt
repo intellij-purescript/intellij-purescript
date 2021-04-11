@@ -45,7 +45,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val nameToImport = element.name
-        val hostModule = element.module
+        val hostModule = element.module ?: return arrayOf()
         return arrayOf(ImportExpressionConstructorQuickFix(
             nameToImport,
             hostModule
