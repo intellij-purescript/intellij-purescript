@@ -61,7 +61,14 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
     }
 
     private fun getProperties(lastModuleName: String, dir: PsiDirectory): Properties {
-        val moduleName = Paths.get(dir.virtualFile.path)
+        val filePath = Paths.get(dir.virtualFile.path)
+        val relativePath = dir
+            .project
+            .basePath
+            ?.let { Paths.get(it).toAbsolutePath() }
+            ?.let { it.relativize(filePath.toAbsolutePath()) }
+            ?: filePath
+        val moduleName = relativePath
             .reversed()
             .takeWhile { "$it" != "src" && "$it" != "test" }
             .reversed()
