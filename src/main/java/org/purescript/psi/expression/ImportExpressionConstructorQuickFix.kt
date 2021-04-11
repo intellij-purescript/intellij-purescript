@@ -4,7 +4,6 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
-import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.search.FilenameIndex
 import org.purescript.file.PSFile
 import org.purescript.file.PSFileType
@@ -12,15 +11,16 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
-    private val expressionConstructor: SmartPsiElementPointer<PSExpressionConstructor>
+    val nameToImport: String?,
+    val hostModule: PSModule?
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val hostModule = expressionConstructor.element?.module
+        val hostModule = hostModule
             ?: return
-        val expressionConstructorName = expressionConstructor.element?.name
+        val expressionConstructorName = nameToImport
             ?: return
         val importedModule = getCandidateModules(project, expressionConstructorName).firstOrNull()
             ?: return
