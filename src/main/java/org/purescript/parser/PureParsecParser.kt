@@ -43,6 +43,7 @@ import org.purescript.parser.PSElements.Companion.DoNotationValue
 import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
+import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
@@ -57,6 +58,7 @@ import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
+import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
@@ -709,7 +711,11 @@ class PureParsecParser {
             label + optional(eq) + expr
         val exprAtom = choice(
             attempt(hole),
-            attempt(attempt(qualified(ident)).`as`(Qualified)).`as`(PSElements.Var),
+            attempt(
+                qualified(ident)
+                    .`as`(QualifiedIdentifier)
+                    .`as`(ExpressionIdentifier)
+            ),
             attempt(
                 qualified(properName)
                     .`as`(QualifiedProperName)

@@ -8,7 +8,7 @@ import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSValueDeclaration
 import org.purescript.psi.PSVarBinderImpl
 
-class ParameterReference (element: @NotNull PSPsiElement) : PsiReferenceBase<PSPsiElement?>(
+class ParameterReference (element: PSPsiElement) : PsiReferenceBase<PSPsiElement>(
     element,
     TextRange.allOf(element.text.trim())
 ) {

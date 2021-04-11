@@ -1,334 +1,285 @@
 package org.purescript.psi.`var`
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.SyntaxTraverser
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
-import org.purescript.file.PSFile
+import org.purescript.getExpressionIdentifier
+import org.purescript.getValueDeclaration
+import org.purescript.getValueDeclarations
+import org.purescript.getVarBinder
 
 class PSVarTest : BasePlatformTestCase() {
 
     fun `test var can resolve to top level`() {
-        val file = myFixture.addFileToProject(
+        val file = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            x = y
-            y = 1
+                module Main where
+                x = y
+                y = 1
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference = psVar.referenceOfType(LocalValueReference::class.java)
-        val valueDeclaration = valueReference.resolve()!! as PsiNamedElement
-        TestCase.assertEquals("y", valueDeclaration.name)
+        )
+        val expressionIdentifier = file.getExpressionIdentifier()
+        val valueDeclaration = file.getValueDeclarations()[1]
+
+        TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
     fun `test var can resolve to top level with multiple definitions`() {
-        val file = myFixture.addFileToProject(
+        val file = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            x = y 1
-            y 1 = 1
-            y _ = 2
+                module Main where
+                x = y 1
+                y 1 = 1
+                y _ = 2
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference = psVar.referenceOfType(LocalValueReference::class.java)
-        val valueDeclarations = valueReference.multiResolve(true)
-        TestCase.assertEquals(2, valueDeclarations.size)
+        )
+        val valueDeclarations = file.getValueDeclarations()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        TestCase.assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[1]))
+//        TestCase.assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[2]))
     }
 
-    fun `test var can see variants for all value declarations`() {
-        val file = myFixture.addFileToProject(
-            "Main.purs",
-            """
-            module Main where
-            
-            import Foo
-            import Bar hiding (w)
-            import Baz (k)
-            
-            x = y
-            y = 1
-            """.trimIndent()
-        ) as PSFile
-        myFixture.addFileToProject(
-            "Foo.purs",
-            """
-            module Foo (z) where
-            z = 1
-            """.trimIndent()
-        )
-        myFixture.addFileToProject(
-            "Bar.purs",
-            """
-            module Bar (w, q) where
-            w = 1
-            q = 1
-            """.trimIndent()
-        )
-        myFixture.addFileToProject(
-            "Baz.purs",
-            """
-            module Baz (k, p) where
-            k = 1
-            p = 1
-            """.trimIndent()
-        )
-        val psVar = file.getVarByName("y")!!
-        val valueReference = psVar.referenceOfType(ImportedValueReference::class.java)
-        val names = valueReference.variants.map { it.name }.toList()
-        assertContainsElements(names, "z", "q", "k")
-        assertDoesntContain(names, "w", "p")
-    }
+//    fun `test var can see variants for all value declarations`() {
+//        val file = myFixture.configureByText(
+//            "Main.purs",
+//            """
+//                module Main where
+//                import Foo
+//                import Bar hiding (w)
+//                import Baz (k)
+//                x = y
+//                y = 1
+//            """.trimIndent()
+//        )
+//        myFixture.configureByText(
+//            "Foo.purs",
+//            """
+//                module Foo (z) where
+//                z = 1
+//            """.trimIndent()
+//        )
+//        myFixture.configureByText(
+//            "Bar.purs",
+//            """
+//                module Bar (w, q) where
+//                w = 1
+//                q = 1
+//            """.trimIndent()
+//        )
+//        myFixture.configureByText(
+//            "Baz.purs",
+//            """
+//                module Baz (k, p) where
+//                k = 1
+//                p = 1
+//            """.trimIndent()
+//        )
+//        val expressionIdentifier = file.getExpressionIdentifier()
+//        val variants = expressionIdentifier.reference.variants
+//        assertContainsElements(variants, "z", "q", "k")
+//        assertDoesntContain(variants, "w", "p")
+//    }
 
     fun `test var can resolve to imported files`() {
-        myFixture.addFileToProject(
+        val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (y) where
-            y = 1
+                module Lib (y) where
+                y = 1
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        ).getValueDeclaration()
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib
-            x = y
+                module Main where
+                import Lib
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclaration = valueReference
-            .multiResolve(false)
-            .first().element as PsiNamedElement
-        TestCase.assertEquals("y", valueDeclaration.name)
+        ).getExpressionIdentifier()
+
+        TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
     fun `test var can resolve to imported files which exports using module keyword`() {
-        myFixture.addFileToProject(
+        val valueDeclaration = myFixture.configureByText(
             "Y.purs",
             """
-            module Y (y) where
-            y = 1
+                module Y (y) where
+                y = 1
             """.trimIndent()
-        ) as PSFile
-        myFixture.addFileToProject(
+        ).getValueDeclaration()
+        myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (module Y) where
-            import Y
+                module Lib (module Y) where
+                import Y
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        )
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib
-            x = y
+                module Main where
+                import Lib
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclaration = valueReference
-            .multiResolve(false)
-            .first().element as PsiNamedElement
-        TestCase.assertEquals("y", valueDeclaration.name)
+        ).getExpressionIdentifier()
+
+        TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
     fun `test var can only resolve exported values`() {
-        myFixture.addFileToProject(
+        myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (z) where
-            y = 1
-            z = 2
+                module Lib (z) where
+                y = 1
+                z = 2
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        )
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib
-            x = y
+                module Main where
+                import Lib
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclarations = valueReference.multiResolve(false)
-        TestCase.assertEquals(0, valueDeclarations.size)
+        ).getExpressionIdentifier()
+
+        TestCase.assertNull(expressionIdentifier.reference.resolve())
     }
 
     fun `test var can resolve exported values when exporting all`() {
-        myFixture.addFileToProject(
+        val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib where
-            y = 1
+                module Lib where
+                y = 1
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        ).getValueDeclaration()
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib
-            x = y
+                module Main where
+                import Lib
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclaration = valueReference.multiResolve(false)
-            .single().element as PsiNamedElement
-        TestCase.assertEquals("y", valueDeclaration.name)
+        ).getExpressionIdentifier()
+
+        TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
     fun `test var can't resolve imported values when hidden`() {
-        myFixture.addFileToProject(
+        myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (y) where
-            y = 1
+                module Lib (y) where
+                y = 1
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        )
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib hiding (y)
-            x = y
+                module Main where
+                import Lib hiding (y)
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclarations = valueReference.multiResolve(false)
-        TestCase.assertEquals(0, valueDeclarations.size)
+        ).getExpressionIdentifier()
+
+        TestCase.assertNull(expressionIdentifier.reference.resolve())
     }
 
     fun `test var can resolve imported values when hiding others`() {
-        myFixture.addFileToProject(
+        val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (y, z) where
-            y = 1
-            z = 2
+                module Lib (y, z) where
+                y = 1
+                z = 2
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        ).getValueDeclarations()[0]
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib hiding (z)
-            x = y
+                module Main where
+                import Lib hiding (z)
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclarations = valueReference.multiResolve(false)
-        TestCase.assertEquals(1, valueDeclarations.size)
+        ).getExpressionIdentifier()
+
+        TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
     fun `test var can only resolve imported named values when they are named`() {
-        myFixture.addFileToProject(
+        myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (y, z) where
-            y = 1
-            z = 2
+                module Lib (y, z) where
+                y = 1
+                z = 2
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        )
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib (z)
-            x = y
+                module Main where
+                import Lib (z)
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclarations = valueReference.multiResolve(false)
-        TestCase.assertEquals(0, valueDeclarations.size)
+        ).getExpressionIdentifier()
+
+        TestCase.assertNull(expressionIdentifier.reference.resolve())
     }
 
     fun `test var can resolve imported named values when they are named`() {
-        myFixture.addFileToProject(
+        val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
-            module Lib (y, z) where
-            y = 1
-            z = 2
+                module Lib (y, z) where
+                y = 1
+                z = 2
             """.trimIndent()
-        ) as PSFile
-        val file = myFixture.addFileToProject(
+        ).getValueDeclarations()[0]
+        val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            import Lib (y)
-            x = y
+                module Main where
+                import Lib (y)
+                x = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val valueReference =
-            psVar.referenceOfType(ImportedValueReference::class.java)
-        val valueDeclarations = valueReference.multiResolve(false)
-        TestCase.assertEquals(1, valueDeclarations.size)
+        ).getExpressionIdentifier()
+
+        TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
     fun `test var can resolve to parameter`() {
-        val file = myFixture.addFileToProject(
+        val file = myFixture.configureByText(
             "Main.purs",
             """
-            module Main where
-            x y = y
+                module Main where
+                x y = y
             """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val parameterReference =
-            psVar.referenceOfType(ParameterReference::class.java)
-        val identifier = parameterReference.resolve()!!
-        TestCase.assertEquals("y", identifier.name)
+        )
+        val varBinder = file.getVarBinder()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        TestCase.assertEquals(varBinder, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var see all parameters`() {
-        val file = myFixture.addFileToProject(
-            "Main.purs",
-            """
-            module Main where
-            x y z = y
-            """.trimIndent()
-        ) as PSFile
-        val psVar = file.getVarByName("y")!!
-        val parameterReference =
-            psVar.referenceOfType(ParameterReference::class.java)
-        val names = parameterReference.variants.map { it?.name }
-        assertContainsElements(names, "z", "y")
-    }
+//    fun `test var see all parameters`() {
+//        myFixture.configureByText(
+//            "Main.purs",
+//            """
+//                module Main where
+//                x y z = y
+//            """.trimIndent()
+//        )
+//        val psVar = file.getVarByName("y")!!
+//        val parameterReference =
+//            psVar.referenceOfType(ParameterReference::class.java)
+//        val names = parameterReference.variants.map { it?.name }
+//        assertContainsElements(names, "z", "y")
+//    }
 
-    private fun PsiElement.getVarByName(
-        name: String
-    ): PSVar? {
-        return SyntaxTraverser
-            .psiTraverser(this)
-            .filterIsInstance(PSVar::class.java)
-            .firstOrNull { it.text.trim() == name }
-    }
-
-    private fun <T> PsiElement.referenceOfType(
-        referenceType: Class<T>
-    ): T {
-        return this
-            .references
-            .filterIsInstance(referenceType)
-            .first()
-    }
 }

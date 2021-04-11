@@ -23,4 +23,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node) {
         get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
 
     override fun getName(): String = qualifiedIdentifier.name
+
+    override fun getReference(): ExpressionIdentifierReference =
+        ExpressionIdentifierReference(this)
 }
