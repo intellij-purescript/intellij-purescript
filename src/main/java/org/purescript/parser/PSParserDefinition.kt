@@ -118,13 +118,11 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.ValueRef
-import org.purescript.parser.PSElements.Companion.Var
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.psi.*
-import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.*
@@ -263,7 +261,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ArrayLiteral -> PSArrayLiteralImpl(node)
             ObjectLiteral -> PSObjectLiteralImpl(node)
             Abs -> PSAbsImpl(node)
-            Var -> PSVar(node)
             Case -> PSCaseImpl(node)
             CaseAlternative -> PSCaseAlternativeImpl(node)
             IfThenElse -> PSIfThenElseImpl(node)

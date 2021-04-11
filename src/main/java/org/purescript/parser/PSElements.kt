@@ -261,9 +261,6 @@ interface PSElements {
         val IdentInfix = PSElementType("IdentInfix")
 
         @kotlin.jvm.JvmField
-        val Var = PSElementType("Var")
-
-        @kotlin.jvm.JvmField
         val ExpressionConstructor = PSElementType("ExpressionConstructor")
 
         @kotlin.jvm.JvmField
