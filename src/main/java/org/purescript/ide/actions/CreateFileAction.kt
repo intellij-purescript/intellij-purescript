@@ -11,6 +11,7 @@ import com.intellij.openapi.ui.InputValidatorEx
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import org.purescript.icons.PSIcons
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
@@ -77,12 +78,17 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
         dir: PsiDirectory
     ): Properties {
         val filePath = Paths.get(dir.virtualFile.path)
-        val relativePath = dir
-            .project
-            .basePath
-            ?.let { Paths.get(it).toAbsolutePath() }
-            ?.relativize(filePath.toAbsolutePath())
-            ?: filePath
+        var relativePath: Path
+        try {
+            relativePath = dir
+                .project
+                .basePath
+                ?.let { Paths.get(it).toAbsolutePath() }
+                ?.relativize(filePath.toAbsolutePath())
+                ?: filePath
+        } catch (ignore: java.lang.IllegalArgumentException) {
+            relativePath = filePath
+        }
         val moduleName = relativePath
             .reversed()
             .takeWhile { "$it" != "src" && "$it" != "test" }
