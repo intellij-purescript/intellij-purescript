@@ -132,7 +132,5 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
         name: String,
         templateName: String,
         dir: PsiDirectory
-    ): PsiFile? {
-        return createFile(name, templateName, dir)
-    }
+    ) = createFile(name, templateName, dir)
 }
