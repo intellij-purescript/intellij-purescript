@@ -12,8 +12,8 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
-    val hostModulePointer: SmartPsiElementPointer<PSModule>,
-    val moduleNameToImport: String
+    private val hostModulePointer: SmartPsiElementPointer<PSModule>,
+    private val moduleNameToImport: String
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
