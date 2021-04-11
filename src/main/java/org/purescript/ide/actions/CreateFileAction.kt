@@ -15,7 +15,11 @@ import java.nio.file.Paths
 import java.util.*
 
 class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
-    override fun buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder) {
+    override fun buildDialog(
+        project: Project,
+        directory: PsiDirectory,
+        builder: CreateFileFromTemplateDialog.Builder
+    ) {
         /*
          *  If we add more kinds here, IntelliJ will prompt for which kind
          *  you want to create when invoking the action.
@@ -28,7 +32,11 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
             .setValidator(NAME_VALIDATOR)
     }
 
-    override fun getActionName(directory: PsiDirectory?, newName: String, templateName: String?): String =
+    override fun getActionName(
+        directory: PsiDirectory?,
+        newName: String,
+        templateName: String?
+    ): String =
         TITLE
 
     /**
@@ -41,7 +49,11 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
      * The Julia plugin project is passing custom properties this way:
      *      [https://github.com/JuliaEditorSupport/julia-intellij/blob/master/src/org/ice1000/julia/lang/action/julia-file-actions.kt]
      */
-    override fun createFileFromTemplate(name: String, template: FileTemplate, dir: PsiDirectory): PsiFile? {
+    override fun createFileFromTemplate(
+        name: String,
+        template: FileTemplate,
+        dir: PsiDirectory
+    ): PsiFile? {
         val lastModuleName = name.removeSuffix(".purs")
             .split(".")
             .last()
@@ -60,13 +72,16 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
         return dialog.create()?.containingFile
     }
 
-    private fun getProperties(lastModuleName: String, dir: PsiDirectory): Properties {
+    private fun getProperties(
+        lastModuleName: String,
+        dir: PsiDirectory
+    ): Properties {
         val filePath = Paths.get(dir.virtualFile.path)
         val relativePath = dir
             .project
             .basePath
             ?.let { Paths.get(it).toAbsolutePath() }
-            ?.let { it.relativize(filePath.toAbsolutePath()) }
+            ?.relativize(filePath.toAbsolutePath())
             ?: filePath
         val moduleName = relativePath
             .reversed()
@@ -77,7 +92,8 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
             .let { "$it.$lastModuleName" }
             .removePrefix(".")
 
-        val properties = FileTemplateManager.getInstance(dir.project).defaultProperties
+        val properties =
+            FileTemplateManager.getInstance(dir.project).defaultProperties
         properties += "MODULE_NAME" to moduleName
 
         return properties
@@ -108,7 +124,11 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
     /**
      * Exposed only for testing purposes.
      */
-    internal fun internalCreateFile(name: String, templateName: String, dir: PsiDirectory): PsiFile? {
+    internal fun internalCreateFile(
+        name: String,
+        templateName: String,
+        dir: PsiDirectory
+    ): PsiFile? {
         return createFile(name, templateName, dir)
     }
 }
