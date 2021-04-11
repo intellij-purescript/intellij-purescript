@@ -12,16 +12,14 @@ import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
     val nameToImport: String,
-    val hostModule: PSModule
+    val hostModule: PSModule,
+    val importedModule: PSModule?
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val importedModule = getCandidateModules(
-            project,
-            nameToImport
-        ).firstOrNull()
+        val importedModule = importedModule
             ?: return
         val psiFactory = PSPsiFactory(project)
         val importDeclaration =
@@ -39,17 +37,19 @@ class ImportExpressionConstructorQuickFix(
         }
     }
 
-    private fun getCandidateModules(project: Project, expressionConstructorName: String): List<PSModule> {
-        val psiManager = PsiManager.getInstance(project)
-        return FilenameIndex.getAllFilesByExt(project, PSFileType.DEFAULT_EXTENSION)
-            .mapNotNull { psiManager.findFile(it) }
-            .filterIsInstance<PSFile>()
-            .mapNotNull { it.module }
-            .filter { module ->
-                module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == expressionConstructorName }
-                    || module.exportedDataDeclarations
-                    .flatMap { it.dataConstructors.toList() }
-                    .any { it.name == expressionConstructorName }
-            }
+    companion object {
+        fun getCandidateModules(project: Project, expressionConstructorName: String): List<PSModule> {
+            val psiManager = PsiManager.getInstance(project)
+            return FilenameIndex.getAllFilesByExt(project, PSFileType.DEFAULT_EXTENSION)
+                .mapNotNull { psiManager.findFile(it) }
+                .filterIsInstance<PSFile>()
+                .mapNotNull { it.module }
+                .filter { module ->
+                    module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == expressionConstructorName }
+                        || module.exportedDataDeclarations
+                        .flatMap { it.dataConstructors.toList() }
+                        .any { it.name == expressionConstructorName }
+                }
+        }
     }
 }
