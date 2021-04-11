@@ -126,6 +126,8 @@ interface PSTokens {
         @kotlin.jvm.JvmField
         val OPERATOR = PSElementType("operator")
         @kotlin.jvm.JvmField
+        val MODULE_PREFIX = PSElementType("module prefix")
+        @kotlin.jvm.JvmField
         val PROPER_NAME = PSElementType("proper name")
         @kotlin.jvm.JvmField
         val IDENT = PSElementType("identifier")

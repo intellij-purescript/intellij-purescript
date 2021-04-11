@@ -160,6 +160,7 @@ charControl = "^" [:uppercase:]
 "'" ([^'] | "\\" {escapeCode} ) "'"               { return CHAR; }
 
 {identStart}{identLetter}*     { return IDENT; }
+({properName}".")+             { return MODULE_PREFIX; }
 {properName}                   { return PROPER_NAME; }
 {uniCode}+                     { return OPERATOR; }
 {opChars}+                     { return OPERATOR; }
