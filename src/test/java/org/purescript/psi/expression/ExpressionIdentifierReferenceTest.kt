@@ -9,7 +9,7 @@ import org.purescript.getVarBinder
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 
-    fun `test var can resolve to top level`() {
+    fun `test resolves value declaration`() {
         val file = myFixture.configureByText(
             "Main.purs",
             """
@@ -24,7 +24,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can resolve to top level with multiple definitions`() {
+    fun `test resolves value declaration with multiple declarations`() {
         val file = myFixture.configureByText(
             "Main.purs",
             """
@@ -82,7 +82,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 //        assertDoesntContain(variants, "w", "p")
 //    }
 
-    fun `test var can resolve to imported files`() {
+    fun `test resolves imported value declarations`() {
         val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
@@ -102,7 +102,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can resolve to imported files which exports using module keyword`() {
+    fun `test resolves deep imported value declarations`() {
         val valueDeclaration = myFixture.configureByText(
             "Y.purs",
             """
@@ -129,7 +129,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can only resolve exported values`() {
+    fun `test does not resolve unexported value declarations`() {
         myFixture.configureByText(
             "Lib.purs",
             """
@@ -150,7 +150,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertNull(expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can resolve exported values when exporting all`() {
+    fun `test resolves value declaration exported using export all`() {
         val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
@@ -170,7 +170,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can't resolve imported values when hidden`() {
+    fun `test does not resolve hidden value declaration`() {
         myFixture.configureByText(
             "Lib.purs",
             """
@@ -190,7 +190,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertNull(expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can resolve imported values when hiding others`() {
+    fun `test resolves imported value declarations when hiding others`() {
         val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
@@ -211,7 +211,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can only resolve imported named values when they are named`() {
+    fun `test does not resolve unimported value declarations`() {
         myFixture.configureByText(
             "Lib.purs",
             """
@@ -232,7 +232,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertNull(expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can resolve imported named values when they are named`() {
+    fun `test resolves explicitly imported and exported value declarations`() {
         val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
             """
@@ -253,7 +253,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         TestCase.assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test var can resolve to parameter`() {
+    fun `test resolves var binders`() {
         val file = myFixture.configureByText(
             "Main.purs",
             """
