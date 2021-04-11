@@ -44,6 +44,17 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
             }
         }
 
-    override fun getQuickFixes(): Array<LocalQuickFix> =
-        arrayOf(ImportExpressionConstructorQuickFix(SmartPointerManager.createPointer(element)))
+    override fun getQuickFixes(): Array<LocalQuickFix> {
+        val nameToImport = element.name
+        val hostModule = element.module ?: return arrayOf()
+        val hostModulePointer = SmartPointerManager.createPointer(hostModule)
+        val candidateModules =
+            ImportExpressionConstructorQuickFix.getCandidateModules(
+                element.project,
+                nameToImport
+            )
+        return candidateModules
+            .map { ImportExpressionConstructorQuickFix(hostModulePointer, it.name) }
+            .toTypedArray()
+    }
 }

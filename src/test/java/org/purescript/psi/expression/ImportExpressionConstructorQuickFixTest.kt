@@ -1,5 +1,6 @@
 package org.purescript.psi.expression
 
+import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getImportDeclaration
 import org.purescript.getImportDeclarations
@@ -29,8 +30,39 @@ class ImportExpressionConstructorQuickFixTest : BasePlatformTestCase() {
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
 
-        assertEquals("Import", action.familyName)
+        assertEquals("Import Data.Maybe", action.familyName)
         assertEquals("Data.Maybe", importDeclaration.name)
+    }
+
+    fun `test imports module when there are more then one to pick`() {
+        myFixture.configureByText(
+            "Maybe.purs",
+            """
+                module Data.Maybe where
+                data Maybe a
+                    = Just a
+                    | Nothing
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Maybe2.purs",
+            """
+                module Data.Maybe2 where
+                data Maybe a
+                    = Just a
+                    | Nothing
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = Just 3
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val actions = myFixture.getAllQuickFixes("Foo.purs")
+        UsefulTestCase.assertSize(2, actions)
     }
 
     fun `test imports module with other imports`() {
