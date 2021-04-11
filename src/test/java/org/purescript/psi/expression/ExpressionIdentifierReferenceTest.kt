@@ -1,4 +1,4 @@
-package org.purescript.psi.`var`
+package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
@@ -7,7 +7,7 @@ import org.purescript.getValueDeclaration
 import org.purescript.getValueDeclarations
 import org.purescript.getVarBinder
 
-class PSVarTest : BasePlatformTestCase() {
+class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 
     fun `test var can resolve to top level`() {
         val file = myFixture.configureByText(
