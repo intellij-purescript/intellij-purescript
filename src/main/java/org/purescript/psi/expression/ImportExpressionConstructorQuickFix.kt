@@ -12,17 +12,15 @@ import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
     val hostModule: PSModule,
-    val importedModule: PSModule?
+    val moduleNameToImport: String
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val importedModule = importedModule
-            ?: return
         val psiFactory = PSPsiFactory(project)
         val importDeclaration =
-            psiFactory.createImportDeclaration(importedModule.name)
+            psiFactory.createImportDeclaration(moduleNameToImport)
                 ?: return
         val lastImportDeclaration =
             this.hostModule.importDeclarations.lastOrNull()

@@ -52,7 +52,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
                 nameToImport
             )
         return candidateModules
-            .map { ImportExpressionConstructorQuickFix(hostModule, it) }
+            .map { ImportExpressionConstructorQuickFix(hostModule, it.name) }
             .toTypedArray()
     }
 }
