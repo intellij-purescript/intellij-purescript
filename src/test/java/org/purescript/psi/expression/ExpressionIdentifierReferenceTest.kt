@@ -1,10 +1,7 @@
 package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.getExpressionIdentifier
-import org.purescript.getValueDeclaration
-import org.purescript.getValueDeclarations
-import org.purescript.getVarBinder
+import org.purescript.*
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 
@@ -299,5 +296,42 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
     // endregion
 
     // region foreign values
+
+    fun `test resolves foreign value declarations`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                foreign import x :: Int
+                y = x
+            """.trimIndent()
+        )
+        val expressionIdentifier = file.getExpressionIdentifier()
+        val foreignValueDeclaration = file.getForeignValueDeclaration()
+
+        assertEquals(foreignValueDeclaration, expressionIdentifier.reference.resolve())
+    }
+
+    fun `test completes foreign value declarations`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import qux :: Int
+                foreign import qut :: Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                y = q<caret>
+            """.trimIndent()
+        )
+
+        myFixture.testCompletionVariants("Foo.purs", "qux", "qut")
+    }
+
     // endregion
 }
