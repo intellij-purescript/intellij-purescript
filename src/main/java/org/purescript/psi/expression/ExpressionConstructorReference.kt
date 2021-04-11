@@ -23,12 +23,24 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
     private val candidates: Sequence<PsiNamedElement>
         get() {
             val module = element.module ?: return emptySequence()
-            return sequence {
-                yieldAll(module.newTypeConstructors)
-                yieldAll(module.dataConstructors)
-                val importDeclarations = module.importDeclarations
-                yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
-                yieldAll(importDeclarations.flatMap { it.importedDataConstructors })
+            val qualifyingName = element.qualifiedProperName.moduleName?.name
+            if (qualifyingName != null) {
+                val importDeclaration = module.importDeclarations
+                    .firstOrNull { it.importAlias?.name == qualifyingName }
+                    ?: return emptySequence()
+                return sequence {
+                    yieldAll(importDeclaration.importedNewTypeConstructors)
+                    yieldAll(importDeclaration.importedDataConstructors)
+                }
+            } else {
+                return sequence {
+                    yieldAll(module.newTypeConstructors)
+                    yieldAll(module.dataConstructors)
+                    val importDeclarations = module.importDeclarations
+                        .filter { it.importAlias == null }
+                    yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
+                    yieldAll(importDeclarations.flatMap { it.importedDataConstructors })
+                }
             }
         }
 
