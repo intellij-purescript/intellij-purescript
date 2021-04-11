@@ -270,6 +270,20 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(varBinder, expressionIdentifier.reference.resolve())
     }
 
+    fun `test resolves complex var binders`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main where
+                x (Just y) = y
+            """.trimIndent()
+        )
+        val varBinder = file.getVarBinder()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+
     fun `test completes var binders`() {
         myFixture.configureByText(
             "Main.purs",
