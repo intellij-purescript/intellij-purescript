@@ -44,27 +44,6 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         assertEquals(dataConstructor, expressionConstructor.reference.resolve())
     }
 
-    fun `test resolves alias imported data declaration constructors`() {
-        val dataDeclaration = myFixture.configureByText(
-            "Hup.purs",
-            """
-                module Hup where
-                data Bar = Bar1 | Bar2 Int
-            """.trimIndent()
-        ).getDataDeclaration()
-        val expressionConstructor = myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                import Hup as H
-                f = H.Bar2 3
-            """.trimIndent()
-        ).getExpressionConstructor()
-        val dataConstructor = dataDeclaration.dataConstructors[1]
-
-        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
-    }
-
     fun `test completes data declaration constructors`() {
         myFixture.configureByText(
             "Hup.purs",
@@ -302,5 +281,119 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         ).getExpressionConstructor()
 
         assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+    }
+
+    fun `test resolves alias imported data declaration constructors`() {
+        val dataDeclaration = myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                data Bar = Bar1 | Bar2 Int
+            """.trimIndent()
+        ).getDataDeclaration()
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup as H
+                f = H.Bar2 3
+            """.trimIndent()
+        ).getExpressionConstructor()
+        val dataConstructor = dataDeclaration.dataConstructors[1]
+
+        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+    }
+
+    fun `test resolves alias imported newtype declaration constructors`() {
+        val newTypeConstructor = myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                newtype Bar = Bar3 Int
+            """.trimIndent()
+        ).getNewTypeConstructor()
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup as H
+                f = H.Bar3 3
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertEquals(newTypeConstructor, expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve when missing qualifier`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                data B = C
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar as Qux
+                f = C
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve when wrong qualifier`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                data B = C
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar as Qux
+                f = Bar.C
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve locally when qualifier`() {
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                data B = C
+                f = Bar.C
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test completes with qualifier`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                data B = Bal | Bap | Bak
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar as Qux
+                newtype C = Baw Int
+                f = Qux.<caret>
+            """.trimIndent()
+        )
+        myFixture.testCompletionVariants("Foo.purs", "Bal", "Bap", "Bak")
     }
 }
