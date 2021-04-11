@@ -30,7 +30,7 @@ class ImportExpressionConstructorQuickFixTest : BasePlatformTestCase() {
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
 
-        assertEquals("Import", action.familyName)
+        assertEquals("Import Data.Maybe", action.familyName)
         assertEquals("Data.Maybe", importDeclaration.name)
     }
 

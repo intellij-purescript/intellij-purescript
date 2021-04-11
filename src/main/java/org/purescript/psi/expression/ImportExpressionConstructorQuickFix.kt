@@ -17,6 +17,7 @@ class ImportExpressionConstructorQuickFix(
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
+    override fun getName() = "Import ${moduleNameToImport}"
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val psiFactory = PSPsiFactory(project)
