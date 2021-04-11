@@ -37,7 +37,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val expressionIdentifier = file.getExpressionIdentifier()
 
         assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[1]))
-//        assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[2]))
+        assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[2]))
     }
 
 //    fun `test var can see variants for all value declarations`() {

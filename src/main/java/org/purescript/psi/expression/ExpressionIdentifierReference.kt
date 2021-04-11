@@ -1,15 +1,14 @@
 package org.purescript.psi.expression
 
-import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveState
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.parents
 import org.purescript.psi.PSValueDeclaration
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
-    PsiReferenceBase<PSExpressionIdentifier>(
+    PsiReferenceBase.Poly<PSExpressionIdentifier>(
         expressionConstructor,
         expressionConstructor.qualifiedIdentifier.identifier.textRangeInParent,
         false
@@ -18,8 +17,22 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
     override fun getVariants(): Array<Any> =
         candidates.toList().toTypedArray()
 
-    override fun resolve(): PsiNamedElement? =
-        candidates.firstOrNull { it.name == element.name }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val name = element.name
+        val declaration = candidates.firstOrNull { it.name == name }
+            ?: return emptyArray()
+        // TODO We may not want to have a PsiPolyVariantReference reference here
+        return if (declaration is PSValueDeclaration) {
+            val module = declaration.module
+            val allValueDeclarations = candidates.filterIsInstance<PSValueDeclaration>()
+                .filter { it.name == name }
+                .filter { it.module == module }
+                .toMutableList()
+            createResults(allValueDeclarations)
+        } else {
+            createResults(declaration)
+        }
+    }
 
     private val candidates: Sequence<PsiNamedElement>
         get() {
