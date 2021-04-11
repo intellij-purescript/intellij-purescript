@@ -77,6 +77,14 @@ class CreateFileActionTest : BasePlatformTestCase() {
             false
         )
     }
+    fun `test it dont use folder names that is in lowercase`() {
+        performCreateFileAction("Foo.Bar", "src/lib/Foo")
+        myFixture.checkResult(
+            "src/lib/Foo/$fileName",
+            getExpectedModuleBody("Foo.Bar"),
+            false
+        )
+    }
 
     private fun getExpectedModuleBody(moduleName: String): String {
         return """
