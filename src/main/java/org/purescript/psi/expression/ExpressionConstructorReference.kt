@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.SmartPointerManager
 
 class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
     LocalQuickFixProvider,
@@ -46,13 +47,14 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val nameToImport = element.name
         val hostModule = element.module ?: return arrayOf()
+        val hostModulePointer = SmartPointerManager.createPointer(hostModule)
         val candidateModules =
             ImportExpressionConstructorQuickFix.getCandidateModules(
                 element.project,
                 nameToImport
             )
         return candidateModules
-            .map { ImportExpressionConstructorQuickFix(hostModule, it.name) }
+            .map { ImportExpressionConstructorQuickFix(hostModulePointer, it.name) }
             .toTypedArray()
     }
 }

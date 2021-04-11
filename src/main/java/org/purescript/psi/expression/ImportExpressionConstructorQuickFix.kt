@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.search.FilenameIndex
 import org.purescript.file.PSFile
 import org.purescript.file.PSFileType
@@ -11,7 +12,7 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
-    val hostModule: PSModule,
+    val hostModulePointer: SmartPsiElementPointer<PSModule>,
     val moduleNameToImport: String
 ) : LocalQuickFix {
 
@@ -22,22 +23,26 @@ class ImportExpressionConstructorQuickFix(
         val importDeclaration =
             psiFactory.createImportDeclaration(moduleNameToImport)
                 ?: return
-        val lastImportDeclaration =
-            this.hostModule.importDeclarations.lastOrNull()
-        val insertPosition =
-            lastImportDeclaration ?: this.hostModule.whereKeyword
-        val newLine = psiFactory.createNewLine()
-        this.hostModule.addAfter(importDeclaration, insertPosition)
-        this.hostModule.addAfter(newLine, insertPosition)
-        if (lastImportDeclaration == null) {
-            this.hostModule.addAfter(newLine, insertPosition)
+        hostModulePointer.element?.let { hostModule ->
+            val lastImportDeclaration = hostModule.importDeclarations.lastOrNull()
+            val insertPosition = lastImportDeclaration ?: hostModule.whereKeyword
+            val newLine = psiFactory.createNewLine()
+            hostModule.addAfter(importDeclaration, insertPosition)
+            hostModule.addAfter(newLine, insertPosition)
+            if (lastImportDeclaration == null) {
+                hostModule.addAfter(newLine, insertPosition)
+            }
         }
     }
 
     companion object {
-        fun getCandidateModules(project: Project, expressionConstructorName: String): List<PSModule> {
+        fun getCandidateModules(
+            project: Project,
+            expressionConstructorName: String
+        ): List<PSModule> {
             val psiManager = PsiManager.getInstance(project)
-            return FilenameIndex.getAllFilesByExt(project, PSFileType.DEFAULT_EXTENSION)
+            return FilenameIndex
+                .getAllFilesByExt(project, PSFileType.DEFAULT_EXTENSION)
                 .mapNotNull { psiManager.findFile(it) }
                 .filterIsInstance<PSFile>()
                 .mapNotNull { it.module }
