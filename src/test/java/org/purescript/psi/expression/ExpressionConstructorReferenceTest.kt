@@ -1,7 +1,10 @@
 package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.*
+import org.purescript.getDataConstructor
+import org.purescript.getDataDeclaration
+import org.purescript.getExpressionConstructor
+import org.purescript.getNewTypeConstructor
 
 class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
     fun `test resolves local data declaration constructors`() {
@@ -179,5 +182,125 @@ class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
         val usageInfo = myFixture.findUsages(newTypeConstructor).single()
 
         assertEquals(expressionConstructor, usageInfo.element)
+    }
+
+    fun `test does not resolve imported newtype constructor when constructor not exported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup (Bar) where
+                newtype Bar = Qux String
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported newtype constructor when constructor not imported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                newtype Bar = Qux String
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup (Bar)
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported data constructor when constructor not exported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup (Bar(Baz)) where
+                data Bar = Qux String | Baz
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported data constructor when constructor not imported`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                data Bar = Qux String | Baz
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup (Baz)
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test does not resolve imported data constructor when constructor is hidden`() {
+        myFixture.configureByText(
+            "Hup.purs",
+            """
+                module Hup where
+                data Bar = Qux String | Baz
+            """.trimIndent()
+        )
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Hup hiding (Bar(..))
+                f = Qux ""
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertNull(expressionConstructor.reference.resolve())
+    }
+
+    fun `test resolves imported data constructor with explicitly imported constructor`() {
+        val dataConstructor = myFixture.configureByText(
+            "Maybe.purs",
+            """
+                module Data.Maybe where
+                data Maybe a = Just a
+            """.trimIndent()
+        ).getDataConstructor()
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Data.Maybe (Maybe(Just))
+                f = Just 3
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
     }
 }

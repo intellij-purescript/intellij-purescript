@@ -4,8 +4,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSModuleName
+import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
@@ -141,6 +143,54 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
         )
 
     /**
+     * @return the [PSNewTypeConstructor] elements imported by this declaration
+     */
+    val importedNewTypeConstructors: List<PSNewTypeConstructor>
+        get() {
+            val importedModule = importedModule ?: return emptyList()
+            val exportedNewTypeConstructors = importedModule.exportedNewTypeConstructors
+
+            val importedItems = importList?.importedItems
+                ?: return exportedNewTypeConstructors
+
+            val importedNewTypeConstructors = mutableListOf<PSNewTypeConstructor>()
+            val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
+            if (isHiding) {
+                /*
+                 * Partially hiding imported data does not work in an intuitive way.
+                 * Here are some examples using Data.Maybe:
+                 *
+                 *   import Data.Maybe hiding (Maybe(..))             -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe)                 -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe())               -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Just))           -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Just, Nothing))  -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Nothing, Just))  -- Hides type and constructors
+                 *
+                 * TODO
+                 *  I'll account for the Maybe(..) case for now, and ignore the rest.
+                 *  It's definitely wrong, but I'd rather the code be simple and wrong
+                 *  than complicated and still somehow wrong.
+                 */
+                val hiddenNewTypeConstructors = importedDataElements
+                    .filter { it.importsAll }
+                    .mapNotNull { it.newTypeDeclaration?.newTypeConstructor }
+                exportedNewTypeConstructors.filterTo(importedNewTypeConstructors) {
+                    it !in hiddenNewTypeConstructors
+                }
+            } else {
+                for (importedData in importedDataElements) {
+                    val newTypeConstructor = importedData.newTypeDeclaration?.newTypeConstructor ?: continue
+                    if (importedData.importsAll || newTypeConstructor.name in importedData.importedDataMembers.map { name }) {
+                        importedNewTypeConstructors.add(newTypeConstructor)
+                    }
+                }
+            }
+
+            return importedNewTypeConstructors
+        }
+
+    /**
      * @return the [PSDataDeclaration] elements imported by this declaration
      */
     val importedDataDeclarations: List<PSDataDeclaration>
@@ -148,6 +198,41 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             PSModule::exportedDataDeclarations,
             PSImportedData::class.java
         )
+
+    /**
+     * @return the [PSDataConstructor] elements imported by this declaration
+     */
+    val importedDataConstructors: List<PSDataConstructor>
+        get() {
+            val importedModule = importedModule ?: return emptyList()
+            val exportedDataConstructors = importedModule.exportedDataConstructors
+
+            val importedItems = importList?.importedItems
+                ?: return exportedDataConstructors
+
+            val importedDataConstructors = mutableListOf<PSDataConstructor>()
+            val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
+            if (isHiding) {
+                // TODO See todo in [importedNewTypeConstructors]
+                val hiddenDataConstructors = importedDataElements
+                    .filter { it.importsAll }
+                    .mapNotNull { it.dataDeclaration }
+                    .flatMap { it.dataConstructors.toList() }
+                exportedDataConstructors.filterTo(importedDataConstructors) { it !in hiddenDataConstructors }
+            } else {
+                for (importedData in importedDataElements) {
+                    val dataConstructors = importedData.dataDeclaration?.dataConstructors ?: continue
+                    if (importedData.importsAll) {
+                        importedDataConstructors.addAll(dataConstructors)
+                    } else {
+                        val importedDataConstructorNames = importedData.importedDataMembers.map { it.name }
+                        dataConstructors.filterTo(importedDataConstructors) { it.name in importedDataConstructorNames }
+                    }
+                }
+            }
+
+            return importedDataConstructors
+        }
 
     /**
      * @return the [PSTypeSynonymDeclaration] elements imported by this declaration

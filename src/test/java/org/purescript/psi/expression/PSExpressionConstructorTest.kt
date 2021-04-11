@@ -15,4 +15,16 @@ class PSExpressionConstructorTest : BasePlatformTestCase() {
 
         assertEquals("Bar", expressionConstructor.name)
     }
+
+    fun `test gets qualified name`() {
+        val expressionConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                val = Qux.Bar
+            """.trimIndent()
+        ).getExpressionConstructor()
+
+        assertEquals("Bar", expressionConstructor.name)
+    }
 }

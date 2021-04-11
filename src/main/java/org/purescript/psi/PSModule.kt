@@ -5,13 +5,16 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
+import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.parser.PSTokens
 import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclarationImpl
 import org.purescript.psi.name.PSModuleName
+import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
@@ -117,11 +120,25 @@ class PSModule(node: ASTNode) :
             findChildrenByClass(PSNewTypeDeclarationImpl::class.java)
 
     /**
+     * @return the [PSNewTypeConstructor] elements in this module
+     */
+    val newTypeConstructors: List<PSNewTypeConstructor>
+        get() =
+            newTypeDeclarations.map { it.newTypeConstructor }
+
+    /**
      * @return the [PSDataDeclaration] elements in this module
      */
     val dataDeclarations: Array<PSDataDeclaration>
         get() =
             findChildrenByClass(PSDataDeclaration::class.java)
+
+    /**
+     * @return the [PSDataConstructor] elements in this module
+     */
+    val dataConstructors: List<PSDataConstructor>
+        get() =
+            dataDeclarations.flatMap { it.dataConstructors.toList() }
 
     /**
      * @return the [PSTypeSynonymDeclaration] elements in this module
@@ -171,6 +188,34 @@ class PSModule(node: ASTNode) :
         )
 
     /**
+     * @return the [PSNewTypeConstructor] elements that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedNewTypeConstructors: List<PSNewTypeConstructor>
+        get() {
+            val explicitlyExportedItems = exportList?.exportedItems
+                ?: return newTypeConstructors
+
+            val exportedNewTypeConstructors = mutableListOf<PSNewTypeConstructor>()
+
+            for (exportedData in explicitlyExportedItems.filterIsInstance<PSExportedData>()) {
+                if (exportedData.exportsAll) {
+                    exportedNewTypeConstructors.addIfNotNull(exportedData.newTypeDeclaration?.newTypeConstructor)
+                } else {
+                    exportedData.dataMembers
+                        .mapNotNull { it.reference.resolve() }
+                        .filterIsInstanceTo(exportedNewTypeConstructors)
+                }
+            }
+
+            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                .mapNotNull { it.importDeclaration }
+                .flatMapTo(exportedNewTypeConstructors) { it.importedNewTypeConstructors }
+
+            return exportedNewTypeConstructors
+        }
+
+    /**
      * @return the [PSDataDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
@@ -180,6 +225,35 @@ class PSModule(node: ASTNode) :
             PSImportDeclarationImpl::importedDataDeclarations,
             PSExportedData::class.java
         )
+
+    /**
+     * @return the [PSDataConstructor] elements that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedDataConstructors: List<PSDataConstructor>
+        get() {
+            val explicitlyExportedItems = exportList?.exportedItems
+                ?: return dataConstructors
+
+            val exportedDataConstructors = mutableListOf<PSDataConstructor>()
+
+            for (exportedData in explicitlyExportedItems.filterIsInstance<PSExportedData>()) {
+                if (exportedData.exportsAll) {
+                    exportedData.dataDeclaration?.dataConstructors
+                        ?.mapTo(exportedDataConstructors) { it }
+                } else {
+                    exportedData.dataMembers
+                        .mapNotNull { it.reference.resolve() }
+                        .filterIsInstanceTo(exportedDataConstructors)
+                }
+            }
+
+            explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                .mapNotNull { it.importDeclaration }
+                .flatMapTo(exportedDataConstructors) { it.importedDataConstructors }
+
+            return exportedDataConstructors
+        }
 
     /**
      * @return the [PSTypeSynonymDeclaration] elements that this module exports,
