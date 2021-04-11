@@ -53,6 +53,7 @@ import org.purescript.parser.PSElements.Companion.ExportedOperator
 import org.purescript.parser.PSElements.Companion.ExportedType
 import org.purescript.parser.PSElements.Companion.ExportedValue
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
+import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.Fixity
@@ -131,6 +132,7 @@ import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -181,6 +183,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             QualifiedProperName -> PSQualifiedProperName(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
+            ExpressionIdentifier -> PSExpressionIdentifier(node)
             TypeConstructor -> PSTypeConstructor(node)
             ImportDeclaration -> PSImportDeclarationImpl(node)
             ImportAlias -> PSImportAlias(node)
