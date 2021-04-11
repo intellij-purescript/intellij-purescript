@@ -8,6 +8,8 @@ import org.purescript.getVarBinder
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 
+    // region value declarations
+
     fun `test resolves value declaration`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -39,47 +41,6 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[1]))
         assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[2]))
     }
-
-//    fun `test var can see variants for all value declarations`() {
-//        val file = myFixture.configureByText(
-//            "Main.purs",
-//            """
-//                module Main where
-//                import Foo
-//                import Bar hiding (w)
-//                import Baz (k)
-//                x = y
-//                y = 1
-//            """.trimIndent()
-//        )
-//        myFixture.configureByText(
-//            "Foo.purs",
-//            """
-//                module Foo (z) where
-//                z = 1
-//            """.trimIndent()
-//        )
-//        myFixture.configureByText(
-//            "Bar.purs",
-//            """
-//                module Bar (w, q) where
-//                w = 1
-//                q = 1
-//            """.trimIndent()
-//        )
-//        myFixture.configureByText(
-//            "Baz.purs",
-//            """
-//                module Baz (k, p) where
-//                k = 1
-//                p = 1
-//            """.trimIndent()
-//        )
-//        val expressionIdentifier = file.getExpressionIdentifier()
-//        val variants = expressionIdentifier.reference.variants
-//        assertContainsElements(variants, "z", "q", "k")
-//        assertDoesntContain(variants, "w", "p")
-//    }
 
     fun `test resolves imported value declarations`() {
         val valueDeclaration = myFixture.configureByText(
@@ -252,6 +213,49 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
+    fun `test completes value declarations`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main where
+                import Foo
+                import Bar hiding (y4)
+                import Baz (y6)
+                y0 = y<caret>
+                y1 = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (y2) where
+                y2 = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (y4, y5) where
+                y4 = 1
+                y5 = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Baz.purs",
+            """
+                module Baz (y6, y7) where
+                y6 = 1
+                y7 = 1
+            """.trimIndent()
+        )
+
+        myFixture.testCompletionVariants("Main.purs", "y0", "y1", "y2", "y5", "y6")
+    }
+
+    // endregion
+
+    // region var binders
+
     fun `test resolves var binders`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -266,19 +270,20 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(varBinder, expressionIdentifier.reference.resolve())
     }
 
-//    fun `test var see all parameters`() {
-//        myFixture.configureByText(
-//            "Main.purs",
-//            """
-//                module Main where
-//                x y z = y
-//            """.trimIndent()
-//        )
-//        val psVar = file.getVarByName("y")!!
-//        val parameterReference =
-//            psVar.referenceOfType(ParameterReference::class.java)
-//        val names = parameterReference.variants.map { it?.name }
-//        assertContainsElements(names, "z", "y")
-//    }
+    fun `test completes var binders`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main where
+                x y1 y2 = y<caret>
+            """.trimIndent()
+        )
 
+        myFixture.testCompletionVariants("Main.purs", "y1", "y2")
+    }
+
+    // endregion
+
+    // region foreign values
+    // endregion
 }
