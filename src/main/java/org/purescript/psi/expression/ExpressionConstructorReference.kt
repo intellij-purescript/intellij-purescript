@@ -52,7 +52,6 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
                 nameToImport
             )
         return arrayOf(ImportExpressionConstructorQuickFix(
-            nameToImport,
             hostModule,
             candidateModules.firstOrNull()
         ))

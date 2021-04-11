@@ -11,7 +11,6 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiFactory
 
 class ImportExpressionConstructorQuickFix(
-    val nameToImport: String,
     val hostModule: PSModule,
     val importedModule: PSModule?
 ) : LocalQuickFix {
