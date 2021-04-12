@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.FilenameIndex
 import org.purescript.file.PSFile
 import org.purescript.file.PSFileType
@@ -51,13 +50,8 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val nameToImport = element.name
-        val hostModule = element.module ?: return arrayOf()
-        val hostModulePointer = SmartPointerManager.createPointer(hostModule)
-        val candidateModules = getCandidateModules(
-                element.project,
-                nameToImport
-            )
+        val candidateModules =
+            getCandidateModules(element.project, element.name)
         return candidateModules
             .map { ImportQuickFix(it.name) }
             .toTypedArray()
