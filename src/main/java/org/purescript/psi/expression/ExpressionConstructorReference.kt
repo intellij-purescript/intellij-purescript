@@ -8,7 +8,6 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.FilenameIndex
 import org.purescript.file.PSFile
 import org.purescript.file.PSFileType
-import org.purescript.psi.PSModule
 
 class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
     LocalQuickFixProvider,
@@ -49,14 +48,12 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val candidateModules =
-            importCandidates
-        return candidateModules
-            .map { ImportQuickFix(it.name) }
+        return importCandidates
+            .map { ImportQuickFix(it) }
             .toTypedArray()
     }
 
-    private val importCandidates: List<PSModule>
+    private val importCandidates: List<String>
         get() {
             val psiManager = PsiManager.getInstance(element.project)
             val allModulesInProject = FilenameIndex
@@ -71,6 +68,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
                         .flatMap { it.dataConstructors.toList() }
                         .any { it.name == element.name }
                 }
+                .map { it.name }
         }
 
 }
