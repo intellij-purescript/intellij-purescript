@@ -1,6 +1,5 @@
 package org.purescript.psi.expression
 
-import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getImportDeclaration
 import org.purescript.getImportDeclarations
@@ -62,7 +61,7 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         val actions = myFixture.getAllQuickFixes("Foo.purs")
-        UsefulTestCase.assertSize(2, actions)
+        assertSize(2, actions)
     }
 
     fun `test imports module with other imports`() {
@@ -104,5 +103,27 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         myFixture.launchAction(action)
 
         assertEmpty(file.getImportDeclarations())
+    }
+
+    fun `test it import values when found`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = bar
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                bar = 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+
+        assertEquals("Bar", file.getImportDeclarations().single().name)
     }
 }

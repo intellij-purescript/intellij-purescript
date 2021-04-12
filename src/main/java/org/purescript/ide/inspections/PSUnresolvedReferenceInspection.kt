@@ -1,6 +1,8 @@
 package org.purescript.ide.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFixProvider
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -13,7 +15,10 @@ import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.imports.PSImportDeclarationImpl
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+    override fun buildVisitor(
+        holder: ProblemsHolder,
+        isOnTheFly: Boolean
+    ): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
@@ -27,8 +32,19 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitReferences(references: Array<PsiReference>) {
-                if (references.isNotEmpty() && references.all{ it.resolve() == null}) {
-                    holder.registerProblem(references.first())
+                if (references.isNotEmpty() && references.all { it.resolve() == null }) {
+                    val fixes = references
+                        .filterIsInstance<LocalQuickFixProvider>()
+                        .mapNotNull { it.quickFixes }
+                        .flatMap { it.asSequence() }
+                        .toTypedArray()
+                    val reference = references.first()
+                    holder.registerProblemForReference(
+                        reference,
+                        ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+                        ProblemsHolder.unresolvedReferenceMessage(reference),
+                        *fixes
+                    )
                 }
             }
 
