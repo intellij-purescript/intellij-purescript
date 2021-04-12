@@ -278,12 +278,12 @@ class PureParsecParser {
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, many1(guardedDeclExpr))
-
-
-    private val parseValueDeclaration =
-        attempt(many1(ident))
-            .then(attempt(manyOrEmpty(binderAtom)))
-            .then(guardedDecl).`as`(ValueDeclaration)
+    private val instBinder =
+        choice(
+            attempt(ident + dcolon) + type,
+            (ident + manyOrEmpty(binderAtom) + guardedDecl)
+                .`as`(ValueDeclaration)
+        )
     private val parseDeps =
         parens(
             commaSep1(
@@ -425,7 +425,7 @@ class PureParsecParser {
                                 where
                                     .then(
                                         `L{` +
-                                            parseValueDeclaration.sepBy1(`L-sep`) +
+                                            instBinder.sepBy1(`L-sep`) +
                                             `L}`
                                     )
                             )
