@@ -4,7 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.SmartPointerManager
+import org.purescript.file.ExportedConstructorsIndex
 
 class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
     LocalQuickFixProvider,
@@ -45,16 +45,14 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val nameToImport = element.name
-        val hostModule = element.module ?: return arrayOf()
-        val hostModulePointer = SmartPointerManager.createPointer(hostModule)
-        val candidateModules =
-            ImportExpressionConstructorQuickFix.getCandidateModules(
-                element.project,
-                nameToImport
-            )
-        return candidateModules
-            .map { ImportExpressionConstructorQuickFix(hostModulePointer, it.name) }
+        return importCandidates
+            .map { ImportQuickFix(it) }
             .toTypedArray()
     }
+
+    private val importCandidates: List<String>
+        get() = ExportedConstructorsIndex
+            .filesExportingConstructor(element.project, element.name)
+            .mapNotNull { it.module?.name }
+
 }
