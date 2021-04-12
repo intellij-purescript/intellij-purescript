@@ -58,11 +58,12 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
 
     private fun getCandidateModules(): List<PSModule> {
         val psiManager = PsiManager.getInstance(element.project)
-        return FilenameIndex
+        val allModulesInProject = FilenameIndex
             .getAllFilesByExt(element.project, PSFileType.DEFAULT_EXTENSION)
             .mapNotNull { psiManager.findFile(it) }
             .filterIsInstance<PSFile>()
             .mapNotNull { it.module }
+        return allModulesInProject
             .filter { module ->
                 module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == element.name }
                     || module.exportedDataDeclarations
