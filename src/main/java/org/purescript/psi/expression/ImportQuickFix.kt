@@ -11,9 +11,7 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 
-class ImportExpressionConstructorQuickFix(
-    private val moduleNameToImport: String
-) : LocalQuickFix {
+class ImportQuickFix(private val moduleNameToImport: String) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
     override fun getName() = "Import ${moduleNameToImport}"

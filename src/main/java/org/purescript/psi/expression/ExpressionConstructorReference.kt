@@ -49,12 +49,12 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
         val hostModule = element.module ?: return arrayOf()
         val hostModulePointer = SmartPointerManager.createPointer(hostModule)
         val candidateModules =
-            ImportExpressionConstructorQuickFix.getCandidateModules(
+            ImportQuickFix.getCandidateModules(
                 element.project,
                 nameToImport
             )
         return candidateModules
-            .map { ImportExpressionConstructorQuickFix(it.name) }
+            .map { ImportQuickFix(it.name) }
             .toTypedArray()
     }
 }

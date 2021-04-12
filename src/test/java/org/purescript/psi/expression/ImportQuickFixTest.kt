@@ -6,7 +6,7 @@ import org.purescript.getImportDeclaration
 import org.purescript.getImportDeclarations
 import org.purescript.ide.inspections.PSUnresolvedReferenceInspection
 
-class ImportExpressionConstructorQuickFixTest : BasePlatformTestCase() {
+class ImportQuickFixTest : BasePlatformTestCase() {
 
     fun `test imports module`() {
         myFixture.configureByText(
