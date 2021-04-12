@@ -2,7 +2,6 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
@@ -51,27 +50,24 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val candidateModules =
-            getCandidateModules(element.project, element.name)
+            getCandidateModules()
         return candidateModules
             .map { ImportQuickFix(it.name) }
             .toTypedArray()
     }
 
-    private fun getCandidateModules(
-        project: Project,
-        expressionConstructorName: String
-    ): List<PSModule> {
-        val psiManager = PsiManager.getInstance(project)
+    private fun getCandidateModules(): List<PSModule> {
+        val psiManager = PsiManager.getInstance(element.project)
         return FilenameIndex
-            .getAllFilesByExt(project, PSFileType.DEFAULT_EXTENSION)
+            .getAllFilesByExt(element.project, PSFileType.DEFAULT_EXTENSION)
             .mapNotNull { psiManager.findFile(it) }
             .filterIsInstance<PSFile>()
             .mapNotNull { it.module }
             .filter { module ->
-                module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == expressionConstructorName }
+                module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == element.name }
                     || module.exportedDataDeclarations
                     .flatMap { it.dataConstructors.toList() }
-                    .any { it.name == expressionConstructorName }
+                    .any { it.name == element.name }
             }
     }
 
