@@ -261,7 +261,7 @@ Purescript File
       PSValueDeclaration(ValueDeclaration)
         PSIdentifier(identifier)
           PsiElement(identifier)('map')
-        PSIdentifier(identifier)
+        PSNullBinderImpl(NullBinder)
           PsiElement(identifier)('_')
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)

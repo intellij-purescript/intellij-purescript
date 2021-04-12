@@ -86,7 +86,7 @@ Purescript File
       PSValueDeclaration(ValueDeclaration)
         PSIdentifier(identifier)
           PsiElement(identifier)('myShow')
-        PSIdentifier(identifier)
+        PSNullBinderImpl(NullBinder)
           PsiElement(identifier)('_')
         PsiElement(=)('=')
         PSValueImpl(Value)
