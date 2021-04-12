@@ -50,26 +50,27 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val candidateModules =
-            getCandidateModules()
+            importCandidates
         return candidateModules
             .map { ImportQuickFix(it.name) }
             .toTypedArray()
     }
 
-    private fun getCandidateModules(): List<PSModule> {
-        val psiManager = PsiManager.getInstance(element.project)
-        val allModulesInProject = FilenameIndex
-            .getAllFilesByExt(element.project, PSFileType.DEFAULT_EXTENSION)
-            .mapNotNull { psiManager.findFile(it) }
-            .filterIsInstance<PSFile>()
-            .mapNotNull { it.module }
-        return allModulesInProject
-            .filter { module ->
-                module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == element.name }
-                    || module.exportedDataDeclarations
-                    .flatMap { it.dataConstructors.toList() }
-                    .any { it.name == element.name }
-            }
-    }
+    private val importCandidates: List<PSModule>
+        get() {
+            val psiManager = PsiManager.getInstance(element.project)
+            val allModulesInProject = FilenameIndex
+                .getAllFilesByExt(element.project, PSFileType.DEFAULT_EXTENSION)
+                .mapNotNull { psiManager.findFile(it) }
+                .filterIsInstance<PSFile>()
+                .mapNotNull { it.module }
+            return allModulesInProject
+                .filter { module ->
+                    module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == element.name }
+                        || module.exportedDataDeclarations
+                        .flatMap { it.dataConstructors.toList() }
+                        .any { it.name == element.name }
+                }
+        }
 
 }
