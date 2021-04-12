@@ -140,4 +140,17 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test reports unresolved expression vars`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = <error descr="Cannot resolve symbol 'sort'">sort</error>
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
