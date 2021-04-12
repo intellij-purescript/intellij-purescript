@@ -334,4 +334,49 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
     }
 
     // endregion
+
+    // region qualified
+
+    fun `test completes qualified values`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import y1 :: Int
+                foreign import y2 :: Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Quz.purs",
+            """
+                module Quz where
+                foreign import y3 :: Int
+                y4 = 4
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Baz.purs",
+            """
+                module Baz (y5, module B) where
+                import Bar hiding (y1) as B
+                y5 :: Int
+                y5 = 5
+                foreign import y6 :: Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                import Quz as Q
+                import Baz as B
+                y0 = B.y<caret>
+            """.trimIndent()
+        )
+
+        myFixture.testCompletionVariants("Foo.purs", "y2", "y5")
+    }
+
+    // endregion
 }
