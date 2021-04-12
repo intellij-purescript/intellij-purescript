@@ -7,6 +7,7 @@ import org.purescript.file.PSFile
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSValueDeclaration
+import org.purescript.psi.PSVarBinderImpl
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
@@ -14,6 +15,7 @@ import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.imports.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
@@ -114,6 +116,12 @@ fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
 fun PsiFile.getValueDeclaration(): PSValueDeclaration =
     getValueDeclarations().single()
 
+fun PsiFile.getVarBinders(): List<PSVarBinderImpl> =
+    collectDescendantsOfType()
+
+fun PsiFile.getVarBinder(): PSVarBinderImpl =
+    getVarBinders().single()
+
 fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
     getModule().foreignValueDeclarations
 
@@ -185,3 +193,9 @@ fun PsiFile.getExpressionConstructors(): List<PSExpressionConstructor> =
 
 fun PsiFile.getExpressionConstructor(): PSExpressionConstructor =
     getExpressionConstructors().single()
+
+fun PsiFile.getExpressionIdentifiers(): List<PSExpressionIdentifier> =
+    collectDescendantsOfType()
+
+fun PsiFile.getExpressionIdentifier(): PSExpressionIdentifier =
+    getExpressionIdentifiers().single()

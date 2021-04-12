@@ -53,6 +53,7 @@ import org.purescript.parser.PSElements.Companion.ExportedOperator
 import org.purescript.parser.PSElements.Companion.ExportedType
 import org.purescript.parser.PSElements.Companion.ExportedValue
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
+import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.Fixity
@@ -94,6 +95,7 @@ import org.purescript.parser.PSElements.Companion.Parens
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
+import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
@@ -116,13 +118,11 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.ValueRef
-import org.purescript.parser.PSElements.Companion.Var
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.psi.*
-import org.purescript.psi.`var`.PSVar
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.*
@@ -131,11 +131,9 @@ import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.imports.*
-import org.purescript.psi.name.PSIdentifier
-import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.name.PSProperName
-import org.purescript.psi.name.PSQualifiedProperName
+import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typeconstructor.PSTypeConstructor
@@ -179,8 +177,10 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ProperName, Qualified, pClassName, importModuleName -> PSProperName(node)
             ModuleName -> PSModuleName(node)
             QualifiedProperName -> PSQualifiedProperName(node)
+            QualifiedIdentifier -> PSQualifiedIdentifier(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
+            ExpressionIdentifier -> PSExpressionIdentifier(node)
             TypeConstructor -> PSTypeConstructor(node)
             ImportDeclaration -> PSImportDeclarationImpl(node)
             ImportAlias -> PSImportAlias(node)
@@ -261,7 +261,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ArrayLiteral -> PSArrayLiteralImpl(node)
             ObjectLiteral -> PSObjectLiteralImpl(node)
             Abs -> PSAbsImpl(node)
-            Var -> PSVar(node)
             Case -> PSCaseImpl(node)
             CaseAlternative -> PSCaseAlternativeImpl(node)
             IfThenElse -> PSIfThenElseImpl(node)
