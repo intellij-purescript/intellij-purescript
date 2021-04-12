@@ -2,12 +2,9 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
-import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.search.FilenameIndex
-import org.purescript.file.PSFile
-import org.purescript.file.PSFileType
+import org.purescript.file.ExportedConstructorsIndex
 
 class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
     LocalQuickFixProvider,
@@ -54,21 +51,8 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
     }
 
     private val importCandidates: List<String>
-        get() {
-            val psiManager = PsiManager.getInstance(element.project)
-            val allModulesInProject = FilenameIndex
-                .getAllFilesByExt(element.project, PSFileType.DEFAULT_EXTENSION)
-                .mapNotNull { psiManager.findFile(it) }
-                .filterIsInstance<PSFile>()
-                .mapNotNull { it.module }
-            return allModulesInProject
-                .filter { module ->
-                    module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == element.name }
-                        || module.exportedDataDeclarations
-                        .flatMap { it.dataConstructors.toList() }
-                        .any { it.name == element.name }
-                }
-                .map { it.name }
-        }
+        get() = ExportedConstructorsIndex
+            .filesExportingConstructor(element.project, element.name)
+            .mapNotNull { it.module?.name }
 
 }
