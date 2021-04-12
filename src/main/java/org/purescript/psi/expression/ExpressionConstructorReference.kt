@@ -2,9 +2,15 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.search.FilenameIndex
+import org.purescript.file.PSFile
+import org.purescript.file.PSFileType
+import org.purescript.psi.PSModule
 
 class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
     LocalQuickFixProvider,
@@ -48,8 +54,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
         val nameToImport = element.name
         val hostModule = element.module ?: return arrayOf()
         val hostModulePointer = SmartPointerManager.createPointer(hostModule)
-        val candidateModules =
-            ImportQuickFix.getCandidateModules(
+        val candidateModules = getCandidateModules(
                 element.project,
                 nameToImport
             )
@@ -57,4 +62,23 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
             .map { ImportQuickFix(it.name) }
             .toTypedArray()
     }
+
+    private fun getCandidateModules(
+        project: Project,
+        expressionConstructorName: String
+    ): List<PSModule> {
+        val psiManager = PsiManager.getInstance(project)
+        return FilenameIndex
+            .getAllFilesByExt(project, PSFileType.DEFAULT_EXTENSION)
+            .mapNotNull { psiManager.findFile(it) }
+            .filterIsInstance<PSFile>()
+            .mapNotNull { it.module }
+            .filter { module ->
+                module.exportedNewTypeDeclarations.any { it.newTypeConstructor.name == expressionConstructorName }
+                    || module.exportedDataDeclarations
+                    .flatMap { it.dataConstructors.toList() }
+                    .any { it.name == expressionConstructorName }
+            }
+    }
+
 }
