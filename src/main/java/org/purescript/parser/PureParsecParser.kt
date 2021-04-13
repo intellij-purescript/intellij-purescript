@@ -6,6 +6,7 @@ import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.commaSep
 import org.purescript.parser.Combinators.commaSep1
 import org.purescript.parser.Combinators.guard
+import org.purescript.parser.Combinators.many
 import org.purescript.parser.Combinators.many1
 import org.purescript.parser.Combinators.manyOrEmpty
 import org.purescript.parser.Combinators.optional
@@ -96,7 +97,6 @@ import org.purescript.parser.PSTokens.Companion.OPERATOR
 import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.START
-import org.purescript.parser.PSTokens.Companion.TYPE
 
 class PureParsecParser {
 
@@ -121,7 +121,7 @@ class PureParsecParser {
         token(PSTokens.IDENT),
         data,
         token(NEWTYPE),
-        token(TYPE),
+        `'type'`,
         token(FOREIGN),
         token(IMPORT),
         infixl,
@@ -262,8 +262,6 @@ class PureParsecParser {
             .`as`(PSElements.TypeDeclaration)
     private val newtypeHead =
         token(NEWTYPE) + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
-    private val typeHead =
-        token(TYPE) + properName + manyOrEmpty(typeVarBinding)
     private val exprWhere =
         expr + optional(where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
 
@@ -329,7 +327,7 @@ class PureParsecParser {
     private val parseFixity =
         parseAssociativity.then(token(NATURAL)).`as`(PSElements.Fixity)
     private val parseFixityDeclaration = parseFixity
-        .then(optional(token(TYPE)))
+        .then(optional(`'type'`))
         .then(
             // TODO Should use qualified proper name instead of module name
             moduleName.or(ident.`as`(ProperName))
@@ -442,7 +440,7 @@ class PureParsecParser {
     ).`as`(PSElements.ImportedDataMemberList)
     private val importedItem =
         choice(
-            token(TYPE)
+            `'type'`
                 .then(parens(operator.`as`(Identifier)))
                 .`as`(PSElements.ImportedType),
             `class`.then(properName).`as`(PSElements.ImportedClass),
@@ -463,6 +461,17 @@ class PureParsecParser {
             .then(optional(importList))
             .then(optional(`as`.then(moduleName).`as`(PSElements.ImportAlias)))
             .`as`(PSElements.ImportDeclaration)
+
+    /**
+     * nominal = the type can never be coerced to another type.
+     * representational = the type can be coerced to another type if certain conditions apply.
+     * phantom - the type can always be coerced to another type.
+     * */
+    private val role = choice(
+        nominal,
+        representational,
+        phantom,
+    )
     private val decl = choice(
         (dataHead +
             optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
@@ -470,10 +479,10 @@ class PureParsecParser {
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
-        (typeHead + eq + type).`as`(TypeSynonymDeclaration),
-        attempt(ident)
-            .then(manyOrEmpty(binderAtom))
-            .then(guardedDecl).`as`(ValueDeclaration),
+        (attempt(`'type'` + `'role'`) + properName + many(role)),
+        (`'type'` + properName + many(typeVarBinding) + eq + type)
+            .`as`(TypeSynonymDeclaration),
+        (attempt(ident) + many(binderAtom) + guardedDecl).`as`(ValueDeclaration),
         parseExternDeclaration,
         parseFixityDeclaration,
         classDeclaration,
@@ -501,7 +510,7 @@ class PureParsecParser {
     private val exportedOperator =
         parens(operator.`as`(Identifier)).`as`(PSElements.ExportedOperator)
     private val exportedType =
-        token(TYPE).then(parens(operator.`as`(Identifier)))
+        `'type'`.then(parens(operator.`as`(Identifier)))
             .`as`(PSElements.ExportedType)
     private val exportedValue = ident.`as`(PSElements.ExportedValue)
     private val exportList =
@@ -754,7 +763,8 @@ class PureParsecParser {
         val expr2 = expr3.sepBy1(
             tick + attempt(qualified(idents)).`as`(
                 Qualified
-            ) + tick)
+            ) + tick
+        )
         val expr1 = expr2.sepBy1(attempt(qualified(operator)).`as`(Qualified))
 
 

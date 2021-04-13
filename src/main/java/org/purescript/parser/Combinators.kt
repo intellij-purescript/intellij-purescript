@@ -135,7 +135,7 @@ object Combinators {
             return true
         }
     }
-
+    fun  many(p: Parsec) = manyOrEmpty(p)
     fun manyOrEmpty(p: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             var info = ParserInfo(context.position, p, true)
