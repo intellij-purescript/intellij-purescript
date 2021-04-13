@@ -719,6 +719,7 @@ class PureParsecParser {
         val parsePropertyUpdate =
             label + optional(eq) + expr
         val exprAtom = choice(
+            `_`,
             attempt(hole),
             attempt(
                 qualified(ident)
