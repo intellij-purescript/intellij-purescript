@@ -550,8 +550,10 @@ class PureParsecParser {
     private val recordLabel =
         choice(
             attempt(label + token(":")) + expr,
-            attempt(label + token("=")) + expr,
-            label,
+            attempt(label + eq) + expr,
+            label
+                .`as`(QualifiedIdentifier)
+                .`as`(ExpressionIdentifier),
         ).`as`(ObjectBinderField)
 
     private val qualOp = choice(
