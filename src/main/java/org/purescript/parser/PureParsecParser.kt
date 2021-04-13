@@ -771,8 +771,10 @@ class PureParsecParser {
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
         val recordBinder =
-            idents +
-                optional(token("=").or(token(":") + binder))
+            choice(
+                attempt(label + eq.or(token(":"))) + binder,
+                label.`as`(VarBinder)
+            )
         binder.setRef(binder1 + optional(dcolon + type))
         binderAtom.setRef(
             choice(
