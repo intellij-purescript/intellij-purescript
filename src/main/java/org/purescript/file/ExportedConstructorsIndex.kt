@@ -7,6 +7,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.jetbrains.annotations.NonNls
+import org.purescript.psi.exports.PSExportedData
+import org.purescript.psi.exports.PSExportedType
 
 class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
     override fun getName(): ID<String, Void?> = NAME
@@ -15,27 +17,48 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
         DataIndexer<String, Void?, FileContent> {
             when (val file = it.psiFile) {
                 is PSFile -> {
-                    val typeConstructors: Sequence<String> = file.module
-                        ?.exportedNewTypeDeclarations
-                        ?.map { it.newTypeConstructor.name }
-                        ?.asSequence()
-                        ?: emptySequence<String>()
-                    val dataConstructors: Sequence<String> = file.module
-                        ?.exportedDataDeclarations
-                        ?.flatMap { it.dataConstructors.asSequence() }
-                        ?.map { it.name }
-                        ?.asSequence()
-                        ?: emptySequence<String>()
-                    (typeConstructors + dataConstructors)
-                        .map { it to null }
-                        .toMap()
+                    when {
+                        // failed parsing file
+                        file.module == null -> emptyMap()
+                        // exports all
+                        file.module?.exportList == null -> {
+                            val dataConstructors = file.module
+                                ?.dataConstructors
+                                ?.map { it.name }
+                                ?.asSequence()
+                                ?: emptySequence()
+                            val typeConstructors = file.module
+                                ?.newTypeConstructors
+                                ?.map { it.name }
+                                ?.asSequence()
+                                ?: emptySequence()
+                            (typeConstructors + dataConstructors)
+                                .map { it to null }
+                                .toMap()
+                        }
+                        // exports named in the export list
+                        else -> {
+                            file.module!!.exportList!!.exportedItems
+                                .mapNotNull { when(it) {
+                                    is PSExportedData -> it.dataDeclaration
+                                        ?.dataConstructors
+                                        ?.map {it.name }
+                                        ?.asSequence()
+                                    is PSExportedType -> sequenceOf(it.name)
+                                    else -> null
+                                } }
+                                .flatMap { it }
+                                .map { it to null }
+                                .toMap()
+                        }
+                    }
                 }
                 else -> emptyMap()
             }
         }
 
     override fun getKeyDescriptor() = EnumeratorStringDescriptor.INSTANCE
-    override fun getVersion() = 0
+    override fun getVersion() = 1
     override fun getInputFilter() =
         DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
 
