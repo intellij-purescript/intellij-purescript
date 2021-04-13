@@ -7,6 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.jetbrains.annotations.NonNls
+import org.purescript.psi.exports.PSExportedValue
 
 class ExportedValuesIndex : ScalarIndexExtension<String>() {
     override fun getName(): ID<String, Void?> = NAME
@@ -15,26 +16,41 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
         DataIndexer<String, Void?, FileContent> {
             when (val file = it.psiFile) {
                 is PSFile -> {
-                    val exportedValues: Sequence<String> = file.module
-                        ?.exportedValueDeclarations
-                        ?.map { it.name }
-                        ?.asSequence()
-                        ?: emptySequence()
-                    val exportedForeignValues: Sequence<String> = file.module
-                        ?.exportedForeignValueDeclarations
-                        ?.mapNotNull { it.name }
-                        ?.asSequence()
-                        ?: emptySequence()
-                    (exportedValues + exportedForeignValues)
-                        .map { it to null }
-                        .toMap()
+                    when {
+                        // failed parsing file
+                        file.module == null -> emptyMap()
+                        // exports all
+                        file.module?.exportList == null -> {
+                            val exportedValues = file.module!!
+                                .valueDeclarations
+                                .map { it.name }
+                                .toSet()
+                                .asSequence()
+                            val exportedForeignValues = file.module!!
+                                .exportedForeignValueDeclarations
+                                .mapNotNull { it.name }
+                                .asSequence()
+                            (exportedValues + exportedForeignValues)
+                                .map { it to null }
+                                .toMap()
+                        }
+                        else -> {
+                            file.module!!.exportList!!.exportedItems
+                                .mapNotNull { when(it) {
+                                    is PSExportedValue -> it.name
+                                    else -> null
+                                } }
+                                .map { it to null }
+                                .toMap()
+                        }
+                    }
                 }
                 else -> emptyMap()
             }
         }
 
     override fun getKeyDescriptor() = EnumeratorStringDescriptor.INSTANCE
-    override fun getVersion() = 0
+    override fun getVersion() = 1
     override fun getInputFilter() =
         DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
 
