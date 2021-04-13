@@ -1,12 +1,11 @@
 package org.purescript.ide.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFixProvider
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceBase
 import org.purescript.PSLanguage
 import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.exports.PSExportedValue
@@ -31,23 +30,6 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                 }
             }
 
-            private fun visitReferences(references: Array<PsiReference>) {
-                if (references.isNotEmpty() && references.all { it.resolve() == null }) {
-                    val fixes = references
-                        .filterIsInstance<LocalQuickFixProvider>()
-                        .mapNotNull { it.quickFixes }
-                        .flatMap { it.asSequence() }
-                        .toTypedArray()
-                    val reference = references.first()
-                    holder.registerProblemForReference(
-                        reference,
-                        ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                        ProblemsHolder.unresolvedReferenceMessage(reference),
-                        *fixes
-                    )
-                }
-            }
-
             private fun visitModuleReference(reference: PsiReference) {
                 if (reference.canonicalText !in PSLanguage.BUILTIN_MODULES) {
                     visitReference(reference)
@@ -55,8 +37,17 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitReference(reference: PsiReference) {
-                if (reference.resolve() == null) {
-                    holder.registerProblem(reference)
+                when(reference) {
+                    is PsiReferenceBase.Poly<*> -> {
+                        if (reference.multiResolve(false).isEmpty()) {
+                            holder.registerProblem(reference)
+                        }
+                    }
+                    else -> {
+                        if (reference.resolve() == null) {
+                            holder.registerProblem(reference)
+                        }
+                    }
                 }
             }
         }
