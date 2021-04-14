@@ -170,4 +170,31 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test errors when constructor is missing`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """module Foo where
+
+            f (<error descr="Cannot resolve symbol 'Just'">Just</error> n) = n
+            f _ = 0
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test it finds local constructors for binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """module Foo where
+            data Box a = Box a
+            f Box a = a
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
