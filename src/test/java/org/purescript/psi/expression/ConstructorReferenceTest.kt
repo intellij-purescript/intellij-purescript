@@ -6,7 +6,7 @@ import org.purescript.getDataDeclaration
 import org.purescript.getExpressionConstructor
 import org.purescript.getNewTypeConstructor
 
-class ExpressionConstructorReferenceTest : BasePlatformTestCase() {
+class ConstructorReferenceTest : BasePlatformTestCase() {
     fun `test resolves local data declaration constructors`() {
         val file = myFixture.configureByText(
             "Foo.purs",

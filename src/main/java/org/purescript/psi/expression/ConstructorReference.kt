@@ -8,7 +8,7 @@ import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.name.PSQualifiedProperName
 
-class ExpressionConstructorReference(
+class ConstructorReference(
     element: PSPsiElement,
     val qualifiedProperName: PSQualifiedProperName
 ) :

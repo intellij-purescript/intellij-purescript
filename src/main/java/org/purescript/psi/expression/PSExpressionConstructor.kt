@@ -25,6 +25,6 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node) {
 
     override fun getName(): String = qualifiedProperName.name
 
-    override fun getReference(): ExpressionConstructorReference =
-        ExpressionConstructorReference(this, qualifiedProperName)
+    override fun getReference(): ConstructorReference =
+        ConstructorReference(this, qualifiedProperName)
 }
