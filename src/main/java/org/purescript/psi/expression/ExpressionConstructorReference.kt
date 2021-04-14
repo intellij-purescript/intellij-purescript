@@ -5,15 +5,16 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedConstructorsIndex
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.name.PSQualifiedProperName
 
 class ExpressionConstructorReference(
-    expressionConstructor: PSExpressionConstructor,
+    element: PSPsiElement,
     val qualifiedProperName: PSQualifiedProperName
 ) :
     LocalQuickFixProvider,
-    PsiReferenceBase<PSExpressionConstructor>(
-        expressionConstructor,
+    PsiReferenceBase<PSPsiElement>(
+        element,
         qualifiedProperName.properName.textRangeInParent,
         false
     ) {
@@ -56,7 +57,7 @@ class ExpressionConstructorReference(
 
     private val importCandidates: List<String>
         get() = ExportedConstructorsIndex
-            .filesExportingConstructor(element.project, element.name)
+            .filesExportingConstructor(element.project, element.name!!)
             .mapNotNull { it.module?.name }
 
 }
