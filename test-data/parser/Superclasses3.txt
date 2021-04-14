@@ -303,7 +303,7 @@ Purescript File
         PsiElement(identifier)('runMTrace')
       PsiElement(()('(')
       PSConstructorBinderImpl(ConstructorBinder)
-        PSProperName(Qualified)
+        PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('MTrace')
       PSVarBinderImpl(VarBinder)

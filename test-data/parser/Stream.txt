@@ -206,7 +206,7 @@ Purescript File
           PsiElement(identifier)('uncons')
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)
-          PSProperName(Qualified)
+          PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Stream')
         PSVarBinderImpl(VarBinder)

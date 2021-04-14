@@ -5,12 +5,17 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedConstructorsIndex
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.name.PSQualifiedProperName
 
-class ExpressionConstructorReference(expressionConstructor: PSExpressionConstructor) :
+class ConstructorReference(
+    element: PSPsiElement,
+    val qualifiedProperName: PSQualifiedProperName
+) :
     LocalQuickFixProvider,
-    PsiReferenceBase<PSExpressionConstructor>(
-        expressionConstructor,
-        expressionConstructor.qualifiedProperName.properName.textRangeInParent,
+    PsiReferenceBase<PSPsiElement>(
+        element,
+        qualifiedProperName.properName.textRangeInParent,
         false
     ) {
 
@@ -23,7 +28,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
     private val candidates: Sequence<PsiNamedElement>
         get() {
             val module = element.module ?: return emptySequence()
-            val qualifyingName = element.qualifiedProperName.moduleName?.name
+            val qualifyingName = qualifiedProperName.moduleName?.name
             if (qualifyingName != null) {
                 val importDeclaration = module.importDeclarations
                     .firstOrNull { it.importAlias?.name == qualifyingName }
@@ -52,7 +57,7 @@ class ExpressionConstructorReference(expressionConstructor: PSExpressionConstruc
 
     private val importCandidates: List<String>
         get() = ExportedConstructorsIndex
-            .filesExportingConstructor(element.project, element.name)
+            .filesExportingConstructor(element.project, element.name!!)
             .mapNotNull { it.module?.name }
 
 }

@@ -101,7 +101,7 @@ Purescript File
               PsiElement(\)('\')
               PsiElement(()('(')
               PSConstructorBinderImpl(ConstructorBinder)
-                PSProperName(Qualified)
+                PSQualifiedProperName(QualifiedProperName)
                   PSModuleName(ModuleName)
                     PsiElement(module prefix)('C.')
                   PSProperName(ProperName)
@@ -274,7 +274,7 @@ Purescript File
           <empty list>
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)
-          PSProperName(Qualified)
+          PSQualifiedProperName(QualifiedProperName)
             PSModuleName(ModuleName)
               PsiElement(module prefix)('C.')
             PSProperName(ProperName)
