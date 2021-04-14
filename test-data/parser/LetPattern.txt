@@ -2312,11 +2312,11 @@ Purescript File
           PSNamedBinderImpl(NamedBinder)
             <empty list>
           PSConstructorBinderImpl(ConstructorBinder)
-            PSProperName(Qualified)
+            PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('Nil')
           PSConstructorBinderImpl(ConstructorBinder)
-            PSProperName(Qualified)
+            PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('Nil')
           PSVarBinderImpl(VarBinder)

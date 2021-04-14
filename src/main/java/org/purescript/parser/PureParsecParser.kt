@@ -566,10 +566,13 @@ class PureParsecParser {
     )
 
 
-    private val qualPropName = attempt(qualified(properName)).`as`(Qualified)
+    private val qualPropName =
+        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val binder2 = choice(
         attempt(
-            qualPropName.`as`(ConstructorBinder).then(manyOrEmpty(binderAtom))
+            qualPropName
+                .`as`(ConstructorBinder)
+                .then(manyOrEmpty(binderAtom))
         ),
         attempt(token("-") + number).`as`(NumberBinder),
         binderAtom,

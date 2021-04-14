@@ -232,7 +232,7 @@ Purescript File
           PsiElement(identifier)('unwrap')
         PsiElement(()('(')
         PSConstructorBinderImpl(ConstructorBinder)
-          PSProperName(Qualified)
+          PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('RecordNewtype')
         PSVarBinderImpl(VarBinder)
