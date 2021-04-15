@@ -350,31 +350,26 @@ class PureParsecParser {
     )
 
     private val classSuper =
-        optional(
-            attempt(constraints + ldarrow.`as`(pImplies))
-                .`as`(ClassConstraintList)
-        )
-
-    private val classHead = `class`
-        .then(classSuper)
-        .then(optional(properName.`as`(pClassName)))
-        .then(optional(manyOrEmpty(typeVarBinding)))
-        .then(optional(fundeps.`as`(ClassFunctionalDependencyList)))
-
+        (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
+    private val classNameAndFundeps =
+        properName.`as`(pClassName) + manyOrEmpty(typeVarBinding) +
+            optional(fundeps.`as`(ClassFunctionalDependencyList))
+    private val classSignature = properName.`as`(pClassName) + dcolon + type
+    private val classHead = choice(
+        // this first is described in haskell code and not in normal happy expression
+        // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
+        attempt(`class` + classSignature),
+        attempt(`class` + classSuper + classNameAndFundeps),
+        `class` + classNameAndFundeps
+    )
     private val classMember =
         (idents.`as`(Identifier) + dcolon + type).`as`(ClassMember)
 
     private val classDeclaration =
-        classHead
-            .then(
-                optional(
-                    attempt(
-                        where
-                            .then(`L{` + (classMember).sepBy1(`L-sep`) + `L}`)
-                            .`as`(ClassMemberList)
-                    )
-                )
-            ).`as`(ClassDeclaration)
+        (classHead + optional(
+            attempt(where + `L{` + (classMember).sepBy1(`L-sep`) + `L}`)
+                .`as`(ClassMemberList)
+        )).`as`(ClassDeclaration)
     private val parseTypeInstanceDeclaration =
         optional(token(DERIVE))
             .then(optional(token(NEWTYPE)))
