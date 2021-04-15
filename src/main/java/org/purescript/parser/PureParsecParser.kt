@@ -475,6 +475,7 @@ class PureParsecParser {
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         (attempt(`'type'` + `'role'`) + properName + many(role)),
+        (attempt(`'type'` + properName + dcolon) + type),
         (`'type'` + properName + many(typeVarBinding) + eq + type)
             .`as`(TypeSynonymDeclaration),
         (attempt(ident) + many(binderAtom) + guardedDecl).`as`(ValueDeclaration),
