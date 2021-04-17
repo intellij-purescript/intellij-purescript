@@ -26,8 +26,6 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('g')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PSValueImpl(Value)
             PSParensImpl(Parens)

@@ -260,8 +260,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('props')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
@@ -454,8 +452,6 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('getHosts')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(()('(')
           PSConstructorBinderImpl(ConstructorBinder)
             PSQualifiedProperName(QualifiedProperName)
@@ -478,10 +474,9 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('toNonEmpty')
-          PSIdentifier(identifier)
-            PsiElement(identifier)('hs')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
+          PSVarBinderImpl(VarBinder)
+            PSIdentifier(identifier)
+              PsiElement(identifier)('hs')
           PsiElement(=)('=')
           PSValueImpl(Value)
             PSExpressionConstructor(ExpressionConstructor)
@@ -515,8 +510,6 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('err')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PSValueImpl(Value)
             PSExpressionConstructor(ExpressionConstructor)

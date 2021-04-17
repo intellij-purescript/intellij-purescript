@@ -101,8 +101,6 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('greeting')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PSValueImpl(Value)
             PSStringLiteralImpl(StringLiteral)
@@ -110,8 +108,6 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('name')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(=)('=')
           PSValueImpl(Value)
             PSStringLiteralImpl(StringLiteral)

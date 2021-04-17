@@ -594,6 +594,10 @@ class PureParsecParser {
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
+            attempt(
+                (ident + many(binderAtom) + guardedDecl)
+                    .`as`(ValueDeclaration)
+            ),
             optional(attempt(lparen))
                 .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                 .then(optional(attempt(many1(ident))))

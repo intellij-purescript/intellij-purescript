@@ -148,10 +148,9 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('search')
-          PSIdentifier(identifier)
-            PsiElement(identifier)('text')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
+          PSVarBinderImpl(VarBinder)
+            PSIdentifier(identifier)
+              PsiElement(identifier)('text')
           PsiElement(=)('=')
           PSValueImpl(Value)
             PSProperName(Qualified)
@@ -195,8 +194,6 @@ Purescript File
               PSValueDeclaration(ValueDeclaration)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('getQualifiedModule')
-                PSNamedBinderImpl(NamedBinder)
-                  <empty list>
                 PsiElement(=)('=')
                 PSValueImpl(Value)
                   PSParensImpl(Parens)
@@ -271,8 +268,6 @@ Purescript File
         PSValueDeclaration(ValueDeclaration)
           PSIdentifier(identifier)
             PsiElement(identifier)('view')
-          PSNamedBinderImpl(NamedBinder)
-            <empty list>
           PsiElement(()('(')
           PSConstructorBinderImpl(ConstructorBinder)
             PSQualifiedProperName(QualifiedProperName)
