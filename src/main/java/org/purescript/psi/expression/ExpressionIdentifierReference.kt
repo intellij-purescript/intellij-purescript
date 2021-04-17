@@ -56,7 +56,15 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 return sequence {
                     for (parent in element.parents) {
                         when (parent) {
-                            is PSValueDeclaration -> yieldAll(parent.varBindersInParameters.values)
+                            is PSValueDeclaration -> {
+                                yieldAll(parent.varBindersInParameters.values)
+                                val valueDeclarations = parent
+                                    .where
+                                    ?.valueDeclarations
+                                    ?.asSequence()
+                                    ?: sequenceOf()
+                                yieldAll(valueDeclarations)
+                            }
                         }
                     }
                     // TODO Support values defined in the expression
