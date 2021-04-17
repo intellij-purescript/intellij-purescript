@@ -45,6 +45,7 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
@@ -263,7 +264,11 @@ class PureParsecParser {
     private val newtypeHead =
         token(NEWTYPE) + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val exprWhere =
-        expr + optional(where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
+        expr + optional(
+            (where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
+                .`as`(ExpressionWhere)
+        )
+
 
     private val parsePatternMatchObject =
         braces(
