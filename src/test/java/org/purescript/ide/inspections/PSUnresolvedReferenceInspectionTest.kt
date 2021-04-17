@@ -197,4 +197,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test it finds local class members`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            class Box a where
+                map :: forall a b. (a -> b) -> Box a -> Box b 
+            f = map
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
