@@ -71,7 +71,12 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                         module.importDeclarations.filter { it.importAlias == null }
                     yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
                     yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-                    // TODO Support imported class members
+                    val importedClassMembers =
+                        importDeclarations
+                            .asSequence()
+                            .flatMap { it.importedClassDeclarations.asSequence() }
+                            .flatMap { it.classMembers.asSequence() }
+                    yieldAll(importedClassMembers)
                 }
             }
         }
