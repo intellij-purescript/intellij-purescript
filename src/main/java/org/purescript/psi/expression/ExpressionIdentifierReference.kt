@@ -28,10 +28,11 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         // TODO We may not want to have a PsiPolyVariantReference reference here
         return if (declaration is PSValueDeclaration) {
             val module = declaration.module
-            val allValueDeclarations = candidates.filterIsInstance<PSValueDeclaration>()
-                .filter { it.name == name }
-                .filter { it.module == module }
-                .toMutableList()
+            val allValueDeclarations =
+                candidates.filterIsInstance<PSValueDeclaration>()
+                    .filter { it.name == name }
+                    .filter { it.module == module }
+                    .toMutableList()
             createResults(allValueDeclarations)
         } else {
             createResults(declaration)
@@ -61,11 +62,21 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                     // TODO Support values defined in the expression
                     yieldAll(module.valueDeclarations.toList())
                     yieldAll(module.foreignValueDeclarations.toList())
-                    // TODO Support local class members
-                    val importDeclarations = module.importDeclarations.filter { it.importAlias == null }
+                    val localClassMembers = module
+                        .classDeclarations
+                        .asSequence()
+                        .flatMap { it.classMembers.asSequence() }
+                    yieldAll(localClassMembers)
+                    val importDeclarations =
+                        module.importDeclarations.filter { it.importAlias == null }
                     yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
                     yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-                    // TODO Support imported class members
+                    val importedClassMembers =
+                        importDeclarations
+                            .asSequence()
+                            .flatMap { it.importedClassDeclarations.asSequence() }
+                            .flatMap { it.classMembers.asSequence() }
+                    yieldAll(importedClassMembers)
                 }
             }
         }
