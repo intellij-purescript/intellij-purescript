@@ -45,6 +45,7 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
@@ -251,7 +252,6 @@ class PureParsecParser {
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()
-    private val parseLocalDeclaration = ref()
     private val parseGuard = (pipe + commaSep(expr)).`as`(Guard)
     private val dataHead =
         data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
@@ -262,9 +262,7 @@ class PureParsecParser {
             .`as`(PSElements.TypeDeclaration)
     private val newtypeHead =
         token(NEWTYPE) + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
-    private val exprWhere =
-        expr + optional(where + `L{` + parseLocalDeclaration.sepBy1(`L-sep`) + `L}`)
-
+    private val exprWhere = ref()
     private val parsePatternMatchObject =
         braces(
             commaSep(
@@ -593,14 +591,13 @@ class PureParsecParser {
         .then(`else`)
         .then(expr)
         .`as`(PSElements.IfThenElse)
-    private val parseLet = token(LET)
-        .then(`L{` + (parseLocalDeclaration).sepBy1(`L-sep`) + `L}`)
-        .then(`in`)
-        .then(expr)
-        .`as`(PSElements.Let)
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
+            attempt(
+                (ident + many(binderAtom) + guardedDecl)
+                    .`as`(ValueDeclaration)
+            ),
             optional(attempt(lparen))
                 .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                 .then(optional(attempt(many1(ident))))
@@ -624,6 +621,11 @@ class PureParsecParser {
                     )
                 ).`as`(ValueDeclaration)
         )
+    private val parseLet = token(LET)
+        .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
+        .then(`in`)
+        .then(expr)
+        .`as`(PSElements.Let)
     private val doStatement =
         choice(
             token(LET).then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
@@ -687,36 +689,6 @@ class PureParsecParser {
                 .then(many1(idents.`as`(GenericIdentifier)))
                 .then(dot)
                 .then(parseConstrainedType).`as`(PSElements.ForAll)
-        )
-        parseLocalDeclaration.setRef(
-            choice(
-                attempt(parseTypeDeclaration),
-                // this is for when used with LET
-                optional(attempt(lparen))
-                    .then(
-                        optional(
-                            attempt(properName).`as`(ExpressionConstructor)
-                        )
-                    )
-                    .then(optional(attempt(many1(ident))))
-                    .then(
-                        optional(
-                            attempt(
-                                squares(commaSep(binder)).`as`(ObjectBinder)
-                            )
-                        )
-                    )
-                    .then(
-                        optional(attempt(`@`.then(braces(commaSep(idents)))))
-                            .`as`(NamedBinder)
-                    )
-                    .then(optional(attempt(parsePatternMatchObject)))
-                    .then(optional(attempt(parseRowPatternBinder)))
-                    .then(optional(attempt(rparen)))
-                    // ---------- end of LET stuff -----------
-                    .then(attempt(manyOrEmpty(binderAtom)))
-                    .then(guardedDecl).`as`(ValueDeclaration)
-            )
         )
         val parsePropertyUpdate =
             label + optional(eq) + expr
@@ -791,6 +763,12 @@ class PureParsecParser {
                 attempt(squares(commaSep(expr)).`as`(ObjectBinder)),
                 attempt(braces(commaSep(recordBinder))),
                 attempt(parens(binder))
+            )
+        )
+        exprWhere.setRef(
+            expr + optional(
+                (where + `L{` + letBinding.sepBy1(`L-sep`) + `L}`)
+                    .`as`(ExpressionWhere)
             )
         )
     }

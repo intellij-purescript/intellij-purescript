@@ -119,8 +119,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('props')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)

@@ -945,8 +945,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('t1')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
@@ -956,8 +954,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('t2')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
@@ -971,8 +967,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('t3')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
@@ -984,8 +978,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('t4')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)

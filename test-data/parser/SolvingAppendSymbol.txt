@@ -221,8 +221,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('gotAB')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
@@ -240,8 +238,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('gotBA')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
@@ -259,8 +255,6 @@ Purescript File
           PSValueDeclaration(ValueDeclaration)
             PSIdentifier(identifier)
               PsiElement(identifier)('gotA'')
-            PSNamedBinderImpl(NamedBinder)
-              <empty list>
             PsiElement(=)('=')
             PSValueImpl(Value)
               PSExpressionIdentifier(ExpressionIdentifier)
