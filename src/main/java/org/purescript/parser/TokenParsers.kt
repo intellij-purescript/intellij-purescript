@@ -25,6 +25,7 @@ import org.purescript.parser.PSTokens.Companion.INFIXR
 import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LPAREN
+import org.purescript.parser.PSTokens.Companion.NEWTYPE
 import org.purescript.parser.PSTokens.Companion.OF
 import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.RPAREN
@@ -34,7 +35,9 @@ import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
+val `'newtype'` = token(NEWTYPE)
 val `'role'` = token("role")
+val `'type'` = token(TYPE)
 val `as` = token(AS)
 val `class` = token(CLASS)
 val `do` = token(DO)
@@ -68,7 +71,6 @@ val representational = token("representational")
 val rparen = token(RPAREN)
 val string = token(STRING)
 val tick = token(TICK)
-val `'type'` = token(TYPE)
 val where = token(WHERE)
 
 @Suppress("ObjectPropertyName")

@@ -262,7 +262,7 @@ class PureParsecParser {
         (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
             .`as`(PSElements.TypeDeclaration)
     private val newtypeHead =
-        token(NEWTYPE) + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
+        `'newtype'` + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val exprWhere = ref()
     private val parsePatternMatchObject =
         braces(
@@ -471,6 +471,7 @@ class PureParsecParser {
         (dataHead +
             optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
             ).`as`(PSElements.DataDeclaration),
+        attempt(`'newtype'` + properName + dcolon) + type,
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(PSElements.NewtypeDeclaration),
         attempt(parseTypeDeclaration),
