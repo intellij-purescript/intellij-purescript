@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
+import org.purescript.psi.PSLetImpl
 import org.purescript.psi.PSValueDeclaration
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
@@ -65,6 +66,8 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     ?: sequenceOf()
                                 yieldAll(valueDeclarations)
                             }
+                            is PSLetImpl ->
+                                yieldAll(parent.valueDeclarations.asSequence())
                         }
                     }
                     // TODO Support values defined in the expression

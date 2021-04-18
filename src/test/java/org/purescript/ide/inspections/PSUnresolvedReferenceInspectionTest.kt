@@ -303,4 +303,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test it finds value declaration in let`() {
+
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            
+            f = let x = 1 in x
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
