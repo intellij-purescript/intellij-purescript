@@ -600,6 +600,7 @@ class PureParsecParser {
                 (ident + many(binderAtom) + guardedDecl)
                     .`as`(ValueDeclaration)
             ),
+            attempt(binder1 + eq + exprWhere),
             optional(attempt(lparen))
                 .then(optional(attempt(properName).`as`(ExpressionConstructor)))
                 .then(optional(attempt(many1(ident))))
