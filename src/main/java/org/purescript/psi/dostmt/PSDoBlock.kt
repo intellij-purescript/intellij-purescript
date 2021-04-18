@@ -1,7 +1,6 @@
-package org.purescript.psi.`do`
+package org.purescript.psi.dostmt
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSDoNotationLetImpl
 import org.purescript.psi.PSPsiElement
 
 class PSDoBlock(node: ASTNode) : PSPsiElement(node) {

@@ -125,13 +125,16 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.psi.*
-import org.purescript.psi.`do`.PSDoBlock
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.dostmt.PSDoBlock
+import org.purescript.psi.dostmt.PSDoNotationBindImpl
+import org.purescript.psi.dostmt.PSDoNotationLetImpl
+import org.purescript.psi.dostmt.PSDoNotationValueImpl
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
