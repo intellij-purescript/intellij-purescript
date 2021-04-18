@@ -291,6 +291,9 @@ interface PSElements {
         val Accessor = PSElementType("Accessor")
 
         @kotlin.jvm.JvmField
+        val DoBlock = PSElementType("DoBlock")
+
+        @kotlin.jvm.JvmField
         val DoNotationLet = PSElementType("DoNotationLet")
 
         @kotlin.jvm.JvmField

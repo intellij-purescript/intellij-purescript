@@ -38,6 +38,7 @@ import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
+import org.purescript.parser.PSElements.Companion.DoBlock
 import org.purescript.parser.PSElements.Companion.DoNotationBind
 import org.purescript.parser.PSElements.Companion.DoNotationLet
 import org.purescript.parser.PSElements.Companion.DoNotationValue
@@ -634,9 +635,9 @@ class PureParsecParser {
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        attempt(qualified(`do`)).`as`(Qualified) + `L{` + (doStatement).sepBy1(
+        (attempt(qualified(`do`)).`as`(Qualified) + `L{` + (doStatement).sepBy1(
             `L-sep`
-        ) + `L}`
+        ) + `L}`).`as`(DoBlock)
 
     private val adoBlock =
         token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
