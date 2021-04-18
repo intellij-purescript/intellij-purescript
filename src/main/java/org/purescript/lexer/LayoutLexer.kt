@@ -737,6 +737,9 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         endOffset: Int,
         initialState: Int
     ) {
+        require(startOffset == 0) { "does not support incremental lexing: startOffset must be 0" }
+        require(initialState == 0) { "does not support incremental lexing: initialState must be 0" }
+
         super.start(buffer, startOffset, endOffset, initialState)
         this.tokens = getTokens(delegate)
             .runningFold(root, correctLineAndColumn(buffer))

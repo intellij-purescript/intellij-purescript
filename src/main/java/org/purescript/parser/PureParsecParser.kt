@@ -600,28 +600,8 @@ class PureParsecParser {
                 (ident + many(binderAtom) + guardedDecl)
                     .`as`(ValueDeclaration)
             ),
-            optional(attempt(lparen))
-                .then(optional(attempt(properName).`as`(ExpressionConstructor)))
-                .then(optional(attempt(many1(ident))))
-                .then(
-                    optional(
-                        attempt(squares(commaSep(binder)).`as`(ObjectBinder))
-                    )
-                )
-                .then(
-                    optional(attempt(`@`.then(braces(commaSep(idents)))))
-                        .`as`(NamedBinder)
-                )
-                .then(optional(attempt(parsePatternMatchObject)))
-                .then(optional(attempt(parseRowPatternBinder)))
-                .then(optional(attempt(rparen)))
-                .then(attempt(manyOrEmpty(binderAtom)))
-                .then(
-                    choice(
-                        attempt(many1(parseGuard + (eq + exprWhere))),
-                        attempt(eq + (exprWhere))
-                    )
-                ).`as`(ValueDeclaration)
+            attempt(binder1 + eq + exprWhere),
+            attempt( ident + many(binderAtom) + guardedDecl)
         )
     private val parseLet = token(LET)
         .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
