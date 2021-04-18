@@ -39,6 +39,7 @@ import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
 import org.purescript.parser.PSElements.Companion.DataDeclaration
+import org.purescript.parser.PSElements.Companion.DoBlock
 import org.purescript.parser.PSElements.Companion.DoNotationBind
 import org.purescript.parser.PSElements.Companion.DoNotationLet
 import org.purescript.parser.PSElements.Companion.DoNotationValue
@@ -130,6 +131,10 @@ import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.dostmt.PSDoBlock
+import org.purescript.psi.dostmt.PSDoNotationBindImpl
+import org.purescript.psi.dostmt.PSDoNotationLetImpl
+import org.purescript.psi.dostmt.PSDoNotationValueImpl
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
@@ -271,6 +276,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             Parens -> PSParensImpl(node)
             UnaryMinus -> PSUnaryMinusImpl(node)
             Accessor -> PSAccessorImpl(node)
+            DoBlock -> PSDoBlock(node)
             DoNotationLet -> PSDoNotationLetImpl(node)
             DoNotationBind -> PSDoNotationBindImpl(node)
             DoNotationValue -> PSDoNotationValueImpl(node)
