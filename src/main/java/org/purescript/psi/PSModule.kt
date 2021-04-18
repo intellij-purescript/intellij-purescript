@@ -9,6 +9,7 @@ import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.parser.PSTokens
 import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.*
@@ -275,6 +276,17 @@ class PSModule(node: ASTNode) :
             classDeclarations,
             PSImportDeclarationImpl::importedClassDeclarations,
             PSExportedClass::class.java
+        )
+
+    /**
+     * @return the [PSClassMembers] elements that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedClassMembers: List<PSClassMember>
+        get() = getExportedDeclarations(
+            classDeclarations.flatMap { it.classMembers.asSequence() }.toTypedArray(),
+            PSImportDeclarationImpl::importedClassMembers,
+            PSExportedValue::class.java
         )
 
     val reexportedModuleNames: List<String>
