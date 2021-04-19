@@ -648,8 +648,15 @@ class PureParsecParser {
             expr7,
             attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            (case + commaSep1(expr) + of + `L{` +
-                caseBranch.sepBy1(`L-sep`) + `L}`).`as`(Case),
+            /*
+            * if there is only one case branch it can ignore layout so we need
+            * to allow layout end at any time.
+            */
+            (case + commaSep1(expr) + of + choice(
+                attempt(`L{` + caseBranch.sepBy1(`L-sep`) + `L}`),
+                attempt(`L{` + commaSep(binder1) + arrow + `L}`+ exprWhere),
+                `L{` + commaSep(binder1) + `L}` + guardedCase,
+            )).`as`(Case),
             parseIfThenElse,
             doBlock,
             adoBlock + `in` + expr,
