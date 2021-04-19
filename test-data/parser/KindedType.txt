@@ -282,7 +282,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('clazzString')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Clazz')

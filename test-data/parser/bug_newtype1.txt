@@ -629,7 +629,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('newtypeIProp')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Newtype')

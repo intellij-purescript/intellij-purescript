@@ -368,16 +368,15 @@ class PureParsecParser {
         )).`as`(ClassDeclaration)
     private val instHead =
         `'instance'` + ident + dcolon +
-            optional(
+            optional(attempt(
                 optional(lparen)
                     + commaSep1(
                     attempt(qualified(properName))
                         .`as`(Qualified)
                         .`as`(TypeConstructor)
                         + manyOrEmpty(typeAtom)
-                ) + optional(rparen) +
-                    optional(darrow)
-            ) + optional(
+                ) + optional(rparen) + darrow
+            )) + optional(
             attempt(qualified(properName))
                 .`as`(Qualified).`as`(pClassName)
         ) + manyOrEmpty(typeAtom.or(string)) +

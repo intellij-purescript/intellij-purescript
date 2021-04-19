@@ -72,7 +72,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('newtypeMultiplicative')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Newtype')

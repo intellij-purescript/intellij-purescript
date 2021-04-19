@@ -59,7 +59,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('cannotShowFunctions')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Fail')

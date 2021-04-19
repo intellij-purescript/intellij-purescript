@@ -61,7 +61,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('appendNil')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Append')

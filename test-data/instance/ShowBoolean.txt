@@ -9,7 +9,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('showBoolean')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Show')

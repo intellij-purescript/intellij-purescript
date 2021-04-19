@@ -36,7 +36,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('fooX')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Foo')

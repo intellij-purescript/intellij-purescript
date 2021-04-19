@@ -242,7 +242,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('functorConst')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Functor')

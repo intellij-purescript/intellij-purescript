@@ -97,7 +97,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('eqT')
       PsiElement(::)('∷')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('Eq')

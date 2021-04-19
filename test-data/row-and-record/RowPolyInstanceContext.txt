@@ -119,7 +119,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('st')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('T')

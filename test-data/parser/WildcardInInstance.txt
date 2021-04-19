@@ -89,7 +89,7 @@ Purescript File
       PSIdentifier(identifier)
         PsiElement(identifier)('monadEffEff')
       PsiElement(::)('::')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ClassName)
         PSProperName(Qualified)
           PSProperName(ProperName)
             PsiElement(proper name)('MonadEff')
