@@ -410,19 +410,9 @@ class PureParsecParser {
                                 .then(optional(rparen))
                         )
                     )
-                    .then(
-                        optional(
-                            attempt(
-                                where
-                                    .then(
-                                        `L{` +
-                                            instBinder.sepBy1(`L-sep`) +
-                                            `L}`
-                                    )
-                            )
-                        )
-                    )
-            ).`as`(TypeInstanceDeclaration)
+            )
+            .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
+            .`as`(TypeInstanceDeclaration)
     private val importedDataMembers = parens(
         choice(
             ddot,
@@ -598,7 +588,7 @@ class PureParsecParser {
                     .`as`(ValueDeclaration)
             ),
             attempt(binder1 + eq + exprWhere),
-            attempt( ident + many(binderAtom) + guardedDecl)
+            attempt(ident + many(binderAtom) + guardedDecl)
         )
     private val parseLet = token(LET)
         .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
