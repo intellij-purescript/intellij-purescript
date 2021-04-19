@@ -367,7 +367,7 @@ class PureParsecParser {
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
     private val instHead =
-        `'instance'` + ident.`as`(GenericIdentifier) + dcolon +
+        `'instance'` + ident + dcolon +
             optional(
                 optional(lparen)
                     + commaSep1(
