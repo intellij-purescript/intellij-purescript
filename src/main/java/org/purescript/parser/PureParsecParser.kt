@@ -369,47 +369,41 @@ class PureParsecParser {
     private val parseTypeInstanceDeclaration =
         optional(`'derive'`)
             .then(optional(`'newtype'`))
+            .then(`'instance'`)
+            .then(ident.`as`(GenericIdentifier).then(dcolon))
             .then(
-                `'instance'`
-                    .then(ident.`as`(GenericIdentifier).then(dcolon))
-                    .then(
-                        optional(
-                            optional(lparen)
-                                .then(
-                                    commaSep1(
-                                        attempt(qualified(properName))
-                                            .`as`(Qualified)
-                                            .`as`(TypeConstructor)
-                                            .then(manyOrEmpty(typeAtom))
-                                    )
-                                )
-                                .then(optional(rparen))
-                                .then(optional(darrow))
-                        )
-                    )
-                    .then(
-                        optional(
-                            attempt(qualified(properName)).`as`(Qualified).`as`(
-                                pClassName
+                optional(
+                    optional(lparen)
+                        .then(
+                            commaSep1(
+                                attempt(qualified(properName))
+                                    .`as`(Qualified)
+                                    .`as`(TypeConstructor)
+                                    .then(manyOrEmpty(typeAtom))
                             )
                         )
-                    )
-                    .then(manyOrEmpty(typeAtom.or(string)))
-                    .then(
-                        optional(
-                            darrow
-                                .then(optional(lparen))
-                                .then(
-                                    attempt(qualified(properName))
-                                        .`as`(Qualified)
-                                        .`as`(
-                                            TypeConstructor
-                                        )
-                                )
-                                .then(manyOrEmpty(typeAtom))
-                                .then(optional(rparen))
+                        .then(optional(rparen))
+                        .then(optional(darrow))
+                )
+            )
+            .then(
+                optional(
+                    attempt(qualified(properName))
+                        .`as`(Qualified).`as`(pClassName)
+                )
+            )
+            .then(manyOrEmpty(typeAtom.or(string)))
+            .then(
+                optional(
+                    darrow
+                        .then(optional(lparen))
+                        .then(
+                            attempt(qualified(properName))
+                                .`as`(Qualified).`as`(TypeConstructor)
                         )
-                    )
+                        .then(manyOrEmpty(typeAtom))
+                        .then(optional(rparen))
+                )
             )
             .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
             .`as`(TypeInstanceDeclaration)
