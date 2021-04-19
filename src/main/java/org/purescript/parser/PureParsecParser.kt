@@ -403,11 +403,6 @@ class PureParsecParser {
                     .then(optional(rparen))
             )
         )
-    private val parseTypeInstanceDeclaration =
-        optional(`'derive'`.then(optional(`'newtype'`)))
-            .then(instHead)
-            .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
-            .`as`(TypeInstanceDeclaration)
     private val importedDataMembers = parens(
         choice(
             ddot,
@@ -465,7 +460,10 @@ class PureParsecParser {
         parseExternDeclaration,
         parseFixityDeclaration,
         classDeclaration,
-        parseTypeInstanceDeclaration
+        optional(`'derive'`.then(optional(`'newtype'`)))
+            .then(instHead)
+            .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
+            .`as`(TypeInstanceDeclaration)
     )
     private val exportedClass =
         `class`.then(properName).`as`(PSElements.ExportedClass)
