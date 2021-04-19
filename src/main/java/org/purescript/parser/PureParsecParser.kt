@@ -83,18 +83,15 @@ import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.FLOAT
 import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
-import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.MODULE
 import org.purescript.parser.PSTokens.Companion.MODULE_PREFIX
 import org.purescript.parser.PSTokens.Companion.NATURAL
-import org.purescript.parser.PSTokens.Companion.NEWTYPE
 import org.purescript.parser.PSTokens.Companion.OPERATOR
 import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
@@ -122,7 +119,7 @@ class PureParsecParser {
     private val lname = choice(
         token(PSTokens.IDENT),
         data,
-        token(NEWTYPE),
+        `'newtype'`,
         `'type'`,
         token(FOREIGN),
         token(IMPORT),
@@ -130,9 +127,9 @@ class PureParsecParser {
         infixr,
         infix,
         `class`,
-        token(DERIVE),
+        `'derive'`,
         token(KIND),
-        token(INSTANCE),
+        `'instance'`,
         token(MODULE),
         case,
         of,
@@ -211,6 +208,7 @@ class PureParsecParser {
             attempt(parens(arrow)),
             attempt(braces(parseRow).`as`(PSElements.ObjectType)),
             attempt(`_`),
+            attempt(string),
             attempt(parseForAll),
             attempt(parseTypeVariable),
             attempt(
@@ -301,7 +299,7 @@ class PureParsecParser {
                         .then(token(PROPER_NAME).`as`(TypeConstructor))
                         .then(dcolon).then(parseKind)
                         .`as`(ExternDataDeclaration),
-                    token(INSTANCE)
+                    `'instance'`
                         .then(ident).then(dcolon)
                         .then(optional(parseDeps))
                         .then(
@@ -337,12 +335,11 @@ class PureParsecParser {
 
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe.then(commaSep1(fundep))
+    private val qualProperName =
+        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val constraint =
-        attempt(qualified(properName))
-            .`as`(Qualified)
-            .`as`(pClassName)
-            .then(manyOrEmpty(typeAtom))
-            .`as`(ClassConstraint)
+        (attempt(qualProperName.`as`(pClassName)) +
+            manyOrEmpty(typeAtom)).`as`(ClassConstraint)
     private val constraints = choice(
         parens(commaSep1(constraint)),
         constraint
@@ -369,63 +366,11 @@ class PureParsecParser {
             attempt(where + `L{` + (classMember).sepBy1(`L-sep`) + `L}`)
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
-    private val parseTypeInstanceDeclaration =
-        optional(token(DERIVE))
-            .then(optional(token(NEWTYPE)))
-            .then(
-                token(INSTANCE)
-                    .then(ident.`as`(GenericIdentifier).then(dcolon))
-                    .then(
-                        optional(
-                            optional(lparen)
-                                .then(
-                                    commaSep1(
-                                        attempt(qualified(properName))
-                                            .`as`(Qualified)
-                                            .`as`(TypeConstructor)
-                                            .then(manyOrEmpty(typeAtom))
-                                    )
-                                )
-                                .then(optional(rparen))
-                                .then(optional(darrow))
-                        )
-                    )
-                    .then(
-                        optional(
-                            attempt(qualified(properName)).`as`(Qualified).`as`(
-                                pClassName
-                            )
-                        )
-                    )
-                    .then(manyOrEmpty(typeAtom.or(string)))
-                    .then(
-                        optional(
-                            darrow
-                                .then(optional(lparen))
-                                .then(
-                                    attempt(qualified(properName))
-                                        .`as`(Qualified)
-                                        .`as`(
-                                            TypeConstructor
-                                        )
-                                )
-                                .then(manyOrEmpty(typeAtom))
-                                .then(optional(rparen))
-                        )
-                    )
-                    .then(
-                        optional(
-                            attempt(
-                                where
-                                    .then(
-                                        `L{` +
-                                            instBinder.sepBy1(`L-sep`) +
-                                            `L}`
-                                    )
-                            )
-                        )
-                    )
-            ).`as`(TypeInstanceDeclaration)
+    private val instHead =
+        `'instance'` + ident + dcolon +
+            optional(attempt(constraints + darrow)) +
+            qualProperName +
+            manyOrEmpty(typeAtom)
     private val importedDataMembers = parens(
         choice(
             ddot,
@@ -483,7 +428,10 @@ class PureParsecParser {
         parseExternDeclaration,
         parseFixityDeclaration,
         classDeclaration,
-        parseTypeInstanceDeclaration
+        optional(`'derive'`.then(optional(`'newtype'`)))
+            .then(instHead)
+            .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
+            .`as`(TypeInstanceDeclaration)
     )
     private val exportedClass =
         `class`.then(properName).`as`(PSElements.ExportedClass)
@@ -562,12 +510,9 @@ class PureParsecParser {
         token(":"),
     )
 
-
-    private val qualPropName =
-        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val binder2 = choice(
         attempt(
-            qualPropName
+            qualProperName
                 .`as`(ConstructorBinder)
                 .then(manyOrEmpty(binderAtom))
         ),
@@ -601,7 +546,7 @@ class PureParsecParser {
                     .`as`(ValueDeclaration)
             ),
             attempt(binder1 + eq + exprWhere),
-            attempt( ident + many(binderAtom) + guardedDecl)
+            attempt(ident + many(binderAtom) + guardedDecl)
         )
     private val parseLet = token(LET)
         .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
@@ -737,7 +682,7 @@ class PureParsecParser {
                 attempt(`_`.`as`(PSElements.NullBinder)),
                 attempt(ident + `@` + binderAtom).`as`(NamedBinder),
                 attempt(ident.`as`(VarBinder)),
-                attempt(qualPropName.`as`(ConstructorBinder)),
+                attempt(qualProperName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
                 attempt(char).`as`(CharBinder),
                 attempt(string.`as`(StringBinder)),

@@ -16,7 +16,7 @@ Purescript File
       PSClassConstraintList(ClassConstraintList)
         PSClassConstraint(ClassConstraint)
           PSProperName(ClassName)
-            PSProperName(Qualified)
+            PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('Foo')
           PSTypeAtomImpl(TypeAtom)
