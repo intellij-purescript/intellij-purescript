@@ -379,14 +379,7 @@ class PureParsecParser {
                 ) + optional(rparen) + darrow
             )) +
             qualified(properName).`as`(Qualified).`as`(pClassName) +
-            manyOrEmpty(typeAtom) +
-            optional(
-                darrow + optional(lparen) +
-                    attempt(qualified(properName))
-                        .`as`(Qualified).`as`(TypeConstructor)
-                    + manyOrEmpty(typeAtom)
-                    + optional(rparen)
-            )
+            manyOrEmpty(typeAtom)
     private val importedDataMembers = parens(
         choice(
             ddot,
