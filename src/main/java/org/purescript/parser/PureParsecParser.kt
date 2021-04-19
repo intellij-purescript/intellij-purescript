@@ -371,11 +371,9 @@ class PureParsecParser {
             optional(attempt(
                 optional(lparen)
                     + commaSep1(
-                    attempt(qualified(properName))
-                        .`as`(Qualified)
-                        .`as`(TypeConstructor)
-                        + manyOrEmpty(typeAtom)
-                ) + optional(rparen) + darrow
+                    attempt(qualProperName.`as`(pClassName)) + manyOrEmpty(typeAtom)
+                    )
+                    + optional(rparen) + darrow
             )) +
             qualProperName +
             manyOrEmpty(typeAtom)
