@@ -83,18 +83,15 @@ import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.FLOAT
 import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.HIDING
 import org.purescript.parser.PSTokens.Companion.IMPORT
-import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.KIND
 import org.purescript.parser.PSTokens.Companion.LET
 import org.purescript.parser.PSTokens.Companion.MODULE
 import org.purescript.parser.PSTokens.Companion.MODULE_PREFIX
 import org.purescript.parser.PSTokens.Companion.NATURAL
-import org.purescript.parser.PSTokens.Companion.NEWTYPE
 import org.purescript.parser.PSTokens.Companion.OPERATOR
 import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
@@ -122,7 +119,7 @@ class PureParsecParser {
     private val lname = choice(
         token(PSTokens.IDENT),
         data,
-        token(NEWTYPE),
+        `'newtype'`,
         `'type'`,
         token(FOREIGN),
         token(IMPORT),
@@ -130,9 +127,9 @@ class PureParsecParser {
         infixr,
         infix,
         `class`,
-        token(DERIVE),
+        `'derive'`,
         token(KIND),
-        token(INSTANCE),
+        `'instance'`,
         token(MODULE),
         case,
         of,
@@ -301,7 +298,7 @@ class PureParsecParser {
                         .then(token(PROPER_NAME).`as`(TypeConstructor))
                         .then(dcolon).then(parseKind)
                         .`as`(ExternDataDeclaration),
-                    token(INSTANCE)
+                    `'instance'`
                         .then(ident).then(dcolon)
                         .then(optional(parseDeps))
                         .then(
@@ -370,10 +367,10 @@ class PureParsecParser {
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
     private val parseTypeInstanceDeclaration =
-        optional(token(DERIVE))
-            .then(optional(token(NEWTYPE)))
+        optional(`'derive'`)
+            .then(optional(`'newtype'`))
             .then(
-                token(INSTANCE)
+                `'instance'`
                     .then(ident.`as`(GenericIdentifier).then(dcolon))
                     .then(
                         optional(

@@ -11,6 +11,7 @@ import org.purescript.parser.PSTokens.Companion.DARROW
 import org.purescript.parser.PSTokens.Companion.DATA
 import org.purescript.parser.PSTokens.Companion.DCOLON
 import org.purescript.parser.PSTokens.Companion.DDOT
+import org.purescript.parser.PSTokens.Companion.DERIVE
 import org.purescript.parser.PSTokens.Companion.DO
 import org.purescript.parser.PSTokens.Companion.DOT
 import org.purescript.parser.PSTokens.Companion.ELSE
@@ -22,6 +23,7 @@ import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.INFIX
 import org.purescript.parser.PSTokens.Companion.INFIXL
 import org.purescript.parser.PSTokens.Companion.INFIXR
+import org.purescript.parser.PSTokens.Companion.INSTANCE
 import org.purescript.parser.PSTokens.Companion.LARROW
 import org.purescript.parser.PSTokens.Companion.LDARROW
 import org.purescript.parser.PSTokens.Companion.LPAREN
@@ -35,6 +37,8 @@ import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
+val `'instance'` = token(INSTANCE)
+val `'derive'` = token(DERIVE)
 val `'newtype'` = token(NEWTYPE)
 val `'role'` = token("role")
 val `'type'` = token(TYPE)
