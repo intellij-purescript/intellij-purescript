@@ -370,9 +370,7 @@ class PureParsecParser {
         `'instance'` + ident + dcolon +
             optional(attempt(
                 optional(lparen)
-                    + commaSep1(
-                    attempt(qualProperName.`as`(pClassName)) + manyOrEmpty(typeAtom)
-                    )
+                    + commaSep1(constraint)
                     + optional(rparen) + darrow
             )) +
             qualProperName +
