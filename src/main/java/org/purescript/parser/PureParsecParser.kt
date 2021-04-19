@@ -367,42 +367,27 @@ class PureParsecParser {
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
     private val instHead =
-        `'instance'`
-        .then(ident.`as`(GenericIdentifier).then(dcolon))
-        .then(
+        `'instance'` + ident.`as`(GenericIdentifier) + dcolon +
             optional(
                 optional(lparen)
-                    .then(
-                        commaSep1(
-                            attempt(qualified(properName))
-                                .`as`(Qualified)
-                                .`as`(TypeConstructor)
-                                .then(manyOrEmpty(typeAtom))
-                        )
-                    )
-                    .then(optional(rparen))
-                    .then(optional(darrow))
-            )
-        )
-        .then(
+                    + commaSep1(
+                    attempt(qualified(properName))
+                        .`as`(Qualified)
+                        .`as`(TypeConstructor)
+                        + manyOrEmpty(typeAtom)
+                ) + optional(rparen) +
+                    optional(darrow)
+            ) + optional(
+            attempt(qualified(properName))
+                .`as`(Qualified).`as`(pClassName)
+        ) + manyOrEmpty(typeAtom.or(string)) +
             optional(
-                attempt(qualified(properName))
-                    .`as`(Qualified).`as`(pClassName)
+                darrow + optional(lparen) +
+                    attempt(qualified(properName))
+                        .`as`(Qualified).`as`(TypeConstructor)
+                    + manyOrEmpty(typeAtom)
+                    + optional(rparen)
             )
-        )
-        .then(manyOrEmpty(typeAtom.or(string)))
-        .then(
-            optional(
-                darrow
-                    .then(optional(lparen))
-                    .then(
-                        attempt(qualified(properName))
-                            .`as`(Qualified).`as`(TypeConstructor)
-                    )
-                    .then(manyOrEmpty(typeAtom))
-                    .then(optional(rparen))
-            )
-        )
     private val importedDataMembers = parens(
         choice(
             ddot,
