@@ -335,12 +335,11 @@ class PureParsecParser {
 
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe.then(commaSep1(fundep))
+    private val qualProperName =
+        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val constraint =
-        attempt(qualified(properName))
-            .`as`(Qualified)
-            .`as`(pClassName)
-            .then(manyOrEmpty(typeAtom))
-            .`as`(ClassConstraint)
+        (attempt(qualProperName.`as`(pClassName)) +
+            manyOrEmpty(typeAtom)).`as`(ClassConstraint)
     private val constraints = choice(
         parens(commaSep1(constraint)),
         constraint
@@ -367,8 +366,6 @@ class PureParsecParser {
             attempt(where + `L{` + (classMember).sepBy1(`L-sep`) + `L}`)
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
-    private val qualProperName =
-        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val instHead =
         `'instance'` + ident + dcolon +
             optional(attempt(
