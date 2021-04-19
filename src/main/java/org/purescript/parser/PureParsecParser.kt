@@ -367,8 +367,7 @@ class PureParsecParser {
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
     private val parseTypeInstanceDeclaration =
-        optional(`'derive'`)
-            .then(optional(`'newtype'`))
+        optional(`'derive'`.then(optional(`'newtype'`)))
             .then(`'instance'`)
             .then(ident.`as`(GenericIdentifier).then(dcolon))
             .then(
