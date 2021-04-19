@@ -367,6 +367,8 @@ class PureParsecParser {
             attempt(where + `L{` + (classMember).sepBy1(`L-sep`) + `L}`)
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
+    private val qualProperName =
+        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val instHead =
         `'instance'` + ident + dcolon +
             optional(attempt(
@@ -378,7 +380,7 @@ class PureParsecParser {
                         + manyOrEmpty(typeAtom)
                 ) + optional(rparen) + darrow
             )) +
-            qualified(properName).`as`(Qualified).`as`(pClassName) +
+            qualProperName +
             manyOrEmpty(typeAtom)
     private val importedDataMembers = parens(
         choice(
@@ -519,9 +521,6 @@ class PureParsecParser {
         token(":"),
     )
 
-
-    private val qualProperName =
-        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val binder2 = choice(
         attempt(
             qualProperName
