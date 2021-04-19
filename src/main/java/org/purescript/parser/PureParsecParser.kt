@@ -208,6 +208,7 @@ class PureParsecParser {
             attempt(parens(arrow)),
             attempt(braces(parseRow).`as`(PSElements.ObjectType)),
             attempt(`_`),
+            attempt(string),
             attempt(parseForAll),
             attempt(parseTypeVariable),
             attempt(
@@ -379,7 +380,7 @@ class PureParsecParser {
             )) + optional(
             attempt(qualified(properName))
                 .`as`(Qualified).`as`(pClassName)
-        ) + manyOrEmpty(typeAtom.or(string)) +
+        ) + manyOrEmpty(typeAtom) +
             optional(
                 darrow + optional(lparen) +
                     attempt(qualified(properName))
