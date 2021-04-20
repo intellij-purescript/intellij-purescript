@@ -87,6 +87,7 @@
     <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex" />
     <fileBasedIndex implementation="org.purescript.file.ExportedConstructorsIndex" />
     <fileBasedIndex implementation="org.purescript.file.ExportedValuesIndex" />
+    <fileBasedIndex implementation="org.purescript.file.ImportedModuleIndex" />
   </extensions>
 
   <actions>
