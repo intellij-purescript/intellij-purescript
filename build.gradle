@@ -95,7 +95,6 @@ intellij {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    implementation 'com.github.ballerina-platform:lsp4intellij:0.94.2'
 }
 
 // Intellij config
