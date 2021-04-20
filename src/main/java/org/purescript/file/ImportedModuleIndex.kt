@@ -3,7 +3,6 @@ package org.purescript.file
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
@@ -47,18 +46,15 @@ class ImportedModuleIndex : ScalarIndexExtension<String>() {
         fun filesImportingModule(
             project: Project,
             moduleName: String
-        ): List<PSFile> {
+        ): MutableCollection<VirtualFile> {
             val fileBasedIndex = FileBasedIndex.getInstance()
-            val files =  ReadAction.compute<Collection<VirtualFile>, Throwable> {
+            return ReadAction.compute<MutableCollection<VirtualFile>, Throwable> {
                 fileBasedIndex.getContainingFiles(
                     NAME,
                     moduleName,
                     GlobalSearchScope.allScope(project)
                 )
             }
-            return files
-                .map { PsiManager.getInstance(project).findFile(it) }
-                .filterIsInstance(PSFile::class.java)
         }
     }
 
