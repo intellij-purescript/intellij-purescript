@@ -640,13 +640,10 @@ class PureParsecParser {
             braces(commaSep(recordLabel)).`as`(ObjectLiteral),
             parens(expr).`as`(PSElements.Parens),
         )
-        val exprBacktick = properName.`as`(ProperName)
-            .or(many1(idents.`as`(ProperName)))
         val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
         val expr5 = choice(
             attempt(braces(commaSep1(parsePropertyUpdate))),
             expr7,
-            attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
             /*
             * if there is only one case branch it can ignore layout so we need

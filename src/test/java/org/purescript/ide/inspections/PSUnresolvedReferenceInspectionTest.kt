@@ -352,6 +352,36 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
+    fun `test it checks infix function`() {
+
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            
+            f x y = x `<error descr="Cannot resolve symbol 'h'">h</error>` y
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test it finds reference for infix function`() {
+
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            h x y = x + y
+            f x y = x `h` y
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
     fun `test it finds reexported`() {
         myFixture.configureByText(
             "Foo.purs",
