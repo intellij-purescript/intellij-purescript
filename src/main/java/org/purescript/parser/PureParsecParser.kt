@@ -662,7 +662,7 @@ class PureParsecParser {
             adoBlock + `in` + expr,
             parseLet
         )
-        val expr4 = expr5 + manyOrEmpty(expr5)
+        val expr4 = many1(expr5)
         val expr3 =
             choice(
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
