@@ -640,13 +640,10 @@ class PureParsecParser {
             braces(commaSep(recordLabel)).`as`(ObjectLiteral),
             parens(expr).`as`(PSElements.Parens),
         )
-        val exprBacktick = properName.`as`(ProperName)
-            .or(many1(idents.`as`(ProperName)))
         val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
         val expr5 = choice(
             attempt(braces(commaSep1(parsePropertyUpdate))),
             expr7,
-            attempt(tick + exprBacktick + tick),
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
             /*
             * if there is only one case branch it can ignore layout so we need
@@ -662,18 +659,14 @@ class PureParsecParser {
             adoBlock + `in` + expr,
             parseLet
         )
-        val expr4 = expr5 + manyOrEmpty(expr5)
+        val expr4 = many1(expr5)
         val expr3 =
             choice(
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
                 expr4
             )
-
-        val expr2 = expr3.sepBy1(
-            tick + attempt(qualified(idents)).`as`(
-                Qualified
-            ) + tick
-        )
+        val exprBacktick2 = expr3.sepBy1(qualOp)
+        val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
         val expr1 = expr2.sepBy1(attempt(qualified(operator)).`as`(Qualified))
 
 
