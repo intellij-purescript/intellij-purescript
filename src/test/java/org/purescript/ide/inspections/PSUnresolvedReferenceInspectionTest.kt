@@ -351,4 +351,31 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test it finds reexported`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            x = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            module Bar (module Foo) where
+            import Foo
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            import Bar
+            y = x
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
