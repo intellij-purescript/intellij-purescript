@@ -668,12 +668,8 @@ class PureParsecParser {
                 (many1(token("-")) + expr4).`as`(UnaryMinus),
                 expr4
             )
-
-        val expr2 = expr3.sepBy1(
-            tick + attempt(qualified(idents)).`as`(
-                Qualified
-            ) + tick
-        )
+        val exprBacktick2 = expr3.sepBy1(qualOp)
+        val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
         val expr1 = expr2.sepBy1(attempt(qualified(operator)).`as`(Qualified))
 
 
