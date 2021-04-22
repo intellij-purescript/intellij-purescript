@@ -22,23 +22,6 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
-    fun `test resolves value declaration with multiple declarations`() {
-        val file = myFixture.configureByText(
-            "Main.purs",
-            """
-                module Main where
-                x = y 1
-                y 1 = 1
-                y _ = 2
-            """.trimIndent()
-        )
-        val valueDeclarations = file.getValueDeclarations()
-        val expressionIdentifier = file.getExpressionIdentifier()
-
-        assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[1]))
-        assertTrue(expressionIdentifier.reference.isReferenceTo(valueDeclarations[2]))
-    }
-
     fun `test resolves imported value declarations`() {
         val valueDeclaration = myFixture.configureByText(
             "Lib.purs",
