@@ -16,10 +16,28 @@ class PSValueDeclaration(node: ASTNode) :
     PsiNameIdentifierOwner,
     DocCommentOwner
 {
+
     override fun getName(): String {
         return findChildByClass(PSIdentifier::class.java)!!
             .name
     }
+    override fun setName(name: String): PsiElement? {
+        this
+            .module
+            ?.valueDeclarations
+            ?.filter { it != this && it.name == this.name }
+            ?.forEach { it.rawSetName(name) }
+        return rawSetName(name)
+    }
+
+    private fun rawSetName(name: String): PSValueDeclaration? {
+        val properName = PSPsiFactory(project).createIdentifier(name)
+            ?: return null
+        nameIdentifier.replace(properName)
+        return this
+    }
+
+    override fun getTextOffset(): Int = nameIdentifier.textOffset
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
@@ -45,12 +63,8 @@ class PSValueDeclaration(node: ASTNode) :
         }
     }
 
-    override fun setName(name: String): PsiElement? {
-        return null
-    }
-
-    override fun getNameIdentifier(): PsiElement? {
-        return findChildByClass(PSIdentifier::class.java)
+    override fun getNameIdentifier(): PSIdentifier {
+        return findNotNullChildByClass(PSIdentifier::class.java)
     }
 
     override val docComments:List<PsiComment>

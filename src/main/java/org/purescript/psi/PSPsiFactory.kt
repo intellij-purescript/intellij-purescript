@@ -7,8 +7,8 @@ import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.purescript.PSLanguage
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.name.PSProperName
 
 
 /**
@@ -67,4 +67,11 @@ class PSPsiFactory(private val project: Project) {
         PsiFileFactory.getInstance(project)
             .createFileFromText(PSLanguage.INSTANCE, code)
             .findDescendantOfType()
+
+    fun createIdentifier(name: String): PSIdentifier? {
+        return createFromText("""
+            |module Main where
+            |$name = 1
+        """.trimMargin())
+    }
 }
