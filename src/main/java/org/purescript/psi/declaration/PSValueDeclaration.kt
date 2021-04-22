@@ -2,10 +2,7 @@ package org.purescript.psi.declaration
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
-import com.intellij.psi.PsiComment
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.SyntaxTraverser
+import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.psi.PSBinderImpl
 import org.purescript.psi.PSPsiElement
@@ -69,6 +66,15 @@ class PSValueDeclaration(node: ASTNode) :
 
     override fun getNameIdentifier(): PSIdentifier {
         return findNotNullChildByClass(PSIdentifier::class.java)
+    }
+
+    override fun getReference(): PsiReference? {
+        val valueDeclarationSelfReference = ValueDeclarationSelfReference(this)
+        if (valueDeclarationSelfReference.resolve() == this) {
+            return null
+        } else  {
+            return valueDeclarationSelfReference
+        }
     }
 
     override val docComments:List<PsiComment>

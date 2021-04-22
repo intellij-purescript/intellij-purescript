@@ -1,7 +1,9 @@
 package org.purescript.psi.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
 import org.purescript.getValueDeclaration
+import org.purescript.getValueDeclarations
 
 class PSValueDeclarationTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {
@@ -41,5 +43,18 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 x = bar 0
             """.trimIndent()
         )
+    }
+
+    fun `test resolves sibling declarations`() {
+        val first = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                foo 0 = 1
+                <caret>foo 1 = 2
+            """.trimIndent()
+        ).getValueDeclarations().first()
+        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
+        TestCase.assertEquals(first, reference.resolve())
     }
 }
