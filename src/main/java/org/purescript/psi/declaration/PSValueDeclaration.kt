@@ -22,19 +22,11 @@ class PSValueDeclaration(node: ASTNode) :
         return findChildByClass(PSIdentifier::class.java)!!
             .name
     }
-    override fun setName(name: String): PsiElement? {
-        this
-            .module
-            ?.valueDeclarations
-            ?.filter { it != this && it.name == this.name }
-            ?.forEach { it.rawSetName(name) }
-        return rawSetName(name)
-    }
 
-    private fun rawSetName(name: String): PSValueDeclaration? {
-        val properName = PSPsiFactory(project).createIdentifier(name)
+    override fun setName(name: String): PsiElement? {
+        val identifier = PSPsiFactory(project).createIdentifier(name)
             ?: return null
-        nameIdentifier.replace(properName)
+        nameIdentifier.replace(identifier)
         return this
     }
 
