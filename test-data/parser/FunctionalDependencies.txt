@@ -143,7 +143,7 @@ Purescript File
         PSDataConstructor(DataConstructor)
           PSProperName(ProperName)
             PsiElement(proper name)('Proxy')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('appendProxy')
       PsiElement(::)('::')

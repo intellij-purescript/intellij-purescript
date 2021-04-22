@@ -45,7 +45,7 @@ Purescript File
         PSDataConstructor(DataConstructor)
           PSProperName(ProperName)
             PsiElement(proper name)('AProxy')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('bProxy')
       PsiElement(::)('::')

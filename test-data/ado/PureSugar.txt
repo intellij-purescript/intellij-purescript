@@ -4,7 +4,7 @@ Purescript File
     PSModuleName(ModuleName)
       PsiElement(proper name)('PureSugar')
     PsiElement(where)('where')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('pure_sugar')
       PsiElement(::)('::')

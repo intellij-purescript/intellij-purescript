@@ -15,7 +15,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('test')
       PsiElement(::)('::')

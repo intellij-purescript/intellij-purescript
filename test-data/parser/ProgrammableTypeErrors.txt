@@ -92,7 +92,7 @@ Purescript File
         PSValueImpl(Value)
           PSStringLiteralImpl(StringLiteral)
             PsiElement(string)('"unreachable"')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(::)('::')

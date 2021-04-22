@@ -581,7 +581,7 @@ Purescript File
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('y')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(::)('::')

@@ -22,7 +22,7 @@ Purescript File
           PsiElement(identifier)('what')
       PsiElement(as)('as')
       PsiElement(operator)('?!')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('what')
       PsiElement(::)('::')

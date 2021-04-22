@@ -4,7 +4,7 @@ Purescript File
     PSModuleName(ModuleName)
       PsiElement(proper name)('AtBinder')
     PsiElement(where)('where')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('f')
       PsiElement(::)('::')

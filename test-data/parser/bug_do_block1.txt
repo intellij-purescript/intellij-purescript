@@ -94,7 +94,7 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('B')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(::)('::')

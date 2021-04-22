@@ -34,7 +34,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('on')
         PsiElement())(')')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('comparing')
       PsiElement(::)('::')

@@ -21,7 +21,7 @@ Purescript File
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
-    PSSignature(TypeDeclaration)
+    PSSignature(Signature)
       PSIdentifier(identifier)
         PsiElement(identifier)('f')
       PsiElement(::)('::')
