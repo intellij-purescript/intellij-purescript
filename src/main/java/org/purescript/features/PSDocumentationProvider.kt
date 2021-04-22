@@ -8,7 +8,7 @@ import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSValueDeclaration
+import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration

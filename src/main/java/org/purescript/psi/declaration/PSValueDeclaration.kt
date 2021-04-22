@@ -1,12 +1,13 @@
-package org.purescript.psi
+package org.purescript.psi.declaration
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
-import com.intellij.psi.PsiComment
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.SyntaxTraverser
+import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.PSBinderImpl
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSVarBinderImpl
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
@@ -16,10 +17,20 @@ class PSValueDeclaration(node: ASTNode) :
     PsiNameIdentifierOwner,
     DocCommentOwner
 {
+
     override fun getName(): String {
         return findChildByClass(PSIdentifier::class.java)!!
             .name
     }
+
+    override fun setName(name: String): PsiElement? {
+        val identifier = PSPsiFactory(project).createIdentifier(name)
+            ?: return null
+        nameIdentifier.replace(identifier)
+        return this
+    }
+
+    override fun getTextOffset(): Int = nameIdentifier.textOffset
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
@@ -45,12 +56,17 @@ class PSValueDeclaration(node: ASTNode) :
         }
     }
 
-    override fun setName(name: String): PsiElement? {
-        return null
+    override fun getNameIdentifier(): PSIdentifier {
+        return findNotNullChildByClass(PSIdentifier::class.java)
     }
 
-    override fun getNameIdentifier(): PsiElement? {
-        return findChildByClass(PSIdentifier::class.java)
+    override fun getReference(): PsiReference? {
+        val valueDeclarationSelfReference = ValueDeclarationSelfReference(this)
+        if (valueDeclarationSelfReference.resolve() == this) {
+            return null
+        } else  {
+            return valueDeclarationSelfReference
+        }
     }
 
     override val docComments:List<PsiComment>

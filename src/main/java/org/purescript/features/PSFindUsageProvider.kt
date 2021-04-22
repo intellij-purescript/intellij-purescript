@@ -8,6 +8,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.imports.PSImportAlias
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl

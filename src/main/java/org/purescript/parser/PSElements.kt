@@ -63,9 +63,6 @@ interface PSElements {
         val TypeArgs = PSElementType("TypeArgs")
 
         @kotlin.jvm.JvmField
-        val TypeAnnotationName = PSElementType("TypeAnnotationName")
-
-        @kotlin.jvm.JvmField
         val ForAll = PSElementType("ForAll")
 
         @kotlin.jvm.JvmField
@@ -108,7 +105,7 @@ interface PSElements {
         val DataConstructor = PSElementType("DataConstructor")
 
         @kotlin.jvm.JvmField
-        val TypeDeclaration = PSElementType("TypeDeclaration")
+        val Signature = PSElementType("Signature")
 
         @kotlin.jvm.JvmField
         val TypeSynonymDeclaration = PSElementType("TypeSynonymDeclaration")

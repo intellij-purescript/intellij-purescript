@@ -257,8 +257,7 @@ class PureParsecParser {
     private val dataCtor =
         properName.then(manyOrEmpty(typeAtom)).`as`(DataConstructor)
     private val parseTypeDeclaration =
-        (ident.`as`(PSElements.TypeAnnotationName) + dcolon + type)
-            .`as`(PSElements.TypeDeclaration)
+        (ident + dcolon + type).`as`(PSElements.Signature)
     private val newtypeHead =
         `'newtype'` + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val exprWhere = ref()

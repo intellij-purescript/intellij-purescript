@@ -105,11 +105,10 @@ import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.Type
-import org.purescript.parser.PSElements.Companion.TypeAnnotationName
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeAtom
 import org.purescript.parser.PSElements.Companion.TypeConstructor
-import org.purescript.parser.PSElements.Companion.TypeDeclaration
+import org.purescript.parser.PSElements.Companion.Signature
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
@@ -131,6 +130,8 @@ import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSSignature
+import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
 import org.purescript.psi.dostmt.PSDoNotationBindImpl
 import org.purescript.psi.dostmt.PSDoNotationLetImpl
@@ -222,7 +223,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             FunKind -> PSFunKindImpl(node)
             Type -> PSTypeImpl(node)
             TypeArgs -> PSTypeArgsImpl(node)
-            TypeAnnotationName -> PSTypeAnnotationNameImpl(node)
             ForAll -> PSForAllImpl(node)
             ConstrainedType -> PSConstrainedTypeImpl(node)
             Row -> PSRowImpl(node)
@@ -231,7 +231,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             TypeVarName -> PSTypeVarName(node)
             TypeVarKinded -> PSTypeVarKinded(node)
             TypeAtom -> PSTypeAtomImpl(node)
-            TypeDeclaration -> PSTypeDeclarationImpl(node)
+            Signature -> PSSignature(node)
             TypeSynonymDeclaration -> PSTypeSynonymDeclaration(node)
             ValueDeclaration -> PSValueDeclaration(node)
             ExternDataDeclaration -> PSExternDataDeclarationImpl(node)

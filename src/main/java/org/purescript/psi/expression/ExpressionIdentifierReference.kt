@@ -2,19 +2,19 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
-import com.intellij.psi.PsiElementResolveResult.createResults
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
 import org.purescript.psi.PSLetImpl
-import org.purescript.psi.PSValueDeclaration
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
     LocalQuickFixProvider,
-    PsiReferenceBase.Poly<PSExpressionIdentifier>(
+    PsiReferenceBase<PSExpressionIdentifier>(
         expressionConstructor,
         expressionConstructor.qualifiedIdentifier.identifier.textRangeInParent,
         false
@@ -23,22 +23,9 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
     override fun getVariants(): Array<Any> =
         candidates.toList().toTypedArray()
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+    override fun resolve(): PsiNamedElement? {
         val name = element.name
-        val declaration = candidates.firstOrNull { it.name == name }
-            ?: return emptyArray()
-        // TODO We may not want to have a PsiPolyVariantReference reference here
-        return if (declaration is PSValueDeclaration) {
-            val module = declaration.module
-            val allValueDeclarations =
-                candidates.filterIsInstance<PSValueDeclaration>()
-                    .filter { it.name == name }
-                    .filter { it.module == module }
-                    .toMutableList()
-            createResults(allValueDeclarations)
-        } else {
-            createResults(declaration)
-        }
+        return candidates.firstOrNull { it.name == name }
     }
 
     private val candidates: Sequence<PsiNamedElement>
@@ -102,4 +89,13 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             .mapNotNull { it.module?.name }
             .map { ImportQuickFix(it) }
             .toTypedArray()
+
+
+    override fun handleElementRename(name: String): PsiElement? {
+        val oldName = element.qualifiedIdentifier.identifier
+        val newName = PSPsiFactory(element.project).createIdentifier(name)
+            ?: return null
+        oldName.replace(newName)
+        return element
+    }
 }

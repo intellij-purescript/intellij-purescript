@@ -419,15 +419,18 @@ class PSModuleTest : BasePlatformTestCase() {
     }
 
     fun `test rename simple`() {
-        val module = myFixture.configureByText(
+        myFixture.configureByText(
             "Foo.purs",
             """
                 module <caret>Foo where
             """.trimIndent()
-        ).getModule()
+        )
         myFixture.renameElementAtCaret("Bar")
-
-        assertEquals("Bar", module.name)
+        myFixture.checkResult(
+            """
+                module Bar where
+            """.trimIndent()
+        )
     }
 
     fun `test rename qualified`() {
