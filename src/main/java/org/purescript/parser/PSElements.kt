@@ -63,9 +63,6 @@ interface PSElements {
         val TypeArgs = PSElementType("TypeArgs")
 
         @kotlin.jvm.JvmField
-        val TypeAnnotationName = PSElementType("TypeAnnotationName")
-
-        @kotlin.jvm.JvmField
         val ForAll = PSElementType("ForAll")
 
         @kotlin.jvm.JvmField

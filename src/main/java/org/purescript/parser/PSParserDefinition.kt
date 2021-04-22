@@ -105,7 +105,6 @@ import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
 import org.purescript.parser.PSElements.Companion.Type
-import org.purescript.parser.PSElements.Companion.TypeAnnotationName
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeAtom
 import org.purescript.parser.PSElements.Companion.TypeConstructor
@@ -223,7 +222,6 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             FunKind -> PSFunKindImpl(node)
             Type -> PSTypeImpl(node)
             TypeArgs -> PSTypeArgsImpl(node)
-            TypeAnnotationName -> PSTypeAnnotationNameImpl(node)
             ForAll -> PSForAllImpl(node)
             ConstrainedType -> PSConstrainedTypeImpl(node)
             Row -> PSRowImpl(node)
