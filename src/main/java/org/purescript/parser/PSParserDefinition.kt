@@ -130,6 +130,7 @@ import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSSignature
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
 import org.purescript.psi.dostmt.PSDoNotationBindImpl
