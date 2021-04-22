@@ -29,6 +29,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             "Foo.purs",
             """
                 module Foo where
+                foo :: Int -> Int
                 <caret>foo 0 = 1
                 foo 1 = 2
                 x = foo 0
@@ -38,6 +39,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
         myFixture.checkResult(
             """
                 module Foo where
+                bar :: Int -> Int
                 bar 0 = 1
                 bar 1 = 2
                 x = bar 0
