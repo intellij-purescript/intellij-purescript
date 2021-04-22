@@ -10,10 +10,10 @@ import org.purescript.psi.name.PSProperName
  * A type constructor is a PSI element that references one of the following PSI elements:
  *  - [PSDataDeclaration]
  *  - [PSNewTypeDeclarationImpl]
- *  - [PSTypeDeclarationImpl]
+ *  - [PSSignature]
  *
  * It can appear in many different places, for example in one of the following PSI elements:
- *  - [PSTypeDeclarationImpl]
+ *  - [PSSignature]
  *  - [PSDataConstructor]
  *  - [PSTypeAtomImpl]
  */

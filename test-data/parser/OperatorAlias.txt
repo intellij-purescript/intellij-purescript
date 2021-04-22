@@ -22,7 +22,7 @@ Purescript File
           PsiElement(identifier)('what')
       PsiElement(as)('as')
       PsiElement(operator)('?!')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('what')

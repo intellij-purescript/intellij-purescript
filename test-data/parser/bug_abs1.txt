@@ -4,7 +4,7 @@ Purescript File
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('localSearch')

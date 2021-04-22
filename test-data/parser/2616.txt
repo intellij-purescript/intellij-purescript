@@ -50,7 +50,7 @@ Purescript File
                   PSIdentifier(GenericIdentifier)
                     PsiElement(identifier)('r')
             PsiElement(})('}')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('unF')

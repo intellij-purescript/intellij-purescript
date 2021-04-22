@@ -41,7 +41,7 @@ Purescript File
               PSTypeAtomImpl(TypeAtom)
                 PSIdentifier(GenericIdentifier)
                   PsiElement(identifier)('a')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('test')

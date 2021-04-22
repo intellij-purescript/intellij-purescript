@@ -29,7 +29,7 @@ Purescript File
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.')
         PsiElement(proper name)('Eff')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('doIt')

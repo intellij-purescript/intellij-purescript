@@ -581,7 +581,7 @@ Purescript File
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('y')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')

@@ -246,7 +246,7 @@ Purescript File
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('rec')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')

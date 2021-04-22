@@ -123,7 +123,7 @@ Purescript File
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('a')
-    PSTypeDeclarationImpl(TypeDeclaration)
+    PSSignature(TypeDeclaration)
       PSTypeAnnotationNameImpl(TypeAnnotationName)
         PSIdentifier(identifier)
           PsiElement(identifier)('strangeThing')

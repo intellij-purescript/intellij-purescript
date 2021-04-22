@@ -597,7 +597,7 @@ Purescript File
                 PsiElement())(')')
       PSExpressionWhere(ExpressionWhere)
         PsiElement(where)('where')
-        PSTypeDeclarationImpl(TypeDeclaration)
+        PSSignature(TypeDeclaration)
           PSTypeAnnotationNameImpl(TypeAnnotationName)
             PSIdentifier(identifier)
               PsiElement(identifier)('same')
