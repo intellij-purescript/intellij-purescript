@@ -11,7 +11,7 @@ import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
 import org.purescript.psi.PSLetImpl
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSValueDeclaration
+import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :

@@ -1,4 +1,4 @@
-package org.purescript.psi
+package org.purescript.psi.declaration
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
@@ -7,6 +7,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.SyntaxTraverser
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.PSBinderImpl
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSVarBinderImpl
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
