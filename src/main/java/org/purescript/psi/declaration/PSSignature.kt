@@ -20,7 +20,7 @@ class PSSignature(node: ASTNode) : PSPsiElement(node) {
         return identifier.name
     }
 
-    override fun getReference(): PsiReference? {
-        return super.getReference()
+    override fun getReference(): PsiReference {
+        return SignatureReference(this)
     }
 }
