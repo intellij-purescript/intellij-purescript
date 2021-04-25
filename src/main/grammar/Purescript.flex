@@ -32,7 +32,7 @@ uniCode = \p{S}
 decimal = [0-9]+
 hexadecimal = [xX][0-9a-zA-Z]+
 octal = [oO][0-7]+
-stringChar = [^\"\\\0-\u001A]
+stringChars = [^\"\\]+
 fractExponent = {fraction} {exponent}? | {exponent}
 fraction = "." {decimal}
 exponent = [eE] [+\-]? {decimal}
@@ -64,7 +64,7 @@ charControl = "^" [:uppercase:]
 
 <STRINGS> {
 "\""                           { yybegin(YYINITIAL); return STRING; }
-{stringChar}                   { return STRING; }
+{stringChars}                   { return STRING; }
 "\\" {escapeCode}              { return STRING_ESCAPED; }
 "\\" {escapeEmpty}             { return STRING_GAP; }
 "\\" {escapeGap}               { return STRING_GAP; }

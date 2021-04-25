@@ -1,7 +1,6 @@
 package org.purescript.psi.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
 import org.purescript.getValueDeclaration
 import org.purescript.getValueDeclarations
 
@@ -57,6 +56,6 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getValueDeclarations().first()
         val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
-        TestCase.assertEquals(first, reference.resolve())
+        assertEquals(first, reference.resolve())
     }
 }

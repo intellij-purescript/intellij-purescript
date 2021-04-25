@@ -1,0 +1,3 @@
+module StringWithTab where
+
+stringWithTab = "	"
