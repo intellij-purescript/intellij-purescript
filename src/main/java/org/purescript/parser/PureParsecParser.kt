@@ -68,6 +68,7 @@ import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
+import org.purescript.parser.PSElements.Companion.Type
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
@@ -180,8 +181,8 @@ class PureParsecParser {
             parseKindAtom
         )
 
-    // Types.hs
     private val type = ref()
+
     private val parseForAll = ref()
 
     private val parseTypeVariable: Parsec =
@@ -238,15 +239,11 @@ class PureParsecParser {
         idents.`as`(Identifier)
             .or(attempt(parens(operator.`as`(Identifier))))
 
-    // Declarations.hs
     private val typeVarBinding =
         choice(
             idents.`as`(TypeVarName),
-            parens(
-                idents.`as`(GenericIdentifier)
-                    .then(dcolon)
-                    .then(parseKind)
-            ).`as`(TypeVarKinded)
+            parens(idents.`as`(GenericIdentifier) + dcolon + type)
+                .`as`(TypeVarKinded)
         )
     private val binderAtom = ref()
     private val binder = ref()
@@ -567,20 +564,7 @@ class PureParsecParser {
     private val adoBlock =
         token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
-    private val type0 = ref()
-    private val type1 = ref()
-    private val type2 = ref()
-    private val type3 = ref()
-    private val type4 = ref()
-    private val type5 = ref()
-
     init {
-        type0.setRef(type1 + optional(dcolon + type0))
-        type1.setRef(type2.or(forall + many1(typeVarBinding) + dot + type1))
-        type2.setRef(type3 + optional(arrow.or(darrow) + type1))
-        type3.setRef(type4 + optional(qualOp + type4))
-        type4.setRef(type5.or(token("#") + type4))
-        type5.setRef(many1(typeAtom))
         parseKindPrefixRef.setRef(parseKindPrefix)
         parseKind.setRef(
             (parseKindPrefix +
@@ -596,20 +580,14 @@ class PureParsecParser {
                         optional(parseKind)
                 )).`as`(PSElements.FunKind)
         )
-        type.setRef(
-            many1(typeAtom.or(string) + optional(dcolon + parseKind))
-                .then(
-                    optional(
-                        choice(
-                            arrow,
-                            darrow,
-                            token(PSTokens.OPTIMISTIC),
-                            token(OPERATOR)
-                        )
-                            .then(type)
-                    )
-                ).`as`(PSElements.Type)
-        )
+
+        val type5 = many1(typeAtom)
+        val type4 = manyOrEmpty(token("#")) + type5
+        val type3 = type4.sepBy1(qualOp)
+        val type2 = ref()
+        val type1 = manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
+        type2.setRef(type3 + optional(arrow.or(darrow) + type1))
+        type.setRef((type1.sepBy1(dcolon)).`as`(Type))
         parseForAll.setRef(
             forall
                 .then(many1(idents.`as`(GenericIdentifier)))
