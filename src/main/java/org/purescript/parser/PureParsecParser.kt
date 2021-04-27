@@ -20,7 +20,6 @@ import org.purescript.parser.PSElements.Companion.Abs
 import org.purescript.parser.PSElements.Companion.Accessor
 import org.purescript.parser.PSElements.Companion.ArrayLiteral
 import org.purescript.parser.PSElements.Companion.Bang
-import org.purescript.parser.PSElements.Companion.Binder
 import org.purescript.parser.PSElements.Companion.BooleanBinder
 import org.purescript.parser.PSElements.Companion.BooleanLiteral
 import org.purescript.parser.PSElements.Companion.Case
@@ -258,16 +257,6 @@ class PureParsecParser {
     private val newtypeHead =
         `'newtype'` + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val exprWhere = ref()
-    private val parsePatternMatchObject =
-        braces(
-            commaSep(
-                idents.or(lname).or(attempt(string))
-                    .then(optional(eq.or(token(OPERATOR))))
-                    .then(optional(binder))
-            )
-        )
-            .`as`(Binder)
-    private val parseRowPatternBinder = token(OPERATOR).then(binder)
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, many1(guardedDeclExpr))
