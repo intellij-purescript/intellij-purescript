@@ -74,7 +74,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                         .flatMap { it.classMembers.asSequence() }
                     yieldAll(localClassMembers)
                     val importDeclarations =
-                        module.importDeclarations.filter { it.importAlias == null }
+                        module.importDeclarations.filter { it.importAlias?.name == qualifyingName }
                     yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
                     yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
                     yieldAll(importDeclarations.flatMap { it.importedClassMembers })
