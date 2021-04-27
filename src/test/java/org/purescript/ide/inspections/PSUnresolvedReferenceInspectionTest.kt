@@ -408,4 +408,25 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test finds values from modules if atleast one imports it as name`() {
+        myFixture.configureByText(
+            "FooBar.purs",
+            """
+            module Foo.Bar where
+            class X where
+                x :: Int
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            import Foo.Bar as F
+            y = F.x
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }

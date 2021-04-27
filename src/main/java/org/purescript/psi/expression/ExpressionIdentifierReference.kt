@@ -32,17 +32,8 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         get() {
             val module = element.module ?: return emptySequence()
             val qualifyingName = element.qualifiedIdentifier.moduleName?.name
-            if (qualifyingName != null) {
-                val importDeclaration = module.importDeclarations
-                    .firstOrNull { it.importAlias?.name == qualifyingName }
-                    ?: return emptySequence()
-                return sequence {
-                    yieldAll(importDeclaration.importedValueDeclarations)
-                    yieldAll(importDeclaration.importedForeignValueDeclarations)
-                    // TODO Support imported class members
-                }
-            } else {
-                return sequence {
+            return sequence {
+                if (qualifyingName == null) {
                     for (parent in element.parents) {
                         when (parent) {
                             is PSValueDeclaration -> {
@@ -68,18 +59,18 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                         .asSequence()
                         .flatMap { it.classMembers.asSequence() }
                     yieldAll(localClassMembers)
-                    val importDeclarations =
-                        module.importDeclarations.filter { it.importAlias == null }
-                    yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
-                    yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-                    yieldAll(importDeclarations.flatMap { it.importedClassMembers })
-                    val importedClassMembers =
-                        importDeclarations
-                            .asSequence()
-                            .flatMap { it.importedClassDeclarations.asSequence() }
-                            .flatMap { it.classMembers.asSequence() }
-                    yieldAll(importedClassMembers)
                 }
+                val importDeclarations =
+                    module.importDeclarations.filter { it.importAlias?.name == qualifyingName }
+                yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
+                yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
+                yieldAll(importDeclarations.flatMap { it.importedClassMembers })
+                val importedClassMembers =
+                    importDeclarations
+                        .asSequence()
+                        .flatMap { it.importedClassDeclarations.asSequence() }
+                        .flatMap { it.classMembers.asSequence() }
+                yieldAll(importedClassMembers)
             }
         }
 
