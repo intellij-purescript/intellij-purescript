@@ -33,13 +33,18 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             val module = element.module ?: return emptySequence()
             val qualifyingName = element.qualifiedIdentifier.moduleName?.name
             if (qualifyingName != null) {
-                val importDeclaration = module.importDeclarations
-                    .firstOrNull { it.importAlias?.name == qualifyingName }
-                    ?: return emptySequence()
+                val importDeclarations = module.importDeclarations
+                    .filter { it.importAlias?.name == qualifyingName }
                 return sequence {
-                    yieldAll(importDeclaration.importedValueDeclarations)
-                    yieldAll(importDeclaration.importedForeignValueDeclarations)
-                    // TODO Support imported class members
+                    yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
+                    yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
+                    yieldAll(importDeclarations.flatMap { it.importedClassMembers })
+                    val importedClassMembers =
+                        importDeclarations
+                            .asSequence()
+                            .flatMap { it.importedClassDeclarations.asSequence() }
+                            .flatMap { it.classMembers.asSequence() }
+                    yieldAll(importedClassMembers)
                 }
             } else {
                 return sequence {
