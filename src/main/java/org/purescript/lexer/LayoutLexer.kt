@@ -761,6 +761,9 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             } else {
                 when(t.value) {
                     PSTokens.WS -> trailing.add(t)
+                    PSTokens.MLCOMMENT -> trailing.add(t)
+                    PSTokens.SLCOMMENT -> trailing.add(t)
+                    PSTokens.DOC_COMMENT -> trailing.add(t)
                     else -> {
                         lexemes.add(Lexeme(token, trailing))
                         token = t

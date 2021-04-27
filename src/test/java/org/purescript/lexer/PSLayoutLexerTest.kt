@@ -11,4 +11,5 @@ class PSLayoutLexerTest: PSLexerTestBase("layout") {
     fun testSnuglyCaseWithWhere() = doFileTest("purs")
 
     fun testLarger() = doFileTest("purs")
+    fun testClassMemberWithComment() = doFileTest("purs")
 }

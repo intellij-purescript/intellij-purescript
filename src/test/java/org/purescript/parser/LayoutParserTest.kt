@@ -9,5 +9,6 @@ class LayoutParserTest: PSLanguageParserTestBase("layout") {
     fun testSnuglyCaseWithWhere() = doTest(true, true)
 
     fun testLarger() = doTest(true, true)
+    fun testClassMemberWithComment() = doTest(true, true)
 
 }
