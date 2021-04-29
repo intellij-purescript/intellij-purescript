@@ -25,7 +25,6 @@ class PSExpressionSymbol(node: ASTNode) : PSPsiElement(node) {
 
     override fun getName(): String = qualifiedSymbol.name
 
-    override fun getTextOffset() = qualifiedSymbol.textOffset
 
     override fun getReference() =
         ExpressionSymbolReference(this)
