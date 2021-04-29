@@ -45,6 +45,7 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
@@ -588,7 +589,7 @@ class PureParsecParser {
             attempt(
                 qualified(parens(operator.`as`(Identifier)))
                     .`as`(QualifiedIdentifier)
-                    .`as`(ExpressionIdentifier)
+                    .`as`(ExpressionSymbol)
             ),
             attempt(
                 qualified(properName)

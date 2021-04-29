@@ -55,6 +55,7 @@ import org.purescript.parser.PSElements.Companion.ExportedType
 import org.purescript.parser.PSElements.Companion.ExportedValue
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
@@ -139,6 +140,7 @@ import org.purescript.psi.dostmt.PSDoNotationValueImpl
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.*
@@ -189,6 +191,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             ExpressionIdentifier -> PSExpressionIdentifier(node)
+            ExpressionSymbol -> PSExpressionSymbol(node)
             ExpressionWhere -> PSExpressionWhere(node)
             TypeConstructor -> PSTypeConstructor(node)
             ImportDeclaration -> PSImportDeclarationImpl(node)

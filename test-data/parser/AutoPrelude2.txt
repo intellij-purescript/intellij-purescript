@@ -53,7 +53,7 @@ Purescript File
         PsiElement(identifier)('main')
       PsiElement(=)('=')
       PSValueImpl(Value)
-        PSExpressionIdentifier(ExpressionIdentifier)
+        PSExpressionSymbol(ExpressionSymbol)
           PSQualifiedIdentifier(QualifiedIdentifier)
             PSModuleName(ModuleName)
               PsiElement(module prefix)('P.')

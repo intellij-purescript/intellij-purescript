@@ -100,7 +100,7 @@ Purescript File
           PsiElement(identifier)('n')
       PsiElement(=)('=')
       PSValueImpl(Value)
-        PSExpressionIdentifier(ExpressionIdentifier)
+        PSExpressionSymbol(ExpressionSymbol)
           PSQualifiedIdentifier(QualifiedIdentifier)
             PsiElement(()('(')
             PSIdentifier(identifier)

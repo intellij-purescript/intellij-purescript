@@ -429,4 +429,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    fun `test finds operators used as functions`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            
+            left a b = a
+            infix 5 left as <.
+            
+            y = (<.) 1 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
