@@ -2,7 +2,10 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
-import org.purescript.psi.*
+import org.purescript.psi.ModuleReference
+import org.purescript.psi.PSForeignValueDeclaration
+import org.purescript.psi.PSModule
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -262,4 +265,13 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             PSModule::exportedClassMembers,
             PSImportedValue::class.java
         )
+    /**
+     * @return the [PSFixityDeclaration] elements imported by this declaration
+     */
+    val importedFixityDeclarations get() =
+        getImportedDeclarations(
+            PSModule::exportedFixityDeclarations,
+            PSImportedOperator::class.java
+        )
+
 }

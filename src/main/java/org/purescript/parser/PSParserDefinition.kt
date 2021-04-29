@@ -55,6 +55,7 @@ import org.purescript.parser.PSElements.Companion.ExportedType
 import org.purescript.parser.PSElements.Companion.ExportedValue
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
@@ -93,22 +94,25 @@ import org.purescript.parser.PSElements.Companion.ObjectBinder
 import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.ObjectType
+import org.purescript.parser.PSElements.Companion.OperatorName
 import org.purescript.parser.PSElements.Companion.Parens
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
+import org.purescript.parser.PSElements.Companion.QualifiedSymbol
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
+import org.purescript.parser.PSElements.Companion.Signature
 import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
+import org.purescript.parser.PSElements.Companion.Symbol
 import org.purescript.parser.PSElements.Companion.Type
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeAtom
 import org.purescript.parser.PSElements.Companion.TypeConstructor
-import org.purescript.parser.PSElements.Companion.Signature
 import org.purescript.parser.PSElements.Companion.TypeHole
 import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
@@ -130,6 +134,7 @@ import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSSignature
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
@@ -139,6 +144,7 @@ import org.purescript.psi.dostmt.PSDoNotationValueImpl
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.*
@@ -183,12 +189,16 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
             ProperName, Qualified, pClassName, importModuleName -> PSProperName(node)
+            OperatorName -> PSOperatorName(node)
+            Symbol -> PSSymbol(node)
             ModuleName -> PSModuleName(node)
             QualifiedProperName -> PSQualifiedProperName(node)
             QualifiedIdentifier -> PSQualifiedIdentifier(node)
+            QualifiedSymbol -> PSQualifiedSymbol(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             ExpressionIdentifier -> PSExpressionIdentifier(node)
+            ExpressionSymbol -> PSExpressionSymbol(node)
             ExpressionWhere -> PSExpressionWhere(node)
             TypeConstructor -> PSTypeConstructor(node)
             ImportDeclaration -> PSImportDeclarationImpl(node)
@@ -237,7 +247,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ExternDataDeclaration -> PSExternDataDeclarationImpl(node)
             ExternInstanceDeclaration -> PSExternInstanceDeclarationImpl(node)
             ForeignValueDeclaration -> PSForeignValueDeclaration(node)
-            FixityDeclaration -> PSFixityDeclarationImpl(node)
+            FixityDeclaration -> PSFixityDeclaration(node)
             PositionedDeclarationRef -> PSPositionedDeclarationRefImpl(node)
             ClassDeclaration -> PSClassDeclaration(node)
             ClassConstraintList -> PSClassConstraintList(node)

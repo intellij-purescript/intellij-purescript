@@ -45,6 +45,7 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
@@ -58,15 +59,18 @@ import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
 import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
+import org.purescript.parser.PSElements.Companion.OperatorName
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
+import org.purescript.parser.PSElements.Companion.QualifiedSymbol
 import org.purescript.parser.PSElements.Companion.Row
 import org.purescript.parser.PSElements.Companion.RowKind
 import org.purescript.parser.PSElements.Companion.Star
 import org.purescript.parser.PSElements.Companion.StringBinder
 import org.purescript.parser.PSElements.Companion.StringLiteral
+import org.purescript.parser.PSElements.Companion.Symbol
 import org.purescript.parser.PSElements.Companion.Type
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeConstructor
@@ -315,7 +319,7 @@ class PureParsecParser {
             moduleName.or(ident.`as`(ProperName))
         )
         .then(`as`)
-        .then(operator)
+        .then(operator.`as`(OperatorName))
         .`as`(PSElements.FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
@@ -581,9 +585,14 @@ class PureParsecParser {
             `_`,
             attempt(hole),
             attempt(
-                qualified(ident)
+                qualified(idents.`as`(Identifier))
                     .`as`(QualifiedIdentifier)
                     .`as`(ExpressionIdentifier)
+            ),
+            attempt(
+                qualified(parens(operator).`as`(Symbol))
+                    .`as`(QualifiedSymbol)
+                    .`as`(ExpressionSymbol)
             ),
             attempt(
                 qualified(properName)
