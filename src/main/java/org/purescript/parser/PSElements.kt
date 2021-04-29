@@ -325,6 +325,12 @@ interface PSElements {
         val Identifier = PSElementType("identifier")
 
         @kotlin.jvm.JvmField
+        val Symbol = PSElementType("symbol")
+
+        @kotlin.jvm.JvmField
+        val QualifiedSymbol = PSElementType("symbol")
+
+        @kotlin.jvm.JvmField
         val ProperName = PSElementType("ProperName")
 
         @kotlin.jvm.JvmField

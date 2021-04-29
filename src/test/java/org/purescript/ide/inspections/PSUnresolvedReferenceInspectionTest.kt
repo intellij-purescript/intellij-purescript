@@ -429,7 +429,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
-    fun `test finds operators used as functions`() {
+    fun `test complains when operator is not defined`() {
         myFixture.configureByText(
             "Main.purs",
             """
@@ -439,6 +439,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
             infix 5 left as <.
             
             y = (<.) 1 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test finds operators used as functions`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            
+            y = <error>(<.)</error> 1 1
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())

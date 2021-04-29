@@ -9,8 +9,17 @@ class ExpressionSymbolReference(symbol: PSExpressionSymbol) :
         symbol.qualifiedSymbol.symbol.textRangeInParent,
         false
     ) {
+
+    override fun getVariants(): Array<Any> =
+        candidates.toList().toTypedArray()
+
     override fun resolve(): PsiElement? {
-        TODO("Not yet implemented")
+        return candidates.firstOrNull()
     }
+
+    val candidates get() =
+        element.module
+            ?.fixityDeclarations
+            ?: arrayOf()
 
 }

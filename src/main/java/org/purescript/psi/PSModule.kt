@@ -12,6 +12,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclarationImpl
@@ -48,6 +49,9 @@ class PSModule(node: ASTNode) :
             .asSequence()
             .find { it.name ?: "" == name }
     }
+
+    val fixityDeclarations: Array<PSFixityDeclaration> get() =
+        findChildrenByClass(PSFixityDeclaration::class.java)
 
     /**
      * @return the where keyword in the module header
