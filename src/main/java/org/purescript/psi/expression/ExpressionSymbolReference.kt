@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReferenceBase
 class ExpressionSymbolReference(symbol: PSExpressionSymbol) :
     PsiReferenceBase<PSExpressionSymbol>(
         symbol,
-        symbol.qualifiedSymbol.symbol.textRangeInParent,
+        symbol.qualifiedSymbol.symbol.textRangeInParent.grown(-2).shiftRight(1),
         false
     ) {
 

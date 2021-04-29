@@ -22,6 +22,8 @@ class PSQualifiedSymbol(node: ASTNode) : PSPsiElement(node) {
     val symbol: PSSymbol
         get() = findNotNullChildByClass(PSSymbol::class.java)
 
+    override fun getTextOffset() = symbol.textOffset
+
     override fun getName(): String =
         symbol.name
 }

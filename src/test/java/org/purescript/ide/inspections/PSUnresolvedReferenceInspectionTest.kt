@@ -451,7 +451,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
             """
             module Main where
             
-            y = <error>(<.)</error> 1 1
+            y = (<error descr="Cannot resolve symbol '<.'"><.</error>) 1 1
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
@@ -467,7 +467,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
             left a b = a
             infix 5 left as <.
             
-            y = <error>(.>)</error> 1 1
+            y = (<error descr="Cannot resolve symbol '.>'">.></error>) 1 1
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
