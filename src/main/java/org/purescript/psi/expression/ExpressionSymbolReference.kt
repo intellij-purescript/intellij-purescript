@@ -14,12 +14,13 @@ class ExpressionSymbolReference(symbol: PSExpressionSymbol) :
         candidates.toList().toTypedArray()
 
     override fun resolve(): PsiElement? {
-        return candidates.firstOrNull()
+        return candidates.firstOrNull() { it.name == element.name}
     }
 
-    val candidates get() =
-        element.module
-            ?.fixityDeclarations
-            ?: arrayOf()
+    val candidates get() = sequence {
+        val module = element.module ?: return@sequence
+        yieldAll(module.fixityDeclarations.asSequence())
+        yieldAll(module.importDeclarations.flatMap { it.importedFixityDeclarations })
+    }
 
 }

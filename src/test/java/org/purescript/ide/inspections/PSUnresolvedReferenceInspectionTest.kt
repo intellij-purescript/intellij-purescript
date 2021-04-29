@@ -429,7 +429,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
-    fun `test complains when operator is not defined`() {
+    fun `test finds operators used as functions`() {
         myFixture.configureByText(
             "Main.purs",
             """
@@ -445,13 +445,53 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
-    fun `test finds operators used as functions`() {
+    fun `test complains when operator is not defined`() {
         myFixture.configureByText(
             "Main.purs",
             """
             module Main where
             
             y = <error>(<.)</error> 1 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test complains when operator is not defined but there is other operators`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            
+            left a b = a
+            infix 5 left as <.
+            
+            y = <error>(.>)</error> 1 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test finds operators used as function when imported`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            
+            left a b = a
+            infix 5 left as <.
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            
+            import Foo
+            
+            y = (<.) 1 1
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())

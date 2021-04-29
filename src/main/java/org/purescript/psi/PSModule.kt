@@ -54,6 +54,17 @@ class PSModule(node: ASTNode) :
         findChildrenByClass(PSFixityDeclaration::class.java)
 
     /**
+     * @return the [PSFixityDeclaration] that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedFixityDeclarations: List<PSFixityDeclaration>
+        get() = getExportedDeclarations(
+            fixityDeclarations,
+            PSImportDeclarationImpl::importedFixityDeclarations,
+            PSExportedOperator::class.java
+        )
+
+    /**
      * @return the where keyword in the module header
      */
     val whereKeyword: PsiElement

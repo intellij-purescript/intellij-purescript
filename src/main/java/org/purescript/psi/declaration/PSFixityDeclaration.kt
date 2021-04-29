@@ -17,4 +17,8 @@ class PSFixityDeclaration(node: ASTNode) : PSPsiElement(node), PsiNameIdentifier
     override fun getNameIdentifier(): PsiElement {
         return operatorName;
     }
+
+    override fun getName(): String {
+        return operatorName.name
+    }
 }
