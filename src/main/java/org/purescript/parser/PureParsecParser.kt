@@ -581,7 +581,12 @@ class PureParsecParser {
             `_`,
             attempt(hole),
             attempt(
-                qualified(ident)
+                qualified(idents.`as`(Identifier))
+                    .`as`(QualifiedIdentifier)
+                    .`as`(ExpressionIdentifier)
+            ),
+            attempt(
+                qualified(parens(operator.`as`(Identifier)))
                     .`as`(QualifiedIdentifier)
                     .`as`(ExpressionIdentifier)
             ),
