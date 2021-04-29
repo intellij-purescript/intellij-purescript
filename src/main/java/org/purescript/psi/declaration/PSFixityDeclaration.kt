@@ -14,6 +14,8 @@ class PSFixityDeclaration(node: ASTNode) : PSPsiElement(node), PsiNameIdentifier
         return null
     }
 
+    override fun getTextOffset(): Int = nameIdentifier.textOffset
+
     override fun getNameIdentifier(): PsiElement {
         return operatorName;
     }
