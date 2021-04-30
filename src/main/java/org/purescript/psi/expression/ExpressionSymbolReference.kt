@@ -2,11 +2,15 @@ package org.purescript.psi.expression
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.name.PSOperatorName
 
-class ExpressionSymbolReference(symbol: PSExpressionSymbol) :
-    PsiReferenceBase<PSExpressionSymbol>(
+class ExpressionSymbolReference(
+    symbol: PSPsiElement, operator: PSOperatorName
+) :
+    PsiReferenceBase<PSPsiElement>(
         symbol,
-        symbol.qualifiedSymbol.symbol.operator.textRangeInParent,
+        operator.textRangeInParent,
         false
     ) {
 

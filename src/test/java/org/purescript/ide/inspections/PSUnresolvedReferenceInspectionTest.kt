@@ -373,7 +373,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
             "Foo.purs",
             """
             module Foo where
-            h x y = x + y
+            h x y = x
             f x y = x `h` y
             """.trimIndent()
         )
@@ -492,6 +492,37 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
             import Foo
             
             y = (<.) 1 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test warns for operator without reference`() {
+
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            
+            y = 1 <error>+</error> 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test finds operators that are defined`() {
+
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+
+            right a b = b
+            infix 6 right as .>
+
+            y = 1 .> 1
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
