@@ -100,6 +100,7 @@ import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
+import org.purescript.parser.PSElements.Companion.QualifiedOperatorName
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.QualifiedSymbol
 import org.purescript.parser.PSElements.Companion.Row
@@ -193,6 +194,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             Symbol -> PSSymbol(node)
             ModuleName -> PSModuleName(node)
             QualifiedProperName -> PSQualifiedProperName(node)
+            QualifiedOperatorName -> PSQualifiedOperatorName(node)
             QualifiedIdentifier -> PSQualifiedIdentifier(node)
             QualifiedSymbol -> PSQualifiedSymbol(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
