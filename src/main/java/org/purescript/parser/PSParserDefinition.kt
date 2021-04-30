@@ -55,6 +55,7 @@ import org.purescript.parser.PSElements.Companion.ExportedType
 import org.purescript.parser.PSElements.Companion.ExportedValue
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
@@ -100,6 +101,7 @@ import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
+import org.purescript.parser.PSElements.Companion.QualifiedOperatorName
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.QualifiedSymbol
 import org.purescript.parser.PSElements.Companion.Row
@@ -142,10 +144,7 @@ import org.purescript.psi.dostmt.PSDoNotationBindImpl
 import org.purescript.psi.dostmt.PSDoNotationLetImpl
 import org.purescript.psi.dostmt.PSDoNotationValueImpl
 import org.purescript.psi.exports.*
-import org.purescript.psi.expression.PSExpressionConstructor
-import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.expression.PSExpressionSymbol
-import org.purescript.psi.expression.PSExpressionWhere
+import org.purescript.psi.expression.*
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
@@ -193,11 +192,13 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             Symbol -> PSSymbol(node)
             ModuleName -> PSModuleName(node)
             QualifiedProperName -> PSQualifiedProperName(node)
+            QualifiedOperatorName -> PSQualifiedOperatorName(node)
             QualifiedIdentifier -> PSQualifiedIdentifier(node)
             QualifiedSymbol -> PSQualifiedSymbol(node)
             Identifier, GenericIdentifier, LocalIdentifier -> PSIdentifier(node)
             ExpressionConstructor -> PSExpressionConstructor(node)
             ExpressionIdentifier -> PSExpressionIdentifier(node)
+            ExpressionOperator -> PSExpressionOperator(node)
             ExpressionSymbol -> PSExpressionSymbol(node)
             ExpressionWhere -> PSExpressionWhere(node)
             TypeConstructor -> PSTypeConstructor(node)

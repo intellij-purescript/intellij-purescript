@@ -45,6 +45,7 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
@@ -63,6 +64,7 @@ import org.purescript.parser.PSElements.Companion.OperatorName
 import org.purescript.parser.PSElements.Companion.ProperName
 import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
+import org.purescript.parser.PSElements.Companion.QualifiedOperatorName
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
 import org.purescript.parser.PSElements.Companion.QualifiedSymbol
 import org.purescript.parser.PSElements.Companion.Row
@@ -97,6 +99,7 @@ import org.purescript.parser.PSTokens.Companion.MODULE
 import org.purescript.parser.PSTokens.Companion.MODULE_PREFIX
 import org.purescript.parser.PSTokens.Companion.NATURAL
 import org.purescript.parser.PSTokens.Companion.OPERATOR
+import org.purescript.parser.PSTokens.Companion.OPTIMISTIC
 import org.purescript.parser.PSTokens.Companion.PIPE
 import org.purescript.parser.PSTokens.Companion.PROPER_NAME
 import org.purescript.parser.PSTokens.Companion.START
@@ -158,6 +161,8 @@ class PureParsecParser {
         lname
     )
 
+    // this doesn't match parser.y but i dont feel like changing it right now
+    // it might be due to differences in the lexer
     private val operator =
         choice(
             token(OPERATOR),
@@ -165,8 +170,13 @@ class PureParsecParser {
             ddot,
             larrow,
             ldarrow,
-            token(PSTokens.OPTIMISTIC)
+            token(OPTIMISTIC),
+            token("<="),
+            token("-"),
+            token("#"),
+            token(":"),
         )
+
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
 
     // Kinds.hs
@@ -426,7 +436,7 @@ class PureParsecParser {
         `class`.then(properName).`as`(PSElements.ExportedClass)
     private val dataMembers =
         parens(ddot.or(commaSep(properName.`as`(ExportedDataMember))))
-        .`as`(ExportedDataMemberList)
+            .`as`(ExportedDataMemberList)
     private val exportedData =
         (properName + optional(dataMembers)).`as`(PSElements.ExportedData)
     private val exportedKind =
@@ -482,14 +492,8 @@ class PureParsecParser {
                 .`as`(ExpressionIdentifier),
         ).`as`(ObjectBinderField)
 
-    private val qualOp = choice(
-        operator,
-        attempt(qualified(operator)).`as`(Qualified),
-        token("<="),
-        token("-"),
-        token("#"),
-        token(":"),
-    )
+    private val qualOp =
+        qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
 
     private val binder2 = choice(
         attempt(
@@ -590,7 +594,7 @@ class PureParsecParser {
                     .`as`(ExpressionIdentifier)
             ),
             attempt(
-                qualified(parens(operator).`as`(Symbol))
+                qualified(parens(operator.`as`(OperatorName)).`as`(Symbol))
                     .`as`(QualifiedSymbol)
                     .`as`(ExpressionSymbol)
             ),
@@ -618,7 +622,7 @@ class PureParsecParser {
             */
             (case + commaSep1(expr) + of + choice(
                 attempt(`L{` + caseBranch.sepBy1(`L-sep`) + `L}`),
-                attempt(`L{` + commaSep(binder1) + arrow + `L}`+ exprWhere),
+                attempt(`L{` + commaSep(binder1) + arrow + `L}` + exprWhere),
                 `L{` + commaSep(binder1) + `L}` + guardedCase,
             )).`as`(Case),
             parseIfThenElse,
@@ -634,7 +638,7 @@ class PureParsecParser {
             )
         val exprBacktick2 = expr3.sepBy1(qualOp)
         val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-        val expr1 = expr2.sepBy1(attempt(qualified(operator)).`as`(Qualified))
+        val expr1 = expr2.sepBy1(attempt(qualOp).`as`(ExpressionOperator))
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
@@ -647,7 +651,9 @@ class PureParsecParser {
         binderAtom.setRef(
             choice(
                 attempt(`_`.`as`(PSElements.NullBinder)),
-                attempt(ident.`as`(VarBinder) + `@` + binderAtom).`as`(NamedBinder),
+                attempt(ident.`as`(VarBinder) + `@` + binderAtom).`as`(
+                    NamedBinder
+                ),
                 attempt(ident.`as`(VarBinder)),
                 attempt(qualProperName.`as`(ConstructorBinder)),
                 attempt(boolean.`as`(BooleanBinder)),
