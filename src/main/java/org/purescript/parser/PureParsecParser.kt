@@ -590,7 +590,7 @@ class PureParsecParser {
                     .`as`(ExpressionIdentifier)
             ),
             attempt(
-                qualified(parens(operator).`as`(Symbol))
+                qualified(parens(operator.`as`(OperatorName)).`as`(Symbol))
                     .`as`(QualifiedSymbol)
                     .`as`(ExpressionSymbol)
             ),
