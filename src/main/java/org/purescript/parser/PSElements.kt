@@ -263,7 +263,7 @@ interface PSElements {
         @kotlin.jvm.JvmField
         val ExpressionIdentifier = PSElementType("ExpressionIdentifier")
 
-        /* Symbol is a operator in parentesis
+        /** Symbol is a operator in parenthesis
             `(+)`
             in
             ```
@@ -272,6 +272,16 @@ interface PSElements {
          */
         @kotlin.jvm.JvmField
         val ExpressionSymbol = PSElementType("ExpressionSymbol")
+
+        /**  Operator in expression
+            `+`
+            in
+            ```
+            addOne a = a + 1
+            ```
+         */
+        @kotlin.jvm.JvmField
+        val ExpressionOperator = PSElementType("ExpressionOperator")
 
         @kotlin.jvm.JvmField
         val ExpressionWhere = PSElementType("ExpressionWhere")

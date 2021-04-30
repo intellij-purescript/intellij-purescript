@@ -17,4 +17,6 @@ class PSQualifiedOperatorName(node: ASTNode) : PSPsiElement(node) {
 
     val operatorName: PSOperatorName
         get() = findNotNullChildByClass(PSOperatorName::class.java)
+
+    override fun getName() = operatorName.name
 }

@@ -45,6 +45,7 @@ import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
+import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
@@ -637,7 +638,7 @@ class PureParsecParser {
             )
         val exprBacktick2 = expr3.sepBy1(qualOp)
         val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-        val expr1 = expr2.sepBy1(attempt(qualOp))
+        val expr1 = expr2.sepBy1(attempt(qualOp).`as`(ExpressionOperator))
 
 
         expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
