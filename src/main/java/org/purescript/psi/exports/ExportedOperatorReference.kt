@@ -1,27 +1,33 @@
 package org.purescript.psi.exports
 
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 
-class ExportedOperatorReference(operator: PSExportedOperator) : PsiReferenceBase<PSExportedOperator>(
-    operator,
-    operator.symbol.operator.textRangeInParent,
-    false
-) {
+class ExportedOperatorReference(operator: PSExportedOperator) :
+    PsiReferenceBase<PSExportedOperator>(
+        operator,
+        operator.symbol.operator.textRangeInParent,
+        false
+    ) {
     override fun getVariants(): Array<PsiNamedElement> {
-        return candidates.toTypedArray()
+        return candidates.toList().toTypedArray()
     }
 
-    override fun resolve(): PsiElement? {
-        return  candidates.firstOrNull { it.name == element.name }
-    }
+    override fun resolve() = candidates.firstOrNull { it.name == element.name }
 
-
-    private val candidates: List<PsiNamedElement>
+    private val importedCandidates
         get() =
             element.module
-                ?.fixityDeclarations
-                ?.toList()
-                ?: listOf()
+                ?.importDeclarations
+                ?.flatMap { it.importedFixityDeclarations }
+                ?.asSequence()
+                ?: sequenceOf()
+
+    private val localCandidates
+        get() = element.module
+            ?.fixityDeclarations
+            ?.asSequence()
+            ?: sequenceOf()
+
+    private val candidates get() = localCandidates + importedCandidates
 }
