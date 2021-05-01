@@ -43,6 +43,7 @@ import org.purescript.parser.PSElements.Companion.DoNotationLet
 import org.purescript.parser.PSElements.Companion.DoNotationValue
 import org.purescript.parser.PSElements.Companion.ExportedDataMember
 import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
+import org.purescript.parser.PSElements.Companion.ExportedOperator
 import org.purescript.parser.PSElements.Companion.ExpressionConstructor
 import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExpressionOperator
@@ -445,7 +446,7 @@ class PureParsecParser {
     private val exportedModule =
         token(MODULE).then(moduleName).`as`(PSElements.ExportedModule)
     private val exportedOperator =
-        parens(operator.`as`(Identifier)).`as`(PSElements.ExportedOperator)
+        symbol.`as`(ExportedOperator)
     private val exportedType =
         `'type'`.then(parens(operator.`as`(Identifier)))
             .`as`(PSElements.ExportedType)

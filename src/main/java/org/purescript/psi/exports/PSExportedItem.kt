@@ -7,6 +7,7 @@ import org.purescript.psi.imports.PSImportDeclarationImpl
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
+import org.purescript.psi.name.PSSymbol
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 
 sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
@@ -53,10 +54,10 @@ class PSExportedKind(node: ASTNode) : PSExportedItem(node) {
 }
 
 class PSExportedOperator(node: ASTNode) : PSExportedItem(node) {
-    private val identifier: PSIdentifier
-        get() = findNotNullChildByClass(PSIdentifier::class.java)
+    private val symbol: PSSymbol
+        get() = findNotNullChildByClass(PSSymbol::class.java)
 
-    override fun getName(): String = identifier.name
+    override fun getName(): String = symbol.name
 }
 
 class PSExportedType(node: ASTNode) : PSExportedItem(node) {
