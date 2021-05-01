@@ -1,4 +1,4 @@
-package org.purescript
+package org.purescript.features
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.file.PSFile
