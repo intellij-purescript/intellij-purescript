@@ -429,6 +429,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
     fun `test finds operators used as functions`() {
         myFixture.configureByText(
             "Main.purs",
@@ -499,7 +500,6 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
     }
 
     fun `test warns for operator without reference`() {
-
         myFixture.configureByText(
             "Main.purs",
             """
@@ -513,7 +513,6 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
     }
 
     fun `test errors when module dont export imported operator`() {
-
         myFixture.configureByText(
             "Lib.purs",
             """
@@ -532,7 +531,6 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
     }
 
     fun `test it finds imported operator if exported`() {
-
         myFixture.configureByText(
             "Lib.purs",
             """
