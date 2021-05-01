@@ -1,6 +1,7 @@
 package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.data.PSDataDeclaration
@@ -128,11 +129,15 @@ class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
  * ```
  */
 class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
-    private val symbol: PSSymbol
+    val symbol: PSSymbol
         get() =
             findNotNullChildByClass(PSSymbol::class.java)
 
     override fun getName(): String = symbol.name
+
+    override fun getReference(): PsiReference {
+        return ImportedOperatorReference(this)
+    }
 }
 
 /**
