@@ -549,5 +549,15 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    fun `test it warns when exporting missing operator`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main ((<error>+</error>)) where
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 
 }

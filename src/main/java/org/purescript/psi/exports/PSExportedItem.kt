@@ -54,10 +54,11 @@ class PSExportedKind(node: ASTNode) : PSExportedItem(node) {
 }
 
 class PSExportedOperator(node: ASTNode) : PSExportedItem(node) {
-    private val symbol: PSSymbol
+    val symbol: PSSymbol
         get() = findNotNullChildByClass(PSSymbol::class.java)
 
     override fun getName(): String = symbol.name
+    override fun getReference() = ExportedOperatorReference(this)
 }
 
 class PSExportedType(node: ASTNode) : PSExportedItem(node) {
