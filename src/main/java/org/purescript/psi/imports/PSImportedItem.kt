@@ -6,6 +6,7 @@ import org.purescript.psi.PSPsiElement
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
+import org.purescript.psi.name.PSSymbol
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 
 /**
@@ -127,11 +128,11 @@ class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
  * ```
  */
 class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
-    private val identifier: PSIdentifier
+    private val symbol: PSSymbol
         get() =
-            findNotNullChildByClass(PSIdentifier::class.java)
+            findNotNullChildByClass(PSSymbol::class.java)
 
-    override fun getName(): String = identifier.name
+    override fun getName(): String = symbol.name
 }
 
 /**

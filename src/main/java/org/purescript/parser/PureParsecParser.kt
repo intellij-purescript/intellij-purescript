@@ -376,6 +376,7 @@ class PureParsecParser {
             commaSep(properName.`as`(PSElements.ImportedDataMember))
         )
     ).`as`(PSElements.ImportedDataMemberList)
+    val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
     private val importedItem =
         choice(
             `'type'`
@@ -383,7 +384,7 @@ class PureParsecParser {
                 .`as`(PSElements.ImportedType),
             `class`.then(properName).`as`(PSElements.ImportedClass),
             token(KIND).then(properName).`as`(PSElements.ImportedKind),
-            parens(operator.`as`(Identifier)).`as`(PSElements.ImportedOperator),
+            symbol.`as`(PSElements.ImportedOperator),
             ident.`as`(PSElements.ImportedValue),
             properName
                 .then(optional(importedDataMembers))
@@ -594,7 +595,7 @@ class PureParsecParser {
                     .`as`(ExpressionIdentifier)
             ),
             attempt(
-                qualified(parens(operator.`as`(OperatorName)).`as`(Symbol))
+                qualified(symbol)
                     .`as`(QualifiedSymbol)
                     .`as`(ExpressionSymbol)
             ),
