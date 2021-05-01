@@ -580,4 +580,38 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
+    fun `test it finds imported operator when exporting as module`() {
+        myFixture.configureByText(
+            "Add.purs",
+            """
+            module Add where
+            add a b = b
+            infix 5 add as +            
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Other.purs",
+            """
+            module Other where
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Lib.purs",
+            """
+            module Lib (module Export) where
+            import Add as Export
+            import Other as Export
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main ((+)) where
+            import Lib ((+))
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
 }

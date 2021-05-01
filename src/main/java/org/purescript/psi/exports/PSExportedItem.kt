@@ -72,10 +72,12 @@ class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
     val moduleName: PSModuleName
         get() = findNotNullChildByClass(PSModuleName::class.java)
 
-    val importDeclaration: PSImportDeclarationImpl?
-        get() = module?.importDeclarations?.singleOrNull {
-            it.name == moduleName.name
-        }
+    val importDeclarations: Sequence<PSImportDeclarationImpl>
+        get() = module
+            ?.importDeclarations
+            ?.asSequence()
+            ?.filter { it.name == moduleName.name }
+            ?: sequenceOf()
 
     override fun getName(): String = moduleName.name
 
