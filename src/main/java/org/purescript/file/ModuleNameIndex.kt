@@ -2,6 +2,7 @@ package org.purescript.file
 
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
@@ -64,6 +65,13 @@ class ModuleNameIndex : ScalarIndexExtension<String>() {
                 .filter { fileContainingModule(project, it) != null }
                 .toList()
         }
+
+        fun getModuleNameFromFile(project: Project,file: VirtualFile) =
+            FileBasedIndex
+                .getInstance()
+                .getFileData(NAME, file, project)
+                .keys
+                .firstOrNull()
     }
 
 }
