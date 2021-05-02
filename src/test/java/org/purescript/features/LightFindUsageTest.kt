@@ -32,4 +32,32 @@ class LightFindUsageTest : BasePlatformTestCase() {
         val usages = myFixture.findUsages(x)
         assertNotEmpty(usages)
     }
+
+    fun `test find of operator re exported with module name`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            import Lib
+            f = 1 + 2
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Lib.purs",
+            """
+            module Lib (module Add) where
+            import Add
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Add.purs",
+            """
+            module Add where
+            add a b = b
+            infix 5 add as <caret>+
+            """.trimIndent()
+        )
+        val usages = myFixture.findUsages(myFixture.elementAtCaret)
+        assertSize(1, usages)
+    }
 }
