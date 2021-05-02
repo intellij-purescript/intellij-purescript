@@ -45,6 +45,14 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     ?: sequenceOf()
                                 yieldAll(valueDeclarations)
                             }
+                            is PSExpressionWhere -> {
+                                val valueDeclarations = parent
+                                    .where
+                                    ?.valueDeclarations
+                                    ?.asSequence()
+                                    ?: sequenceOf()
+                                yieldAll(valueDeclarations)
+                            }
                             is PSLetImpl ->
                                 yieldAll(parent.valueDeclarations.asSequence())
                             is PSDoBlock ->
