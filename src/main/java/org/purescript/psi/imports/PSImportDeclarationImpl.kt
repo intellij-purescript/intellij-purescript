@@ -186,7 +186,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             } else {
                 for (importedData in importedDataElements) {
                     val newTypeConstructor = importedData.newTypeDeclaration?.newTypeConstructor ?: continue
-                    if (importedData.importsAll || newTypeConstructor.name in importedData.importedDataMembers.map { name }) {
+                    if (importedData.importsAll || newTypeConstructor.name in importedData.importedDataMembers.map { it.name }) {
                         importedNewTypeConstructors.add(newTypeConstructor)
                     }
                 }

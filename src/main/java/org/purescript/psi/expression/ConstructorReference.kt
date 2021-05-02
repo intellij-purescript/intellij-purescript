@@ -29,23 +29,15 @@ class ConstructorReference(
         get() {
             val module = element.module ?: return emptySequence()
             val qualifyingName = qualifiedProperName.moduleName?.name
-            if (qualifyingName != null) {
-                val importDeclaration = module.importDeclarations
-                    .firstOrNull { it.importAlias?.name == qualifyingName }
-                    ?: return emptySequence()
-                return sequence {
-                    yieldAll(importDeclaration.importedNewTypeConstructors)
-                    yieldAll(importDeclaration.importedDataConstructors)
-                }
-            } else {
-                return sequence {
+            return sequence {
+                if (qualifyingName == null) {
                     yieldAll(module.newTypeConstructors)
                     yieldAll(module.dataConstructors)
-                    val importDeclarations = module.importDeclarations
-                        .filter { it.importAlias == null }
-                    yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
-                    yieldAll(importDeclarations.flatMap { it.importedDataConstructors })
                 }
+                val importDeclarations = module.importDeclarations
+                    .filter { it.importAlias?.name == qualifyingName }
+                yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
+                yieldAll(importDeclarations.flatMap { it.importedDataConstructors })
             }
         }
 
