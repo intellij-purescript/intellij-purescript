@@ -614,4 +614,33 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
+    fun `test it finds explicit imported newtype constructors`() {
+
+        myFixture.configureByText(
+            "Box.purs",
+            """
+            module Box where
+            newtype Box = Box String
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Lib.purs",
+            """
+            module Lib (module Box) where
+            import Box (Box(..))
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Main.purs",
+            """
+            module Main where
+            import Lib (Box(Box))
+            
+            f = Box "hello world"
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
 }
