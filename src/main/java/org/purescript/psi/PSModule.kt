@@ -97,7 +97,7 @@ class PSModule(node: ASTNode) :
         }
 
         explicitlyExportedItems.filterIsInstance<PSExportedModule>()
-            .mapNotNull { it.importDeclaration }
+            .flatMap { it.importDeclarations }
             .flatMapTo(exportedDeclarations) { importedDeclarationProperty.get(it) }
 
         return exportedDeclarations
@@ -226,7 +226,7 @@ class PSModule(node: ASTNode) :
             }
 
             explicitlyExportedItems.filterIsInstance<PSExportedModule>()
-                .mapNotNull { it.importDeclaration }
+                .flatMap { it.importDeclarations }
                 .flatMapTo(exportedNewTypeConstructors) { it.importedNewTypeConstructors }
 
             return exportedNewTypeConstructors
@@ -266,7 +266,7 @@ class PSModule(node: ASTNode) :
             }
 
             explicitlyExportedItems.filterIsInstance<PSExportedModule>()
-                .mapNotNull { it.importDeclaration }
+                .flatMap { it.importDeclarations }
                 .flatMapTo(exportedDataConstructors) { it.importedDataConstructors }
 
             return exportedDataConstructors

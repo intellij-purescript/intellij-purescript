@@ -1,6 +1,5 @@
 package org.purescript.psi.exports
 
-import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 
 class ExportedOperatorReference(operator: PSExportedOperator) :
@@ -9,10 +8,7 @@ class ExportedOperatorReference(operator: PSExportedOperator) :
         operator.symbol.operator.textRangeInParent,
         false
     ) {
-    override fun getVariants(): Array<PsiNamedElement> {
-        return candidates.toList().toTypedArray()
-    }
-
+    override fun getVariants() = candidates.toList().toTypedArray()
     override fun resolve() = candidates.firstOrNull { it.name == element.name }
 
     private val importedCandidates
