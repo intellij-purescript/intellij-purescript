@@ -169,7 +169,6 @@ class PureParsecParser {
             token(OPERATOR),
             dot,
             ddot,
-            larrow,
             ldarrow,
             token(OPTIMISTIC),
             token("<="),
@@ -262,7 +261,9 @@ class PureParsecParser {
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()
-    private val parseGuard = (pipe + commaSep(expr)).`as`(Guard)
+    // TODO: pattern guards should parse expr1 not expr
+    private val patternGuard = optional(attempt(binder + larrow)) + expr
+    private val parseGuard = (pipe + commaSep(patternGuard)).`as`(Guard)
     private val dataHead =
         data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val dataCtor =
