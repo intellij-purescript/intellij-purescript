@@ -82,7 +82,7 @@ Purescript File
             PsiElement(proper name)('TP')
     PsiElement(foreign)('foreign')
     PsiElement(import)('import')
-    PSExternDataDeclarationImpl(ExternDataDeclaration)
+    PSForeignDataDeclaration(ForeignDataDeclaration)
       PsiElement(data)('data')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('T'''')

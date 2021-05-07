@@ -364,7 +364,7 @@ Purescript File
           PsiElement(identifier)('s')
     PsiElement(foreign)('foreign')
     PsiElement(import)('import')
-    PSExternDataDeclarationImpl(ExternDataDeclaration)
+    PSForeignDataDeclaration(ForeignDataDeclaration)
       PsiElement(data)('data')
       PSTypeConstructor(TypeConstructor)
         PsiElement(proper name)('FVect')

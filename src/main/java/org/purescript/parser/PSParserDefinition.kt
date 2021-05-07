@@ -58,7 +58,7 @@ import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
-import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
+import org.purescript.parser.PSElements.Companion.ForeignDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.Fixity
 import org.purescript.parser.PSElements.Companion.FixityDeclaration
@@ -245,7 +245,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             Signature -> PSSignature(node)
             TypeSynonymDeclaration -> PSTypeSynonymDeclaration(node)
             ValueDeclaration -> PSValueDeclaration(node)
-            ExternDataDeclaration -> PSExternDataDeclarationImpl(node)
+            ForeignDataDeclaration -> PSForeignDataDeclaration(node)
             ExternInstanceDeclaration -> PSExternInstanceDeclarationImpl(node)
             ForeignValueDeclaration -> PSForeignValueDeclaration(node)
             FixityDeclaration -> PSFixityDeclaration(node)

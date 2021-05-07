@@ -114,7 +114,7 @@ interface PSElements {
         val ValueDeclaration = PSElementType("ValueDeclaration")
 
         @kotlin.jvm.JvmField
-        val ExternDataDeclaration = PSElementType("ExternDataDeclaration")
+        val ForeignDataDeclaration = PSElementType("ForeignDataDeclaration")
 
         @kotlin.jvm.JvmField
         val ExternInstanceDeclaration = PSElementType("ExternInstanceDeclaration")
