@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.siblings
 import org.purescript.PSLanguage
 import org.purescript.psi.PSConstructorBinderImpl
 import org.purescript.psi.exports.PSExportedModule
@@ -49,9 +50,20 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitTypeReference(reference: PsiReference) {
-                if (reference.canonicalText !in PSLanguage.BUILTIN_TYPES) {
-                    visitReference(reference)
+                if (reference.canonicalText in PSLanguage.BUILTIN_TYPES) {
+                    return
                 }
+
+                // TODO Workaround to prevent false positives on class constraints
+                val isClassConstraint = reference.element.parent
+                    .siblings(forward = true, withSelf = false)
+                    .any { it.text == "=>" }
+
+                if (isClassConstraint) {
+                    return
+                }
+
+                visitReference(reference)
             }
 
             private fun visitReference(reference: PsiReference) {

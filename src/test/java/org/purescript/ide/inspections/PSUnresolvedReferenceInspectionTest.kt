@@ -705,4 +705,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
+    fun `test does not report resolved class constraints`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Show a where
+                    show :: a -> String
+                f :: forall a. Show a => a -> String
+                f a = show a
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
