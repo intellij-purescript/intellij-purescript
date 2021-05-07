@@ -84,7 +84,7 @@ Purescript File
     PsiElement(import)('import')
     PSForeignDataDeclaration(ForeignDataDeclaration)
       PsiElement(data)('data')
-      PSTypeConstructor(TypeConstructor)
+      PSProperName(ProperName)
         PsiElement(proper name)('T'''')
       PsiElement(::)('∷')
       PSFunKindImpl(FunKind)

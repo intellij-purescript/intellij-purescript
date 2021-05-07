@@ -1,7 +1,6 @@
 package org.purescript.psi.typeconstructor
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
 import org.purescript.*
 
 class TypeConstructorReferenceTest : BasePlatformTestCase() {

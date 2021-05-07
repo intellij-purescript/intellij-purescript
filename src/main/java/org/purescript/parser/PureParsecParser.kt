@@ -297,7 +297,7 @@ class PureParsecParser {
             .then(
                 choice(
                     data
-                        .then(token(PROPER_NAME).`as`(TypeConstructor))
+                        .then(properName)
                         .then(dcolon).then(parseKind)
                         .`as`(ForeignDataDeclaration),
                     `'instance'`

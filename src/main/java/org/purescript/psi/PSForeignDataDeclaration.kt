@@ -3,7 +3,7 @@ package org.purescript.psi
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import org.purescript.psi.typeconstructor.PSTypeConstructor
+import org.purescript.psi.name.PSProperName
 
 /**
  * A foreign data declaration, e.g.
@@ -12,22 +12,21 @@ import org.purescript.psi.typeconstructor.PSTypeConstructor
  * ```
  */
 class PSForeignDataDeclaration(node: ASTNode) :
-        PSPsiElement(node),
-        PsiNameIdentifierOwner {
+    PSPsiElement(node),
+    PsiNameIdentifierOwner {
 
-    internal val typeConstructor: PSTypeConstructor
-        get() = findNotNullChildByClass(PSTypeConstructor::class.java)
+    internal val properName: PSProperName
+        get() = findNotNullChildByClass(PSProperName::class.java)
 
     override fun setName(name: String): PsiElement? =
-            null
+        null
 
-    // TODO This should maybe not be a PSTypeConstructor
     override fun getNameIdentifier(): PsiElement =
-            typeConstructor
+        properName
 
     override fun getName(): String =
-            typeConstructor.name
+        properName.name
 
     override fun getTextOffset(): Int =
-            typeConstructor.textOffset
+        properName.textOffset
 }
