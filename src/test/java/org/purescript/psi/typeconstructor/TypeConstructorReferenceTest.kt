@@ -248,7 +248,7 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
                 type <caret>A = Int
                 func :: A -> A
                 func a = a
-                """.trimIndent()
+            """.trimIndent()
         )
         val usageInfo = myFixture.testFindUsages("Main.purs")
 
@@ -342,7 +342,7 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
                 foreign import data <caret>A :: Type
                 func :: A -> A
                 func a = a
-                """.trimIndent()
+            """.trimIndent()
         )
         val usageInfo = myFixture.testFindUsages("Main.purs")
 

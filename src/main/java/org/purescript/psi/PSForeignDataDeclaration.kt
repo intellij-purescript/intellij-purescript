@@ -18,15 +18,11 @@ class PSForeignDataDeclaration(node: ASTNode) :
     internal val properName: PSProperName
         get() = findNotNullChildByClass(PSProperName::class.java)
 
-    override fun setName(name: String): PsiElement? =
-        null
+    override fun setName(name: String): PsiElement? = null
 
-    override fun getNameIdentifier(): PsiElement =
-        properName
+    override fun getNameIdentifier(): PsiElement = properName
 
-    override fun getName(): String =
-        properName.name
+    override fun getName(): String = properName.name
 
-    override fun getTextOffset(): Int =
-        properName.textOffset
+    override fun getTextOffset(): Int = properName.textOffset
 }
