@@ -7,7 +7,7 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
         val INSTANCE = PSLanguage()
 
         /**
-         * These modules are built in to the purescript compiler,
+         * These modules are built into the purescript compiler,
          * and have no corresponding source files.
          *
          * See [https://pursuit.purescript.org/builtins/docs/Prim] for details.
@@ -21,6 +21,20 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
             "Prim.RowList",
             "Prim.Symbol",
             "Prim.TypeError",
+        )
+
+        /**
+         * These types are built into the purescript compiles,
+         * and are always available.
+         *
+         * See [https://pursuit.purescript.org/builtins/docs/Prim] for details.
+         */
+        val BUILTIN_TYPES = listOf(
+            "Int",
+            "Number",
+            "String",
+            "Char",
+            "Boolean"
         )
     }
 }

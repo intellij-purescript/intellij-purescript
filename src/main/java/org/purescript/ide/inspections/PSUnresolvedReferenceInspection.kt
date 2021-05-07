@@ -17,6 +17,7 @@ import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.imports.PSImportDeclarationImpl
 import org.purescript.psi.imports.PSImportedOperator
+import org.purescript.psi.typeconstructor.PSTypeConstructor
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(
@@ -37,11 +38,18 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                     is PSExpressionIdentifier -> visitReference(element.reference)
                     is PSExpressionSymbol -> visitReference(element.reference)
                     is PSExpressionOperator -> visitReference(element.reference)
+                    is PSTypeConstructor -> visitTypeReference(element.reference)
                 }
             }
 
             private fun visitModuleReference(reference: PsiReference) {
                 if (reference.canonicalText !in PSLanguage.BUILTIN_MODULES) {
+                    visitReference(reference)
+                }
+            }
+
+            private fun visitTypeReference(reference: PsiReference) {
+                if (reference.canonicalText !in PSLanguage.BUILTIN_TYPES) {
                     visitReference(reference)
                 }
             }
