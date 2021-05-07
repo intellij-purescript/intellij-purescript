@@ -34,6 +34,7 @@ import org.purescript.parser.PSTokens.Companion.STRING
 import org.purescript.parser.PSTokens.Companion.STRING_ERROR
 import org.purescript.parser.PSTokens.Companion.STRING_ESCAPED
 import org.purescript.parser.PSTokens.Companion.STRING_GAP
+import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSVarBinderImpl
@@ -63,6 +64,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSTypeSynonymDeclaration
             || psiElement is PSClassMember
             || psiElement is PSFixityDeclaration
+            || psiElement is PSForeignDataDeclaration
 
     override fun getWordsScanner(): WordsScanner {
         val psWordScanner = DefaultWordsScanner(
@@ -115,6 +117,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSDataConstructor -> "data constructor"
             is PSClassDeclaration -> "class"
             is PSForeignValueDeclaration -> "foreign value"
+            is PSForeignDataDeclaration -> "foreign data"
             is PSTypeSynonymDeclaration -> "type synonym"
             is PSClassMember -> "class member"
             is PSFixityDeclaration -> "operator"
