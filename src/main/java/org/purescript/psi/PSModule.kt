@@ -107,7 +107,8 @@ class PSModule(node: ASTNode) :
      * If the export list is null, this module implicitly exports all its members.
      * @return the [PSExportList] in this module, if it exists
      */
-    val exportList: PSExportList? = findChildByClass(PSExportList::class.java)
+    val exportList: PSExportList?
+        get() = findChildByClass(PSExportList::class.java)
 
     /**
      * @return the [PSImportDeclarationImpl] elements in this module
