@@ -8,6 +8,7 @@ import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -24,12 +25,19 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun map(inputData: FileContent): Map<String, Void?> {
         val file = inputData.psiFile as? PSFile ?: return emptyMap()
         val module = file.module ?: return emptyMap()
-        val exportedNames = mutableSetOf<String>()
-        module.exportedTypeSynonymDeclarations.mapTo(exportedNames) { it.name }
-        module.exportedDataDeclarations.mapTo(exportedNames) { it.name }
-        module.exportedNewTypeDeclarations.mapTo(exportedNames) { it.name }
-        module.exportedForeignDataDeclarations.mapTo(exportedNames) { it.name }
-        return exportedNames.associateWith { null }
+        val exportList = module.exportList
+        return if (exportList == null) {
+            val exportedNames = mutableSetOf<String>()
+            module.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
+            module.dataDeclarations.mapTo(exportedNames) { it.name }
+            module.newTypeDeclarations.mapTo(exportedNames) { it.name }
+            module.foreignDataDeclarations.mapTo(exportedNames) { it.name }
+            exportedNames.associateWith { null }
+        } else {
+            exportList.exportedItems
+                .filterIsInstance<PSExportedData>()
+                .associate { it.name to null }
+        }
     }
 
     override fun getName(): ID<String, Void?> = NAME
