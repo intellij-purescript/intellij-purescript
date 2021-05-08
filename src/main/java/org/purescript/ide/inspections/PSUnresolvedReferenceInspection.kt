@@ -58,8 +58,12 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                 val isClassConstraint = reference.element.parent
                     .siblings(forward = true, withSelf = false)
                     .any { it.text == "=>" }
-
                 if (isClassConstraint) {
+                    return
+                }
+
+                // TODO Workaround to prevent false positives on qualified types
+                if (reference.element.textContains('.')) {
                     return
                 }
 
