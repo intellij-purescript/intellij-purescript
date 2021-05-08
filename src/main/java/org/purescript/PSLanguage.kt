@@ -12,7 +12,7 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
          *
          * See [https://pursuit.purescript.org/builtins/docs/Prim] for details.
          */
-        val BUILTIN_MODULES = listOf(
+        val BUILTIN_MODULES = setOf(
             "Prim",
             "Prim.Boolean",
             "Prim.Coerce",
@@ -29,7 +29,7 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
          *
          * See [https://pursuit.purescript.org/builtins/docs/Prim] for details.
          */
-        val BUILTIN_TYPES = listOf(
+        val BUILTIN_TYPES = setOf(
             "Int",
             "Number",
             "String",
