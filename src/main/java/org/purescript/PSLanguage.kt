@@ -34,7 +34,9 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
             "Number",
             "String",
             "Char",
-            "Boolean"
+            "Boolean",
+            "Array",
+            "Type", // TODO Type is really a kind, not a type
         )
     }
 }
