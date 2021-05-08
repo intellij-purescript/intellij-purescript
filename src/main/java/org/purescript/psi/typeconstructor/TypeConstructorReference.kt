@@ -1,9 +1,15 @@
 package org.purescript.psi.typeconstructor
 
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
+import org.purescript.file.ExportedConstructorsIndex
+import org.purescript.file.ExportedTypesIndex
+import org.purescript.psi.expression.ImportQuickFix
 
 class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
+    LocalQuickFixProvider,
     PsiReferenceBase<PSTypeConstructor>(
         typeConstructor,
         typeConstructor.textRangeInParent,
@@ -36,4 +42,15 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
             }
             return candidates
         }
+
+    override fun getQuickFixes(): Array<LocalQuickFix> {
+        return importCandidates
+            .map { ImportQuickFix(it) }
+            .toTypedArray()
+    }
+
+    private val importCandidates: List<String>
+        get() = ExportedTypesIndex
+            .filesExportingType(element.project, element.name)
+            .mapNotNull { it.module?.name }
 }
