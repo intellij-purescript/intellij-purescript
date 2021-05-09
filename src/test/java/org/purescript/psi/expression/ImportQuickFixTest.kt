@@ -126,4 +126,28 @@ class ImportQuickFixTest : BasePlatformTestCase() {
 
         assertEquals("Bar", file.getImportDeclarations().single().name)
     }
+
+    fun `test imports type constructor`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import data Bar :: Type
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f :: Bar
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+        val importDeclaration = file.getImportDeclaration()
+
+        assertEquals("Import Bar", action.familyName)
+        assertEquals("Bar", importDeclaration.name)
+    }
 }

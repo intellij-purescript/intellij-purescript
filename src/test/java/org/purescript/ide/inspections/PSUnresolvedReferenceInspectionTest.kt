@@ -204,7 +204,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
             """
             module Foo where
             class Box a where
-                map :: forall a b. (a -> b) -> Box a -> Box b 
+                map :: forall a b. (a -> b) -> a -> b 
             f = map
             """.trimIndent()
         )
@@ -658,4 +658,66 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
+    fun `test reports unresolved type constructor`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f :: <error descr="Cannot resolve symbol 'Bar'">Bar</error>
+                f = 3
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test does not report locally resolved type constructor`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                type Bar = Int
+                f :: Bar
+                f = 3
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test does not report imported resolved type constructor`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import data Qux :: Type
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar (Qux)
+                f :: Qux
+                f = 3
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test does not report resolved class constraints`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                class Show a where
+                    show :: a -> String
+                f :: forall a. Show a => a -> String
+                f a = show a
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
