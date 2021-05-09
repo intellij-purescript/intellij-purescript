@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
+import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.declaration.PSValueDeclaration
@@ -179,14 +180,23 @@ fun PsiFile.getClassMember(): PSClassMember =
 fun PsiFile.getClassConstraint(): PSClassConstraint =
     getClassDeclaration().classConstraints.single()
 
+fun PsiFile.getTypeConstructors(): List<PSTypeConstructor> =
+    collectDescendantsOfType()
+
 fun PsiFile.getTypeConstructor(): PSTypeConstructor =
-    collectDescendantsOfType<PSTypeConstructor>().single()
+    getTypeConstructors().single()
 
 fun PsiFile.getTypeSynonymDeclarations(): Array<PSTypeSynonymDeclaration> =
     getModule().typeSynonymDeclarations
 
 fun PsiFile.getTypeSynonymDeclaration(): PSTypeSynonymDeclaration =
     getTypeSynonymDeclarations().single()
+
+fun PsiFile.getForeignDataDeclarations(): Array<PSForeignDataDeclaration> =
+    getModule().foreignDataDeclarations
+
+fun PsiFile.getForeignDataDeclaration(): PSForeignDataDeclaration =
+    getForeignDataDeclarations().single()
 
 fun PsiFile.getExpressionConstructors(): List<PSExpressionConstructor> =
     collectDescendantsOfType()

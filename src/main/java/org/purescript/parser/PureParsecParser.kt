@@ -49,7 +49,7 @@ import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
-import org.purescript.parser.PSElements.Companion.ExternDataDeclaration
+import org.purescript.parser.PSElements.Companion.ForeignDataDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
 import org.purescript.parser.PSElements.Companion.Identifier
@@ -291,15 +291,15 @@ class PureParsecParser {
                     .then(manyOrEmpty(typeAtom))
             )
         ).then(darrow)
-    private val parseExternDeclaration =
+    private val parseForeignDeclaration =
         token(FOREIGN)
             .then(token(IMPORT))
             .then(
                 choice(
                     data
-                        .then(token(PROPER_NAME).`as`(TypeConstructor))
+                        .then(properName)
                         .then(dcolon).then(parseKind)
-                        .`as`(ExternDataDeclaration),
+                        .`as`(ForeignDataDeclaration),
                     `'instance'`
                         .then(ident).then(dcolon)
                         .then(optional(parseDeps))
@@ -427,7 +427,7 @@ class PureParsecParser {
         (`'type'` + properName + many(typeVarBinding) + eq + type)
             .`as`(TypeSynonymDeclaration),
         (attempt(ident) + many(binderAtom) + guardedDecl).`as`(ValueDeclaration),
-        parseExternDeclaration,
+        parseForeignDeclaration,
         parseFixityDeclaration,
         classDeclaration,
         optional(`'derive'`.then(optional(`'newtype'`)))

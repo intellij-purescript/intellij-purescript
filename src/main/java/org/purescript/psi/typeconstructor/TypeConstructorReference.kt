@@ -27,10 +27,12 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
             candidates.addAll(module.dataDeclarations)
             candidates.addAll(module.newTypeDeclarations)
             candidates.addAll(module.typeSynonymDeclarations)
+            candidates.addAll(module.foreignDataDeclarations)
             for (importDeclaration in module.importDeclarations) {
                 candidates.addAll(importDeclaration.importedDataDeclarations)
                 candidates.addAll(importDeclaration.importedNewTypeDeclarations)
                 candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
+                candidates.addAll(importDeclaration.importedForeignDataDeclarations)
             }
             return candidates
         }

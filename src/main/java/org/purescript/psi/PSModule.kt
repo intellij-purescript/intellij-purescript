@@ -130,6 +130,13 @@ class PSModule(node: ASTNode) :
             findChildrenByClass(PSForeignValueDeclaration::class.java)
 
     /**
+     * @return the [PSForeignDataDeclaration] elements in this module
+     */
+    val foreignDataDeclarations: Array<PSForeignDataDeclaration>
+        get() =
+            findChildrenByClass(PSForeignDataDeclaration::class.java)
+
+    /**
      * @return the [PSNewTypeDeclarationImpl] elements in this module
      */
     val newTypeDeclarations: Array<PSNewTypeDeclarationImpl>
@@ -191,6 +198,17 @@ class PSModule(node: ASTNode) :
             foreignValueDeclarations,
             PSImportDeclarationImpl::importedForeignValueDeclarations,
             PSExportedValue::class.java
+        )
+
+    /**
+     * @return the [PSForeignDataDeclaration] elements that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
+        get() = getExportedDeclarations(
+            foreignDataDeclarations,
+            PSImportDeclarationImpl::importedForeignDataDeclarations,
+            PSExportedData::class.java
         )
 
     /**

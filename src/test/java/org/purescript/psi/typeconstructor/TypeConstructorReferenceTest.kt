@@ -1,10 +1,7 @@
 package org.purescript.psi.typeconstructor
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.getDataDeclaration
-import org.purescript.getNewTypeDeclaration
-import org.purescript.getTypeConstructor
-import org.purescript.getTypeSynonymDeclaration
+import org.purescript.*
 
 class TypeConstructorReferenceTest : BasePlatformTestCase() {
 
@@ -251,10 +248,10 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
                 type <caret>A = Int
                 func :: A -> A
                 func a = a
-                """.trimIndent()
+            """.trimIndent()
         )
         val usageInfo = myFixture.testFindUsages("Main.purs")
-        
+
         assertEquals(2, usageInfo.size)
     }
 
@@ -275,6 +272,100 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getTypeConstructor()
         val usageInfo = myFixture.findUsages(typeSynonymDeclaration).single()
+
+        assertEquals(typeConstructor, usageInfo.element)
+    }
+
+    fun `test resolves local foreign data declarations`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                foreign import data Bar :: Type
+                q :: Bar
+            """.trimIndent()
+        )
+        val foreignDataDeclaration = file.getForeignDataDeclaration()
+        val typeConstructor = file.getTypeConstructors()[1]
+
+        assertEquals("Bar", typeConstructor.name)
+        assertEquals(foreignDataDeclaration, typeConstructor.reference.resolve())
+    }
+
+    fun `test resolves imported foreign data declarations`() {
+        val foreignDataDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import data Qux :: Type
+            """.trimIndent()
+        ).getForeignDataDeclaration()
+        val typeConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                a :: Qux
+            """.trimIndent()
+        ).getTypeConstructor()
+
+        assertEquals(foreignDataDeclaration, typeConstructor.reference.resolve())
+    }
+
+    fun `test completes foreign data declarations`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import data Qux :: Type
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                foreign import data Bum :: Type
+                a :: <caret>
+            """.trimIndent()
+        )
+
+        myFixture.testCompletionVariants("Foo.purs", "Qux", "Bum")
+    }
+
+    fun `test finds usages from local foreign data declarations`() {
+        myFixture.configureByText(
+            "Main.purs",
+            """
+                module Data where
+                foreign import data B :: Type
+                foreign import data <caret>A :: Type
+                func :: A -> A
+                func a = a
+            """.trimIndent()
+        )
+        val usageInfo = myFixture.testFindUsages("Main.purs")
+
+        assertEquals(2, usageInfo.size)
+    }
+
+    fun `test finds usages from imported foreign data declarations`() {
+        val foreignDataDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                foreign import data Qux :: Type
+            """.trimIndent()
+        ).getForeignDataDeclaration()
+        val typeConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar
+                a :: Qux
+            """.trimIndent()
+        ).getTypeConstructor()
+        val usageInfo = myFixture.findUsages(foreignDataDeclaration).single()
 
         assertEquals(typeConstructor, usageInfo.element)
     }
