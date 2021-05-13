@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import org.purescript.psi.PSPsiElement
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 
 class PSVarBinderImpl(node: ASTNode) :
@@ -14,7 +15,10 @@ class PSVarBinderImpl(node: ASTNode) :
     override fun getName(): String = nameIdentifier.name
 
     override fun setName(name: String): PsiElement? {
-        return null
+        val newName =
+            PSPsiFactory(project).createIdentifier(name) ?: return null
+        this.nameIdentifier.replace(newName)
+        return this
     }
 
     override fun getNameIdentifier(): PSIdentifier {
