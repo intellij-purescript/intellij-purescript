@@ -84,15 +84,20 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PS
     override fun getReference(): ModuleReference =
         ModuleReference(this)
 
-    override fun compareTo(other: PSImportDeclarationImpl): Int =
-        compareValuesBy(
-            this,
-            other,
-            { it.name },
-            { it.isHiding },
-            { it.importAlias?.name },
-            { it.text } // TODO We probably want to compare by import list instead
-        )
+    override fun compareTo(other: PSImportDeclarationImpl): Int {
+        return when {
+            name == "Prelude" && other.name != "Prelude" -> -1
+            name != "Prelude" && other.name == "Prelude" -> 1
+            else -> compareValuesBy(
+                this,
+                other,
+                { it.moduleName?.name },
+                { it.isHiding },
+                { it.importAlias?.name },
+                { it.text } // TODO We probably want to compare by import list instead
+            )
+        }
+    }
 
     /**
      * Helper method for retrieving various types of imported declarations.
