@@ -200,12 +200,16 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PS
                  * Partially hiding imported data does not work in an intuitive way.
                  * Here are some examples using Data.Maybe:
                  *
-                 *   import Data.Maybe hiding (Maybe(..))             -- Hides type and constructors
-                 *   import Data.Maybe hiding (Maybe)                 -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe())               -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe(Just))           -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe(Just, Nothing))  -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe(Nothing, Just))  -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe(..))                           -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe)                               -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe())                             -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Just))                         -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Just, Nothing))                -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Nothing, Just))                -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe(Just), Maybe(Nothing))         -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Nothing), Maybe(Just))         -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe, Maybe(Nothing), Maybe(Just))  -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe, Maybe(Just), Maybe(Nothing))  -- Hides nothing
                  *
                  * TODO
                  *  I'll account for the Maybe(..) case for now, and ignore the rest.
