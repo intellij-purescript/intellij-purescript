@@ -22,7 +22,7 @@ import kotlin.reflect.KProperty1
  * import Foo.Bar hiding (a, b, c) as FB
  * ```
  */
-class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
+class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PSImportDeclarationImpl> {
 
     /**
      * The identifier specifying module being imported, e.g.
@@ -42,6 +42,20 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
     val importList: PSImportList?
         get() =
             findChildByClass(PSImportList::class.java)
+
+    /**
+     * @return true if the import declaration implicitly imports
+     * all available items.
+     */
+    val importsAll: Boolean
+        get() = importList == null
+
+    /**
+     * @return all the items in [importList], or an empty array if
+     * the import list is null.
+     */
+    val importedItems: Array<PSImportedItem> get() =
+        importList?.importedItems ?: emptyArray()
 
     /**
      * @return the import alias of this import declaration,
@@ -83,6 +97,21 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      */
     override fun getReference(): ModuleReference =
         ModuleReference(this)
+
+    override fun compareTo(other: PSImportDeclarationImpl): Int {
+        return when {
+            name == "Prelude" && other.name != "Prelude" -> -1
+            name != "Prelude" && other.name == "Prelude" -> 1
+            else -> compareValuesBy(
+                this,
+                other,
+                { it.moduleName?.name },
+                { it.isHiding },
+                { it.importAlias?.name },
+                { it.text } // TODO We probably want to compare by import list instead
+            )
+        }
+    }
 
     /**
      * Helper method for retrieving various types of imported declarations.
@@ -171,12 +200,16 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
                  * Partially hiding imported data does not work in an intuitive way.
                  * Here are some examples using Data.Maybe:
                  *
-                 *   import Data.Maybe hiding (Maybe(..))             -- Hides type and constructors
-                 *   import Data.Maybe hiding (Maybe)                 -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe())               -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe(Just))           -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe(Just, Nothing))  -- Hides nothing
-                 *   import Data.Maybe hiding (Maybe(Nothing, Just))  -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe(..))                           -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe)                               -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe())                             -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Just))                         -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Just, Nothing))                -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Nothing, Just))                -- Hides type and constructors
+                 *   import Data.Maybe hiding (Maybe(Just), Maybe(Nothing))         -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe(Nothing), Maybe(Just))         -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe, Maybe(Nothing), Maybe(Just))  -- Hides nothing
+                 *   import Data.Maybe hiding (Maybe, Maybe(Just), Maybe(Nothing))  -- Hides nothing
                  *
                  * TODO
                  *  I'll account for the Maybe(..) case for now, and ignore the rest.
@@ -271,13 +304,15 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             PSModule::exportedClassMembers,
             PSImportedValue::class.java
         )
+
     /**
      * @return the [PSFixityDeclaration] elements imported by this declaration
      */
-    val importedFixityDeclarations get() =
-        getImportedDeclarations(
-            PSModule::exportedFixityDeclarations,
-            PSImportedOperator::class.java
-        )
+    val importedFixityDeclarations
+        get() =
+            getImportedDeclarations(
+                PSModule::exportedFixityDeclarations,
+                PSImportedOperator::class.java
+            )
 
 }

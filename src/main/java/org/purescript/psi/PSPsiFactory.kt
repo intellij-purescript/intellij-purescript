@@ -6,7 +6,8 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.purescript.PSLanguage
-import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.ide.formatting.*
+import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 
@@ -20,6 +21,7 @@ import org.purescript.psi.name.PSModuleName
 inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(noinline predicate: (T) -> Boolean = { true }): T? {
     return findDescendantOfType({ true }, predicate)
 }
+
 /**
  * This should be [com.intellij.psi.util.findDescendantOfType]
  * but is currently missing from the EAP build
@@ -52,11 +54,107 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
-    fun createImportDeclaration(moduleName: String): PSImportDeclarationImpl? =
+    fun createImportDeclaration(importDeclaration: ImportDeclaration): PSImportDeclarationImpl? =
+        createImportDeclaration(
+            importDeclaration.moduleName,
+            importDeclaration.hiding,
+            importDeclaration.importedItems.map { createImportedItem(it) ?: return null },
+            importDeclaration.alias
+        )
+
+    fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
+        return when (importedItem) {
+            is ImportedClass -> createImportedClass(importedItem.name)
+            is ImportedData -> createImportedData(
+                importedItem.name,
+                importedItem.doubleDot,
+                importedItem.dataMembers
+            )
+            is ImportedKind -> createImportedKind(importedItem.name)
+            is ImportedOperator -> createImportedOperator(importedItem.name)
+            is ImportedType -> createImportedType(importedItem.name)
+            is ImportedValue -> createImportedValue(importedItem.name)
+        }
+    }
+
+    fun createImportDeclaration(
+        moduleName: String,
+        hiding: Boolean = false,
+        importedItems: Collection<PSImportedItem> = emptyList(),
+        alias: String? = null
+    ): PSImportDeclarationImpl? =
+        createFromText(
+            buildString {
+                appendLine("module Foo where")
+                append("import $moduleName")
+                if (importedItems.isNotEmpty()) {
+                    if (hiding) {
+                        append(" hiding")
+                    }
+                    append(importedItems.joinToString(prefix = " (", postfix = ")") { it.text })
+                }
+                if (alias != null) {
+                    append(" as $alias")
+                }
+            }
+        )
+
+    private fun createImportedClass(name: String): PSImportedClass? =
         createFromText(
             """
                 module Foo where
-                import $moduleName
+                import Bar (class $name)
+            """.trimIndent()
+        )
+
+    private fun createImportedKind(name: String): PSImportedKind? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (kind $name)
+            """.trimIndent()
+        )
+
+    private fun createImportedOperator(name: String): PSImportedOperator? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (($name))
+            """.trimIndent()
+        )
+
+    private fun createImportedType(name: String): PSImportedType? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (type ($name))
+            """.trimIndent()
+        )
+
+    fun createImportedData(
+        name: String,
+        doubleDot: Boolean = false,
+        importedDataMembers: Collection<String> = emptyList()
+    ): PSImportedData? =
+        createFromText(
+            buildString {
+                appendLine("module Foo where")
+                append("import Bar (")
+                append(name)
+                if (doubleDot) {
+                    append("(..)")
+                } else if (importedDataMembers.isNotEmpty()) {
+                    append(importedDataMembers.joinToString(prefix = "(", postfix = ")"))
+                }
+                append(")")
+            }
+        )
+
+    fun createImportedValue(name: String): PSImportedValue? =
+        createFromText(
+            """
+                module Foo where
+                import Bar ($name)
             """.trimIndent()
         )
 
@@ -69,9 +167,11 @@ class PSPsiFactory(private val project: Project) {
             .findDescendantOfType()
 
     fun createIdentifier(name: String): PSIdentifier? {
-        return createFromText("""
+        return createFromText(
+            """
             |module Main where
             |$name = 1
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
 }

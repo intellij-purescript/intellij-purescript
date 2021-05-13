@@ -83,6 +83,14 @@
             enabledByDefault="true" level="ERROR"
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
     />
+
+    <!-- Formatting -->
+
+    <lang.importOptimizer
+            language="Purescript"
+            implementationClass="org.purescript.ide.formatting.PurescriptImportOptimizer"
+    />
+
     <!-- Indexes -->
     <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex" />
     <fileBasedIndex implementation="org.purescript.file.ExportedConstructorsIndex" />
