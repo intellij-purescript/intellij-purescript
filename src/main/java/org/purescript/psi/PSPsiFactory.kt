@@ -7,6 +7,8 @@ import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.purescript.PSLanguage
 import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportedData
+import org.purescript.psi.imports.PSImportedItem
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 
@@ -52,13 +54,29 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
-    fun createImportDeclaration(moduleName: String): PSImportDeclarationImpl? =
-        createFromText(
+    fun createImportDeclaration(
+        moduleName: String,
+        hiding: Boolean = false,
+        importedItems: Collection<PSImportedItem> = emptyList(),
+        alias: String? = null
+    ): PSImportDeclarationImpl? {
+        val importDeclarationBuilder = StringBuilder("import $moduleName")
+        if (importedItems.isNotEmpty()) {
+            if (hiding) {
+                importDeclarationBuilder.append(" hiding")
+            }
+            importDeclarationBuilder.append(importedItems.joinToString(prefix = " (", postfix = ")") { it.text })
+        }
+        if (alias != null) {
+            importDeclarationBuilder.append(" as $alias")
+        }
+        return createFromText(
             """
                 module Foo where
-                import $moduleName
+                $importDeclarationBuilder
             """.trimIndent()
         )
+    }
 
     fun createNewLine(): PsiElement =
         PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n")

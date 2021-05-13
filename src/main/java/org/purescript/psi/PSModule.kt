@@ -342,4 +342,23 @@ class PSModule(node: ASTNode) :
     override val docComments: List<PsiComment>
         get() = getDocComments()
 
+    fun addImportDeclaration(importDeclaration: PSImportDeclarationImpl) {
+        val lastImportDeclaration = importDeclarations.lastOrNull()
+        val insertPosition = lastImportDeclaration ?: whereKeyword
+        val newLine = PSPsiFactory(project).createNewLine()
+        addAfter(importDeclaration, insertPosition)
+        addAfter(newLine, insertPosition)
+        if (lastImportDeclaration == null) {
+            addAfter(newLine, insertPosition)
+        }
+    }
+
+    fun replaceImportDeclarations(newImportDeclarations: Collection<PSImportDeclarationImpl>) {
+        for (importDeclaration in importDeclarations) {
+            importDeclaration.delete()
+        }
+        for (importDeclaration in newImportDeclarations) {
+            addImportDeclaration(importDeclaration)
+        }
+    }
 }
