@@ -8,7 +8,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.siblings
 import org.purescript.PSLanguage
-import org.purescript.psi.PSConstructorBinderImpl
+import org.purescript.psi.binder.PSConstructorBinderImpl
 import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.exports.PSExportedOperator
 import org.purescript.psi.exports.PSExportedValue

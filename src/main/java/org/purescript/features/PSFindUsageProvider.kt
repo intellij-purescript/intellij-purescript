@@ -37,7 +37,7 @@ import org.purescript.parser.PSTokens.Companion.STRING_GAP
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
-import org.purescript.psi.PSVarBinderImpl
+import org.purescript.psi.binder.PSVarBinderImpl
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
