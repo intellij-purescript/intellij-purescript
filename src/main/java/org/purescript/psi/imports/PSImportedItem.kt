@@ -13,12 +13,45 @@ import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 /**
  * Any element that can occur in a [PSImportList]
  */
-sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node) {
+sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSImportedItem> {
     abstract override fun getName(): String
 
     internal val importDeclaration: PSImportDeclarationImpl?
         get() =
             PsiTreeUtil.getParentOfType(this, PSImportDeclarationImpl::class.java)
+
+    /**
+     * Compares this [PSImportedItem] with the specified [PSImportedItem] for order.
+     * Returns zero if this [PSImportedItem] is equal to the specified
+     * [other] [PSImportedItem], a negative number if it's less than [other], or a
+     * positive number if it's greater than [other].
+     *
+     * Different classes of [PSImportedItem] are ordered accordingly, in ascending order:
+     *  - [PSImportedClass]
+     *  - [PSImportedKind]
+     *  - [PSImportedType]
+     *  - [PSImportedData]
+     *  - [PSImportedValue]
+     *  - [PSImportedOperator]
+     *
+     * If the operands are of the same class, they are ordered according to their [getName].
+     */
+    override fun compareTo(other: PSImportedItem): Int =
+        compareValuesBy(
+            this,
+            other,
+            {
+                when (it) {
+                    is PSImportedClass -> 0
+                    is PSImportedKind -> 1
+                    is PSImportedType -> 2
+                    is PSImportedData -> 3
+                    is PSImportedValue -> 4
+                    is PSImportedOperator -> 5
+                }
+            },
+            { it.name }
+        )
 }
 
 /**

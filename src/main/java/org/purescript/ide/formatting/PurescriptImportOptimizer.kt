@@ -37,7 +37,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
                 importDeclarations.mapNotNull { it.importList }
                     .flatMap { it.importedItems.toList() }
                     .distinctBy { it.text }
-                    .sortedBy { it.text }
+                    .sorted()
             }
             val mergedImportDeclaration = factory.createImportDeclaration(moduleName, hiding, importedDataElements, alias)
                 ?: return NOP
