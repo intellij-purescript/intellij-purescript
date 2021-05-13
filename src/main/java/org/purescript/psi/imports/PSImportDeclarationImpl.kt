@@ -44,6 +44,20 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PS
             findChildByClass(PSImportList::class.java)
 
     /**
+     * @return true if the import declaration implicitly imports
+     * all available items.
+     */
+    val importsAll: Boolean
+        get() = importList == null
+
+    /**
+     * @return all the items in [importList], or an empty array if
+     * the import list is null.
+     */
+    val importedItems: Array<PSImportedItem> get() =
+        importList?.importedItems ?: emptyArray()
+
+    /**
      * @return the import alias of this import declaration,
      * if it has one.
      */

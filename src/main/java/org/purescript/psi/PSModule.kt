@@ -354,11 +354,12 @@ class PSModule(node: ASTNode) :
     }
 
     fun replaceImportDeclarations(newImportDeclarations: Collection<PSImportDeclarationImpl>) {
-        for (importDeclaration in importDeclarations) {
-            importDeclaration.delete()
-        }
+        val oldImportDeclarations = importDeclarations
         for (importDeclaration in newImportDeclarations) {
             addImportDeclaration(importDeclaration)
+        }
+        for (importDeclaration in oldImportDeclarations) {
+            importDeclaration.delete()
         }
     }
 }
