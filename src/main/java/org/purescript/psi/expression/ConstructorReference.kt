@@ -4,9 +4,13 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.parentOfType
 import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.psi.PSPsiElement
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSQualifiedProperName
+import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 
 class ConstructorReference(
     element: PSPsiElement,
@@ -42,14 +46,40 @@ class ConstructorReference(
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        return importCandidates
-            .map { ImportQuickFix(it) }
-            .toTypedArray()
+        val factory = PSPsiFactory(element.project)
+        val quickFixes = mutableListOf<LocalQuickFix>()
+        for ((moduleName, typeName) in importCandidates) {
+            val importedData = factory.createImportedData(typeName, true)
+                ?: return emptyArray()
+            quickFixes += ImportQuickFix(moduleName, importedData)
+        }
+        return quickFixes.toTypedArray()
     }
 
-    private val importCandidates: List<String>
-        get() = ExportedConstructorsIndex
-            .filesExportingConstructor(element.project, element.name!!)
-            .mapNotNull { it.module?.name }
+    private val importCandidates: Set<Pair<String, String>>
+        get() {
+            val modules = ExportedConstructorsIndex
+                .filesExportingConstructor(element.project, qualifiedProperName.name)
+                .mapNotNull { it.module }
+
+            val importCandidates = mutableSetOf<Pair<String, String>>()
+            for (module in modules) {
+                for (exportedDataConstructor in module.exportedDataConstructors) {
+                    if (exportedDataConstructor.name == qualifiedProperName.name) {
+                        val dataDeclaration = exportedDataConstructor.parentOfType<PSDataDeclaration>()
+                            ?: continue
+                        importCandidates += module.name to dataDeclaration.name
+                    }
+                }
+                for (exportedNewTypeConstructor in module.exportedNewTypeConstructors) {
+                    if (exportedNewTypeConstructor.name == qualifiedProperName.name) {
+                        val newTypeDeclaration = exportedNewTypeConstructor.parentOfType<PSNewTypeDeclarationImpl>()
+                            ?: continue
+                        importCandidates += module.name to newTypeDeclaration.name
+                    }
+                }
+            }
+            return importCandidates
+        }
 
 }

@@ -11,6 +11,7 @@ import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedType
 
 class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
+
     override fun getName(): ID<String, Void?> = NAME
 
     override fun getIndexer(): DataIndexer<String, Void?, FileContent> =
@@ -57,15 +58,17 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
             }
         }
 
-    override fun getKeyDescriptor() = EnumeratorStringDescriptor.INSTANCE
+    override fun getKeyDescriptor(): EnumeratorStringDescriptor =
+        EnumeratorStringDescriptor.INSTANCE
+
     override fun getVersion() = 1
+
     override fun getInputFilter() =
         DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
 
     override fun dependsOnFileContent() = true
 
     companion object {
-        @NonNls
         val NAME =
             ID.create<String, Void?>("org.purescript.file.ExportedConstructorsIndex")
 

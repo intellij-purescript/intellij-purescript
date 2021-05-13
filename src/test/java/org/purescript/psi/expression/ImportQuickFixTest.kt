@@ -32,7 +32,7 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
 
-        assertEquals("Import Data.Maybe", action.familyName)
+        assertEquals("Import Data.Maybe (Maybe(..))", action.familyName)
         assertEquals("Data.Maybe", importDeclaration.name)
     }
 
@@ -55,7 +55,7 @@ class ImportQuickFixTest : BasePlatformTestCase() {
                     | Nothing
             """.trimIndent()
         )
-        val file = myFixture.configureByText(
+        myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where

@@ -80,12 +80,17 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createImportedData(name: String): PSImportedData? =
+    fun createImportedData(name: String, doubleDot: Boolean = false): PSImportedData? =
         createFromText(
-            """
-                module Foo where
-                import Bar ($name)
-            """.trimIndent()
+            buildString {
+                appendLine("module Foo where")
+                append("import Bar (")
+                append(name)
+                if (doubleDot) {
+                    append("(..)")
+                }
+                append(")")
+            }
         )
 
     fun createImportedValue(name: String): PSImportedValue? =
