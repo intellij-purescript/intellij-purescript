@@ -1,0 +1,84 @@
+<templateSet group="Purescript">
+    <template
+        name="instance"
+        value="instance $INSTANCE$ :: $CLASS$ $SUBJECT$ where&#10;    $MEMBER$ = $BODY$"
+        description="simple instance declaration with automatic name"
+        toReformat="false"
+        toShortenFQNames="false"
+    >
+        <variable
+            name="CLASS"
+            expression="complete()"
+            defaultValue='"Show"'
+            alwaysStopAt="true"
+        />
+        <variable
+            name="SUBJECT"
+            expression="complete()"
+            defaultValue='"_"'
+            alwaysStopAt="true"
+        />
+        <variable
+            name="INSTANCE"
+            expression="concat(decapitalize(CLASS), SUBJECT)"
+            defaultValue='"_"'
+            alwaysStopAt="false"
+        />
+        <variable
+            name="MEMBER"
+            expression="decapitalize(CLASS)"
+            defaultValue='"_"'
+            alwaysStopAt="true"
+        />
+        <variable
+            name="BODY"
+            expression=""
+            defaultValue='"?"'
+            alwaysStopAt="true"
+        />
+        <context>
+            <option name="PURESCRIPT" value="true"/>
+        </context>
+    </template>
+    <template
+        name="case2"
+        value="case $SELECTED$ of &#10;    $BINDER1$ -> $BODY1$&#10;    $BINDER2$ -> $BODY2$"
+        description="case with 2 branches"
+        toReformat="false"
+        toShortenFQNames="false"
+    >
+        <variable
+            name="SELECTED"
+            expression="complete()"
+            defaultValue=''
+            alwaysStopAt="true"
+        />
+        <variable
+            name="BINDER1"
+            expression="complete()"
+            defaultValue='"_"'
+            alwaysStopAt="true"
+        />
+        <variable
+            name="BODY1"
+            expression="complete()"
+            defaultValue='"?"'
+            alwaysStopAt="true"
+        />
+        <variable
+            name="BINDER2"
+            expression="complete()"
+            defaultValue='"_"'
+            alwaysStopAt="true"
+        />
+        <variable
+            name="BODY2"
+            expression="complete()"
+            defaultValue='"?"'
+            alwaysStopAt="true"
+        />
+        <context>
+            <option name="PURESCRIPT" value="true"/>
+        </context>
+    </template>
+</templateSet>

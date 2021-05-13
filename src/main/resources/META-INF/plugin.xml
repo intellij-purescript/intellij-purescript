@@ -75,6 +75,12 @@
             language="Purescript"
             implementationClass="org.purescript.features.PSPairedBraceMatcher"/>
 
+    <!-- Templates -->
+    <liveTemplateContext
+        implementation="org.purescript.PurescriptLiveTemplateContext"/>
+    <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
+
+
     <!-- Inspections -->
 
     <localInspection
