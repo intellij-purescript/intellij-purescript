@@ -61,24 +61,22 @@ class PSPsiFactory(private val project: Project) {
         hiding: Boolean = false,
         importedItems: Collection<PSImportedItem> = emptyList(),
         alias: String? = null
-    ): PSImportDeclarationImpl? {
-        val importDeclarationBuilder = StringBuilder("import $moduleName")
-        if (importedItems.isNotEmpty()) {
-            if (hiding) {
-                importDeclarationBuilder.append(" hiding")
+    ): PSImportDeclarationImpl? =
+        createFromText(
+            buildString {
+                appendLine("module Foo where")
+                append("import $moduleName")
+                if (importedItems.isNotEmpty()) {
+                    if (hiding) {
+                        append(" hiding")
+                    }
+                    append(importedItems.joinToString(prefix = " (", postfix = ")") { it.text })
+                }
+                if (alias != null) {
+                    append(" as $alias")
+                }
             }
-            importDeclarationBuilder.append(importedItems.joinToString(prefix = " (", postfix = ")") { it.text })
-        }
-        if (alias != null) {
-            importDeclarationBuilder.append(" as $alias")
-        }
-        return createFromText(
-            """
-                module Foo where
-                $importDeclarationBuilder
-            """.trimIndent()
         )
-    }
 
     fun createImportedData(
         name: String,
@@ -92,8 +90,7 @@ class PSPsiFactory(private val project: Project) {
                 append(name)
                 if (doubleDot) {
                     append("(..)")
-                }
-                else if (importedDataMembers.isNotEmpty()) {
+                } else if (importedDataMembers.isNotEmpty()) {
                     append(importedDataMembers.joinToString(prefix = "(", postfix = ")"))
                 }
                 append(")")
@@ -117,9 +114,11 @@ class PSPsiFactory(private val project: Project) {
             .findDescendantOfType()
 
     fun createIdentifier(name: String): PSIdentifier? {
-        return createFromText("""
+        return createFromText(
+            """
             |module Main where
             |$name = 1
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
 }
