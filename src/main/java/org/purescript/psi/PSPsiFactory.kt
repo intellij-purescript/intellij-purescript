@@ -80,7 +80,11 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createImportedData(name: String, doubleDot: Boolean = false): PSImportedData? =
+    fun createImportedData(
+        name: String,
+        doubleDot: Boolean = false,
+        importedDataMembers: List<String> = emptyList()
+    ): PSImportedData? =
         createFromText(
             buildString {
                 appendLine("module Foo where")
@@ -88,6 +92,9 @@ class PSPsiFactory(private val project: Project) {
                 append(name)
                 if (doubleDot) {
                     append("(..)")
+                }
+                else if (importedDataMembers.isNotEmpty()) {
+                    append(importedDataMembers.joinToString(prefix = "(", postfix = ")"))
                 }
                 append(")")
             }
