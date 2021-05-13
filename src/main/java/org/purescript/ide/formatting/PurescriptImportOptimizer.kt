@@ -43,9 +43,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
                 ?: return NOP
             newImportDeclarations += mergedImportDeclaration
         }
-        return Runnable {
-            module.replaceImportDeclarations(newImportDeclarations.sortedBy { it.text })
-        }
+        return Runnable { module.replaceImportDeclarations(newImportDeclarations.sorted()) }
     }
 
     companion object {

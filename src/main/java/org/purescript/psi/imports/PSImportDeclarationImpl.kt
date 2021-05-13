@@ -22,7 +22,7 @@ import kotlin.reflect.KProperty1
  * import Foo.Bar hiding (a, b, c) as FB
  * ```
  */
-class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
+class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PSImportDeclarationImpl> {
 
     /**
      * The identifier specifying module being imported, e.g.
@@ -83,6 +83,16 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
      */
     override fun getReference(): ModuleReference =
         ModuleReference(this)
+
+    override fun compareTo(other: PSImportDeclarationImpl): Int =
+        compareValuesBy(
+            this,
+            other,
+            { it.name },
+            { it.isHiding },
+            { it.importAlias?.name },
+            { it.text } // TODO We probably want to compare by import list instead
+        )
 
     /**
      * Helper method for retrieving various types of imported declarations.
@@ -271,13 +281,15 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node) {
             PSModule::exportedClassMembers,
             PSImportedValue::class.java
         )
+
     /**
      * @return the [PSFixityDeclaration] elements imported by this declaration
      */
-    val importedFixityDeclarations get() =
-        getImportedDeclarations(
-            PSModule::exportedFixityDeclarations,
-            PSImportedOperator::class.java
-        )
+    val importedFixityDeclarations
+        get() =
+            getImportedDeclarations(
+                PSModule::exportedFixityDeclarations,
+                PSImportedOperator::class.java
+            )
 
 }
