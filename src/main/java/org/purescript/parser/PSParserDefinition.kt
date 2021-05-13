@@ -130,6 +130,7 @@ import org.purescript.parser.PSElements.Companion.importModuleName
 import org.purescript.parser.PSElements.Companion.pClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.psi.*
+import org.purescript.psi.binder.*
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.*

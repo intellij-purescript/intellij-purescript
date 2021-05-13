@@ -1,6 +1,7 @@
-package org.purescript.psi
+package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.expression.ConstructorReference
 import org.purescript.psi.name.PSQualifiedProperName
 

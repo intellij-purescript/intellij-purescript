@@ -1,10 +1,11 @@
-package org.purescript.psi
+package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.name.PSIdentifier
 
 class PSVarBinderImpl(node: ASTNode) :
