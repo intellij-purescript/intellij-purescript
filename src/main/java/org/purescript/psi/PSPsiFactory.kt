@@ -9,6 +9,7 @@ import org.purescript.PSLanguage
 import org.purescript.psi.imports.PSImportDeclarationImpl
 import org.purescript.psi.imports.PSImportedData
 import org.purescript.psi.imports.PSImportedItem
+import org.purescript.psi.imports.PSImportedValue
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 
@@ -80,6 +81,14 @@ class PSPsiFactory(private val project: Project) {
     }
 
     fun createImportedData(name: String): PSImportedData? =
+        createFromText(
+            """
+                module Foo where
+                import Bar ($name)
+            """.trimIndent()
+        )
+
+    fun createImportedValue(name: String): PSImportedValue? =
         createFromText(
             """
                 module Foo where

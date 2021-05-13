@@ -1,9 +1,11 @@
 package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
 import org.purescript.getImportDeclaration
 import org.purescript.getImportDeclarations
 import org.purescript.getImportedData
+import org.purescript.getImportedValue
 import org.purescript.ide.inspections.PSUnresolvedReferenceInspection
 
 class ImportQuickFixTest : BasePlatformTestCase() {
@@ -125,7 +127,8 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         val action = myFixture.getAllQuickFixes("Foo.purs").single()
         myFixture.launchAction(action)
 
-        assertEquals("Bar", file.getImportDeclarations().single().name)
+        assertEquals("Bar", file.getImportDeclaration().name)
+        assertEquals("bar", file.getImportedValue().name)
     }
 
     fun `test imports type constructor`() {
