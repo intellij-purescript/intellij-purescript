@@ -3,6 +3,7 @@ package org.purescript.psi.expression
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getImportDeclaration
 import org.purescript.getImportDeclarations
+import org.purescript.getImportedData
 import org.purescript.ide.inspections.PSUnresolvedReferenceInspection
 
 class ImportQuickFixTest : BasePlatformTestCase() {
@@ -132,22 +133,24 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             "Bar.purs",
             """
                 module Bar where
-                foreign import data Bar :: Type
+                foreign import data Qux :: Type
             """.trimIndent()
         )
         val file = myFixture.configureByText(
             "Foo.purs",
             """
                 module Foo where
-                f :: Bar
+                f :: Qux
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         val action = myFixture.getAllQuickFixes("Foo.purs").single()
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
+        val importedData = file.getImportedData()
 
-        assertEquals("Import Bar", action.familyName)
+        assertEquals("Import Bar (Qux)", action.familyName)
         assertEquals("Bar", importDeclaration.name)
+        assertEquals("Qux", importedData.name)
     }
 }

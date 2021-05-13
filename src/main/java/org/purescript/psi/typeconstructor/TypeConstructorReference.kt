@@ -4,8 +4,8 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.file.ExportedTypesIndex
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.expression.ImportQuickFix
 
 class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
@@ -44,8 +44,10 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
+        val factory = PSPsiFactory(element.project)
+        val importedData = factory.createImportedData(element.name)
         return importCandidates
-            .map { ImportQuickFix(it) }
+            .map { ImportQuickFix(it, importedData) }
             .toTypedArray()
     }
 

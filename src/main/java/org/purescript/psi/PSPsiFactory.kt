@@ -22,6 +22,7 @@ import org.purescript.psi.name.PSModuleName
 inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(noinline predicate: (T) -> Boolean = { true }): T? {
     return findDescendantOfType({ true }, predicate)
 }
+
 /**
  * This should be [com.intellij.psi.util.findDescendantOfType]
  * but is currently missing from the EAP build
@@ -77,6 +78,14 @@ class PSPsiFactory(private val project: Project) {
             """.trimIndent()
         )
     }
+
+    fun createImportedData(name: String): PSImportedData? =
+        createFromText(
+            """
+                module Foo where
+                import Bar ($name)
+            """.trimIndent()
+        )
 
     fun createNewLine(): PsiElement =
         PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n")
