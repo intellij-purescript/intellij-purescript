@@ -78,6 +78,8 @@
     <!-- Templates -->
     <liveTemplateContext
         implementation="org.purescript.PurescriptLiveTemplateContext"/>
+    <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
+
 
     <!-- Inspections -->
 
