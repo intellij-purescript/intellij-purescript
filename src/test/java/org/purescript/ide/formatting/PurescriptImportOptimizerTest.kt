@@ -41,7 +41,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test sorts according to module name`() {
+    fun `failing test sorts according to module name`() {
         test(
             """
                 module Foo where
@@ -60,7 +60,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test sort keeps prelude at the top`() {
+    fun `failing test sort keeps prelude at the top`() {
         test(
             """
                 module Foo where
@@ -79,7 +79,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test sorts according to alias`() {
+    fun `failing test sorts according to alias`() {
         test(
             """
                 module Foo where
@@ -110,7 +110,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test merges imports`() {
+    fun `failing test merges imports`() {
         test(
             """
                 module Foo where
@@ -128,7 +128,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test groups aliased imports when merging`() {
+    fun `failing test groups aliased imports when merging`() {
         test(
             """
                 module Foo where
@@ -151,7 +151,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test removes specific imports if one import imports all`() {
+    fun `failing test removes specific imports if one import imports all`() {
         test(
             """
                 module Foo where
@@ -170,7 +170,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test removes duplicate imports`() {
+    fun `failing test removes duplicate imports`() {
         test(
             """
                 module Foo where
@@ -194,7 +194,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test merges imported data`() {
+    fun `failing test merges imported data`() {
         test(
             """
                 module Foo where
@@ -209,7 +209,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test merges imported data with double dot`() {
+    fun `failing test merges imported data with double dot`() {
         test(
             """
                 module Foo where
