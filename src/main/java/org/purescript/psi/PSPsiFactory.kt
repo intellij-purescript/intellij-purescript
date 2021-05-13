@@ -6,10 +6,8 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.purescript.PSLanguage
-import org.purescript.psi.imports.PSImportDeclarationImpl
-import org.purescript.psi.imports.PSImportedData
-import org.purescript.psi.imports.PSImportedItem
-import org.purescript.psi.imports.PSImportedValue
+import org.purescript.ide.formatting.*
+import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 
@@ -56,6 +54,29 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
+    fun createImportDeclaration(importDeclaration: ImportDeclaration): PSImportDeclarationImpl? =
+        createImportDeclaration(
+            importDeclaration.moduleName,
+            importDeclaration.hiding,
+            importDeclaration.importedItems.map { createImportedItem(it) ?: return null },
+            importDeclaration.alias
+        )
+
+    fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
+        return when (importedItem) {
+            is ImportedClass -> createImportedClass(importedItem.name)
+            is ImportedData -> createImportedData(
+                importedItem.name,
+                importedItem.doubleDot,
+                importedItem.dataMembers
+            )
+            is ImportedKind -> createImportedKind(importedItem.name)
+            is ImportedOperator -> createImportedOperator(importedItem.name)
+            is ImportedType -> createImportedType(importedItem.name)
+            is ImportedValue -> createImportedValue(importedItem.name)
+        }
+    }
+
     fun createImportDeclaration(
         moduleName: String,
         hiding: Boolean = false,
@@ -78,10 +99,42 @@ class PSPsiFactory(private val project: Project) {
             }
         )
 
+    private fun createImportedClass(name: String): PSImportedClass? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (class $name)
+            """.trimIndent()
+        )
+
+    private fun createImportedKind(name: String): PSImportedKind? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (kind $name)
+            """.trimIndent()
+        )
+
+    private fun createImportedOperator(name: String): PSImportedOperator? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (($name))
+            """.trimIndent()
+        )
+
+    private fun createImportedType(name: String): PSImportedType? =
+        createFromText(
+            """
+                module Foo where
+                import Bar (type ($name))
+            """.trimIndent()
+        )
+
     fun createImportedData(
         name: String,
         doubleDot: Boolean = false,
-        importedDataMembers: List<String> = emptyList()
+        importedDataMembers: Collection<String> = emptyList()
     ): PSImportedData? =
         createFromText(
             buildString {

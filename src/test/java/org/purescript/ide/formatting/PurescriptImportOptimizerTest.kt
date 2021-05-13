@@ -96,7 +96,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test sorts according to hiding`() {
+    fun `test merges hiding and non-hiding imports`() {
         test(
             """
                 module Foo where
@@ -105,8 +105,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
                 module Foo where
-                import Alphabet (a)
-                import Alphabet hiding (a)
+                import Alphabet
             """.trimIndent()
         )
     }
@@ -229,13 +228,13 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
-                import Foo hiding (a, b, c)
-                import Foo hiding (b)
-                import Foo hiding (b, c)
+                import Bar hiding (a, b, c)
+                import Bar hiding (b)
+                import Bar hiding (b, c)
             """.trimIndent(),
             """
                 module Foo where
-                import Foo (b)
+                import Bar hiding (b)
             """.trimIndent()
         )
     }
