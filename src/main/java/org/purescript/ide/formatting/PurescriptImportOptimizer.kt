@@ -12,17 +12,19 @@ class PurescriptImportOptimizer : ImportOptimizer {
 
     override fun processFile(file: PsiFile): Runnable {
         val psFile = file as PSFile
-        val module = psFile.module ?: error("File ${file.name} contains no Purescript module")
+        val module = psFile.module ?: error("File contains no Purescript module: ${file.name} ")
         val factory = PSPsiFactory(file.project)
         val importDeclarations = module.importDeclarations.map(::fromPsiElement).toSet()
-        val mergedImportDeclarations = mergeImportDeclarations(importDeclarations)
-            .map { factory.createImportDeclaration(it)!! }
+        val mergedImportDeclarations = mergeImportDeclarations(importDeclarations).map {
+            factory.createImportDeclaration(it) ?: error("Could not create import declaration: $it")
+        }
         return Runnable { module.replaceImportDeclarations(mergedImportDeclarations) }
     }
 
     private fun fromPsiElement(importDeclaration: PSImportDeclarationImpl): ImportDeclaration =
         ImportDeclaration(
-            importDeclaration.moduleName!!.name,
+            importDeclaration.moduleName?.name
+                ?: error("Import declaration is missing module name: ${importDeclaration.text}"),
             importDeclaration.isHiding,
             importDeclaration.importedItems.map(::fromPsiElement).toSet(),
             importDeclaration.importAlias?.name
