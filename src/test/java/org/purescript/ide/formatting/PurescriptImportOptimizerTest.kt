@@ -248,7 +248,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test merges imported data`() {
+    fun `test merges imported data`() {
         test(
             """
                 module Foo where
@@ -267,7 +267,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test merges imported data with double dot`() {
+    fun `test merges imported data with double dot`() {
         test(
             """
                 module Foo where

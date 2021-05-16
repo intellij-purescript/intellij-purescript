@@ -89,6 +89,16 @@ class ImportMergerTest : TestCase() {
         assertEquals(expected, mergeImportDeclarations(importDeclarations))
     }
 
+    fun `test merges imported data with double dot`() {
+        val importDeclarations = setOf(
+            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe"))),
+            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", dataMembers = setOf("Just")))),
+            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", doubleDot = true))),
+        )
+        val expected = setOf(ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", doubleDot = true))))
+        assertEquals(expected, mergeImportDeclarations(importDeclarations))
+    }
+
     @Suppress("unused")
     fun `failing test, does not merge hiding and regular import declarations that hide only data constructors`() {
         val importDeclarations = setOf(

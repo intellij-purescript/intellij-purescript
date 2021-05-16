@@ -32,7 +32,11 @@ fun mergeImportDeclarations(importDeclarations: Iterable<ImportDeclaration>): Se
         }.toSet()
 }
 
-private fun mergeGroup(moduleName: String, alias: String?, importDeclarations: List<ImportDeclaration>):
+private fun mergeGroup(
+    moduleName: String,
+    alias: String?,
+    importDeclarations: List<ImportDeclaration>
+):
     ImportDeclaration {
     if (importDeclarations.any { it.importedItems.isEmpty() }) {
         return ImportDeclaration(moduleName, alias = alias)
@@ -57,9 +61,32 @@ private fun mergeGroup(moduleName: String, alias: String?, importDeclarations: L
         )
     }
 
+    val importedItems = importDeclarations
+        .flatMap { it.importedItems }
+        .let { mergeImportedItems(it) }
+
     return ImportDeclaration(
         moduleName,
-        importedItems = importDeclarations.flatMap { it.importedItems }.toSet(),
+        importedItems = importedItems,
         alias = alias
     )
+}
+
+fun mergeImportedItems(importedItems: Iterable<ImportedItem>): Set<ImportedItem> {
+    val mergedImportItems = mutableSetOf<ImportedItem>()
+    importedItems.filterTo(mergedImportItems) { it !is ImportedData }
+    importedItems
+        .filterIsInstance<ImportedData>()
+        .groupBy { it.name }
+        .mapTo(mergedImportItems) {
+            val (name, importedDataItems) = it
+            if (importedDataItems.any { it.doubleDot }) {
+                ImportedData(name, doubleDot = true)
+            } else {
+                val dataMembers =
+                    importedDataItems.flatMap { it.dataMembers }.toSet()
+                ImportedData(name, dataMembers = dataMembers)
+            }
+        }
+    return mergedImportItems
 }
