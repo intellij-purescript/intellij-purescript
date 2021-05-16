@@ -220,7 +220,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test removes duplicate imports`() {
+    fun `test removes duplicate imports`() {
         test(
             """
                 module Foo where
@@ -241,7 +241,9 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Prelude (class Applicative, kind Kind, type (~>), Unit, pure, (<*>))
+            
             """.trimIndent()
         )
     }
@@ -250,13 +252,17 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe)
                 import Data.Maybe (Maybe(Just))
                 import Data.Maybe (Maybe(Nothing))
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe(Just, Nothing))
+                
             """.trimIndent()
         )
     }
@@ -265,24 +271,30 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe)
                 import Data.Maybe (Maybe(Just))
                 import Data.Maybe (Maybe(..))
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe(..))
+                
             """.trimIndent()
         )
     }
 
-    fun `failing, test merges imported data hiding items`() {
+    fun `test merges imported data hiding items`() {
         test(
             """
                 module Foo where
+                
                 import Bar hiding (a, b, c)
                 import Bar hiding (b)
                 import Bar hiding (b, c)
+                
             """.trimIndent(),
             """
                 module Foo where
