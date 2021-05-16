@@ -370,8 +370,7 @@ class PureParsecParser {
     private val instHead =
         `'instance'` + ident + dcolon +
             optional(attempt(constraints + darrow)) +
-            qualProperName.`as`(ClassName) +
-            manyOrEmpty(typeAtom)
+            constraint // this constraint is the instance type
     private val importedDataMembers = parens(
         choice(
             ddot,
