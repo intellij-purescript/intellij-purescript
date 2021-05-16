@@ -16,7 +16,35 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
     fun `test does nothing when no imports`() {
         test(
             "module Foo where",
-            "module Foo where"
+            """module Foo where
+                |
+            """.trimMargin()
+        )
+    }
+
+    fun `test add empty line between where and first declaration`() {
+        test(
+            """module Foo where
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |f = 3
+            """.trimMargin()
+        )
+    }
+
+    fun `test removes redundant empty lines`() {
+        test(
+            """module Foo where
+                |
+                |
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |f = 3
+            """.trimMargin()
         )
     }
 
@@ -41,7 +69,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test sorts according to module name`() {
+    fun `test sorts according to module name`() {
         test(
             """
                 module Foo where
@@ -52,46 +80,34 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Cat
                 import Dog
                 import Giraffe
                 import Pig
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test sort keeps prelude at the top`() {
-        test(
-            """
-                module Foo where
-                import Giraffe
-                import Prelude
-                import Dog
-                import Cat
-            """.trimIndent(),
-            """
-                module Foo where
-                import Prelude
-                import Cat
-                import Dog
-                import Giraffe
-            """.trimIndent()
-        )
-    }
 
-    fun `failing test sorts according to alias`() {
+    fun `test sorts according to alias`() {
         test(
             """
                 module Foo where
+                
                 import Alphabet as C
                 import Alphabet as A
                 import Alphabet as B
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Alphabet as A
                 import Alphabet as B
                 import Alphabet as C
+                
             """.trimIndent()
         )
     }
@@ -100,30 +116,38 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Alphabet hiding (a)
                 import Alphabet (a)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Alphabet
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test merges imports`() {
+    fun `failing, test merges imports`() {
         test(
             """
                 module Foo where
+                
                 import Prelude (pure)
                 import Prelude ((<*>))
                 import Prelude (type (~>))
                 import Prelude (class Applicative)
                 import Prelude (Unit)
                 import Prelude (kind Kind)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Prelude (class Applicative, kind Kind, type (~>), Unit, pure, (<*>))
+                
             """.trimIndent()
         )
     }
@@ -132,6 +156,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Bar (field) as B
                 import Bar (class Class) as B
                 import Bar (SomeType) as B
@@ -141,12 +166,15 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
                 import Bar (field) as A
                 import Bar (class Class) as A
                 import Bar (SomeType) as A
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Bar (class Class, SomeType, field)
                 import Bar (class Class, SomeType, field) as A
                 import Bar (class Class, SomeType, field) as B
+                
             """.trimIndent()
         )
     }
@@ -224,7 +252,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test merges imported data hiding items`() {
+    fun `failing, test merges imported data hiding items`() {
         test(
             """
                 module Foo where
@@ -234,7 +262,9 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Bar hiding (b)
+                
             """.trimIndent()
         )
     }

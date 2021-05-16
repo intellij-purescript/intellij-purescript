@@ -40,19 +40,20 @@ class PurescriptImportOptimizer : ImportOptimizer {
                 importDeclaration.delete()
             }
             val where = module.whereKeyword
-            for (element in psiElements.reversed()) {
-                module.addAfter(element, where)
+            where.siblings(forward = true, withSelf = false)
+                .takeWhile { it is PsiWhiteSpace }
+                .forEach { it.delete() }
+            val toAdd = mutableListOf<PsiElement>()
+            toAdd.add(factory.createNewLine())
+            if (psiElements.isNotEmpty()) {
+                toAdd.add(factory.createNewLine())
+                toAdd.addAll(psiElements)
             }
-            module.addAfter(factory.createNewLine(), where)
-            module.addAfter(factory.createNewLine(), where)
-
-            val lastImportDeclaration = module.importDeclarations.lastOrNull()
-            if (lastImportDeclaration != null) {
-                lastImportDeclaration.siblings(withSelf = false)
-                    .takeWhile { it is PsiWhiteSpace }
-                    .forEach { it.delete() }
-                module.addAfter(factory.createNewLine(), lastImportDeclaration)
-                module.addAfter(factory.createNewLine(), lastImportDeclaration)
+            if (where.nextSibling != null) {
+                toAdd.add(factory.createNewLine())
+            }
+            for (element in toAdd.reversed()) {
+                module.addAfter(element, where)
             }
         }
     }
