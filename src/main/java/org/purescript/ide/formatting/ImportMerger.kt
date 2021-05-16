@@ -6,7 +6,7 @@ data class ImportDeclaration(
     val importedItems: Set<ImportedItem> = emptySet(),
     val alias: String? = null
 ) {
-    val implicit = hiding || importedItems.isEmpty()
+    val implicit = alias == null && (hiding || importedItems.isEmpty())
 }
 
 sealed class ImportedItem(open val name: String)

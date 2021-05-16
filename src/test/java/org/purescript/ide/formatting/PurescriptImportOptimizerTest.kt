@@ -169,7 +169,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test groups aliased imports when merging`() {
+    fun `test groups aliased imports when merging`() {
         test(
             """
                 module Foo where
@@ -196,21 +196,26 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test removes specific imports if one import imports all`() {
+    fun `test removes specific imports if one import imports all`() {
         test(
             """
                 module Foo where
+                
                 import Bar (field) as B
                 import Bar as B
                 import Bar (SomeType) as B
                 import Bar
                 import Bar (class Class)
                 import Bar (SomeType)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Bar
+                
                 import Bar as B
+                
             """.trimIndent()
         )
     }
@@ -219,6 +224,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Prelude (pure)
                 import Prelude ((<*>))
                 import Prelude (type (~>))
@@ -231,6 +237,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
                 import Prelude (class Applicative, class Applicative)
                 import Prelude (Unit, Unit)
                 import Prelude (kind Kind, kind Kind)
+                
             """.trimIndent(),
             """
                 module Foo where
