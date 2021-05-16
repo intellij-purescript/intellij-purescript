@@ -60,6 +60,7 @@ class PSPsiFactory(private val project: Project) {
             importDeclaration.hiding,
             importDeclaration
                 .importedItems
+                .sortedBy { it.name }
                 .sortedBy { when(it) {
                     is ImportedClass -> 1
                     is ImportedKind -> 2

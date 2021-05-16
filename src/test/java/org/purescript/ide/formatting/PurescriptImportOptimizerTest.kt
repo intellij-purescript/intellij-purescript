@@ -152,6 +152,23 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
+    fun `test sorts import items by name`() {
+        test(
+            """
+                module Foo where
+                
+                import Prelude (pure, map)
+                
+            """.trimIndent(),
+            """
+                module Foo where
+                
+                import Prelude (map, pure)
+                
+            """.trimIndent()
+        )
+    }
+
     fun `failing test groups aliased imports when merging`() {
         test(
             """

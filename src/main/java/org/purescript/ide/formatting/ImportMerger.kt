@@ -9,14 +9,18 @@ data class ImportDeclaration(
     val implicit = hiding || importedItems.isEmpty()
 }
 
-sealed class ImportedItem
+sealed class ImportedItem(open val name: String)
 
-data class ImportedClass(val name: String) : ImportedItem()
-data class ImportedKind(val name: String) : ImportedItem()
-data class ImportedType(val name: String) : ImportedItem()
-data class ImportedData(val name: String, val doubleDot: Boolean = false, val dataMembers: Set<String> = emptySet()) : ImportedItem()
-data class ImportedValue(val name: String) : ImportedItem()
-data class ImportedOperator(val name: String) : ImportedItem()
+data class ImportedClass(override val name: String) : ImportedItem(name)
+data class ImportedKind(override val name: String) : ImportedItem(name)
+data class ImportedType(override val name: String) : ImportedItem(name)
+data class ImportedValue(override val name: String) : ImportedItem(name)
+data class ImportedOperator(override val name: String) : ImportedItem(name)
+data class ImportedData(
+    override val name: String,
+    val doubleDot: Boolean = false,
+    val dataMembers: Set<String> = emptySet()
+) : ImportedItem(name)
 
 fun mergeImportDeclarations(importDeclarations: Iterable<ImportDeclaration>): Set<ImportDeclaration> {
     return importDeclarations.toSet()
