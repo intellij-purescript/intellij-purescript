@@ -63,6 +63,24 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
+    fun `test whitespace formatting with declaration and import with too many whitespace`() {
+        test(
+            """module Foo where
+                |import Prelude
+                |
+                |
+                |
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |import Prelude
+                |
+                |f = 3
+            """.trimMargin()
+        )
+    }
+
     fun `test preserves whitespace`() {
         test(
             """
