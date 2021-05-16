@@ -78,7 +78,7 @@ import org.purescript.parser.PSElements.Companion.Type
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
 import org.purescript.parser.PSElements.Companion.TypeVarName
@@ -86,7 +86,7 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
-import org.purescript.parser.PSElements.Companion.pClassName
+import org.purescript.parser.PSElements.Companion.ClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -306,7 +306,7 @@ class PureParsecParser {
                         .then(
                             attempt(qualified(properName))
                                 .`as`(Qualified)
-                                .`as`(pClassName)
+                                .`as`(ClassName)
                         )
                         .then(manyOrEmpty(typeAtom))
                         .`as`(PSElements.ExternInstanceDeclaration),
@@ -339,8 +339,8 @@ class PureParsecParser {
     private val qualProperName =
         (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val constraint =
-        (attempt(qualProperName.`as`(pClassName)) +
-            manyOrEmpty(typeAtom)).`as`(ClassConstraint)
+        (qualProperName.`as`(ClassName) + manyOrEmpty(typeAtom))
+            .`as`(ClassConstraint)
     private val constraints = choice(
         parens(commaSep1(constraint)),
         constraint
@@ -349,9 +349,9 @@ class PureParsecParser {
     private val classSuper =
         (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
     private val classNameAndFundeps =
-        properName.`as`(pClassName) + manyOrEmpty(typeVarBinding) +
+        properName.`as`(ClassName) + manyOrEmpty(typeVarBinding) +
             optional(fundeps.`as`(ClassFunctionalDependencyList))
-    private val classSignature = properName.`as`(pClassName) + dcolon + type
+    private val classSignature = properName.`as`(ClassName) + dcolon + type
     private val classHead = choice(
         // this first is described in haskell code and not in normal happy expression
         // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
@@ -370,8 +370,7 @@ class PureParsecParser {
     private val instHead =
         `'instance'` + ident + dcolon +
             optional(attempt(constraints + darrow)) +
-            qualProperName +
-            manyOrEmpty(typeAtom)
+            constraint // this constraint is the instance type
     private val importedDataMembers = parens(
         choice(
             ddot,
@@ -433,7 +432,7 @@ class PureParsecParser {
         optional(`'derive'`.then(optional(`'newtype'`)))
             .then(instHead)
             .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
-            .`as`(TypeInstanceDeclaration)
+            .`as`(InstanceDeclaration)
     )
     private val exportedClass =
         `class`.then(properName).`as`(PSElements.ExportedClass)

@@ -116,7 +116,7 @@ import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeAtom
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVar
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
@@ -127,7 +127,7 @@ import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.ValueRef
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
-import org.purescript.parser.PSElements.Companion.pClassName
+import org.purescript.parser.PSElements.Companion.ClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.psi.*
 import org.purescript.psi.binder.*
@@ -188,7 +188,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, Qualified, pClassName, importModuleName -> PSProperName(node)
+            ProperName, Qualified, importModuleName -> PSProperName(node)
+            ClassName -> PSClassName(node)
             OperatorName -> PSOperatorName(node)
             Symbol -> PSSymbol(node)
             ModuleName -> PSModuleName(node)
@@ -258,7 +259,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ClassFunctionalDependency -> PSClassFunctionalDependency(node)
             ClassMemberList -> PSClassMemberList(node)
             ClassMember -> PSClassMember(node)
-            TypeInstanceDeclaration -> PSTypeInstanceDeclarationImpl(node)
+            InstanceDeclaration -> PSInstanceDeclaration(node)
             NewtypeDeclaration -> PSNewTypeDeclarationImpl(node)
             NewTypeConstructor -> PSNewTypeConstructor(node)
             Guard -> PSGuardImpl(node)

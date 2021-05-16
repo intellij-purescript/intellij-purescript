@@ -183,7 +183,7 @@ interface PSElements {
         val ClassMemberList = PSElementType("ClassMemberList")
 
         @kotlin.jvm.JvmField
-        val TypeInstanceDeclaration = PSElementType("TypeInstanceDeclaration")
+        val InstanceDeclaration = PSElementType("TypeInstanceDeclaration")
 
         @kotlin.jvm.JvmField
         val NewtypeDeclaration = PSElementType("NewtypeDeclaration")
@@ -359,7 +359,7 @@ interface PSElements {
         val importModuleName = PSElementType("ImportModuleName")
 
         @kotlin.jvm.JvmField
-        val pClassName = PSElementType("ClassName")
+        val ClassName = PSElementType("ClassName")
 
         @kotlin.jvm.JvmField
         val pImplies = PSElementType("Implies")
