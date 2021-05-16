@@ -14,7 +14,7 @@ import org.purescript.parser.PSElements.Companion.LocalIdentifier
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.ValueRef
-import org.purescript.parser.PSElements.Companion.className
+import org.purescript.parser.PSElements.Companion.ClassName
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -24,7 +24,7 @@ class PSSyntaxHighlightAnnotator : Annotator {
                     .textAttributes(IMPORT_REF)
                     .create()
             }
-            PositionedDeclarationRef, TypeConstructor, className -> {
+            PositionedDeclarationRef, TypeConstructor, ClassName -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_NAME)
                     .create()

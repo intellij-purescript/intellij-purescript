@@ -86,7 +86,7 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
-import org.purescript.parser.PSElements.Companion.className
+import org.purescript.parser.PSElements.Companion.ClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -306,7 +306,7 @@ class PureParsecParser {
                         .then(
                             attempt(qualified(properName))
                                 .`as`(Qualified)
-                                .`as`(className)
+                                .`as`(ClassName)
                         )
                         .then(manyOrEmpty(typeAtom))
                         .`as`(PSElements.ExternInstanceDeclaration),
@@ -339,7 +339,7 @@ class PureParsecParser {
     private val qualProperName =
         (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val constraint =
-        (attempt(qualProperName.`as`(className)) +
+        (attempt(qualProperName.`as`(ClassName)) +
             manyOrEmpty(typeAtom)).`as`(ClassConstraint)
     private val constraints = choice(
         parens(commaSep1(constraint)),
@@ -349,9 +349,9 @@ class PureParsecParser {
     private val classSuper =
         (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
     private val classNameAndFundeps =
-        properName.`as`(className) + manyOrEmpty(typeVarBinding) +
+        properName.`as`(ClassName) + manyOrEmpty(typeVarBinding) +
             optional(fundeps.`as`(ClassFunctionalDependencyList))
-    private val classSignature = properName.`as`(className) + dcolon + type
+    private val classSignature = properName.`as`(ClassName) + dcolon + type
     private val classHead = choice(
         // this first is described in haskell code and not in normal happy expression
         // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
