@@ -339,8 +339,8 @@ class PureParsecParser {
     private val qualProperName =
         (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val constraint =
-        (attempt(qualProperName.`as`(ClassName)) +
-            manyOrEmpty(typeAtom)).`as`(ClassConstraint)
+        (qualProperName.`as`(ClassName) + manyOrEmpty(typeAtom))
+            .`as`(ClassConstraint)
     private val constraints = choice(
         parens(commaSep1(constraint)),
         constraint
