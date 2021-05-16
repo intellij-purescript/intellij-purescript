@@ -359,7 +359,7 @@ interface PSElements {
         val importModuleName = PSElementType("ImportModuleName")
 
         @kotlin.jvm.JvmField
-        val pClassName = PSElementType("ClassName")
+        val className = PSElementType("ClassName")
 
         @kotlin.jvm.JvmField
         val pImplies = PSElementType("Implies")
