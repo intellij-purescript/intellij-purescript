@@ -41,7 +41,7 @@ Purescript File
               PsiElement(identifier)('b')
     PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
-      PSProperName(ClassName)
+      PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('MonadState')
       PSTypeVarName(TypeVarName)

@@ -74,7 +74,7 @@ Purescript File
         PsiElement(identifier)('eqList')
       PsiElement(::)('::')
       PSClassConstraint(ClassConstraint)
-        PSProperName(ClassName)
+        PSClassName(ClassName)
           PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Eq')

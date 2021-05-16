@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReference
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSTypeAtomImpl
+import org.purescript.psi.name.PSClassName
 
 /**
  * An individual constraint in a class declaration, e.g.
@@ -19,10 +20,10 @@ import org.purescript.psi.PSTypeAtomImpl
 class PSClassConstraint(node: ASTNode) : PSPsiElement(node) {
 
     /**
-     * @return the [PSProperName] that identifies this constraint
+     * @return the [PSClassName] that identifies this constraint
      */
-    val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    val identifier: PSClassName
+        get() = findNotNullChildByClass(PSClassName::class.java)
 
     /**
      * @return the [PSTypeAtomImpl] elements that this constraint contains,

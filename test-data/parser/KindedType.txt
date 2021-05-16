@@ -250,7 +250,7 @@ Purescript File
           PsiElement(])(']')
     PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
-      PSProperName(ClassName)
+      PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Clazz')
       PSTypeVarKinded(TypeVarKinded)

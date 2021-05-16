@@ -12,7 +12,7 @@ Purescript File
         <empty list>
     PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
-      PSProperName(ClassName)
+      PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Bar')
       PSTypeVarName(TypeVarName)
@@ -23,7 +23,7 @@ Purescript File
         PsiElement(identifier)('fooBar')
       PsiElement(::)('::')
       PSClassConstraint(ClassConstraint)
-        PSProperName(ClassName)
+        PSClassName(ClassName)
           PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Fail')

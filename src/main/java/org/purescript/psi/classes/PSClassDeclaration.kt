@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
+import org.purescript.psi.name.PSClassName
 import org.purescript.psi.typevar.PSTypeVarBinding
 
 /**
@@ -23,8 +24,8 @@ class PSClassDeclaration(node: ASTNode) :
     internal val classConstraintList: PSClassConstraintList?
         get() = findChildByClass(PSClassConstraintList::class.java)
 
-    internal val properName: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    internal val className: PSClassName
+        get() = findNotNullChildByClass(PSClassName::class.java)
 
     internal val typeVarBindings: Array<PSTypeVarBinding>
         get() = findChildrenByClass(PSTypeVarBinding::class.java)
@@ -49,11 +50,11 @@ class PSClassDeclaration(node: ASTNode) :
     val classMembers: Array<PSClassMember>
         get() = classMemberList?.classMembers ?: emptyArray()
 
-    override fun getName(): String = properName.name
+    override fun getName(): String = className.name
 
     override fun setName(name: String): PsiElement? = null
 
-    override fun getNameIdentifier(): PsiElement = properName
+    override fun getNameIdentifier(): PsiElement = className
 
-    override fun getTextOffset(): Int = properName.textOffset
+    override fun getTextOffset(): Int = className.textOffset
 }

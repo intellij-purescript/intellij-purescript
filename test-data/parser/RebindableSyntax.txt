@@ -280,7 +280,7 @@ Purescript File
         PsiElement(identifier)('applyConst')
       PsiElement(::)('::')
       PSClassConstraint(ClassConstraint)
-        PSProperName(ClassName)
+        PSClassName(ClassName)
           PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Semigroup')

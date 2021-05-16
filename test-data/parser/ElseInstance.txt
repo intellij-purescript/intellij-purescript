@@ -6,7 +6,7 @@ Purescript File
     PsiElement(where)('where')
     PSClassDeclaration(ClassDeclaration)
       PsiElement(class)('class')
-      PSProperName(ClassName)
+      PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Show')
       PSTypeVarName(TypeVarName)

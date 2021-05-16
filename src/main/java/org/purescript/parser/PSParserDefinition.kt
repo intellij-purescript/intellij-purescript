@@ -188,7 +188,8 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, Qualified, className, importModuleName -> PSProperName(node)
+            ProperName, Qualified, importModuleName -> PSProperName(node)
+            className -> PSClassName(node)
             OperatorName -> PSOperatorName(node)
             Symbol -> PSSymbol(node)
             ModuleName -> PSModuleName(node)
