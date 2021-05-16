@@ -183,7 +183,7 @@ interface PSElements {
         val ClassMemberList = PSElementType("ClassMemberList")
 
         @kotlin.jvm.JvmField
-        val TypeInstanceDeclaration = PSElementType("TypeInstanceDeclaration")
+        val InstanceDeclaration = PSElementType("TypeInstanceDeclaration")
 
         @kotlin.jvm.JvmField
         val NewtypeDeclaration = PSElementType("NewtypeDeclaration")

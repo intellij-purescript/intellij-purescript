@@ -92,7 +92,7 @@ Purescript File
           PSProperName(Qualified)
             PSProperName(ProperName)
               PsiElement(proper name)('Type')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('eqT')

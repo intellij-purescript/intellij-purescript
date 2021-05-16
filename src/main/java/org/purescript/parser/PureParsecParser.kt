@@ -78,7 +78,7 @@ import org.purescript.parser.PSElements.Companion.Type
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
 import org.purescript.parser.PSElements.Companion.TypeVarName
@@ -433,7 +433,7 @@ class PureParsecParser {
         optional(`'derive'`.then(optional(`'newtype'`)))
             .then(instHead)
             .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
-            .`as`(TypeInstanceDeclaration)
+            .`as`(InstanceDeclaration)
     )
     private val exportedClass =
         `class`.then(properName).`as`(PSElements.ExportedClass)

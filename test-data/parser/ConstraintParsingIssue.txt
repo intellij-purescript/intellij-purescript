@@ -16,7 +16,7 @@ Purescript File
           PsiElement(proper name)('X')
       PSTypeVarName(TypeVarName)
         PsiElement(identifier)('a')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('x')

@@ -4,7 +4,7 @@ Purescript File
     PSModuleName(ModuleName)
       PsiElement(proper name)('ShowBoolean')
     PsiElement(where)('where')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('showBoolean')

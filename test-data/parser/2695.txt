@@ -60,7 +60,7 @@ Purescript File
             PSProperName(Qualified)
               PSProperName(ProperName)
                 PsiElement(proper name)('Foo')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(derive)('derive')
       PsiElement(instance)('instance')
       PSIdentifier(identifier)

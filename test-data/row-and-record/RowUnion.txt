@@ -782,7 +782,7 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('Type')
         PsiElement())(')')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('subrow')

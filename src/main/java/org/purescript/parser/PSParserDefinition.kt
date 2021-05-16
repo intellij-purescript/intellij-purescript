@@ -116,7 +116,7 @@ import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeAtom
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.TypeInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVar
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
@@ -259,7 +259,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
             ClassFunctionalDependency -> PSClassFunctionalDependency(node)
             ClassMemberList -> PSClassMemberList(node)
             ClassMember -> PSClassMember(node)
-            TypeInstanceDeclaration -> PSTypeInstanceDeclarationImpl(node)
+            InstanceDeclaration -> PSInstanceDeclaration(node)
             NewtypeDeclaration -> PSNewTypeDeclarationImpl(node)
             NewTypeConstructor -> PSNewTypeConstructor(node)
             Guard -> PSGuardImpl(node)

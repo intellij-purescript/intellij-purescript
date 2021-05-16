@@ -32,7 +32,7 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('Symbol')
         PsiElement())(')')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('fooX')

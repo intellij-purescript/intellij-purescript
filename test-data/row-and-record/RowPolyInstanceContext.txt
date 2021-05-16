@@ -110,7 +110,7 @@ Purescript File
                           PsiElement(identifier)('a')
                   PsiElement(})('}')
             PsiElement())(')')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('st')

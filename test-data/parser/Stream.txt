@@ -146,7 +146,7 @@ Purescript File
                 PSIdentifier(GenericIdentifier)
                   PsiElement(identifier)('a')
             PsiElement())(')')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('streamIsStream')

@@ -68,7 +68,7 @@ Purescript File
       PsiElement(as)('as')
       PSOperatorName(OperatorName)
         PsiElement(operator)(':')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('eqList')

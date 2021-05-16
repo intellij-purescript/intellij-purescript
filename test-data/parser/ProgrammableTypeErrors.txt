@@ -53,7 +53,7 @@ Purescript File
                 PSProperName(Qualified)
                   PSProperName(ProperName)
                     PsiElement(proper name)('String')
-    PSTypeInstanceDeclarationImpl(TypeInstanceDeclaration)
+    PSInstanceDeclaration(TypeInstanceDeclaration)
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('cannotShowFunctions')
