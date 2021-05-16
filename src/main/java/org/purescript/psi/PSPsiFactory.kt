@@ -58,7 +58,18 @@ class PSPsiFactory(private val project: Project) {
         createImportDeclaration(
             importDeclaration.moduleName,
             importDeclaration.hiding,
-            importDeclaration.importedItems.map { createImportedItem(it) ?: return null },
+            importDeclaration
+                .importedItems
+                .sortedBy { when(it) {
+                    is ImportedClass -> 1
+                    is ImportedKind -> 2
+                    is ImportedType -> 3
+                    is ImportedData -> 4
+                    is ImportedValue -> 5
+                    is ImportedOperator -> 6
+                } }
+                .map { createImportedItem(it) ?: return null }
+            ,
             importDeclaration.alias
         )
 

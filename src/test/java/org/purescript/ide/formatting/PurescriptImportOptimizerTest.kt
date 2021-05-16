@@ -130,7 +130,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing, test merges imports`() {
+    fun `test merges imports and sorts import items by type`() {
         test(
             """
                 module Foo where
