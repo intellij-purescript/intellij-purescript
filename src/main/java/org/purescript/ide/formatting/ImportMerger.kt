@@ -5,7 +5,9 @@ data class ImportDeclaration(
     val hiding: Boolean = false,
     val importedItems: Set<ImportedItem> = emptySet(),
     val alias: String? = null
-)
+) {
+    val implicit = hiding || importedItems.isEmpty()
+}
 
 sealed class ImportedItem
 
@@ -16,8 +18,9 @@ data class ImportedData(val name: String, val doubleDot: Boolean = false, val da
 data class ImportedValue(val name: String) : ImportedItem()
 data class ImportedOperator(val name: String) : ImportedItem()
 
-fun mergeImportDeclarations(importDeclarations: Set<ImportDeclaration>): Set<ImportDeclaration> {
-    return importDeclarations.groupBy { it.moduleName to it.alias }
+fun mergeImportDeclarations(importDeclarations: Iterable<ImportDeclaration>): Set<ImportDeclaration> {
+    return importDeclarations.toSet()
+        .groupBy { it.moduleName to it.alias }
         .map {
             val (moduleNameAndAlias, group) = it
             val (moduleName, alias) = moduleNameAndAlias
