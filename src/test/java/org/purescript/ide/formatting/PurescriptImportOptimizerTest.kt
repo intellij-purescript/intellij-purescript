@@ -16,7 +16,68 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
     fun `test does nothing when no imports`() {
         test(
             "module Foo where",
-            "module Foo where"
+            """module Foo where
+                |
+            """.trimMargin()
+        )
+    }
+
+    fun `test add empty line between where and first declaration`() {
+        test(
+            """module Foo where
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |f = 3
+            """.trimMargin()
+        )
+    }
+
+    fun `test removes redundant empty lines`() {
+        test(
+            """module Foo where
+                |
+                |
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |f = 3
+            """.trimMargin()
+        )
+    }
+
+    fun `test whitespace formatting with declaration and import`() {
+        test(
+            """module Foo where
+                |import Prelude
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |import Prelude
+                |
+                |f = 3
+            """.trimMargin()
+        )
+    }
+
+    fun `test whitespace formatting with declaration and import with too many whitespace`() {
+        test(
+            """module Foo where
+                |import Prelude
+                |
+                |
+                |
+                |f = 3
+            """.trimMargin(),
+            """module Foo where
+                |
+                |import Prelude
+                |
+                |f = 3
+            """.trimMargin()
         )
     }
 
@@ -41,7 +102,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
     }
 
-    fun `failing test sorts according to module name`() {
+    fun `test sorts according to module name`() {
         test(
             """
                 module Foo where
@@ -52,46 +113,34 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Cat
                 import Dog
                 import Giraffe
                 import Pig
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test sort keeps prelude at the top`() {
-        test(
-            """
-                module Foo where
-                import Giraffe
-                import Prelude
-                import Dog
-                import Cat
-            """.trimIndent(),
-            """
-                module Foo where
-                import Prelude
-                import Cat
-                import Dog
-                import Giraffe
-            """.trimIndent()
-        )
-    }
 
-    fun `failing test sorts according to alias`() {
+    fun `test sorts according to alias`() {
         test(
             """
                 module Foo where
+                
                 import Alphabet as C
                 import Alphabet as A
                 import Alphabet as B
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Alphabet as A
                 import Alphabet as B
                 import Alphabet as C
+                
             """.trimIndent()
         )
     }
@@ -100,38 +149,64 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Alphabet hiding (a)
                 import Alphabet (a)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Alphabet
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test merges imports`() {
+    fun `test merges imports and sorts import items by type`() {
         test(
             """
                 module Foo where
+                
                 import Prelude (pure)
                 import Prelude ((<*>))
                 import Prelude (type (~>))
                 import Prelude (class Applicative)
                 import Prelude (Unit)
                 import Prelude (kind Kind)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Prelude (class Applicative, kind Kind, type (~>), Unit, pure, (<*>))
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test groups aliased imports when merging`() {
+    fun `test sorts import items by name`() {
         test(
             """
                 module Foo where
+                
+                import Prelude (pure, map)
+                
+            """.trimIndent(),
+            """
+                module Foo where
+                
+                import Prelude (map, pure)
+                
+            """.trimIndent()
+        )
+    }
+
+    fun `test groups aliased imports when merging`() {
+        test(
+            """
+                module Foo where
+                
                 import Bar (field) as B
                 import Bar (class Class) as B
                 import Bar (SomeType) as B
@@ -141,39 +216,48 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
                 import Bar (field) as A
                 import Bar (class Class) as A
                 import Bar (SomeType) as A
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Bar (class Class, SomeType, field)
                 import Bar (class Class, SomeType, field) as A
                 import Bar (class Class, SomeType, field) as B
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test removes specific imports if one import imports all`() {
+    fun `test removes specific imports if one import imports all`() {
         test(
             """
                 module Foo where
+                
                 import Bar (field) as B
                 import Bar as B
                 import Bar (SomeType) as B
                 import Bar
                 import Bar (class Class)
                 import Bar (SomeType)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Bar
+                
                 import Bar as B
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test removes duplicate imports`() {
+    fun `test removes duplicate imports`() {
         test(
             """
                 module Foo where
+                
                 import Prelude (pure)
                 import Prelude ((<*>))
                 import Prelude (type (~>))
@@ -186,40 +270,51 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
                 import Prelude (class Applicative, class Applicative)
                 import Prelude (Unit, Unit)
                 import Prelude (kind Kind, kind Kind)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Prelude (class Applicative, kind Kind, type (~>), Unit, pure, (<*>))
+            
             """.trimIndent()
         )
     }
 
-    fun `failing test merges imported data`() {
+    fun `test merges imported data`() {
         test(
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe)
                 import Data.Maybe (Maybe(Just))
                 import Data.Maybe (Maybe(Nothing))
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe(Just, Nothing))
+                
             """.trimIndent()
         )
     }
 
-    fun `failing test merges imported data with double dot`() {
+    fun `test merges imported data with double dot`() {
         test(
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe)
                 import Data.Maybe (Maybe(Just))
                 import Data.Maybe (Maybe(..))
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Data.Maybe (Maybe(..))
+                
             """.trimIndent()
         )
     }
@@ -228,13 +323,17 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Bar hiding (a, b, c)
                 import Bar hiding (b)
                 import Bar hiding (b, c)
+                
             """.trimIndent(),
             """
                 module Foo where
+                
                 import Bar hiding (b)
+                
             """.trimIndent()
         )
     }

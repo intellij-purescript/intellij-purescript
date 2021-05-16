@@ -352,14 +352,4 @@ class PSModule(node: ASTNode) :
             addAfter(newLine, insertPosition)
         }
     }
-
-    fun replaceImportDeclarations(newImportDeclarations: Collection<PSImportDeclarationImpl>) {
-        val oldImportDeclarations = importDeclarations
-        for (importDeclaration in newImportDeclarations) {
-            addImportDeclaration(importDeclaration)
-        }
-        for (importDeclaration in oldImportDeclarations) {
-            importDeclaration.delete()
-        }
-    }
 }
