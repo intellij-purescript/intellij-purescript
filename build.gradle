@@ -26,13 +26,12 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 
 sourceSets {
     main {
-        java.srcDirs 'src/main/java', 'src/main/gen'
-        kotlin.srcDirs 'src/main/java'
+        java.srcDirs 'src/main/gen'
+        kotlin.srcDirs 'src/main/kotlin'
         resources.srcDirs 'src/main/resources'
     }
     test {
-        java.srcDirs 'src/test/java'
-        kotlin.srcDirs 'src/test/java'
+        kotlin.srcDirs 'src/test/kotlin'
         resources.srcDirs 'src/test/resources'
     }
 }
@@ -58,14 +57,6 @@ compileKotlin {
 
 test {
      systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
-}
-
-// take the version number defined in gradle build and use that in plugin.xml
-task initConfig(type: Copy) {
-    from('src/main/resources') {
-        include '**/plugin.xml'
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
-    }
 }
 
 // Plugin config
