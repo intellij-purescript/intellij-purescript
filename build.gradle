@@ -59,14 +59,6 @@ test {
      systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
 }
 
-// take the version number defined in gradle build and use that in plugin.xml
-task initConfig(type: Copy) {
-    from('src/main/resources') {
-        include '**/plugin.xml'
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
-    }
-}
-
 // Plugin config
 version = "${version}"
 apply plugin: 'org.jetbrains.intellij'
