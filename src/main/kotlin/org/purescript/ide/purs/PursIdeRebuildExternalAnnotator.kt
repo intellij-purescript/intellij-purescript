@@ -38,8 +38,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         )
         return try {
             val json = gson.fromJson(output, Response::class.java)
-            @Suppress("SENSELESS_COMPARISON")
-            if (json.resultType != null && json.resultType in listOf("success", "error")) {
+            if (json?.resultType in listOf("success", "error")) {
                 json
             } else {
                 null
