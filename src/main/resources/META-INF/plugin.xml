@@ -13,6 +13,7 @@
         <li>Autocomplete for things in scope</li>
         <li>Warning missing reference (with some false positives, we are working on it)</li>
         <li>Import missing reference</li>
+        <li>Ask running purs ide servers for annotations and suggestions</li>
       </ul>
     ]]></description>
 
@@ -88,6 +89,21 @@
             displayName="Unresolved reference"
             enabledByDefault="true" level="ERROR"
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
+    />
+
+    <localInspection
+        language="Purescript"
+        groupName="Purescript"
+        displayName="Purs IDE rebuild"
+        shortName="Rebuild"
+        enabledByDefault="true"
+        level="ERROR"
+        implementationClass="org.purescript.ide.purs.PursIdeRebuildInspection"
+    />
+
+    <externalAnnotator
+            language="Purescript"
+            implementationClass="org.purescript.ide.purs.PursIdeRebuildExternalAnnotator"
     />
 
     <!-- Formatting -->
