@@ -10,8 +10,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.SystemInfo.isWindows
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import com.intellij.util.io.div
-import com.intellij.util.io.exists
+
+
 import org.jetbrains.annotations.NotNull
 import java.io.File
 import java.nio.file.Path
@@ -51,20 +51,21 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     }
 
     private fun getPursPath(file: PsiFile): Path? {
-        val nodeModules: Path = sequence<Path> {
+        val sequence = sequence<Path> {
             var tmp = file.virtualFile.toNioPath()
             while (tmp.parent != null) {
                 yield(tmp.parent)
                 tmp = tmp.parent
             }
         }
-            .map { it / "node_modules" }
-            .firstOrNull() { it.exists() }
+        val nodeModules = sequence
+            .map { it.resolve("node_modules") }
+            .firstOrNull { it.toFile().exists() }
             ?: return null
-        val binDir = nodeModules / ".bin"
+        val binDir = nodeModules.resolve(".bin")
         return when {
-            isWindows -> binDir / "purs.cmd"
-            else -> binDir / "purs"
+            isWindows -> binDir.resolve("purs.cmd")
+            else -> binDir.resolve("purs")
         }
     }
 
