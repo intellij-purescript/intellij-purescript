@@ -13,6 +13,7 @@
         <li>Autocomplete for things in scope</li>
         <li>Warning missing reference (with some false positives, we are working on it)</li>
         <li>Import missing reference</li>
+        <li>Ask running purs ide servers for annotations and suggestions</li>
       </ul>
     ]]></description>
 
