@@ -90,6 +90,21 @@
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
     />
 
+    <localInspection
+        language="Purescript"
+        groupName="Purescript"
+        displayName="Purs IDE rebuild"
+        shortName="Rebuild"
+        enabledByDefault="true"
+        level="ERROR"
+        implementationClass="org.purescript.ide.purs.PursIdeRebuildInspection"
+    />
+
+    <externalAnnotator
+            language="Purescript"
+            implementationClass="org.purescript.ide.purs.PursIdeRebuildExternalAnnotator"
+    />
+
     <!-- Formatting -->
 
     <lang.importOptimizer
