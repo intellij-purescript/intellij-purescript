@@ -65,7 +65,7 @@ tasks.named("test").configure {
 }
 
 // Plugin config
-version = "${version}"
+version = property("version")
 intellij {
     pluginName 'purity-intellij'
     version ideaVersion
