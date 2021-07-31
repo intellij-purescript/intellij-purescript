@@ -18,6 +18,10 @@ repositories {
     maven { url 'https://cache-redirector.jetbrains.com/intellij-dependencies'}
 }
 
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+}
+
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 tasks.withType(JavaCompile).configureEach {options.encoding = 'UTF-8' }
@@ -84,9 +88,6 @@ intellij {
 
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-}
 
 // Intellij config
 idea {
