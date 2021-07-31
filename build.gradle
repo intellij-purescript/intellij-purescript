@@ -6,6 +6,7 @@ buildscript {
 }
 
 plugins {
+    id 'idea'
     id 'org.jetbrains.intellij' version '0.7.3'
     id "org.jetbrains.grammarkit" version "2020.3.2"
 	id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
@@ -36,8 +37,6 @@ sourceSets {
     }
 }
 // GRAMMAR KIT
-
-apply plugin: 'org.jetbrains.grammarkit'
 import org.jetbrains.grammarkit.tasks.GenerateLexer
 task generateLexer(type: GenerateLexer) {
     source = "src/main/grammar/Purescript.flex"
@@ -61,7 +60,6 @@ test {
 
 // Plugin config
 version = "${version}"
-apply plugin: 'org.jetbrains.intellij'
 intellij {
     pluginName 'purity-intellij'
     version ideaVersion
@@ -89,7 +87,6 @@ dependencies {
 }
 
 // Intellij config
-apply plugin: 'idea'
 idea {
     project {
         jdkName = javaVersion
