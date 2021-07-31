@@ -6,9 +6,10 @@ buildscript {
 }
 
 plugins {
+    id 'idea'
     id 'org.jetbrains.intellij' version '0.7.3'
     id "org.jetbrains.grammarkit" version "2020.3.2"
-	id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
 }
 
 repositories {
@@ -17,9 +18,13 @@ repositories {
     maven { url 'https://cache-redirector.jetbrains.com/intellij-dependencies'}
 }
 
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+}
+
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
-tasks.withType(JavaCompile) {options.encoding = 'UTF-8' }
+tasks.withType(JavaCompile).configureEach {options.encoding = 'UTF-8' }
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -36,32 +41,31 @@ sourceSets {
     }
 }
 // GRAMMAR KIT
-
-apply plugin: 'org.jetbrains.grammarkit'
 import org.jetbrains.grammarkit.tasks.GenerateLexer
-task generateLexer(type: GenerateLexer) {
-    source = "src/main/grammar/Purescript.flex"
-    targetDir = "src/main/gen/org/purescript/lexer/"
-    targetClass = "_PSLexer"
-    purgeOldFiles = true
-    skeleton = "src/main/grammar/idea-flex.skeleton"
-}
+def generateLexer =
+    tasks.register("generateLexer", GenerateLexer.class) {
+        source = "src/main/grammar/Purescript.flex"
+        targetDir = "src/main/gen/org/purescript/lexer/"
+        targetClass = "_PSLexer"
+        purgeOldFiles = true
+        skeleton = "src/main/grammar/idea-flex.skeleton"
 
-compileJava {
+    }
+
+tasks.named("compileJava").configure {
     dependsOn generateLexer
 }
 
-compileKotlin {
+tasks.named("compileKotlin").configure {
     dependsOn generateLexer
 }
 
-test {
+tasks.named("test").configure {
      systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
 }
 
 // Plugin config
-version = "${version}"
-apply plugin: 'org.jetbrains.intellij'
+version = property("version")
 intellij {
     pluginName 'purity-intellij'
     version ideaVersion
@@ -84,12 +88,8 @@ intellij {
 
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-}
 
 // Intellij config
-apply plugin: 'idea'
 idea {
     project {
         jdkName = javaVersion
