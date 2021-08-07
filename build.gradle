@@ -21,12 +21,29 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
+// GRAMMAR KIT
+import org.jetbrains.grammarkit.tasks.GenerateLexer
+def generateLexer =
+    tasks.register("generateLexer", GenerateLexer.class) {
+        source = "src/main/grammar/Purescript.flex"
+        targetDir = "src/main/gen/org/purescript/lexer/"
+        targetClass = "_PSLexer"
+        purgeOldFiles = true
+        skeleton = "src/main/grammar/idea-flex.skeleton"
+
+    }
 
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
-tasks.withType(JavaCompile).configureEach {options.encoding = 'UTF-8' }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    dependsOn generateLexer
+}
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    dependsOn generateLexer
 }
 
 sourceSets {
@@ -40,25 +57,7 @@ sourceSets {
         resources.srcDirs 'src/test/resources'
     }
 }
-// GRAMMAR KIT
-import org.jetbrains.grammarkit.tasks.GenerateLexer
-def generateLexer =
-    tasks.register("generateLexer", GenerateLexer.class) {
-        source = "src/main/grammar/Purescript.flex"
-        targetDir = "src/main/gen/org/purescript/lexer/"
-        targetClass = "_PSLexer"
-        purgeOldFiles = true
-        skeleton = "src/main/grammar/idea-flex.skeleton"
 
-    }
-
-tasks.named("compileJava").configure {
-    dependsOn generateLexer
-}
-
-tasks.named("compileKotlin").configure {
-    dependsOn generateLexer
-}
 
 tasks.named("test").configure {
      systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
