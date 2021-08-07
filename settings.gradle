@@ -1,1 +1,3 @@
 rootProject.name = 'Purescript'
+include 'lexer'
+

@@ -6,9 +6,7 @@ buildscript {
 }
 
 plugins {
-    id 'idea'
     id 'org.jetbrains.intellij' version '0.7.3'
-    id "org.jetbrains.grammarkit" version "2020.3.2"
     id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
 }
 
@@ -19,34 +17,25 @@ repositories {
 }
 
 dependencies {
+    implementation project(":lexer")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
-def generateLexer =
-    tasks.register("generateLexer", org.jetbrains.grammarkit.tasks.GenerateLexer) {
-        source = "src/main/grammar/Purescript.flex"
-        targetDir = "src/main/gen/org/purescript/lexer/"
-        targetClass = "_PSLexer"
-        purgeOldFiles = true
-        skeleton = "src/main/grammar/idea-flex.skeleton"
-    }
-
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    dependsOn generateLexer
 }
+
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    dependsOn generateLexer
 }
 
 sourceSets {
     main {
-        java.srcDirs 'src/main/gen'
         kotlin.srcDirs 'src/main/kotlin'
         resources.srcDirs 'src/main/resources'
     }
@@ -83,18 +72,6 @@ intellij {
         sinceBuild '203'
     }
 
-}
-
-
-// Intellij config
-idea {
-    project {
-        jdkName = javaVersion
-        languageLevel = javaVersion
-    }
-    module {
-        generatedSourceDirs += file('src/main/gen')
-    }
 }
 
 tasks.processResources {
