@@ -98,6 +98,28 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
+    fun `test doesn't report unresolved exported value declaration when module exporting it self`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo (module Foo) where
+            x = 1
+            """.trimIndent()
+        )
+
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            module Bar where
+            import Foo (x)
+            
+            y = x
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
     fun `test doesn't report unresolved built-in modules`() {
         myFixture.configureByText(
             "Foo.purs",

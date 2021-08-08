@@ -92,8 +92,13 @@ class PSModule(node: ASTNode) :
             .toSet()
 
         val exportedDeclarations = mutableListOf<Declaration>()
+
+        val exportsSelf = explicitlyExportedItems
+            .filterIsInstance<PSExportedModule>()
+            .any { it.name == name }
+
         declarations.filterTo(exportedDeclarations) {
-            it.name in explicitlyNames
+            exportsSelf || it.name in explicitlyNames
         }
 
         explicitlyExportedItems.filterIsInstance<PSExportedModule>()
