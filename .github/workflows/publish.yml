@@ -50,4 +50,4 @@ jobs:
       - name: Gradle Publish Plugin
         run: |
           VERSION=$(git describe --tags --match='v*')
-          ./gradlew publishPlugin -PintellijPublishToken="${{ secrets.INTELLIJPUBLISHTOKEN }}"  -PpublishChannels=Stable -PideaVersion=LATEST-EAP-SNAPSHOT  -Pversion="$VERSION"
+          ./gradlew :publishPlugin -PintellijPublishToken="${{ secrets.INTELLIJPUBLISHTOKEN }}"  -PpublishChannels=Stable -PideaVersion=LATEST-EAP-SNAPSHOT  -Pversion="$VERSION"
