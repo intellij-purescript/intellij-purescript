@@ -47,7 +47,7 @@ class PSModule(node: ASTNode) :
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
         return importDeclarations
             .asSequence()
-            .find { it.name ?: "" == name }
+            .find { (it.name ?: "") == name }
     }
 
     val fixityDeclarations: Array<PSFixityDeclaration> get() =
@@ -319,7 +319,7 @@ class PSModule(node: ASTNode) :
         )
 
     /**
-     * @return the [PSClassMembers] elements that this module exports,
+     * @return the [PSClassMember] elements that this module exports,
      * both directly and through re-exported modules
      */
     val exportedClassMembers: List<PSClassMember>
