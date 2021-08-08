@@ -15,9 +15,14 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
             .toTypedArray()
     }
 
-    override fun resolve(): PsiElement? =
-        candidates.firstOrNull { it.name == myElement.name }
-            ?.run { importAlias ?: importedModule }
+    override fun resolve(): PsiElement? {
+        if (element.name == myElement.module?.name) {
+            return myElement.module
+        } else {
+            return candidates.firstOrNull { it.name == myElement.name }
+                ?.run { importAlias ?: importedModule }
+        }
+    }
 
     override fun handleElementRename(name: String): PsiElement? {
         val newProperName = PSPsiFactory(element.project).createModuleName(name)

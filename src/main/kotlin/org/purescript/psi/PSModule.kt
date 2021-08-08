@@ -47,7 +47,7 @@ class PSModule(node: ASTNode) :
     fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
         return importDeclarations
             .asSequence()
-            .find { it.name ?: "" == name }
+            .find { (it.name ?: "") == name }
     }
 
     val fixityDeclarations: Array<PSFixityDeclaration> get() =
@@ -92,8 +92,13 @@ class PSModule(node: ASTNode) :
             .toSet()
 
         val exportedDeclarations = mutableListOf<Declaration>()
+
+        val exportsSelf = explicitlyExportedItems
+            .filterIsInstance<PSExportedModule>()
+            .any { it.name == name }
+
         declarations.filterTo(exportedDeclarations) {
-            it.name in explicitlyNames
+            exportsSelf || it.name in explicitlyNames
         }
 
         explicitlyExportedItems.filterIsInstance<PSExportedModule>()
@@ -314,7 +319,7 @@ class PSModule(node: ASTNode) :
         )
 
     /**
-     * @return the [PSClassMembers] elements that this module exports,
+     * @return the [PSClassMember] elements that this module exports,
      * both directly and through re-exported modules
      */
     val exportedClassMembers: List<PSClassMember>
