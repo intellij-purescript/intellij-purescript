@@ -5,7 +5,7 @@ import org.purescript.PSLanguage
 import org.purescript.icons.PSIcons
 import javax.swing.Icon
 
-class PSFileType private constructor() : LanguageFileType(org.purescript.PSLanguage.INSTANCE) {
+class PSFileType private constructor() : LanguageFileType(PSLanguage.INSTANCE) {
     override fun getName(): String {
         return "Purescript file"
     }

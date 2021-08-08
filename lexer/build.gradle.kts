@@ -1,0 +1,57 @@
+plugins {
+    java
+    kotlin("jvm")
+    id("org.jetbrains.intellij")
+    id("org.jetbrains.grammarkit") version "2020.3.2"
+}
+
+repositories {
+    mavenCentral()
+    maven { setUrl("https://jitpack.io") }
+    maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies")}
+}
+
+
+version = "1.15-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(kotlin("stdlib"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+
+task("generateLexer", org.jetbrains.grammarkit.tasks.GenerateLexer::class) {
+    source = "src/main/grammar/Purescript.flex"
+    targetDir = "src/main/gen/org/purescript/lexer/"
+    targetClass = "_PSLexer"
+    purgeOldFiles = true
+    skeleton = "src/main/grammar/idea-flex.skeleton"
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    dependsOn("generateLexer")
+}
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    dependsOn("generateLexer")
+}
+
+sourceSets {
+    main {
+        java {
+            setSrcDirs(listOf("src/main/gen", "src/main/java"))
+        }
+    }
+}
+
