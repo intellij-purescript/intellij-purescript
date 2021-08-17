@@ -165,7 +165,7 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         myFixture.configureByText(
             "Bar.purs",
             """
-                module Bar (module Bar') where
+                module Bar (module Bar) where
                 type Bar' = String
             """.trimIndent()
         )

@@ -500,5 +500,24 @@ class PSModuleTest : BasePlatformTestCase() {
 
         assertSize(2, module.exportedDataConstructors)
     }
+    fun `test exports self`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (module Foo) where
+            """.trimIndent()
+        ).getModule()
+        assertTrue(module.exportsSelf)
+    }
+    fun `test dont exports self`() {
+        val module = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (f) where
+                f = 1
+            """.trimIndent()
+        ).getModule()
+        assertFalse(module.exportsSelf)
+    }
 }
 
