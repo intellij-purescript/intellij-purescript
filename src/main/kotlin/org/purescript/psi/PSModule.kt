@@ -357,4 +357,9 @@ class PSModule(node: ASTNode) :
             addAfter(newLine, insertPosition)
         }
     }
+    val exportsSelf:Boolean get() =
+        exportList?.exportedItems
+            ?.filterIsInstance<PSExportedModule>()
+            ?.any { it.name == module?.name }
+            ?: true
 }
