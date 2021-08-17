@@ -21,16 +21,16 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
-sourceCompatibility = javaVersion
-targetCompatibility = javaVersion
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
@@ -59,13 +59,6 @@ intellij {
     publishPlugin {
         token = intellijPublishToken
         channels publishChannels
-    }
-
-    prepareSandbox {
-        copy {
-            from './PsiViewer.jar'
-            into './build/idea-sandbox/plugins/'
-        }
     }
 
     patchPluginXml {

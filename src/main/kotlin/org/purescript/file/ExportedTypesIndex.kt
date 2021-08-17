@@ -7,8 +7,10 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.purescript.psi.PSForeignDataDeclaration
+import org.purescript.psi.PSModule
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.PSExportedData
+import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -27,17 +29,26 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
         val module = file.module ?: return emptyMap()
         val exportList = module.exportList
         return if (exportList == null) {
-            val exportedNames = mutableSetOf<String>()
-            module.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
-            module.dataDeclarations.mapTo(exportedNames) { it.name }
-            module.newTypeDeclarations.mapTo(exportedNames) { it.name }
-            module.foreignDataDeclarations.mapTo(exportedNames) { it.name }
-            exportedNames.associateWith { null }
+            declarations(module)
         } else {
-            exportList.exportedItems
+            val explicitlyExported = exportList.exportedItems
                 .filterIsInstance<PSExportedData>()
                 .associate { it.name to null }
+            if (module.exportsSelf) {
+                explicitlyExported + declarations(module)
+            } else {
+                explicitlyExported
+            }
         }
+    }
+
+    private fun declarations(module: PSModule): Map<String, Nothing?> {
+        val exportedNames = mutableSetOf<String>()
+        module.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
+        module.dataDeclarations.mapTo(exportedNames) { it.name }
+        module.newTypeDeclarations.mapTo(exportedNames) { it.name }
+        module.foreignDataDeclarations.mapTo(exportedNames) { it.name }
+        return exportedNames.associateWith { null }
     }
 
     override fun getName(): ID<String, Void?> = NAME
@@ -47,7 +58,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun getKeyDescriptor(): EnumeratorStringDescriptor =
         EnumeratorStringDescriptor.INSTANCE
 
-    override fun getVersion() = 1
+    override fun getVersion() = 2
 
     override fun getInputFilter() =
         DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)

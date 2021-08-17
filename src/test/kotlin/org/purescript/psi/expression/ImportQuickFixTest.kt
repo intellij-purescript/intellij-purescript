@@ -2,10 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
-import org.purescript.getImportDeclaration
-import org.purescript.getImportDeclarations
-import org.purescript.getImportedData
-import org.purescript.getImportedValue
+import org.purescript.*
 import org.purescript.ide.inspections.PSUnresolvedReferenceInspection
 
 class ImportQuickFixTest : BasePlatformTestCase() {
@@ -155,5 +152,28 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         assertEquals("Import Bar (Qux)", action.familyName)
         assertEquals("Bar", importDeclaration.name)
         assertEquals("Qux", importedData.name)
+    }
+    fun `test it import type synonyme with apostrophe when module export it self`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f :: Bar'
+                f = ""
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar (module Bar') where
+                type Bar' = String
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+
+        assertEquals("Bar", file.getImportDeclaration().name)
+        assertEquals("Bar'", file.getImportedData().name)
     }
 }
