@@ -38,11 +38,14 @@ task("generateLexer", org.jetbrains.grammarkit.tasks.GenerateLexer::class) {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+
     dependsOn("generateLexer")
 }
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     dependsOn("generateLexer")
 }
