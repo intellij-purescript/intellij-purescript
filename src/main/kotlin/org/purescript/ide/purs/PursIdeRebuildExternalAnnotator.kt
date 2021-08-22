@@ -1,5 +1,6 @@
 package org.purescript.ide.purs
 
+
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -8,23 +9,22 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.guessProjectDir
-import com.intellij.openapi.util.SystemInfo.isWindows
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-
-
-import org.jetbrains.annotations.NotNull
 import java.io.File
-import java.nio.file.Path
 
 class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun collectInformation(file: PsiFile) = file
 
     override fun doAnnotate(file: PsiFile): Response? {
+
         // without a project dir we don't know where to build the file
         val projectDir = file.project.guessProjectDir() ?: return null
         val rootDir = projectDir.toNioPath()
-        val pursBin = Purs().nodeModulesVersion(rootDir)
+
+        // without a purs bin path we can't annotate with it
+        val pursBin = Purs().nodeModulesVersion(rootDir) ?: return null
+
         val gson = Gson()
         val tempFile: File =
             File.createTempFile("purescript-intellij", file.name)
