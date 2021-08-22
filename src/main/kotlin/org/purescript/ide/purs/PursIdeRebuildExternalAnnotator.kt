@@ -7,6 +7,7 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo.isWindows
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
@@ -20,7 +21,10 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun collectInformation(file: PsiFile) = file
 
     override fun doAnnotate(file: PsiFile): Response? {
-        val pursBin = getPursPath(file) ?: return null
+        // without a project dir we don't know where to build the file
+        val projectDir = file.project.guessProjectDir() ?: return null
+        val rootDir = projectDir.toNioPath()
+        val pursBin = Purs().nodeModulesVersion(rootDir)
         val gson = Gson()
         val tempFile: File =
             File.createTempFile("purescript-intellij", file.name)
@@ -47,25 +51,6 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             null
         } finally {
             tempFile.delete()
-        }
-    }
-
-    private fun getPursPath(file: PsiFile): Path? {
-        val sequence = sequence<Path> {
-            var tmp = file.virtualFile.toNioPath()
-            while (tmp.parent != null) {
-                yield(tmp.parent)
-                tmp = tmp.parent
-            }
-        }
-        val nodeModules = sequence
-            .map { it.resolve("node_modules") }
-            .firstOrNull { it.toFile().exists() }
-            ?: return null
-        val binDir = nodeModules.resolve(".bin")
-        return when {
-            isWindows -> binDir.resolve("purs.cmd")
-            else -> binDir.resolve("purs")
         }
     }
 
