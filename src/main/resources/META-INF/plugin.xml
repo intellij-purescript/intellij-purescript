@@ -90,7 +90,7 @@
             enabledByDefault="true" level="ERROR"
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
     />
-
+    <!-- purs ide -->
     <localInspection
         language="Purescript"
         groupName="Purescript"
@@ -104,6 +104,9 @@
     <externalAnnotator
             language="Purescript"
             implementationClass="org.purescript.ide.purs.PursIdeRebuildExternalAnnotator"
+    />
+    <postStartupActivity
+        implementation="org.purescript.ide.purs.StartupActivity"
     />
 
     <!-- Formatting -->

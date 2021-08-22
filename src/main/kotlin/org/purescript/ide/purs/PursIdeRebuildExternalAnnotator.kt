@@ -1,5 +1,6 @@
 package org.purescript.ide.purs
 
+
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -7,20 +8,23 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.util.SystemInfo.isWindows
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-
-
-import org.jetbrains.annotations.NotNull
 import java.io.File
-import java.nio.file.Path
 
 class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun collectInformation(file: PsiFile) = file
 
     override fun doAnnotate(file: PsiFile): Response? {
-        val pursBin = getPursPath(file) ?: return null
+
+        // without a project dir we don't know where to build the file
+        val projectDir = file.project.guessProjectDir() ?: return null
+        val rootDir = projectDir.toNioPath()
+
+        // without a purs bin path we can't annotate with it
+        val pursBin = Purs().nodeModulesVersion(rootDir) ?: return null
+
         val gson = Gson()
         val tempFile: File =
             File.createTempFile("purescript-intellij", file.name)
@@ -50,29 +54,10 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         }
     }
 
-    private fun getPursPath(file: PsiFile): Path? {
-        val sequence = sequence<Path> {
-            var tmp = file.virtualFile.toNioPath()
-            while (tmp.parent != null) {
-                yield(tmp.parent)
-                tmp = tmp.parent
-            }
-        }
-        val nodeModules = sequence
-            .map { it.resolve("node_modules") }
-            .firstOrNull { it.toFile().exists() }
-            ?: return null
-        val binDir = nodeModules.resolve(".bin")
-        return when {
-            isWindows -> binDir.resolve("purs.cmd")
-            else -> binDir.resolve("purs")
-        }
-    }
-
     override fun apply(
-        file: @NotNull PsiFile,
+        file: PsiFile,
         annotationResult: Response,
-        holder: @NotNull AnnotationHolder
+        holder: AnnotationHolder
     ) {
         val documentManager = PsiDocumentManager.getInstance(file.project)
         val document = documentManager.getDocument(file) ?: return
