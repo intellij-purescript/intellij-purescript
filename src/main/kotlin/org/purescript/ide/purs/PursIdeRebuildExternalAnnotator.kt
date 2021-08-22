@@ -55,9 +55,9 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     }
 
     override fun apply(
-        file: @NotNull PsiFile,
+        file: PsiFile,
         annotationResult: Response,
-        holder: @NotNull AnnotationHolder
+        holder: AnnotationHolder
     ) {
         val documentManager = PsiDocumentManager.getInstance(file.project)
         val document = documentManager.getDocument(file) ?: return
