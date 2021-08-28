@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange
 data class Response(val result: List<Result>, val resultType: String) {
     data class Result(
         val message: String,
+        val errorCode: String?,
         val position: Position,
         val suggestion: Suggestion?
     )
