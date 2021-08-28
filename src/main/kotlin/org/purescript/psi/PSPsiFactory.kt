@@ -1,10 +1,12 @@
 package org.purescript.psi
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
 import org.purescript.psi.imports.*
@@ -49,6 +51,7 @@ inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(
     return result
 }
 
+@Suppress("PSUnresolvedReference")
 class PSPsiFactory(private val project: Project) {
 
     fun createModuleName(name: String): PSModuleName? =
@@ -173,7 +176,7 @@ class PSPsiFactory(private val project: Project) {
     fun createNewLine(): PsiElement =
         PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n")
 
-    private inline fun <reified T : PsiElement> createFromText(code: String): T? =
+    private inline fun <reified T : PsiElement> createFromText(@Language("Purescript") code: String): T? =
         PsiFileFactory.getInstance(project)
             .createFileFromText(PSLanguage.INSTANCE, code)
             .findDescendantOfType()
@@ -183,6 +186,15 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |$name = 1
+        """.trimMargin()
+        )
+    }
+
+    fun createParenthesis(around: String): PSParensImpl? {
+        return createFromText(
+            """
+            |module Main where
+            |x = ($around)
         """.trimMargin()
         )
     }
