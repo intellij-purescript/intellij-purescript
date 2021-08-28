@@ -76,6 +76,12 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
                 val fix = PursIdeQuickFix(result.suggestion, result.message)
                 annotationBuilder.withFix(fix)
             }
+            when (result.errorCode) {
+                "OrphanTypeDeclaration" -> {
+                    val fix = PursIdeAddClauseQuickFix(textRange)
+                    annotationBuilder.withFix(fix)
+                }
+            }
             annotationBuilder.create()
         }
     }
