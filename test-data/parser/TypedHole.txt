@@ -79,7 +79,4 @@ Purescript File
       PSValueImpl(Value)
         PSTypeHoleImpl(TypeHole)
           PsiElement(operator)('?')
-        PSExpressionIdentifier(ExpressionIdentifier)
-          PSQualifiedIdentifier(QualifiedIdentifier)
-            PSIdentifier(identifier)
-              PsiElement(identifier)('ummm')
+          PsiElement(identifier)('ummm')

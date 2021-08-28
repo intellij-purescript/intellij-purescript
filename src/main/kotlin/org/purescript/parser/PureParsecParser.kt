@@ -484,7 +484,7 @@ class PureParsecParser {
     private val boolean = `true`.or(`false`)
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
-    private val hole = token("?").`as`(TypeHole)
+    private val hole = (token("?") + idents).`as`(TypeHole)
     private val recordLabel =
         choice(
             attempt(label + token(":")) + expr,
