@@ -68,7 +68,8 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         for (result in annotationResult.result) {
             val textRange = result.position.textRange(document)
             val annotationBuilder = holder
-                .newAnnotation(severity, result.message)
+                .newAnnotation(severity, "Purs ide rebuild")
+                .tooltip(result.message)
                 .range(textRange)
                 .needsUpdateOnTyping()
             if (result.suggestion != null) {
