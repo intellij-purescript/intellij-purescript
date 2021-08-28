@@ -7,6 +7,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.psi.binder.PSBinderImpl
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSValueImpl
 import org.purescript.psi.binder.PSVarBinderImpl
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
@@ -17,6 +18,8 @@ class PSValueDeclaration(node: ASTNode) :
     PsiNameIdentifierOwner,
     DocCommentOwner
 {
+
+    val value get() = findChildByClass(PSValueImpl::class.java)
 
     override fun getName(): String {
         return findChildByClass(PSIdentifier::class.java)!!
@@ -76,7 +79,6 @@ class PSValueDeclaration(node: ASTNode) :
         get() = SyntaxTraverser.psiTraverser(this)
             .filterIsInstance(PSVarBinderImpl::class.java)
             .asSequence()
-            .filterNotNull()
             .map { Pair(it.name, it) }
             .toMap()
 
