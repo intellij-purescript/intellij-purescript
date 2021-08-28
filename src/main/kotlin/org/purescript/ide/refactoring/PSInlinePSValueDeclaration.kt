@@ -8,6 +8,8 @@ import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSTypeImpl
+import org.purescript.psi.declaration.PSSignature
 import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSInlinePSValueDeclaration(val project: Project, val toInline: PSValueDeclaration) : BaseRefactoringProcessor(project) {
@@ -27,6 +29,10 @@ class PSInlinePSValueDeclaration(val project: Project, val toInline: PSValueDecl
         usages.asIterable().forEach loop@{
             val copy = value.copy()
             val element = it.reference?.element ?: return@loop
+            if (element is PSSignature) {
+                element.delete()
+                return@loop
+            }
             val parent = element.parent
             if (parent.children.size == 1) {
                 parent.addRangeAfter(copy.firstChild, copy.lastChild, element)

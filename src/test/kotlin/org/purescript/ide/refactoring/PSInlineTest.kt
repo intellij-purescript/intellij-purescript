@@ -19,6 +19,21 @@ class PSInlineTest : BasePlatformTestCase() {
         )
     }
 
+    fun `test deletes inlined type declaration`() {
+        doTest(
+            """
+                module Main where
+                x :: Int
+                x{-caret-} = 1
+                y = 1
+            """.trimIndent(),
+            """
+                module Main where
+                y = 1
+            """.trimIndent()
+        )
+    }
+
     fun `test inline value declaration with single value and no parameters`() {
         doTest(
             """
