@@ -9,9 +9,12 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
+import com.intellij.util.io.div
 import java.io.File
+import java.nio.file.Path
 
 class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun collectInformation(file: PsiFile) = file
@@ -29,6 +32,16 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         val tempFile: File =
             File.createTempFile("purescript-intellij", file.name)
         tempFile.writeText(file.text, file.virtualFile.charset)
+        val filePath = file.virtualFile.toNioPath()
+        val jsPath = filePath.parent / (filePath.toFile().nameWithoutExtension + ".js")
+        val jsFile = VirtualFileManager.getInstance().findFileByNioPath(jsPath)
+        val tempJsFile: File?
+        if (jsFile != null) {
+            tempJsFile = (tempFile.toPath().parent / (tempFile.nameWithoutExtension + ".js")).toFile()
+            tempJsFile?.writeBytes(jsFile.contentsToByteArray())
+        } else {
+            tempJsFile = null
+        }
         val request = mapOf(
             "command" to "rebuild",
             "params" to mapOf(
@@ -51,6 +64,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             null
         } finally {
             tempFile.delete()
+            tempJsFile?.delete()
         }
     }
 
