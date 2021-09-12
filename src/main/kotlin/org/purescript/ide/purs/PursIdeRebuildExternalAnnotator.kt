@@ -33,11 +33,11 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             File.createTempFile("purescript-intellij", file.name)
         tempFile.writeText(file.text, file.virtualFile.charset)
         val filePath = file.virtualFile.toNioPath()
-        val jsPath = filePath.parent / (filePath.toFile().nameWithoutExtension + ".js")
+        val jsPath = filePath.parent.resolve((filePath.toFile().nameWithoutExtension + ".js"))
         val jsFile = VirtualFileManager.getInstance().findFileByNioPath(jsPath)
         val tempJsFile: File?
         if (jsFile != null) {
-            tempJsFile = (tempFile.toPath().parent / (tempFile.nameWithoutExtension + ".js")).toFile()
+            tempJsFile = (tempFile.toPath().parent.resolve((tempFile.nameWithoutExtension + ".js"))).toFile()
             tempJsFile?.writeBytes(jsFile.contentsToByteArray())
         } else {
             tempJsFile = null
