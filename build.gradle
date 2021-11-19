@@ -34,17 +34,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     }
 }
 
-sourceSets {
-    main {
-        kotlin.srcDirs 'src/main/kotlin'
-        resources.srcDirs 'src/main/resources'
-    }
-    test {
-        kotlin.srcDirs 'src/test/kotlin'
-        resources.srcDirs 'src/test/resources'
-    }
-}
-
 
 tasks.named("test").configure {
      systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
