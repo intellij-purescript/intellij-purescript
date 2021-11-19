@@ -10,7 +10,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
@@ -22,7 +22,7 @@ import kotlin.reflect.KProperty1
  * import Foo.Bar hiding (a, b, c) as FB
  * ```
  */
-class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PSImportDeclarationImpl> {
+class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImportDeclaration> {
 
     /**
      * The identifier specifying module being imported, e.g.
@@ -98,7 +98,7 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PS
     override fun getReference(): ModuleReference =
         ModuleReference(this)
 
-    override fun compareTo(other: PSImportDeclarationImpl): Int {
+    override fun compareTo(other: PSImportDeclaration): Int {
         return when {
             name == "Prelude" && other.name != "Prelude" -> -1
             name != "Prelude" && other.name == "Prelude" -> 1
@@ -174,9 +174,9 @@ class PSImportDeclarationImpl(node: ASTNode) : PSPsiElement(node), Comparable<PS
         )
 
     /**
-     * @return the [PSNewTypeDeclarationImpl] elements imported by this declaration
+     * @return the [PSNewTypeDeclaration] elements imported by this declaration
      */
-    val importedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
+    val importedNewTypeDeclarations: List<PSNewTypeDeclaration>
         get() = getImportedDeclarations(
             PSModule::exportedNewTypeDeclarations,
             PSImportedData::class.java

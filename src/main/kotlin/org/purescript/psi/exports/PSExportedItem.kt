@@ -3,12 +3,12 @@ package org.purescript.psi.exports
 import com.intellij.lang.ASTNode
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 
 sealed class PSExportedItem(node: ASTNode) : PSPsiElement(node) {
     abstract override fun getName(): String
@@ -27,8 +27,8 @@ class PSExportedData(node: ASTNode) : PSExportedItem(node) {
     val dataMembers: Array<PSExportedDataMember>
         get() = dataMemberList?.dataMembers ?: emptyArray()
 
-    val newTypeDeclaration: PSNewTypeDeclarationImpl?
-        get() = reference.resolve() as? PSNewTypeDeclarationImpl
+    val newTypeDeclaration: PSNewTypeDeclaration?
+        get() = reference.resolve() as? PSNewTypeDeclaration
 
     val dataDeclaration: PSDataDeclaration?
         get() = reference.resolve() as? PSDataDeclaration
@@ -72,7 +72,7 @@ class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
     val moduleName: PSModuleName
         get() = findNotNullChildByClass(PSModuleName::class.java)
 
-    val importDeclarations: Sequence<PSImportDeclarationImpl>
+    val importDeclarations: Sequence<PSImportDeclaration>
         get() = module
             ?.importDeclarations
             ?.asSequence()

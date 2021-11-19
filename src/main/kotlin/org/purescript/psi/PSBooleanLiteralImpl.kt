@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSBooleanLiteralImpl(node: ASTNode) : PSPsiElement(node)
+class PSBooleanLiteral(node: ASTNode) : PSPsiElement(node)

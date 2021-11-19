@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSImpliesImpl(node: ASTNode) : PSPsiElement(node)
+class PSImplies(node: ASTNode) : PSPsiElement(node)

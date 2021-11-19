@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSRowImpl(node: ASTNode) : PSPsiElement(node)
+class PSRow(node: ASTNode) : PSPsiElement(node)

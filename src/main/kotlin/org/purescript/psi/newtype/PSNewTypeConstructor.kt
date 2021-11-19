@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSTypeAtomImpl
+import org.purescript.psi.PSTypeAtom
 import org.purescript.psi.data.PSDataConstructor
 
 /**
@@ -33,10 +33,10 @@ class PSNewTypeConstructor(node: ASTNode) :
      * In contrast to [PSDataConstructor], a valid [PSNewTypeConstructor]
      * must contain one single type atom.
      *
-     * @return the [PSTypeAtomImpl] element in this constructor.
+     * @return the [PSTypeAtom] element in this constructor.
      */
-    internal val typeAtom: PSTypeAtomImpl
-        get() = findNotNullChildByClass(PSTypeAtomImpl::class.java)
+    internal val typeAtom: PSTypeAtom
+        get() = findNotNullChildByClass(PSTypeAtom::class.java)
 
     override fun setName(name: String): PsiElement? = null
 

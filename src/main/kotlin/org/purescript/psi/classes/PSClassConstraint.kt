@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSTypeAtomImpl
+import org.purescript.psi.PSTypeAtom
 import org.purescript.psi.name.PSClassName
 
 /**
@@ -26,11 +26,11 @@ class PSClassConstraint(node: ASTNode) : PSPsiElement(node) {
         get() = findNotNullChildByClass(PSClassName::class.java)
 
     /**
-     * @return the [PSTypeAtomImpl] elements that this constraint contains,
+     * @return the [PSTypeAtom] elements that this constraint contains,
      * or an empty array if it does not contain any.
      */
-    val typeAtoms: Array<PSTypeAtomImpl>
-        get() = findChildrenByClass(PSTypeAtomImpl::class.java)
+    val typeAtoms: Array<PSTypeAtom>
+        get() = findChildrenByClass(PSTypeAtom::class.java)
 
     override fun getName(): String = identifier.name
 

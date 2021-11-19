@@ -6,7 +6,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 
-class PSNewTypeDeclarationImpl(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
+class PSNewTypeDeclaration(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
 
     /**
      * @return the [PSProperName] that identifies this declaration

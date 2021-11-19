@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSIfThenElseImpl(node: ASTNode) : PSPsiElement(node)
+class PSIfThenElse(node: ASTNode) : PSPsiElement(node)

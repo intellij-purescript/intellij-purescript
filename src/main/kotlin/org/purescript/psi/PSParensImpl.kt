@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSParensImpl(node: ASTNode) : PSPsiElement(node)
+class PSParens(node: ASTNode) : PSPsiElement(node)

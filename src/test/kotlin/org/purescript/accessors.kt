@@ -8,7 +8,7 @@ import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.declaration.PSValueDeclaration
-import org.purescript.psi.binder.PSVarBinderImpl
+import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.classes.PSClassConstraint
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
@@ -19,7 +19,7 @@ import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.imports.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -105,10 +105,10 @@ fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> =
 fun PsiFile.getExportedClassDeclarations(): List<PSClassDeclaration> =
     getModule().exportedClassDeclarations
 
-fun PsiFile.getImportDeclarations(): Array<PSImportDeclarationImpl> =
+fun PsiFile.getImportDeclarations(): Array<PSImportDeclaration> =
     getModule().importDeclarations
 
-fun PsiFile.getImportDeclaration(): PSImportDeclarationImpl =
+fun PsiFile.getImportDeclaration(): PSImportDeclaration =
     getImportDeclarations().single()
 
 fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
@@ -117,10 +117,10 @@ fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
 fun PsiFile.getValueDeclaration(): PSValueDeclaration =
     getValueDeclarations().single()
 
-fun PsiFile.getVarBinders(): List<PSVarBinderImpl> =
+fun PsiFile.getVarBinders(): List<PSVarBinder> =
     collectDescendantsOfType()
 
-fun PsiFile.getVarBinder(): PSVarBinderImpl =
+fun PsiFile.getVarBinder(): PSVarBinder =
     getVarBinders().single()
 
 fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
@@ -129,10 +129,10 @@ fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
 fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration =
     getForeignValueDeclarations().single()
 
-fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclarationImpl> =
+fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclaration> =
     getModule().newTypeDeclarations
 
-fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclarationImpl =
+fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclaration =
     getNewTypeDeclarations().single()
 
 fun PsiFile.getNewTypeConstructor(): PSNewTypeConstructor =

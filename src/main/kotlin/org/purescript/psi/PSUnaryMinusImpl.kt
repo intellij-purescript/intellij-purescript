@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSUnaryMinusImpl(node: ASTNode) : PSPsiElement(node)
+class PSUnaryMinus(node: ASTNode) : PSPsiElement(node)

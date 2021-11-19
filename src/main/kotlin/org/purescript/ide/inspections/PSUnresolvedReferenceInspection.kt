@@ -8,7 +8,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.siblings
 import org.purescript.PSLanguage
-import org.purescript.psi.binder.PSConstructorBinderImpl
+import org.purescript.psi.binder.PSConstructorBinder
 import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.exports.PSExportedOperator
 import org.purescript.psi.exports.PSExportedValue
@@ -16,7 +16,7 @@ import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionSymbol
-import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclaration
 import org.purescript.psi.imports.PSImportedOperator
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 
@@ -32,10 +32,10 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                     is PSExportedValue -> visitReference(element.reference)
                     is PSExportedOperator -> visitReference(element.reference)
                     is PSExportedModule -> visitModuleReference(element.reference)
-                    is PSImportDeclarationImpl -> visitModuleReference(element.reference)
+                    is PSImportDeclaration -> visitModuleReference(element.reference)
                     is PSImportedOperator -> visitReference(element.reference)
                     is PSExpressionConstructor -> visitReference(element.reference)
-                    is PSConstructorBinderImpl -> visitReference(element.reference)
+                    is PSConstructorBinder -> visitReference(element.reference)
                     is PSExpressionIdentifier -> visitReference(element.reference)
                     is PSExpressionSymbol -> visitReference(element.reference)
                     is PSExpressionOperator -> visitReference(element.reference)

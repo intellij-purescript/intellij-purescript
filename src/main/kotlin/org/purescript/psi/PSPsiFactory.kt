@@ -57,7 +57,7 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
-    fun createImportDeclaration(importDeclaration: ImportDeclaration): PSImportDeclarationImpl? =
+    fun createImportDeclaration(importDeclaration: ImportDeclaration): PSImportDeclaration? =
         createImportDeclaration(
             importDeclaration.moduleName,
             importDeclaration.hiding,
@@ -97,7 +97,7 @@ class PSPsiFactory(private val project: Project) {
         hiding: Boolean = false,
         importedItems: Collection<PSImportedItem> = emptyList(),
         alias: String? = null
-    ): PSImportDeclarationImpl? =
+    ): PSImportDeclaration? =
         createFromText(
             buildString {
                 appendLine("module Foo where")
@@ -190,7 +190,7 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createParenthesis(around: String): PSParensImpl? {
+    fun createParenthesis(around: String): PSParens? {
         return createFromText(
             """
             |module Main where

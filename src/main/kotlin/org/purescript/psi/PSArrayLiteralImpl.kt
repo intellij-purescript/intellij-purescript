@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSArrayLiteralImpl(node: ASTNode) : PSPsiElement(node)
+class PSArrayLiteral(node: ASTNode) : PSPsiElement(node)
