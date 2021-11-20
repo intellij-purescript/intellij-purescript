@@ -87,6 +87,9 @@ import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.ClassName
+import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
+import org.purescript.parser.PSElements.Companion.JSRaw
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -293,13 +296,11 @@ class PureParsecParser {
         ).then(darrow)
     private val parseForeignDeclaration =
         `'foreign'` + `'import'` + choice(
-            (data + properName + dcolon + parseKind).`as`(ForeignDataDeclaration),
-            (`'instance'` + ident + dcolon + optional(parseDeps)
-                + attempt(qualified(properName)).`as`(Qualified).`as`(ClassName)
-                + manyOrEmpty(typeAtom)
-                ).`as`(PSElements.ExternInstanceDeclaration),
-            (attempt(ident) + optional(attempt(string).`as`(PSElements.JSRaw))
-                + dcolon + type).`as`(PSElements.ForeignValueDeclaration)
+            data + properName + dcolon + parseKind `as` ForeignDataDeclaration,
+            `'instance'` + ident + dcolon + optional(parseDeps)
+                + (attempt(qualified(properName)) `as` Qualified `as` ClassName)
+                + manyOrEmpty(typeAtom) `as` (ExternInstanceDeclaration),
+            attempt(ident) + optional(attempt(string) `as` JSRaw) + dcolon + type `as` ForeignValueDeclaration
         )
     private val parseAssociativity = choice(
         infixl,
