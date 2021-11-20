@@ -18,7 +18,9 @@ import org.purescript.parser.PSTokens.Companion.ELSE
 import org.purescript.parser.PSTokens.Companion.EQ
 import org.purescript.parser.PSTokens.Companion.FALSE
 import org.purescript.parser.PSTokens.Companion.FORALL
+import org.purescript.parser.PSTokens.Companion.FOREIGN
 import org.purescript.parser.PSTokens.Companion.IF
+import org.purescript.parser.PSTokens.Companion.IMPORT
 import org.purescript.parser.PSTokens.Companion.IN
 import org.purescript.parser.PSTokens.Companion.INFIX
 import org.purescript.parser.PSTokens.Companion.INFIXL
@@ -37,8 +39,10 @@ import org.purescript.parser.PSTokens.Companion.TRUE
 import org.purescript.parser.PSTokens.Companion.TYPE
 import org.purescript.parser.PSTokens.Companion.WHERE
 
-val `'instance'` = token(INSTANCE)
 val `'derive'` = token(DERIVE)
+val `'foreign'`  = token(FOREIGN)
+val `'import'` = token(IMPORT)
+val `'instance'` = token(INSTANCE)
 val `'newtype'` = token(NEWTYPE)
 val `'role'` = token("role")
 val `'type'` = token(TYPE)
