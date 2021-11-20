@@ -7,7 +7,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
-import org.purescript.psi.PSLetImpl
+import org.purescript.psi.PSLet
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
@@ -53,7 +53,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     ?: sequenceOf()
                                 yieldAll(valueDeclarations)
                             }
-                            is PSLetImpl ->
+                            is PSLet ->
                                 yieldAll(parent.valueDeclarations.asSequence())
                             is PSDoBlock ->
                                 yieldAll(parent.valueDeclarations)

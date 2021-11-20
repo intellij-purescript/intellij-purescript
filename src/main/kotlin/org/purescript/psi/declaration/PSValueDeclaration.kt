@@ -4,11 +4,11 @@ import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
-import org.purescript.psi.binder.PSBinderImpl
+import org.purescript.psi.binder.PSBinder
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSValueImpl
-import org.purescript.psi.binder.PSVarBinderImpl
+import org.purescript.psi.PSValue
+import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
@@ -19,7 +19,7 @@ class PSValueDeclaration(node: ASTNode) :
     DocCommentOwner
 {
 
-    val value get() = findChildByClass(PSValueImpl::class.java)
+    val value get() = findChildByClass(PSValue::class.java)
 
     override fun getName(): String {
         return findChildByClass(PSIdentifier::class.java)!!
@@ -37,7 +37,7 @@ class PSValueDeclaration(node: ASTNode) :
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
-        val parameters = findChildrenByClass(PSBinderImpl::class.java)
+        val parameters = findChildrenByClass(PSBinder::class.java)
         val parameterList = parameters
             .asSequence()
             .map { it.text.trim() }
@@ -75,9 +75,9 @@ class PSValueDeclaration(node: ASTNode) :
     override val docComments:List<PsiComment>
         get() = this.getDocComments()
 
-    val varBindersInParameters: Map<String, PSVarBinderImpl>
+    val varBindersInParameters: Map<String, PSVarBinder>
         get() = SyntaxTraverser.psiTraverser(this)
-            .filterIsInstance(PSVarBinderImpl::class.java)
+            .filterIsInstance(PSVarBinder::class.java)
             .asSequence()
             .map { Pair(it.name, it) }
             .toMap()

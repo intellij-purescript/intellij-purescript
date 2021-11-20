@@ -5,7 +5,7 @@ import org.purescript.psi.PSPsiElement
 
 class PSDoBlock(node: ASTNode) : PSPsiElement(node) {
     val letDeclarations get() =
-        findChildrenByClass(PSDoNotationLetImpl::class.java)
+        findChildrenByClass(PSDoNotationLet::class.java)
 
     val valueDeclarations get () =
             letDeclarations

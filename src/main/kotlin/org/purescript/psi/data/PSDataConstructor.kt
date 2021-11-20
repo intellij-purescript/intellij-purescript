@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSTypeAtomImpl
+import org.purescript.psi.PSTypeAtom
 
 /**
  * A data constructor in a data declaration, e.g.
@@ -29,10 +29,10 @@ class PSDataConstructor(node: ASTNode) :
         get() = findNotNullChildByClass(PSProperName::class.java)
 
     /**
-     * @return the [PSTypeAtomImpl] elements in this constructor
+     * @return the [PSTypeAtom] elements in this constructor
      */
-    internal val typeAtoms: Array<PSTypeAtomImpl>
-        get() = findChildrenByClass(PSTypeAtomImpl::class.java)
+    internal val typeAtoms: Array<PSTypeAtom>
+        get() = findChildrenByClass(PSTypeAtom::class.java)
 
     override fun setName(name: String): PsiElement? = null
 

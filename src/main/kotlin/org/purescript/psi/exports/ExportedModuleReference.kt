@@ -3,7 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclaration
 
 class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase<PSExportedModule>(
     exportedModule,
@@ -31,7 +31,7 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
         return element
     }
 
-    private val candidates: Array<PSImportDeclarationImpl>
+    private val candidates: Array<PSImportDeclaration>
         get() =
             myElement.module?.importDeclarations ?: emptyArray()
 }

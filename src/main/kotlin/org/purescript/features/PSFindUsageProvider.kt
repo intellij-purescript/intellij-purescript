@@ -37,7 +37,7 @@ import org.purescript.parser.PSTokens.Companion.STRING_GAP
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSModule
-import org.purescript.psi.binder.PSVarBinderImpl
+import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -46,16 +46,16 @@ import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.imports.PSImportAlias
 import org.purescript.psi.newtype.PSNewTypeConstructor
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
         psiElement is PSValueDeclaration
-            || psiElement is PSVarBinderImpl
+            || psiElement is PSVarBinder
             || psiElement is PSModule
             || psiElement is PSForeignValueDeclaration
-            || psiElement is PSNewTypeDeclarationImpl
+            || psiElement is PSNewTypeDeclaration
             || psiElement is PSNewTypeConstructor
             || psiElement is PSImportAlias
             || psiElement is PSDataDeclaration
@@ -108,9 +108,9 @@ class PSFindUsageProvider : FindUsagesProvider {
     override fun getType(element: PsiElement): String {
         return when (element) {
             is PSValueDeclaration -> "value"
-            is PSVarBinderImpl -> "parameter"
+            is PSVarBinder -> "parameter"
             is PSModule -> "module"
-            is PSNewTypeDeclarationImpl -> "newtype"
+            is PSNewTypeDeclaration -> "newtype"
             is PSNewTypeConstructor -> "newtype constructor"
             is PSImportAlias -> "import alias"
             is PSDataDeclaration -> "data"

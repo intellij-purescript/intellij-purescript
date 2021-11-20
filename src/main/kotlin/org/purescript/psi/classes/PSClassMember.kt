@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSTypeImpl
+import org.purescript.psi.PSType
 
 /**
  * The a member function of a class declaration, e.g.
@@ -35,7 +35,7 @@ class PSClassMember(node: ASTNode) :
     val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
 
     /**
-     * @return the [PSTypeImpl] specifying this member's type signature, e.g.
+     * @return the [PSType] specifying this member's type signature, e.g.
      * ```
      * Json -> Either JsonDecodeError a
      * ```
@@ -44,7 +44,7 @@ class PSClassMember(node: ASTNode) :
      * decodeJson :: Json -> Either JsonDecodeError a
      * ```
      */
-    val type get() = findNotNullChildByClass(PSTypeImpl::class.java)
+    val type get() = findNotNullChildByClass(PSType::class.java)
 
     override fun setName(name: String): PsiElement? = null
 

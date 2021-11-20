@@ -4,7 +4,7 @@ Purescript File
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclarationImpl(ImportDeclaration)
+    PSImportDeclaration(ImportDeclaration)
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.Array.')

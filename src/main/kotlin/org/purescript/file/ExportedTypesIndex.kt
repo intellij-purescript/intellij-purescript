@@ -11,7 +11,7 @@ import org.purescript.psi.PSModule
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedModule
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 /**
@@ -19,7 +19,7 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
  * The index contains the following declarations:
  *  - [PSTypeSynonymDeclaration]
  *  - [PSDataDeclaration]
- *  - [PSNewTypeDeclarationImpl]
+ *  - [PSNewTypeDeclaration]
  *  - [PSForeignDataDeclaration]
  */
 class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, Void?, FileContent> {

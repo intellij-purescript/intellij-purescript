@@ -8,6 +8,6 @@ Purescript File
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('User2')
-      PSTypeArgsImpl(TypeArgs)
+      PSTypeArgs(TypeArgs)
         PSTypeVarName(TypeVarName)
           PsiElement(identifier)('a')

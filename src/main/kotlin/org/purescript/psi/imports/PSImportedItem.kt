@@ -8,7 +8,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 
 /**
  * Any element that can occur in a [PSImportList]
@@ -16,9 +16,9 @@ import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
 sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSImportedItem> {
     abstract override fun getName(): String
 
-    internal val importDeclaration: PSImportDeclarationImpl?
+    internal val importDeclaration: PSImportDeclaration?
         get() =
-            PsiTreeUtil.getParentOfType(this, PSImportDeclarationImpl::class.java)
+            PsiTreeUtil.getParentOfType(this, PSImportDeclaration::class.java)
 
     /**
      * Compares this [PSImportedItem] with the specified [PSImportedItem] for order.
@@ -114,11 +114,11 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
         get() = importedDataMemberList?.dataMembers ?: emptyArray()
 
     /**
-     * @return the [PSNewTypeDeclarationImpl] that this element references to,
+     * @return the [PSNewTypeDeclaration] that this element references to,
      * if it exists
      */
-    val newTypeDeclaration: PSNewTypeDeclarationImpl?
-        get() = reference.resolve() as? PSNewTypeDeclarationImpl
+    val newTypeDeclaration: PSNewTypeDeclaration?
+        get() = reference.resolve() as? PSNewTypeDeclaration
 
     /**
      * @return the [PSDataDeclaration] that this element references to,

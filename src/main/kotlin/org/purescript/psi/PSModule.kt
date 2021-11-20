@@ -15,10 +15,10 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.exports.*
-import org.purescript.psi.imports.PSImportDeclarationImpl
+import org.purescript.psi.imports.PSImportDeclaration
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
-import org.purescript.psi.newtype.PSNewTypeDeclarationImpl
+import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
@@ -44,7 +44,7 @@ class PSModule(node: ASTNode) :
 
     override fun getTextOffset(): Int = nameIdentifier.textOffset
 
-    fun getImportDeclarationByName(name: String): PSImportDeclarationImpl? {
+    fun getImportDeclarationByName(name: String): PSImportDeclaration? {
         return importDeclarations
             .asSequence()
             .find { (it.name ?: "") == name }
@@ -60,7 +60,7 @@ class PSModule(node: ASTNode) :
     val exportedFixityDeclarations: List<PSFixityDeclaration>
         get() = getExportedDeclarations(
             fixityDeclarations,
-            PSImportDeclarationImpl::importedFixityDeclarations,
+            PSImportDeclaration::importedFixityDeclarations,
             PSExportedOperator::class.java
         )
 
@@ -74,13 +74,13 @@ class PSModule(node: ASTNode) :
      * Helper method for retrieving various types of exported declarations.
      *
      * @param declarations The declarations of the wanted type in this module
-     * @param importedDeclarationProperty The property for the imported declarations in an [PSImportDeclarationImpl]
+     * @param importedDeclarationProperty The property for the imported declarations in an [PSImportDeclaration]
      * @param exportedItemClass The class of the [PSExportedItem] to use when filtering the results
      * @return the [Declaration] element that this module exports
      */
     private fun <Declaration : PsiNamedElement> getExportedDeclarations(
         declarations: Array<Declaration>,
-        importedDeclarationProperty: KProperty1<PSImportDeclarationImpl, List<Declaration>>,
+        importedDeclarationProperty: KProperty1<PSImportDeclaration, List<Declaration>>,
         exportedItemClass: Class<out PSExportedItem>
     ): List<Declaration> {
         val explicitlyExportedItems = exportList?.exportedItems
@@ -116,11 +116,11 @@ class PSModule(node: ASTNode) :
         get() = findChildByClass(PSExportList::class.java)
 
     /**
-     * @return the [PSImportDeclarationImpl] elements in this module
+     * @return the [PSImportDeclaration] elements in this module
      */
-    val importDeclarations: Array<PSImportDeclarationImpl>
+    val importDeclarations: Array<PSImportDeclaration>
         get() =
-            findChildrenByClass(PSImportDeclarationImpl::class.java)
+            findChildrenByClass(PSImportDeclaration::class.java)
 
     /**
      * @return the [PSValueDeclaration] elements in this module
@@ -143,11 +143,11 @@ class PSModule(node: ASTNode) :
             findChildrenByClass(PSForeignDataDeclaration::class.java)
 
     /**
-     * @return the [PSNewTypeDeclarationImpl] elements in this module
+     * @return the [PSNewTypeDeclaration] elements in this module
      */
-    val newTypeDeclarations: Array<PSNewTypeDeclarationImpl>
+    val newTypeDeclarations: Array<PSNewTypeDeclaration>
         get() =
-            findChildrenByClass(PSNewTypeDeclarationImpl::class.java)
+            findChildrenByClass(PSNewTypeDeclaration::class.java)
 
     /**
      * @return the [PSNewTypeConstructor] elements in this module
@@ -191,7 +191,7 @@ class PSModule(node: ASTNode) :
     val exportedValueDeclarations: List<PSValueDeclaration>
         get() = getExportedDeclarations(
             valueDeclarations,
-            PSImportDeclarationImpl::importedValueDeclarations,
+            PSImportDeclaration::importedValueDeclarations,
             PSExportedValue::class.java
         )
 
@@ -202,7 +202,7 @@ class PSModule(node: ASTNode) :
     val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
         get() = getExportedDeclarations(
             foreignValueDeclarations,
-            PSImportDeclarationImpl::importedForeignValueDeclarations,
+            PSImportDeclaration::importedForeignValueDeclarations,
             PSExportedValue::class.java
         )
 
@@ -213,18 +213,18 @@ class PSModule(node: ASTNode) :
     val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
         get() = getExportedDeclarations(
             foreignDataDeclarations,
-            PSImportDeclarationImpl::importedForeignDataDeclarations,
+            PSImportDeclaration::importedForeignDataDeclarations,
             PSExportedData::class.java
         )
 
     /**
-     * @return the [PSNewTypeDeclarationImpl] elements that this module exports,
+     * @return the [PSNewTypeDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
-    val exportedNewTypeDeclarations: List<PSNewTypeDeclarationImpl>
+    val exportedNewTypeDeclarations: List<PSNewTypeDeclaration>
         get() = getExportedDeclarations(
             newTypeDeclarations,
-            PSImportDeclarationImpl::importedNewTypeDeclarations,
+            PSImportDeclaration::importedNewTypeDeclarations,
             PSExportedData::class.java
         )
 
@@ -263,7 +263,7 @@ class PSModule(node: ASTNode) :
     val exportedDataDeclarations: List<PSDataDeclaration>
         get() = getExportedDeclarations(
             dataDeclarations,
-            PSImportDeclarationImpl::importedDataDeclarations,
+            PSImportDeclaration::importedDataDeclarations,
             PSExportedData::class.java
         )
 
@@ -303,7 +303,7 @@ class PSModule(node: ASTNode) :
     val exportedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
         get() = getExportedDeclarations(
             typeSynonymDeclarations,
-            PSImportDeclarationImpl::importedTypeSynonymDeclarations,
+            PSImportDeclaration::importedTypeSynonymDeclarations,
             PSExportedData::class.java
         )
 
@@ -314,7 +314,7 @@ class PSModule(node: ASTNode) :
     val exportedClassDeclarations: List<PSClassDeclaration>
         get() = getExportedDeclarations(
             classDeclarations,
-            PSImportDeclarationImpl::importedClassDeclarations,
+            PSImportDeclaration::importedClassDeclarations,
             PSExportedClass::class.java
         )
 
@@ -325,7 +325,7 @@ class PSModule(node: ASTNode) :
     val exportedClassMembers: List<PSClassMember>
         get() = getExportedDeclarations(
             classDeclarations.flatMap { it.classMembers.asSequence() }.toTypedArray(),
-            PSImportDeclarationImpl::importedClassMembers,
+            PSImportDeclaration::importedClassMembers,
             PSExportedValue::class.java
         )
 
@@ -347,7 +347,7 @@ class PSModule(node: ASTNode) :
     override val docComments: List<PsiComment>
         get() = getDocComments()
 
-    fun addImportDeclaration(importDeclaration: PSImportDeclarationImpl) {
+    fun addImportDeclaration(importDeclaration: PSImportDeclaration) {
         val lastImportDeclaration = importDeclarations.lastOrNull()
         val insertPosition = lastImportDeclaration ?: whereKeyword
         val newLine = PSPsiFactory(project).createNewLine()
