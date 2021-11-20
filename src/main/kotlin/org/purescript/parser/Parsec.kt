@@ -27,7 +27,7 @@ abstract class Parsec {
     fun then(next: Parsec) = this + next
     fun or(next: Parsec) = Combinators.choice(this, next)
     fun sepBy1(next: Parsec) = Combinators.sepBy1(this, next)
-    fun `as`(node: IElementType) = SymbolicParsec(this, node)
+    infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
     abstract fun canStartWith(type: IElementType): Boolean
     fun canBeEmpty(): Boolean {
         if (canBeEmpty == null) {
