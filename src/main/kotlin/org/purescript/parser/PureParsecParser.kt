@@ -296,7 +296,7 @@ class PureParsecParser {
         ).then(darrow)
     private val parseForeignDeclaration =
         `'foreign'` + `'import'` + choice(
-            data + properName + dcolon + parseKind `as` ForeignDataDeclaration,
+            data + properName + dcolon + type `as` ForeignDataDeclaration,
             attempt(ident) + optional(attempt(string) `as` JSRaw) + dcolon + type `as` ForeignValueDeclaration
         )
     private val parseAssociativity = choice(
