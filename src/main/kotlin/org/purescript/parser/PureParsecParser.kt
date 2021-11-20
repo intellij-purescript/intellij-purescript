@@ -292,31 +292,16 @@ class PureParsecParser {
             )
         ).then(darrow)
     private val parseForeignDeclaration =
-        token(FOREIGN)
-            .then(token(IMPORT))
-            .then(
-                choice(
-                    data
-                        .then(properName)
-                        .then(dcolon).then(parseKind)
-                        .`as`(ForeignDataDeclaration),
-                    `'instance'`
-                        .then(ident).then(dcolon)
-                        .then(optional(parseDeps))
-                        .then(
-                            attempt(qualified(properName))
-                                .`as`(Qualified)
-                                .`as`(ClassName)
-                        )
-                        .then(manyOrEmpty(typeAtom))
-                        .`as`(PSElements.ExternInstanceDeclaration),
-                    attempt(ident)
-                        .then(optional(attempt(string).`as`(PSElements.JSRaw)))
-                        .then(dcolon)
-                        .then(type)
-                        .`as`(PSElements.ForeignValueDeclaration)
-                )
-            )
+        token(FOREIGN) + token(IMPORT) + choice(
+            (data + properName + dcolon + parseKind)
+                .`as`(ForeignDataDeclaration),
+            (`'instance'` + ident + dcolon + optional(parseDeps)
+                + attempt(qualified(properName)).`as`(Qualified).`as`(ClassName)
+                + manyOrEmpty(typeAtom)
+                ).`as`(PSElements.ExternInstanceDeclaration),
+            (attempt(ident) + optional(attempt(string).`as`(PSElements.JSRaw))
+                + dcolon + type).`as`(PSElements.ForeignValueDeclaration)
+        )
     private val parseAssociativity = choice(
         infixl,
         infixr,
