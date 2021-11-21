@@ -87,6 +87,9 @@ import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.ClassName
+import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
+import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
+import org.purescript.parser.PSElements.Companion.JSRaw
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -292,31 +295,10 @@ class PureParsecParser {
             )
         ).then(darrow)
     private val parseForeignDeclaration =
-        token(FOREIGN)
-            .then(token(IMPORT))
-            .then(
-                choice(
-                    data
-                        .then(properName)
-                        .then(dcolon).then(parseKind)
-                        .`as`(ForeignDataDeclaration),
-                    `'instance'`
-                        .then(ident).then(dcolon)
-                        .then(optional(parseDeps))
-                        .then(
-                            attempt(qualified(properName))
-                                .`as`(Qualified)
-                                .`as`(ClassName)
-                        )
-                        .then(manyOrEmpty(typeAtom))
-                        .`as`(PSElements.ExternInstanceDeclaration),
-                    attempt(ident)
-                        .then(optional(attempt(string).`as`(PSElements.JSRaw)))
-                        .then(dcolon)
-                        .then(type)
-                        .`as`(PSElements.ForeignValueDeclaration)
-                )
-            )
+        `'foreign'` + `'import'` + choice(
+            data + properName + dcolon + type `as` ForeignDataDeclaration,
+            attempt(ident) + optional(attempt(string) `as` JSRaw) + dcolon + type `as` ForeignValueDeclaration
+        )
     private val parseAssociativity = choice(
         infixl,
         infixr,
