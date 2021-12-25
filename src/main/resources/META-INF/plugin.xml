@@ -42,6 +42,12 @@
         language="Purescript"
         implementationClass="org.purescript.features.PSFindUsageProvider"
     />
+    <completion.contributor 
+        language="Purescript"
+        implementationClass="org.purescript.keyword.KeywordCompletionContributor"
+        id="KeywordCompletionContributor"
+        order="first"
+    />
 
     <fileType
         name="Purescript file"
