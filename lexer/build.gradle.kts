@@ -2,13 +2,13 @@ plugins {
     java
     kotlin("jvm")
     id("org.jetbrains.intellij")
-    id("org.jetbrains.grammarkit") version "2020.3.2"
+    id("org.jetbrains.grammarkit") version "2021.1.3"
 }
 
 repositories {
     mavenCentral()
     maven { setUrl("https://jitpack.io") }
-    maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies")}
+    maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies") }
 }
 
 
@@ -43,12 +43,14 @@ tasks.withType<JavaCompile>().configureEach {
 
     dependsOn("generateLexer")
 }
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "11"
+tasks
+    .withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
+    .configureEach {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+        dependsOn("generateLexer")
     }
-    dependsOn("generateLexer")
-}
 
 sourceSets {
     main {
