@@ -19,6 +19,13 @@ repositories {
 dependencies {
     implementation project(":lexer")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("junit:junit:4.13.2")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 
@@ -36,7 +43,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 
 
 tasks.named("test").configure {
-     systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
+    systemProperty "idea.tests.overwrite.data", Boolean.getBoolean("idea.tests.overwrite.data")
+    useJUnitPlatform()
 }
 
 // Plugin config

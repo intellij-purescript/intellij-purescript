@@ -1,8 +1,11 @@
 package org.purescript.features
 
-import junit.framework.TestCase
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-class PSDocumentationProviderTest : TestCase() {
+class PSDocumentationProviderTest {
+    
+    @Test
     fun `test converts doc comments to flowing text`() {
         val documentation =
             PSDocumentationProvider().docCommentsToDocstring(
@@ -14,6 +17,7 @@ class PSDocumentationProviderTest : TestCase() {
         assertEquals("<p>This is\nmain</p>", documentation)
     }
 
+    @Test
     fun `test converts doc comments to paragraphs`() {
         val documentation =
             PSDocumentationProvider().docCommentsToDocstring(
@@ -26,6 +30,7 @@ class PSDocumentationProviderTest : TestCase() {
         assertEquals("<p>This is</p>\n\n<p>main</p>", documentation)
     }
 
+    @Test
     fun `test converts doc comments with code blocks`() {
         val documentation =
             PSDocumentationProvider().docCommentsToDocstring(
