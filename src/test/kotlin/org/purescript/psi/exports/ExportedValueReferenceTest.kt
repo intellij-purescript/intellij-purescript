@@ -102,7 +102,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
                 <caret>foreign import foo :: Int
             """.trimIndent()
         )
-        assertThrows<AssertionError>(AssertionError::class.java, "Cannot find referenced element") {
+        assertThrows(AssertionError::class.java, "Cannot find referenced element") {
             myFixture.testFindUsages("Foo.purs")
         }
     }
