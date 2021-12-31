@@ -13,5 +13,6 @@ class KeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
         result: CompletionResultSet
     ) {
         result.addElement(LookupElementBuilder.create("do"))
+        result.addElement(LookupElementBuilder.create("ado"))
     }
 }
