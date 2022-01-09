@@ -56,7 +56,7 @@ class Purs {
                     if (isWindows) {
                         it.resolve("purs.cmd")
                     } else {
-                        it.resolve("purs")
+                        it.resolve("purescript/purs.bin")
                     }
                 }.firstOrNull { it.toFile().exists() }
         }
