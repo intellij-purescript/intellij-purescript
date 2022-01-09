@@ -8,7 +8,6 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
@@ -19,12 +18,8 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
 
     override fun doAnnotate(file: PsiFile): Response? {
 
-        // without a project dir we don't know where to build the file
-        val projectDir = file.project.guessProjectDir() ?: return null
-        val rootDir = projectDir.toNioPath()
-
         // without a purs bin path we can't annotate with it
-        val pursBin = Purs().nodeModulesVersion(rootDir) ?: return null
+        val pursBin = Purs.nodeModulesVersion(file.project) ?: return null
 
         val gson = Gson()
         val tempFile: File =
@@ -98,9 +93,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         }
     }
 
-
     override fun getPairedBatchInspectionShortName(): String {
         return PursIdeRebuildInspection.SHORT_NAME
     }
-
 }
