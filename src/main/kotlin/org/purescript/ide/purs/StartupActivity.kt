@@ -19,7 +19,7 @@ class StartupActivity : StartupActivity.Background {
         val rootDir = projectDir.toNioPath()
 
         // without a purs bin path we can't annotate with it
-        val pursBin = Purs().nodeModulesVersion(rootDir) ?: return
+        val pursBin = Purs.nodeModulesVersion(project) ?: return
 
         val command = GeneralCommandLine(pursBin.toString(), "ide", "server")
             .withWorkDirectory(rootDir.toFile())
@@ -32,7 +32,6 @@ class StartupActivity : StartupActivity.Background {
                 CapturingProcessHandler(command)
                     .runProcessWithProgressIndicator(indicator)
             }
-
         }
         task.queue()
     }

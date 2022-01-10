@@ -1,25 +1,20 @@
 package org.purescript.ide.purs
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.runUndoTransparentWriteAction
-import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.Task
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import org.purescript.icons.PSIcons
 import java.io.File
-
 
 class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionAction, Iconable {
     data class Response(val result: List<String>, val resultType: String) {}
@@ -37,12 +32,8 @@ class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionActi
             PsiDocumentManager.getInstance(file.project).getDocument(file)
                 ?: return
 
-        // without a project dir we don't know where to build the file
-        val projectDir = file.project.guessProjectDir() ?: return
-        val rootDir = projectDir.toNioPath()
-
         // without a purs bin path we can't annotate with it
-        val pursBin = Purs().nodeModulesVersion(rootDir) ?: return
+        val pursBin = Purs.nodeModulesVersion(file.project) ?: return
 
         val gson = Gson()
         val tempFile: File =
@@ -75,5 +66,4 @@ class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionActi
     }
 
     override fun getIcon(flags: Int) = PSIcons.FILE
-
 }
