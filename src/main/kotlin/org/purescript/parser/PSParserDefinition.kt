@@ -11,8 +11,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
+import org.purescript.file.PS_FILE_STUB_TYPE_INSTANCE
 import org.purescript.file.PSFile
-import org.purescript.file.PSFileStubType
 import org.purescript.lexer.LayoutLexer
 import org.purescript.lexer.PSLexer
 import org.purescript.parser.PSElements.Companion.Abs
@@ -165,7 +165,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     }
 
     override fun getFileNodeType(): IFileElementType {
-        return PSFileStubType.INSTANCE
+        return PS_FILE_STUB_TYPE_INSTANCE
     }
 
     override fun getWhitespaceTokens(): TokenSet {
