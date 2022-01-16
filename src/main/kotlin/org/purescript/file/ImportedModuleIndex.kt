@@ -34,7 +34,7 @@ class ImportedModuleIndex : ScalarIndexExtension<String>() {
     override fun getVersion(): Int = 0
 
     override fun getInputFilter(): FileBasedIndex.InputFilter =
-        DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
+        DefaultFileTypeSpecificInputFilter(PS_FILE_TYPE_INSTANCE)
 
     override fun dependsOnFileContent(): Boolean = true
 

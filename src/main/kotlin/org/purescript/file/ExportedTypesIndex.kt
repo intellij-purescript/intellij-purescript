@@ -10,7 +10,6 @@ import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSModule
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.exports.PSExportedData
-import org.purescript.psi.exports.PSExportedModule
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -61,7 +60,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun getVersion() = 2
 
     override fun getInputFilter() =
-        DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
+        DefaultFileTypeSpecificInputFilter(PS_FILE_TYPE_INSTANCE)
 
     override fun dependsOnFileContent() = true
 

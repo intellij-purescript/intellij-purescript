@@ -6,7 +6,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
-import org.jetbrains.annotations.NonNls
 import org.purescript.psi.exports.PSExportedData
 import org.purescript.psi.exports.PSExportedType
 
@@ -64,7 +63,7 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
     override fun getVersion() = 1
 
     override fun getInputFilter() =
-        DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
+        DefaultFileTypeSpecificInputFilter(PS_FILE_TYPE_INSTANCE)
 
     override fun dependsOnFileContent() = true
 

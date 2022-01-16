@@ -10,7 +10,7 @@ import org.purescript.psi.declaration.PSValueDeclaration
 class PSFile(viewProvider: FileViewProvider) :
     PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
     override fun getFileType(): FileType {
-        return PSFileType.INSTANCE
+        return PS_FILE_TYPE_INSTANCE
     }
 
     override fun toString(): String {
