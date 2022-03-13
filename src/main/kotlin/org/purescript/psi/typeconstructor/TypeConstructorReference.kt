@@ -27,21 +27,37 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
      * in the current module or any of the imported modules.
      */
     private val candidates: List<PsiNamedElement>
-        get() {
-            val module = element.module ?: return emptyList()
-            val candidates = mutableListOf<PsiNamedElement>()
-            candidates.addAll(module.dataDeclarations)
-            candidates.addAll(module.newTypeDeclarations)
-            candidates.addAll(module.typeSynonymDeclarations)
-            candidates.addAll(module.foreignDataDeclarations)
-            for (importDeclaration in module.importDeclarations) {
-                candidates.addAll(importDeclaration.importedDataDeclarations)
-                candidates.addAll(importDeclaration.importedNewTypeDeclarations)
-                candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
-                candidates.addAll(importDeclaration.importedForeignDataDeclarations)
-            }
-            return candidates
+        get() = element.moduleName?.name?.let(::candidatesFor) ?:allCandidates
+
+    private fun candidatesFor(name: String): List<PsiNamedElement> {
+        val module = element.module ?: return emptyList()
+        val importDeclaration = module
+            .importDeclarations
+            .firstOrNull { it.importAlias?.name == name }
+            ?: return emptyList()
+        val candidates = mutableListOf<PsiNamedElement>()
+        candidates.addAll(importDeclaration.importedDataDeclarations)
+        candidates.addAll(importDeclaration.importedNewTypeDeclarations)
+        candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
+        candidates.addAll(importDeclaration.importedForeignDataDeclarations)
+        return candidates
+    }
+
+    private val allCandidates: List<PsiNamedElement> get() {
+        val module = element.module ?: return emptyList()
+        val candidates = mutableListOf<PsiNamedElement>()
+        candidates.addAll(module.dataDeclarations)
+        candidates.addAll(module.newTypeDeclarations)
+        candidates.addAll(module.typeSynonymDeclarations)
+        candidates.addAll(module.foreignDataDeclarations)
+        for (importDeclaration in module.importDeclarations) {
+            candidates.addAll(importDeclaration.importedDataDeclarations)
+            candidates.addAll(importDeclaration.importedNewTypeDeclarations)
+            candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
+            candidates.addAll(importDeclaration.importedForeignDataDeclarations)
         }
+        return candidates
+    }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val factory = PSPsiFactory(element.project)

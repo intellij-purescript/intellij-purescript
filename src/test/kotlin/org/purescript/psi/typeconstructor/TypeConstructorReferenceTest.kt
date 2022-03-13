@@ -217,6 +217,26 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
 
         assertEquals(typeSynonymDeclaration, typeConstructor.reference.resolve())
     }
+    
+    fun `test resolves alias imported type synonym declarations`() {
+        val typeSynonymDeclaration = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                type Qux = Int
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
+        val typeConstructor = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                import Bar as Bar
+                a :: Bar.Qux
+            """.trimIndent()
+        ).getTypeConstructor()
+
+        assertEquals(typeSynonymDeclaration, typeConstructor.reference.resolve())
+    }
 
     fun `test completes type synonym declarations`() {
         myFixture.configureByText(
