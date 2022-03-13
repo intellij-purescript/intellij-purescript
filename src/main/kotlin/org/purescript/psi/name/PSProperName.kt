@@ -11,5 +11,8 @@ import org.purescript.psi.PSPsiElement
  * - Eq
  */
 class PSProperName(node: ASTNode) : PSPsiElement(node) {
+    val moduleName: PSModuleName? get() = findChildByClass(PSModuleName::class.java)
+    val identifier: PSProperName
+        get() = findChildByClass(PSProperName::class.java)?.identifier ?: this
     override fun getName(): String = text.trim()
 }

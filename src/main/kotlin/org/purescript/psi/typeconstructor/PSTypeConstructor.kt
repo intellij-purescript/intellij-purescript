@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import org.purescript.psi.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
 
 /**
@@ -19,11 +20,14 @@ import org.purescript.psi.name.PSProperName
  */
 class PSTypeConstructor(node: ASTNode) : PSPsiElement(node) {
 
+    val moduleName: PSModuleName?
+        get() = identifier.moduleName 
+
     /**
      * @return the [PSProperName] identifying this type constructor
      */
     private val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+        get() = findNotNullChildByClass(PSProperName::class.java).identifier
 
     override fun getName(): String =
         identifier.name
