@@ -8,13 +8,13 @@ import org.purescript.highlighting.PSSyntaxHighlighter.Companion.IMPORT_REF
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.NUMBER
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_VARIABLE
-import org.purescript.parser.PSElements.Companion.ExpressionConstructor
-import org.purescript.parser.PSElements.Companion.GenericIdentifier
-import org.purescript.parser.PSElements.Companion.LocalIdentifier
-import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
-import org.purescript.parser.PSElements.Companion.TypeConstructor
-import org.purescript.parser.PSElements.Companion.ValueRef
-import org.purescript.parser.PSElements.Companion.ClassName
+import org.purescript.parser.ExpressionConstructor
+import org.purescript.parser.GenericIdentifier
+import org.purescript.parser.LocalIdentifier
+import org.purescript.parser.PositionedDeclarationRef
+import org.purescript.parser.TypeConstructor
+import org.purescript.parser.ValueRef
+import org.purescript.parser.ClassName
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

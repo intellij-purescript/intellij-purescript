@@ -5,7 +5,7 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
 
-class PureParser : PsiParser, PSTokens, PSElements {
+class PureParser : PsiParser {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         // builder.setDebugMode(true);
         val context = ParserContext(builder)

@@ -3,7 +3,8 @@ package org.purescript.psi
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.impl.source.tree.LeafElement
-import org.purescript.parser.PSElements
+import org.purescript.parser.JSRaw
+import org.purescript.parser.StringLiteral
 
 class PSASTWrapperElement(astNode: ASTNode?) : ASTWrapperPsiElement(
     astNode!!
@@ -11,7 +12,7 @@ class PSASTWrapperElement(astNode: ASTNode?) : ASTWrapperPsiElement(
     val isString: Boolean
         get() {
             val type = node.elementType
-            return type == PSElements.JSRaw || type == PSElements.StringLiteral
+            return type == JSRaw || type == StringLiteral
         }
     val isBlockString: Boolean
         get() = stringText.startsWith("\"\"\"")

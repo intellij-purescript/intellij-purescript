@@ -8,9 +8,8 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSHighlightLexer
-import org.purescript.parser.PSElements
+import org.purescript.parser.ModuleName
 import org.purescript.parser.PSTokens
-import java.util.*
 
 class PSSyntaxHighlighter : SyntaxHighlighterBase() {
     companion object {
@@ -135,7 +134,7 @@ class PSSyntaxHighlighter : SyntaxHighlighterBase() {
                 TokenSet.create(PSTokens.PROPER_NAME),
                 METHOD_DECLARATION
             )
-            fillMap(keys, TokenSet.create(PSElements.ModuleName), TYPE_NAME)
+            fillMap(keys, TokenSet.create(ModuleName), TYPE_NAME)
             fillMap(keys, TokenSet.create(PSTokens.STRING_ESCAPED), KEYWORD)
             fillMap(keys, TokenSet.create(PSTokens.STRING_GAP), STRING_GAP)
             fillMap(

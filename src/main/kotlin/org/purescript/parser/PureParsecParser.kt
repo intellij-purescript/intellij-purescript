@@ -16,81 +16,6 @@ import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
-import org.purescript.parser.PSElements.Companion.Abs
-import org.purescript.parser.PSElements.Companion.Accessor
-import org.purescript.parser.PSElements.Companion.ArrayLiteral
-import org.purescript.parser.PSElements.Companion.Bang
-import org.purescript.parser.PSElements.Companion.BooleanBinder
-import org.purescript.parser.PSElements.Companion.BooleanLiteral
-import org.purescript.parser.PSElements.Companion.Case
-import org.purescript.parser.PSElements.Companion.CaseAlternative
-import org.purescript.parser.PSElements.Companion.CharBinder
-import org.purescript.parser.PSElements.Companion.CharLiteral
-import org.purescript.parser.PSElements.Companion.ClassConstraint
-import org.purescript.parser.PSElements.Companion.ClassConstraintList
-import org.purescript.parser.PSElements.Companion.ClassDeclaration
-import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
-import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
-import org.purescript.parser.PSElements.Companion.ClassMember
-import org.purescript.parser.PSElements.Companion.ClassMemberList
-import org.purescript.parser.PSElements.Companion.ClassName
-import org.purescript.parser.PSElements.Companion.ConstrainedType
-import org.purescript.parser.PSElements.Companion.ConstructorBinder
-import org.purescript.parser.PSElements.Companion.DataConstructor
-import org.purescript.parser.PSElements.Companion.DataConstructorList
-import org.purescript.parser.PSElements.Companion.DataDeclaration
-import org.purescript.parser.PSElements.Companion.DoBlock
-import org.purescript.parser.PSElements.Companion.DoNotationBind
-import org.purescript.parser.PSElements.Companion.DoNotationLet
-import org.purescript.parser.PSElements.Companion.DoNotationValue
-import org.purescript.parser.PSElements.Companion.ExportedDataMember
-import org.purescript.parser.PSElements.Companion.ExportedDataMemberList
-import org.purescript.parser.PSElements.Companion.ExportedOperator
-import org.purescript.parser.PSElements.Companion.ExpressionConstructor
-import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
-import org.purescript.parser.PSElements.Companion.ExpressionOperator
-import org.purescript.parser.PSElements.Companion.ExpressionSymbol
-import org.purescript.parser.PSElements.Companion.ExpressionWhere
-import org.purescript.parser.PSElements.Companion.ForeignDataDeclaration
-import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
-import org.purescript.parser.PSElements.Companion.GenericIdentifier
-import org.purescript.parser.PSElements.Companion.Guard
-import org.purescript.parser.PSElements.Companion.Identifier
-import org.purescript.parser.PSElements.Companion.InstanceDeclaration
-import org.purescript.parser.PSElements.Companion.JSRaw
-import org.purescript.parser.PSElements.Companion.ModuleName
-import org.purescript.parser.PSElements.Companion.NamedBinder
-import org.purescript.parser.PSElements.Companion.NewTypeConstructor
-import org.purescript.parser.PSElements.Companion.NewtypeDeclaration
-import org.purescript.parser.PSElements.Companion.NumberBinder
-import org.purescript.parser.PSElements.Companion.NumericLiteral
-import org.purescript.parser.PSElements.Companion.ObjectBinder
-import org.purescript.parser.PSElements.Companion.ObjectBinderField
-import org.purescript.parser.PSElements.Companion.ObjectLiteral
-import org.purescript.parser.PSElements.Companion.OperatorName
-import org.purescript.parser.PSElements.Companion.ProperName
-import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
-import org.purescript.parser.PSElements.Companion.QualifiedOperatorName
-import org.purescript.parser.PSElements.Companion.QualifiedProperName
-import org.purescript.parser.PSElements.Companion.QualifiedSymbol
-import org.purescript.parser.PSElements.Companion.Row
-import org.purescript.parser.PSElements.Companion.RowKind
-import org.purescript.parser.PSElements.Companion.Star
-import org.purescript.parser.PSElements.Companion.StringBinder
-import org.purescript.parser.PSElements.Companion.StringLiteral
-import org.purescript.parser.PSElements.Companion.Symbol
-import org.purescript.parser.PSElements.Companion.Type
-import org.purescript.parser.PSElements.Companion.TypeArgs
-import org.purescript.parser.PSElements.Companion.TypeConstructor
-import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
-import org.purescript.parser.PSElements.Companion.TypeVarKinded
-import org.purescript.parser.PSElements.Companion.TypeVarName
-import org.purescript.parser.PSElements.Companion.UnaryMinus
-import org.purescript.parser.PSElements.Companion.Value
-import org.purescript.parser.PSElements.Companion.ValueDeclaration
-import org.purescript.parser.PSElements.Companion.VarBinder
-import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
 import org.purescript.parser.PSTokens.Companion.FLOAT
@@ -223,7 +148,7 @@ class PureParsecParser {
         choice(
             attempt(squares(optional(type))),
             attempt(parens(arrow)),
-            attempt(braces(parseRow).`as`(PSElements.ObjectType)),
+            attempt(braces(parseRow).`as`(ObjectType)),
             attempt(`_`),
             attempt(string),
             attempt(parseForAll),
@@ -235,7 +160,7 @@ class PureParsecParser {
             attempt(parens(parseRow)),
             attempt(parens(type))
         )
-            .`as`(PSElements.TypeAtom)
+            .`as`(TypeAtom)
     private val parseConstrainedType: Parsec =
         optional(
             attempt(
@@ -261,6 +186,7 @@ class PureParsecParser {
     private val binderAtom = ref()
     private val binder = ref()
     private val expr = ref()
+
     // TODO: pattern guards should parse expr1 not expr
     private val patternGuard = optional(attempt(binder + larrow)) + expr
     private val parseGuard = (pipe + commaSep(patternGuard)).`as`(Guard)
@@ -269,7 +195,7 @@ class PureParsecParser {
     private val dataCtor =
         properName.then(manyOrEmpty(typeAtom)).`as`(DataConstructor)
     private val parseTypeDeclaration =
-        (ident + dcolon + type).`as`(PSElements.Signature)
+        (ident + dcolon + type).`as`(Signature)
     private val newtypeHead =
         `'newtype'` + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val exprWhere = ref()
@@ -300,7 +226,7 @@ class PureParsecParser {
         infix
     )
     private val parseFixity =
-        parseAssociativity.then(token(NATURAL)).`as`(PSElements.Fixity)
+        parseAssociativity.then(token(NATURAL)).`as`(Fixity)
     private val parseFixityDeclaration = parseFixity
         .then(optional(`'type'`))
         .then(
@@ -309,7 +235,7 @@ class PureParsecParser {
         )
         .then(`as`)
         .then(operator.`as`(OperatorName))
-        .`as`(PSElements.FixityDeclaration)
+        .`as`(FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe.then(commaSep1(fundep))
@@ -351,33 +277,33 @@ class PureParsecParser {
     private val importedDataMembers = parens(
         choice(
             ddot,
-            commaSep(properName.`as`(PSElements.ImportedDataMember))
+            commaSep(properName.`as`(ImportedDataMember))
         )
-    ).`as`(PSElements.ImportedDataMemberList)
+    ).`as`(ImportedDataMemberList)
     val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
     private val importedItem =
         choice(
             `'type'`
                 .then(parens(operator.`as`(Identifier)))
-                .`as`(PSElements.ImportedType),
-            `class`.then(properName).`as`(PSElements.ImportedClass),
-            token(KIND).then(properName).`as`(PSElements.ImportedKind),
-            symbol.`as`(PSElements.ImportedOperator),
-            ident.`as`(PSElements.ImportedValue),
+                .`as`(ImportedType),
+            `class`.then(properName).`as`(ImportedClass),
+            token(KIND).then(properName).`as`(ImportedKind),
+            symbol.`as`(ImportedOperator),
+            ident.`as`(ImportedValue),
             properName
                 .then(optional(importedDataMembers))
-                .`as`(PSElements.ImportedData),
+                .`as`(ImportedData),
         )
     private val importList =
         optional(token(HIDING))
             .then(parens(commaSep(importedItem)))
-            .`as`(PSElements.ImportList)
+            .`as`(ImportList)
     private val parseImportDeclaration =
         token(IMPORT)
             .then(moduleName)
             .then(optional(importList))
-            .then(optional(`as`.then(moduleName).`as`(PSElements.ImportAlias)))
-            .`as`(PSElements.ImportDeclaration)
+            .then(optional(`as`.then(moduleName).`as`(ImportAlias)))
+            .`as`(ImportDeclaration)
 
     /**
      * nominal = the type can never be coerced to another type.
@@ -393,7 +319,7 @@ class PureParsecParser {
         attempt(dataHead + dcolon) + type,
         (dataHead +
             optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
-        ).`as`(DataDeclaration),
+            ).`as`(DataDeclaration),
         attempt(`'newtype'` + properName + dcolon) + type,
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(NewtypeDeclaration),
@@ -412,22 +338,22 @@ class PureParsecParser {
             .`as`(InstanceDeclaration)
     )
     private val exportedClass =
-        `class`.then(properName).`as`(PSElements.ExportedClass)
+        `class`.then(properName).`as`(ExportedClass)
     private val dataMembers =
         parens(ddot.or(commaSep(properName.`as`(ExportedDataMember))))
             .`as`(ExportedDataMemberList)
     private val exportedData =
-        (properName + optional(dataMembers)).`as`(PSElements.ExportedData)
+        (properName + optional(dataMembers)).`as`(ExportedData)
     private val exportedKind =
-        token(KIND).then(properName).`as`(PSElements.ExportedKind)
+        token(KIND).then(properName).`as`(ExportedKind)
     private val exportedModule =
-        token(MODULE).then(moduleName).`as`(PSElements.ExportedModule)
+        token(MODULE).then(moduleName).`as`(ExportedModule)
     private val exportedOperator =
         symbol.`as`(ExportedOperator)
     private val exportedType =
         `'type'`.then(parens(operator.`as`(Identifier)))
-            .`as`(PSElements.ExportedType)
-    private val exportedValue = ident.`as`(PSElements.ExportedValue)
+            .`as`(ExportedType)
+    private val exportedValue = ident.`as`(ExportedValue)
     private val exportList =
         parens(
             commaSep1(
@@ -441,7 +367,7 @@ class PureParsecParser {
                     exportedValue,
                 )
             )
-        ).`as`(PSElements.ExportList)
+        ).`as`(ExportList)
 
     private val elseDecl = token("else") + optional(`L-sep`)
     private val moduleDecl =
@@ -455,7 +381,7 @@ class PureParsecParser {
         .then(optional(exportList))
         .then(where)
         .then(`L{` + moduleDecl.sepBy(`L-sep`) + `L}`)
-        .`as`(PSElements.Module)
+        .`as`(Module)
 
     // Literals
     private val boolean = `true`.or(`false`)
@@ -501,7 +427,7 @@ class PureParsecParser {
         .then(expr)
         .then(`else`)
         .then(expr)
-        .`as`(PSElements.IfThenElse)
+        .`as`(IfThenElse)
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
@@ -516,7 +442,7 @@ class PureParsecParser {
         .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
         .then(`in`)
         .then(expr)
-        .`as`(PSElements.Let)
+        .`as`(Let)
     private val doStatement =
         choice(
             token(LET).then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
@@ -538,11 +464,15 @@ class PureParsecParser {
             (parseKindPrefix +
                 optional(
                     arrow
-                        .or(optional(
-                            attempt(qualified(properName)).`as`(TypeConstructor)
-                        )) +
+                        .or(
+                            optional(
+                                attempt(qualified(properName)).`as`(
+                                    TypeConstructor
+                                )
+                            )
+                        ) +
                         optional(parseKind)
-                )).`as`(PSElements.FunKind)
+                )).`as`(FunKind)
         )
 
         val type5 = many1(typeAtom)
@@ -556,7 +486,7 @@ class PureParsecParser {
             forall
                 .then(many1(idents.`as`(GenericIdentifier)))
                 .then(dot)
-                .then(parseConstrainedType).`as`(PSElements.ForAll)
+                .then(parseConstrainedType).`as`(ForAll)
         )
         val parsePropertyUpdate =
             label + optional(eq) + expr
@@ -584,7 +514,7 @@ class PureParsecParser {
             number,
             squares(commaSep(expr)).`as`(ArrayLiteral),
             braces(commaSep(recordLabel)).`as`(ObjectLiteral),
-            parens(expr).`as`(PSElements.Parens),
+            parens(expr).`as`(Parens),
         )
         val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
         val expr5 = choice(
@@ -625,7 +555,7 @@ class PureParsecParser {
         binder.setRef(binder1 + optional(dcolon + type))
         binderAtom.setRef(
             choice(
-                attempt(`_`.`as`(PSElements.NullBinder)),
+                attempt(`_`.`as`(NullBinder)),
                 attempt(ident.`as`(VarBinder) + `@` + binderAtom)
                     .`as`(NamedBinder),
                 attempt(ident.`as`(VarBinder)),
