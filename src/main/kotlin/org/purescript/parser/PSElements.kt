@@ -54,9 +54,6 @@ interface PSElements {
         val DocComment = PSElementType("DocComment")
 
         @kotlin.jvm.JvmField
-        val Qualified = PSElementType("Qualified")
-
-        @kotlin.jvm.JvmField
         val Type = PSElementType("Type")
 
         @kotlin.jvm.JvmField

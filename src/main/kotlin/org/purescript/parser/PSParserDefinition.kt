@@ -34,6 +34,7 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
 import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
+import org.purescript.parser.PSElements.Companion.ClassName
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
@@ -58,11 +59,11 @@ import org.purescript.parser.PSElements.Companion.ExpressionIdentifier
 import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
-import org.purescript.parser.PSElements.Companion.ForeignDataDeclaration
 import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
 import org.purescript.parser.PSElements.Companion.Fixity
 import org.purescript.parser.PSElements.Companion.FixityDeclaration
 import org.purescript.parser.PSElements.Companion.ForAll
+import org.purescript.parser.PSElements.Companion.ForeignDataDeclaration
 import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
 import org.purescript.parser.PSElements.Companion.FunKind
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
@@ -80,6 +81,7 @@ import org.purescript.parser.PSElements.Companion.ImportedKind
 import org.purescript.parser.PSElements.Companion.ImportedOperator
 import org.purescript.parser.PSElements.Companion.ImportedType
 import org.purescript.parser.PSElements.Companion.ImportedValue
+import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.JSRaw
 import org.purescript.parser.PSElements.Companion.Let
 import org.purescript.parser.PSElements.Companion.LocalIdentifier
@@ -99,7 +101,6 @@ import org.purescript.parser.PSElements.Companion.OperatorName
 import org.purescript.parser.PSElements.Companion.Parens
 import org.purescript.parser.PSElements.Companion.PositionedDeclarationRef
 import org.purescript.parser.PSElements.Companion.ProperName
-import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
 import org.purescript.parser.PSElements.Companion.QualifiedOperatorName
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
@@ -116,7 +117,6 @@ import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeAtom
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVar
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
@@ -127,7 +127,6 @@ import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.ValueRef
 import org.purescript.parser.PSElements.Companion.VarBinder
 import org.purescript.parser.PSElements.Companion.importModuleName
-import org.purescript.parser.PSElements.Companion.ClassName
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.psi.*
 import org.purescript.psi.binder.*
@@ -188,7 +187,7 @@ class PSParserDefinition : ParserDefinition, PSTokens {
 
     override fun createElement(node: ASTNode): PsiElement =
         when (node.elementType) {
-            ProperName, Qualified, importModuleName -> PSProperName(node)
+            ProperName, importModuleName -> PSProperName(node)
             ClassName -> PSClassName(node)
             OperatorName -> PSOperatorName(node)
             Symbol -> PSSymbol(node)

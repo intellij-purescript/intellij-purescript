@@ -69,7 +69,6 @@ import org.purescript.parser.PSElements.Companion.ObjectBinderField
 import org.purescript.parser.PSElements.Companion.ObjectLiteral
 import org.purescript.parser.PSElements.Companion.OperatorName
 import org.purescript.parser.PSElements.Companion.ProperName
-import org.purescript.parser.PSElements.Companion.Qualified
 import org.purescript.parser.PSElements.Companion.QualifiedIdentifier
 import org.purescript.parser.PSElements.Companion.QualifiedOperatorName
 import org.purescript.parser.PSElements.Companion.QualifiedProperName
@@ -526,7 +525,7 @@ class PureParsecParser {
             attempt(expr.`as`(DoNotationValue))
         )
     private val doBlock =
-        (attempt(qualified(`do`)).`as`(Qualified) + `L{` + (doStatement).sepBy1(
+        (attempt(qualified(`do`)) + `L{` + (doStatement).sepBy1(
             `L-sep`
         ) + `L}`).`as`(DoBlock)
 
