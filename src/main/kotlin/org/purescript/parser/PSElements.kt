@@ -2,366 +2,133 @@ package org.purescript.parser
 
 import org.purescript.psi.PSElementType
 
-interface PSElements {
-    companion object {
-
-        @kotlin.jvm.JvmField
-        val Module = PSElementType("Module")
-
-        @kotlin.jvm.JvmField
-        val ExportList = PSElementType("ExportList")
-
-        @kotlin.jvm.JvmField
-        val ExportedClass = PSElementType("ExportedClass")
-
-        @kotlin.jvm.JvmField
-        val ExportedData = PSElementType("ExportedData")
-
-        @kotlin.jvm.JvmField
-        val ExportedDataMember = PSElementType("ExportedDataMember")
-
-        @kotlin.jvm.JvmField
-        val ExportedDataMemberList = PSElementType("ExportedDataMemberList")
-
-        @kotlin.jvm.JvmField
-        val ExportedKind = PSElementType("ExportedKind")
-
-        @kotlin.jvm.JvmField
-        val ExportedModule = PSElementType("ExportedModule")
-
-        @kotlin.jvm.JvmField
-        val ExportedOperator = PSElementType("ExportedOperator")
-
-        @kotlin.jvm.JvmField
-        val ExportedType = PSElementType("ExportedType")
-
-        @kotlin.jvm.JvmField
-        val ExportedValue = PSElementType("ExportedValue")
-
-        @kotlin.jvm.JvmField
-        val Star = PSElementType("Star")
-
-        @kotlin.jvm.JvmField
-        val Bang = PSElementType("Bang")
-
-        @kotlin.jvm.JvmField
-        val RowKind = PSElementType("RowKind")
-
-        @kotlin.jvm.JvmField
-        val FunKind = PSElementType("FunKind")
-
-        @kotlin.jvm.JvmField
-        val DocComment = PSElementType("DocComment")
-
-        @kotlin.jvm.JvmField
-        val Type = PSElementType("Type")
-
-        @kotlin.jvm.JvmField
-        val TypeArgs = PSElementType("TypeArgs")
-
-        @kotlin.jvm.JvmField
-        val ForAll = PSElementType("ForAll")
-
-        @kotlin.jvm.JvmField
-        val ConstrainedType = PSElementType("ConstrainedType")
-
-        @kotlin.jvm.JvmField
-        val Row = PSElementType("Row")
-
-        @kotlin.jvm.JvmField
-        val ObjectType = PSElementType("ObjectType")
-
-        @kotlin.jvm.JvmField
-        val TypeVar = PSElementType("TypeVar")
-
-        @kotlin.jvm.JvmField
-        val TypeVarName = PSElementType("TypeVarName")
-
-        @kotlin.jvm.JvmField
-        val TypeVarKinded = PSElementType("TypeVarKinded")
-
-        @kotlin.jvm.JvmField
-        val TypeConstructor = PSElementType("TypeConstructor")
-
-        @kotlin.jvm.JvmField
-        val TypeAtom = PSElementType("TypeAtom")
-
-        @kotlin.jvm.JvmField
-        val GenericIdentifier = PSElementType("GenericIdentifier")
-
-        @kotlin.jvm.JvmField
-        val LocalIdentifier = PSElementType("LocalIdentifier")
-
-        @kotlin.jvm.JvmField
-        val DataDeclaration = PSElementType("DataDeclaration")
-
-        @kotlin.jvm.JvmField
-        val DataConstructorList = PSElementType("DataConstructorList")
-
-        @kotlin.jvm.JvmField
-        val DataConstructor = PSElementType("DataConstructor")
-
-        @kotlin.jvm.JvmField
-        val Signature = PSElementType("Signature")
-
-        @kotlin.jvm.JvmField
-        val TypeSynonymDeclaration = PSElementType("TypeSynonymDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ValueDeclaration = PSElementType("ValueDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ForeignDataDeclaration = PSElementType("ForeignDataDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ExternInstanceDeclaration = PSElementType("ExternInstanceDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ForeignValueDeclaration = PSElementType("ForeignValueDeclaration")
-
-        @kotlin.jvm.JvmField
-        val FixityDeclaration = PSElementType("FixityDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ImportDeclaration = PSElementType("ImportDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ImportAlias = PSElementType("ImportAlias")
-
-        @kotlin.jvm.JvmField
-        val ImportList = PSElementType("ImportList")
-
-        @kotlin.jvm.JvmField
-        val ImportedClass = PSElementType("ImportedClass")
-
-        @kotlin.jvm.JvmField
-        val ImportedData = PSElementType("ImportedData")
-
-        @kotlin.jvm.JvmField
-        val ImportedDataMemberList = PSElementType("ImportedDataMemberList")
-
-        @kotlin.jvm.JvmField
-        val ImportedDataMember = PSElementType("ImportedDataMember")
-
-        @kotlin.jvm.JvmField
-        val ImportedKind = PSElementType("ImportedKind")
-
-        @kotlin.jvm.JvmField
-        val ImportedOperator = PSElementType("ImportedOperator")
-
-        @kotlin.jvm.JvmField
-        val ImportedType = PSElementType("ImportedType")
-
-        @kotlin.jvm.JvmField
-        val ImportedValue = PSElementType("ImportedValue")
-
-        @kotlin.jvm.JvmField
-        val PositionedDeclarationRef = PSElementType("PositionedDeclarationRef")
-
-        @kotlin.jvm.JvmField
-        val ClassDeclaration = PSElementType("ClassDeclaration")
-
-        @kotlin.jvm.JvmField
-        val ClassConstraintList = PSElementType("ClassConstraintList")
-
-        @kotlin.jvm.JvmField
-        val ClassConstraint = PSElementType("ClassConstraint")
-
-        @kotlin.jvm.JvmField
-        val ClassFunctionalDependencyList = PSElementType("ClassFunctionalDependencyList")
-
-        @kotlin.jvm.JvmField
-        val ClassFunctionalDependency = PSElementType("ClassFunctionalDependency")
-
-        @kotlin.jvm.JvmField
-        val ClassMember = PSElementType("ClassMember")
-
-        @kotlin.jvm.JvmField
-        val ClassMemberList = PSElementType("ClassMemberList")
-
-        @kotlin.jvm.JvmField
-        val InstanceDeclaration = PSElementType("TypeInstanceDeclaration")
-
-        @kotlin.jvm.JvmField
-        val NewtypeDeclaration = PSElementType("NewtypeDeclaration")
-
-        @kotlin.jvm.JvmField
-        val NewTypeConstructor = PSElementType("NewTypeConstructor")
-
-        @kotlin.jvm.JvmField
-        val Guard = PSElementType("Guard")
-
-        @kotlin.jvm.JvmField
-        val NullBinder = PSElementType("NullBinder")
-
-        @kotlin.jvm.JvmField
-        val StringBinder = PSElementType("StringBinder")
-
-        @kotlin.jvm.JvmField
-        val CharBinder = PSElementType("CharBinder")
-
-        @kotlin.jvm.JvmField
-        val BooleanBinder = PSElementType("BooleanBinder")
-
-        @kotlin.jvm.JvmField
-        val NumberBinder = PSElementType("NumberBinder")
-
-        @kotlin.jvm.JvmField
-        val NamedBinder = PSElementType("NamedBinder")
-
-        @kotlin.jvm.JvmField
-        val VarBinder = PSElementType("VarBinder")
-
-        @kotlin.jvm.JvmField
-        val ConstructorBinder = PSElementType("ConstructorBinder")
-
-        @kotlin.jvm.JvmField
-        val ObjectBinder = PSElementType("ObjectBinder")
-
-        @kotlin.jvm.JvmField
-        val ObjectBinderField = PSElementType("ObjectBinderField")
-
-        @kotlin.jvm.JvmField
-        val BinderAtom = PSElementType("BinderAtom")
-
-        @kotlin.jvm.JvmField
-        val Binder = PSElementType("Binder")
-
-        @kotlin.jvm.JvmField
-        val ValueRef = PSElementType("ValueRef")
-
-        @kotlin.jvm.JvmField
-        val BooleanLiteral = PSElementType("BooleanLiteral")
-
-        @kotlin.jvm.JvmField
-        val NumericLiteral = PSElementType("NumericLiteral")
-
-        @kotlin.jvm.JvmField
-        val StringLiteral = PSElementType("StringLiteral")
-
-        @kotlin.jvm.JvmField
-        val CharLiteral = PSElementType("CharLiteral")
-
-        @kotlin.jvm.JvmField
-        val ArrayLiteral = PSElementType("ArrayLiteral")
-
-        @kotlin.jvm.JvmField
-        val ObjectLiteral = PSElementType("ObjectLiteral")
-
-        @kotlin.jvm.JvmField
-        val Abs = PSElementType("Abs")
-
-        @kotlin.jvm.JvmField
-        val IdentInfix = PSElementType("IdentInfix")
-
-        @kotlin.jvm.JvmField
-        val ExpressionConstructor = PSElementType("ExpressionConstructor")
-
-        @kotlin.jvm.JvmField
-        val ExpressionIdentifier = PSElementType("ExpressionIdentifier")
-
-        /** Symbol is a operator in parenthesis
-            `(+)`
-            in
-            ```
-            addOne = (+) 1
-            ```
-         */
-        @kotlin.jvm.JvmField
-        val ExpressionSymbol = PSElementType("ExpressionSymbol")
-
-        /**  Operator in expression
-            `+`
-            in
-            ```
-            addOne a = a + 1
-            ```
-         */
-        @kotlin.jvm.JvmField
-        val ExpressionOperator = PSElementType("ExpressionOperator")
-
-        @kotlin.jvm.JvmField
-        val ExpressionWhere = PSElementType("ExpressionWhere")
-
-        @kotlin.jvm.JvmField
-        val Case = PSElementType("Case")
-
-        @kotlin.jvm.JvmField
-        val CaseAlternative = PSElementType("CaseAlternative")
-
-        @kotlin.jvm.JvmField
-        val IfThenElse = PSElementType("IfThenElse")
-
-        @kotlin.jvm.JvmField
-        val Let = PSElementType("Let")
-
-        @kotlin.jvm.JvmField
-        val Parens = PSElementType("Parens")
-
-        @kotlin.jvm.JvmField
-        val UnaryMinus = PSElementType("UnaryMinus")
-
-        @kotlin.jvm.JvmField
-        val Accessor = PSElementType("Accessor")
-
-        @kotlin.jvm.JvmField
-        val DoBlock = PSElementType("DoBlock")
-
-        @kotlin.jvm.JvmField
-        val DoNotationLet = PSElementType("DoNotationLet")
-
-        @kotlin.jvm.JvmField
-        val DoNotationBind = PSElementType("DoNotationBind")
-
-        @kotlin.jvm.JvmField
-        val DoNotationValue = PSElementType("DoNotationValue")
-
-        @kotlin.jvm.JvmField
-        val Value = PSElementType("Value")
-
-        @kotlin.jvm.JvmField
-        val Fixity = PSElementType("Fixity")
-
-        @kotlin.jvm.JvmField
-        val JSRaw = PSElementType("JavaScript")
-
-        @kotlin.jvm.JvmField
-        val ModuleName = PSElementType("ModuleName")
-
-        @kotlin.jvm.JvmField
-        val Identifier = PSElementType("identifier")
-
-        @kotlin.jvm.JvmField
-        val Symbol = PSElementType("symbol")
-
-        @kotlin.jvm.JvmField
-        val QualifiedSymbol = PSElementType("symbol")
-
-        @kotlin.jvm.JvmField
-        val ProperName = PSElementType("ProperName")
-
-        @kotlin.jvm.JvmField
-        val OperatorName = PSElementType("OperatorName")
-
-        @kotlin.jvm.JvmField
-        val QualifiedIdentifier = PSElementType("QualifiedIdentifier")
-
-        @kotlin.jvm.JvmField
-        val QualifiedProperName = PSElementType("QualifiedProperName")
-
-        @kotlin.jvm.JvmField
-        val QualifiedOperatorName = PSElementType("QualifiedOperatorName")
-
-        @kotlin.jvm.JvmField
-        val importModuleName = PSElementType("ImportModuleName")
-
-        @kotlin.jvm.JvmField
-        val ClassName = PSElementType("ClassName")
-
-        @kotlin.jvm.JvmField
-        val pImplies = PSElementType("Implies")
-
-        @kotlin.jvm.JvmField
-        val TypeHole = PSElementType("TypeHole")
-    }
-}
+val Module = PSElementType("Module")
+val ExportList = PSElementType("ExportList")
+val ExportedClass = PSElementType("ExportedClass")
+val ExportedData = PSElementType("ExportedData")
+val ExportedDataMember = PSElementType("ExportedDataMember")
+val ExportedDataMemberList = PSElementType("ExportedDataMemberList")
+val ExportedKind = PSElementType("ExportedKind")
+val ExportedModule = PSElementType("ExportedModule")
+val ExportedOperator = PSElementType("ExportedOperator")
+val ExportedType = PSElementType("ExportedType")
+val ExportedValue = PSElementType("ExportedValue")
+val Star = PSElementType("Star")
+val Bang = PSElementType("Bang")
+val RowKind = PSElementType("RowKind")
+val FunKind = PSElementType("FunKind")
+val DocComment = PSElementType("DocComment")
+val Type = PSElementType("Type")
+val TypeArgs = PSElementType("TypeArgs")
+val ForAll = PSElementType("ForAll")
+val ConstrainedType = PSElementType("ConstrainedType")
+val Row = PSElementType("Row")
+val ObjectType = PSElementType("ObjectType")
+val TypeVar = PSElementType("TypeVar")
+val TypeVarName = PSElementType("TypeVarName")
+val TypeVarKinded = PSElementType("TypeVarKinded")
+val TypeConstructor = PSElementType("TypeConstructor")
+val TypeAtom = PSElementType("TypeAtom")
+val GenericIdentifier = PSElementType("GenericIdentifier")
+val LocalIdentifier = PSElementType("LocalIdentifier")
+val DataDeclaration = PSElementType("DataDeclaration")
+val DataConstructorList = PSElementType("DataConstructorList")
+val DataConstructor = PSElementType("DataConstructor")
+val Signature = PSElementType("Signature")
+val TypeSynonymDeclaration = PSElementType("TypeSynonymDeclaration")
+val ValueDeclaration = PSElementType("ValueDeclaration")
+val ForeignDataDeclaration = PSElementType("ForeignDataDeclaration")
+val ExternInstanceDeclaration = PSElementType("ExternInstanceDeclaration")
+val ForeignValueDeclaration = PSElementType("ForeignValueDeclaration")
+val FixityDeclaration = PSElementType("FixityDeclaration")
+val ImportDeclaration = PSElementType("ImportDeclaration")
+val ImportAlias = PSElementType("ImportAlias")
+val ImportList = PSElementType("ImportList")
+val ImportedClass = PSElementType("ImportedClass")
+val ImportedData = PSElementType("ImportedData")
+val ImportedDataMemberList = PSElementType("ImportedDataMemberList")
+val ImportedDataMember = PSElementType("ImportedDataMember")
+val ImportedKind = PSElementType("ImportedKind")
+val ImportedOperator = PSElementType("ImportedOperator")
+val ImportedType = PSElementType("ImportedType")
+val ImportedValue = PSElementType("ImportedValue")
+val PositionedDeclarationRef = PSElementType("PositionedDeclarationRef")
+val ClassDeclaration = PSElementType("ClassDeclaration")
+val ClassConstraintList = PSElementType("ClassConstraintList")
+val ClassConstraint = PSElementType("ClassConstraint")
+val ClassFunctionalDependencyList =
+    PSElementType("ClassFunctionalDependencyList")
+val ClassFunctionalDependency = PSElementType("ClassFunctionalDependency")
+val ClassMember = PSElementType("ClassMember")
+val ClassMemberList = PSElementType("ClassMemberList")
+val InstanceDeclaration = PSElementType("TypeInstanceDeclaration")
+val NewtypeDeclaration = PSElementType("NewtypeDeclaration")
+val NewTypeConstructor = PSElementType("NewTypeConstructor")
+val Guard = PSElementType("Guard")
+val NullBinder = PSElementType("NullBinder")
+val StringBinder = PSElementType("StringBinder")
+val CharBinder = PSElementType("CharBinder")
+val BooleanBinder = PSElementType("BooleanBinder")
+val NumberBinder = PSElementType("NumberBinder")
+val NamedBinder = PSElementType("NamedBinder")
+val VarBinder = PSElementType("VarBinder")
+val ConstructorBinder = PSElementType("ConstructorBinder")
+val ObjectBinder = PSElementType("ObjectBinder")
+val ObjectBinderField = PSElementType("ObjectBinderField")
+val BinderAtom = PSElementType("BinderAtom")
+val Binder = PSElementType("Binder")
+val ValueRef = PSElementType("ValueRef")
+val BooleanLiteral = PSElementType("BooleanLiteral")
+val NumericLiteral = PSElementType("NumericLiteral")
+val StringLiteral = PSElementType("StringLiteral")
+val CharLiteral = PSElementType("CharLiteral")
+val ArrayLiteral = PSElementType("ArrayLiteral")
+val ObjectLiteral = PSElementType("ObjectLiteral")
+val Abs = PSElementType("Abs")
+val IdentInfix = PSElementType("IdentInfix")
+val ExpressionConstructor = PSElementType("ExpressionConstructor")
+val ExpressionIdentifier = PSElementType("ExpressionIdentifier")
+/** Symbol is a operator in parenthesis
+`(+)`
+in
+```
+addOne = (+) 1
+```
+ */
+val ExpressionSymbol = PSElementType("ExpressionSymbol")
+/**  Operator in expression
+`+`
+in
+```
+addOne a = a + 1
+```
+ */
+val ExpressionOperator = PSElementType("ExpressionOperator")
+val ExpressionWhere = PSElementType("ExpressionWhere")
+val Case = PSElementType("Case")
+val CaseAlternative = PSElementType("CaseAlternative")
+val IfThenElse = PSElementType("IfThenElse")
+val Let = PSElementType("Let")
+val Parens = PSElementType("Parens")
+val UnaryMinus = PSElementType("UnaryMinus")
+val Accessor = PSElementType("Accessor")
+val DoBlock = PSElementType("DoBlock")
+val DoNotationLet = PSElementType("DoNotationLet")
+val DoNotationBind = PSElementType("DoNotationBind")
+val DoNotationValue = PSElementType("DoNotationValue")
+val Value = PSElementType("Value")
+val Fixity = PSElementType("Fixity")
+val JSRaw = PSElementType("JavaScript")
+val ModuleName = PSElementType("ModuleName")
+val Identifier = PSElementType("identifier")
+val Symbol = PSElementType("symbol")
+val QualifiedSymbol = PSElementType("symbol")
+val ProperName = PSElementType("ProperName")
+val OperatorName = PSElementType("OperatorName")
+val QualifiedIdentifier = PSElementType("QualifiedIdentifier")
+val QualifiedProperName = PSElementType("QualifiedProperName")
+val QualifiedOperatorName = PSElementType("QualifiedOperatorName")
+val importModuleName = PSElementType("ImportModuleName")
+val ClassName = PSElementType("ClassName")
+val pImplies = PSElementType("Implies")
+val TypeHole = PSElementType("TypeHole")

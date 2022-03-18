@@ -219,23 +219,23 @@ object Combinators {
     }
 
     fun parens(p: Parsec) =
-        token(PSTokens.LPAREN).then(p).then(token(PSTokens.RPAREN))
+        token(LPAREN).then(p).then(token(RPAREN))
 
     fun squares(p: Parsec) =
-        token(PSTokens.LBRACK).then(p).then(token(PSTokens.RBRACK))
+        token(LBRACK).then(p).then(token(RBRACK))
 
     fun braces(p: Parsec) =
-        token(PSTokens.LCURLY).then(p).then(token(PSTokens.RCURLY))
+        token(LCURLY).then(p).then(token(RCURLY))
 
     fun sepBy1(p: Parsec, sep: IElementType) =
         p.then(attempt(manyOrEmpty(token(sep).then(p))))
 
-    fun commaSep1(p: Parsec) = sepBy1(p, PSTokens.COMMA)
+    fun commaSep1(p: Parsec) = sepBy1(p, COMMA)
     fun sepBy(p: Parsec, sep: Parsec) =
         optional(p.then(manyOrEmpty(sep.then(p))))
 
     fun sepBy1(p: Parsec, sep: Parsec) = p.then(manyOrEmpty(sep.then(p)))
-    fun commaSep(p: Parsec) = sepBy(p, token(PSTokens.COMMA))
+    fun commaSep(p: Parsec) = sepBy(p, token(COMMA))
     fun ref() = ParsecRef()
     fun guard(
         p: Parsec,

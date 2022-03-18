@@ -4,19 +4,17 @@ import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
-import org.purescript.parser.PSTokens
+import org.purescript.parser.*
 
 class PSPairedBraceMatcher : PairedBraceMatcher {
-    override fun getPairs(): Array<BracePair> {
-        return PAIRS
-    }
+    override fun getPairs(): Array<BracePair> = PAIRS
 
     override fun isPairedBracesAllowedBeforeType(
         lbraceType: IElementType,
         contextType: IElementType?
     ): Boolean {
         return (contextType == null
-                || contextType === PSTokens.WS)
+            || contextType === WS)
     }
 
     override fun getCodeConstructStart(
@@ -28,9 +26,9 @@ class PSPairedBraceMatcher : PairedBraceMatcher {
 
     companion object {
         private val PAIRS = arrayOf(
-            BracePair(PSTokens.LCURLY, PSTokens.RCURLY, true),
-            BracePair(PSTokens.LBRACK, PSTokens.RBRACK, true),
-            BracePair(PSTokens.LPAREN, PSTokens.RPAREN, false)
+            BracePair(LCURLY, RCURLY, true),
+            BracePair(LBRACK, RBRACK, true),
+            BracePair(LPAREN, RPAREN, false)
         )
     }
 }

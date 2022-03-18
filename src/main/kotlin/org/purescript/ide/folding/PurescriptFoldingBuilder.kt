@@ -9,7 +9,8 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.file.PSFile
-import org.purescript.parser.PSElements
+import org.purescript.parser.ExportList
+import org.purescript.parser.ImportDeclaration
 
 class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
@@ -28,8 +29,8 @@ class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
         return with(CodeFoldingSettings.getInstance()) {
             when (node.elementType) {
-                PSElements.ImportDeclaration -> COLLAPSE_IMPORTS
-                PSElements.ExportList -> COLLAPSE_FILE_HEADER
+                ImportDeclaration -> COLLAPSE_IMPORTS
+                ExportList -> COLLAPSE_FILE_HEADER
                 else -> false
             }
         }

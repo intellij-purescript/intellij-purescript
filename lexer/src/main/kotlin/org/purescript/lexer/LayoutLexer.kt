@@ -6,7 +6,7 @@ import com.intellij.psi.tree.IElementType
 import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
-import org.purescript.parser.PSTokens
+import org.purescript.parser.*
 import org.purescript.psi.PSElementType
 
 data class LayoutStack(
@@ -118,7 +118,7 @@ fun collapse(
         val (lytPos, lyt, tail) = stack
         return if (p(tokPos, lytPos, lyt)) {
             val nextAcc = if (isIndented(lyt)) {
-                val pair = lytToken(tokPos, PSTokens.LAYOUT_END) to tail
+                val pair = lytToken(tokPos, LAYOUT_END) to tail
                 snoc(acc, pair)
             } else {
                 acc
@@ -159,7 +159,7 @@ fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter): Boole
 fun insertSep(tokPos: SourcePos, state: LayoutState): LayoutState {
     val (stk, acc) = state
     val (lytPos, lyt, tail) = stk ?: return state
-    val sepTok = lytToken(tokPos, PSTokens.LAYOUT_SEP)
+    val sepTok = lytToken(tokPos, LAYOUT_SEP)
     return when {
         LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
             insertToken(sepTok, LayoutState(tail, acc))
@@ -205,7 +205,7 @@ fun find(
 
 
 fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
-    insertToken(lytToken(tokPos, PSTokens.LAYOUT_END), state)
+    insertToken(lytToken(tokPos, LAYOUT_END), state)
 
 
 fun insertDefault(
@@ -238,14 +238,14 @@ fun insertStart(
     val (pos, _, _) = find(stk) { stack: LayoutStack ->
         isIndented(stack.layoutDelimiter)
     } ?: return insertToken(
-        lytToken(nextPos, PSTokens.LAYOUT_START),
+        lytToken(nextPos, LAYOUT_START),
         pushStack(nextPos, lyt, state)
     )
     return if (nextPos.column <= pos.column) {
         state
     } else {
         insertToken(
-            lytToken(nextPos, PSTokens.LAYOUT_START),
+            lytToken(nextPos, LAYOUT_START),
             pushStack(nextPos, lyt, state)
         )
     }
@@ -273,7 +273,7 @@ fun insertLayout(
     val (stk, acc) = state
 
     return when (tokenValue) {
-        PSTokens.DATA -> {
+        DATA -> {
             val state2 = insertDefault(src, tokPos, state)
             if (isTopDecl(tokPos, state2.stack)) {
                 pushStack(tokPos, LayoutDelimiter.TopDecl, state2)
@@ -282,7 +282,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.CLASS -> {
+        CLASS -> {
             val state2 = insertDefault(src, tokPos, state)
             if (isTopDecl(tokPos, state2.stack)) {
                 pushStack(tokPos, LayoutDelimiter.TopDeclHead, state2)
@@ -291,7 +291,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.WHERE -> {
+        WHERE -> {
             fun whereP(
                 tokPos: SourcePos,
                 lytPos: SourcePos,
@@ -327,7 +327,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.IN -> {
+        IN -> {
             fun inP(
                 tokPos: SourcePos,
                 ignore: SourcePos,
@@ -359,7 +359,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.LET -> {
+        LET -> {
             fun next(state: LayoutState): LayoutState {
                 val (p, lyt, _) = state.stack ?: return insertStart(
                     nextPos,
@@ -378,7 +378,7 @@ fun insertLayout(
             return insertKwProperty(src, tokPos, ::next, state)
         }
 
-        PSTokens.DO ->
+        DO ->
             insertKwProperty(
                 src,
                 tokPos,
@@ -386,7 +386,7 @@ fun insertLayout(
                 state
             )
 
-        PSTokens.ADO ->
+        ADO ->
             insertKwProperty(
                 src,
                 tokPos,
@@ -394,7 +394,7 @@ fun insertLayout(
                 state
             )
 
-        PSTokens.CASE ->
+        CASE ->
             insertKwProperty(
                 src,
                 tokPos,
@@ -402,7 +402,7 @@ fun insertLayout(
                 state
             )
 
-        PSTokens.OF -> {
+        OF -> {
             val state2 = collapse(tokPos, ::indentedP, state)
             return if (state2.stack?.layoutDelimiter == LayoutDelimiter.Case) {
                 LayoutState(state2.stack.tail, state2.acc)
@@ -422,7 +422,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.IF ->
+        IF ->
             insertKwProperty(
                 src,
                 tokPos,
@@ -430,7 +430,7 @@ fun insertLayout(
                 state
             )
 
-        PSTokens.THEN -> {
+        THEN -> {
             val state2 = collapse(tokPos, ::indentedP, state)
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.If) {
                 LayoutState(state2.stack.tail, state2.acc)
@@ -442,7 +442,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.ELSE -> {
+        ELSE -> {
             val state2 = collapse(tokPos, ::indentedP, state)
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Then) {
                 LayoutState(state2.stack.tail, state2.acc)
@@ -459,7 +459,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.FORALL ->
+        FORALL ->
             insertKwProperty(
                 src,
                 tokPos,
@@ -467,11 +467,11 @@ fun insertLayout(
                 state
             )
 
-        PSTokens.BACKSLASH -> state
+        BACKSLASH -> state
             .let { insertDefault(src, tokPos, it) }
             .let { pushStack(tokPos, LayoutDelimiter.LambdaBinders, it) }
 
-        PSTokens.ARROW -> {
+        ARROW -> {
             fun arrowP(
                 tokPos: SourcePos,
                 lytPos: SourcePos,
@@ -495,7 +495,7 @@ fun insertLayout(
                 .let { insertToken(src, it) }
         }
 
-        PSTokens.EQ -> {
+        EQ -> {
             fun equalsP(
                 tokPos: SourcePos,
                 ignore: SourcePos,
@@ -515,7 +515,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.PIPE -> {
+        PIPE -> {
             val state2 = collapse(tokPos, ::offsideEndP, state)
             val (stk, _) = state2
             when (stk?.layoutDelimiter) {
@@ -543,7 +543,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.TICK -> {
+        TICK -> {
             val state2 = collapse(tokPos, ::indentedP, state)
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Tick) {
                 LayoutState(state2.stack.tail, state2.acc)
@@ -555,7 +555,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.COMMA -> {
+        COMMA -> {
             val state2 = collapse(tokPos, ::indentedP, state)
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Brace) {
                 state2
@@ -567,7 +567,7 @@ fun insertLayout(
             }
         }
 
-        PSTokens.DOT -> {
+        DOT -> {
             val state2 = insertDefault(src, tokPos, state)
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Forall) {
                 LayoutState(state2.stack.tail, state2.acc)
@@ -577,44 +577,44 @@ fun insertLayout(
             }
         }
 
-        PSTokens.LPAREN -> state
+        LPAREN -> state
             .let { insertDefault(src, tokPos, it) }
             .let { pushStack(tokPos, LayoutDelimiter.Paren, it) }
 
-        PSTokens.LCURLY -> state
+        LCURLY -> state
             .let { insertDefault(src, tokPos, it) }
             .let { pushStack(tokPos, LayoutDelimiter.Brace, it) }
             .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
 
-        PSTokens.LBRACK -> state
+        LBRACK -> state
             .let { insertDefault(src, tokPos, it) }
             .let { pushStack(tokPos, LayoutDelimiter.Square, it) }
 
-        PSTokens.RPAREN -> state
+        RPAREN -> state
             .let { collapse(tokPos, ::indentedP, it) }
             .let { popStack(it) { it == LayoutDelimiter.Paren } }
             .let { insertToken(src, it) }
 
-        PSTokens.RCURLY -> state
+        RCURLY -> state
             .let { collapse(tokPos, ::indentedP, it) }
             .let { popStack(it) { it == LayoutDelimiter.Property } }
             .let { popStack(it) { it == LayoutDelimiter.Brace } }
             .let { insertToken(src, it) }
 
-        PSTokens.RBRACK -> state
+        RBRACK -> state
             .let { collapse(tokPos, ::indentedP, it) }
             .let { popStack(it) { it == LayoutDelimiter.Square } }
             .let { insertToken(src, it) }
 
-        PSTokens.STRING -> state
+        STRING -> state
             .let { insertDefault(src, tokPos, it) }
             .let { popStack(it) { it == LayoutDelimiter.Property } }
 
-        PSTokens.IDENT -> state
+        IDENT -> state
             .let { insertDefault(src, tokPos, it) }
             .let { popStack(it) { it == LayoutDelimiter.Property } }
 
-        PSTokens.OPERATOR -> state
+        OPERATOR -> state
             .let { collapse(tokPos, ::offsideP, it) }
             .let { insertSep(tokPos, it) }
             .let { insertToken(src, it) }
@@ -638,7 +638,7 @@ fun unwindLayout(
 ): Sequence<SuperToken> {
     return getTokensFromStack(stkIn)
         .filter { isIndented(it) }
-        .map { lytToken(pos, PSTokens.LAYOUT_END) }
+        .map { lytToken(pos, LAYOUT_END) }
 }
 
 fun lex(
@@ -729,7 +729,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var tokens: List<SourceToken> = listOf<SourceToken>()
     private var index = 0;
-    private val root = SourceToken(rangeFromOffsets(0, 0), PSTokens.WS)
+    private val root = SourceToken(rangeFromOffsets(0, 0), WS)
 
     override fun start(
         buffer: CharSequence,
@@ -760,10 +760,10 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
                 token = t
             } else {
                 when(t.value) {
-                    PSTokens.WS -> trailing.add(t)
-                    PSTokens.MLCOMMENT -> trailing.add(t)
-                    PSTokens.SLCOMMENT -> trailing.add(t)
-                    PSTokens.DOC_COMMENT -> trailing.add(t)
+                    WS -> trailing.add(t)
+                    MLCOMMENT -> trailing.add(t)
+                    SLCOMMENT -> trailing.add(t)
+                    DOC_COMMENT -> trailing.add(t)
                     else -> {
                         lexemes.add(Lexeme(token, trailing))
                         token = t
@@ -787,8 +787,8 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
                 lexeme = l
             } else {
                 when {
-                    lexeme.value == PSTokens.PROPER_NAME &&
-                        l.value  == PSTokens.DOT &&
+                    lexeme.value == PROPER_NAME &&
+                        l.value  == DOT &&
                         l.trailingWhitespace.isEmpty() &&
                         lexeme.trailingWhitespace.isEmpty() -> {
                         // <Proper Name><.>

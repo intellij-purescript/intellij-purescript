@@ -8,13 +8,12 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSHighlightLexer
-import org.purescript.parser.PSElements
-import org.purescript.parser.PSTokens
-import java.util.*
+import org.purescript.parser.*
 
 class PSSyntaxHighlighter : SyntaxHighlighterBase() {
     companion object {
-        private val keys: MutableMap<IElementType, TextAttributesKey> = HashMap()
+        private val keys: MutableMap<IElementType, TextAttributesKey> =
+            HashMap()
         val LINE_COMMENT = createKey(
             "PS_LINE_COMMENT",
             DefaultLanguageHighlighterColors.LINE_COMMENT
@@ -104,57 +103,45 @@ class PSSyntaxHighlighter : SyntaxHighlighterBase() {
         }
 
         init {
-            fillMap(keys, TokenSet.create(PSTokens.SLCOMMENT), LINE_COMMENT)
-            fillMap(keys, TokenSet.create(PSTokens.MLCOMMENT), BLOCK_COMMENT)
-            fillMap(keys, PSTokens.kKeywords, KEYWORD)
-            fillMap(keys, TokenSet.create(PSTokens.NATURAL), NUMBER)
-            fillMap(keys, PSTokens.kStrings, STRING)
+            fillMap(keys, TokenSet.create(SLCOMMENT), LINE_COMMENT)
+            fillMap(keys, TokenSet.create(MLCOMMENT), BLOCK_COMMENT)
+            fillMap(keys, kKeywords, KEYWORD)
+            fillMap(keys, TokenSet.create(NATURAL), NUMBER)
+            fillMap(keys, kStrings, STRING)
+            fillMap(keys, TokenSet.create(LPAREN, RPAREN), PS_PARENTHESIS)
+            fillMap(keys, TokenSet.create(LBRACK, RBRACK), PS_BRACKETS)
+            fillMap(keys, TokenSet.create(LCURLY, RCURLY), PS_BRACES)
+            fillMap(keys, kOperators, OPERATOR)
             fillMap(
                 keys,
-                TokenSet.create(PSTokens.LPAREN, PSTokens.RPAREN),
-                PS_PARENTHESIS
-            )
-            fillMap(
-                keys,
-                TokenSet.create(PSTokens.LBRACK, PSTokens.RBRACK),
-                PS_BRACKETS
-            )
-            fillMap(
-                keys,
-                TokenSet.create(PSTokens.LCURLY, PSTokens.RCURLY),
-                PS_BRACES
-            )
-            fillMap(keys, PSTokens.kOperators, OPERATOR)
-            fillMap(
-                keys,
-                TokenSet.create(PSTokens.IDENT, PSTokens.OPERATOR),
+                TokenSet.create(IDENT, org.purescript.parser.OPERATOR),
                 VARIABLE
             )
+            fillMap(keys, TokenSet.create(PROPER_NAME), METHOD_DECLARATION)
+            fillMap(keys, TokenSet.create(ModuleName), TYPE_NAME)
+            fillMap(keys, TokenSet.create(STRING_ESCAPED), KEYWORD)
             fillMap(
                 keys,
-                TokenSet.create(PSTokens.PROPER_NAME),
-                METHOD_DECLARATION
+                TokenSet.create(org.purescript.parser.STRING_GAP),
+                STRING_GAP
             )
-            fillMap(keys, TokenSet.create(PSElements.ModuleName), TYPE_NAME)
-            fillMap(keys, TokenSet.create(PSTokens.STRING_ESCAPED), KEYWORD)
-            fillMap(keys, TokenSet.create(PSTokens.STRING_GAP), STRING_GAP)
             fillMap(
                 keys,
-                TokenSet.create(PSTokens.STRING_ERROR),
+                TokenSet.create(STRING_ERROR),
                 CodeInsightColors.ERRORS_ATTRIBUTES
             )
             fillMap(
                 keys,
-                TokenSet.create(PSTokens.ERROR),
+                TokenSet.create(ERROR),
                 CodeInsightColors.ERRORS_ATTRIBUTES
             )
-            keys[PSTokens.EQ] = PS_EQ
-            keys[PSTokens.COMMA] = PS_COMMA
-            keys[PSTokens.DOT] = PS_DOT
-            keys[PSTokens.DCOLON] = PS_DCOLON
-            keys[PSTokens.ARROW] = PS_ARROW
-            keys[PSTokens.LARROW] = PS_ARROW
-            keys[PSTokens.FLOAT] = NUMBER
+            keys[EQ] = PS_EQ
+            keys[COMMA] = PS_COMMA
+            keys[DOT] = PS_DOT
+            keys[DCOLON] = PS_DCOLON
+            keys[ARROW] = PS_ARROW
+            keys[LARROW] = PS_ARROW
+            keys[FLOAT] = NUMBER
         }
     }
 

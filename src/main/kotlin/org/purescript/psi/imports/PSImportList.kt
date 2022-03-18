@@ -2,7 +2,7 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import org.purescript.parser.PSTokens
+import org.purescript.parser.HIDING
 import org.purescript.psi.PSPsiElement
 
 /**
@@ -17,8 +17,7 @@ import org.purescript.psi.PSPsiElement
  */
 class PSImportList(node: ASTNode) : PSPsiElement(node) {
     private val hidingElement: PsiElement?
-        get() =
-            findChildByType(PSTokens.HIDING)
+        get() = findChildByType(HIDING)
 
     /**
      * Returns `true` if the import list is hiding its
@@ -31,6 +30,7 @@ class PSImportList(node: ASTNode) : PSPsiElement(node) {
      * either hidden or exposed depending on whether [isHiding]
      * is `true` or `false`, respectively.
      */
-    val importedItems: Array<PSImportedItem> get() =
-        findChildrenByClass(PSImportedItem::class.java)
+    val importedItems: Array<PSImportedItem>
+        get() =
+            findChildrenByClass(PSImportedItem::class.java)
 }
