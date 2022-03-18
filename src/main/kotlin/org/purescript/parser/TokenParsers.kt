@@ -1,43 +1,6 @@
 package org.purescript.parser
 
 import org.purescript.parser.Combinators.token
-import org.purescript.parser.PSTokens.Companion.ARROW
-import org.purescript.parser.PSTokens.Companion.AS
-import org.purescript.parser.PSTokens.Companion.BACKSLASH
-import org.purescript.parser.PSTokens.Companion.CASE
-import org.purescript.parser.PSTokens.Companion.CHAR
-import org.purescript.parser.PSTokens.Companion.CLASS
-import org.purescript.parser.PSTokens.Companion.DARROW
-import org.purescript.parser.PSTokens.Companion.DATA
-import org.purescript.parser.PSTokens.Companion.DCOLON
-import org.purescript.parser.PSTokens.Companion.DDOT
-import org.purescript.parser.PSTokens.Companion.DERIVE
-import org.purescript.parser.PSTokens.Companion.DO
-import org.purescript.parser.PSTokens.Companion.DOT
-import org.purescript.parser.PSTokens.Companion.ELSE
-import org.purescript.parser.PSTokens.Companion.EQ
-import org.purescript.parser.PSTokens.Companion.FALSE
-import org.purescript.parser.PSTokens.Companion.FORALL
-import org.purescript.parser.PSTokens.Companion.FOREIGN
-import org.purescript.parser.PSTokens.Companion.IF
-import org.purescript.parser.PSTokens.Companion.IMPORT
-import org.purescript.parser.PSTokens.Companion.IN
-import org.purescript.parser.PSTokens.Companion.INFIX
-import org.purescript.parser.PSTokens.Companion.INFIXL
-import org.purescript.parser.PSTokens.Companion.INFIXR
-import org.purescript.parser.PSTokens.Companion.INSTANCE
-import org.purescript.parser.PSTokens.Companion.LARROW
-import org.purescript.parser.PSTokens.Companion.LDARROW
-import org.purescript.parser.PSTokens.Companion.LPAREN
-import org.purescript.parser.PSTokens.Companion.NEWTYPE
-import org.purescript.parser.PSTokens.Companion.OF
-import org.purescript.parser.PSTokens.Companion.PIPE
-import org.purescript.parser.PSTokens.Companion.RPAREN
-import org.purescript.parser.PSTokens.Companion.STRING
-import org.purescript.parser.PSTokens.Companion.TICK
-import org.purescript.parser.PSTokens.Companion.TRUE
-import org.purescript.parser.PSTokens.Companion.TYPE
-import org.purescript.parser.PSTokens.Companion.WHERE
 
 val `'derive'` = token(DERIVE)
 val `'foreign'`  = token(FOREIGN)
@@ -86,7 +49,7 @@ val `@` = token("@")
 @Suppress("ObjectPropertyName")
 val `_` = token("_")
 
-val `L{` = token(PSTokens.LAYOUT_START)
-val `L-sep` = token(PSTokens.LAYOUT_SEP)
-val `L}` = token(PSTokens.LAYOUT_END)
+val `L{` = token(LAYOUT_START)
+val `L-sep` = token(LAYOUT_SEP)
+val `L}` = token(LAYOUT_END)
 

@@ -16,7 +16,7 @@ class ParserContext(private val builder: PsiBuilder) {
     fun exitOptional() = inOptional--
     fun isInOptional() = inOptional > 0
     fun text() = builder.tokenText ?: ""
-    fun peek() = builder.tokenType ?: PSTokens.EOF
+    fun peek() = builder.tokenType ?: EOF
 
     fun eat(type: IElementType): Boolean {
         if (builder.tokenType === type) {

@@ -15,119 +15,6 @@ import org.purescript.file.PSFile
 import org.purescript.file.PSFileStubType
 import org.purescript.lexer.LayoutLexer
 import org.purescript.lexer.PSLexer
-import org.purescript.parser.Abs
-import org.purescript.parser.Accessor
-import org.purescript.parser.ArrayLiteral
-import org.purescript.parser.Bang
-import org.purescript.parser.Binder
-import org.purescript.parser.BinderAtom
-import org.purescript.parser.BooleanBinder
-import org.purescript.parser.BooleanLiteral
-import org.purescript.parser.Case
-import org.purescript.parser.CaseAlternative
-import org.purescript.parser.CharBinder
-import org.purescript.parser.CharLiteral
-import org.purescript.parser.ClassConstraint
-import org.purescript.parser.ClassConstraintList
-import org.purescript.parser.ClassDeclaration
-import org.purescript.parser.ClassFunctionalDependency
-import org.purescript.parser.ClassFunctionalDependencyList
-import org.purescript.parser.ClassMember
-import org.purescript.parser.ClassMemberList
-import org.purescript.parser.ClassName
-import org.purescript.parser.ConstrainedType
-import org.purescript.parser.ConstructorBinder
-import org.purescript.parser.DataConstructor
-import org.purescript.parser.DataConstructorList
-import org.purescript.parser.DataDeclaration
-import org.purescript.parser.DoBlock
-import org.purescript.parser.DoNotationBind
-import org.purescript.parser.DoNotationLet
-import org.purescript.parser.DoNotationValue
-import org.purescript.parser.ExportList
-import org.purescript.parser.ExportedClass
-import org.purescript.parser.ExportedData
-import org.purescript.parser.ExportedDataMember
-import org.purescript.parser.ExportedDataMemberList
-import org.purescript.parser.ExportedKind
-import org.purescript.parser.ExportedModule
-import org.purescript.parser.ExportedOperator
-import org.purescript.parser.ExportedType
-import org.purescript.parser.ExportedValue
-import org.purescript.parser.ExpressionConstructor
-import org.purescript.parser.ExpressionIdentifier
-import org.purescript.parser.ExpressionOperator
-import org.purescript.parser.ExpressionSymbol
-import org.purescript.parser.ExpressionWhere
-import org.purescript.parser.ExternInstanceDeclaration
-import org.purescript.parser.Fixity
-import org.purescript.parser.FixityDeclaration
-import org.purescript.parser.ForAll
-import org.purescript.parser.ForeignDataDeclaration
-import org.purescript.parser.ForeignValueDeclaration
-import org.purescript.parser.FunKind
-import org.purescript.parser.GenericIdentifier
-import org.purescript.parser.Guard
-import org.purescript.parser.Identifier
-import org.purescript.parser.IfThenElse
-import org.purescript.parser.ImportAlias
-import org.purescript.parser.ImportDeclaration
-import org.purescript.parser.ImportList
-import org.purescript.parser.ImportedClass
-import org.purescript.parser.ImportedData
-import org.purescript.parser.ImportedDataMember
-import org.purescript.parser.ImportedDataMemberList
-import org.purescript.parser.ImportedKind
-import org.purescript.parser.ImportedOperator
-import org.purescript.parser.ImportedType
-import org.purescript.parser.ImportedValue
-import org.purescript.parser.InstanceDeclaration
-import org.purescript.parser.JSRaw
-import org.purescript.parser.Let
-import org.purescript.parser.LocalIdentifier
-import org.purescript.parser.Module
-import org.purescript.parser.ModuleName
-import org.purescript.parser.NamedBinder
-import org.purescript.parser.NewTypeConstructor
-import org.purescript.parser.NewtypeDeclaration
-import org.purescript.parser.NullBinder
-import org.purescript.parser.NumberBinder
-import org.purescript.parser.NumericLiteral
-import org.purescript.parser.ObjectBinder
-import org.purescript.parser.ObjectBinderField
-import org.purescript.parser.ObjectLiteral
-import org.purescript.parser.ObjectType
-import org.purescript.parser.OperatorName
-import org.purescript.parser.Parens
-import org.purescript.parser.PositionedDeclarationRef
-import org.purescript.parser.ProperName
-import org.purescript.parser.QualifiedIdentifier
-import org.purescript.parser.QualifiedOperatorName
-import org.purescript.parser.QualifiedProperName
-import org.purescript.parser.QualifiedSymbol
-import org.purescript.parser.Row
-import org.purescript.parser.RowKind
-import org.purescript.parser.Signature
-import org.purescript.parser.Star
-import org.purescript.parser.StringBinder
-import org.purescript.parser.StringLiteral
-import org.purescript.parser.Symbol
-import org.purescript.parser.Type
-import org.purescript.parser.TypeArgs
-import org.purescript.parser.TypeAtom
-import org.purescript.parser.TypeConstructor
-import org.purescript.parser.TypeHole
-import org.purescript.parser.TypeSynonymDeclaration
-import org.purescript.parser.TypeVar
-import org.purescript.parser.TypeVarKinded
-import org.purescript.parser.TypeVarName
-import org.purescript.parser.UnaryMinus
-import org.purescript.parser.Value
-import org.purescript.parser.ValueDeclaration
-import org.purescript.parser.ValueRef
-import org.purescript.parser.VarBinder
-import org.purescript.parser.importModuleName
-import org.purescript.parser.pImplies
 import org.purescript.psi.*
 import org.purescript.psi.binder.*
 import org.purescript.psi.char.PSCharBinder
@@ -154,7 +41,7 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
-class PSParserDefinition : ParserDefinition, PSTokens {
+class PSParserDefinition : ParserDefinition {
     override fun createLexer(project: Project): Lexer {
         return LayoutLexer(PSLexer())
     }
@@ -168,21 +55,15 @@ class PSParserDefinition : ParserDefinition, PSTokens {
     }
 
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(
-            PSTokens.WS,
-        )
+        return TokenSet.create(WS)
     }
 
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.create(
-            PSTokens.DOC_COMMENT,
-            PSTokens.MLCOMMENT,
-            PSTokens.SLCOMMENT,
-        )
+        return TokenSet.create(DOC_COMMENT, MLCOMMENT, SLCOMMENT)
     }
 
     override fun getStringLiteralElements(): TokenSet {
-        return PSTokens.kStrings
+        return kStrings
     }
 
     override fun createElement(node: ASTNode): PsiElement =

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
-import org.purescript.parser.PSTokens
+import org.purescript.parser.WHERE
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -68,7 +68,7 @@ class PSModule(node: ASTNode) :
      * @return the where keyword in the module header
      */
     val whereKeyword: PsiElement
-        get() = findNotNullChildByType(PSTokens.WHERE)
+        get() = findNotNullChildByType(WHERE)
 
     /**
      * Helper method for retrieving various types of exported declarations.

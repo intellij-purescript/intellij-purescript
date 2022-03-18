@@ -16,22 +16,6 @@ import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
-import org.purescript.parser.PSTokens.Companion.ADO
-import org.purescript.parser.PSTokens.Companion.BANG
-import org.purescript.parser.PSTokens.Companion.FLOAT
-import org.purescript.parser.PSTokens.Companion.FOREIGN
-import org.purescript.parser.PSTokens.Companion.HIDING
-import org.purescript.parser.PSTokens.Companion.IMPORT
-import org.purescript.parser.PSTokens.Companion.KIND
-import org.purescript.parser.PSTokens.Companion.LET
-import org.purescript.parser.PSTokens.Companion.MODULE
-import org.purescript.parser.PSTokens.Companion.MODULE_PREFIX
-import org.purescript.parser.PSTokens.Companion.NATURAL
-import org.purescript.parser.PSTokens.Companion.OPERATOR
-import org.purescript.parser.PSTokens.Companion.OPTIMISTIC
-import org.purescript.parser.PSTokens.Companion.PIPE
-import org.purescript.parser.PSTokens.Companion.PROPER_NAME
-import org.purescript.parser.PSTokens.Companion.START
 
 class PureParsecParser {
 
@@ -44,16 +28,16 @@ class PureParsecParser {
 
     private val idents =
         choice(
-            token(PSTokens.IDENT),
+            token(IDENT),
             `as`,
             token(HIDING),
             forall,
-            token(PSTokens.QUALIFIED),
+            token(QUALIFIED),
             token(KIND),
         )
 
     private val lname = choice(
-        token(PSTokens.IDENT),
+        token(IDENT),
         data,
         `'newtype'`,
         `'type'`,
@@ -70,7 +54,7 @@ class PureParsecParser {
         case,
         of,
         `if`,
-        token(PSTokens.THEN),
+        token(THEN),
         `else`,
         `do`,
         token(ADO),
@@ -80,7 +64,7 @@ class PureParsecParser {
         `in`,
         where,
         forall,
-        token(PSTokens.QUALIFIED),
+        token(QUALIFIED),
         token(HIDING),
         `as`
     ).`as`(Identifier)
@@ -423,7 +407,7 @@ class PureParsecParser {
 
     private val parseIfThenElse = `if`
         .then(expr)
-        .then(token(PSTokens.THEN))
+        .then(token(THEN))
         .then(expr)
         .then(`else`)
         .then(expr)

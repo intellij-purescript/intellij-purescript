@@ -5,22 +5,17 @@ import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.LookAheadLexer
 import com.intellij.lexer.MergingLexerAdapter
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.PSTokens
+import org.purescript.parser.*
 
 class PSLexer : LookAheadLexer(
     MergingLexerAdapter(
         CollapsingLexer(
             FilterLexer(
                 FlexAdapter(org.purescript.lexer._PSLexer(null)),
-                FilterLexer.SetFilter(
-                    TokenSet.create(
-                        PSTokens.MLCOMMENT,
-                        PSTokens.SLCOMMENT
-                    )
-                )
+                FilterLexer.SetFilter(TokenSet.create(MLCOMMENT, SLCOMMENT))
             ),
-            TokenSet.create(PSTokens.STRING, PSTokens.STRING_GAP, PSTokens.STRING_ESCAPED),
-            PSTokens.STRING
+            TokenSet.create(STRING, STRING_GAP, STRING_ESCAPED),
+            STRING
         ),
-        TokenSet.create(PSTokens.WS)
+        TokenSet.create(WS)
     ))
