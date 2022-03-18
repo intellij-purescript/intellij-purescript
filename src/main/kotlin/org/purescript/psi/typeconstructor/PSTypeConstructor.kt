@@ -21,13 +21,13 @@ import org.purescript.psi.name.PSProperName
 class PSTypeConstructor(node: ASTNode) : PSPsiElement(node) {
 
     val moduleName: PSModuleName?
-        get() = identifier.moduleName 
+        get() = findChildByClass(PSModuleName::class.java)
 
     /**
      * @return the [PSProperName] identifying this type constructor
      */
     private val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java).identifier
+        get() = findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String =
         identifier.name
