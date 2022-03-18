@@ -27,7 +27,14 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
      * in the current module or any of the imported modules.
      */
     private val candidates: List<PsiNamedElement>
-        get() = element.moduleName?.name?.let(::candidatesFor) ?:allCandidates
+        get() {
+            val name = element.moduleName?.name
+            return if (name != null) {
+                candidatesFor(name)
+            } else {
+                allCandidates
+            }
+        }
 
     private fun candidatesFor(name: String): List<PsiNamedElement> {
         val module = element.module ?: return emptyList()

@@ -33,10 +33,12 @@ import org.purescript.parser.PSElements.Companion.ClassFunctionalDependency
 import org.purescript.parser.PSElements.Companion.ClassFunctionalDependencyList
 import org.purescript.parser.PSElements.Companion.ClassMember
 import org.purescript.parser.PSElements.Companion.ClassMemberList
+import org.purescript.parser.PSElements.Companion.ClassName
 import org.purescript.parser.PSElements.Companion.ConstrainedType
 import org.purescript.parser.PSElements.Companion.ConstructorBinder
 import org.purescript.parser.PSElements.Companion.DataConstructor
 import org.purescript.parser.PSElements.Companion.DataConstructorList
+import org.purescript.parser.PSElements.Companion.DataDeclaration
 import org.purescript.parser.PSElements.Companion.DoBlock
 import org.purescript.parser.PSElements.Companion.DoNotationBind
 import org.purescript.parser.PSElements.Companion.DoNotationLet
@@ -50,12 +52,16 @@ import org.purescript.parser.PSElements.Companion.ExpressionOperator
 import org.purescript.parser.PSElements.Companion.ExpressionSymbol
 import org.purescript.parser.PSElements.Companion.ExpressionWhere
 import org.purescript.parser.PSElements.Companion.ForeignDataDeclaration
+import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
 import org.purescript.parser.PSElements.Companion.GenericIdentifier
 import org.purescript.parser.PSElements.Companion.Guard
 import org.purescript.parser.PSElements.Companion.Identifier
+import org.purescript.parser.PSElements.Companion.InstanceDeclaration
+import org.purescript.parser.PSElements.Companion.JSRaw
 import org.purescript.parser.PSElements.Companion.ModuleName
 import org.purescript.parser.PSElements.Companion.NamedBinder
 import org.purescript.parser.PSElements.Companion.NewTypeConstructor
+import org.purescript.parser.PSElements.Companion.NewtypeDeclaration
 import org.purescript.parser.PSElements.Companion.NumberBinder
 import org.purescript.parser.PSElements.Companion.NumericLiteral
 import org.purescript.parser.PSElements.Companion.ObjectBinder
@@ -78,7 +84,6 @@ import org.purescript.parser.PSElements.Companion.Type
 import org.purescript.parser.PSElements.Companion.TypeArgs
 import org.purescript.parser.PSElements.Companion.TypeConstructor
 import org.purescript.parser.PSElements.Companion.TypeHole
-import org.purescript.parser.PSElements.Companion.InstanceDeclaration
 import org.purescript.parser.PSElements.Companion.TypeSynonymDeclaration
 import org.purescript.parser.PSElements.Companion.TypeVarKinded
 import org.purescript.parser.PSElements.Companion.TypeVarName
@@ -86,10 +91,6 @@ import org.purescript.parser.PSElements.Companion.UnaryMinus
 import org.purescript.parser.PSElements.Companion.Value
 import org.purescript.parser.PSElements.Companion.ValueDeclaration
 import org.purescript.parser.PSElements.Companion.VarBinder
-import org.purescript.parser.PSElements.Companion.ClassName
-import org.purescript.parser.PSElements.Companion.ExternInstanceDeclaration
-import org.purescript.parser.PSElements.Companion.ForeignValueDeclaration
-import org.purescript.parser.PSElements.Companion.JSRaw
 import org.purescript.parser.PSElements.Companion.pImplies
 import org.purescript.parser.PSTokens.Companion.ADO
 import org.purescript.parser.PSTokens.Companion.BANG
@@ -188,7 +189,7 @@ class PureParsecParser {
     private val parseKindAtom = choice(
         token("*").`as`(START).`as`(Star),
         token("!").`as`(BANG).`as`(Bang),
-        attempt(qualified(properName)).`as`(Qualified).`as`(TypeConstructor),
+        attempt(qualified(properName)).`as`(TypeConstructor),
         parens(parseKind)
     )
     private val parseKindPrefix =
@@ -230,7 +231,6 @@ class PureParsecParser {
             attempt(parseTypeVariable),
             attempt(
                 attempt(qualified(properName))
-                    .`as`(Qualified)
                     .`as`(TypeConstructor)
             ),
             attempt(parens(parseRow)),
@@ -242,9 +242,7 @@ class PureParsecParser {
             attempt(
                 parens(
                     commaSep1(
-                        attempt(qualified(properName))
-                            .`as`(Qualified)
-                            .`as`(TypeConstructor) +
+                        attempt(qualified(properName)).`as`(TypeConstructor) +
                             manyOrEmpty(typeAtom)
                     )
                 ) + darrow
@@ -288,9 +286,7 @@ class PureParsecParser {
     private val parseDeps =
         parens(
             commaSep1(
-                attempt(qualified(properName))
-                    .`as`(Qualified)
-                    .`as`(TypeConstructor)
+                attempt(qualified(properName)).`as`(TypeConstructor)
                     .then(manyOrEmpty(typeAtom))
             )
         ).then(darrow)
@@ -398,10 +394,10 @@ class PureParsecParser {
         attempt(dataHead + dcolon) + type,
         (dataHead +
             optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
-            ).`as`(PSElements.DataDeclaration),
+        ).`as`(DataDeclaration),
         attempt(`'newtype'` + properName + dcolon) + type,
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
-            .`as`(PSElements.NewtypeDeclaration),
+            .`as`(NewtypeDeclaration),
         attempt(parseTypeDeclaration),
         (attempt(`'type'` + `'role'`) + properName + many(role)),
         (attempt(`'type'` + properName + dcolon) + type),
@@ -543,13 +539,9 @@ class PureParsecParser {
             (parseKindPrefix +
                 optional(
                     arrow
-                        .or(
-                            optional(
-                                attempt(qualified(properName))
-                                    .`as`(Qualified)
-                                    .`as`(TypeConstructor)
-                            )
-                        ) +
+                        .or(optional(
+                            attempt(qualified(properName)).`as`(TypeConstructor)
+                        )) +
                         optional(parseKind)
                 )).`as`(PSElements.FunKind)
         )
