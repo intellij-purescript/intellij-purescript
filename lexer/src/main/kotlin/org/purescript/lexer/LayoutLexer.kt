@@ -610,7 +610,7 @@ fun insertLayout(
             .let { insertDefault(src, tokPos, it) }
             .let { popStack(it) { it == LayoutDelimiter.Property } }
 
-        IDENT -> state
+        IDENT, TYPE -> state
             .let { insertDefault(src, tokPos, it) }
             .let { popStack(it) { it == LayoutDelimiter.Property } }
 

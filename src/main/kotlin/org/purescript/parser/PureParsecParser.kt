@@ -34,6 +34,7 @@ class PureParsecParser {
             forall,
             token(QUALIFIED),
             token(KIND),
+            `'type'`,
         )
 
     private val lname = choice(
@@ -231,20 +232,29 @@ class PureParsecParser {
     )
     }
     private val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
+
+    /*
+    * if there is only one case branch it can ignore layout so we need
+    * to allow layout end at any time.
+    */
+    private val exprCase: Parsec = ref {
+        (case + commaSep1(expr) + of + choice(
+            attempt(parseBadSingleCaseBranch),
+            `L{` + caseBranch.sepBy1(`L-sep`) + `L}`
+        )).`as`(Case)
+    }
+    private val parseBadSingleCaseBranch: Parsec = ref {
+        `L{` + binder1 + choice(
+            arrow + `L}` + exprWhere,
+            `L}` + guardedCase
+        )
+    }
     private val expr5 = ref {
         choice(
             attempt(braces(commaSep1(parsePropertyUpdate))),
             expr7,
             (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            /*
-            * if there is only one case branch it can ignore layout so we need
-            * to allow layout end at any time.
-            */
-            (case + commaSep1(expr) + of + choice(
-                attempt(`L{` + caseBranch.sepBy1(`L-sep`) + `L}`),
-                attempt(`L{` + commaSep(binder1) + arrow + `L}` + exprWhere),
-                `L{` + commaSep(binder1) + `L}` + guardedCase,
-            )).`as`(Case),
+            exprCase,
             parseIfThenElse,
             doBlock,
             adoBlock + `in` + expr,
@@ -512,11 +522,9 @@ class PureParsecParser {
             attempt(binder1 + eq + exprWhere),
             attempt(ident + many(binderAtom) + guardedDecl)
         )
-    private val parseLet = token(LET)
-        .then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
-        .then(`in`)
-        .then(expr)
-        .`as`(Let)
+    private val parseLet = 
+        (token(LET) + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
+            .`as`(Let)
     private val doStatement =
         choice(
             token(LET).then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
