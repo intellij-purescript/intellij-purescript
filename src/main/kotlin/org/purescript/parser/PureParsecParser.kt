@@ -500,13 +500,8 @@ class PureParsecParser {
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
-    private val parseIfThenElse = `if`
-        .then(expr)
-        .then(token(THEN))
-        .then(expr)
-        .then(`else`)
-        .then(expr)
-        .`as`(IfThenElse)
+    private val parseIfThenElse = 
+        (`if` + expr + token(THEN) + expr + `else` + expr).`as`(IfThenElse)
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
