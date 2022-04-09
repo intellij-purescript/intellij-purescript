@@ -49,6 +49,9 @@ val `@` = token("@")
 @Suppress("ObjectPropertyName")
 val `_` = token("_")
 
+val `(` = token(LPAREN)
+val `)` = token(RPAREN)
+
 val `L{` = token(LAYOUT_START)
 val `L-sep` = token(LAYOUT_SEP)
 val `L}` = token(LAYOUT_END)

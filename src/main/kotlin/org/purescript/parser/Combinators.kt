@@ -236,7 +236,7 @@ object Combinators {
 
     fun sepBy1(p: Parsec, sep: Parsec) = p.then(manyOrEmpty(sep.then(p)))
     fun commaSep(p: Parsec) = sepBy(p, token(COMMA))
-    fun ref() = ParsecRef()
+    fun ref(init: Parsec.() -> Parsec) = ParsecRef(init)
     fun guard(
         p: Parsec,
         predicate: (String?) -> Boolean,
