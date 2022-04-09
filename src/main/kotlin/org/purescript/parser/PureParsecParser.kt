@@ -92,8 +92,14 @@ class PureParsecParser {
     private val properName: Parsec = token(PROPER_NAME).`as`(ProperName)
 
     // Kinds.hs
-    private val parseKind = ref()
-    private val parseKindPrefixRef = ref()
+    private val parseKind: Parsec = ref {
+        (parseKindPrefix + 
+            optional(arrow.or(optional(attempt(qualified(properName))
+                .`as`(TypeConstructor))) +
+                optional(this))
+        ).`as`(FunKind)
+    }
+    private val parseKindPrefixRef: Parsec = ref {parseKindPrefix}
     private val parseKindAtom = choice(
         token("*").`as`(START).`as`(Star),
         token("!").`as`(BANG).`as`(Bang),
@@ -106,9 +112,14 @@ class PureParsecParser {
             parseKindAtom
         )
 
-    private val type = ref()
+    private val type : Parsec = ref {(type1.sepBy1(dcolon)).`as`(Type)}
 
-    private val parseForAll = ref()
+    private val parseForAll: Parsec = ref {
+        forall
+        .then(many1(idents.`as`(GenericIdentifier)))
+        .then(dot)
+        .then(parseConstrainedType).`as`(ForAll)
+    }
 
     private val parseTypeVariable: Parsec =
         guard(
@@ -167,9 +178,89 @@ class PureParsecParser {
             parens(idents.`as`(GenericIdentifier) + dcolon + type)
                 .`as`(TypeVarKinded)
         )
-    private val binderAtom = ref()
-    private val binder = ref()
-    private val expr = ref()
+    private val binderAtom: Parsec = ref {
+        choice(
+        attempt(`_`.`as`(NullBinder)),
+        attempt(ident.`as`(VarBinder) + `@` + this)
+            .`as`(NamedBinder),
+        attempt(ident.`as`(VarBinder)),
+        attempt(qualProperName.`as`(ConstructorBinder)),
+        attempt(boolean.`as`(BooleanBinder)),
+        attempt(char).`as`(CharBinder),
+        attempt(string.`as`(StringBinder)),
+        attempt(number.`as`(NumberBinder)),
+        attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
+        attempt(braces(commaSep(recordBinder))),
+        attempt(parens(binder))
+    )
+    }
+    private val binder: Parsec = ref {binder1 + optional(dcolon + type)}
+    private val expr: Parsec = ref {(expr1 + optional(dcolon + type)).`as`(Value)}
+    private val qualOp = qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
+    private val type5 = many1(typeAtom)
+    private val type4 = manyOrEmpty(token("#")) + type5
+    private val type3 =  ref { type4.sepBy1(qualOp) }
+    private val type2: Parsec = ref {type3 + optional(arrow.or(darrow) + type1)}
+    private val type1 = manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
+    private val parsePropertyUpdate: Parsec = ref { label + optional(eq) + expr }
+    private val exprAtom =  ref { choice(
+        `_`,
+        attempt(hole),
+        attempt(
+            qualified(idents.`as`(Identifier))
+                .`as`(QualifiedIdentifier)
+                .`as`(ExpressionIdentifier)
+        ),
+        attempt(
+            qualified(symbol)
+                .`as`(QualifiedSymbol)
+                .`as`(ExpressionSymbol)
+        ),
+        attempt(
+            qualified(properName)
+                .`as`(QualifiedProperName)
+                .`as`(ExpressionConstructor)
+        ),
+        boolean.`as`(BooleanLiteral),
+        char.`as`(CharLiteral),
+        string.`as`(StringLiteral),
+        number,
+        squares(commaSep(expr)).`as`(ArrayLiteral),
+        braces(commaSep(recordLabel)).`as`(ObjectLiteral),
+        parens(expr).`as`(Parens),
+    )
+    }
+    private val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
+    private val expr5 = ref {
+        choice(
+            attempt(braces(commaSep1(parsePropertyUpdate))),
+            expr7,
+            (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
+            /*
+            * if there is only one case branch it can ignore layout so we need
+            * to allow layout end at any time.
+            */
+            (case + commaSep1(expr) + of + choice(
+                attempt(`L{` + caseBranch.sepBy1(`L-sep`) + `L}`),
+                attempt(`L{` + commaSep(binder1) + arrow + `L}` + exprWhere),
+                `L{` + commaSep(binder1) + `L}` + guardedCase,
+            )).`as`(Case),
+            parseIfThenElse,
+            doBlock,
+            adoBlock + `in` + expr,
+            parseLet
+        )
+    }
+    private val expr4 = many1(expr5)
+    private val expr3 =
+        choice(
+            (many1(token("-")) + expr4).`as`(UnaryMinus),
+            expr4
+        )
+    private val exprBacktick2 = expr3.sepBy1(qualOp)
+    private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
+    private val expr1 = expr2.sepBy1(attempt(qualOp).`as`(ExpressionOperator))
+
 
     // TODO: pattern guards should parse expr1 not expr
     private val patternGuard = optional(attempt(binder + larrow)) + expr
@@ -182,7 +273,13 @@ class PureParsecParser {
         (ident + dcolon + type).`as`(Signature)
     private val newtypeHead =
         `'newtype'` + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
-    private val exprWhere = ref()
+    private val exprWhere: Parsec = ref {
+        expr + optional(
+            (where + `L{` + letBinding.sepBy1(`L-sep`) + `L}`).`as`(
+                ExpressionWhere
+            )
+        )
+    }
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
         choice(attempt(eq) + exprWhere, many1(guardedDeclExpr))
@@ -381,8 +478,6 @@ class PureParsecParser {
                 .`as`(ExpressionIdentifier),
         ).`as`(ObjectBinderField)
 
-    private val qualOp =
-        qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
 
     private val binder2 = choice(
         attempt(
@@ -442,122 +537,9 @@ class PureParsecParser {
     private val adoBlock =
         token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
-    init {
-        parseKindPrefixRef.setRef(parseKindPrefix)
-        parseKind.setRef(
-            (parseKindPrefix +
-                optional(
-                    arrow
-                        .or(
-                            optional(
-                                attempt(qualified(properName)).`as`(
-                                    TypeConstructor
-                                )
-                            )
-                        ) +
-                        optional(parseKind)
-                )).`as`(FunKind)
+    private val recordBinder =
+        choice(
+            attempt(label + eq.or(token(":"))) + binder,
+            label.`as`(VarBinder)
         )
-
-        val type5 = many1(typeAtom)
-        val type4 = manyOrEmpty(token("#")) + type5
-        val type3 = type4.sepBy1(qualOp)
-        val type2 = ref()
-        val type1 = manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
-        type2.setRef(type3 + optional(arrow.or(darrow) + type1))
-        type.setRef((type1.sepBy1(dcolon)).`as`(Type))
-        parseForAll.setRef(
-            forall
-                .then(many1(idents.`as`(GenericIdentifier)))
-                .then(dot)
-                .then(parseConstrainedType).`as`(ForAll)
-        )
-        val parsePropertyUpdate =
-            label + optional(eq) + expr
-        val exprAtom = choice(
-            `_`,
-            attempt(hole),
-            attempt(
-                qualified(idents.`as`(Identifier))
-                    .`as`(QualifiedIdentifier)
-                    .`as`(ExpressionIdentifier)
-            ),
-            attempt(
-                qualified(symbol)
-                    .`as`(QualifiedSymbol)
-                    .`as`(ExpressionSymbol)
-            ),
-            attempt(
-                qualified(properName)
-                    .`as`(QualifiedProperName)
-                    .`as`(ExpressionConstructor)
-            ),
-            boolean.`as`(BooleanLiteral),
-            char.`as`(CharLiteral),
-            string.`as`(StringLiteral),
-            number,
-            squares(commaSep(expr)).`as`(ArrayLiteral),
-            braces(commaSep(recordLabel)).`as`(ObjectLiteral),
-            parens(expr).`as`(Parens),
-        )
-        val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
-        val expr5 = choice(
-            attempt(braces(commaSep1(parsePropertyUpdate))),
-            expr7,
-            (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
-            /*
-            * if there is only one case branch it can ignore layout so we need
-            * to allow layout end at any time.
-            */
-            (case + commaSep1(expr) + of + choice(
-                attempt(`L{` + caseBranch.sepBy1(`L-sep`) + `L}`),
-                attempt(`L{` + commaSep(binder1) + arrow + `L}` + exprWhere),
-                `L{` + commaSep(binder1) + `L}` + guardedCase,
-            )).`as`(Case),
-            parseIfThenElse,
-            doBlock,
-            adoBlock + `in` + expr,
-            parseLet
-        )
-        val expr4 = many1(expr5)
-        val expr3 =
-            choice(
-                (many1(token("-")) + expr4).`as`(UnaryMinus),
-                expr4
-            )
-        val exprBacktick2 = expr3.sepBy1(qualOp)
-        val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-        val expr1 = expr2.sepBy1(attempt(qualOp).`as`(ExpressionOperator))
-
-
-        expr.setRef((expr1 + optional(dcolon + type)).`as`(Value))
-        val recordBinder =
-            choice(
-                attempt(label + eq.or(token(":"))) + binder,
-                label.`as`(VarBinder)
-            )
-        binder.setRef(binder1 + optional(dcolon + type))
-        binderAtom.setRef(
-            choice(
-                attempt(`_`.`as`(NullBinder)),
-                attempt(ident.`as`(VarBinder) + `@` + binderAtom)
-                    .`as`(NamedBinder),
-                attempt(ident.`as`(VarBinder)),
-                attempt(qualProperName.`as`(ConstructorBinder)),
-                attempt(boolean.`as`(BooleanBinder)),
-                attempt(char).`as`(CharBinder),
-                attempt(string.`as`(StringBinder)),
-                attempt(number.`as`(NumberBinder)),
-                attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
-                attempt(braces(commaSep(recordBinder))),
-                attempt(parens(binder))
-            )
-        )
-        exprWhere.setRef(
-            expr + optional(
-                (where + `L{` + letBinding.sepBy1(`L-sep`) + `L}`)
-                    .`as`(ExpressionWhere)
-            )
-        )
-    }
 }
