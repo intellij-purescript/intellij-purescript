@@ -59,4 +59,7 @@ sourceSets {
         }
     }
 }
-
+val ideaVersion: String by project
+intellij {
+    version.set(ideaVersion)
+}

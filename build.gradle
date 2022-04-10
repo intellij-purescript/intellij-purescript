@@ -6,7 +6,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '0.7.3'
+    id 'org.jetbrains.intellij' version '1.5.2'
     id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
 }
 
@@ -50,16 +50,16 @@ tasks.named("test").configure {
 // Plugin config
 version = property("version")
 intellij {
-    pluginName 'purity-intellij'
-    version ideaVersion
+    pluginName = 'purity-intellij'
+    version = ideaVersion
 
     publishPlugin {
         token = intellijPublishToken
-        channels publishChannels
+        channels = [publishChannels]
     }
 
     patchPluginXml {
-        sinceBuild '203'
+        sinceBuild = '203'
     }
 
 }
