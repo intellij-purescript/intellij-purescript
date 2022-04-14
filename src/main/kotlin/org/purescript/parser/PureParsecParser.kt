@@ -498,7 +498,7 @@ class PureParsecParser {
         attempt(token("-") + number).`as`(NumberBinder),
         binderAtom,
     )
-    private val binder1 = binder2.sepBy1(token(OPERATOR))
+    private val binder1 = binder2.sepBy1(qualOp)
 
     private val guardedCaseExpr = parseGuard + (arrow + exprWhere)
 
