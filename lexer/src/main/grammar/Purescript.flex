@@ -157,7 +157,7 @@ charControl = "^" [:uppercase:]
 {decimal}{fractExponent}                       { return FLOAT; }
 "\"\"\""                                       { yybegin(BLOCK_STRINGS); return STRING; }
 "\""                                           { yybegin(STRINGS); return STRING; }
-"'" ([^'] | "\\" {escapeCode} ) "'"               { return CHAR; }
+"'" ( "\\" {escapeCode} | . ) "'"               { return CHAR; }
 
 {identStart}{identLetter}*     { return IDENT; }
 ({properName}".")+             { return MODULE_PREFIX; }
