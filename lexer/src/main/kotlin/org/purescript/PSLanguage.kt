@@ -33,7 +33,7 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
             "Array",
             "Boolean",
             "Char",
-            "Constraint", // TODO Constraint is really a kind, not a type
+            "Constraint",
             "Function", // TODO Function is really a kind, not a type
             "Int",
             "Number",
