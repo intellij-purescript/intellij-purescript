@@ -30,6 +30,11 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
          * See [https://pursuit.purescript.org/builtins/docs/Prim] for details.
          */
         val BUILTIN_TYPES = setOf(
+            "Function", // TODO Function is really a kind, not a type
+            "Record", // TODO Record is really a kind, not a type
+            "Partial", // TODO Partial is really a Class, not a type
+            "Constraint", // TODO Constraint is really a kind, not a type
+            "Symbol", 
             "Int",
             "Number",
             "String",
