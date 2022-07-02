@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 class Purs {
     companion object {
-        private val linuxGetNPMRootShellCmd = listOf<String>("/bin/bash", "-c", "npm -g root")
+        private val linuxGetNPMRootShellCmd = listOf<String>("/usr/bin/env", "bash", "-c", "npm -g root")
         private val windowsGetNPMRootShellCmd = listOf<String>("cmd", "/c", "npm -g root")
         private val log = logger<Purs>()
         private var pursCmd: Path? = null
