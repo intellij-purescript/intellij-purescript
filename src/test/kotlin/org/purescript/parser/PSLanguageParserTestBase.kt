@@ -8,7 +8,7 @@ import com.intellij.testFramework.TestDataFile
 import org.jetbrains.annotations.NonNls
 import java.io.File
 
-abstract class PSLanguageParserTestBase(val dataPath: String) :
+abstract class PSLanguageParserTestBase(dataPath: String) :
     ParsingTestCase(dataPath, "purs", PSParserDefinition()) {
     override fun getTestDataPath(): String =
         "test-data"
