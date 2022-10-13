@@ -73,6 +73,7 @@ class PSLanguageParserTest : PSLanguageParserTestBase("parser") {
     fun testNewtypeClass() = doTest(true, true)
     fun testOperatorAlias() = doTest(true, true)
     fun testOperatorAliasElsewhere() = doTest(true, true)
+    fun testOperatorAliasQualified() = doTest(true, true)
     fun testOperators() = doTest(true, true)
     fun testRebindableSyntax() = doTest(true, true)
     fun testSuperclasses3() = doTest(true, true)
