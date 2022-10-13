@@ -1,0 +1,3 @@
+module TripleQuoteString where
+
+parseEvent = (""""""")
