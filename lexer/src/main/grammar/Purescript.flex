@@ -73,7 +73,7 @@ charControl = "^" [:uppercase:]
 }
 
 <BLOCK_STRINGS> {
-"\"\"\""                       { yybegin(YYINITIAL); return STRING; }
+"\"\"\"" "\""*                 { yybegin(YYINITIAL); return STRING; }
 [^]                            { return STRING; }
 }
 
