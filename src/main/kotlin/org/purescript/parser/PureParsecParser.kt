@@ -318,11 +318,19 @@ class PureParsecParser {
     )
     private val parseFixity =
         parseAssociativity.then(token(NATURAL)).`as`(Fixity)
+    private val qualIdentifier =
+        (optional(qualifier) + ident).`as`(QualifiedIdentifier)
+    private val qualProperName =
+        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val parseFixityDeclaration = parseFixity
-        .then(optional(`'type'`))
         .then(
-            // TODO Should use qualified proper name instead of module name
-            moduleName.or(ident.`as`(ProperName))
+            choice(
+                // TODO Should we differentiate Types and DataConstructors?
+                // that would mean that when there is a `type` prefix we parse as Type
+                // otherwise if it's a capital name it's a DataConstructor
+                attempt(optional(`'type'`).then(properName.or(qualProperName))),
+                ident.or(qualIdentifier)
+            )
         )
         .then(`as`)
         .then(operator.`as`(OperatorName))
@@ -330,8 +338,6 @@ class PureParsecParser {
 
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe.then(commaSep1(fundep))
-    private val qualProperName =
-        (optional(qualifier) + properName).`as`(QualifiedProperName)
     private val constraint =
         (qualProperName.`as`(ClassName) + manyOrEmpty(typeAtom))
             .`as`(ClassConstraint)

@@ -61,7 +61,7 @@ Purescript File
       PSFixity(Fixity)
         PsiElement(infixr)('infixr')
         PsiElement(natural)('6')
-      PSModuleName(ModuleName)
+      PSProperName(ProperName)
         PsiElement(proper name)('Cons')
       PsiElement(as)('as')
       PSOperatorName(OperatorName)

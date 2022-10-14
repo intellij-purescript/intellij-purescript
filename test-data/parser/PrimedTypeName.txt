@@ -138,7 +138,7 @@ Purescript File
         PsiElement(infixr)('infixr')
         PsiElement(natural)('4')
       PsiElement(type)('type')
-      PSModuleName(ModuleName)
+      PSProperName(ProperName)
         PsiElement(proper name)('A'')
       PsiElement(as)('as')
       PSOperatorName(OperatorName)
