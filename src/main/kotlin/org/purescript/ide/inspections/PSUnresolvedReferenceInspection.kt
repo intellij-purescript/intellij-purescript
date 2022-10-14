@@ -57,7 +57,7 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                 // TODO Workaround to prevent false positives on class constraints
                 val isClassConstraint = reference.element.parent
                     .siblings(forward = true, withSelf = false)
-                    .any { it.text == "=>" }
+                    .any { it.text == "=>" || it.text == "⇒" }
                 if (isClassConstraint) {
                     return
                 }
