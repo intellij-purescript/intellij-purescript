@@ -90,7 +90,7 @@ class CreateFileAction : CreateFileFromTemplateAction(TITLE, "", PSIcons.FILE) {
         val moduleName = relativePath
             .reversed()
             .takeWhile { "$it" != "src" && "$it" != "test" }
-            .filter { "$it".capitalize() == "$it" }
+            .filter { "$it".first().isUpperCase()}
             .reversed()
             .joinToString(".")
             .let { "$it.$lastModuleName" }
