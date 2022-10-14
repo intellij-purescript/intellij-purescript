@@ -10,7 +10,7 @@ import org.purescript.parser.WS
 
 class PSHighlightLexer : LookAheadLexer(
     MergingLexerAdapter(
-        FlexAdapter(org.purescript.lexer._PSLexer(null)),
+        FlexAdapter(_PSLexer(null)),
         TokenSet.create(MLCOMMENT, WS, STRING)
     ), 10
 )

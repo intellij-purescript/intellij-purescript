@@ -14,7 +14,7 @@ class ImportedOperatorReference(element: PSImportedOperator) :
         candidates.toTypedArray()
 
     override fun resolve(): PsiElement? {
-        return candidates.firstOrNull() { it.name == element.name }
+        return candidates.firstOrNull { it.name == element.name }
     }
 
     val candidates

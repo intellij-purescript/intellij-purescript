@@ -18,7 +18,7 @@ class ExpressionSymbolReference(
         candidates.toList().toTypedArray()
 
     override fun resolve(): PsiElement? {
-        return candidates.firstOrNull() { it.name == element.name}
+        return candidates.firstOrNull { it.name == element.name}
     }
 
     val candidates get() = sequence {

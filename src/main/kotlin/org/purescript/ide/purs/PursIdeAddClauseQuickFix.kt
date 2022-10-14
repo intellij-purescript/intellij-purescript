@@ -17,7 +17,8 @@ import org.purescript.icons.PSIcons
 import java.io.File
 
 class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionAction, Iconable {
-    data class Response(val result: List<String>, val resultType: String) {}
+    data class Response(val result: List<String>, val resultType: String)
+
     override fun startInWriteAction(): Boolean = false
     override fun getText(): String = "Add clause"
     override fun getFamilyName(): String = "Purs ide suggestion"

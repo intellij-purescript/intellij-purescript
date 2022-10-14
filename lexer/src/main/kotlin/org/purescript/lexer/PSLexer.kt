@@ -11,7 +11,7 @@ class PSLexer : LookAheadLexer(
     MergingLexerAdapter(
         CollapsingLexer(
             FilterLexer(
-                FlexAdapter(org.purescript.lexer._PSLexer(null)),
+                FlexAdapter(_PSLexer(null)),
                 FilterLexer.SetFilter(TokenSet.create(MLCOMMENT, SLCOMMENT))
             ),
             TokenSet.create(STRING, STRING_GAP, STRING_ESCAPED),
