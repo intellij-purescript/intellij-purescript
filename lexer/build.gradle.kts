@@ -1,3 +1,5 @@
+import org.jetbrains.grammarkit.tasks.GenerateLexer
+
 plugins {
     java
     kotlin("jvm")
@@ -28,7 +30,7 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-task("generateLexer", org.jetbrains.grammarkit.tasks.GenerateLexer::class) {
+tasks.register<GenerateLexer>("generateLexer") {
     source = "src/main/grammar/Purescript.flex"
     targetDir = "src/main/gen/org/purescript/lexer/"
     targetClass = "_PSLexer"
