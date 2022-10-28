@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://cache-redirector.jetbrains.com/intellij-dependencies'}
+        maven { url 'https://cache-redirector.jetbrains.com/intellij-dependencies' }
     }
 }
 
@@ -15,7 +15,7 @@ plugins {
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-    maven { url 'https://cache-redirector.jetbrains.com/intellij-dependencies'}
+    maven { url 'https://cache-redirector.jetbrains.com/intellij-dependencies' }
 }
 
 dependencies {
@@ -28,13 +28,6 @@ dependencies {
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-}
-
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
 }
 
 tasks.withType(KotlinCompile).configureEach {
