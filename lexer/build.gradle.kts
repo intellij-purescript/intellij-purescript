@@ -1,3 +1,6 @@
+import org.jetbrains.grammarkit.tasks.GenerateLexer
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     java
     kotlin("jvm")
@@ -23,35 +26,33 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
+tasks {
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
-
-task("generateLexer", org.jetbrains.grammarkit.tasks.GenerateLexer::class) {
-    source = "src/main/grammar/Purescript.flex"
-    targetDir = "src/main/gen/org/purescript/lexer/"
-    targetClass = "_PSLexer"
-    purgeOldFiles = true
-    skeleton = "src/main/grammar/idea-flex.skeleton"
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
-
-    dependsOn("generateLexer")
-}
-tasks
-    .withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
-    .configureEach {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-        dependsOn("generateLexer")
+    getByName<Test>("test") {
+        useJUnitPlatform()
     }
 
+    register<GenerateLexer>("generateLexer") {
+        source = "src/main/grammar/Purescript.flex"
+        targetDir = "src/main/gen/org/purescript/lexer/"
+        targetClass = "_PSLexer"
+        purgeOldFiles = true
+        skeleton = "src/main/grammar/idea-flex.skeleton"
+    }
+
+    withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
+
+        dependsOn("generateLexer")
+    }
+    withType<KotlinCompile>()
+        .configureEach {
+            kotlinOptions { jvmTarget = "11" }
+            dependsOn("generateLexer")
+        }
+}
 sourceSets {
     main {
         java {
