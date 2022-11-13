@@ -110,6 +110,7 @@ import org.purescript.psi.PSElementType
 @JvmField val kStrings = TokenSet.create(STRING)
 @JvmField val kOperators = TokenSet.create(
     DARROW,
+    LARROW,
     LDARROW,
     ARROW,
     EQ,
