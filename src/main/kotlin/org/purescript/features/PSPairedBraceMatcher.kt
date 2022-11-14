@@ -3,6 +3,7 @@ package org.purescript.features
 import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
+import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import org.purescript.parser.*
 
@@ -14,7 +15,7 @@ class PSPairedBraceMatcher : PairedBraceMatcher {
         contextType: IElementType?
     ): Boolean {
         return (contextType == null
-            || contextType === WS)
+            || contextType === WHITE_SPACE)
     }
 
     override fun getCodeConstructStart(

@@ -54,10 +54,6 @@ class PSParserDefinition : ParserDefinition {
         return PSFileStubType.INSTANCE
     }
 
-    override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(WS)
-    }
-
     override fun getCommentTokens(): TokenSet {
         return TokenSet.create(DOC_COMMENT, MLCOMMENT, SLCOMMENT)
     }

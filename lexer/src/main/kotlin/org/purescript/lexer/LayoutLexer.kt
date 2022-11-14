@@ -4,12 +4,14 @@ package org.purescript.lexer
 
 import com.intellij.lexer.DelegateLexer
 import com.intellij.lexer.Lexer
+import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.*
 import org.purescript.psi.PSElementType
+
 
 data class LayoutStack(
     val sourcePos: SourcePos,
@@ -755,7 +757,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var tokens: List<SourceToken> = listOf()
     private var index = 0
-    private val root = SourceToken(rangeFromOffsets(0, 0), WS)
+    private val root = SourceToken(rangeFromOffsets(0, 0), WHITE_SPACE)
 
     override fun start(
         buffer: CharSequence,
@@ -786,7 +788,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
                 token = t
             } else {
                 when (t.value) {
-                    WS -> trailing.add(t)
+                    WHITE_SPACE -> trailing.add(t)
                     MLCOMMENT -> trailing.add(t)
                     SLCOMMENT -> trailing.add(t)
                     DOC_COMMENT -> trailing.add(t)

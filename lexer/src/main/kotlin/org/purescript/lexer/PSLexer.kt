@@ -5,6 +5,7 @@ import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.LookAheadLexer
 import com.intellij.lexer.MergingLexerAdapter
 import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.tree.TokenSet.WHITE_SPACE
 import org.purescript.parser.*
 
 class PSLexer : LookAheadLexer(
@@ -17,5 +18,5 @@ class PSLexer : LookAheadLexer(
             TokenSet.create(STRING, STRING_GAP, STRING_ESCAPED),
             STRING
         ),
-        TokenSet.create(WS)
+        WHITE_SPACE
     ))

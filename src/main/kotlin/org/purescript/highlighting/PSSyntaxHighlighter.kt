@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.CodeInsightColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
+import com.intellij.psi.TokenType.BAD_CHARACTER
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSHighlightLexer
@@ -132,7 +133,7 @@ class PSSyntaxHighlighter : SyntaxHighlighterBase() {
             )
             fillMap(
                 keys,
-                TokenSet.create(ERROR),
+                TokenSet.create(BAD_CHARACTER),
                 CodeInsightColors.ERRORS_ATTRIBUTES
             )
             keys[EQ] = PS_EQ

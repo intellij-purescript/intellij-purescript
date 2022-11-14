@@ -6,8 +6,6 @@ import org.purescript.psi.PSElementType
 @JvmField val LAYOUT_START = PSElementType("layout start")
 @JvmField val LAYOUT_SEP = PSElementType("layout separator")
 @JvmField val LAYOUT_END = PSElementType("layout end")
-@JvmField val ERROR = PSElementType("error")
-@JvmField val WS = PSElementType("whitespace")
 @JvmField val MLCOMMENT = PSElementType("block comment")
 @JvmField val SLCOMMENT = PSElementType("line comment")
 @JvmField val DOC_COMMENT = PSElementType("doc comment")

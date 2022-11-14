@@ -3,6 +3,8 @@ package org.purescript.lexer;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import static org.purescript.parser.PSTokensKt.*;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
 %%
 
@@ -69,7 +71,7 @@ charControl = "^" [:uppercase:]
 "\\" {escapeEmpty}             { return STRING_GAP; }
 "\\" {escapeGap}               { return STRING_GAP; }
 "\\"                           { return STRING_ERROR; }
-[^]                            { return ERROR; }
+[^]                            { return BAD_CHARACTER; }
 }
 
 <BLOCK_STRINGS> {
@@ -79,7 +81,7 @@ charControl = "^" [:uppercase:]
 
 <YYINITIAL> {
 
-{whitespace}+                  { return WS; }
+{whitespace}+                  { return WHITE_SPACE; }
 
 "{-"                           { yybegin(COMMENT); comment_nesting = 1; return MLCOMMENT; }
 "--" " "* "|" [^\n]*           { return DOC_COMMENT; }
@@ -165,5 +167,5 @@ charControl = "^" [:uppercase:]
 {uniCode}+                     { return OPERATOR; }
 {opChars}+                     { return OPERATOR; }
 
-.                              { return ERROR; }
+.                              { return BAD_CHARACTER; }
 }
