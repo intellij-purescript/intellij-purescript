@@ -36,9 +36,13 @@ class PSBlock(
         return myNode.firstChildNode == null
     }
 
+    override fun getIndent(): Indent? {
+        return Indent.getNoneIndent()
+    }
+    
+
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-        return getReadOnlySpacing();
-        //return spacingBuilder.getSpacing(this, child1, child2);
+        return spacingBuilder.getSpacing(this, child1, child2);
     }
 
 }
