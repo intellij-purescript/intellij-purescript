@@ -18,10 +18,7 @@ class Npm {
                 SystemInfo.isWindows -> listOf("cmd", "/c", command)
                 else -> listOf("/usr/bin/env", "bash", "-c", command)
             }
-            val npmProc = ProcessBuilder(npmCmd)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .start()
+            val npmProc = ProcessBuilder(npmCmd).start()
             npmProc.waitFor(4, TimeUnit.SECONDS)
             return npmProc.inputStream.bufferedReader().readLine()
         }
