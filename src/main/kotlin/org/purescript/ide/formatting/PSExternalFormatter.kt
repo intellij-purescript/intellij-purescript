@@ -20,15 +20,15 @@ class PSExternalFormatter : AsyncDocumentFormattingService() {
 
         // without a purs bin path we can't annotate with it
         val pursTidyBin = Npm.pathFor("purs-tidy") ?: return null
-        val params = listOf<String>("format")
+        val params = listOf("format")
         return try {
-            val commandLine: GeneralCommandLine = GeneralCommandLine()
+            val commandLine = GeneralCommandLine()
                 .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
                 .withExePath(pursTidyBin.toString())
                 .withParameters(params)
                 .withInput(request.ioFile)
-            val withCharset = commandLine.withCharset(StandardCharsets.UTF_8)
-            val handler = OSProcessHandler(withCharset)
+                .withCharset(StandardCharsets.UTF_8)
+            val handler = OSProcessHandler(commandLine)
             val listener = object : CapturingProcessAdapter() {
                 override fun processTerminated(event: ProcessEvent) =
                     when (event.exitCode) {
