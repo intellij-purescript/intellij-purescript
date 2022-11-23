@@ -19,7 +19,7 @@ class StartupActivity : StartupActivity.Background {
         val rootDir = projectDir.toNioPath()
 
         // without a purs bin path we can't annotate with it
-        val pursBin = Npm.pathFor(project, "purs") ?: return
+        val pursBin = Npm.pathFor("purs") ?: return
 
         val command = GeneralCommandLine(pursBin.toString(), "ide", "server")
             .withWorkDirectory(rootDir.toFile())

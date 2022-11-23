@@ -19,7 +19,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun doAnnotate(file: PsiFile): Response? {
 
         // without a purs bin path we can't annotate with it
-        val pursBin = Npm.pathFor(file.project, "purs") ?: return null
+        val pursBin = Npm.pathFor("purs") ?: return null
 
         val gson = Gson()
         val tempFile: File =

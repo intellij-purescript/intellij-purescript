@@ -19,8 +19,7 @@ class PSExternalFormatter : AsyncDocumentFormattingService() {
     override fun createFormattingTask(request: AsyncFormattingRequest): FormattingTask? {
 
         // without a purs bin path we can't annotate with it
-        val project = request.context.project
-        val pursTidyBin = Npm.pathFor(project, "purs-tidy") ?: return null
+        val pursTidyBin = Npm.pathFor("purs-tidy") ?: return null
         val params = listOf<String>("format")
         return try {
             val commandLine: GeneralCommandLine = GeneralCommandLine()

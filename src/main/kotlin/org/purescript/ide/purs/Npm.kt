@@ -1,113 +1,46 @@
 package org.purescript.ide.purs
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.io.exists
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 
+
 class Npm {
     companion object {
-        private val linuxGetNPMRootShellCmd =
-            listOf("/usr/bin/env", "bash", "-c", "npm -g root")
-        private val windowsGetNPMRootShellCmd =
-            listOf("cmd", "/c", "npm -g root")
-        private val log = logger<Npm>()
-        private var paths: MutableMap<String, Path> = mutableMapOf()
+        private val localBinPath: String by lazy { run("npm bin") }
 
-        fun pathFor(project: Project, command: String): Path? {
-            if (command !in paths) {
-                val virtualFile = project.guessProjectDir()
-                if (virtualFile != null) {
-                    try {
-                        val toNioPath = virtualFile.toNioPath()
-                        localVersion(toNioPath, command)?.let {
-                            paths[command] = it
-                        }
-                    } catch (e:UnsupportedOperationException) {
-                        
-                    }
-                }
-            }
-            if (command !in paths) {
-                globalVersion(command)?.let {
-                    paths[command] = it
-                }
-            }
-            if (log.isDebugEnabled) {
-                if (command in paths) {
-                    log.debug("$command is not found")
-                } else {
-                    log.debug("$command is found at ${paths[command]}")
-                }
-            }
-            return paths[command]
-        }
+        private val globalBinPath: String by lazy { run("npm -g bin") }
 
-        fun localVersion(rootDir: Path, command: String): Path? {
-            val sequence: Sequence<Path> = sequence {
-                var localPath: Path? = rootDir
-                while (localPath != null) {
-                    yield(localPath)
-                    localPath = localPath.parent
-                }
-            }
-            return extractPursCmd(
-                sequence,
-                "node_modules/.bin",
-                nameToCommand(command)
-            )
-        }
-
-        fun globalVersion(command: String): Path? {
-            val globalSequence = sequence<Path> {
-                var globalPath: Path? = npmGlobalModulesDir()
-                while (globalPath != null) {
-                    yield(globalPath)
-                    globalPath = globalPath.parent
-                }
-            }
-            return extractPursCmd(
-                globalSequence,
-                "./",
-                nameToCommand(command)
-            )
-        }
-
-        private fun extractPursCmd(
-            sequence: Sequence<Path>,
-            pursExecutablePathStr: String,
-            command: String
-        ): Path? {
-            return sequence.map { it.resolve(pursExecutablePathStr) }
-                .filter { it.toFile().exists() }
-                .map { it.resolve(command) }
-                .firstOrNull { it.toFile().exists() }
-        }
-
-        private fun nameToCommand(cmd: String) = when {
-            SystemInfo.isWindows -> "$cmd.cmd"
-            else -> "purescript/$cmd.bin"
-        }
-
-        fun npmGlobalModulesDir(): Path {
+        private fun run(command: String): String {
             val npmCmd = when {
-                SystemInfo.isWindows -> windowsGetNPMRootShellCmd
-                else -> linuxGetNPMRootShellCmd
+                SystemInfo.isWindows -> listOf("cmd", "/c", command)
+                else -> listOf("/usr/bin/env", "bash", "-c", command)
             }
-
             val npmProc = ProcessBuilder(npmCmd)
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
                 .start()
-
             npmProc.waitFor(4, TimeUnit.SECONDS)
-            val rawPath = npmProc.inputStream.bufferedReader().readLine()
-            return when {
-                !rawPath.isNullOrEmpty() -> Path.of(rawPath)
-                else -> Path.of("/")
+            return npmProc.inputStream.bufferedReader().readLine()
+        }
+
+        private val log = logger<Npm>()
+
+        fun pathFor(command: String): Path? {
+            val binary = when {
+                SystemInfo.isWindows -> "$command.cmd"
+                else -> command
             }
+            val localCommand = Path.of(localBinPath, binary)
+            if (localCommand.exists()) return localCommand
+            
+            val globalCommand = Path.of(globalBinPath, binary)
+            if (globalCommand.exists()) return globalCommand
+            
+            if (log.isDebugEnabled) log.debug("$command is not found")
+            return null
         }
     }
 }
