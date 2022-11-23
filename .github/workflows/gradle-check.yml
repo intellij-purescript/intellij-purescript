@@ -49,5 +49,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Install Purs-Tidy
+        run: npm install purs-tidy
+        
       - name: Gradle Check
         run: ./gradlew check

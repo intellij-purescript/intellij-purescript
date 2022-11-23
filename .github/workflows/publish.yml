@@ -47,6 +47,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Install Purs-Tidy
+        run: npm install purs-tidy
+        
       - name: Gradle Publish Plugin
         run: |
           VERSION=$(git describe --tags --match='v*')
