@@ -117,10 +117,8 @@
     />
 
     <!-- Formatting -->
-    <lang.formatter
-        language="Purescript"
-        implementationClass="org.purescript.ide.formatting.PSFormattingModelBuilder"
-    />
+
+    <formattingService implementation="org.purescript.ide.formatting.PSExternalFormatter"/>
 
     <lang.importOptimizer
             language="Purescript"

@@ -34,7 +34,7 @@ class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionActi
                 ?: return
 
         // without a purs bin path we can't annotate with it
-        val pursBin = Purs.nodeModulesVersion(file.project) ?: return
+        val pursBin = Npm.pathFor(file.project, "purs") ?: return
 
         val gson = Gson()
         val tempFile: File =
