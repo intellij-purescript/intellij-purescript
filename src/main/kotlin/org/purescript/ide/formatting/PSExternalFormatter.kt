@@ -7,6 +7,7 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.formatting.service.AsyncDocumentFormattingService
 import com.intellij.formatting.service.AsyncFormattingRequest
 import com.intellij.formatting.service.FormattingService
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
@@ -19,7 +20,8 @@ class PSExternalFormatter : AsyncDocumentFormattingService() {
     override fun createFormattingTask(request: AsyncFormattingRequest): FormattingTask? {
 
         // without a purs bin path we can't annotate with it
-        val pursTidyBin = Npm.pathFor("purs-tidy") ?: return null
+        val project = request.context.project
+        val pursTidyBin = project.service<Npm>().pathFor("purs-tidy") ?: return null
         val params = listOf("format")
         return try {
             val commandLine = GeneralCommandLine()

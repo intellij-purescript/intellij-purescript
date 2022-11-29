@@ -3,6 +3,7 @@ package org.purescript.ide.purs
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.ide.plugins.PluginManagerCore.isUnitTestMode
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
@@ -19,7 +20,7 @@ class StartupActivity : StartupActivity.Background {
         val rootDir = projectDir.toNioPath()
 
         // without a purs bin path we can't annotate with it
-        val pursBin = Npm.pathFor("purs") ?: return
+        val pursBin = project.service<Npm>().pathFor("purs") ?: return
 
         val command = GeneralCommandLine(pursBin.toString(), "ide", "server")
             .withWorkDirectory(rootDir.toFile())
