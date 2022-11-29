@@ -1,11 +1,11 @@
-import org.jetbrains.grammarkit.tasks.GenerateLexer
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
     kotlin("jvm")
     id("org.jetbrains.intellij")
-    id("org.jetbrains.grammarkit") version "2021.1.3"
+    id("org.jetbrains.grammarkit") version "2021.2.2"
 }
 
 repositories {
@@ -14,6 +14,11 @@ repositories {
     maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies") }
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
 
 version = "1.15-SNAPSHOT"
 
@@ -27,30 +32,25 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 tasks {
-
     getByName<Test>("test") {
         useJUnitPlatform()
     }
-
-    register<GenerateLexer>("generateLexer") {
-        source = "src/main/grammar/Purescript.flex"
-        targetDir = "src/main/gen/org/purescript/lexer/"
-        targetClass = "_PSLexer"
-        purgeOldFiles = true
-        skeleton = "src/main/grammar/idea-flex.skeleton"
+    generateLexer.configure {
+        source.set("src/main/grammar/Purescript.flex") 
+        targetDir.set("src/main/gen/org/purescript/lexer/")
+        targetClass.set("_PSLexer")
+        purgeOldFiles.set(true)
+        skeleton.set(file("src/main/grammar/idea-flex.skeleton"))
     }
-
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
-
-        dependsOn("generateLexer")
+        options.release.set(11)
+        dependsOn(generateLexer)
     }
     withType<KotlinCompile>()
         .configureEach {
             kotlinOptions { jvmTarget = "11" }
-            dependsOn("generateLexer")
+            dependsOn(generateLexer)
         }
 }
 sourceSets {
