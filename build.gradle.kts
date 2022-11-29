@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     implementation(project(":lexer"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.20")
+    implementation(kotlin("stdlib"))
 
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
