@@ -16,6 +16,7 @@ buildscript {
 
 plugins {
     id("org.jetbrains.intellij")
+    java
     kotlin("jvm")
 }
 
@@ -35,6 +36,12 @@ dependencies {
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+    }
 }
 
 // Plugin config
