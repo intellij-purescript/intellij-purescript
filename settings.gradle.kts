@@ -7,6 +7,7 @@ pluginManagement {
     plugins {
         kotlin("jvm") version kotlinVersion
         id("org.jetbrains.intellij") version "1.10.0"
+        id("org.jetbrains.grammarkit") version "2021.2.2"
     }
 }
 
