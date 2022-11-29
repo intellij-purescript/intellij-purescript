@@ -14,9 +14,10 @@ repositories {
     maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies") }
 }
 
+val javaVersion: String by project
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
     }
 }
 
@@ -49,7 +50,7 @@ tasks {
     }
     withType<KotlinCompile>()
         .configureEach {
-            kotlinOptions { jvmTarget = "11" }
+            kotlinOptions { jvmTarget = javaVersion }
             dependsOn(generateLexer)
         }
 }

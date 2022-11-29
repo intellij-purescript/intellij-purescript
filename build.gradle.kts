@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotlinVersion: String by project
+val javaVersion: String by project
 val version: String by project
 val ideaVersion: String by project
 val intellijPublishToken: String by project
@@ -46,7 +47,7 @@ intellij {
 tasks {
     withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = javaVersion
         }
     }
     getByName<Test>("test") {
