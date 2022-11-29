@@ -54,7 +54,7 @@ intellij {
     }
 
     patchPluginXml {
-        sinceBuild.set('203')
+        sinceBuild.set('221')
     }
 }
 
