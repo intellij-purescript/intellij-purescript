@@ -127,6 +127,30 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         assertEquals("Bar", file.getImportDeclaration().name)
         assertEquals("bar", file.getImportedValue().name)
     }
+    
+    fun `test it import values when found and are aliased`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = Bar.bar
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                bar = 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+
+        assertEquals("Bar", file.getImportDeclaration().name)
+        assertEquals("Bar", file.getImportAlias().name)
+        assertEquals("bar", file.getImportedValue().name)
+    }
 
     fun `test imports type constructor`() {
         myFixture.configureByText(

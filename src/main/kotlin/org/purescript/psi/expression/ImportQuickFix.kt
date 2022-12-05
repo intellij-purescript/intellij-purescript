@@ -11,7 +11,8 @@ import org.purescript.psi.imports.PSImportedItem
 
 class ImportQuickFix(
     private val moduleName: String,
-    importedItem: PSImportedItem? = null
+    importedItem: PSImportedItem? = null,
+    private val alias: String? = null
 ) : LocalQuickFix {
 
     private val importedItem: SmartPsiElementPointer<PSImportedItem>? =
@@ -29,7 +30,8 @@ class ImportQuickFix(
         val importedItems = importedItem?.element?.let { listOf(it) } ?: emptyList()
         val importDeclaration = psiFactory.createImportDeclaration(
             moduleName = moduleName,
-            importedItems = importedItems
+            importedItems = importedItems,
+            alias = alias
         ) ?: return
         hostModule.addImportDeclaration(importDeclaration)
     }
