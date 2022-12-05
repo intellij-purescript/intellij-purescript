@@ -48,9 +48,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Configure node with npm
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
       - name: Install Purs-Tidy
         run: npm install purs-tidy
-        
+
       - name: Gradle Publish Plugin
         run: |
           VERSION=$(git describe --tags --match='v*')
