@@ -1,7 +1,6 @@
 package org.purescript.psi
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
@@ -61,20 +60,22 @@ class PSPsiFactory(private val project: Project) {
         createImportDeclaration(
             importDeclaration.moduleName,
             importDeclaration.hiding,
+            importDeclaration.alias
+            ,
             importDeclaration
                 .importedItems
                 .sortedBy { it.name }
-                .sortedBy { when(it) {
-                    is ImportedClass -> 1
-                    is ImportedKind -> 2
-                    is ImportedType -> 3
-                    is ImportedData -> 4
-                    is ImportedValue -> 5
-                    is ImportedOperator -> 6
-                } }
-                .map { createImportedItem(it) ?: return null }
-            ,
-            importDeclaration.alias
+                .sortedBy {
+                    when (it) {
+                        is ImportedClass -> 1
+                        is ImportedKind -> 2
+                        is ImportedType -> 3
+                        is ImportedData -> 4
+                        is ImportedValue -> 5
+                        is ImportedOperator -> 6
+                    }
+                }
+                .map { createImportedItem(it) ?: return null }.map { it.text }
         )
 
     fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
@@ -95,18 +96,18 @@ class PSPsiFactory(private val project: Project) {
     fun createImportDeclaration(
         moduleName: String,
         hiding: Boolean = false,
-        importedItems: Collection<PSImportedItem> = emptyList(),
-        alias: String? = null
+        alias: String? = null,
+        items: List<String>
     ): PSImportDeclaration? =
         createFromText(
             buildString {
                 appendLine("module Foo where")
                 append("import $moduleName")
-                if (importedItems.isNotEmpty()) {
+                if (items.isNotEmpty()) {
                     if (hiding) {
                         append(" hiding")
                     }
-                    append(importedItems.joinToString(prefix = " (", postfix = ")") { it.text })
+                    append(items.joinToString(prefix = " (", postfix = ")") { it })
                 }
                 if (alias != null) {
                     append(" as $alias")

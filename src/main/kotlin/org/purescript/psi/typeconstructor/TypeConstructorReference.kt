@@ -67,10 +67,8 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val factory = PSPsiFactory(element.project)
-        val importedData = factory.createImportedData(element.name)
         return importCandidates
-            .map { ImportQuickFix(it, importedData) }
+            .map { ImportQuickFix(it, item = element.name) }
             .toTypedArray()
     }
 

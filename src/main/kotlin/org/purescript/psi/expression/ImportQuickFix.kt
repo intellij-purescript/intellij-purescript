@@ -12,26 +12,32 @@ import org.purescript.psi.imports.PSImportedItem
 class ImportQuickFix(
     private val moduleName: String,
     importedItem: PSImportedItem? = null,
-    private val alias: String? = null
+    private val alias: String? = null,
+    val item: String?
 ) : LocalQuickFix {
 
     private val importedItem: SmartPsiElementPointer<PSImportedItem>? =
         importedItem?.let { SmartPointerManager.createPointer(it) }
 
     override fun getFamilyName(): String = "Import"
-
-    override fun getName(): String =
-        importedItem?.element?.let { "Import $moduleName (${it.text})" }
-            ?: "Import $moduleName"
-
+    
+    override fun getName(): String = when (item) {
+        null -> when (alias) {
+            null -> "Import $moduleName"
+            else -> "Import $moduleName as $alias"
+        } 
+        else -> when (alias) {
+            null -> "Import $moduleName ($item)"
+            else -> "Import $moduleName ($item) as $alias"
+        }
+    }
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val hostModule = (descriptor.psiElement as? PSPsiElement)?.module ?: return
         val psiFactory = PSPsiFactory(project)
-        val importedItems = importedItem?.element?.let { listOf(it) } ?: emptyList()
         val importDeclaration = psiFactory.createImportDeclaration(
             moduleName = moduleName,
-            importedItems = importedItems,
-            alias = alias
+            alias = alias,
+            items = listOfNotNull(item)
         ) ?: return
         hostModule.addImportDeclaration(importDeclaration)
     }
