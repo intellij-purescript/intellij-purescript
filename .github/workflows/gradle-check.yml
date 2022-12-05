@@ -26,29 +26,8 @@ jobs:
           distribution: zulu
           java-version: 17
 
-      - name: Cache gradle
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Cache gradle wrapper
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradlewrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradlewrapper-
-
-      - name: Cache maven
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository/
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - name: Configure gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Configure node with npm
         uses: actions/setup-node@v3
