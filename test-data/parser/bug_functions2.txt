@@ -146,7 +146,7 @@ Purescript File
                 PSParens(Parens)
                   PsiElement(()('(')
                   PSValue(Value)
-                    PSAbs(Abs)
+                    PSLambda(Lambda)
                       PsiElement(\)('\')
                       PsiElement(()('(')
                       PSConstructorBinder(ConstructorBinder)

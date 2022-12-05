@@ -36,7 +36,7 @@ Purescript File
         PsiElement(identifier)('test')
       PsiElement(=)('=')
       PSValue(Value)
-        PSAbs(Abs)
+        PSLambda(Lambda)
           PsiElement(\)('\')
           PsiElement(()('(')
           PSVarBinder(VarBinder)

@@ -157,7 +157,7 @@ class PSParserDefinition : ParserDefinition {
             CharLiteral -> PSCharLiteral(node)
             ArrayLiteral -> PSArrayLiteral(node)
             ObjectLiteral -> PSObjectLiteral(node)
-            Abs -> PSAbs(node)
+            Lambda -> PSLambda(node)
             Case -> PSCase(node)
             CaseAlternative -> PSCaseAlternative(node)
             IfThenElse -> PSIfThenElse(node)
