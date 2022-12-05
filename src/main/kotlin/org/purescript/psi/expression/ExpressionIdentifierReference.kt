@@ -86,11 +86,15 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val importedValue = PSPsiFactory(element.project).createImportedValue(element.name)
+        val qualifyingName = element.qualifiedIdentifier.moduleName?.name
         return ExportedValuesIndex
             .filesExportingValue(element.project, element.name)
             .mapNotNull { it.module?.name }
-            .map { ImportQuickFix(it, importedValue) }
+            .map { ImportQuickFix(
+                it,
+                item = element.name,
+                alias = qualifyingName,
+            ) }
             .toTypedArray()
     }
 

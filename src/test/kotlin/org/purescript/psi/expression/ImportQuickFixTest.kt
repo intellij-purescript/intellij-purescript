@@ -32,6 +32,32 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         assertEquals("Import Data.Maybe (Maybe(..))", action.familyName)
         assertEquals("Data.Maybe", importDeclaration.name)
     }
+    fun `test imports module with alias`() {
+        myFixture.configureByText(
+            "Maybe.purs",
+            """
+                module Data.Maybe where
+                data Maybe a
+                    = Just a
+                    | Nothing
+            """.trimIndent()
+        )
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = Maybe.Just 3
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+        val importDeclaration = file.getImportDeclaration()
+
+        assertEquals("Import Data.Maybe (Maybe(..)) as Maybe", action.familyName)
+        assertEquals("Data.Maybe", importDeclaration.importedModule!!.name)
+        assertEquals("Maybe", importDeclaration.importAlias!!.name)
+    }
 
     fun `test imports module when there are more then one to pick`() {
         myFixture.configureByText(
@@ -125,6 +151,30 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         myFixture.launchAction(action)
 
         assertEquals("Bar", file.getImportDeclaration().name)
+        assertEquals("bar", file.getImportedValue().name)
+    }
+    
+    fun `test it import values when found and are aliased`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = Bar.bar
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                bar = 1
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+
+        assertEquals("Bar", file.getImportDeclaration().name)
+        assertEquals("Bar", file.getImportAlias().name)
         assertEquals("bar", file.getImportedValue().name)
     }
 

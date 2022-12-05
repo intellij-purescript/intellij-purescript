@@ -46,12 +46,14 @@ class ConstructorReference(
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val factory = PSPsiFactory(element.project)
+        val qualifyingName = qualifiedProperName.moduleName?.name
         val quickFixes = mutableListOf<LocalQuickFix>()
         for ((moduleName, typeName) in importCandidates) {
-            val importedData = factory.createImportedData(typeName, true)
-                ?: return emptyArray()
-            quickFixes += ImportQuickFix(moduleName, importedData)
+            quickFixes += ImportQuickFix(
+                moduleName,
+                alias = qualifyingName,
+                item = "$typeName(..)"
+            )
         }
         return quickFixes.toTypedArray()
     }
