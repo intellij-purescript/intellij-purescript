@@ -1562,7 +1562,7 @@ Purescript File
                 PSQualifiedOperatorName(QualifiedOperatorName)
                   PSOperatorName(OperatorName)
                     PsiElement(operator)('>>=')
-              PSAbs(Abs)
+              PSLambda(Lambda)
                 PsiElement(\)('\')
                 PSVarBinder(VarBinder)
                   PSIdentifier(identifier)

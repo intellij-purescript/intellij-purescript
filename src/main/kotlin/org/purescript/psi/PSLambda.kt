@@ -2,4 +2,4 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 
-class PSAbs(node: ASTNode) : PSPsiElement(node)
+class PSLambda(node: ASTNode) : PSPsiElement(node)

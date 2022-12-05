@@ -253,7 +253,7 @@ class PureParsecParser {
         choice(
             attempt(braces(commaSep1(parsePropertyUpdate))),
             expr7,
-            (backslash + many1(binderAtom) + arrow + expr).`as`(Abs),
+            (backslash + many1(binderAtom) + arrow + expr).`as`(Lambda),
             exprCase,
             parseIfThenElse,
             doBlock,
