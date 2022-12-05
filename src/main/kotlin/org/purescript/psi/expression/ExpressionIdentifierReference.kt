@@ -34,7 +34,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             val qualifyingName = element.qualifiedIdentifier.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {
-                    for (parent in element.parents) {
+                    for (parent in element.parents(false)) {
                         when (parent) {
                             is PSValueDeclaration -> {
                                 yieldAll(parent.varBindersInParameters.values)
@@ -45,6 +45,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     ?: sequenceOf()
                                 yieldAll(valueDeclarations)
                             }
+
                             is PSExpressionWhere -> {
                                 val valueDeclarations = parent
                                     .where
@@ -53,8 +54,10 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     ?: sequenceOf()
                                 yieldAll(valueDeclarations)
                             }
+
                             is PSLet ->
                                 yieldAll(parent.valueDeclarations.asSequence())
+
                             is PSDoBlock ->
                                 yieldAll(parent.valueDeclarations)
                         }
