@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.io.exists
+import java.io.InputStream
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 
@@ -33,7 +34,11 @@ class Npm(val project: Project) {
         }
         
         npmProc.waitFor(4, TimeUnit.SECONDS)
-        return npmProc.inputStream.bufferedReader().readLine()
+        
+        return when (val output: InputStream? = npmProc.inputStream) {
+            null -> ""
+            else -> output.bufferedReader().readLine()
+        }
     }
 
     private val log = logger<Npm>()
