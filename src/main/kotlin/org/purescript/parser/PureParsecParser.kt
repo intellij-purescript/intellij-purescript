@@ -19,6 +19,10 @@ import org.purescript.parser.Combinators.token
 
 class PureParsecParser {
 
+    // Literals
+    private val boolean = `true`.or(`false`)
+    private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
+    
     private val moduleName =
         (optional(token(MODULE_PREFIX)) + token(PROPER_NAME)).`as`(ModuleName)
     private val qualifier = token(MODULE_PREFIX).`as`(ModuleName)
@@ -147,6 +151,7 @@ class PureParsecParser {
             attempt(braces(parseRow).`as`(ObjectType)),
             attempt(`_`),
             attempt(string),
+            attempt(number),
             attempt(parseForAll),
             attempt(parseTypeVariable),
             attempt(
@@ -199,7 +204,10 @@ class PureParsecParser {
     private val expr: Parsec = ref {(expr1 + optional(dcolon + type)).`as`(Value)}
     private val qualOp = qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
     private val type5 = many1(typeAtom)
-    private val type4 = manyOrEmpty(token("#")) + type5
+    private val type4 = choice(
+        attempt(token("-") + number),
+        manyOrEmpty(token("#")) + type5
+    )
     private val type3 =  ref { type4.sepBy1(qualOp) }
     private val type2: Parsec = ref {type3 + optional(arrow.or(darrow) + type1)}
     private val type1 = manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
@@ -480,9 +488,6 @@ class PureParsecParser {
         .then(`L{` + moduleDecl.sepBy(`L-sep`) + `L}`)
         .`as`(Module)
 
-    // Literals
-    private val boolean = `true`.or(`false`)
-    private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
 
     private val hole = (token("?") + idents).`as`(TypeHole)
     private val recordLabel =

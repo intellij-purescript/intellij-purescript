@@ -5,4 +5,5 @@ class TypeParserTest: PSLanguageParserTestBase("type") {
     fun testPolyKinds() = doTest(true, true)
     fun testPolyNewKinds() = doTest(true, true)
     fun testRecordRowNamedType() = doTest(true, true)
+    fun testTypeLevelInt() = doTest(true, true)
 }
