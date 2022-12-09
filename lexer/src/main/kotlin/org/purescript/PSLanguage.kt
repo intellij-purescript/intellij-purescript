@@ -20,6 +20,7 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
             "Prim.Row",
             "Prim.RowList",
             "Prim.Symbol",
+            "Prim.Int",
             "Prim.TypeError",
         )
 
