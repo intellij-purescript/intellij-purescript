@@ -156,6 +156,9 @@ fun PsiFile.getImportedData(): PSImportedData =
 fun PsiFile.getImportedValue(): PSImportedValue =
     getImportedItem() as PSImportedValue
 
+fun PsiFile.getImportedOperator(): PSImportedOperator =
+    getImportedItem() as PSImportedOperator
+
 fun PsiFile.getExportedItems(): Array<PSExportedItem> =
     getModule().exportList!!.exportedItems
 

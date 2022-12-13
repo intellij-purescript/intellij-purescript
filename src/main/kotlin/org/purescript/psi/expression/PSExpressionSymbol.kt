@@ -27,5 +27,9 @@ class PSExpressionSymbol(node: ASTNode) : PSPsiElement(node) {
 
 
     override fun getReference() =
-        ExpressionSymbolReference(this, qualifiedSymbol.symbol.operator)
+        ExpressionSymbolReference(
+            this,
+            qualifiedSymbol.moduleName,
+            qualifiedSymbol.symbol.operator
+        )
 }
