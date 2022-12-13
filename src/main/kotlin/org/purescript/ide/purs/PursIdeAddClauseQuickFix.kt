@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.runUndoTransparentWriteAction
 import com.intellij.openapi.components.service
@@ -35,7 +36,9 @@ class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionActi
                 ?: return
 
         // without a purs bin path we can't annotate with it
-        val pursBin = project.service<Npm>().pathFor("purs") ?: return
+        val pursBin = project.service<Npm>().pathFor("purs")
+            ?: PathManager.findBinFile("purs")
+            ?: return
 
         val gson = Gson()
         val tempFile: File =

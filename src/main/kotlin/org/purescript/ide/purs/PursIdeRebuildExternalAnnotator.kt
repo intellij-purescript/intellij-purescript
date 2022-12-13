@@ -8,6 +8,7 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
@@ -21,7 +22,9 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
 
         // without a purs bin path we can't annotate with it
         val project = file.project
-        val pursBin = project.service<Npm>().pathFor("purs") ?: return null
+        val pursBin = project.service<Npm>().pathFor("purs")
+            ?: PathManager.findBinFile("purs")
+            ?: return null
 
         val gson = Gson()
         val tempFile: File =
