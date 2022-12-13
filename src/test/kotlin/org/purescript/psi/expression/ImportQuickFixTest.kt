@@ -4,6 +4,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.*
 import org.purescript.ide.inspections.PSUnresolvedReferenceInspection
+import org.purescript.psi.imports.PSImportedOperator
 
 class ImportQuickFixTest : BasePlatformTestCase() {
 
@@ -176,6 +177,33 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         assertEquals("Bar", file.getImportDeclaration().name)
         assertEquals("Bar", file.getImportAlias().name)
         assertEquals("bar", file.getImportedValue().name)
+    }
+    
+    fun `test it import operator when found and are aliased`() {
+        val file = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = 1 Bar.+ 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                infixl 6 fakeAdd as +
+                
+                fakeAdd :: Int -> Int -> Int
+                fakeAdd x y = x
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        myFixture.launchAction(action)
+
+        assertEquals("Bar", file.getImportDeclaration().name)
+        assertEquals("Bar", file.getImportAlias().name)
+        assertEquals("+", file.getImportedOperator().name)
     }
 
     fun `test imports type constructor`() {
