@@ -1,5 +1,8 @@
 package org.purescript.ide.purs
 
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.GeneralCommandLine.ParentEnvironmentType.CONSOLE
+import com.intellij.execution.util.ExecUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
@@ -7,7 +10,6 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.io.exists
 import java.nio.file.Path
-import java.util.concurrent.TimeUnit
 
 @Service
 class Npm(val project: Project) {
@@ -27,17 +29,10 @@ class Npm(val project: Project) {
         } catch (_:UnsupportedOperationException) {
             null
         }
-        val npmProc: Process = when (cwd) {
-            null -> ProcessBuilder(npmCmd).start()
-            else -> ProcessBuilder(npmCmd).directory(cwd).start()
-        }
-        
-        npmProc.waitFor(4, TimeUnit.SECONDS)
-        return try {
-            npmProc.inputStream.bufferedReader().readLine()
-        } catch (_: NullPointerException) {
-            ""
-        }
+        val commandLine = GeneralCommandLine(npmCmd)
+            .withParentEnvironmentType(CONSOLE)
+            .withWorkDirectory(cwd)
+        return ExecUtil.execAndReadLine(commandLine) ?: ""
     }
 
     private val log = logger<Npm>()
