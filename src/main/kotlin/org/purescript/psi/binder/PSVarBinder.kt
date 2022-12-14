@@ -10,7 +10,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 
 class PSVarBinder(node: ASTNode) :
-    PSPsiElement(node), PsiNameIdentifierOwner {
+    PSBinderAtom(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name
 

@@ -2,29 +2,40 @@ package org.purescript.features
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
+import com.intellij.navigation.NavigationItem
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(
         element: PsiElement?,
         originalElement: PsiElement?
     ): String? {
-        if (element is DocCommentOwner && element is PsiNamedElement) {
-            return layout(
-                element.name ?: "unknown",
-                docCommentsToDocstring(element.docComments.map { it.text })
-            )
+        return when (element) {
+            is PSValueDeclaration ->
+                layout(
+                    element.presentation.presentableText ?: element.name,
+                    docCommentsToDocstring(element.docComments.map { it.text })
+                )
+            is DocCommentOwner, is PsiNamedElement ->
+                layout(
+                    (element as PsiNamedElement).name ?: "unknown",
+                    docCommentsToDocstring(
+                        (element as DocCommentOwner).docComments.map { it.text }
+                    )
+                )
+
+            else -> null
         }
-        return null
     }
 
     override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?) =
@@ -48,16 +59,22 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         return when (element) {
             is PSValueDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
+
             is PSDataConstructor ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
+
             is PSDataDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
+
             is PSClassDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
+
             is PSPsiElement ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}")
+
             is PSModule ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
+
             else -> mutableListOf()
         }
     }

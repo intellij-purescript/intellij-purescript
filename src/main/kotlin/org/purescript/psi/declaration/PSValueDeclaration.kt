@@ -4,10 +4,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
-import org.purescript.psi.binder.PSBinder
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSValue
+import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
@@ -37,7 +37,7 @@ class PSValueDeclaration(node: ASTNode) :
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
-        val parameters = findChildrenByClass(PSBinder::class.java)
+        val parameters = findChildrenByClass(PSBinderAtom::class.java)
         val parameterList = parameters
             .asSequence()
             .map { it.text.trim() }
