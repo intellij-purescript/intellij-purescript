@@ -26,7 +26,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "Maybe(..)" in it.text}
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
 
@@ -51,7 +53,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "Maybe(..)" in it.text}
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
 
@@ -88,7 +92,7 @@ class ImportQuickFixTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         val actions = myFixture.getAllQuickFixes("Foo.purs")
-        assertSize(2, actions)
+        assertSize(4, actions)
     }
 
     fun `test imports module with other imports`() {
@@ -109,7 +113,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "Just(..)" in it.text}
         myFixture.launchAction(action)
 
         val importDeclarations = file.getImportDeclarations()
@@ -148,7 +154,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "(bar)" in it.text}
         myFixture.launchAction(action)
 
         assertEquals("Bar", file.getImportDeclaration().name)
@@ -171,7 +179,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "(bar)" in it.text}
         myFixture.launchAction(action)
 
         assertEquals("Bar", file.getImportDeclaration().name)
@@ -198,7 +208,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "((+))" in it.text}
         myFixture.launchAction(action)
 
         assertEquals("Bar", file.getImportDeclaration().name)
@@ -222,7 +234,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "(Qux)" in it.text}
         myFixture.launchAction(action)
         val importDeclaration = file.getImportDeclaration()
         val importedData = file.getImportedData()
@@ -248,7 +262,9 @@ class ImportQuickFixTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        val action = myFixture.getAllQuickFixes("Foo.purs").single()
+        val action = myFixture
+            .getAllQuickFixes("Foo.purs")
+            .first { "(Bar')" in it.text}
         myFixture.launchAction(action)
 
         assertEquals("Bar", file.getImportDeclaration().name)

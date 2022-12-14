@@ -67,7 +67,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         return importCandidates
-            .map { ImportQuickFix(it, item = element.name) }
+            .flatMap { ImportQuickFix.allCombinations(it, item = element.name) }
             .toTypedArray()
     }
 

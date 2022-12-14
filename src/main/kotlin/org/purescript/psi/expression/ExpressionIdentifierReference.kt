@@ -90,7 +90,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         return ExportedValuesIndex
             .filesExportingValue(element.project, element.name)
             .mapNotNull { it.module?.name }
-            .map { ImportQuickFix(
+            .flatMap { ImportQuickFix.allCombinations(
                 it,
                 alias = qualifyingName,
                 item = element.name,

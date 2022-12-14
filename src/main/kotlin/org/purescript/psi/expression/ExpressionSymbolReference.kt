@@ -37,8 +37,8 @@ class ExpressionSymbolReference(
         return ExportedFixityIndex
             .filesExportingFixity(element.project, operator.name)
             .mapNotNull { it.module?.name }
-            .map {
-                ImportQuickFix(
+            .flatMap {
+                ImportQuickFix.allCombinations(
                     it,
                     alias = qualifyingName,
                     item = "(${element.name})",

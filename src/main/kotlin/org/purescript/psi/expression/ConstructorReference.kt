@@ -48,7 +48,7 @@ class ConstructorReference(
         val qualifyingName = qualifiedProperName.moduleName?.name
         val quickFixes = mutableListOf<LocalQuickFix>()
         for ((moduleName, typeName) in importCandidates) {
-            quickFixes += ImportQuickFix(
+            quickFixes += ImportQuickFix.allCombinations(
                 moduleName,
                 alias = qualifyingName,
                 item = "$typeName(..)"
