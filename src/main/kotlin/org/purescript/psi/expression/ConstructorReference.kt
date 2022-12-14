@@ -7,7 +7,6 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.newtype.PSNewTypeDeclaration
@@ -49,7 +48,7 @@ class ConstructorReference(
         val qualifyingName = qualifiedProperName.moduleName?.name
         val quickFixes = mutableListOf<LocalQuickFix>()
         for ((moduleName, typeName) in importCandidates) {
-            quickFixes += ImportQuickFix(
+            quickFixes += ImportQuickFix.allCombinations(
                 moduleName,
                 alias = qualifyingName,
                 item = "$typeName(..)"
