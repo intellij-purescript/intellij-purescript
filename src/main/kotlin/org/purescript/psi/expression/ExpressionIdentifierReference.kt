@@ -92,8 +92,8 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             .mapNotNull { it.module?.name }
             .map { ImportQuickFix(
                 it,
-                item = element.name,
                 alias = qualifyingName,
+                item = element.name,
             ) }
             .toTypedArray()
     }
