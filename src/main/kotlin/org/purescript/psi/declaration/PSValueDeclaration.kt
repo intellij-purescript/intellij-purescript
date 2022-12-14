@@ -34,15 +34,21 @@ class PSValueDeclaration(node: ASTNode) :
     }
 
     override fun getTextOffset(): Int = nameIdentifier.textOffset
-
+    
+    val signature: PSSignature? get() = when (val sibling = prevSibling?.prevSibling) {
+        is PSValueDeclaration -> sibling.signature
+        is PSSignature -> sibling
+        else -> null
+    }
     override fun getPresentation(): ItemPresentation {
         val name = this.name
         val parameters = findChildrenByClass(PSBinderAtom::class.java)
         val parameterList = parameters
             .asSequence()
-            .map { it.text.trim() }
-            .joinToString(" ")
-        val presentableText = "$name $parameterList"
+            .map { " " + it.text.trim() }
+            .joinToString("")
+        val type = signature?.text?.substringAfter(name) ?: ""
+        val presentableText = "$name$parameterList$type".replace(Regex("\\s*"), " ")
         val fileName = this.containingFile.name
         return object : ItemPresentation {
             override fun getPresentableText(): String {
