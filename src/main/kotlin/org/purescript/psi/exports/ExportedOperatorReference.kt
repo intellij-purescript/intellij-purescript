@@ -1,6 +1,8 @@
 package org.purescript.psi.exports
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import org.purescript.psi.PSPsiFactory
 
 class ExportedOperatorReference(operator: PSExportedOperator) :
     PsiReferenceBase<PSExportedOperator>(
@@ -26,4 +28,11 @@ class ExportedOperatorReference(operator: PSExportedOperator) :
             ?: sequenceOf()
 
     private val candidates get() = localCandidates + importedCandidates
+
+    override fun handleElementRename(name: String): PsiElement? {
+        val newName = PSPsiFactory(element.project).createOperatorName(name)
+            ?: return null
+        element.symbol.operator.replace(newName)
+        return element
+    }
 }

@@ -11,6 +11,7 @@ import org.purescript.ide.formatting.*
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
+import org.purescript.psi.name.PSOperatorName
 
 
 /**
@@ -187,6 +188,15 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |$name = 1
+        """.trimMargin()
+        )
+    }
+    
+    fun createOperatorName(name: String): PSOperatorName? {
+        return createFromText(
+            """
+            |module Main where
+            |infixl 0 add as $name
         """.trimMargin()
         )
     }
