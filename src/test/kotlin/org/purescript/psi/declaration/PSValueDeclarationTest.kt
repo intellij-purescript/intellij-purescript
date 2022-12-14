@@ -25,9 +25,20 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
 
     fun `test rename`() {
         myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main where
+                
+                import Foo (foo)
+                
+                x :: Int
+                x = foo 0
+            """.trimIndent()
+        )
+        myFixture.configureByText(
             "Foo.purs",
             """
-                module Foo where
+                module Foo (foo) where
                 foo :: Int -> Int
                 <caret>foo 0 = 1
                 foo 1 = 2
@@ -36,13 +47,27 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
         )
         myFixture.renameElementAtCaret("bar")
         myFixture.checkResult(
+            "Foo.purs",
             """
-                module Foo where
+                module Foo (bar) where
                 bar :: Int -> Int
                 bar 0 = 1
                 bar 1 = 2
                 x = bar 0
-            """.trimIndent()
+            """.trimIndent(),
+            false
+        )
+        myFixture.checkResult(
+            "Main.purs",
+            """
+                module Main where
+                
+                import Foo (bar)
+                
+                x :: Int
+                x = bar 0
+            """.trimIndent(),
+            false
         )
     }
 
