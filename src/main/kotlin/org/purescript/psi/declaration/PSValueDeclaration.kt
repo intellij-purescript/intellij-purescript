@@ -36,7 +36,7 @@ class PSValueDeclaration(node: ASTNode) :
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     
     val signature: PSSignature? get() = when (val sibling = prevSibling?.prevSibling) {
-        is PSValueDeclaration -> sibling.signature
+        is PSValueDeclaration -> if (sibling.name == name) sibling.signature else null
         is PSSignature -> sibling
         else -> null
     }
