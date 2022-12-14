@@ -48,7 +48,7 @@ class PSValueDeclaration(node: ASTNode) :
             .map { " " + it.text.trim() }
             .joinToString("")
         val type = signature?.text?.substringAfter(name) ?: ""
-        val presentableText = "$name$parameterList$type".replace(Regex("\\s*"), " ")
+        val presentableText = "$name$parameterList$type".replace(Regex("\\s+"), " ")
         val fileName = this.containingFile.name
         return object : ItemPresentation {
             override fun getPresentableText(): String {
