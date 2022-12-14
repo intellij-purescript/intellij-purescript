@@ -20,17 +20,17 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         element: PsiElement?,
         originalElement: PsiElement?
     ): String? {
-        return when (element) {
-            is PSValueDeclaration ->
+        return when  {
+            element is PSValueDeclaration ->
                 layout(
-                    element.presentation.presentableText ?: element.name,
+                    element.signature?.text ?: element.name,
                     docCommentsToDocstring(element.docComments.map { it.text })
                 )
-            is DocCommentOwner, is PsiNamedElement ->
+            element is DocCommentOwner && element is PsiNamedElement ->
                 layout(
-                    (element as PsiNamedElement).name ?: "unknown",
+                    element.name ?: "unknown",
                     docCommentsToDocstring(
-                        (element as DocCommentOwner).docComments.map { it.text }
+                        element.docComments.map { it.text }
                     )
                 )
 
