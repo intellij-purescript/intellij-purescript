@@ -3,4 +3,4 @@ package org.purescript.psi.binder
 import com.intellij.lang.ASTNode
 import org.purescript.psi.PSPsiElement
 
-class PSBinderAtom(node: ASTNode?) : PSPsiElement(node!!)
+sealed class PSBinderAtom(node: ASTNode?) : PSPsiElement(node!!)
