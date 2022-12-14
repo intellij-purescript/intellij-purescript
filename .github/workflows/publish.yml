@@ -34,7 +34,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Purs-Tidy
-        run: npm install purs-tidy
+        run: npm install -g purs-tidy
 
       - name: Gradle Publish Plugin
         run: |
