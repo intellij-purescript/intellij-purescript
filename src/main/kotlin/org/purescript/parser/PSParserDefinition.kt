@@ -169,7 +169,6 @@ class PSParserDefinition : ParserDefinition {
             DoNotationValue -> PSDoNotationValue(node)
             Value -> PSValue(node)
             Fixity -> PSFixity(node)
-            JSRaw -> PSJSRaw(node)
             pImplies -> PSImplies(node)
             TypeHole -> PSTypeHole(node)
             else -> PSASTWrapperElement(node)
