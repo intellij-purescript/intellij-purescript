@@ -3,11 +3,13 @@ package org.purescript.features
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
 import com.intellij.navigation.NavigationItem
+import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
+import org.purescript.PSLanguage
 import org.purescript.psi.PSModule
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.classes.PSClassDeclaration
@@ -23,7 +25,12 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         return when  {
             element is PSValueDeclaration ->
                 layout(
-                    element.signature?.text ?: element.name,
+                    HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                        element.project,
+                        PSLanguage.INSTANCE,
+                        element.signature?.text ?: element.name,
+                        1f
+                    ) ,
                     docCommentsToDocstring(element.docComments.map { it.text })
                 )
             element is DocCommentOwner && element is PsiNamedElement ->
