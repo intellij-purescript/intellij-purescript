@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
-import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.runUndoTransparentWriteAction
 import com.intellij.openapi.components.service
@@ -36,36 +35,36 @@ class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionActi
                 ?: return
 
         // without a purs bin path we can't annotate with it
-        val pursBin = project.service<Npm>().pathFor("purs")
-            ?: PathManager.findBinFile("purs")
-            ?: return
-
-        val gson = Gson()
-        val tempFile: File =
-            File.createTempFile("purescript-intellij", file.name)
-        tempFile.writeText(file.text, file.virtualFile.charset)
-        val request = mapOf(
-            "command" to "addClause",
-            "params" to mapOf(
-                "line" to document.getText(textRange),
-                "annotations" to true,
-            )
-        )
+        val purs = project.service<Purs>()
         runBackgroundableTask("Add Clause", project, false) {
-            val output = ExecUtil.execAndGetOutput(
-                GeneralCommandLine(pursBin.toString(), "ide", "client"),
-                gson.toJson(request)
-            )
-            val response = gson.fromJson(output, Response::class.java)
-            val lines = response.result.joinToString("\n")
-            invokeLater {
-                runUndoTransparentWriteAction {
-                    document.replaceString(
-                        textRange.startOffset,
-                        textRange.endOffset,
-                        lines
+            purs.withServer {
+                val tempFile: File =
+                    File.createTempFile("purescript-intellij", file.name)
+                tempFile.writeText(file.text, file.virtualFile.charset)
+                val output = ExecUtil.execAndGetOutput(
+                    GeneralCommandLine(purs.path, "ide", "client"),
+                    Gson().toJson(
+                        mapOf(
+                            "command" to "addClause",
+                            "params" to mapOf<String, Any>(
+                                "line" to document.getText(textRange),
+                                "annotations" to true,
+                            )
+                        )
                     )
-                }
+                )
+                val response = Gson().fromJson(output, Response::class.java)
+                val lines = response.result.joinToString("\n")
+
+                invokeLater {
+                    runUndoTransparentWriteAction {
+                        document.replaceString(
+                            textRange.startOffset,
+                            textRange.endOffset,
+                            lines
+                        )
+                    }
+                }    
             }
         }
     }

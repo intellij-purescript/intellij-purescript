@@ -109,9 +109,12 @@
             language="Purescript"
             implementationClass="org.purescript.ide.purs.PursIdeRebuildExternalAnnotator"
     />
-    <postStartupActivity
-        implementation="org.purescript.ide.purs.StartupActivity"
-    />
+    <projectConfigurable
+        parentId="build"
+        instance="org.purescript.ide.purs.PursConfigurable"
+        id="org.purescript.ide.purs.PursConfigurable"
+        displayName="Purs"
+        nonDefaultProject="true"/>
 
     <!-- Formatting -->
 

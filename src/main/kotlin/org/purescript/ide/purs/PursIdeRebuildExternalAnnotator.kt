@@ -8,7 +8,6 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
@@ -22,11 +21,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
 
         // without a purs bin path we can't annotate with it
         val project = file.project
-        val pursBin = project.service<Npm>().pathFor("purs")
-            ?: PathManager.findBinFile("purs")
-            ?: return null
-
-        val gson = Gson()
+        val purs = project.service<Purs>()
         val tempFile: File =
             File.createTempFile("purescript-intellij", file.name)
         tempFile.writeText(file.text, file.virtualFile.charset)
@@ -40,29 +35,37 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         } else {
             tempJsFile = null
         }
-        val request = mapOf(
-            "command" to "rebuild",
-            "params" to mapOf(
-                "file" to tempFile.path,
-                "actualFile" to file.virtualFile.path,
+        val gson = Gson()
+        return purs.withServer {
+            val output = ExecUtil.execAndGetOutput(
+                GeneralCommandLine(
+                    purs.path,
+                    "ide",
+                    "client"
+                ),
+                gson.toJson(
+                    mapOf(
+                        "command" to "rebuild",
+                        "params" to mapOf(
+                            "file" to tempFile.path,
+                            "actualFile" to file.virtualFile.path,
+                        )
+                    )
+                )
             )
-        )
-        val output = ExecUtil.execAndGetOutput(
-            GeneralCommandLine(pursBin.toString(), "ide", "client"),
-            gson.toJson(request)
-        )
-        return try {
-            val json = gson.fromJson(output, Response::class.java)
-            if (json?.resultType in listOf("success", "error")) {
-                json
-            } else {
+            try {
+                val json = gson.fromJson(output, Response::class.java)
+                if (json?.resultType in listOf("success", "error")) {
+                    json
+                } else {
+                    null
+                }
+            } catch (e: JsonSyntaxException) {
                 null
+            } finally {
+                tempFile.delete()
+                tempJsFile?.delete()
             }
-        } catch (e: JsonSyntaxException) {
-            null
-        } finally {
-            tempFile.delete()
-            tempJsFile?.delete()
         }
     }
 
