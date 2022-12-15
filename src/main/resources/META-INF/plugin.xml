@@ -59,9 +59,6 @@
 
     <lang.parserDefinition language="Purescript" implementationClass="org.purescript.parser.PSParserDefinition"/>
 
-    <lang.elementManipulator forClass="org.purescript.psi.PSASTWrapperElement"
-                             implementationClass="org.purescript.psi.PSStringManipulator"/>
-
     <lang.syntaxHighlighterFactory language="Purescript"
                                    implementationClass="org.purescript.highlighting.PSSyntaxHighlighterFactory"/>
 

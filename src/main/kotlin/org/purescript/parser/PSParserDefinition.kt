@@ -1,5 +1,6 @@
 package org.purescript.parser
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.ParserDefinition.SpaceRequirements
@@ -171,7 +172,7 @@ class PSParserDefinition : ParserDefinition {
             Fixity -> PSFixity(node)
             pImplies -> PSImplies(node)
             TypeHole -> PSTypeHole(node)
-            else -> PSASTWrapperElement(node)
+            else -> ASTWrapperPsiElement(node) // this should never happen
         }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
