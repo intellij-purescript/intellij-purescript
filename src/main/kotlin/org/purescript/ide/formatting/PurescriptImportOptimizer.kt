@@ -20,7 +20,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val importDeclarations = mergeImportDeclarations(module.importDeclarations.map(::fromPsiElement))
         val psiElements = mutableListOf<PsiElement>()
         val implicitImportDeclarations = importDeclarations.filter { it.implicit }
-        val regularImportDeclarations = importDeclarations - implicitImportDeclarations
+        val regularImportDeclarations = importDeclarations - implicitImportDeclarations.toSet()
         for (importDeclaration in implicitImportDeclarations.sortedWith(importDeclarationComparator)) {
             psiElements += factory.createImportDeclaration(importDeclaration)
                 ?: error("Could not create import declaration: $importDeclaration")

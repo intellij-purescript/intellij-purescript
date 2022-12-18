@@ -8,7 +8,6 @@ import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.jetbrains.annotations.NonNls
 import org.purescript.psi.exports.PSExportedOperator
-import org.purescript.psi.exports.PSExportedValue
 
 class ExportedFixityIndex : ScalarIndexExtension<String>() {
     override fun getName(): ID<String, Void?> = NAME
@@ -41,7 +40,7 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
             }
         }
 
-    override fun getKeyDescriptor() = EnumeratorStringDescriptor.INSTANCE
+    override fun getKeyDescriptor() = EnumeratorStringDescriptor.INSTANCE!!
     override fun getVersion() = 1
     override fun getInputFilter() =
         DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)

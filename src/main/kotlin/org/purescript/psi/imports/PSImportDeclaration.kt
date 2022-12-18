@@ -7,6 +7,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
@@ -306,7 +307,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
         )
 
     /**
-     * @return the [PSFixityDeclaration] elements imported by this declaration
+     * @return the [org.purescript.psi.declaration.PSFixityDeclaration] elements imported by this declaration
      */
     val importedFixityDeclarations
         get() =

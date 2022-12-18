@@ -1,6 +1,5 @@
 package org.purescript.ide.refactoring
 
-import com.intellij.codeInsight.TargetElementUtil
 import com.intellij.lang.Language
 import com.intellij.lang.refactoring.InlineActionHandler
 import com.intellij.openapi.editor.Editor

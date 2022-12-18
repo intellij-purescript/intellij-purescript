@@ -66,40 +66,37 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSFixityDeclaration
             || psiElement is PSForeignDataDeclaration
 
-    override fun getWordsScanner(): WordsScanner {
-        val psWordScanner = DefaultWordsScanner(
-            PSLexer(),
-            TokenSet.create(IDENT, PROPER_NAME, MODULE_PREFIX),
-            TokenSet.create(MLCOMMENT, SLCOMMENT, DOC_COMMENT),
-            TokenSet.create(
-                STRING,
-                STRING_ERROR,
-                STRING_ESCAPED,
-                STRING_GAP,
-                CHAR,
-                NATURAL,
-                FLOAT
-            ),
-            TokenSet.EMPTY,
-            TokenSet.create(
-                OPERATOR,
-                ARROW,
-                BACKSLASH, // maybe?!
-                COMMA,
-                DARROW,
-                DCOLON,
-                DDOT,
-                DOT,
-                EQ, // maybe?!
-                LARROW,
-                LDARROW,
-                OPTIMISTIC,
-                PIPE,
-                SEMI,
-            )
+    override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(
+        PSLexer(),
+        TokenSet.create(IDENT, PROPER_NAME, MODULE_PREFIX),
+        TokenSet.create(MLCOMMENT, SLCOMMENT, DOC_COMMENT),
+        TokenSet.create(
+            STRING,
+            STRING_ERROR,
+            STRING_ESCAPED,
+            STRING_GAP,
+            CHAR,
+            NATURAL,
+            FLOAT
+        ),
+        TokenSet.EMPTY,
+        TokenSet.create(
+            OPERATOR,
+            ARROW,
+            BACKSLASH, // maybe?!
+            COMMA,
+            DARROW,
+            DCOLON,
+            DDOT,
+            DOT,
+            EQ, // maybe?!
+            LARROW,
+            LDARROW,
+            OPTIMISTIC,
+            PIPE,
+            SEMI,
         )
-        return psWordScanner
-    }
+    )
 
     override fun getHelpId(psiElement: PsiElement): String? {
         return null

@@ -1,3 +1,5 @@
+@file:Suppress("ObjectPropertyName")
+
 package org.purescript.parser
 
 import org.purescript.parser.Combinators.token

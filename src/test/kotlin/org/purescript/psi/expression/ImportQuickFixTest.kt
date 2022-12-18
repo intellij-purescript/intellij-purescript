@@ -1,10 +1,8 @@
 package org.purescript.psi.expression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
 import org.purescript.*
 import org.purescript.ide.inspections.PSUnresolvedReferenceInspection
-import org.purescript.psi.imports.PSImportedOperator
 
 class ImportQuickFixTest : BasePlatformTestCase() {
 

@@ -1,6 +1,5 @@
 package org.purescript.psi.classes
 
-import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getClassDeclaration
 

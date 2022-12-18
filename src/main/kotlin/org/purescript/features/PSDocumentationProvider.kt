@@ -2,9 +2,7 @@ package org.purescript.features
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
-import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
-import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
@@ -76,11 +74,11 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is PSClassDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
-            is PSPsiElement ->
-                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}")
-
             is PSModule ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
+
+            is PSPsiElement ->
+                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}")
 
             else -> mutableListOf()
         }

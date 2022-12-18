@@ -1,5 +1,6 @@
 package org.purescript.psi
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
@@ -15,7 +16,7 @@ import org.purescript.psi.name.PSOperatorName
 
 
 /**
- * This should be [com.intellij.psi.util.findDescendantOfType]
+ * This should be com.intellij.psi.util.findDescendantOfType
  * but is currently missing from the EAP build
  *
  * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
@@ -25,7 +26,7 @@ inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(noinline pre
 }
 
 /**
- * This should be [com.intellij.psi.util.findDescendantOfType]
+ * This should be com.intellij.psi.util.findDescendantOfType
  * but is currently missing from the EAP build
  *
  * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
@@ -79,7 +80,7 @@ class PSPsiFactory(private val project: Project) {
                 .map { createImportedItem(it) ?: return null }.map { it.text }
         )
 
-    fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
+    private fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
         return when (importedItem) {
             is ImportedClass -> createImportedClass(importedItem.name)
             is ImportedData -> createImportedData(
@@ -148,7 +149,7 @@ class PSPsiFactory(private val project: Project) {
             """.trimIndent()
         )
 
-    fun createImportedData(
+    private fun createImportedData(
         name: String,
         doubleDot: Boolean = false,
         importedDataMembers: Collection<String> = emptyList()
@@ -167,7 +168,7 @@ class PSPsiFactory(private val project: Project) {
             }
         )
 
-    fun createImportedValue(name: String): PSImportedValue? =
+    private fun createImportedValue(name: String): PSImportedValue? =
         createFromText(
             """
                 module Foo where
@@ -176,7 +177,7 @@ class PSPsiFactory(private val project: Project) {
         )
 
     fun createNewLine(): PsiElement =
-        PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n")
+        project.service<PsiParserFacade>().createWhiteSpaceFromText("\n")
 
     private inline fun <reified T : PsiElement> createFromText(@Language("Purescript") code: String): T? =
         PsiFileFactory.getInstance(project)

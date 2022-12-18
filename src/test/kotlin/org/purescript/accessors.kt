@@ -25,19 +25,7 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 
 /**
- * This should be [com.intellij.psi.util.forEachDescendantOfType]
- * but is currently missing from the EAP build
- *
- * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
- */
-
-inline fun <reified T : PsiElement> PsiElement.forEachDescendantOfType(noinline action: (T) -> Unit) {
-    forEachDescendantOfType({ true }, action)
-}
-
-
-/**
- * This should be [com.intellij.psi.util.forEachDescendantOfType]
+ * This should be com.intellij.psi.util.forEachDescendantOfType
  * but is currently missing from the EAP build
  *
  * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
@@ -61,7 +49,7 @@ inline fun <reified T : PsiElement> PsiElement.forEachDescendantOfType(
 
 
 /**
- * This should be [com.intellij.psi.util.collectDescendantsOfType]
+ * This should be com.intellij.psi.util.collectDescendantsOfType
  * but is currently missing from the EAP build
  *
  * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
@@ -71,7 +59,7 @@ inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(noinline
 }
 
 /**
- * This should be [com.intellij.psi.util.collectDescendantsOfType]
+ * This should be com.intellij.psi.util.collectDescendantsOfType
  * but is currently missing from the EAP build
  *
  * Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license

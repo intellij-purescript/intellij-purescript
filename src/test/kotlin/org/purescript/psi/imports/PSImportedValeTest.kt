@@ -1,8 +1,6 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
-import org.purescript.file.PSFile
 import org.purescript.getImportedValue
 
 
