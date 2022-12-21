@@ -9,9 +9,7 @@ class ParserInfo(
 
     override fun toString(): String {
         if (errorMessage != null) return errorMessage
-        val expectedStrings: Set<String> = expected
-            .flatMapTo(mutableSetOf()) { it.expectedName }
-        val expected = expectedStrings.toTypedArray()
+        val expected = expected.flatMap { it.expectedName }.toSet().toList()
         return if (expected.isNotEmpty()) buildString {
             append("Expecting ")
             for (i in 0 until expected.size - 2) {
