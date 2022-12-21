@@ -27,28 +27,17 @@ class ParserInfo(
         return "Error"
     }
 
-    fun merge(other: ParserInfo, success: Boolean) = when {
-        position < other.position -> {
-            if (success == other.success) {
-                other
-            } else {
-                ParserInfo(
-                    other.position,
-                    other.expected,
-                    other.errorMessage,
-                    success
-                )
-            }
-        }
+    fun merge(other: ParserInfo) = when {
+        position < other.position -> other
         position > other.position -> {
-            if (success == this.success) {
+            if (other.success == this.success) {
                 this
             } else {
                 ParserInfo(
                     position,
                     expected,
                     errorMessage,
-                    success
+                    other.success
                 )
             }
         }
@@ -57,7 +46,7 @@ class ParserInfo(
             expected + other.expected,
             if (errorMessage == null) other.errorMessage
             else errorMessage + ";" + other.errorMessage,
-            success
+            other.success
         )
     }
 }

@@ -39,7 +39,7 @@ object Combinators {
             val info = p1.parse(context)
             return if (info.success) {
                 val info2 = p2.parse(context)
-                info.merge(info2, info2.success)
+                info.merge(info2)
             } else {
                 info
             }
@@ -86,7 +86,7 @@ object Combinators {
                         ParserInfo(position, setOf(p2), null, false)
                     }
                 info =
-                    info.merge(info2, info2.success)
+                    info.merge(info2)
                 if (context.position > position || info.success) {
                     return info
                 }
@@ -134,17 +134,23 @@ object Combinators {
                 if (info.success) {
                     if (position == context.position) {
                         // TODO: this should not be allowed.
-                        return info.merge(
-                            ParserInfo(context.position, info.expected, null, false),
+                        val info2 = ParserInfo(
+                            context.position,
+                            info.expected,
+                            null,
                             false
                         )
+                        return info.merge(info2)
                     }
                 } else {
                     return if (position == context.position) {
-                        info.merge(
-                            ParserInfo(context.position, info.expected, null, true),
+                        val info2 = ParserInfo(
+                            context.position,
+                            info.expected,
+                            null,
                             true
                         )
+                        info.merge(info2)
                     } else {
                         info
                     }
