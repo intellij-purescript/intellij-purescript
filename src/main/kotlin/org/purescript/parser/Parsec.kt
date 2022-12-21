@@ -17,7 +17,6 @@ abstract class Parsec {
     protected abstract fun calcName(): String
     protected abstract fun calcExpectedName(): Set<String>
     operator fun plus(other: Parsec) = Combinators.seq(this, other)
-    fun then(next: Parsec) = this + next
     fun or(next: Parsec) = Combinators.choice(this, next)
     fun sepBy1(next: Parsec) = Combinators.sepBy1(this, next)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)

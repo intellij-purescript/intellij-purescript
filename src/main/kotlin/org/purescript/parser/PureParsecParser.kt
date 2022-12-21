@@ -22,7 +22,7 @@ class PureParsecParser {
     // Literals
     private val boolean = `true`.or(`false`)
     private val number = token(NATURAL).or(token(FLOAT)).`as`(NumericLiteral)
-    
+
     private val moduleName =
         (optional(token(MODULE_PREFIX)) + token(PROPER_NAME)).`as`(ModuleName)
     private val qualifier = token(MODULE_PREFIX).`as`(ModuleName)
@@ -98,13 +98,19 @@ class PureParsecParser {
 
     // Kinds.hs
     private val parseKind: Parsec = ref {
-        (parseKindPrefix + 
-            optional(arrow.or(optional(attempt(qualified(properName))
-                .`as`(TypeConstructor))) +
-                optional(this))
-        ).`as`(FunKind)
+        (parseKindPrefix +
+            optional(
+                arrow.or(
+                    optional(
+                        attempt(qualified(properName))
+                            .`as`(TypeConstructor)
+                    )
+                ) +
+                    optional(this)
+            )
+            ).`as`(FunKind)
     }
-    private val parseKindPrefixRef: Parsec = ref {parseKindPrefix}
+    private val parseKindPrefixRef: Parsec = ref { parseKindPrefix }
     private val parseKindAtom = choice(
         token("*").`as`(START).`as`(Star),
         token("!").`as`(BANG).`as`(Bang),
@@ -117,13 +123,13 @@ class PureParsecParser {
             parseKindAtom
         )
 
-    private val type : Parsec = ref {(type1.sepBy1(dcolon)).`as`(Type)}
+    private val type: Parsec = ref { (type1.sepBy1(dcolon)).`as`(Type) }
 
     private val parseForAll: Parsec = ref {
-        forall
-        .then(many1(idents.`as`(GenericIdentifier)))
-        .then(dot)
-        .then(parseConstrainedType).`as`(ForAll)
+        (((forall
+            + many1(idents.`as`(GenericIdentifier)))
+            + dot)
+            + parseConstrainedType).`as`(ForAll)
     }
 
     private val parseTypeVariable: Parsec =
@@ -163,7 +169,7 @@ class PureParsecParser {
         )
             .`as`(TypeAtom)
     private val parseConstrainedType: Parsec =
-        optional(
+        (optional(
             attempt(
                 parens(
                     commaSep1(
@@ -172,7 +178,7 @@ class PureParsecParser {
                     )
                 ) + darrow
             )
-        ).then(type).`as`(ConstrainedType)
+        ) + type).`as`(ConstrainedType)
 
     private val ident =
         idents.`as`(Identifier)
@@ -186,58 +192,64 @@ class PureParsecParser {
         )
     private val binderAtom: Parsec = ref {
         choice(
-        attempt(`_`.`as`(NullBinder)),
-        attempt(ident.`as`(VarBinder) + `@` + this)
-            .`as`(NamedBinder),
-        attempt(ident.`as`(VarBinder)),
-        attempt(qualProperName.`as`(ConstructorBinder)),
-        attempt(boolean.`as`(BooleanBinder)),
-        attempt(char).`as`(CharBinder),
-        attempt(string.`as`(StringBinder)),
-        attempt(number.`as`(NumberBinder)),
-        attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
-        attempt(braces(commaSep(recordBinder))),
-        attempt(parens(binder))
-    )
+            attempt(`_`.`as`(NullBinder)),
+            attempt(ident.`as`(VarBinder) + `@` + this)
+                .`as`(NamedBinder),
+            attempt(ident.`as`(VarBinder)),
+            attempt(qualProperName.`as`(ConstructorBinder)),
+            attempt(boolean.`as`(BooleanBinder)),
+            attempt(char).`as`(CharBinder),
+            attempt(string.`as`(StringBinder)),
+            attempt(number.`as`(NumberBinder)),
+            attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
+            attempt(braces(commaSep(recordBinder))),
+            attempt(parens(binder))
+        )
     }
-    private val binder: Parsec = ref {binder1 + optional(dcolon + type)}
-    private val expr: Parsec = ref {(expr1 + optional(dcolon + type)).`as`(Value)}
-    private val qualOp = qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
+    private val binder: Parsec = ref { binder1 + optional(dcolon + type) }
+    private val expr: Parsec =
+        ref { (expr1 + optional(dcolon + type)).`as`(Value) }
+    private val qualOp =
+        qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
     private val type5 = many1(typeAtom)
     private val type4 = choice(
         attempt(token("-") + number),
         manyOrEmpty(token("#")) + type5
     )
-    private val type3 =  ref { type4.sepBy1(qualOp) }
-    private val type2: Parsec = ref {type3 + optional(arrow.or(darrow) + type1)}
-    private val type1 = manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
-    private val parsePropertyUpdate: Parsec = ref { label + optional(eq) + expr }
-    private val exprAtom =  ref { choice(
-        `_`,
-        attempt(hole),
-        attempt(
-            qualified(idents.`as`(Identifier))
-                .`as`(QualifiedIdentifier)
-                .`as`(ExpressionIdentifier)
-        ),
-        attempt(
-            qualified(symbol)
-                .`as`(QualifiedSymbol)
-                .`as`(ExpressionSymbol)
-        ),
-        attempt(
-            qualified(properName)
-                .`as`(QualifiedProperName)
-                .`as`(ExpressionConstructor)
-        ),
-        boolean.`as`(BooleanLiteral),
-        char.`as`(CharLiteral),
-        string.`as`(StringLiteral),
-        number,
-        squares(commaSep(expr)).`as`(ArrayLiteral),
-        braces(commaSep(recordLabel)).`as`(ObjectLiteral),
-        parens(expr).`as`(Parens),
-    )
+    private val type3 = ref { type4.sepBy1(qualOp) }
+    private val type2: Parsec =
+        ref { type3 + optional(arrow.or(darrow) + type1) }
+    private val type1 =
+        manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
+    private val parsePropertyUpdate: Parsec =
+        ref { label + optional(eq) + expr }
+    private val exprAtom = ref {
+        choice(
+            `_`,
+            attempt(hole),
+            attempt(
+                qualified(idents.`as`(Identifier))
+                    .`as`(QualifiedIdentifier)
+                    .`as`(ExpressionIdentifier)
+            ),
+            attempt(
+                qualified(symbol)
+                    .`as`(QualifiedSymbol)
+                    .`as`(ExpressionSymbol)
+            ),
+            attempt(
+                qualified(properName)
+                    .`as`(QualifiedProperName)
+                    .`as`(ExpressionConstructor)
+            ),
+            boolean.`as`(BooleanLiteral),
+            char.`as`(CharLiteral),
+            string.`as`(StringLiteral),
+            number,
+            squares(commaSep(expr)).`as`(ArrayLiteral),
+            braces(commaSep(recordLabel)).`as`(ObjectLiteral),
+            parens(expr).`as`(Parens),
+        )
     }
     private val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
 
@@ -286,7 +298,7 @@ class PureParsecParser {
     private val dataHead =
         data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val dataCtor =
-        properName.then(manyOrEmpty(typeAtom)).`as`(DataConstructor)
+        (properName + manyOrEmpty(typeAtom)).`as`(DataConstructor)
     private val parseTypeDeclaration =
         (ident + dcolon + type).`as`(Signature)
     private val newtypeHead =
@@ -311,9 +323,9 @@ class PureParsecParser {
         parens(
             commaSep1(
                 attempt(qualified(properName)).`as`(TypeConstructor)
-                    .then(manyOrEmpty(typeAtom))
+                    + manyOrEmpty(typeAtom)
             )
-        ).then(darrow)
+        ) + darrow
     private val parseForeignDeclaration =
         `'foreign'` + `'import'` + choice(
             data + properName + dcolon + type `as` ForeignDataDeclaration,
@@ -325,27 +337,26 @@ class PureParsecParser {
         infix
     )
     private val parseFixity =
-        parseAssociativity.then(token(NATURAL)).`as`(Fixity)
+        (parseAssociativity + token(NATURAL)).`as`(Fixity)
     private val qualIdentifier =
         (optional(qualifier) + ident).`as`(QualifiedIdentifier)
     private val qualProperName =
         (optional(qualifier) + properName).`as`(QualifiedProperName)
-    private val parseFixityDeclaration = parseFixity
-        .then(
-            choice(
-                // TODO Should we differentiate Types and DataConstructors?
-                // that would mean that when there is a `type` prefix we parse as Type
-                // otherwise if it's a capital name it's a DataConstructor
-                attempt(optional(`'type'`).then(properName.or(qualProperName))),
-                ident.or(qualIdentifier)
-            )
+    private val parseFixityDeclaration = (((parseFixity
+        + choice(
+        // TODO Should we differentiate Types and DataConstructors?
+        // that would mean that when there is a `type` prefix we parse as Type
+        // otherwise if it's a capital name it's a DataConstructor
+        attempt(optional(`'type'`) + properName.or(qualProperName)),
+        ident.or(qualIdentifier)
+    )
         )
-        .then(`as`)
-        .then(operator.`as`(OperatorName))
+        + `as`)
+        + operator.`as`(OperatorName))
         .`as`(FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
-    private val fundeps = pipe.then(commaSep1(fundep))
+    private val fundeps = pipe + commaSep1(fundep)
     private val constraint =
         (qualProperName.`as`(ClassName) + manyOrEmpty(typeAtom))
             .`as`(ClassConstraint)
@@ -388,26 +399,26 @@ class PureParsecParser {
     val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
     private val importedItem =
         choice(
-            `'type'`
-                .then(parens(operator.`as`(Identifier)))
+            (`'type'`
+                + parens(operator.`as`(Identifier)))
                 .`as`(ImportedType),
-            `class`.then(properName).`as`(ImportedClass),
-            token(KIND).then(properName).`as`(ImportedKind),
+            (`class` + properName).`as`(ImportedClass),
+            (token(KIND) + properName).`as`(ImportedKind),
             symbol.`as`(ImportedOperator),
             ident.`as`(ImportedValue),
-            properName
-                .then(optional(importedDataMembers))
+            (properName
+                + optional(importedDataMembers))
                 .`as`(ImportedData),
         )
     private val importList =
-        optional(token(HIDING))
-            .then(parens(commaSep(importedItem)))
+        (optional(token(HIDING))
+            + parens(commaSep(importedItem)))
             .`as`(ImportList)
     private val parseImportDeclaration =
-        token(IMPORT)
-            .then(moduleName)
-            .then(optional(importList))
-            .then(optional(`as`.then(moduleName).`as`(ImportAlias)))
+        (((token(IMPORT)
+            + moduleName)
+            + optional(importList))
+            + optional((`as` + moduleName).`as`(ImportAlias)))
             .`as`(ImportDeclaration)
 
     /**
@@ -437,26 +448,26 @@ class PureParsecParser {
         parseForeignDeclaration,
         parseFixityDeclaration,
         classDeclaration,
-        optional(`'derive'`.then(optional(`'newtype'`)))
-            .then(instHead)
-            .then(optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
+        ((optional(`'derive'` + optional(`'newtype'`))
+            + instHead)
+            + optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
             .`as`(InstanceDeclaration)
     )
     private val exportedClass =
-        `class`.then(properName).`as`(ExportedClass)
+        (`class` + properName).`as`(ExportedClass)
     private val dataMembers =
         parens(ddot.or(commaSep(properName.`as`(ExportedDataMember))))
             .`as`(ExportedDataMemberList)
     private val exportedData =
         (properName + optional(dataMembers)).`as`(ExportedData)
     private val exportedKind =
-        token(KIND).then(properName).`as`(ExportedKind)
+        (token(KIND) + properName).`as`(ExportedKind)
     private val exportedModule =
-        token(MODULE).then(moduleName).`as`(ExportedModule)
+        (token(MODULE) + moduleName).`as`(ExportedModule)
     private val exportedOperator =
         symbol.`as`(ExportedOperator)
     private val exportedType =
-        `'type'`.then(parens(operator.`as`(Identifier)))
+        (`'type'` + parens(operator.`as`(Identifier)))
             .`as`(ExportedType)
     private val exportedValue = ident.`as`(ExportedValue)
     private val exportList =
@@ -481,11 +492,11 @@ class PureParsecParser {
             sepBy(decl, elseDecl)
         )
 
-    val parseModule = token(MODULE)
-        .then(moduleName)
-        .then(optional(exportList))
-        .then(where)
-        .then(`L{` + moduleDecl.sepBy(`L-sep`) + `L}`)
+    val parseModule = ((((token(MODULE)
+        + moduleName)
+        + optional(exportList))
+        + where)
+        + (`L{` + moduleDecl.sepBy(`L-sep`) + `L}`))
         .`as`(Module)
 
 
@@ -504,7 +515,7 @@ class PureParsecParser {
         attempt(
             qualProperName
                 .`as`(ConstructorBinder)
-                .then(manyOrEmpty(binderAtom))
+                + manyOrEmpty(binderAtom)
         ),
         attempt(token("-") + number).`as`(NumberBinder),
         binderAtom,
@@ -521,7 +532,7 @@ class PureParsecParser {
     private val caseBranch =
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
-    private val parseIfThenElse = 
+    private val parseIfThenElse =
         (`if` + expr + token(THEN) + expr + `else` + expr).`as`(IfThenElse)
     private val letBinding =
         choice(
@@ -533,12 +544,12 @@ class PureParsecParser {
             attempt(binder1 + eq + exprWhere),
             attempt(ident + many(binderAtom) + guardedDecl)
         )
-    private val parseLet = 
+    private val parseLet =
         (token(LET) + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
             .`as`(Let)
     private val doStatement =
         choice(
-            token(LET).then(`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)
+            (token(LET) + (`L{` + (letBinding).sepBy1(`L-sep`) + `L}`))
                 .`as`(DoNotationLet),
             attempt(binder + larrow + expr).`as`(DoNotationBind),
             attempt(expr.`as`(DoNotationValue))
