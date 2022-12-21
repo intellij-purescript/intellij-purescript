@@ -252,8 +252,8 @@ object Combinators {
     fun ref(init: Parsec.() -> Parsec) = ParsecRef(init)
     fun guard(
         p: Parsec,
-        predicate: (String?) -> Boolean,
-        errorMessage: String
+        errorMessage: String,
+        predicate: (String?) -> Boolean
     ) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val pack = context.start()
