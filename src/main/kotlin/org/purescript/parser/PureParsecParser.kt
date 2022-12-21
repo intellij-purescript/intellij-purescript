@@ -46,7 +46,7 @@ class PureParsecParser {
         data,
         `'newtype'`,
         `'type'`,
-        token(FOREIGN),
+        `'foreign'`,
         `'import'`,
         infixl,
         infixr,
@@ -55,7 +55,7 @@ class PureParsecParser {
         `'derive'`,
         token(KIND),
         `'instance'`,
-        token(MODULE),
+        module,
         case,
         of,
         `if`,
@@ -401,7 +401,7 @@ class PureParsecParser {
         (properName + optional(dataMembers)).`as`(ExportedData)
     private val exportedKind = (token(KIND) + properName).`as`(ExportedKind)
     private val exportedModule =
-        (token(MODULE) + moduleName).`as`(ExportedModule)
+        (module + moduleName).`as`(ExportedModule)
     private val exportedOperator = symbol.`as`(ExportedOperator)
     private val exportedType =
         (`'type'` + parens(operator.`as`(Identifier))).`as`(ExportedType)
@@ -424,7 +424,7 @@ class PureParsecParser {
     private val moduleDecl = parseImportDeclaration.or(sepBy(decl, elseDecl))
 
     val parseModule = (
-        token(MODULE) + moduleName + optional(exportList) + where +
+        module + moduleName + optional(exportList) + where +
             `L{` + moduleDecl.sepBy(`L-sep`) + `L}`
         ).`as`(Module)
 
