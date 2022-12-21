@@ -5,18 +5,16 @@ import com.intellij.psi.tree.TokenSet
 
 abstract class Parsec {
     val name: String by lazy { calcName() }
-    val expectedName: Set<String> by lazy { calcExpectedName() }
-    abstract fun parse(context: ParserContext): ParserInfo
     protected abstract fun calcName(): String
+    val expectedName: Set<String> by lazy { calcExpectedName() }
     protected abstract fun calcExpectedName(): Set<String>
+    val canBeEmpty: Boolean by lazy { calcCanBeEmpty() }
+    protected abstract fun calcCanBeEmpty(): Boolean
+    abstract val canStartWithSet: TokenSet
+    abstract fun parse(context: ParserContext): ParserInfo
     operator fun plus(other: Parsec) = Combinators.seq(this, other)
     fun or(next: Parsec) = Combinators.choice(this, next)
     fun sepBy1(next: Parsec) = Combinators.sepBy1(this, next)
-    infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
-
-    abstract val canStartWithSet: TokenSet
-
-    val canBeEmpty: Boolean by lazy { calcCanBeEmpty() }
-    protected abstract fun calcCanBeEmpty(): Boolean
     fun sepBy(parsec: Parsec) = Combinators.sepBy(this, parsec)
+    infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
 }
