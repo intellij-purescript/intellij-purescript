@@ -62,8 +62,8 @@ class PureParsecParser {
         then,
         `else`,
         `do`,
-        token(ADO),
-        token(LET),
+        ado,
+        let,
         `true`,
         `false`,
         `in`,
@@ -458,11 +458,10 @@ class PureParsecParser {
             attempt(ident + many(binderAtom) + guardedDecl)
         )
     private val parseLet =
-        (token(LET) + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
+        (let + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
             .`as`(Let)
     private val doStatement = choice(
-        (token(LET) + (`L{` + (letBinding).sepBy1(`L-sep`) + `L}`))
-            .`as`(DoNotationLet),
+        (let + (`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)).`as`(DoNotationLet),
         attempt(binder + larrow + expr).`as`(DoNotationBind),
         attempt(expr.`as`(DoNotationValue))
     )
@@ -471,8 +470,7 @@ class PureParsecParser {
             `L-sep`
         ) + `L}`).`as`(DoBlock)
 
-    private val adoBlock =
-        token(ADO) + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
+    private val adoBlock = ado + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
     private val recordBinder =
         (attempt(label + eq.or(token(":"))) + binder).or(label.`as`(VarBinder))
