@@ -4,7 +4,6 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
 object Combinators {
-
     fun token(tokenType: IElementType): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo =
             if (context.eat(tokenType)) {
@@ -15,9 +14,7 @@ object Combinators {
 
         public override fun calcName() = tokenType.toString()
         override fun calcExpectedName() = setOf(tokenType.toString())
-        override val canStartWithSet: TokenSet
-            get() = TokenSet.create(tokenType)
-
+        override val canStartWithSet: TokenSet get() = TokenSet.create(tokenType)
         public override fun calcCanBeEmpty() = false
     }
 
@@ -32,12 +29,8 @@ object Combinators {
 
         public override fun calcName() = "\"" + token + "\""
         override fun calcExpectedName() = setOf("\"" + token + "\"")
-
-        override val canStartWithSet: TokenSet
-            get() = TokenSet.ANY
-
+        override val canStartWithSet: TokenSet get() = TokenSet.ANY
         public override fun calcCanBeEmpty() = false
-
     }
 
     fun seq(p1: Parsec, p2: Parsec): Parsec = object : Parsec() {
@@ -68,8 +61,7 @@ object Combinators {
                 }
             }
 
-        public override fun calcCanBeEmpty() =
-            p1.canBeEmpty && p2.canBeEmpty
+        public override fun calcCanBeEmpty() = p1.canBeEmpty && p2.canBeEmpty
     }
 
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
@@ -103,9 +95,7 @@ object Combinators {
 
         public override fun calcName(): String = buildString {
             append("(${head.name})")
-            for (parsec in tail) {
-                append(" | (${parsec.name})")
-            }
+            for (parsec in tail) append(" | (${parsec.name})")
         }
 
         override fun calcExpectedName(): Set<String> =
@@ -161,6 +151,7 @@ object Combinators {
             }
             return info
         }
+
         public override fun calcName() = "(" + p.name + ")*"
         override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
@@ -182,6 +173,7 @@ object Combinators {
         } finally {
             context.exitOptional()
         }
+
         public override fun calcName() = "(" + p.name + ")?"
         override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
@@ -219,6 +211,7 @@ object Combinators {
     fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
     fun sepBy1(p: Parsec, sep: IElementType) =
         p + attempt(manyOrEmpty(token(sep) + p))
+
     fun commaSep1(p: Parsec) = sepBy1(p, COMMA)
     fun sepBy(p: Parsec, sep: Parsec) = optional(p + manyOrEmpty(sep + p))
     fun sepBy1(p: Parsec, sep: Parsec) = p + manyOrEmpty(sep + p)
@@ -247,6 +240,7 @@ object Combinators {
                 info1
             }
         }
+
         public override fun calcName() = p.name
         override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
