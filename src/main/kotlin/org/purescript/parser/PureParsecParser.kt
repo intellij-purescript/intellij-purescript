@@ -59,7 +59,7 @@ class PureParsecParser {
         case,
         of,
         `if`,
-        token(THEN),
+        then,
         `else`,
         `do`,
         token(ADO),
