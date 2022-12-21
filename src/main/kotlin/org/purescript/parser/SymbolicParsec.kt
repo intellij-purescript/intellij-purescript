@@ -1,6 +1,7 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
 
 class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
     Parsec() {
@@ -20,6 +21,7 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
     }
     public override fun calcName() = node.toString()
     override fun calcExpectedName() = setOf(node.toString())
-    override fun canStartWith(type: IElementType) = ref.canStartWith(type)
+    override val canStartWithSet: TokenSet
+        get() = ref.canStartWithSet
     public override fun calcCanBeEmpty() = ref.canBeEmpty
 }

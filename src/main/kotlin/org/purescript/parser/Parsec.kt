@@ -1,6 +1,7 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
 
 abstract class Parsec {
     var name: String? = null
@@ -27,8 +28,9 @@ abstract class Parsec {
     fun or(next: Parsec) = Combinators.choice(this, next)
     fun sepBy1(next: Parsec) = Combinators.sepBy1(this, next)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
-    abstract fun canStartWith(type: IElementType): Boolean
-    
+
+    abstract val canStartWithSet: TokenSet
+
     val canBeEmpty: Boolean by lazy { calcCanBeEmpty() }
     protected abstract fun calcCanBeEmpty(): Boolean
     fun sepBy(parsec: Parsec) = Combinators.sepBy(this, parsec)
