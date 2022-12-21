@@ -227,7 +227,6 @@ object Combinators {
         override val canStartWithSet: TokenSet
             get() = p.canStartWithSet
 
-        fun canStartWith(type: IElementType) = p.canStartWithSet.contains(type)
         public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
     }
 
