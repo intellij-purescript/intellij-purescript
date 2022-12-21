@@ -230,22 +230,13 @@ object Combinators {
         public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
     }
 
-    fun parens(p: Parsec) =
-        (token(LPAREN) + p) + token(RPAREN)
-
-    fun squares(p: Parsec) =
-        (token(LBRACK) + p) + token(RBRACK)
-
-    fun braces(p: Parsec) =
-        (token(LCURLY) + p) + token(RCURLY)
-
+    fun parens(p: Parsec) = token(LPAREN) + p + token(RPAREN)
+    fun squares(p: Parsec) = token(LBRACK) + p + token(RBRACK)
+    fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
     fun sepBy1(p: Parsec, sep: IElementType) =
         p + attempt(manyOrEmpty(token(sep) + p))
-
     fun commaSep1(p: Parsec) = sepBy1(p, COMMA)
-    fun sepBy(p: Parsec, sep: Parsec) =
-        optional(p + manyOrEmpty(sep + p))
-
+    fun sepBy(p: Parsec, sep: Parsec) = optional(p + manyOrEmpty(sep + p))
     fun sepBy1(p: Parsec, sep: Parsec) = p + manyOrEmpty(sep + p)
     fun commaSep(p: Parsec) = sepBy(p, token(COMMA))
     fun ref(init: Parsec.() -> Parsec) = ParsecRef(init)
