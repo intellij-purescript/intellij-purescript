@@ -123,13 +123,11 @@ class PureParsecParser {
             parseKindAtom
         )
 
-    private val type: Parsec = ref { (type1.sepBy1(dcolon)).`as`(Type) }
+    private val type: Parsec = ref { type1.sepBy1(dcolon).`as`(Type) }
 
     private val parseForAll: Parsec = ref {
-        (((forall
-            + many1(idents.`as`(GenericIdentifier)))
-            + dot)
-            + parseConstrainedType).`as`(ForAll)
+        (forall + many1(idents.`as`(GenericIdentifier)) + dot + parseConstrainedType)
+            .`as`(ForAll)
     }
 
     private val parseTypeVariable: Parsec =
@@ -338,18 +336,15 @@ class PureParsecParser {
         (optional(qualifier) + ident).`as`(QualifiedIdentifier)
     private val qualProperName =
         (optional(qualifier) + properName).`as`(QualifiedProperName)
-    private val parseFixityDeclaration = (((parseFixity
-        + choice(
-        // TODO Should we differentiate Types and DataConstructors?
-        // that would mean that when there is a `type` prefix we parse as Type
-        // otherwise if it's a capital name it's a DataConstructor
-        attempt(optional(`'type'`) + properName.or(qualProperName)),
-        ident.or(qualIdentifier)
-    )
-        )
-        + `as`)
-        + operator.`as`(OperatorName))
-        .`as`(FixityDeclaration)
+    private val parseFixityDeclaration =
+        (parseFixity + choice(
+            // TODO Should we differentiate Types and DataConstructors?
+            // that would mean that when there is a `type` prefix we parse as Type
+            // otherwise if it's a capital name it's a DataConstructor
+            attempt(optional(`'type'`) + properName.or(qualProperName)),
+            ident.or(qualIdentifier)
+        ) + `as` + operator.`as`(OperatorName))
+            .`as`(FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe + commaSep1(fundep)
@@ -411,11 +406,11 @@ class PureParsecParser {
             + parens(commaSep(importedItem)))
             .`as`(ImportList)
     private val parseImportDeclaration =
-        (((token(IMPORT)
-            + moduleName)
-            + optional(importList))
-            + optional((`as` + moduleName).`as`(ImportAlias)))
-            .`as`(ImportDeclaration)
+        (token(IMPORT) +
+            moduleName +
+            optional(importList) +
+            optional((`as` + moduleName).`as`(ImportAlias))
+            ).`as`(ImportDeclaration)
 
     /**
      * nominal = the type can never be coerced to another type.
@@ -436,18 +431,18 @@ class PureParsecParser {
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(NewtypeDeclaration),
         attempt(parseTypeDeclaration),
-        (attempt(`'type'` + `'role'`) + properName + many(role)),
-        (attempt(`'type'` + properName + dcolon) + type),
+        attempt(`'type'` + `'role'`) + properName + many(role),
+        attempt(`'type'` + properName + dcolon) + type,
         (`'type'` + properName + many(typeVarBinding) + eq + type)
             .`as`(TypeSynonymDeclaration),
         (attempt(ident) + many(binderAtom) + guardedDecl).`as`(ValueDeclaration),
         parseForeignDeclaration,
         parseFixityDeclaration,
         classDeclaration,
-        ((optional(`'derive'` + optional(`'newtype'`))
-            + instHead)
-            + optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`))
-            .`as`(InstanceDeclaration)
+        (optional(`'derive'` + optional(`'newtype'`))
+            + instHead
+            + optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
+            ).`as`(InstanceDeclaration)
     )
     private val exportedClass =
         (`class` + properName).`as`(ExportedClass)
@@ -488,12 +483,10 @@ class PureParsecParser {
             sepBy(decl, elseDecl)
         )
 
-    val parseModule = ((((token(MODULE)
-        + moduleName)
-        + optional(exportList))
-        + where)
-        + (`L{` + moduleDecl.sepBy(`L-sep`) + `L}`))
-        .`as`(Module)
+    val parseModule = (
+        token(MODULE) + moduleName + optional(exportList) + where +
+            `L{` + moduleDecl.sepBy(`L-sep`) + `L}`
+        ).`as`(Module)
 
 
     private val hole = (token("?") + idents).`as`(TypeHole)
