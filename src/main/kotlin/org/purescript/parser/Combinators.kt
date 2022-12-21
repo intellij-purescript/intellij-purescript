@@ -38,8 +38,7 @@ object Combinators {
         override fun parse(context: ParserContext): ParserInfo {
             val info = p1.parse(context)
             return if (info.success) {
-                val info2 = p2.parse(context)
-                info.merge(info2)
+                info.merge(p2.parse(context))
             } else {
                 info
             }
@@ -67,15 +66,15 @@ object Combinators {
 
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
-            val position = context.position
+            val start = context.position
             var info: ParserInfo
             info =
                 if (head.canBeEmpty || head.canStartWithSet.contains(context.peek())) {
                     head.parse(context)
                 } else {
-                    ParserInfo(position, setOf(head), null, false)
+                    ParserInfo(start, setOf(head), null, false)
                 }
-            if (context.position > position || info.success) {
+            if (start < context.position || info.success) {
                 return info
             }
             for (p2 in tail) {
@@ -83,11 +82,10 @@ object Combinators {
                     if (p2.canBeEmpty || p2.canStartWithSet.contains(context.peek())) {
                         p2.parse(context)
                     } else {
-                        ParserInfo(position, setOf(p2), null, false)
+                        ParserInfo(start, setOf(p2), null, false)
                     }
-                info =
-                    info.merge(info2)
-                if (context.position > position || info.success) {
+                info = info.merge(info2)
+                if (start < context.position || info.success) {
                     return info
                 }
             }
