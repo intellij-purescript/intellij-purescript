@@ -6,12 +6,13 @@ import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
 
 class PureParser : PsiParser {
+
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         // builder.setDebugMode(true);
         val context = ParserContext(builder)
         val mark = context.start()
         // Creating a new instance here allows hot swapping while debugging.
-        val info = PureParsecParser().parseModule.parse(context)
+        val info = pureParsecParser.parseModule.parse(context)
         var nextType: IElementType? = null
         if (!context.eof()) {
             var errorMarker: PsiBuilder.Marker? = null
@@ -30,5 +31,9 @@ class PureParser : PsiParser {
         }
         mark.done(root)
         return builder.treeBuilt
+    }
+
+    companion object {
+        private val pureParsecParser = PureParsecParser()
     }
 }
