@@ -133,10 +133,7 @@ class PureParsecParser {
     }
 
     private val parseTypeVariable: Parsec =
-        guard(
-            idents,
-            "not `forall`"
-        ) { content: String? -> !(content == "∀" || content == "forall") }
+        guard(idents, "not `forall`") { !(it == "∀" || it == "forall") }
             .`as`(GenericIdentifier)
 
     private val rowLabel =
