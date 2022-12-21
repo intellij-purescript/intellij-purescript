@@ -68,23 +68,12 @@ object Combinators {
         override fun parse(context: ParserContext): ParserInfo {
             val start = context.position
             var info: ParserInfo
-            info =
-                if (head.canParse(context)) {
-                    head.parse(context)
-                } else {
-                    ParserInfo(start, setOf(head), null, false)
-                }
+            info = head.tryToParse(context)
             if (start < context.position || info.success) {
                 return info
             }
-            for (p2 in tail) {
-                val info2: ParserInfo =
-                    if (p2.canParse(context)) {
-                        p2.parse(context)
-                    } else {
-                        ParserInfo(start, setOf(p2), null, false)
-                    }
-                info = info.merge(info2)
+            for (p in tail) {
+                info = info.merge(p.tryToParse(context))
                 if (start < context.position || info.success) {
                     return info
                 }

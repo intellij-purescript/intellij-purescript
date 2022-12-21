@@ -13,6 +13,12 @@ abstract class Parsec {
     abstract val canStartWithSet: TokenSet
     fun canParse(context: ParserContext): Boolean =
         canBeEmpty || canStartWithSet.contains(context.peek())
+    fun tryToParse(context: ParserContext) =
+        if (canParse(context)) {
+            parse(context)
+        } else {
+            ParserInfo(context.position, setOf(this), null, false)
+        }
     abstract fun parse(context: ParserContext): ParserInfo
     operator fun plus(other: Parsec) = Combinators.seq(this, other)
     fun or(next: Parsec) = Combinators.choice(this, next)
