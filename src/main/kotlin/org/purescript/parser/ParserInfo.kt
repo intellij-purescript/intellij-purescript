@@ -29,7 +29,7 @@ class ParserInfo(
 
     fun merge(other: ParserInfo) = when {
         position < other.position -> other
-        position > other.position -> {
+        other.position < position -> {
             if (other.success == this.success) {
                 this
             } else {
