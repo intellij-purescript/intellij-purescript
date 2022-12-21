@@ -36,6 +36,9 @@ class PSModule(node: ASTNode) :
 
         val importDeclarations: Array<PSImportDeclaration>
             by lazy { findChildrenByClass(PSImportDeclaration::class.java) }
+
+        val importDeclarationByName: Map<String?, List<PSImportDeclaration>>
+            by lazy { importDeclarations.groupBy { it.name } }
         
         val valueDeclarations: Array<PSValueDeclaration>
             by lazy { findChildrenByClass(PSValueDeclaration::class.java) }

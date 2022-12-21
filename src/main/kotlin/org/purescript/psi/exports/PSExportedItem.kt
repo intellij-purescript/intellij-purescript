@@ -74,9 +74,10 @@ class PSExportedModule(node: ASTNode) : PSExportedItem(node) {
 
     val importDeclarations: Sequence<PSImportDeclaration>
         get() = module
-            ?.let { it.cache.importDeclarations }
+            ?.cache
+            ?.importDeclarationByName
+            ?.get(name)
             ?.asSequence()
-            ?.filter { it.name == moduleName.name }
             ?: sequenceOf()
 
     override fun getName(): String = moduleName.name
