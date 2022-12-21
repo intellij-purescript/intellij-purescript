@@ -11,6 +11,8 @@ abstract class Parsec {
     val canBeEmpty: Boolean by lazy { calcCanBeEmpty() }
     protected abstract fun calcCanBeEmpty(): Boolean
     abstract val canStartWithSet: TokenSet
+    fun canParse(context: ParserContext): Boolean =
+        canBeEmpty || canStartWithSet.contains(context.peek())
     abstract fun parse(context: ParserContext): ParserInfo
     operator fun plus(other: Parsec) = Combinators.seq(this, other)
     fun or(next: Parsec) = Combinators.choice(this, next)

@@ -69,7 +69,7 @@ object Combinators {
             val start = context.position
             var info: ParserInfo
             info =
-                if (head.canBeEmpty || head.canStartWithSet.contains(context.peek())) {
+                if (head.canParse(context)) {
                     head.parse(context)
                 } else {
                     ParserInfo(start, setOf(head), null, false)
@@ -79,7 +79,7 @@ object Combinators {
             }
             for (p2 in tail) {
                 val info2: ParserInfo =
-                    if (p2.canBeEmpty || p2.canStartWithSet.contains(context.peek())) {
+                    if (p2.canParse(context)) {
                         p2.parse(context)
                     } else {
                         ParserInfo(start, setOf(p2), null, false)
@@ -187,7 +187,7 @@ object Combinators {
 
     fun attempt(p: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext) =
-            if (!p.canBeEmpty && !p.canStartWithSet.contains(context.peek())) {
+            if (!p.canParse(context)) {
                 ParserInfo(context.position, setOf(p), null, false)
             } else {
                 val start = context.position
