@@ -43,6 +43,7 @@ val pipe = token(PIPE)
 val representational = token("representational")
 val rparen = token(RPAREN)
 val string = token(STRING)
+val then = token(THEN) 
 val tick = token(TICK)
 val where = token(WHERE)
 

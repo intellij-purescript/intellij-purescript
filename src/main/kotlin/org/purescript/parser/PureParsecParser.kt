@@ -448,7 +448,7 @@ class PureParsecParser {
         (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
 
     private val parseIfThenElse =
-        (`if` + expr + token(THEN) + expr + `else` + expr).`as`(IfThenElse)
+        (`if` + expr + then + expr + `else` + expr).`as`(IfThenElse)
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
