@@ -1,6 +1,6 @@
 package org.purescript.parser
 
-class ParserInfo(
+data class ParserInfo(
     val position: Int,
     val expected: Set<Parsec>,
     private val errorMessage: String?,
@@ -30,12 +30,7 @@ class ParserInfo(
             if (other.success == this.success) {
                 this
             } else {
-                ParserInfo(
-                    position,
-                    expected,
-                    errorMessage,
-                    other.success
-                )
+                copy(success = other.success)
             }
         }
         else -> ParserInfo(
