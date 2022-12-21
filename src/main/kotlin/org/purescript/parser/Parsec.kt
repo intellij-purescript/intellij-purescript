@@ -4,14 +4,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
 abstract class Parsec {
-    var name: String? = null
-        get() {
-            if (field == null) {
-                field = calcName()
-            }
-            return field
-        }
-        private set
+    val name: String by lazy { calcName() }
     var expectedName: Set<String>? = null
         get() {
             if (field == null) {
