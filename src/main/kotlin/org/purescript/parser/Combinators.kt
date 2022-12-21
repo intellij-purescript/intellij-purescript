@@ -101,23 +101,15 @@ object Combinators {
             return info
         }
 
-        public override fun calcName(): String {
-            // TODO: avoid unnecessary parentheses.
-            val sb = StringBuilder()
-            sb.append("(").append(head.name).append(")")
+        public override fun calcName(): String = buildString {
+            append("(${head.name})")
             for (parsec in tail) {
-                sb.append(" | (").append(parsec.name).append(")")
+                append(" | (${parsec.name})")
             }
-            return sb.toString()
         }
 
-        override fun calcExpectedName(): Set<String> {
-            var result = head.expectedName
-            for (parsec in tail) {
-                result = result + parsec.expectedName
-            }
-            return result
-        }
+        override fun calcExpectedName(): Set<String> =
+            tail.fold(head.expectedName) { acc, parsec -> acc + parsec.expectedName }
 
         override val canStartWithSet: TokenSet
             by lazy {
@@ -169,12 +161,9 @@ object Combinators {
             }
             return info
         }
-
         public override fun calcName() = "(" + p.name + ")*"
         override fun calcExpectedName() = p.expectedName
-        override val canStartWithSet: TokenSet
-            get() = p.canStartWithSet
-
+        override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty() = true
     }
 
@@ -193,12 +182,9 @@ object Combinators {
         } finally {
             context.exitOptional()
         }
-
         public override fun calcName() = "(" + p.name + ")?"
         override fun calcExpectedName() = p.expectedName
-        override val canStartWithSet: TokenSet
-            get() = p.canStartWithSet
-
+        override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty() = true
     }
 
@@ -224,9 +210,7 @@ object Combinators {
 
         public override fun calcName() = "try(" + p.name + ")"
         override fun calcExpectedName() = p.expectedName
-        override val canStartWithSet: TokenSet
-            get() = p.canStartWithSet
-
+        override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
     }
 
@@ -249,24 +233,23 @@ object Combinators {
             val pack = context.start()
             val start = context.position
             val info1 = p.parse(context)
-            if (info1.success) {
+            return if (info1.success) {
                 val end = context.position
                 val text = context.getText(start, end)
                 if (!predicate.invoke(text)) {
-                    return ParserInfo(context.position, errorMessage, false)
+                    ParserInfo(context.position, errorMessage, false)
+                } else {
+                    pack.drop()
+                    info1
                 }
-                pack.drop()
-                return info1
+            } else {
+                pack.rollbackTo()
+                info1
             }
-            pack.rollbackTo()
-            return info1
         }
-
         public override fun calcName() = p.name
         override fun calcExpectedName() = p.expectedName
-        override val canStartWithSet: TokenSet
-            get() = p.canStartWithSet
-
+        override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty() = p.canBeEmpty
     }
 }
