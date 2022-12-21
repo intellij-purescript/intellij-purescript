@@ -5,14 +5,7 @@ import com.intellij.psi.tree.TokenSet
 
 abstract class Parsec {
     val name: String by lazy { calcName() }
-    var expectedName: Set<String>? = null
-        get() {
-            if (field == null) {
-                field = calcExpectedName()
-            }
-            return field
-        }
-        private set
+    val expectedName: Set<String> by lazy { calcExpectedName() }
     abstract fun parse(context: ParserContext): ParserInfo
     protected abstract fun calcName(): String
     protected abstract fun calcExpectedName(): Set<String>
