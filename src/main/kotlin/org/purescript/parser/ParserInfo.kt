@@ -12,19 +12,18 @@ class ParserInfo(
         val expectedStrings: Set<String> = expected
             .flatMapTo(mutableSetOf()) { it.expectedName }
         val expected = expectedStrings.toTypedArray()
-        if (expected.isNotEmpty()) {
-            val sb = StringBuilder()
-            sb.append("Expecting ")
+        return if (expected.isNotEmpty()) buildString {
+            append("Expecting ")
             for (i in 0 until expected.size - 2) {
-                sb.append(expected[i]).append(", ")
+                append("${expected[i]}, ")
             }
             if (expected.size >= 2) {
-                sb.append(expected[expected.size - 2]).append(" or ")
+                append("${expected[expected.size - 2]} or ")
             }
-            sb.append(expected[expected.size - 1])
-            return sb.toString()
+            append(expected[expected.size - 1])
+        } else {
+            "Error"
         }
-        return "Error"
     }
 
     fun merge(other: ParserInfo) = when {
