@@ -47,21 +47,21 @@ object Combinators {
 
         public override fun calcName() = "${p1.name} ${p2.name}"
         override fun calcExpectedName() =
-            if (p1.canBeEmpty()) {
+            if (p1.canBeEmpty) {
                 p1.expectedName!! + p2.expectedName!!
             } else {
                 p1.expectedName!!
             }
 
         override fun canStartWith(type: IElementType) =
-            if (p1.canBeEmpty()) {
+            if (p1.canBeEmpty) {
                 p1.canStartWith(type) || p2.canStartWith(type)
             } else {
                 p1.canStartWith(type)
             }
 
         public override fun calcCanBeEmpty() =
-            p1.canBeEmpty() && p2.canBeEmpty()
+            p1.canBeEmpty && p2.canBeEmpty
     }
 
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
@@ -69,7 +69,7 @@ object Combinators {
             val position = context.position
             var info: ParserInfo
             info =
-                if (head.canBeEmpty() || head.canStartWith(context.peek())) {
+                if (head.canBeEmpty || head.canStartWith(context.peek())) {
                     head.parse(context)
                 } else {
                     ParserInfo(position, head, false)
@@ -79,7 +79,7 @@ object Combinators {
             }
             for (p2 in tail) {
                 val info2: ParserInfo =
-                    if (p2.canBeEmpty() || p2.canStartWith(context.peek())) {
+                    if (p2.canBeEmpty || p2.canStartWith(context.peek())) {
                         p2.parse(context)
                     } else {
                         ParserInfo(position, p2, false)
@@ -124,11 +124,11 @@ object Combinators {
         }
 
         public override fun calcCanBeEmpty(): Boolean {
-            if (!head.canBeEmpty()) {
+            if (!head.canBeEmpty) {
                 return false
             }
             for (parsec in tail) {
-                if (!parsec.canBeEmpty()) {
+                if (!parsec.canBeEmpty) {
                     return false
                 }
             }
@@ -194,7 +194,7 @@ object Combinators {
 
     fun attempt(p: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext) =
-            if (!p.canBeEmpty() && !p.canStartWith(context.peek())) {
+            if (!p.canBeEmpty && !p.canStartWith(context.peek())) {
                 ParserInfo(context.position, p, false)
             } else {
                 val start = context.position
@@ -215,7 +215,7 @@ object Combinators {
         public override fun calcName() = "try(" + p.name + ")"
         override fun calcExpectedName() = p.expectedName!!
         override fun canStartWith(type: IElementType) = p.canStartWith(type)
-        public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty()
+        public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
     }
 
     fun parens(p: Parsec) =
@@ -262,6 +262,6 @@ object Combinators {
         public override fun calcName() = p.name!!
         override fun calcExpectedName() = p.expectedName!!
         override fun canStartWith(type: IElementType) = p.canStartWith(type)
-        public override fun calcCanBeEmpty() = p.canBeEmpty()
+        public override fun calcCanBeEmpty() = p.canBeEmpty
     }
 }

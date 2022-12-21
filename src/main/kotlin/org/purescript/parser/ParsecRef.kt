@@ -8,5 +8,5 @@ class ParsecRef(private val init: Parsec.() -> Parsec) : Parsec() {
     public override fun calcName() = ref.name!!
     override fun calcExpectedName() = ref.expectedName!!
     override fun canStartWith(type: IElementType) = ref.canStartWith(type)
-    public override fun calcCanBeEmpty() = ref.canBeEmpty()
+    public override fun calcCanBeEmpty() = ref.canBeEmpty
 }

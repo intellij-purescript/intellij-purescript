@@ -19,7 +19,6 @@ abstract class Parsec {
             return field
         }
         private set
-    private var canBeEmpty: Boolean? = null
     abstract fun parse(context: ParserContext): ParserInfo
     protected abstract fun calcName(): String
     protected abstract fun calcExpectedName(): Set<String>
@@ -29,12 +28,8 @@ abstract class Parsec {
     fun sepBy1(next: Parsec) = Combinators.sepBy1(this, next)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
     abstract fun canStartWith(type: IElementType): Boolean
-    fun canBeEmpty(): Boolean {
-        if (canBeEmpty == null) {
-            canBeEmpty = calcCanBeEmpty()
-        }
-        return canBeEmpty!!
-    }
+    
+    val canBeEmpty: Boolean by lazy { calcCanBeEmpty() }
     protected abstract fun calcCanBeEmpty(): Boolean
     fun sepBy(parsec: Parsec) = Combinators.sepBy(this, parsec)
 }
