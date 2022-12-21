@@ -67,18 +67,20 @@ object Combinators {
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val start = context.position
-            var info: ParserInfo
-            info = head.tryToParse(context)
-            if (start < context.position || info.success) {
-                return info
+            val headInfo: ParserInfo = head.tryToParse(context)
+            if (start < context.position || headInfo.success) {
+                return headInfo
             }
+            val failed = mutableListOf(headInfo)
             for (p in tail) {
-                info = info.merge(p.tryToParse(context))
+                val info = p.tryToParse(context)
                 if (start < context.position || info.success) {
                     return info
+                } else {
+                    failed.add(info)
                 }
             }
-            return info
+            return failed.reduce { acc, parserInfo -> acc.merge(parserInfo) }
         }
 
         public override fun calcName(): String = buildString {
