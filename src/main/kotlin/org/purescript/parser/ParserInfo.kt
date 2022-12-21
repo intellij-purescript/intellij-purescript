@@ -1,48 +1,16 @@
 package org.purescript.parser
 
-class ParserInfo {
-    val position: Int
-    val expected: Set<Parsec>
-    val errorMessage: String?
+class ParserInfo(
+    val position: Int,
+    val expected: Set<Parsec>,
+    private val errorMessage: String?,
     val success: Boolean
-
-    private constructor(
-        position: Int,
-        expected: Set<Parsec>,
-        errorMessage: String?,
-        success: Boolean
-    ) {
-        this.position = position
-        this.success = success
-        this.expected = expected
-        this.errorMessage = errorMessage
-    }
-
-    constructor(position: Int, errorMessage: String?, b: Boolean) {
-        this.position = position
-        success = b
-        expected = setOf()
-        this.errorMessage = errorMessage
-    }
-
-    constructor(position: Int, expected: Parsec, success: Boolean) : this(
-        position,
-        setOf(expected),
-        null,
-        success
-    )
-
-    constructor(position: Int, info: ParserInfo, success: Boolean) : this(
-        position,
-        info.expected,
-        null,
-        success
-    )
+) {
 
     override fun toString(): String {
         if (errorMessage != null) return errorMessage
         val expectedStrings: Set<String> = expected
-            .flatMapTo(mutableSetOf()) {it.expectedName ?: setOf()}
+            .flatMapTo(mutableSetOf()) { it.expectedName ?: setOf() }
         val expected = expectedStrings.toTypedArray()
         if (expected.isNotEmpty()) {
             val sb = StringBuilder()
@@ -59,19 +27,20 @@ class ParserInfo {
         return "Error"
     }
 
-    fun merge(info2: ParserInfo, success: Boolean) =
-        if (position < info2.position) {
-            if (success == info2.success) {
-                info2
+    fun merge(other: ParserInfo, success: Boolean) = when {
+        position < other.position -> {
+            if (success == other.success) {
+                other
             } else {
                 ParserInfo(
-                    info2.position,
-                    info2.expected,
-                    info2.errorMessage,
+                    other.position,
+                    other.expected,
+                    other.errorMessage,
                     success
                 )
             }
-        } else if (position > info2.position) {
+        }
+        position > other.position -> {
             if (success == this.success) {
                 this
             } else {
@@ -82,13 +51,13 @@ class ParserInfo {
                     success
                 )
             }
-        } else {
-            ParserInfo(
-                position,
-                expected + info2.expected,
-                if (errorMessage == null) info2.errorMessage
-                else errorMessage + ";" + info2.errorMessage,
-                success
-            )
         }
+        else -> ParserInfo(
+            position,
+            expected + other.expected,
+            if (errorMessage == null) other.errorMessage
+            else errorMessage + ";" + other.errorMessage,
+            success
+        )
+    }
 }

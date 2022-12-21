@@ -5,12 +5,13 @@ import com.intellij.psi.tree.TokenSet
 
 object Combinators {
     fun token(tokenType: IElementType): Parsec = object : Parsec() {
-        override fun parse(context: ParserContext): ParserInfo =
-            if (context.eat(tokenType)) {
-                ParserInfo(context.position, this, true)
-            } else {
-                ParserInfo(context.position, this, false)
-            }
+        override fun parse(context: ParserContext): ParserInfo = ParserInfo(
+            context.position,
+            setOf(this),
+            null,
+            context.eat(tokenType)
+        )
+
 
         public override fun calcName() = tokenType.toString()
         override fun calcExpectedName() = setOf(tokenType.toString())
@@ -22,9 +23,9 @@ object Combinators {
         override fun parse(context: ParserContext): ParserInfo =
             if (context.text() == token) {
                 context.advance()
-                ParserInfo(context.position, this, true)
+                ParserInfo(context.position, setOf(this), null, true)
             } else {
-                ParserInfo(context.position, this, false)
+                ParserInfo(context.position, setOf(this), null, false)
             }
 
         public override fun calcName() = "\"" + token + "\""
@@ -72,7 +73,7 @@ object Combinators {
                 if (head.canBeEmpty || head.canStartWithSet.contains(context.peek())) {
                     head.parse(context)
                 } else {
-                    ParserInfo(position, head, false)
+                    ParserInfo(position, setOf(head), null, false)
                 }
             if (context.position > position || info.success) {
                 return info
@@ -82,7 +83,7 @@ object Combinators {
                     if (p2.canBeEmpty || p2.canStartWithSet.contains(context.peek())) {
                         p2.parse(context)
                     } else {
-                        ParserInfo(position, p2, false)
+                        ParserInfo(position, setOf(p2), null, false)
                     }
                 info =
                     info.merge(info2, info2.success)
@@ -126,7 +127,7 @@ object Combinators {
     fun many(p: Parsec) = manyOrEmpty(p)
     fun manyOrEmpty(p: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
-            var info = ParserInfo(context.position, p, true)
+            var info = ParserInfo(context.position, setOf(p), null, true)
             while (!context.eof()) {
                 val position = context.position
                 info = p.parse(context)
@@ -134,14 +135,14 @@ object Combinators {
                     if (position == context.position) {
                         // TODO: this should not be allowed.
                         return info.merge(
-                            ParserInfo(context.position, info, false),
+                            ParserInfo(context.position, info.expected, null, false),
                             false
                         )
                     }
                 } else {
                     return if (position == context.position) {
                         info.merge(
-                            ParserInfo(context.position, info, true),
+                            ParserInfo(context.position, info.expected, null, true),
                             true
                         )
                     } else {
@@ -168,7 +169,7 @@ object Combinators {
                 info1
             } else {
                 val success = context.position == position
-                ParserInfo(info1.position, info1, success)
+                ParserInfo(info1.position, info1.expected, null, success)
             }
         } finally {
             context.exitOptional()
@@ -183,7 +184,7 @@ object Combinators {
     fun attempt(p: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext) =
             if (!p.canBeEmpty && !p.canStartWithSet.contains(context.peek())) {
-                ParserInfo(context.position, p, false)
+                ParserInfo(context.position, setOf(p), null, false)
             } else {
                 val start = context.position
                 val pack = context.start()
@@ -196,7 +197,7 @@ object Combinators {
                     info
                 } else {
                     pack.rollbackTo()
-                    ParserInfo(start, info, false)
+                    ParserInfo(start, info.expected, null, false)
                 }
             }
 
@@ -230,7 +231,7 @@ object Combinators {
                 val end = context.position
                 val text = context.getText(start, end)
                 if (!predicate.invoke(text)) {
-                    ParserInfo(context.position, errorMessage, false)
+                    ParserInfo(context.position, setOf(), errorMessage, false)
                 } else {
                     pack.drop()
                     info1
