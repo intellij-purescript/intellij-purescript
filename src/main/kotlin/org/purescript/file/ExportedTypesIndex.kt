@@ -26,7 +26,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun map(inputData: FileContent): Map<String, Void?> {
         val file = inputData.psiFile as? PSFile ?: return emptyMap()
         val module = file.module ?: return emptyMap()
-        val exportList = module.exportList
+        val exportList = module.cache.exportsList
         return if (exportList == null) {
             declarations(module)
         } else {
@@ -43,10 +43,10 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
 
     private fun declarations(module: PSModule): Map<String, Nothing?> {
         val exportedNames = mutableSetOf<String>()
-        module.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
-        module.dataDeclarations.mapTo(exportedNames) { it.name }
-        module.newTypeDeclarations.mapTo(exportedNames) { it.name }
-        module.foreignDataDeclarations.mapTo(exportedNames) { it.name }
+        module.cache.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
+        module.cache.dataDeclarations.mapTo(exportedNames) { it.name }
+        module.cache.newTypeDeclarations.mapTo(exportedNames) { it.name }
+        module.cache.foreignDataDeclarations.mapTo(exportedNames) { it.name }
         return exportedNames.associateWith { null }
     }
 

@@ -26,9 +26,11 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
         get() =
             myElement?.module?.run {
                 listOf(
-                    *valueDeclarations,
-                    *foreignValueDeclarations,
-                    *classDeclarations.flatMap { it.classMembers.toList() }.toTypedArray()
+                    *cache.valueDeclarations,
+                    *cache.foreignValueDeclarations,
+                    *cache.classDeclarations
+                        .flatMap { it.classMembers.toList() }
+                        .toTypedArray()
                 )
             } ?: emptyList()
 

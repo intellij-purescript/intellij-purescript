@@ -63,16 +63,16 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                         }
                     }
                     // TODO Support values defined in the expression
-                    yieldAll(module.valueDeclarations.toList())
-                    yieldAll(module.foreignValueDeclarations.toList())
+                    yieldAll(module.cache.valueDeclarations.toList())
+                    yieldAll(module.cache.foreignValueDeclarations.toList())
                     val localClassMembers = module
-                        .classDeclarations
+                        .cache.classDeclarations
                         .asSequence()
                         .flatMap { it.classMembers.asSequence() }
                     yieldAll(localClassMembers)
                 }
                 val importDeclarations =
-                    module.importDeclarations.filter { it.importAlias?.name == qualifyingName }
+                    module.cache.importDeclarations.filter { it.importAlias?.name == qualifyingName }
                 yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
                 yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
                 yieldAll(importDeclarations.flatMap { it.importedClassMembers })

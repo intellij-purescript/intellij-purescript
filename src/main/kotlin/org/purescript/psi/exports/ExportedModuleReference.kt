@@ -33,5 +33,6 @@ class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBa
 
     private val candidates: Array<PSImportDeclaration>
         get() =
-            myElement.module?.importDeclarations ?: emptyArray()
+            myElement.module?.let { it.cache.importDeclarations }
+                ?: emptyArray()
 }

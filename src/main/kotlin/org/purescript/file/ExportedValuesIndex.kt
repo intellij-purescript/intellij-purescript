@@ -20,9 +20,9 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.exportList == null -> {
+                        file.module?.let { it.cache.exportsList } == null -> {
                             val exportedValues = file.module!!
-                                .valueDeclarations
+                                .cache.valueDeclarations
                                 .map { it.name }
                                 .toSet()
                                 .asSequence()
@@ -35,11 +35,13 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
                                 .toMap()
                         }
                         else -> {
-                            file.module!!.exportList!!.exportedItems
-                                .mapNotNull { when(it) {
-                                    is PSExportedValue -> it.name
-                                    else -> null
-                                } }
+                            file.module!!.cache.exportsList!!.exportedItems
+                                .mapNotNull {
+                                    when (it) {
+                                        is PSExportedValue -> it.name
+                                        else -> null
+                                    }
+                                }
                                 .map { it to null }
                                 .toMap()
                         }

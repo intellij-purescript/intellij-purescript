@@ -20,13 +20,13 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.exportList == null -> {
+                        file.module?.let { it.cache.exportsList } == null -> {
                             file.module!!
-                                .fixityDeclarations
+                                .cache.fixityDeclarations
                                 .map { it.name }.associateWith { null }
                         }
                         else -> {
-                            file.module!!.exportList!!.exportedItems
+                            file.module!!.cache.exportsList!!.exportedItems
                                 .mapNotNull {
                                     when (it) {
                                         is PSExportedOperator -> it.name

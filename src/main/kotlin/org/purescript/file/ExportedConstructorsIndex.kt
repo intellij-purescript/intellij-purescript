@@ -21,14 +21,14 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.exportList == null -> {
+                        file.module?.let { it.cache.exportsList } == null -> {
                             val dataConstructors = file.module
-                                ?.dataConstructors
+                                ?.let { it.cache.dataConstructors }
                                 ?.map { it.name }
                                 ?.asSequence()
                                 ?: emptySequence()
                             val typeConstructors = file.module
-                                ?.newTypeConstructors
+                                ?.let { it.cache.newTypeConstructors }
                                 ?.map { it.name }
                                 ?.asSequence()
                                 ?: emptySequence()
@@ -38,15 +38,18 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                         }
                         // exports named in the export list
                         else -> {
-                            file.module!!.exportList!!.exportedItems
-                                .mapNotNull { when(it) {
-                                    is PSExportedData -> it.dataDeclaration
-                                        ?.dataConstructors
-                                        ?.map {it.name }
-                                        ?.asSequence()
-                                    is PSExportedType -> sequenceOf(it.name)
-                                    else -> null
-                                } }
+                            file.module!!.cache.exportsList!!.exportedItems
+                                .mapNotNull {
+                                    when (it) {
+                                        is PSExportedData -> it.dataDeclaration
+                                            ?.dataConstructors
+                                            ?.map { it.name }
+                                            ?.asSequence()
+
+                                        is PSExportedType -> sequenceOf(it.name)
+                                        else -> null
+                                    }
+                                }
                                 .flatMap { it }
                                 .map { it to null }
                                 .toMap()

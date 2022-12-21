@@ -34,10 +34,10 @@ class ConstructorReference(
             val qualifyingName = qualifiedProperName.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {
-                    yieldAll(module.newTypeConstructors)
-                    yieldAll(module.dataConstructors)
+                    yieldAll(module.cache.newTypeConstructors)
+                    yieldAll(module.cache.dataConstructors)
                 }
-                val importDeclarations = module.importDeclarations
+                val importDeclarations = module.cache.importDeclarations
                     .filter { it.importAlias?.name == qualifyingName }
                 yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
                 yieldAll(importDeclarations.flatMap { it.importedDataConstructors })

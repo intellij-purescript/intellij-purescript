@@ -12,8 +12,8 @@ class SignatureReference(signature: PSSignature) :
     ) {
     override fun resolve(): PsiElement? {
         return element.module
-            ?.valueDeclarations
-            ?.firstOrNull {it.name == element.name}
+            ?.let { it.cache.valueDeclarations }
+            ?.firstOrNull { it.name == element.name }
     }
 
     override fun handleElementRename(name: String): PsiElement? {

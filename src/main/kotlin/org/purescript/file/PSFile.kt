@@ -25,7 +25,7 @@ class PSFile(viewProvider: FileViewProvider) :
         get() = findChildByClass(PSModule::class.java)
 
     val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
-        get() = module?.valueDeclarations?.groupBy { it.name }
+        get() = module?.let { it.cache.valueDeclarations }?.groupBy { it.name }
             ?: emptyMap()
 
 }

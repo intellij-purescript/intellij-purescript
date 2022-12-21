@@ -16,14 +16,14 @@ class ExportedOperatorReference(operator: PSExportedOperator) :
     private val importedCandidates
         get() =
             element.module
-                ?.importDeclarations
+                ?.let { it.cache.importDeclarations }
                 ?.flatMap { it.importedFixityDeclarations }
                 ?.asSequence()
                 ?: sequenceOf()
 
     private val localCandidates
         get() = element.module
-            ?.fixityDeclarations
+            ?.let { it.cache.fixityDeclarations }
             ?.asSequence()
             ?: sequenceOf()
 

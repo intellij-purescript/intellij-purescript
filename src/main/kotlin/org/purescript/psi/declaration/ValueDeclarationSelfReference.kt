@@ -13,7 +13,7 @@ class ValueDeclarationSelfReference(valueDeclaration: PSValueDeclaration) :
 
     override fun resolve(): PsiElement? {
         return element.module
-            ?.valueDeclarations
+            ?.let { it.cache.valueDeclarations }
             ?.firstOrNull { it.name == element.name }
     }
 

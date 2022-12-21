@@ -106,7 +106,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 data Qux a b = Baz (a -> b)
             """.trimIndent()
         ).getModule()
-        assertSize(2, module.dataDeclarations)
+        assertSize(2, module.cache.dataDeclarations)
     }
 
     fun `test finds foreign value declarations`() {
@@ -118,7 +118,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 foreign import split :: Pattern -> String -> Array String
             """.trimIndent()
         ).getModule()
-        TestCase.assertEquals(1, module.foreignValueDeclarations.size)
+        TestCase.assertEquals(1, module.cache.foreignValueDeclarations.size)
     }
 
     fun `test exported value declarations (exports all)`() {
@@ -334,7 +334,7 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        assertSize(2, module.newTypeDeclarations)
+        assertSize(2, module.cache.newTypeDeclarations)
     }
 
     fun `test finds exported newtype declarations`() {
@@ -454,7 +454,7 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        assertSize(1, module.newTypeConstructors)
+        assertSize(1, module.cache.newTypeConstructors)
     }
 
     fun `test finds data constructors`() {
@@ -469,7 +469,7 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        assertSize(3, module.dataConstructors)
+        assertSize(3, module.cache.dataConstructors)
     }
 
     fun `test finds exported newtype constructors`() {

@@ -27,9 +27,50 @@ class PSModule(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,
     DocCommentOwner {
-    override fun getName(): String {
-        return nameIdentifier.name
+
+    var cache = Cache()
+
+    inner class Cache {
+        val name: String by lazy { nameIdentifier.name }
+        val exportsList by lazy { findChildByClass(PSExportList::class.java) }
+
+        val importDeclarations: Array<PSImportDeclaration>
+            by lazy { findChildrenByClass(PSImportDeclaration::class.java) }
+        
+        val valueDeclarations: Array<PSValueDeclaration>
+            by lazy { findChildrenByClass(PSValueDeclaration::class.java) }
+
+        val dataDeclarations: Array<PSDataDeclaration>
+            by lazy { findChildrenByClass(PSDataDeclaration::class.java) }
+        val dataConstructors
+            by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
+        
+        val newTypeDeclarations: Array<PSNewTypeDeclaration>
+            by lazy { findChildrenByClass(PSNewTypeDeclaration::class.java) }
+        val newTypeConstructors: List<PSNewTypeConstructor>
+            by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
+        
+        val typeSynonymDeclarations: Array<PSTypeSynonymDeclaration>
+            by lazy { findChildrenByClass(PSTypeSynonymDeclaration::class.java) }
+        
+        val classDeclarations: Array<PSClassDeclaration>
+            by lazy { findChildrenByClass(PSClassDeclaration::class.java) }
+
+        val fixityDeclarations: Array<PSFixityDeclaration>
+            by lazy { findChildrenByClass(PSFixityDeclaration::class.java) }
+        
+        val foreignValueDeclarations: Array<PSForeignValueDeclaration>
+            by lazy { findChildrenByClass(PSForeignValueDeclaration::class.java) }
+        val foreignDataDeclarations: Array<PSForeignDataDeclaration>
+            by lazy { findChildrenByClass(PSForeignDataDeclaration::class.java) }
     }
+
+    override fun subtreeChanged() {
+        cache = Cache()
+        super.subtreeChanged()
+    }
+
+    override fun getName(): String = cache.name
 
     override fun setName(name: String): PsiElement? {
         val properName = PSPsiFactory(project).createModuleName(name)
@@ -45,13 +86,10 @@ class PSModule(node: ASTNode) :
     override fun getTextOffset(): Int = nameIdentifier.textOffset
 
     fun getImportDeclarationByName(name: String): PSImportDeclaration? {
-        return importDeclarations
+        return cache.importDeclarations
             .asSequence()
             .find { (it.name ?: "") == name }
     }
-
-    val fixityDeclarations: Array<PSFixityDeclaration> get() =
-        findChildrenByClass(PSFixityDeclaration::class.java)
 
     /**
      * @return the [PSFixityDeclaration] that this module exports,
@@ -59,7 +97,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedFixityDeclarations: List<PSFixityDeclaration>
         get() = getExportedDeclarations(
-            fixityDeclarations,
+            cache.fixityDeclarations,
             PSImportDeclaration::importedFixityDeclarations,
             PSExportedOperator::class.java
         )
@@ -83,7 +121,7 @@ class PSModule(node: ASTNode) :
         importedDeclarationProperty: KProperty1<PSImportDeclaration, List<Declaration>>,
         exportedItemClass: Class<out PSExportedItem>
     ): List<Declaration> {
-        val explicitlyExportedItems = exportList?.exportedItems
+        val explicitlyExportedItems = cache.exportsList?.exportedItems
             ?: return declarations.toList()
 
         val explicitlyNames = explicitlyExportedItems
@@ -103,86 +141,14 @@ class PSModule(node: ASTNode) :
 
         explicitlyExportedItems.filterIsInstance<PSExportedModule>()
             .flatMap { it.importDeclarations }
-            .flatMapTo(exportedDeclarations) { importedDeclarationProperty.get(it) }
+            .flatMapTo(exportedDeclarations) {
+                importedDeclarationProperty.get(
+                    it
+                )
+            }
 
         return exportedDeclarations
     }
-
-    /**
-     * If the export list is null, this module implicitly exports all its members.
-     * @return the [PSExportList] in this module, if it exists
-     */
-    val exportList: PSExportList?
-        get() = findChildByClass(PSExportList::class.java)
-
-    /**
-     * @return the [PSImportDeclaration] elements in this module
-     */
-    val importDeclarations: Array<PSImportDeclaration>
-        get() =
-            findChildrenByClass(PSImportDeclaration::class.java)
-
-    /**
-     * @return the [PSValueDeclaration] elements in this module
-     */
-    val valueDeclarations: Array<PSValueDeclaration>
-        get() = findChildrenByClass(PSValueDeclaration::class.java)
-
-    /**
-     * @return the [PSForeignValueDeclaration] elements in this module
-     */
-    val foreignValueDeclarations: Array<PSForeignValueDeclaration>
-        get() =
-            findChildrenByClass(PSForeignValueDeclaration::class.java)
-
-    /**
-     * @return the [PSForeignDataDeclaration] elements in this module
-     */
-    val foreignDataDeclarations: Array<PSForeignDataDeclaration>
-        get() =
-            findChildrenByClass(PSForeignDataDeclaration::class.java)
-
-    /**
-     * @return the [PSNewTypeDeclaration] elements in this module
-     */
-    val newTypeDeclarations: Array<PSNewTypeDeclaration>
-        get() =
-            findChildrenByClass(PSNewTypeDeclaration::class.java)
-
-    /**
-     * @return the [PSNewTypeConstructor] elements in this module
-     */
-    val newTypeConstructors: List<PSNewTypeConstructor>
-        get() =
-            newTypeDeclarations.map { it.newTypeConstructor }
-
-    /**
-     * @return the [PSDataDeclaration] elements in this module
-     */
-    val dataDeclarations: Array<PSDataDeclaration>
-        get() =
-            findChildrenByClass(PSDataDeclaration::class.java)
-
-    /**
-     * @return the [PSDataConstructor] elements in this module
-     */
-    val dataConstructors: List<PSDataConstructor>
-        get() =
-            dataDeclarations.flatMap { it.dataConstructors.toList() }
-
-    /**
-     * @return the [PSTypeSynonymDeclaration] elements in this module
-     */
-    val typeSynonymDeclarations: Array<PSTypeSynonymDeclaration>
-        get() =
-            findChildrenByClass(PSTypeSynonymDeclaration::class.java)
-
-    /**
-     * @return the [PSClassDeclaration] elements in this module
-     */
-    val classDeclarations: Array<PSClassDeclaration>
-        get() =
-            findChildrenByClass(PSClassDeclaration::class.java)
 
     /**
      * @return the [PSValueDeclaration] that this module exports,
@@ -190,7 +156,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedValueDeclarations: List<PSValueDeclaration>
         get() = getExportedDeclarations(
-            valueDeclarations,
+            cache.valueDeclarations,
             PSImportDeclaration::importedValueDeclarations,
             PSExportedValue::class.java
         )
@@ -201,7 +167,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
         get() = getExportedDeclarations(
-            foreignValueDeclarations,
+            cache.foreignValueDeclarations,
             PSImportDeclaration::importedForeignValueDeclarations,
             PSExportedValue::class.java
         )
@@ -212,7 +178,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
         get() = getExportedDeclarations(
-            foreignDataDeclarations,
+            cache.foreignDataDeclarations,
             PSImportDeclaration::importedForeignDataDeclarations,
             PSExportedData::class.java
         )
@@ -223,7 +189,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedNewTypeDeclarations: List<PSNewTypeDeclaration>
         get() = getExportedDeclarations(
-            newTypeDeclarations,
+            cache.newTypeDeclarations,
             PSImportDeclaration::importedNewTypeDeclarations,
             PSExportedData::class.java
         )
@@ -234,10 +200,11 @@ class PSModule(node: ASTNode) :
      */
     val exportedNewTypeConstructors: List<PSNewTypeConstructor>
         get() {
-            val explicitlyExportedItems = exportList?.exportedItems
-                ?: return newTypeConstructors
+            val explicitlyExportedItems = cache.exportsList?.exportedItems
+                ?: return cache.newTypeConstructors
 
-            val exportedNewTypeConstructors = mutableListOf<PSNewTypeConstructor>()
+            val exportedNewTypeConstructors =
+                mutableListOf<PSNewTypeConstructor>()
 
             for (exportedData in explicitlyExportedItems.filterIsInstance<PSExportedData>()) {
                 if (exportedData.exportsAll) {
@@ -262,7 +229,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedDataDeclarations: List<PSDataDeclaration>
         get() = getExportedDeclarations(
-            dataDeclarations,
+            cache.dataDeclarations,
             PSImportDeclaration::importedDataDeclarations,
             PSExportedData::class.java
         )
@@ -273,8 +240,8 @@ class PSModule(node: ASTNode) :
      */
     val exportedDataConstructors: List<PSDataConstructor>
         get() {
-            val explicitlyExportedItems = exportList?.exportedItems
-                ?: return dataConstructors
+            val explicitlyExportedItems = cache.exportsList?.exportedItems
+                ?: return cache.dataConstructors
 
             val exportedDataConstructors = mutableListOf<PSDataConstructor>()
 
@@ -302,7 +269,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
         get() = getExportedDeclarations(
-            typeSynonymDeclarations,
+            cache.typeSynonymDeclarations,
             PSImportDeclaration::importedTypeSynonymDeclarations,
             PSExportedData::class.java
         )
@@ -313,7 +280,7 @@ class PSModule(node: ASTNode) :
      */
     val exportedClassDeclarations: List<PSClassDeclaration>
         get() = getExportedDeclarations(
-            classDeclarations,
+            cache.classDeclarations,
             PSImportDeclaration::importedClassDeclarations,
             PSExportedClass::class.java
         )
@@ -324,21 +291,24 @@ class PSModule(node: ASTNode) :
      */
     val exportedClassMembers: List<PSClassMember>
         get() = getExportedDeclarations(
-            classDeclarations.flatMap { it.classMembers.asSequence() }.toTypedArray(),
+            cache.classDeclarations
+                .flatMap { it.classMembers.asSequence() }
+                .toTypedArray(),
             PSImportDeclaration::importedClassMembers,
             PSExportedValue::class.java
         )
 
     val reexportedModuleNames: List<String>
         get() =
-            exportList?.exportedItems?.filterIsInstance(PSExportedModule::class.java)
+            cache.exportsList?.exportedItems
+                ?.filterIsInstance(PSExportedModule::class.java)
                 ?.map { it.name }
                 ?.toList()
                 ?: emptyList()
 
     val exportedNames: List<String>
         get() =
-            exportList?.exportedItems
+            cache.exportsList?.exportedItems
                 ?.filter { it !is PSExportedModule }
                 ?.map { it.text.trim() }
                 ?.toList()
@@ -348,7 +318,7 @@ class PSModule(node: ASTNode) :
         get() = getDocComments()
 
     fun addImportDeclaration(importDeclaration: PSImportDeclaration) {
-        val lastImportDeclaration = importDeclarations.lastOrNull()
+        val lastImportDeclaration = cache.importDeclarations.lastOrNull()
         val insertPosition = lastImportDeclaration ?: whereKeyword
         val newLine = PSPsiFactory(project).createNewLine()
         addAfter(importDeclaration, insertPosition)
@@ -357,9 +327,11 @@ class PSModule(node: ASTNode) :
             addAfter(newLine, insertPosition)
         }
     }
-    val exportsSelf:Boolean get() =
-        exportList?.exportedItems
-            ?.filterIsInstance<PSExportedModule>()
-            ?.any { it.name == module?.name }
-            ?: true
+
+    val exportsSelf: Boolean
+        get() =
+            cache.exportsList?.exportedItems
+                ?.filterIsInstance<PSExportedModule>()
+                ?.any { it.name == module?.name }
+                ?: true
 }

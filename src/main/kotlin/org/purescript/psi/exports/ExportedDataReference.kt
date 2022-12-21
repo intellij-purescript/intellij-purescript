@@ -20,8 +20,8 @@ class ExportedDataReference(exportedData: PSExportedData) : PsiReferenceBase<PSE
         get() =
             myElement.module?.run {
                 arrayOf(
-                    *dataDeclarations,
-                    *newTypeDeclarations,
+                    *cache.dataDeclarations,
+                    *cache.newTypeDeclarations,
                 )
             } ?: emptyArray()
 }

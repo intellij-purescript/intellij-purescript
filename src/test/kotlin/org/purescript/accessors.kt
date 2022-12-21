@@ -82,7 +82,7 @@ fun PsiFile.getModule(): PSModule =
     (this as PSFile).module!!
 
 fun PsiFile.getDataDeclaration(): PSDataDeclaration =
-    getModule().dataDeclarations.single()
+    getModule().cache.dataDeclarations.single()
 
 fun PsiFile.getDataConstructor(): PSDataConstructor =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
@@ -94,19 +94,21 @@ fun PsiFile.getExportedClassDeclarations(): List<PSClassDeclaration> =
     getModule().exportedClassDeclarations
 
 fun PsiFile.getImportDeclarations(): Array<PSImportDeclaration> =
-    getModule().importDeclarations
+    getModule().cache.importDeclarations
+
 fun PsiFile.getImportAliases(): List<PSImportAlias> =
     getModule()
-        .importDeclarations
+        .cache.importDeclarations
         .mapNotNull { it.importAlias }
 
 fun PsiFile.getImportDeclaration(): PSImportDeclaration =
     getImportDeclarations().single()
+
 fun PsiFile.getImportAlias(): PSImportAlias =
     getImportAliases().single()
 
 fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
-    getModule().valueDeclarations
+    getModule().cache.valueDeclarations
 
 fun PsiFile.getValueDeclaration(): PSValueDeclaration =
     getValueDeclarations().single()
@@ -118,13 +120,13 @@ fun PsiFile.getVarBinder(): PSVarBinder =
     getVarBinders().single()
 
 fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
-    getModule().foreignValueDeclarations
+    getModule().cache.foreignValueDeclarations
 
 fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration =
     getForeignValueDeclarations().single()
 
 fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclaration> =
-    getModule().newTypeDeclarations
+    getModule().cache.newTypeDeclarations
 
 fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclaration =
     getNewTypeDeclarations().single()
@@ -148,7 +150,7 @@ fun PsiFile.getImportedOperator(): PSImportedOperator =
     getImportedItem() as PSImportedOperator
 
 fun PsiFile.getExportedItems(): Array<PSExportedItem> =
-    getModule().exportList!!.exportedItems
+    getModule().cache.exportsList!!.exportedItems
 
 fun PsiFile.getExportedItem(): PSExportedItem =
     getExportedItems().single()
@@ -166,7 +168,7 @@ fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()
 
 fun PsiFile.getClassDeclarations(): Array<PSClassDeclaration> =
-    getModule().classDeclarations
+    getModule().cache.classDeclarations
 
 fun PsiFile.getClassDeclaration(): PSClassDeclaration =
     getClassDeclarations().single()
@@ -184,13 +186,13 @@ fun PsiFile.getTypeConstructor(): PSTypeConstructor =
     getTypeConstructors().single()
 
 fun PsiFile.getTypeSynonymDeclarations(): Array<PSTypeSynonymDeclaration> =
-    getModule().typeSynonymDeclarations
+    getModule().cache.typeSynonymDeclarations
 
 fun PsiFile.getTypeSynonymDeclaration(): PSTypeSynonymDeclaration =
     getTypeSynonymDeclarations().single()
 
 fun PsiFile.getForeignDataDeclarations(): Array<PSForeignDataDeclaration> =
-    getModule().foreignDataDeclarations
+    getModule().cache.foreignDataDeclarations
 
 fun PsiFile.getForeignDataDeclaration(): PSForeignDataDeclaration =
     getForeignDataDeclarations().single()

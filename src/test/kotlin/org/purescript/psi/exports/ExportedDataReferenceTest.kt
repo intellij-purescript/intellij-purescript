@@ -14,8 +14,9 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 data Bar = Qux
             """.trimIndent()
         ).getModule()
-        val exportedData = module.exportList!!.exportedItems.single() as PSExportedData
-        val dataDeclaration = module.dataDeclarations.single()
+        val exportedData =
+            module.cache.exportsList!!.exportedItems.single() as PSExportedData
+        val dataDeclaration = module.cache.dataDeclarations.single()
 
         TestCase.assertEquals(dataDeclaration, exportedData.reference.resolve())
     }
@@ -27,7 +28,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 module Foo (Bar) where
             """.trimIndent()
         ).getModule()
-        val exportedData = module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedData = module.cache.exportsList!!.exportedItems.single() as PSExportedData
 
         TestCase.assertNull(exportedData.reference.resolve())
     }
@@ -52,7 +53,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 data <caret>Bar = Qux
             """.trimIndent()
         ).getModule()
-        val exportedData = module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedData = module.cache.exportsList!!.exportedItems.single() as PSExportedData
         val usageInfo = myFixture.testFindUsages("Foo.purs").single()
 
         TestCase.assertEquals(exportedData, usageInfo.element)
@@ -66,10 +67,14 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 newtype Bar = Qux Int
             """.trimIndent()
         ).getModule()
-        val exportedData = module.exportList!!.exportedItems.single() as PSExportedData
-        val newtypeDeclaration = module.newTypeDeclarations.single()
+        val exportedData =
+            module.cache.exportsList!!.exportedItems.single() as PSExportedData
+        val newtypeDeclaration = module.cache.newTypeDeclarations.single()
 
-        TestCase.assertEquals(newtypeDeclaration, exportedData.reference.resolve())
+        TestCase.assertEquals(
+            newtypeDeclaration,
+            exportedData.reference.resolve()
+        )
     }
 
     fun `test resolve fails when no newtype declaration exists`() {
@@ -79,7 +84,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 module Foo (Bar) where
             """.trimIndent()
         ).getModule()
-        val exportedData = module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedData = module.cache.exportsList!!.exportedItems.single() as PSExportedData
 
         TestCase.assertNull(exportedData.reference.resolve())
     }
@@ -104,7 +109,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 newtype <caret>Bar = Qux Int
             """.trimIndent()
         ).getModule()
-        val exportedData = module.exportList!!.exportedItems.single() as PSExportedData
+        val exportedData = module.cache.exportsList!!.exportedItems.single() as PSExportedData
         val usageInfo = myFixture.testFindUsages("Foo.purs").single()
 
         TestCase.assertEquals(exportedData, usageInfo.element)
