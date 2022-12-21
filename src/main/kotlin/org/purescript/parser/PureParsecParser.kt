@@ -47,7 +47,7 @@ class PureParsecParser {
         `'newtype'`,
         `'type'`,
         token(FOREIGN),
-        token(IMPORT),
+        `'import'`,
         infixl,
         infixr,
         infix,
@@ -359,7 +359,7 @@ class PureParsecParser {
         (optional(token(HIDING)) + parens(commaSep(importedItem)))
             .`as`(ImportList)
     private val parseImportDeclaration = (
-        token(IMPORT) +
+        `'import'` +
             moduleName +
             optional(importList) +
             optional((`as` + moduleName).`as`(ImportAlias))
