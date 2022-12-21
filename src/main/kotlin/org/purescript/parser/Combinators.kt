@@ -54,9 +54,9 @@ object Combinators {
         public override fun calcName() = "${p1.name} ${p2.name}"
         override fun calcExpectedName() =
             if (p1.canBeEmpty) {
-                p1.expectedName!! + p2.expectedName!!
+                p1.expectedName + p2.expectedName
             } else {
-                p1.expectedName!!
+                p1.expectedName
             }
 
         override val canStartWithSet: TokenSet
@@ -112,9 +112,9 @@ object Combinators {
         }
 
         override fun calcExpectedName(): Set<String> {
-            var result = head.expectedName!!
+            var result = head.expectedName
             for (parsec in tail) {
-                result = result + parsec.expectedName!!
+                result = result + parsec.expectedName
             }
             return result
         }
@@ -171,7 +171,7 @@ object Combinators {
         }
 
         public override fun calcName() = "(" + p.name + ")*"
-        override fun calcExpectedName() = p.expectedName!!
+        override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet
             get() = p.canStartWithSet
 
@@ -195,7 +195,7 @@ object Combinators {
         }
 
         public override fun calcName() = "(" + p.name + ")?"
-        override fun calcExpectedName() = p.expectedName!!
+        override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet
             get() = p.canStartWithSet
 
@@ -223,7 +223,7 @@ object Combinators {
             }
 
         public override fun calcName() = "try(" + p.name + ")"
-        override fun calcExpectedName() = p.expectedName!!
+        override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet
             get() = p.canStartWithSet
 
@@ -272,8 +272,8 @@ object Combinators {
             return info1
         }
 
-        public override fun calcName() = p.name!!
-        override fun calcExpectedName() = p.expectedName!!
+        public override fun calcName() = p.name
+        override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet
             get() = p.canStartWithSet
 
