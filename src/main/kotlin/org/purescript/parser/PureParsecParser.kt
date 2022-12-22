@@ -4,13 +4,10 @@ import org.purescript.parser.Combinators.attempt
 import org.purescript.parser.Combinators.braces
 import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.guard
-import org.purescript.parser.Combinators.many
 import org.purescript.parser.Combinators.many1
-import org.purescript.parser.Combinators.manyOrEmpty
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
-import org.purescript.parser.Combinators.sepBy
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
 
@@ -150,7 +147,7 @@ class PureParsecParser {
             attempt(
                 parens(
                     (attempt(qualified(properName)).`as`(TypeConstructor) +
-                        manyOrEmpty(typeAtom)
+                        typeAtom.noneOrMore()
                         ).sepBy1(token(COMMA))
                 ) + darrow
             )
@@ -186,12 +183,12 @@ class PureParsecParser {
         qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
     private val type5 = many1(typeAtom)
     private val type4 =
-        attempt(token("-") + number).or(manyOrEmpty(token("#")) + type5)
+        attempt(token("-") + number).or(token("#").noneOrMore() + type5)
     private val type3 = ref { type4.sepBy1(qualOp) }
     private val type2: Parsec =
         ref { type3 + optional(arrow.or(darrow) + type1) }
     private val type1 =
-        manyOrEmpty(forall + many1(typeVarBinding) + dot) + type2
+        (forall + many1(typeVarBinding) + dot).noneOrMore() + type2
     private val parsePropertyUpdate: Parsec =
         ref { label + optional(eq) + expr }
     private val exprAtom = ref {
@@ -220,7 +217,7 @@ class PureParsecParser {
             parens(expr).`as`(Parens),
         )
     }
-    private val expr7 = exprAtom + manyOrEmpty((dot + label).`as`(Accessor))
+    private val expr7 = exprAtom + (dot + label).`as`(Accessor).noneOrMore()
 
     /*
     * if there is only one case branch it can ignore layout so we need
@@ -258,13 +255,13 @@ class PureParsecParser {
     private val parseGuard =
         (pipe + patternGuard.sepBy(token(COMMA))).`as`(Guard)
     private val dataHead =
-        data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
+        data + properName + typeVarBinding.noneOrMore().`as`(TypeArgs)
     private val dataCtor =
-        (properName + manyOrEmpty(typeAtom)).`as`(DataConstructor)
+        (properName + typeAtom.noneOrMore()).`as`(DataConstructor)
     private val parseTypeDeclaration =
         (ident + dcolon + type).`as`(Signature)
     private val newtypeHead =
-        `'newtype'` + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
+        `'newtype'` + properName + typeVarBinding.noneOrMore().`as`(TypeArgs)
     private val exprWhere: Parsec = ref {
         expr + optional(
             (where + `L{` + letBinding.sepBy1(`L-sep`) + `L}`).`as`(
@@ -278,13 +275,13 @@ class PureParsecParser {
     private val instBinder =
         choice(
             attempt(ident + dcolon) + type,
-            (ident + manyOrEmpty(binderAtom) + guardedDecl)
+            (ident + binderAtom.noneOrMore() + guardedDecl)
                 .`as`(ValueDeclaration)
         )
     private val parseDeps =
         parens(
             (attempt(qualified(properName)).`as`(TypeConstructor)
-                + manyOrEmpty(typeAtom)
+                + typeAtom.noneOrMore()
                 ).sepBy1(token(COMMA))
         ) + darrow
     private val parseForeignDeclaration =
@@ -311,7 +308,7 @@ class PureParsecParser {
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe + fundep.sepBy1(token(COMMA))
     private val constraint =
-        (qualProperName.`as`(ClassName) + manyOrEmpty(typeAtom))
+        (qualProperName.`as`(ClassName) + typeAtom.noneOrMore())
             .`as`(ClassConstraint)
     private val constraints =
         parens(constraint.sepBy1(token(COMMA))).or(constraint)
@@ -319,7 +316,7 @@ class PureParsecParser {
     private val classSuper =
         (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
     private val classNameAndFundeps =
-        properName.`as`(ClassName) + manyOrEmpty(typeVarBinding) +
+        properName.`as`(ClassName) + typeVarBinding.noneOrMore() +
             optional(fundeps.`as`(ClassFunctionalDependencyList))
     private val classSignature = properName.`as`(ClassName) + dcolon + type
     private val classHead = choice(
@@ -389,11 +386,13 @@ class PureParsecParser {
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(NewtypeDeclaration),
         attempt(parseTypeDeclaration),
-        attempt(`'type'` + `'role'`) + properName + many(role),
+        attempt(`'type'` + `'role'`) + properName + role.noneOrMore(),
         attempt(`'type'` + properName + dcolon) + type,
-        (`'type'` + properName + many(typeVarBinding) + eq + type)
+        (`'type'` + properName + typeVarBinding.noneOrMore() + eq + type)
             .`as`(TypeSynonymDeclaration),
-        (attempt(ident) + many(binderAtom) + guardedDecl).`as`(ValueDeclaration),
+        (attempt(ident) + binderAtom.noneOrMore() + guardedDecl).`as`(
+            ValueDeclaration
+        ),
         parseForeignDeclaration,
         parseFixityDeclaration,
         classDeclaration,
@@ -443,14 +442,14 @@ class PureParsecParser {
     ).`as`(ObjectBinderField)
 
     private val binder2 = choice(
-        attempt(qualProperName.`as`(ConstructorBinder) + manyOrEmpty(binderAtom)),
+        attempt(qualProperName.`as`(ConstructorBinder) + binderAtom.noneOrMore()),
         attempt(token("-") + number).`as`(NumberBinder),
         binderAtom,
     )
     private val binder1 = binder2.sepBy1(qualOp)
     private val guardedCaseExpr = parseGuard + (arrow + exprWhere)
     private val guardedCase =
-        attempt(arrow + exprWhere).or(manyOrEmpty(guardedCaseExpr))
+        attempt(arrow + exprWhere).or(guardedCaseExpr.noneOrMore())
     private val caseBranch =
         (binder1.sepBy1(token(COMMA)) + guardedCase).`as`(CaseAlternative)
 
@@ -459,10 +458,10 @@ class PureParsecParser {
     private val letBinding =
         choice(
             attempt(parseTypeDeclaration),
-            attempt((ident + many(binderAtom) + guardedDecl))
+            attempt((ident + binderAtom.noneOrMore() + guardedDecl))
                 .`as`(ValueDeclaration),
             attempt(binder1 + eq + exprWhere),
-            attempt(ident + many(binderAtom) + guardedDecl)
+            attempt(ident + binderAtom.noneOrMore() + guardedDecl)
         )
     private val parseLet =
         (let + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)

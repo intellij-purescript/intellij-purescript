@@ -2,7 +2,6 @@ package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.Combinators.manyOrEmpty
 import org.purescript.parser.Combinators.optional
 
 abstract class Parsec {
@@ -26,7 +25,9 @@ abstract class Parsec {
     abstract fun parse(context: ParserContext): ParserInfo
     operator fun plus(other: Parsec) = Combinators.seq(this, other)
     fun or(next: Parsec) = Combinators.choice(this, next)
-    fun sepBy1(delimiter: Parsec) = this + manyOrEmpty(delimiter + this)
+    fun sepBy1(delimiter: Parsec) = this + (delimiter + this).noneOrMore()
     fun sepBy(delimiter: Parsec) = optional(sepBy1(delimiter))
+    fun oneOrMore() = this + noneOrMore()
+    fun noneOrMore() = Combinators.noneOrMore(this)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
 }

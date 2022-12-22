@@ -120,8 +120,7 @@ object Combinators {
         }
     }
 
-    fun many(p: Parsec) = manyOrEmpty(p)
-    fun manyOrEmpty(p: Parsec): Parsec = object : Parsec() {
+    fun noneOrMore(p: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             var info = ParserInfo(context.position, setOf(p), null, true)
             while (!context.eof()) {
@@ -161,7 +160,7 @@ object Combinators {
         public override fun calcCanBeEmpty() = true
     }
 
-    fun many1(p: Parsec) = p + manyOrEmpty(p)
+    fun many1(p: Parsec) = p + p.noneOrMore()
     fun optional(p: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val position = context.position
@@ -207,8 +206,6 @@ object Combinators {
     fun parens(p: Parsec) = token(LPAREN) + p + token(RPAREN)
     fun squares(p: Parsec) = token(LBRACK) + p + token(RBRACK)
     fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
-
-    fun sepBy(p: Parsec, sep: Parsec) = optional(p + manyOrEmpty(sep + p))
     fun ref(init: Parsec.() -> Parsec) = ParsecRef(init)
     fun guard(
         p: Parsec,
