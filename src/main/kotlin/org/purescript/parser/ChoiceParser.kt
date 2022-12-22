@@ -1,0 +1,62 @@
+package org.purescript.parser
+
+import com.intellij.psi.tree.TokenSet
+
+class ChoiceParser(
+    private val head: Parsec,
+    private val tail: Array<out Parsec>
+) : Parsec() {
+    override fun parse(context: ParserContext): ParserInfo {
+        val start = context.position
+        val headInfo: ParserInfo = head.tryToParse(context)
+        if (start < context.position || headInfo.success) return headInfo
+        val failed = mutableListOf(headInfo)
+        for (p in tail) {
+            val info = p.tryToParse(context)
+            if (start < context.position || info.success) return info
+            else failed.add(info)
+        }
+        return failed.reduce { acc, parserInfo ->
+            when {
+                acc.position < parserInfo.position -> parserInfo
+                parserInfo.position < acc.position -> acc
+                else -> ParserInfo(
+                    acc.position,
+                    acc.expected + parserInfo.expected,
+                    if (acc.errorMessage == null) parserInfo.errorMessage
+                    else acc.errorMessage + ";" + parserInfo.errorMessage,
+                    false
+                )
+            }
+        }
+    }
+
+    public override fun calcName(): String = buildString {
+        append("(${head.name})")
+        for (parsec in tail) append(" | (${parsec.name})")
+    }
+
+    override fun calcExpectedName(): Set<String> =
+        tail.fold(head.expectedName) { acc, parsec -> acc + parsec.expectedName }
+
+    override val canStartWithSet: TokenSet
+        by lazy {
+            TokenSet.orSet(
+                head.canStartWithSet,
+                *tail.map { it.canStartWithSet }.toTypedArray()
+            )
+        }
+
+
+    public override fun calcCanBeEmpty(): Boolean {
+        if (!head.canBeEmpty) {
+            return false
+        }
+        for (parsec in tail) {
+            if (!parsec.canBeEmpty) {
+                return false
+            }
+        }
+        return true
+    }
+}

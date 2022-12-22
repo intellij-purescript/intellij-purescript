@@ -16,20 +16,20 @@ sealed interface DSL {
 }
 
 class ElementToken(private val token: IElementType) : DSL {
-    override val compile by lazy { Combinators.token(token) }
+    override val compile by lazy { ElementTokenParser(token) }
     override val optimize: DSL = this
 }
 
 class StringToken(private val token: String) : DSL {
-    override val compile by lazy { Combinators.token(token) }
+    override val compile by lazy { StringTokenParser(token) }
     override val optimize: DSL = this
 }
 
 class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
     override val compile by lazy {
-        Combinators.seq(
-            first.compile,
-            *rest.map { it.compile }.toTypedArray()
+        SeqParser(
+            rest.map { it.compile }.toTypedArray(),
+            first.compile
         )
     }
 
@@ -51,9 +51,9 @@ class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
 
 class Choice(val first: DSL, private vararg val rest: DSL) : DSL {
     override val compile: Parsec by lazy {
-        Combinators.choice(
+        ChoiceParser(
             first.compile,
-            * rest.map { it.compile }.toTypedArray()
+            rest.map { it.compile }.toTypedArray()
         )
     }
 
@@ -82,7 +82,7 @@ class NoneOrMore(private val child: DSL) : DSL {
 }
 
 class Optional(private val child: DSL) : DSL {
-    override val compile: Parsec by lazy { Combinators.optional(child.compile) }
+    override val compile: Parsec by lazy { OptionalParser(child.compile) }
     override val optimize by lazy {
         if (child == child.optimize) this
         else Optional(child.optimize)
@@ -98,7 +98,11 @@ class Transaction(private val child: DSL) : DSL {
 }
 
 class Reference(private val init: DSL.() -> DSL) : DSL {
-    override val compile: Parsec by lazy { Combinators.ref { init(Wrapper(this)).compile } }
+    override val compile: Parsec by lazy {
+        ParsecRef(fun Parsec.(): Parsec {
+            return init(Wrapper(this)).compile
+        })
+    }
 
     override val optimize: DSL get() = this
 }
@@ -114,7 +118,7 @@ class DSLGuard(
     private val predicate: (String?) -> Boolean
 ) : DSL {
     override val compile: Parsec by lazy {
-        Combinators.guard(child.compile, errorMessage, predicate)
+        GuardParser(child.compile, predicate, errorMessage)
     }
 
     override val optimize: DSL get() = this

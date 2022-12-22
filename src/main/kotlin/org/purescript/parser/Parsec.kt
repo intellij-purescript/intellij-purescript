@@ -2,7 +2,6 @@ package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.Combinators.optional
 
 abstract class Parsec {
     val name: String by lazy { calcName() }
@@ -23,12 +22,12 @@ abstract class Parsec {
         }
 
     abstract fun parse(context: ParserContext): ParserInfo
-    operator fun plus(other: Parsec) = Combinators.seq(this, other)
-    fun or(next: Parsec) = Combinators.choice(this, next)
+    operator fun plus(other: Parsec) = SeqParser(arrayOf(other), this)
+    fun or(next: Parsec) = ChoiceParser(this, arrayOf(next))
     fun sepBy1(delimiter: Parsec) = this + (delimiter + this).noneOrMore()
-    fun sepBy(delimiter: Parsec) = optional(sepBy1(delimiter))
+    fun sepBy(delimiter: Parsec) = OptionalParser(sepBy1(delimiter))
     fun oneOrMore() = this + noneOrMore()
-    fun noneOrMore() = Combinators.noneOrMore(this)
+    fun noneOrMore() = NoneOrMoreParser(this)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
-    fun withRollback() = Combinators.withRollback(this)
+    fun withRollback() = RollbackParser(this)
 }
