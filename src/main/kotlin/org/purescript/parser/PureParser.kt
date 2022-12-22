@@ -8,16 +8,14 @@ import com.intellij.psi.tree.IElementType
 class PureParser : PsiParser {
 
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
-        // builder.setDebugMode(true);
         val context = ParserContext(builder)
         val mark = context.start()
-        // Creating a new instance here allows hot swapping while debugging.
         val info = pureParsecParser.parseModule.parse(context)
         var nextType: IElementType? = null
         if (!context.eof()) {
             var errorMarker: PsiBuilder.Marker? = null
             while (!context.eof()) {
-                if (context.position >= info.position && errorMarker == null) {
+                if (errorMarker == null && context.position >= info.position) {
                     errorMarker = context.start()
                     nextType = builder.tokenType
                 }
