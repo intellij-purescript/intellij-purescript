@@ -35,9 +35,17 @@ class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
 
     override val optimize: DSL by lazy {
         val first = first.optimize
-        val rest = rest.map { it.optimize }.toTypedArray()
+        val rest = rest.map { it.optimize }.flatMap {
+            when (it) {
+                is Seq -> sequenceOf(it.first, *it.rest)
+                else -> sequenceOf(it)
+            }
+        }.toTypedArray()
         if (this.first == first && this.rest.contentEquals(rest)) this
-        else Seq(first, *rest)
+        else when (first) {
+            is Seq -> Seq(first.first, *first.rest, *rest)
+            else -> Seq(first, *rest)
+        } 
     }
 }
 
