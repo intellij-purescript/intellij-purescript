@@ -1,5 +1,6 @@
 package org.purescript.parser
 
+import com.intellij.ide.navbar.impl.fromOldExtensions
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
@@ -32,34 +33,39 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = TokenSet.ANY
         public override fun calcCanBeEmpty() = false
     }
-    fun seq(p1: Parsec, p2: Parsec): Parsec = object : Parsec() {
+    fun seq(first:Parsec, vararg ps: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
-            val info = p1.parse(context)
-            return if (info.success) {
-                info.merge(p2.parse(context))
-            } else {
-                info
+            return ps.fold(first.parse(context)) {info, p ->
+                if (info.success) info.merge(p.parse(context))
+                else info
             }
         }
 
-        public override fun calcName() = "${p1.name} ${p2.name}"
-        override fun calcExpectedName() =
-            if (p1.canBeEmpty) {
-                p1.expectedName + p2.expectedName
-            } else {
-                p1.expectedName
+        public override fun calcName() = 
+            all().joinToString(" ") { it.name }
+        override fun calcExpectedName(): Set<String> {
+            var ret = emptySet<String>()
+            for (p in all()) {
+                ret = ret + p.expectedName
+                if (!p.canBeEmpty) return ret
             }
+            return ret
+        }
 
         override val canStartWithSet: TokenSet
             by lazy {
-                if (p1.canBeEmpty) {
-                    TokenSet.orSet(p1.canStartWithSet, p2.canStartWithSet)
-                } else {
-                    p1.canStartWithSet
+                var ret = TokenSet.EMPTY
+                for (p in all()) {
+                    ret =TokenSet.orSet( ret, p.canStartWithSet)
+                    if (!p.canBeEmpty) return@lazy ret
                 }
+                ret
             }
 
-        public override fun calcCanBeEmpty() = p1.canBeEmpty && p2.canBeEmpty
+        private fun all() = sequenceOf(first, *ps)
+
+        public override fun calcCanBeEmpty() = 
+            all().all { it.canBeEmpty }
     }
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
