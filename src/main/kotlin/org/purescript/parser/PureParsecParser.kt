@@ -4,7 +4,6 @@ import org.purescript.parser.Combinators.attempt
 import org.purescript.parser.Combinators.braces
 import org.purescript.parser.Combinators.choice
 import org.purescript.parser.Combinators.guard
-import org.purescript.parser.Combinators.many1
 import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
@@ -112,7 +111,9 @@ class PureParsecParser {
     private val type: Parsec = ref { type1.sepBy1(dcolon).`as`(Type) }
 
     private val parseForAll: Parsec = ref {
-        (forall + many1(idents.`as`(GenericIdentifier)) + dot + parseConstrainedType)
+        (forall + idents
+            .`as`(GenericIdentifier)
+            .oneOrMore() + dot + parseConstrainedType)
             .`as`(ForAll)
     }
 
@@ -181,14 +182,14 @@ class PureParsecParser {
         ref { (expr1 + optional(dcolon + type)).`as`(Value) }
     private val qualOp =
         qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
-    private val type5 = many1(typeAtom)
+    private val type5 = typeAtom.oneOrMore()
     private val type4 =
         attempt(token("-") + number).or(token("#").noneOrMore() + type5)
     private val type3 = ref { type4.sepBy1(qualOp) }
     private val type2: Parsec =
         ref { type3 + optional(arrow.or(darrow) + type1) }
     private val type1 =
-        (forall + many1(typeVarBinding) + dot).noneOrMore() + type2
+        (forall + typeVarBinding.oneOrMore() + dot).noneOrMore() + type2
     private val parsePropertyUpdate: Parsec =
         ref { label + optional(eq) + expr }
     private val exprAtom = ref {
@@ -235,7 +236,7 @@ class PureParsecParser {
         choice(
             attempt(braces(parsePropertyUpdate.sepBy1(token(COMMA)))),
             expr7,
-            (backslash + many1(binderAtom) + arrow + expr).`as`(Lambda),
+            (backslash + binderAtom.oneOrMore() + arrow + expr).`as`(Lambda),
             exprCase,
             parseIfThenElse,
             doBlock,
@@ -243,8 +244,8 @@ class PureParsecParser {
             parseLet
         )
     }
-    private val expr4 = many1(expr5)
-    private val expr3 = (many1(token("-")) + expr4).`as`(UnaryMinus).or(expr4)
+    private val expr4 = expr5.oneOrMore()
+    private val expr3 = (token("-").oneOrMore() + expr4).`as`(UnaryMinus).or(expr4)
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(attempt(qualOp).`as`(ExpressionOperator))
@@ -271,7 +272,7 @@ class PureParsecParser {
     }
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
-        choice(attempt(eq) + exprWhere, many1(guardedDeclExpr))
+        choice(attempt(eq) + exprWhere, guardedDeclExpr.oneOrMore())
     private val instBinder =
         choice(
             attempt(ident + dcolon) + type,

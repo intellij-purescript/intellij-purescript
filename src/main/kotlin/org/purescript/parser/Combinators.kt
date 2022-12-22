@@ -18,7 +18,6 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = TokenSet.create(tokenType)
         public override fun calcCanBeEmpty() = false
     }
-
     fun token(token: String): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo =
             if (context.text() == token) {
@@ -33,7 +32,6 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = TokenSet.ANY
         public override fun calcCanBeEmpty() = false
     }
-
     fun seq(p1: Parsec, p2: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val info = p1.parse(context)
@@ -63,7 +61,6 @@ object Combinators {
 
         public override fun calcCanBeEmpty() = p1.canBeEmpty && p2.canBeEmpty
     }
-
     fun choice(head: Parsec, vararg tail: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val start = context.position
@@ -119,7 +116,6 @@ object Combinators {
             return true
         }
     }
-
     fun noneOrMore(p: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             var info = ParserInfo(context.position, setOf(p), null, true)
@@ -159,8 +155,6 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty() = true
     }
-
-    fun many1(p: Parsec) = p + p.noneOrMore()
     fun optional(p: Parsec) = object : Parsec() {
         override fun parse(context: ParserContext): ParserInfo {
             val position = context.position
@@ -179,7 +173,6 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty() = true
     }
-
     fun attempt(p: Parsec): Parsec = object : Parsec() {
         override fun parse(context: ParserContext) =
             if (!p.canParse(context)) {
@@ -202,7 +195,6 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
     }
-
     fun parens(p: Parsec) = token(LPAREN) + p + token(RPAREN)
     fun squares(p: Parsec) = token(LBRACK) + p + token(RBRACK)
     fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
