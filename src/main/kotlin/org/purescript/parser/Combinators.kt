@@ -209,7 +209,6 @@ object Combinators {
     fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
 
     fun sepBy(p: Parsec, sep: Parsec) = optional(p + manyOrEmpty(sep + p))
-    fun sepBy1(p: Parsec, sep: Parsec) = p + manyOrEmpty(sep + p)
     fun ref(init: Parsec.() -> Parsec) = ParsecRef(init)
     fun guard(
         p: Parsec,

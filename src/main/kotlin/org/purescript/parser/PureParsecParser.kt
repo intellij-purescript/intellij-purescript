@@ -428,7 +428,7 @@ class PureParsecParser {
     ).`as`(ExportList)
 
     private val elseDecl = token("else") + optional(`L-sep`)
-    private val moduleDecl = parseImportDeclaration.or(sepBy(decl, elseDecl))
+    private val moduleDecl = parseImportDeclaration.or(decl.sepBy(elseDecl))
 
     val parseModule = (
         module + moduleName + optional(exportList) + where +
