@@ -30,4 +30,5 @@ abstract class Parsec {
     fun oneOrMore() = this + noneOrMore()
     fun noneOrMore() = Combinators.noneOrMore(this)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
+    fun withRollback() = Combinators.withRollback(this)
 }

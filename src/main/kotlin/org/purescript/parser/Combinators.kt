@@ -173,28 +173,29 @@ object Combinators {
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty() = true
     }
-    fun attempt(p: Parsec): Parsec = object : Parsec() {
-        override fun parse(context: ParserContext) =
-            if (!p.canParse(context)) {
-                ParserInfo(context.position, setOf(p), null, false)
-            } else {
-                val start = context.position
-                val pack = context.start()
-                val info = p.parse(context)
-                if (info.success) {
-                    pack.drop()
-                    info
+    fun withRollback(p: Parsec) = object : Parsec() {
+            override fun parse(context: ParserContext) =
+                if (!p.canParse(context)) {
+                    ParserInfo(context.position, setOf(p), null, false)
                 } else {
-                    pack.rollbackTo()
-                    ParserInfo(start, info.expected, null, false)
+                    val start = context.position
+                    val pack = context.start()
+                    val info = p.parse(context)
+                    if (info.success) {
+                        pack.drop()
+                        info
+                    } else {
+                        pack.rollbackTo()
+                        ParserInfo(start, info.expected, null, false)
+                    }
                 }
-            }
+    
+            public override fun calcName() = "try(" + p.name + ")"
+            override fun calcExpectedName() = p.expectedName
+            override val canStartWithSet: TokenSet get() = p.canStartWithSet
+            public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
+        }
 
-        public override fun calcName() = "try(" + p.name + ")"
-        override fun calcExpectedName() = p.expectedName
-        override val canStartWithSet: TokenSet get() = p.canStartWithSet
-        public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
-    }
     fun parens(p: Parsec) = token(LPAREN) + p + token(RPAREN)
     fun squares(p: Parsec) = token(LBRACK) + p + token(RBRACK)
     fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
