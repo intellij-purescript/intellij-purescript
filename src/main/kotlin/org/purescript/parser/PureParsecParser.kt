@@ -86,7 +86,7 @@ class PureParsecParser {
                 arrow.or(
                     Optional(
                         qualified(properName)
-                            .withRollback()
+                            .withRollback
                             .`as`(TypeConstructor)
                     )
                 ) + Optional(this)
@@ -97,7 +97,7 @@ class PureParsecParser {
     private val parseKindAtom = Choice(
         StringToken("*").`as`(START).`as`(Star),
         StringToken("!").`as`(BANG).`as`(Bang),
-        qualified(properName).withRollback().`as`(TypeConstructor),
+        qualified(properName).withRollback.`as`(TypeConstructor),
         parens(parseKind)
     )
     private val parseKindPrefix =
@@ -108,7 +108,7 @@ class PureParsecParser {
     private val parseForAll: DSL = Reference {
         (forall + idents
             .`as`(GenericIdentifier)
-            .oneOrMore() + dot + parseConstrainedType)
+            .oneOrMore + dot + parseConstrainedType)
             .`as`(ForAll)
     }
 
@@ -117,7 +117,7 @@ class PureParsecParser {
             .`as`(GenericIdentifier)
 
     private val rowLabel =
-        lname.or(string.withRollback()).`as`(GenericIdentifier) + dcolon + type
+        lname.or(string.withRollback).`as`(GenericIdentifier) + dcolon + type
 
     private val parseRow: DSL =
         (pipe + type)
@@ -126,20 +126,20 @@ class PureParsecParser {
 
     private val typeAtom: DSL =
         Choice(
-            squares(Optional(type)).withRollback(),
-            parens(arrow).withRollback(),
-            braces(parseRow).`as`(ObjectType).withRollback(),
-            `_`.withRollback(),
-            string.withRollback(),
-            number.withRollback(),
-            parseForAll.withRollback(),
-            parseTypeVariable.withRollback(),
+            squares(Optional(type)).withRollback,
+            parens(arrow).withRollback,
+            braces(parseRow).`as`(ObjectType).withRollback,
+            `_`.withRollback,
+            string.withRollback,
+            number.withRollback,
+            parseForAll.withRollback,
+            parseTypeVariable.withRollback,
             qualified(properName)
-                .withRollback()
+                .withRollback
                 .`as`(TypeConstructor)
-                .withRollback(),
-            parens(parseRow).withRollback(),
-            parens(type).withRollback()
+                .withRollback,
+            parens(parseRow).withRollback,
+            parens(type).withRollback
         ).`as`(TypeAtom)
 
     private fun braces(p: DSL): DSL =
@@ -155,18 +155,18 @@ class PureParsecParser {
         (Optional(
             (parens(
                 (qualified(properName)
-                    .withRollback()
+                    .withRollback
                     .`as`(TypeConstructor) +
-                    typeAtom.noneOrMore()
+                    typeAtom.noneOrMore
                     ).sepBy1(ElementToken(COMMA))
             ) + darrow
-                ).withRollback()
+                ).withRollback
         ) + type).`as`(ConstrainedType)
 
     private val ident =
         idents
             .`as`(Identifier)
-            .or(parens(operator.`as`(Identifier)).withRollback())
+            .or(parens(operator.`as`(Identifier)).withRollback)
 
     private val typeVarBinding = Choice(
         idents.`as`(TypeVarName),
@@ -175,21 +175,21 @@ class PureParsecParser {
     )
     private val binderAtom: DSL = Reference {
         Choice(
-            `_`.`as`(NullBinder).withRollback(),
+            `_`.`as`(NullBinder).withRollback,
             (ident.`as`(VarBinder) + `@` + this)
-                .withRollback()
+                .withRollback
                 .`as`(NamedBinder),
-            ident.`as`(VarBinder).withRollback(),
-            qualProperName.`as`(ConstructorBinder).withRollback(),
-            boolean.`as`(BooleanBinder).withRollback(),
-            char.withRollback().`as`(CharBinder),
-            string.`as`(StringBinder).withRollback(),
-            number.`as`(NumberBinder).withRollback(),
+            ident.`as`(VarBinder).withRollback,
+            qualProperName.`as`(ConstructorBinder).withRollback,
+            boolean.`as`(BooleanBinder).withRollback,
+            char.withRollback.`as`(CharBinder),
+            string.`as`(StringBinder).withRollback,
+            number.`as`(NumberBinder).withRollback,
             squares(binder.sepBy(ElementToken(COMMA)))
                 .`as`(ObjectBinder)
-                .withRollback(),
-            braces(recordBinder.sepBy(ElementToken(COMMA))).withRollback(),
-            parens(binder).withRollback()
+                .withRollback,
+            braces(recordBinder.sepBy(ElementToken(COMMA))).withRollback,
+            parens(binder).withRollback
         )
     }
     private val binder: DSL = Reference { binder1 + Optional(dcolon + type) }
@@ -197,30 +197,30 @@ class PureParsecParser {
         Reference { (expr1 + Optional(dcolon + type)).`as`(Value) }
     private val qualOp =
         qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
-    private val type5 = typeAtom.oneOrMore()
+    private val type5 = typeAtom.oneOrMore
     private val type4 =
         (StringToken("-") + number)
-            .withRollback()
-            .or(StringToken("#").noneOrMore() + type5)
+            .withRollback
+            .or(StringToken("#").noneOrMore + type5)
     private val type3 = Reference { type4.sepBy1(qualOp) }
     private val type2: DSL =
         Reference { type3 + Optional(arrow.or(darrow) + type1) }
     private val type1 =
-        (forall + typeVarBinding.oneOrMore() + dot).noneOrMore() + type2
+        (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
     private val parsePropertyUpdate: DSL =
         Reference { label + Optional(eq) + expr }
     private val exprAtom = Reference {
         Choice(
             `_`,
-            hole.withRollback(),
+            hole.withRollback,
             qualified(idents.`as`(Identifier))
                 .`as`(QualifiedIdentifier)
-                .`as`(ExpressionIdentifier).withRollback(),
+                .`as`(ExpressionIdentifier).withRollback,
             qualified(symbol).`as`(QualifiedSymbol)
-                .`as`(ExpressionSymbol).withRollback(),
+                .`as`(ExpressionSymbol).withRollback,
             qualified(properName)
                 .`as`(QualifiedProperName)
-                .`as`(ExpressionConstructor).withRollback(),
+                .`as`(ExpressionConstructor).withRollback,
             boolean.`as`(BooleanLiteral),
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),
@@ -230,7 +230,7 @@ class PureParsecParser {
             parens(expr).`as`(Parens),
         )
     }
-    private val expr7 = exprAtom + (dot + label).`as`(Accessor).noneOrMore()
+    private val expr7 = exprAtom + (dot + label).`as`(Accessor).noneOrMore
 
     /*
     * if there is only one case branch it can ignore layout so we need
@@ -238,7 +238,7 @@ class PureParsecParser {
     */
     private val exprCase: DSL = Reference {
         (case + expr.sepBy1(ElementToken(COMMA)) + of + Choice(
-            parseBadSingleCaseBranch.withRollback(),
+            parseBadSingleCaseBranch.withRollback,
             `L{` + caseBranch.sepBy1(`L-sep`) + `L}`
         )).`as`(Case)
     }
@@ -246,9 +246,9 @@ class PureParsecParser {
         Reference { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
     private val expr5 = Reference {
         Choice(
-            braces(parsePropertyUpdate.sepBy1(ElementToken(COMMA))).withRollback(),
+            braces(parsePropertyUpdate.sepBy1(ElementToken(COMMA))).withRollback,
             expr7,
-            (backslash + binderAtom.oneOrMore() + arrow + expr).`as`(Lambda),
+            (backslash + binderAtom.oneOrMore + arrow + expr).`as`(Lambda),
             exprCase,
             parseIfThenElse,
             doBlock,
@@ -256,30 +256,30 @@ class PureParsecParser {
             parseLet
         )
     }
-    private val expr4 = expr5.oneOrMore()
+    private val expr4 = expr5.oneOrMore
     private val expr3 =
-        (StringToken("-").oneOrMore() + expr4).`as`(UnaryMinus).or(expr4)
+        (StringToken("-").oneOrMore + expr4).`as`(UnaryMinus).or(expr4)
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(
         qualOp
-            .withRollback()
+            .withRollback
             .`as`(ExpressionOperator)
     )
 
 
     // TODO: pattern guards should parse expr1 not expr
-    private val patternGuard = Optional((binder + larrow).withRollback()) + expr
+    private val patternGuard = Optional((binder + larrow).withRollback) + expr
     private val parseGuard =
         (pipe + patternGuard.sepBy(ElementToken(COMMA))).`as`(Guard)
     private val dataHead =
-        data + properName + typeVarBinding.noneOrMore().`as`(TypeArgs)
+        data + properName + typeVarBinding.noneOrMore.`as`(TypeArgs)
     private val dataCtor =
-        (properName + typeAtom.noneOrMore()).`as`(DataConstructor)
+        (properName + typeAtom.noneOrMore).`as`(DataConstructor)
     private val parseTypeDeclaration =
         (ident + dcolon + type).`as`(Signature)
     private val newtypeHead =
-        `'newtype'` + properName + typeVarBinding.noneOrMore().`as`(TypeArgs)
+        `'newtype'` + properName + typeVarBinding.noneOrMore.`as`(TypeArgs)
     private val exprWhere: DSL = Reference {
         expr + Optional(
             (where + `L{` + letBinding.sepBy1(`L-sep`) + `L}`)
@@ -288,23 +288,23 @@ class PureParsecParser {
     }
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
-        Choice(eq.withRollback() + exprWhere, guardedDeclExpr.oneOrMore())
+        Choice(eq.withRollback + exprWhere, guardedDeclExpr.oneOrMore)
     private val instBinder =
         Choice(
-            (ident + dcolon).withRollback() + type,
-            (ident + binderAtom.noneOrMore() + guardedDecl)
+            (ident + dcolon).withRollback + type,
+            (ident + binderAtom.noneOrMore + guardedDecl)
                 .`as`(ValueDeclaration)
         )
     private val parseDeps =
         parens(
-            (qualified(properName).withRollback().`as`(TypeConstructor)
-                + typeAtom.noneOrMore()
+            (qualified(properName).withRollback.`as`(TypeConstructor)
+                + typeAtom.noneOrMore
                 ).sepBy1(ElementToken(COMMA))
         ) + darrow
     private val parseForeignDeclaration =
         `'foreign'` + `'import'` + Choice(
             data + properName + dcolon + type `as` ForeignDataDeclaration,
-            ident.withRollback() + dcolon + type `as` ForeignValueDeclaration
+            ident.withRollback + dcolon + type `as` ForeignValueDeclaration
         )
     private val parseAssociativity = Choice(infixl, infixr, infix)
     private val parseFixity =
@@ -318,7 +318,7 @@ class PureParsecParser {
             // TODO Should we differentiate Types and DataConstructors?
             // that would mean that when there is a `type` prefix we parse as Type
             // otherwise if it's a capital name it's a DataConstructor
-            (Optional(`'type'`) + properName.or(qualProperName)).withRollback(),
+            (Optional(`'type'`) + properName.or(qualProperName)).withRollback,
             ident.or(qualIdentifier)
         ) + `as` + operator.`as`(OperatorName))
             .`as`(FixityDeclaration)
@@ -326,7 +326,7 @@ class PureParsecParser {
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe + fundep.sepBy1(ElementToken(COMMA))
     private val constraint =
-        (qualProperName.`as`(ClassName) + typeAtom.noneOrMore())
+        (qualProperName.`as`(ClassName) + typeAtom.noneOrMore)
             .`as`(ClassConstraint)
     private val constraints =
         parens(constraint.sepBy1(ElementToken(COMMA))).or(constraint)
@@ -334,14 +334,14 @@ class PureParsecParser {
     private val classSuper =
         (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
     private val classNameAndFundeps =
-        properName.`as`(ClassName) + typeVarBinding.noneOrMore() +
+        properName.`as`(ClassName) + typeVarBinding.noneOrMore +
             Optional(fundeps.`as`(ClassFunctionalDependencyList))
     private val classSignature = properName.`as`(ClassName) + dcolon + type
     private val classHead = Choice(
         // this first is described in haskell code and not in normal happy expression
         // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
-        (`class` + classSignature).withRollback(),
-        (`class` + classSuper + classNameAndFundeps).withRollback(),
+        (`class` + classSignature).withRollback,
+        (`class` + classSuper + classNameAndFundeps).withRollback,
         `class` + classNameAndFundeps
     )
     private val classMember =
@@ -349,12 +349,12 @@ class PureParsecParser {
 
     private val classDeclaration =
         (classHead + Optional(
-            (where + `L{` + (classMember).sepBy1(`L-sep`) + `L}`).withRollback()
+            (where + `L{` + (classMember).sepBy1(`L-sep`) + `L}`).withRollback
                 .`as`(ClassMemberList)
         )).`as`(ClassDeclaration)
     private val instHead =
         `'instance'` + Optional(ident + dcolon) +
-            Optional((constraints + darrow).withRollback()) +
+            Optional((constraints + darrow).withRollback) +
             constraint // this constraint is the instance type
     private val importedDataMembers =
         parens(
@@ -398,7 +398,7 @@ class PureParsecParser {
      * */
     private val role = Choice(nominal, representational, phantom)
     private val decl = Choice(
-        (dataHead + dcolon).withRollback() + type,
+        (dataHead + dcolon).withRollback + type,
         (dataHead +
             Optional(
                 (eq + dataCtor.sepBy1(ElementToken(PIPE))).`as`(
@@ -406,15 +406,15 @@ class PureParsecParser {
                 )
             )
             ).`as`(DataDeclaration),
-        (`'newtype'` + properName + dcolon).withRollback() + type,
+        (`'newtype'` + properName + dcolon).withRollback + type,
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
             .`as`(NewtypeDeclaration),
-        parseTypeDeclaration.withRollback(),
-        (`'type'` + `'role'`).withRollback() + properName + role.noneOrMore(),
-        (`'type'` + properName + dcolon).withRollback() + type,
-        (`'type'` + properName + typeVarBinding.noneOrMore() + eq + type)
+        parseTypeDeclaration.withRollback,
+        (`'type'` + `'role'`).withRollback + properName + role.noneOrMore,
+        (`'type'` + properName + dcolon).withRollback + type,
+        (`'type'` + properName + typeVarBinding.noneOrMore + eq + type)
             .`as`(TypeSynonymDeclaration),
-        (ident.withRollback() + binderAtom.noneOrMore() + guardedDecl).`as`(
+        (ident.withRollback + binderAtom.noneOrMore + guardedDecl).`as`(
             ValueDeclaration
         ),
         parseForeignDeclaration,
@@ -467,20 +467,20 @@ class PureParsecParser {
 
     private val hole = (StringToken("?") + idents).`as`(TypeHole)
     private val recordLabel = Choice(
-        (label + StringToken(":")).withRollback() + expr,
-        (label + eq).withRollback() + expr,
+        (label + StringToken(":")).withRollback + expr,
+        (label + eq).withRollback + expr,
         label.`as`(QualifiedIdentifier).`as`(ExpressionIdentifier),
     ).`as`(ObjectBinderField)
 
     private val binder2 = Choice(
-        (qualProperName.`as`(ConstructorBinder) + binderAtom.noneOrMore()).withRollback(),
-        (StringToken("-") + number).withRollback().`as`(NumberBinder),
+        (qualProperName.`as`(ConstructorBinder) + binderAtom.noneOrMore).withRollback,
+        (StringToken("-") + number).withRollback.`as`(NumberBinder),
         binderAtom,
     )
     private val binder1 = binder2.sepBy1(qualOp)
     private val guardedCaseExpr = parseGuard + (arrow + exprWhere)
     private val guardedCase =
-        (arrow + exprWhere).withRollback().or(guardedCaseExpr.noneOrMore())
+        (arrow + exprWhere).withRollback.or(guardedCaseExpr.noneOrMore)
     private val caseBranch =
         (binder1.sepBy1(ElementToken(COMMA)) + guardedCase).`as`(CaseAlternative)
 
@@ -488,29 +488,29 @@ class PureParsecParser {
         (`if` + expr + then + expr + `else` + expr).`as`(IfThenElse)
     private val letBinding =
         Choice(
-            parseTypeDeclaration.withRollback(),
-            (ident + binderAtom.noneOrMore() + guardedDecl).withRollback()
+            parseTypeDeclaration.withRollback,
+            (ident + binderAtom.noneOrMore + guardedDecl).withRollback
                 .`as`(ValueDeclaration),
-            (binder1 + eq + exprWhere).withRollback(),
-            (ident + binderAtom.noneOrMore() + guardedDecl).withRollback()
+            (binder1 + eq + exprWhere).withRollback,
+            (ident + binderAtom.noneOrMore + guardedDecl).withRollback
         )
     private val parseLet =
         (let + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
             .`as`(Let)
     private val doStatement = Choice(
         (let + (`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)).`as`(DoNotationLet),
-        (binder + larrow + expr).withRollback().`as`(DoNotationBind),
-        expr.`as`(DoNotationValue).withRollback()
+        (binder + larrow + expr).withRollback.`as`(DoNotationBind),
+        expr.`as`(DoNotationValue).withRollback
     )
     private val doBlock =
-        (qualified(`do`).withRollback() + `L{` + (doStatement).sepBy1(
+        (qualified(`do`).withRollback + `L{` + (doStatement).sepBy1(
             `L-sep`
         ) + `L}`).`as`(DoBlock)
 
     private val adoBlock = ado + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
     private val recordBinder =
-        ((label + eq.or(StringToken(":"))).withRollback() + binder).or(
+        ((label + eq.or(StringToken(":"))).withRollback + binder).or(
             label.`as`(
                 VarBinder
             )

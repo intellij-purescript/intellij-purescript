@@ -9,10 +9,10 @@ sealed interface DSL {
     fun or(next: DSL) = Choice(this, next)
     fun sepBy(delimiter: DSL) = Optional(sepBy1(delimiter))
     fun sepBy1(delimiter: DSL) = this + NoneOrMore(delimiter + this)
-    fun oneOrMore() = this + noneOrMore()
-    fun noneOrMore() = NoneOrMore(this)
     infix fun `as`(node: IElementType) = Symbolic(this, node)
-    fun withRollback() = Transaction(this)
+    val oneOrMore get() = this + noneOrMore
+    val noneOrMore get() = NoneOrMore(this)
+    val withRollback get() = Transaction(this)
 }
 
 class ElementToken(private val token: IElementType) : DSL {
