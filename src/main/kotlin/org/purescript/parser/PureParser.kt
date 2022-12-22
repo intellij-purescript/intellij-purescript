@@ -23,11 +23,10 @@ class PureParser : PsiParser {
                 }
                 context.advance()
             }
-            if (errorMarker != null) {
-                if (nextType != null) errorMarker.error("Unexpected $nextType. $info") else errorMarker.error(
-                    info.toString()
-                )
-            }
+            errorMarker?.error(
+                if (nextType != null) "Unexpected $nextType. $info"
+                else "$info"
+            )
         }
         mark.done(root)
         return builder.treeBuilt
