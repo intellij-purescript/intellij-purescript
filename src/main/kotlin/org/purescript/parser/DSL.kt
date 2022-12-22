@@ -14,7 +14,7 @@ sealed interface DSL {
     fun withRollback() = Transaction(this)
 }
 
-class ElementToke(private val token: IElementType) : DSL {
+class ElementToken(private val token: IElementType) : DSL {
     override fun compile() = Combinators.token(token)
 }
 
@@ -64,7 +64,7 @@ class Wrapper(private val parsec: Parsec) : DSL {
     override fun compile(): Parsec = parsec
 }
 
-class Guard(
+class DSLGuard(
     private val child: DSL,
     private val errorMessage: String,
     private val predicate: (String?) -> Boolean

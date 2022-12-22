@@ -10,7 +10,7 @@ class PureParser : PsiParser {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         val context = ParserContext(builder)
         val mark = context.start()
-        val info = pureParsecParser.parseModule.parse(context)
+        val info = pureParsecParser.parseModule.compile().parse(context)
         var nextType: IElementType? = null
         if (!context.eof()) {
             var errorMarker: PsiBuilder.Marker? = null
