@@ -3,8 +3,6 @@ package org.purescript.parser
 import org.purescript.parser.Combinators.attempt
 import org.purescript.parser.Combinators.braces
 import org.purescript.parser.Combinators.choice
-import org.purescript.parser.Combinators.commaSep
-import org.purescript.parser.Combinators.commaSep1
 import org.purescript.parser.Combinators.guard
 import org.purescript.parser.Combinators.many
 import org.purescript.parser.Combinators.many1
@@ -13,7 +11,6 @@ import org.purescript.parser.Combinators.optional
 import org.purescript.parser.Combinators.parens
 import org.purescript.parser.Combinators.ref
 import org.purescript.parser.Combinators.sepBy
-import org.purescript.parser.Combinators.sepBy1
 import org.purescript.parser.Combinators.squares
 import org.purescript.parser.Combinators.token
 
@@ -130,7 +127,9 @@ class PureParsecParser {
         lname.or(attempt(string)).`as`(GenericIdentifier) + dcolon + type
 
     private val parseRow: Parsec =
-        (pipe + type).or(commaSep(rowLabel) + optional(pipe + type)).`as`(Row)
+        (pipe + type)
+            .or(rowLabel.sepBy(token(COMMA)) + optional(pipe + type))
+            .`as`(Row)
 
     private val typeAtom: Parsec =
         choice(
@@ -150,10 +149,9 @@ class PureParsecParser {
         (optional(
             attempt(
                 parens(
-                    commaSep1(
-                        attempt(qualified(properName)).`as`(TypeConstructor) +
-                            manyOrEmpty(typeAtom)
-                    )
+                    (attempt(qualified(properName)).`as`(TypeConstructor) +
+                        manyOrEmpty(typeAtom)
+                        ).sepBy1(token(COMMA))
                 ) + darrow
             )
         ) + type).`as`(ConstrainedType)
@@ -176,8 +174,8 @@ class PureParsecParser {
             attempt(char).`as`(CharBinder),
             attempt(string.`as`(StringBinder)),
             attempt(number.`as`(NumberBinder)),
-            attempt(squares(commaSep(binder)).`as`(ObjectBinder)),
-            attempt(braces(commaSep(recordBinder))),
+            attempt(squares(binder.sepBy(token(COMMA))).`as`(ObjectBinder)),
+            attempt(braces(recordBinder.sepBy(token(COMMA)))),
             attempt(parens(binder))
         )
     }
@@ -217,8 +215,8 @@ class PureParsecParser {
             char.`as`(CharLiteral),
             string.`as`(StringLiteral),
             number,
-            squares(commaSep(expr)).`as`(ArrayLiteral),
-            braces(commaSep(recordLabel)).`as`(ObjectLiteral),
+            squares(expr.sepBy(token(COMMA))).`as`(ArrayLiteral),
+            braces(recordLabel.sepBy(token(COMMA))).`as`(ObjectLiteral),
             parens(expr).`as`(Parens),
         )
     }
@@ -229,7 +227,7 @@ class PureParsecParser {
     * to allow layout end at any time.
     */
     private val exprCase: Parsec = ref {
-        (case + commaSep1(expr) + of + choice(
+        (case + expr.sepBy1(token(COMMA)) + of + choice(
             attempt(parseBadSingleCaseBranch),
             `L{` + caseBranch.sepBy1(`L-sep`) + `L}`
         )).`as`(Case)
@@ -238,7 +236,7 @@ class PureParsecParser {
         ref { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
     private val expr5 = ref {
         choice(
-            attempt(braces(commaSep1(parsePropertyUpdate))),
+            attempt(braces(parsePropertyUpdate.sepBy1(token(COMMA)))),
             expr7,
             (backslash + many1(binderAtom) + arrow + expr).`as`(Lambda),
             exprCase,
@@ -257,7 +255,8 @@ class PureParsecParser {
 
     // TODO: pattern guards should parse expr1 not expr
     private val patternGuard = optional(attempt(binder + larrow)) + expr
-    private val parseGuard = (pipe + commaSep(patternGuard)).`as`(Guard)
+    private val parseGuard =
+        (pipe + patternGuard.sepBy(token(COMMA))).`as`(Guard)
     private val dataHead =
         data + properName + manyOrEmpty(typeVarBinding).`as`(TypeArgs)
     private val dataCtor =
@@ -284,10 +283,9 @@ class PureParsecParser {
         )
     private val parseDeps =
         parens(
-            commaSep1(
-                attempt(qualified(properName)).`as`(TypeConstructor)
-                    + manyOrEmpty(typeAtom)
-            )
+            (attempt(qualified(properName)).`as`(TypeConstructor)
+                + manyOrEmpty(typeAtom)
+                ).sepBy1(token(COMMA))
         ) + darrow
     private val parseForeignDeclaration =
         `'foreign'` + `'import'` + choice(
@@ -311,11 +309,12 @@ class PureParsecParser {
             .`as`(FixityDeclaration)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
-    private val fundeps = pipe + commaSep1(fundep)
+    private val fundeps = pipe + fundep.sepBy1(token(COMMA))
     private val constraint =
         (qualProperName.`as`(ClassName) + manyOrEmpty(typeAtom))
             .`as`(ClassConstraint)
-    private val constraints = parens(commaSep1(constraint)).or(constraint)
+    private val constraints =
+        parens(constraint.sepBy1(token(COMMA))).or(constraint)
 
     private val classSuper =
         (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
@@ -343,7 +342,13 @@ class PureParsecParser {
             optional(attempt(constraints + darrow)) +
             constraint // this constraint is the instance type
     private val importedDataMembers =
-        parens(ddot.or(commaSep(properName.`as`(ImportedDataMember))))
+        parens(
+            ddot.or(
+                properName
+                    .`as`(ImportedDataMember)
+                    .sepBy(token(COMMA))
+            )
+        )
             .`as`(ImportedDataMemberList)
     val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
     private val importedItem =
@@ -356,7 +361,7 @@ class PureParsecParser {
             (properName + optional(importedDataMembers)).`as`(ImportedData),
         )
     private val importList =
-        (optional(token(HIDING)) + parens(commaSep(importedItem)))
+        (optional(token(HIDING)) + parens(importedItem.sepBy(token(COMMA))))
             .`as`(ImportList)
     private val parseImportDeclaration = (
         `'import'` +
@@ -374,7 +379,11 @@ class PureParsecParser {
     private val decl = choice(
         attempt(dataHead + dcolon) + type,
         (dataHead +
-            optional((eq + sepBy1(dataCtor, PIPE)).`as`(DataConstructorList))
+            optional(
+                (eq + dataCtor.sepBy1(token(PIPE))).`as`(
+                    DataConstructorList
+                )
+            )
             ).`as`(DataDeclaration),
         attempt(`'newtype'` + properName + dcolon) + type,
         (newtypeHead + eq + (properName + typeAtom).`as`(NewTypeConstructor))
@@ -395,7 +404,7 @@ class PureParsecParser {
     )
     private val exportedClass = (`class` + properName).`as`(ExportedClass)
     private val dataMembers =
-        parens(ddot.or(commaSep(properName.`as`(ExportedDataMember))))
+        parens(ddot.or(properName.`as`(ExportedDataMember).sepBy(token(COMMA))))
             .`as`(ExportedDataMemberList)
     private val exportedData =
         (properName + optional(dataMembers)).`as`(ExportedData)
@@ -407,17 +416,15 @@ class PureParsecParser {
         (`'type'` + parens(operator.`as`(Identifier))).`as`(ExportedType)
     private val exportedValue = ident.`as`(ExportedValue)
     private val exportList = parens(
-        commaSep1(
-            choice(
-                exportedClass,
-                exportedData,
-                exportedKind,
-                exportedModule,
-                exportedOperator,
-                exportedType,
-                exportedValue,
-            )
-        )
+        choice(
+            exportedClass,
+            exportedData,
+            exportedKind,
+            exportedModule,
+            exportedOperator,
+            exportedType,
+            exportedValue,
+        ).sepBy1(token(COMMA))
     ).`as`(ExportList)
 
     private val elseDecl = token("else") + optional(`L-sep`)
@@ -445,7 +452,7 @@ class PureParsecParser {
     private val guardedCase =
         attempt(arrow + exprWhere).or(manyOrEmpty(guardedCaseExpr))
     private val caseBranch =
-        (commaSep1(binder1) + guardedCase).`as`(CaseAlternative)
+        (binder1.sepBy1(token(COMMA)) + guardedCase).`as`(CaseAlternative)
 
     private val parseIfThenElse =
         (`if` + expr + then + expr + `else` + expr).`as`(IfThenElse)

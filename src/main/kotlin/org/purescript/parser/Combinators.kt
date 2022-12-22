@@ -72,7 +72,7 @@ object Combinators {
             val failed = mutableListOf(headInfo)
             for (p in tail) {
                 val info = p.tryToParse(context)
-                if (start < context.position || info.success) return info 
+                if (start < context.position || info.success) return info
                 else failed.add(info)
             }
             return failed.reduce { acc, parserInfo ->
@@ -166,7 +166,7 @@ object Combinators {
         override fun parse(context: ParserContext): ParserInfo {
             val position = context.position
             val info1 = p.parse(context)
-            return if (info1.success) info1 
+            return if (info1.success) info1
             else ParserInfo(
                 info1.position,
                 info1.expected,
@@ -207,13 +207,9 @@ object Combinators {
     fun parens(p: Parsec) = token(LPAREN) + p + token(RPAREN)
     fun squares(p: Parsec) = token(LBRACK) + p + token(RBRACK)
     fun braces(p: Parsec) = token(LCURLY) + p + token(RCURLY)
-    fun sepBy1(p: Parsec, sep: IElementType) =
-        p + attempt(manyOrEmpty(token(sep) + p))
 
-    fun commaSep1(p: Parsec) = sepBy1(p, COMMA)
     fun sepBy(p: Parsec, sep: Parsec) = optional(p + manyOrEmpty(sep + p))
     fun sepBy1(p: Parsec, sep: Parsec) = p + manyOrEmpty(sep + p)
-    fun commaSep(p: Parsec) = sepBy(p, token(COMMA))
     fun ref(init: Parsec.() -> Parsec) = ParsecRef(init)
     fun guard(
         p: Parsec,
