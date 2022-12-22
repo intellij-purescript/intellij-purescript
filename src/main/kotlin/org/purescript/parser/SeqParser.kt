@@ -7,10 +7,13 @@ class SeqParser(
     private val first: Parsec
 ) : Parsec() {
     override fun parse(context: ParserContext): ParserInfo {
-        return ps.fold(first.parse(context)) {info, p ->
-            if (info.success) info.merge(p.parse(context))
-            else info
+        var info = first.parse(context)
+        for (p in ps) {
+            if (!info.success) return info
+            val other = p.parse(context)
+            info = info.merge(other)
         }
+        return info
     }
 
     public override fun calcName() = 
