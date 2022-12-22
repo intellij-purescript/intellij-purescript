@@ -6,13 +6,8 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 
 class ParserContext(private val builder: PsiBuilder) {
-    var isInAttempt = false
-    private var inOptional = 0
     fun eof() = builder.eof()
     fun advance() = builder.advanceLexer()
-    fun enterOptional() = inOptional++
-    fun exitOptional() = inOptional--
-    fun isInOptional() = inOptional > 0
     fun text() = builder.tokenText ?: ""
     fun peek() = builder.tokenType ?: EOF
     fun eat(type: IElementType): Boolean {

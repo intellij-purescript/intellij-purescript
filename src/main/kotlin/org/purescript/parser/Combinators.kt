@@ -156,18 +156,16 @@ object Combinators {
 
     fun many1(p: Parsec) = p + manyOrEmpty(p)
     fun optional(p: Parsec) = object : Parsec() {
-        override fun parse(context: ParserContext) = try {
-            context.enterOptional()
+        override fun parse(context: ParserContext): ParserInfo {
             val position = context.position
             val info1 = p.parse(context)
-            if (info1.success) {
-                info1
-            } else {
-                val success = context.position == position
-                ParserInfo(info1.position, info1.expected, null, success)
-            }
-        } finally {
-            context.exitOptional()
+            return if (info1.success) info1 
+            else ParserInfo(
+                info1.position,
+                info1.expected,
+                null,
+                context.position == position
+            )
         }
 
         public override fun calcName() = "(" + p.name + ")?"
@@ -183,10 +181,7 @@ object Combinators {
             } else {
                 val start = context.position
                 val pack = context.start()
-                val inAttempt = context.isInAttempt
-                context.isInAttempt = true
                 val info = p.parse(context)
-                context.isInAttempt = inAttempt
                 if (info.success) {
                     pack.drop()
                     info
