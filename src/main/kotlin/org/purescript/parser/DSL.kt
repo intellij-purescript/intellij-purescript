@@ -29,7 +29,10 @@ class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
     override fun compile() = rest.fold(first.compile()) { acc, dsl ->
         Combinators.seq(acc, dsl.compile())
     }
-    override fun optimize(): DSL = this
+    override fun optimize(): DSL = Seq(
+        first.optimize(),
+        *rest.map { it.optimize() }.toTypedArray()
+    )
 }
 
 class Choice(val first: DSL, private vararg val rest: DSL) : DSL {
@@ -38,22 +41,25 @@ class Choice(val first: DSL, private vararg val rest: DSL) : DSL {
         * rest.map { it.compile() }.toTypedArray()
     )
 
-    override fun optimize(): DSL = this
+    override fun optimize(): DSL = Choice(
+        first.optimize(),
+        *rest.map { it.optimize() }.toTypedArray()
+    )
 }
 
 class NoneOrMore(private val child: DSL) : DSL {
     override fun compile(): Parsec = child.compile().noneOrMore()
-    override fun optimize(): DSL = this
+    override fun optimize(): DSL = NoneOrMore(child.optimize())
 }
 
 class Optional(private val child: DSL) : DSL {
     override fun compile(): Parsec = Combinators.optional(child.compile())
-    override fun optimize(): DSL = this
+    override fun optimize(): DSL = Optional(child.optimize())
 }
 
 class Transaction(private val child: DSL) : DSL {
     override fun compile(): Parsec = child.compile().withRollback()
-    override fun optimize(): DSL = this
+    override fun optimize(): DSL = Transaction(child.optimize())
 }
 
 class Reference(private val init: DSL.() -> DSL) : DSL {
@@ -81,5 +87,5 @@ class DSLGuard(
 
 class Symbolic(private val child: DSL, val symbol: IElementType) : DSL {
     override fun compile(): Parsec = child.compile().`as`(symbol)
-    override fun optimize(): DSL = this
+    override fun optimize(): DSL = Symbolic(child.optimize(), symbol)
 }
