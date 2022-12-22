@@ -27,9 +27,10 @@ class StringToken(private val token: String) : DSL {
 
 class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
     override val compile by lazy {
-        rest.fold(first.compile) { acc, dsl ->
-            Combinators.seq(acc, dsl.compile)
-        }
+        Combinators.seq(
+            first.compile,
+            *rest.map { it.compile }.toTypedArray()
+        )
     }
 
     override val optimize: DSL by lazy {
