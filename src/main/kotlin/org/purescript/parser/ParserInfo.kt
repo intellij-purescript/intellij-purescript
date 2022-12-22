@@ -3,7 +3,7 @@ package org.purescript.parser
 data class ParserInfo(
     val position: Int,
     val expected: Set<Parsec>,
-    private val errorMessage: String?,
+    val errorMessage: String?,
     val success: Boolean
 ) {
 

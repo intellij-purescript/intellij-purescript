@@ -68,19 +68,26 @@ object Combinators {
         override fun parse(context: ParserContext): ParserInfo {
             val start = context.position
             val headInfo: ParserInfo = head.tryToParse(context)
-            if (start < context.position || headInfo.success) {
-                return headInfo
-            }
+            if (start < context.position || headInfo.success) return headInfo
             val failed = mutableListOf(headInfo)
             for (p in tail) {
                 val info = p.tryToParse(context)
-                if (start < context.position || info.success) {
-                    return info
-                } else {
-                    failed.add(info)
+                if (start < context.position || info.success) return info 
+                else failed.add(info)
+            }
+            return failed.reduce { acc, parserInfo ->
+                when {
+                    acc.position < parserInfo.position -> parserInfo
+                    parserInfo.position < acc.position -> acc
+                    else -> ParserInfo(
+                        acc.position,
+                        acc.expected + parserInfo.expected,
+                        if (acc.errorMessage == null) parserInfo.errorMessage
+                        else acc.errorMessage + ";" + parserInfo.errorMessage,
+                        false
+                    )
                 }
             }
-            return failed.reduce { acc, parserInfo -> acc.merge(parserInfo) }
         }
 
         public override fun calcName(): String = buildString {
