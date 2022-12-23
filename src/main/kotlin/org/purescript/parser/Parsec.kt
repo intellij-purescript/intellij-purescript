@@ -22,9 +22,6 @@ abstract class Parsec {
     abstract fun parse(context: ParserContext): Info
     operator fun plus(other: Parsec) = SeqParser(arrayOf(other), this)
     fun or(next: Parsec) = ChoiceParser(this, arrayOf(next))
-    fun sepBy1(delimiter: Parsec) = this + (delimiter + this).noneOrMore()
-    fun sepBy(delimiter: Parsec) = OptionalParser(sepBy1(delimiter))
-    fun oneOrMore() = this + noneOrMore()
     fun noneOrMore() = NoneOrMoreParser(this)
     infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
     fun withRollback() = RollbackParser(this)
