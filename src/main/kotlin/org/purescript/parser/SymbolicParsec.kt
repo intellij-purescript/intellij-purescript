@@ -7,7 +7,7 @@ import org.purescript.parser.ParserInfo.Failure
 class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
     Parsec() {
     override fun parse(context: ParserContext): ParserInfo {
-        val startPosition = context.position
+        context.position
         val pack = context.start()
         val info = ref.parse(context)
         if (info !is Failure) {
@@ -15,15 +15,7 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
         } else {
             pack.drop()
         }
-        return if (startPosition == info.position) {
-            if (info !is Failure) ParserInfo.Optional(
-                info.position,
-                setOf(this)
-            )
-            else ParserInfo.Failure(info.position, setOf(this))
-        } else {
-            info
-        }
+        return info
     }
 
     override fun calcExpectedName() = setOf(node.toString())
