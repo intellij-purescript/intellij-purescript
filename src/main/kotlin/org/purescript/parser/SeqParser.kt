@@ -38,9 +38,6 @@ class SeqParser(
             }
             ret
         }
-
     private fun all() = sequenceOf(first, *ps)
-
-    public override fun calcCanBeEmpty() =
-        all().all { it.canBeEmpty }
+    public override fun calcCanBeEmpty() = all().all { it.canBeEmpty }
 }
