@@ -16,10 +16,10 @@ abstract class Parsec {
         if (canParse(context)) {
             parse(context)
         } else {
-            ParserInfo.Failure(context.position, setOf(this))
+            Info.Failure(context.position, setOf(this))
         }
 
-    abstract fun parse(context: ParserContext): ParserInfo
+    abstract fun parse(context: ParserContext): Info
     operator fun plus(other: Parsec) = SeqParser(arrayOf(other), this)
     fun or(next: Parsec) = ChoiceParser(this, arrayOf(next))
     fun sepBy1(delimiter: Parsec) = this + (delimiter + this).noneOrMore()

@@ -1,15 +1,15 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.ParserInfo.*
+import org.purescript.parser.Info.*
 
 class ChoiceParser(
     private val head: Parsec,
     private val tail: Array<out Parsec>
 ) : Parsec() {
-    override fun parse(context: ParserContext): ParserInfo {
+    override fun parse(context: ParserContext): Info {
         val start = context.position
-        val headInfo: ParserInfo = head.tryToParse(context)
+        val headInfo: Info = head.tryToParse(context)
         if (headInfo !is Failure) return headInfo
         for (p in tail) {
             val info = p.tryToParse(context)

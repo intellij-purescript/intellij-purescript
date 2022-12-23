@@ -1,12 +1,12 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.ParserInfo.Failure
+import org.purescript.parser.Info.Failure
 
 class RollbackParser(private val p: Parsec) : Parsec() {
         override fun parse(context: ParserContext) =
             if (!p.canParse(context)) {
-                ParserInfo.Failure(context.position, setOf(p))
+                Info.Failure(context.position, setOf(p))
             } else {
                 val start = context.position
                 val pack = context.start()
@@ -16,7 +16,7 @@ class RollbackParser(private val p: Parsec) : Parsec() {
                     info
                 } else {
                     pack.rollbackTo()
-                    ParserInfo.Failure(start, info.expected)
+                    Info.Failure(start, info.expected)
                 }
             }
 

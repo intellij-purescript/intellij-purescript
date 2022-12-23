@@ -1,23 +1,25 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.ParserInfo.Failure
+import org.purescript.parser.Info.Failure
 
 class SeqParser(
     private val ps: Array<out Parsec>,
     private val first: Parsec
 ) : Parsec() {
-    override fun parse(context: ParserContext): ParserInfo {
+    override fun parse(context: ParserContext): Info {
         var info = first.parse(context)
         for (p in ps) {
-            if (info is Failure) return info
-            val other = p.parse(context)
-            info = when (other) {
-                is ParserInfo.Optional -> ParserInfo.Optional(
-                    other.position, 
-                    info.expected + other.expected
-                )
-                else -> other
+            info = when (info) {
+                is Failure -> return info
+                is Info.Success -> p.parse(context)
+                is Info.Optional ->{
+                    when (val next = p.parse(context)) {
+                        is Info.Optional ->
+                            Info.Optional(next.position, info.expected + next.expected)
+                        else -> next
+                    }
+                }
             }
         }
         return info

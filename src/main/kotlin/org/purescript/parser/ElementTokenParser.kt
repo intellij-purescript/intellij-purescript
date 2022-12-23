@@ -4,11 +4,11 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
 class ElementTokenParser(private val tokenType: IElementType) : Parsec() {
-    override fun parse(context: ParserContext): ParserInfo {
+    override fun parse(context: ParserContext): Info {
         val position = context.position
         val success = context.eat(tokenType)
-        return if(success) ParserInfo.Success()
-        else ParserInfo.Failure(position, setOf(this))
+        return if(success) Info.Success
+        else Info.Failure(position, setOf(this))
     }
 
 
