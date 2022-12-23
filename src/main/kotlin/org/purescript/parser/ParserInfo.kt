@@ -6,7 +6,7 @@ abstract class ParserInfo(
 ) {
 
     class Optional(position: Int, expected: Set<Parsec>) : ParserInfo(position, expected)
-    class Success(position: Int, expected: Set<Parsec>) : ParserInfo(position, expected)
+    class Success(position: Int) : ParserInfo(position, emptySet())
     class Failure(position: Int, expected: Set<Parsec>) : ParserInfo(position, expected) 
 
     override fun toString(): String {
