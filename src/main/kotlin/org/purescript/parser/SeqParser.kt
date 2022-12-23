@@ -11,13 +11,18 @@ class SeqParser(
         for (p in ps) {
             if (!info.success) return info
             val other = p.parse(context)
-            info = info.merge(other)
+            info = if (info.position == other.position) ParserInfo(
+                info.position,
+                info.expected + other.expected,
+                other.success
+            ) else other
         }
         return info
     }
 
-    public override fun calcName() = 
+    public override fun calcName() =
         all().joinToString(" ") { it.name }
+
     override fun calcExpectedName(): Set<String> {
         var ret = emptySet<String>()
         for (p in all()) {
@@ -39,6 +44,6 @@ class SeqParser(
 
     private fun all() = sequenceOf(first, *ps)
 
-    public override fun calcCanBeEmpty() = 
+    public override fun calcCanBeEmpty() =
         all().all { it.canBeEmpty }
 }
