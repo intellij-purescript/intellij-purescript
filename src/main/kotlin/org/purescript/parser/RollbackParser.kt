@@ -6,7 +6,7 @@ import org.purescript.parser.Info.Failure
 class RollbackParser(private val p: Parsec) : Parsec() {
         override fun parse(context: ParserContext) =
             if (!p.canParse(context)) {
-                Info.Failure(context.position, setOf(p))
+                Failure(context.position, setOf(p))
             } else {
                 val start = context.position
                 val pack = context.start()
@@ -16,7 +16,7 @@ class RollbackParser(private val p: Parsec) : Parsec() {
                     info
                 } else {
                     pack.rollbackTo()
-                    Info.Failure(start, info.expected)
+                    Failure(start, info.expected)
                 }
             }
 
