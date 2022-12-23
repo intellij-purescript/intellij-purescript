@@ -112,17 +112,6 @@ class Wrapper(private val parsec: Parsec) : DSL {
     override val optimize: DSL get() = this
 }
 
-class DSLGuard(
-    private val child: DSL,
-    private val predicate: (String?) -> Boolean
-) : DSL {
-    override val compile: Parsec by lazy {
-        GuardParser(child.compile, predicate)
-    }
-
-    override val optimize: DSL get() = this
-}
-
 class Symbolic(private val child: DSL, val symbol: IElementType) : DSL {
     override val compile: Parsec by lazy { child.compile.`as`(symbol) }
     override val optimize by lazy {
