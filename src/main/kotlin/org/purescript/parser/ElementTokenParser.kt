@@ -7,7 +7,6 @@ class ElementTokenParser(private val tokenType: IElementType) : Parsec() {
     override fun parse(context: ParserContext): ParserInfo = ParserInfo(
         context.position,
         setOf(this),
-        null,
         context.eat(tokenType)
     )
 

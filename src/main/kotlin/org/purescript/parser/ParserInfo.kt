@@ -3,12 +3,10 @@ package org.purescript.parser
 data class ParserInfo(
     val position: Int,
     val expected: Set<Parsec>,
-    val errorMessage: String?,
     val success: Boolean
 ) {
 
     override fun toString(): String {
-        if (errorMessage != null) return errorMessage
         val expected = expected.flatMap { it.expectedName }.toSet().toList()
         return if (expected.isNotEmpty()) buildString {
             append("Expecting ")
@@ -33,12 +31,6 @@ data class ParserInfo(
                 copy(success = other.success)
             }
         }
-        else -> ParserInfo(
-            position,
-            expected + other.expected,
-            if (errorMessage == null) other.errorMessage
-            else errorMessage + ";" + other.errorMessage,
-            other.success
-        )
+        else -> ParserInfo(position, expected + other.expected, other.success)
     }
 }

@@ -4,7 +4,7 @@ import com.intellij.psi.tree.TokenSet
 
 class NoneOrMoreParser(private val p: Parsec) : Parsec() {
     override fun parse(context: ParserContext): ParserInfo {
-        var info = ParserInfo(context.position, setOf(p), null, true)
+        var info = ParserInfo(context.position, setOf(p), true)
         while (!context.eof()) {
             val position = context.position
             info = p.parse(context)
@@ -14,7 +14,6 @@ class NoneOrMoreParser(private val p: Parsec) : Parsec() {
                     val info2 = ParserInfo(
                         context.position,
                         info.expected,
-                        null,
                         false
                     )
                     return info.merge(info2)
@@ -24,7 +23,6 @@ class NoneOrMoreParser(private val p: Parsec) : Parsec() {
                     val info2 = ParserInfo(
                         context.position,
                         info.expected,
-                        null,
                         true
                     )
                     info.merge(info2)

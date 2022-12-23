@@ -15,7 +15,7 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
             pack.drop()
         }
         return if (startPosition == info.position) {
-            ParserInfo(info.position, setOf(this), null, info.success)
+            ParserInfo(info.position, setOf(this), info.success)
         } else {
             info
         }

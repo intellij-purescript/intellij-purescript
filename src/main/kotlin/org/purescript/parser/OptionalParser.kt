@@ -10,7 +10,6 @@ class OptionalParser(private val p: Parsec) : Parsec() {
         else ParserInfo(
             info1.position,
             info1.expected,
-            null,
             context.position == position
         )
     }

@@ -18,7 +18,7 @@ abstract class Parsec {
         if (canParse(context)) {
             parse(context)
         } else {
-            ParserInfo(context.position, setOf(this), null, false)
+            ParserInfo(context.position, setOf(this), false)
         }
 
     abstract fun parse(context: ParserContext): ParserInfo

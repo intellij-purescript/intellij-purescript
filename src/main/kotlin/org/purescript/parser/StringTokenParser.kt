@@ -6,9 +6,9 @@ class StringTokenParser(private val token: String) : Parsec() {
     override fun parse(context: ParserContext): ParserInfo =
         if (context.text() == token) {
             context.advance()
-            ParserInfo(context.position, setOf(this), null, true)
+            ParserInfo(context.position, setOf(this), true)
         } else {
-            ParserInfo(context.position, setOf(this), null, false)
+            ParserInfo(context.position, setOf(this), false)
         }
 
     public override fun calcName() = "\"" + token + "\""

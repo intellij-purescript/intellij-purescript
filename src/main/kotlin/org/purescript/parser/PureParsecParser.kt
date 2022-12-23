@@ -113,7 +113,7 @@ class PureParsecParser {
     }
 
     private val parseTypeVariable: DSL =
-        DSLGuard(idents, "not `forall`") { !(it == "∀" || it == "forall") }
+        DSLGuard(idents) { !(it == "∀" || it == "forall") }
             .`as`(GenericIdentifier)
 
     private val rowLabel =

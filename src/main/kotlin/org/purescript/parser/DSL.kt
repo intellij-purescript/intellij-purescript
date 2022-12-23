@@ -45,7 +45,7 @@ class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
         else when (first) {
             is Seq -> Seq(first.first, *first.rest, *rest)
             else -> Seq(first, *rest)
-        } 
+        }
     }
 }
 
@@ -114,11 +114,10 @@ class Wrapper(private val parsec: Parsec) : DSL {
 
 class DSLGuard(
     private val child: DSL,
-    private val errorMessage: String,
     private val predicate: (String?) -> Boolean
 ) : DSL {
     override val compile: Parsec by lazy {
-        GuardParser(child.compile, predicate, errorMessage)
+        GuardParser(child.compile, predicate)
     }
 
     override val optimize: DSL get() = this

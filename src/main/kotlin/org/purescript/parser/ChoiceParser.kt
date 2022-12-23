@@ -23,8 +23,6 @@ class ChoiceParser(
                 else -> ParserInfo(
                     acc.position,
                     acc.expected + parserInfo.expected,
-                    if (acc.errorMessage == null) parserInfo.errorMessage
-                    else acc.errorMessage + ";" + parserInfo.errorMessage,
                     false
                 )
             }

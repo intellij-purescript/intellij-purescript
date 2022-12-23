@@ -4,8 +4,7 @@ import com.intellij.psi.tree.TokenSet
 
 class GuardParser(
     private val p: Parsec,
-    private val predicate: (String?) -> Boolean,
-    private val errorMessage: String
+    private val predicate: (String?) -> Boolean
 ) : Parsec() {
     override fun parse(context: ParserContext): ParserInfo {
         val pack = context.start()
@@ -15,7 +14,7 @@ class GuardParser(
             val end = context.position
             val text = context.getText(start, end)
             if (!predicate.invoke(text)) {
-                ParserInfo(context.position, setOf(), errorMessage, false)
+                ParserInfo(context.position, setOf(), false)
             } else {
                 pack.drop()
                 info1
