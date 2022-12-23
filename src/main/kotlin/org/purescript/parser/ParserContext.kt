@@ -5,7 +5,8 @@ package org.purescript.parser
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 
-class ParserContext(private val builder: PsiBuilder) {
+@JvmInline
+value class ParserContext(private val builder: PsiBuilder) {
     fun eof() = builder.eof()
     fun advance() = builder.advanceLexer()
     fun text() = builder.tokenText ?: ""
