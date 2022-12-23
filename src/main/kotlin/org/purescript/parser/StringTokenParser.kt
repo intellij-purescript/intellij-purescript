@@ -7,7 +7,7 @@ class StringTokenParser(private val token: String) : Parsec() {
         val start = context.position
         return if (context.text() == token) {
             context.advance()
-            ParserInfo.Success(start)
+            ParserInfo.Success()
         } else {
             ParserInfo.Failure(start, setOf(this))
         }

@@ -1,13 +1,12 @@
 package org.purescript.parser
 
 abstract class ParserInfo(
-    val position: Int,
     val expected: Set<Parsec>
 ) {
 
-    class Optional(position: Int, expected: Set<Parsec>) : ParserInfo(position, expected)
-    class Success(position: Int) : ParserInfo(position, emptySet())
-    class Failure(position: Int, expected: Set<Parsec>) : ParserInfo(position, expected) 
+    class Failure(val position: Int, expected: Set<Parsec>) : ParserInfo(expected)
+    class Optional(val position: Int, expected: Set<Parsec>) : ParserInfo(expected)
+    class Success : ParserInfo(emptySet())
 
     override fun toString(): String {
         val expected = expected.flatMap { it.expectedName }.toSet().toList()

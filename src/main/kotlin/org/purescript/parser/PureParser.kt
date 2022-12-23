@@ -15,7 +15,7 @@ class PureParser : PsiParser {
         if (!context.eof()) {
             var errorMarker: PsiBuilder.Marker? = null
             while (!context.eof()) {
-                if (errorMarker == null && context.position >= info.position) {
+                if (errorMarker == null && info is ParserInfo.Failure && context.position >= info.position) {
                     errorMarker = context.start()
                     nextType = builder.tokenType
                 }
