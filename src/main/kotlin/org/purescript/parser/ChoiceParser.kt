@@ -1,6 +1,7 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
+import org.purescript.parser.ParserInfo.Failure
 
 class ChoiceParser(
     private val head: Parsec,
@@ -9,11 +10,11 @@ class ChoiceParser(
     override fun parse(context: ParserContext): ParserInfo {
         val start = context.position
         val headInfo: ParserInfo = head.tryToParse(context)
-        if (start < context.position || headInfo.success) return headInfo
+        if (start < context.position || headInfo !is Failure) return headInfo
         val failed = mutableListOf(headInfo)
         for (p in tail) {
             val info = p.tryToParse(context)
-            if (start < context.position || info.success) return info
+            if (start < context.position || info !is Failure) return info
             else failed.add(info)
         }
         return failed.reduce { acc, parserInfo ->
