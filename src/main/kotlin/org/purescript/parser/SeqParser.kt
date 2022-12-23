@@ -10,18 +10,15 @@ class SeqParser(
     override fun parse(context: ParserContext): ParserInfo {
         var info = first.parse(context)
         for (p in ps) {
-            if (!(info !is Failure)) return info
+            if (info is Failure) return info
             val other = p.parse(context)
-            info = if (info.position == other.position)
-                if (other !is Failure) ParserInfo.Optional(
-                    info.position,
+            info = when (other) {
+                is ParserInfo.Optional -> ParserInfo.Optional(
+                    other.position, 
                     info.expected + other.expected
                 )
-                else ParserInfo.Failure(
-                    info.position,
-                    info.expected + other.expected
-                )
-            else other
+                else -> other
+            }
         }
         return info
     }
