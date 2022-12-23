@@ -11,11 +11,10 @@ class SeqParser(
         for (p in ps) {
             if (!info.success) return info
             val other = p.parse(context)
-            info = if (info.position == other.position) ParserInfo(
-                info.position,
-                info.expected + other.expected,
-                other.success
-            ) else other
+            info = if (info.position == other.position)
+                if(other.success) ParserInfo.Optional(info.position, info.expected + other.expected) 
+                else ParserInfo.Failure(info.position, info.expected + other.expected)
+            else other
         }
         return info
     }

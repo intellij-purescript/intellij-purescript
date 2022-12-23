@@ -20,10 +20,9 @@ class ChoiceParser(
             when {
                 acc.position < parserInfo.position -> parserInfo
                 parserInfo.position < acc.position -> acc
-                else -> ParserInfo(
+                else -> ParserInfo.Failure(
                     acc.position,
-                    acc.expected + parserInfo.expected,
-                    false
+                    acc.expected + parserInfo.expected
                 )
             }
         }

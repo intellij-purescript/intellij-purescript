@@ -16,7 +16,7 @@ abstract class Parsec {
         if (canParse(context)) {
             parse(context)
         } else {
-            ParserInfo(context.position, setOf(this), false)
+            ParserInfo.Failure(context.position, setOf(this))
         }
 
     abstract fun parse(context: ParserContext): ParserInfo

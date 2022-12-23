@@ -5,7 +5,7 @@ import com.intellij.psi.tree.TokenSet
 class RollbackParser(private val p: Parsec) : Parsec() {
         override fun parse(context: ParserContext) =
             if (!p.canParse(context)) {
-                ParserInfo(context.position, setOf(p), false)
+                ParserInfo.Failure(context.position, setOf(p))
             } else {
                 val start = context.position
                 val pack = context.start()
@@ -15,7 +15,7 @@ class RollbackParser(private val p: Parsec) : Parsec() {
                     info
                 } else {
                     pack.rollbackTo()
-                    ParserInfo(start, info.expected, false)
+                    ParserInfo.Failure(start, info.expected)
                 }
             }
 

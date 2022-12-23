@@ -7,7 +7,7 @@ class NoneOrMoreParser(private val p: Parsec) : Parsec() {
         val position = context.position
         val info = p.parse(context)
         return when (info.success) {
-            false -> ParserInfo(position, setOf(p), true)
+            false -> ParserInfo.Optional(position, setOf(p))
             true -> parse(context)
         }
     }
