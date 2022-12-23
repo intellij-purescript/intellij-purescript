@@ -1,31 +1,26 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.ParserInfo.Failure
+import org.purescript.parser.ParserInfo.*
 
 class ChoiceParser(
     private val head: Parsec,
     private val tail: Array<out Parsec>
 ) : Parsec() {
     override fun parse(context: ParserContext): ParserInfo {
-        val start = context.position
         val headInfo: ParserInfo = head.tryToParse(context)
-        if (start < context.position || headInfo !is Failure) return headInfo
-        val failed = mutableListOf(headInfo)
+        if (headInfo !is Failure) return headInfo
+        val failed: MutableList<Failure> = mutableListOf(headInfo)
         for (p in tail) {
-            val info = p.tryToParse(context)
-            if (start < context.position || info !is Failure) return info
-            else failed.add(info)
+            when (val info = p.tryToParse(context)) {
+                is Failure -> failed.add(info)
+                is Success -> return info
+                // TODO(what does a optional choice mean?)
+                is ParserInfo.Optional -> return info
+            }
         }
         return failed.reduce { acc, parserInfo ->
-            when {
-                acc.position < parserInfo.position -> parserInfo
-                parserInfo.position < acc.position -> acc
-                else -> ParserInfo.Failure(
-                    acc.position,
-                    acc.expected + parserInfo.expected
-                )
-            }
+            Failure(acc.position, acc.expected + parserInfo.expected)
         }
     }
 
