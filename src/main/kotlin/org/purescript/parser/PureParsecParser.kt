@@ -112,10 +112,6 @@ class PureParsecParser {
             .`as`(ForAll)
     }
 
-    private val parseTypeVariable: DSL =
-        DSLGuard(idents) { !(it == "∀" || it == "forall") }
-            .`as`(GenericIdentifier)
-
     private val rowLabel =
         lname.or(string.withRollback).`as`(GenericIdentifier) + dcolon + type
 
@@ -133,7 +129,7 @@ class PureParsecParser {
             string.withRollback,
             number.withRollback,
             parseForAll.withRollback,
-            parseTypeVariable.withRollback,
+            idents.`as`(GenericIdentifier).withRollback,
             qualified(properName)
                 .withRollback
                 .`as`(TypeConstructor)

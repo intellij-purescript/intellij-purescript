@@ -8,18 +8,7 @@ data class ParserInfo(
 
     override fun toString(): String {
         val expected = expected.flatMap { it.expectedName }.toSet().toList()
-        return if (expected.isNotEmpty()) buildString {
-            append("Expecting ")
-            for (i in 0 until expected.size - 2) {
-                append("${expected[i]}, ")
-            }
-            if (expected.size >= 2) {
-                append("${expected[expected.size - 2]} or ")
-            }
-            append(expected[expected.size - 1])
-        } else {
-            "Error"
-        }
+        return "Expected one of: ${expected.joinToString(", ") { it }}"
     }
 
     fun merge(other: ParserInfo) = when {
