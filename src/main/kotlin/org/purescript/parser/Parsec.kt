@@ -4,8 +4,6 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
 abstract class Parsec {
-    val name: String by lazy { calcName() }
-    protected abstract fun calcName(): String
     val expectedName: Set<String> by lazy { calcExpectedName() }
     protected abstract fun calcExpectedName(): Set<String>
     val canBeEmpty: Boolean by lazy { calcCanBeEmpty() }

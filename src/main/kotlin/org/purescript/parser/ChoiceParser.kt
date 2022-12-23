@@ -29,11 +29,6 @@ class ChoiceParser(
         }
     }
 
-    public override fun calcName(): String = buildString {
-        append("(${head.name})")
-        for (parsec in tail) append(" | (${parsec.name})")
-    }
-
     override fun calcExpectedName(): Set<String> =
         tail.fold(head.expectedName) { acc, parsec -> acc + parsec.expectedName }
 

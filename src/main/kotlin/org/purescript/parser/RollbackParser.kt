@@ -19,8 +19,7 @@ class RollbackParser(private val p: Parsec) : Parsec() {
                 }
             }
 
-        public override fun calcName() = "try(" + p.name + ")"
-        override fun calcExpectedName() = p.expectedName
+    override fun calcExpectedName() = p.expectedName
         override val canStartWithSet: TokenSet get() = p.canStartWithSet
         public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
     }

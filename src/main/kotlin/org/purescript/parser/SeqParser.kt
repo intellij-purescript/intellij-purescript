@@ -20,9 +20,6 @@ class SeqParser(
         return info
     }
 
-    public override fun calcName() =
-        all().joinToString(" ") { it.name }
-
     override fun calcExpectedName(): Set<String> {
         var ret = emptySet<String>()
         for (p in all()) {

@@ -12,7 +12,6 @@ class NoneOrMoreParser(private val p: Parsec) : Parsec() {
         }
     }
 
-    public override fun calcName() = "(" + p.name + ")*"
     override fun calcExpectedName() = p.expectedName
     override val canStartWithSet: TokenSet get() = p.canStartWithSet
     public override fun calcCanBeEmpty() = true

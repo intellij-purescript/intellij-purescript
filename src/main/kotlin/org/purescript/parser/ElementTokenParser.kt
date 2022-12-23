@@ -11,7 +11,6 @@ class ElementTokenParser(private val tokenType: IElementType) : Parsec() {
     )
 
 
-    public override fun calcName() = tokenType.toString()
     override fun calcExpectedName() = setOf(tokenType.toString())
     override val canStartWithSet: TokenSet get() = TokenSet.create(tokenType)
     public override fun calcCanBeEmpty() = false

@@ -11,7 +11,6 @@ class StringTokenParser(private val token: String) : Parsec() {
             ParserInfo(context.position, setOf(this), false)
         }
 
-    public override fun calcName() = "\"" + token + "\""
     override fun calcExpectedName() = setOf("\"" + token + "\"")
     override val canStartWithSet: TokenSet get() = TokenSet.ANY
     public override fun calcCanBeEmpty() = false
