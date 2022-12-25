@@ -13,74 +13,69 @@ sealed interface DSL {
     val oneOrMore get() = this + noneOrMore
     val noneOrMore get() = NoneOrMore(this)
     val withRollback get() = Transaction(this)
+    fun parse(context: ParserContext): Info = when (this) {
+        is ElementToken -> when {
+            context.eat(this.token) -> Success
+            else -> Failure
+        }
 
-    companion object {
-        fun parse(dsl: DSL, context: ParserContext): Info {
-            return when (dsl) {
-                is ElementToken -> when {
-                    context.eat(dsl.token) -> Success
-                    else -> Failure
+        is StringToken -> when (context.text()) {
+            this.token -> {
+                context.advance()
+                Success
+            }
+
+            else -> Failure
+        }
+
+        is Optional -> {
+            this.child.parse(context)
+            Success
+        }
+
+        is Choice -> when (this.first.parse(context)) {
+            Success -> Success
+            Failure -> this.next.parse(context)
+        }
+
+        is Seq -> when (this.first.parse(context)) {
+            Success -> this.next.parse(context)
+            Failure -> Failure
+        }
+
+        is NoneOrMore -> when (this.child.parse(context)) {
+            Failure -> Success
+            Success -> this.parse(context)
+        }
+
+        is Transaction -> {
+            val pack = context.start()
+            when (this.child.parse(context)) {
+                Failure -> {
+                    pack.rollbackTo()
+                    Failure
                 }
 
-                is StringToken -> when (context.text()) {
-                    dsl.token -> {
-                        context.advance()
-                        Success
-                    }
-
-                    else -> Failure
-                }
-
-                is Optional -> {
-                    parse(dsl.child, context)
+                Success -> {
+                    pack.drop()
                     Success
                 }
+            }
+        }
 
-                is Choice -> when (parse(dsl.first, context)) {
-                    Success -> Success
-                    Failure -> parse(dsl.next, context)
+        is Reference -> this.init(this).parse(context)
+
+        is Symbolic -> {
+            val pack = context.start()
+            when (this.child.parse(context)) {
+                Failure -> {
+                    pack.drop()
+                    Failure
                 }
 
-                is Seq -> when (parse(dsl.first, context)) {
-                    Success -> parse(dsl.next, context)
-                    Failure -> Failure
-                }
-
-                is NoneOrMore -> when (parse(dsl.child, context)) {
-                    Failure -> Success
-                    Success -> parse(dsl, context)
-                }
-
-                is Transaction -> {
-                    val pack = context.start()
-                    return when (parse(dsl.child, context)) {
-                        Failure -> {
-                            pack.rollbackTo()
-                            Failure
-                        }
-
-                        Success -> {
-                            pack.drop()
-                            Success
-                        }
-                    }
-                }
-
-                is Reference -> parse(dsl.init(dsl), context)
-
-                is Symbolic -> {
-                    val pack = context.start()
-                    return when (val info = parse(dsl.child, context)) {
-                        Failure -> {
-                            pack.drop()
-                            Failure
-                        }
-
-                        Success -> {
-                            pack.done(dsl.symbol)
-                            Success
-                        }
-                    }
+                Success -> {
+                    pack.done(this.symbol)
+                    Success
                 }
             }
         }
