@@ -13,7 +13,7 @@ class PureParser : PsiParser {
         if (!builder.eof()) {
             var nextType: IElementType? = null
             var errorMarker: PsiBuilder.Marker? = null
-            if (info == Info.Failure) {
+            if (!info) {
                 errorMarker = builder.mark()
                 nextType = builder.tokenType
             }
