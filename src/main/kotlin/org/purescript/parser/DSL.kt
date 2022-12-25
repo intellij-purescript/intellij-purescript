@@ -15,17 +15,17 @@ sealed interface DSL {
     val withRollback get() = Transaction(this)
 }
 
-class ElementToken(private val token: IElementType) : DSL {
+data class ElementToken(val token: IElementType) : DSL {
     override val compile by lazy { ElementTokenParser(token) }
     override val optimize: DSL = this
 }
 
-class StringToken(private val token: String) : DSL {
+data class StringToken(val token: String) : DSL {
     override val compile by lazy { StringTokenParser(token) }
     override val optimize: DSL = this
 }
 
-class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
+class Seq(val first: DSL, vararg val rest: DSL) : DSL {
     override val compile by lazy {
         SeqParser(
             rest.map { it.compile }.toTypedArray(),
@@ -49,7 +49,7 @@ class Seq(val first: DSL, private vararg val rest: DSL) : DSL {
     }
 }
 
-class Choice(val first: DSL, private vararg val rest: DSL) : DSL {
+class Choice(val first: DSL, vararg val rest: DSL) : DSL {
     override val compile: Parsec by lazy {
         ChoiceParser(
             first.compile,
@@ -73,7 +73,7 @@ class Choice(val first: DSL, private vararg val rest: DSL) : DSL {
     }
 }
 
-class NoneOrMore(private val child: DSL) : DSL {
+data class NoneOrMore(val child: DSL) : DSL {
     override val compile: Parsec = NoneOrMoreParser(child.compile)
     override val optimize by lazy {
         if (child == child.optimize) this
@@ -81,7 +81,7 @@ class NoneOrMore(private val child: DSL) : DSL {
     }
 }
 
-class Optional(private val child: DSL) : DSL {
+data class Optional(val child: DSL) : DSL {
     override val compile: Parsec by lazy { OptionalParser(child.compile) }
     override val optimize by lazy {
         if (child == child.optimize) this
@@ -89,7 +89,7 @@ class Optional(private val child: DSL) : DSL {
     }
 }
 
-class Transaction(private val child: DSL) : DSL {
+data class Transaction(val child: DSL) : DSL {
     override val compile: Parsec by lazy { RollbackParser(child.compile) }
     override val optimize by lazy {
         if (child == child.optimize) this
@@ -97,7 +97,7 @@ class Transaction(private val child: DSL) : DSL {
     }
 }
 
-class Reference(private val init: DSL.() -> DSL) : DSL {
+data class Reference(val init: DSL.() -> DSL) : DSL {
     override val compile: Parsec by lazy {
         ParsecRef(fun Parsec.(): Parsec {
             return init(Wrapper(this)).compile
@@ -107,12 +107,12 @@ class Reference(private val init: DSL.() -> DSL) : DSL {
     override val optimize: DSL get() = this
 }
 
-class Wrapper(private val parsec: Parsec) : DSL {
+data class Wrapper(val parsec: Parsec) : DSL {
     override val compile: Parsec by lazy { parsec }
     override val optimize: DSL get() = this
 }
 
-class Symbolic(private val child: DSL, val symbol: IElementType) : DSL {
+data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
     override val compile: Parsec by lazy {
         SymbolicParsec(child.compile, symbol)
     }
