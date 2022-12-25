@@ -8,18 +8,17 @@ import com.intellij.psi.tree.IElementType
 class PureParser : PsiParser {
 
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
-        val context = ParserContext(builder)
-        val mark = context.start()
-        val info = parser.parse(context)
-        if (!context.eof()) {
+        val mark = builder.mark()
+        val info = parser.parse(builder)
+        if (!builder.eof()) {
             var nextType: IElementType? = null
             var errorMarker: PsiBuilder.Marker? = null
             if (info == Info.Failure) {
-                errorMarker = context.start()
+                errorMarker = builder.mark()
                 nextType = builder.tokenType
             }
-            while (!context.eof()) {
-                context.advance()
+            while (!builder.eof()) {
+                builder.advanceLexer()
             }
             errorMarker?.error(
                 if (nextType != null) "Unexpected $nextType. $info"
