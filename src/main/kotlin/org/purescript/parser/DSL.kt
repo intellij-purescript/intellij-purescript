@@ -13,15 +13,15 @@ sealed interface DSL {
     val oneOrMore get() = this + noneOrMore
     val noneOrMore get() = NoneOrMore(this)
     val withRollback get() = Transaction(this)
-    fun parse(psiBuilder: PsiBuilder): Boolean
+    fun parse(builder: PsiBuilder): Boolean
 }
 
 operator fun DSL.plus(other: DSL) = Seq(this, other)
 
 data class ElementToken(val token: IElementType) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean = 
-        if (psiBuilder.tokenType === token) {
-            psiBuilder.advanceLexer()
+    override fun parse(builder: PsiBuilder): Boolean = 
+        if (builder.tokenType === token) {
+            builder.advanceLexer()
             true
         } else {
             false
@@ -29,10 +29,10 @@ data class ElementToken(val token: IElementType) : DSL {
 }
 
 data class StringToken(val token: String) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean =
-        when (psiBuilder.tokenText) {
+    override fun parse(builder: PsiBuilder): Boolean =
+        when (builder.tokenText) {
             token -> {
-                psiBuilder.advanceLexer()
+                builder.advanceLexer()
                 true
             }
 
@@ -41,8 +41,8 @@ data class StringToken(val token: String) : DSL {
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean =
-        first.parse(psiBuilder) && next.parse(psiBuilder)
+    override fun parse(builder: PsiBuilder): Boolean =
+        first.parse(builder) && next.parse(builder)
 }
 
 data class Choice(val first: DSL, val next: DSL) : DSL {
@@ -53,24 +53,24 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
         }
     }
 
-    override fun parse(psiBuilder: PsiBuilder): Boolean =
-        first.parse(psiBuilder) || next.parse(psiBuilder)
+    override fun parse(builder: PsiBuilder): Boolean =
+        first.parse(builder) || next.parse(builder)
 }
 
 data class NoneOrMore(val child: DSL) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean =
-        child.parse(psiBuilder) && parse(psiBuilder) || true
+    override fun parse(builder: PsiBuilder): Boolean =
+        child.parse(builder) && parse(builder) || true
 }
 
 data class Optional(val child: DSL) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean =
-        child.parse(psiBuilder) || true
+    override fun parse(builder: PsiBuilder): Boolean =
+        child.parse(builder) || true
 }
 
 data class Transaction(val child: DSL) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean {
-        val pack = psiBuilder.mark()
-        return when (child.parse(psiBuilder)) {
+    override fun parse(builder: PsiBuilder): Boolean {
+        val pack = builder.mark()
+        return when (child.parse(builder)) {
             false -> {
                 pack.rollbackTo()
                 false
@@ -85,14 +85,14 @@ data class Transaction(val child: DSL) : DSL {
 }
 
 data class Reference(val init: DSL.() -> DSL) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean =
-        this.init(this).parse(psiBuilder)
+    override fun parse(builder: PsiBuilder): Boolean =
+        this.init(this).parse(builder)
 }
 
 data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
-    override fun parse(psiBuilder: PsiBuilder): Boolean {
-        val pack = psiBuilder.mark()
-        return when (child.parse(psiBuilder)) {
+    override fun parse(builder: PsiBuilder): Boolean {
+        val pack = builder.mark()
+        return when (child.parse(builder)) {
             false -> {
                 pack.drop()
                 false
