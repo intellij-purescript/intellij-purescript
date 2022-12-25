@@ -3,8 +3,8 @@ package org.purescript.parser
 import org.purescript.parser.Info.Failure
 
 class SeqParser(
-    private val ps: Array<out Parsec>,
-    private val first: Parsec
+    private val first: Parsec,
+    private vararg val ps: Parsec
 ) : Parsec() {
     override fun parse(context: ParserContext): Info {
         var info = first.parse(context)

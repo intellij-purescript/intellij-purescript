@@ -17,7 +17,7 @@ class PureParsecParser {
     // ElementTokens
 
     private val idents =
-        Choice(
+        Choice.of(
             ElementToken(IDENT),
             `as`,
             ElementToken(HIDING),
@@ -27,7 +27,7 @@ class PureParsecParser {
             `'type'`,
         )
 
-    private val lname = Choice(
+    private val lname = Choice.of(
         ElementToken(IDENT),
         data,
         `'newtype'`,
@@ -60,12 +60,12 @@ class PureParsecParser {
         `as`
     ).`as`(Identifier)
 
-    private val label = Choice(string, lname)
+    private val label = Choice.of(string, lname)
 
     // this doesn't match parser.y but i dont feel like changing it right now
     // it might be due to differences in the lexer
     private val operator =
-        Choice(
+        Choice.of(
             ElementToken(OPERATOR),
             dot,
             ddot,
@@ -94,7 +94,7 @@ class PureParsecParser {
             ).`as`(FunKind)
     }
     private val parseKindPrefixRef: DSL = Reference { parseKindPrefix }
-    private val parseKindAtom = Choice(
+    private val parseKindAtom = Choice.of(
         StringToken("*").`as`(START).`as`(Star),
         StringToken("!").`as`(BANG).`as`(Bang),
         qualified(properName).withRollback.`as`(TypeConstructor),
@@ -121,7 +121,7 @@ class PureParsecParser {
             .`as`(Row)
 
     private val typeAtom: DSL =
-        Choice(
+        Choice.of(
             squares(Optional(type)).withRollback,
             parens(arrow).withRollback,
             braces(parseRow).`as`(ObjectType).withRollback,
@@ -164,13 +164,13 @@ class PureParsecParser {
             .`as`(Identifier)
             .or(parens(operator.`as`(Identifier)).withRollback)
 
-    private val typeVarBinding = Choice(
+    private val typeVarBinding = Choice.of(
         idents.`as`(TypeVarName),
         parens(idents.`as`(GenericIdentifier) + dcolon + type)
             .`as`(TypeVarKinded)
     )
     private val binderAtom: DSL = Reference {
-        Choice(
+        Choice.of(
             `_`.`as`(NullBinder).withRollback,
             (ident.`as`(VarBinder) + `@` + this)
                 .withRollback
@@ -206,7 +206,7 @@ class PureParsecParser {
     private val parsePropertyUpdate: DSL =
         Reference { label + Optional(eq) + expr }
     private val exprAtom = Reference {
-        Choice(
+        Choice.of(
             `_`,
             hole.withRollback,
             qualified(idents.`as`(Identifier))
@@ -233,7 +233,7 @@ class PureParsecParser {
     * to allow layout end at any time.
     */
     private val exprCase: DSL = Reference {
-        (case + expr.sepBy1(ElementToken(COMMA)) + of + Choice(
+        (case + expr.sepBy1(ElementToken(COMMA)) + of + Choice.of(
             parseBadSingleCaseBranch.withRollback,
             `L{` + caseBranch.sepBy1(`L-sep`) + `L}`
         )).`as`(Case)
@@ -241,7 +241,7 @@ class PureParsecParser {
     private val parseBadSingleCaseBranch: DSL =
         Reference { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
     private val expr5 = Reference {
-        Choice(
+        Choice.of(
             braces(parsePropertyUpdate.sepBy1(ElementToken(COMMA))).withRollback,
             expr7,
             (backslash + binderAtom.oneOrMore + arrow + expr).`as`(Lambda),
@@ -284,9 +284,9 @@ class PureParsecParser {
     }
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
-        Choice(eq.withRollback + exprWhere, guardedDeclExpr.oneOrMore)
+        Choice.of(eq.withRollback + exprWhere, guardedDeclExpr.oneOrMore)
     private val instBinder =
-        Choice(
+        Choice.of(
             (ident + dcolon).withRollback + type,
             (ident + binderAtom.noneOrMore + guardedDecl)
                 .`as`(ValueDeclaration)
@@ -298,11 +298,11 @@ class PureParsecParser {
                 ).sepBy1(ElementToken(COMMA))
         ) + darrow
     private val parseForeignDeclaration =
-        `'foreign'` + `'import'` + Choice(
+        `'foreign'` + `'import'` + Choice.of(
             data + properName + dcolon + type `as` ForeignDataDeclaration,
             ident.withRollback + dcolon + type `as` ForeignValueDeclaration
         )
-    private val parseAssociativity = Choice(infixl, infixr, infix)
+    private val parseAssociativity = Choice.of(infixl, infixr, infix)
     private val parseFixity =
         (parseAssociativity + ElementToken(NATURAL)).`as`(Fixity)
     private val qualIdentifier =
@@ -310,7 +310,7 @@ class PureParsecParser {
     private val qualProperName =
         (Optional(qualifier) + properName).`as`(QualifiedProperName)
     private val parseFixityDeclaration =
-        (parseFixity + Choice(
+        (parseFixity + Choice.of(
             // TODO Should we differentiate Types and DataConstructors?
             // that would mean that when there is a `type` prefix we parse as Type
             // otherwise if it's a capital name it's a DataConstructor
@@ -333,7 +333,7 @@ class PureParsecParser {
         properName.`as`(ClassName) + typeVarBinding.noneOrMore +
             Optional(fundeps.`as`(ClassFunctionalDependencyList))
     private val classSignature = properName.`as`(ClassName) + dcolon + type
-    private val classHead = Choice(
+    private val classHead = Choice.of(
         // this first is described in haskell code and not in normal happy expression
         // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
         (`class` + classSignature).withRollback,
@@ -363,7 +363,7 @@ class PureParsecParser {
             .`as`(ImportedDataMemberList)
     val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
     private val importedItem =
-        Choice(
+        Choice.of(
             (`'type'` + parens(operator.`as`(Identifier))).`as`(ImportedType),
             (`class` + properName).`as`(ImportedClass),
             (ElementToken(KIND) + properName).`as`(ImportedKind),
@@ -392,8 +392,8 @@ class PureParsecParser {
      * representational = the type can be coerced to another type if certain conditions apply.
      * phantom - the type can always be coerced to another type.
      * */
-    private val role = Choice(nominal, representational, phantom)
-    private val decl = Choice(
+    private val role = Choice.of(nominal, representational, phantom)
+    private val decl = Choice.of(
         (dataHead + dcolon).withRollback + type,
         (dataHead +
             Optional(
@@ -442,7 +442,7 @@ class PureParsecParser {
         (`'type'` + parens(operator.`as`(Identifier))).`as`(ExportedType)
     private val exportedValue = ident.`as`(ExportedValue)
     private val exportList = parens(
-        Choice(
+        Choice.of(
             exportedClass,
             exportedData,
             exportedKind,
@@ -462,13 +462,13 @@ class PureParsecParser {
         ).`as`(Module)
 
     private val hole = (StringToken("?") + idents).`as`(TypeHole)
-    private val recordLabel = Choice(
+    private val recordLabel = Choice.of(
         (label + StringToken(":")).withRollback + expr,
         (label + eq).withRollback + expr,
         label.`as`(QualifiedIdentifier).`as`(ExpressionIdentifier),
     ).`as`(ObjectBinderField)
 
-    private val binder2 = Choice(
+    private val binder2 = Choice.of(
         (qualProperName.`as`(ConstructorBinder) + binderAtom.noneOrMore).withRollback,
         (StringToken("-") + number).withRollback.`as`(NumberBinder),
         binderAtom,
@@ -483,7 +483,7 @@ class PureParsecParser {
     private val parseIfThenElse =
         (`if` + expr + then + expr + `else` + expr).`as`(IfThenElse)
     private val letBinding =
-        Choice(
+        Choice.of(
             parseTypeDeclaration.withRollback,
             (ident + binderAtom.noneOrMore + guardedDecl).withRollback
                 .`as`(ValueDeclaration),
@@ -493,7 +493,7 @@ class PureParsecParser {
     private val parseLet =
         (let + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
             .`as`(Let)
-    private val doStatement = Choice(
+    private val doStatement = Choice.of(
         (let + (`L{` + (letBinding).sepBy1(`L-sep`) + `L}`)).`as`(DoNotationLet),
         (binder + larrow + expr).withRollback.`as`(DoNotationBind),
         expr.`as`(DoNotationValue).withRollback

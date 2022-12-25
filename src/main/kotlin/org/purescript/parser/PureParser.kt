@@ -31,6 +31,6 @@ class PureParser : PsiParser {
     }
 
     companion object {
-        private val parser = PureParsecParser().parseModule.optimize
+        private val parser = PureParsecParser().parseModule
     }
 }
