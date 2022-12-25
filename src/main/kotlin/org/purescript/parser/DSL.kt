@@ -5,7 +5,6 @@ import org.purescript.parser.Info.Failure
 import org.purescript.parser.Info.Success
 
 sealed interface DSL {
-    val compile: Parsec
     operator fun plus(other: DSL) = Seq(this, other)
     fun or(next: DSL) = Choice(this, next)
     fun sepBy(delimiter: DSL) = Optional(sepBy1(delimiter))
@@ -69,8 +68,6 @@ sealed interface DSL {
 
                 is Reference -> parse(dsl.init(dsl), context)
 
-                is Wrapper -> dsl.parsec.parse(context)
-
                 is Symbolic -> {
                     val pack = context.start()
                     return when (val info = parse(dsl.child, context)) {
@@ -91,22 +88,13 @@ sealed interface DSL {
     }
 }
 
-data class ElementToken(val token: IElementType) : DSL {
-    override val compile by lazy { ElementTokenParser(token) }
-}
+data class ElementToken(val token: IElementType) : DSL
 
-data class StringToken(val token: String) : DSL {
-    override val compile by lazy { StringTokenParser(token) }
-}
+data class StringToken(val token: String) : DSL
 
-data class Seq(val first: DSL, val next: DSL) : DSL {
-    override val compile by lazy { SeqParser(first.compile, next.compile) }
-}
+data class Seq(val first: DSL, val next: DSL) : DSL
 
 data class Choice(val first: DSL, val next: DSL) : DSL {
-    override val compile: Parsec by lazy {
-        ChoiceParser(first.compile, next.compile)
-    }
 
     companion object {
         fun of(vararg all: DSL): DSL {
@@ -115,33 +103,12 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
     }
 }
 
-data class NoneOrMore(val child: DSL) : DSL {
-    override val compile: Parsec = NoneOrMoreParser(child.compile)
-}
+data class NoneOrMore(val child: DSL) : DSL
 
-data class Optional(val child: DSL) : DSL {
-    override val compile: Parsec by lazy { OptionalParser(child.compile) }
-}
+data class Optional(val child: DSL) : DSL
 
-data class Transaction(val child: DSL) : DSL {
-    override val compile: Parsec by lazy { RollbackParser(child.compile) }
-}
+data class Transaction(val child: DSL) : DSL
 
-data class Reference(val init: DSL.() -> DSL) : DSL {
-    override val compile: Parsec by lazy {
-        ParsecRef(fun Parsec.(): Parsec {
-            return init(Wrapper(this)).compile
-        })
-    }
+data class Reference(val init: DSL.() -> DSL) : DSL
 
-}
-
-data class Wrapper(val parsec: Parsec) : DSL {
-    override val compile: Parsec by lazy { parsec }
-}
-
-data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
-    override val compile: Parsec by lazy {
-        SymbolicParsec(child.compile, symbol)
-    }
-}
+data class Symbolic(val child: DSL, val symbol: IElementType) : DSL 
