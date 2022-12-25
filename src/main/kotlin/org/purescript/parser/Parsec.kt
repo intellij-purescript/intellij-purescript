@@ -8,5 +8,4 @@ abstract class Parsec {
     protected abstract fun calcCanBeEmpty(): Boolean
     abstract val canStartWithSet: TokenSet
     abstract fun parse(context: ParserContext): Info
-    operator fun plus(other: Parsec) = SeqParser(arrayOf(other), this)
 }
