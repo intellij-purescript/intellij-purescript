@@ -10,23 +10,11 @@ class SeqParser(
         var info = first.parse(context)
         for (p in ps) {
             info = when (info) {
-                is Failure -> return info
-                is Info.Success -> p.parse(context)
-                is Info.Optional -> {
-                    when (val next = p.parse(context)) {
-                        is Info.Optional ->
-                            Info.Optional(
-                                next.position,
-                                info.expected + next.expected
-                            )
-
-                        else -> next
-                    }
-                }
+                Failure -> return info
+                else -> p.parse(context)
             }
         }
         return info
     }
 
-    private fun all() = sequenceOf(first, *ps)
 }
