@@ -31,7 +31,7 @@ data class ElementToken(val token: IElementType) : DSL {
 
 data class StringToken(val token: String) : DSL {
     override fun parse(psiBuilder: PsiBuilder): Info =
-        when (psiBuilder.tokenText ?: "") {
+        when (psiBuilder.tokenText) {
             token -> {
                 psiBuilder.advanceLexer()
                 Success
