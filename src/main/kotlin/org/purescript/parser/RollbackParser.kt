@@ -5,7 +5,7 @@ import org.purescript.parser.Info.Failure
 
 class RollbackParser(private val p: Parsec) : Parsec() {
         override fun parse(context: ParserContext) =
-            if (!p.canParse(context)) {
+            if (!(p.canBeEmpty || p.canStartWithSet.contains(context.peek()))) {
                 Failure(context.position, setOf(p))
             } else {
                 val start = context.position

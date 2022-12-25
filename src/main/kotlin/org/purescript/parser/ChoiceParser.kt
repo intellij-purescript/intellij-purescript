@@ -9,10 +9,20 @@ class ChoiceParser(
 ) : Parsec() {
     override fun parse(context: ParserContext): Info {
         val start = context.position
-        val headInfo: Info = head.tryToParse(context)
+        val headInfo: Info =
+            if (head.canBeEmpty || head.canStartWithSet.contains(context.peek())) {
+                head.parse(context)
+            } else {
+                Failure(context.position, setOf(head))
+            }
         if (headInfo !is Failure) return headInfo
         for (p in tail) {
-            val info = p.tryToParse(context)
+            val info =
+                if (p.canBeEmpty || p.canStartWithSet.contains(context.peek())) {
+                    p.parse(context)
+                } else {
+                    Failure(context.position, setOf(p))
+                }
             if (info !is Failure) return info
         }
         return Failure(start, setOf(head, *tail))
