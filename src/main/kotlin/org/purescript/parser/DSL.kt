@@ -74,7 +74,7 @@ class Choice(val first: DSL, private vararg val rest: DSL) : DSL {
 }
 
 class NoneOrMore(private val child: DSL) : DSL {
-    override val compile: Parsec = child.compile.noneOrMore()
+    override val compile: Parsec = NoneOrMoreParser(child.compile)
     override val optimize by lazy {
         if (child == child.optimize) this
         else NoneOrMore(child.optimize)
@@ -90,7 +90,7 @@ class Optional(private val child: DSL) : DSL {
 }
 
 class Transaction(private val child: DSL) : DSL {
-    override val compile: Parsec by lazy { child.compile.withRollback() }
+    override val compile: Parsec by lazy { RollbackParser(child.compile) }
     override val optimize by lazy {
         if (child == child.optimize) this
         else Transaction(child.optimize)
@@ -113,7 +113,9 @@ class Wrapper(private val parsec: Parsec) : DSL {
 }
 
 class Symbolic(private val child: DSL, val symbol: IElementType) : DSL {
-    override val compile: Parsec by lazy { child.compile.`as`(symbol) }
+    override val compile: Parsec by lazy {
+        SymbolicParsec(child.compile, symbol)
+    }
     override val optimize by lazy {
         if (child == child.optimize) this
         else Symbolic(child.optimize, symbol)

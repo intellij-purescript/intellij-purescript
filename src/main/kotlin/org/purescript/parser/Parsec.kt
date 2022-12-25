@@ -9,7 +9,4 @@ abstract class Parsec {
     abstract val canStartWithSet: TokenSet
     abstract fun parse(context: ParserContext): Info
     operator fun plus(other: Parsec) = SeqParser(arrayOf(other), this)
-    fun noneOrMore() = NoneOrMoreParser(this)
-    infix fun `as`(node: IElementType) = SymbolicParsec(this, node)
-    fun withRollback() = RollbackParser(this)
 }
