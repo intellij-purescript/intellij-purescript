@@ -13,10 +13,14 @@ class SeqParser(
             info = when (info) {
                 is Failure -> return info
                 is Info.Success -> p.parse(context)
-                is Info.Optional ->{
+                is Info.Optional -> {
                     when (val next = p.parse(context)) {
                         is Info.Optional ->
-                            Info.Optional(next.position, info.expected + next.expected)
+                            Info.Optional(
+                                next.position,
+                                info.expected + next.expected
+                            )
+
                         else -> next
                     }
                 }
@@ -34,6 +38,7 @@ class SeqParser(
             }
             ret
         }
+
     private fun all() = sequenceOf(first, *ps)
-    public override fun calcCanBeEmpty() = all().all { it.canBeEmpty }
+    override val canBeEmpty: Boolean by lazy { all().all { it.canBeEmpty } }
 }

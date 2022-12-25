@@ -14,5 +14,5 @@ class StringTokenParser(private val token: String) : Parsec() {
     }
 
     override val canStartWithSet: TokenSet = TokenSet.ANY
-    public override fun calcCanBeEmpty() = false
+    override val canBeEmpty: Boolean = false
 }

@@ -1,7 +1,8 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.Info.*
+import org.purescript.parser.Info.Failure
+import org.purescript.parser.Info.Optional
 
 class OptionalParser(private val p: Parsec) : Parsec() {
     override fun parse(context: ParserContext): Info {
@@ -11,5 +12,5 @@ class OptionalParser(private val p: Parsec) : Parsec() {
     }
 
     override val canStartWithSet: TokenSet get() = p.canStartWithSet
-    public override fun calcCanBeEmpty() = true
+    override val canBeEmpty = true
 }

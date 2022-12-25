@@ -18,5 +18,5 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
     }
 
     override val canStartWithSet: TokenSet get() = ref.canStartWithSet
-    public override fun calcCanBeEmpty() = ref.canBeEmpty
+    override val canBeEmpty get() = ref.canBeEmpty
 }

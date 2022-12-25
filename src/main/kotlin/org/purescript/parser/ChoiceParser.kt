@@ -1,7 +1,7 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.TokenSet
-import org.purescript.parser.Info.*
+import org.purescript.parser.Info.Failure
 
 class ChoiceParser(
     private val head: Parsec,
@@ -37,15 +37,15 @@ class ChoiceParser(
         }
 
 
-    public override fun calcCanBeEmpty(): Boolean {
+    override val canBeEmpty: Boolean by lazy {
         if (!head.canBeEmpty) {
-            return false
+            return@lazy false
         }
         for (parsec in tail) {
             if (!parsec.canBeEmpty) {
-                return false
+                return@lazy false
             }
         }
-        return true
+        true
     }
 }

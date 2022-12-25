@@ -4,22 +4,22 @@ import com.intellij.psi.tree.TokenSet
 import org.purescript.parser.Info.Failure
 
 class RollbackParser(private val p: Parsec) : Parsec() {
-        override fun parse(context: ParserContext) =
-            if (!(p.canBeEmpty || p.canStartWithSet.contains(context.peek()))) {
-                Failure(context.position, setOf(p))
+    override fun parse(context: ParserContext) =
+        if (!(p.canBeEmpty || p.canStartWithSet.contains(context.peek()))) {
+            Failure(context.position, setOf(p))
+        } else {
+            val start = context.position
+            val pack = context.start()
+            val info = p.parse(context)
+            if (info !is Failure) {
+                pack.drop()
+                info
             } else {
-                val start = context.position
-                val pack = context.start()
-                val info = p.parse(context)
-                if (info !is Failure) {
-                    pack.drop()
-                    info
-                } else {
-                    pack.rollbackTo()
-                    Failure(start, info.expected)
-                }
+                pack.rollbackTo()
+                Failure(start, info.expected)
             }
+        }
 
     override val canStartWithSet: TokenSet get() = p.canStartWithSet
-        public override fun calcCanBeEmpty(): Boolean = p.canBeEmpty
-    }
+    override val canBeEmpty get() = p.canBeEmpty
+}
