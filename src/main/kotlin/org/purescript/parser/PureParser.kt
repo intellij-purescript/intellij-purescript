@@ -9,27 +9,22 @@ class PureParser : PsiParser {
 
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         val mark = builder.mark()
-        val info = parser.parse(builder)
-        if (!builder.eof()) {
-            var nextType: IElementType? = null
-            var errorMarker: PsiBuilder.Marker? = null
-            if (!info) {
-                errorMarker = builder.mark()
-                nextType = builder.tokenType
+        var success = definitions.parseModule.parse(builder)
+        while (!builder.eof()) {
+            if (!success) {
+                builder.mark().error(
+                    if (builder.tokenType != null) "Unexpected ${builder.tokenType}, while parsing"
+                    else "Parsing failed"
+                )
             }
-            while (!builder.eof()) {
-                builder.advanceLexer()
-            }
-            errorMarker?.error(
-                if (nextType != null) "Unexpected $nextType. $info"
-                else "$info"
-            )
+            builder.advanceLexer()
+            success = definitions.parseModuleBody.parse(builder)
         }
         mark.done(root)
         return builder.treeBuilt
     }
 
     companion object {
-        private val parser = PureParsecParser().parseModule
+        val definitions = ParserDefinitions()
     }
 }

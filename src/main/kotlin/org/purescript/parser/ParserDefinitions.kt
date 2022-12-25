@@ -1,6 +1,6 @@
 package org.purescript.parser
 
-class PureParsecParser {
+class ParserDefinitions {
 
     // Literals
     private val boolean = `true`.or(`false`)
@@ -454,12 +454,12 @@ class PureParsecParser {
     ).`as`(ExportList)
 
     private val elseDecl = `else` + Optional(`L-sep`)
-    private val moduleDecl = parseImportDeclaration.or(decl.sepBy(elseDecl))
 
-    val parseModule = (
-        module + moduleName + Optional(exportList) + where +
-            `L{` + moduleDecl.sepBy(`L-sep`) + `L}`
-        ).`as`(Module)
+    val parseModuleHeader = 
+        module + moduleName + Optional(exportList) + where + `L{` +
+            (parseImportDeclaration + `L-sep`).noneOrMore
+    val parseModuleBody = (decl.sepBy(elseDecl) + `L-sep`).noneOrMore + `L}`
+    val parseModule = ( parseModuleHeader + parseModuleBody).`as`(Module)
 
     private val hole = (StringToken("?") + idents).`as`(TypeHole)
     private val recordLabel = Choice.of(
