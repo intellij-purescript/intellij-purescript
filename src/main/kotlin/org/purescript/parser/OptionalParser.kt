@@ -10,7 +10,6 @@ class OptionalParser(private val p: Parsec) : Parsec() {
         else info1
     }
 
-    override fun calcExpectedName() = p.expectedName
     override val canStartWithSet: TokenSet get() = p.canStartWithSet
     public override fun calcCanBeEmpty() = true
 }

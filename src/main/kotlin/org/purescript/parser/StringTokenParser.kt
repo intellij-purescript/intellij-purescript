@@ -13,7 +13,6 @@ class StringTokenParser(private val token: String) : Parsec() {
         }
     }
 
-    override fun calcExpectedName() = setOf("\"" + token + "\"")
     override val canStartWithSet: TokenSet = TokenSet.ANY
     public override fun calcCanBeEmpty() = false
 }

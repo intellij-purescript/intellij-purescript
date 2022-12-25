@@ -18,9 +18,6 @@ class ChoiceParser(
         return Failure(start, setOf(head, *tail))
     }
 
-    override fun calcExpectedName(): Set<String> =
-        tail.fold(head.expectedName) { acc, parsec -> acc + parsec.expectedName }
-
     override val canStartWithSet: TokenSet
         by lazy {
             TokenSet.orSet(

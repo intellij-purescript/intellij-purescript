@@ -17,7 +17,6 @@ class SymbolicParsec(private val ref: Parsec, private val node: IElementType) :
         return info
     }
 
-    override fun calcExpectedName() = setOf(node.toString())
     override val canStartWithSet: TokenSet get() = ref.canStartWithSet
     public override fun calcCanBeEmpty() = ref.canBeEmpty
 }

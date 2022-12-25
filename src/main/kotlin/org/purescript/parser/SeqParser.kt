@@ -25,15 +25,6 @@ class SeqParser(
         return info
     }
 
-    override fun calcExpectedName(): Set<String> {
-        var ret = emptySet<String>()
-        for (p in all()) {
-            ret = ret + p.expectedName
-            if (!p.canBeEmpty) return ret
-        }
-        return ret
-    }
-
     override val canStartWithSet: TokenSet
         by lazy {
             var ret = TokenSet.EMPTY
