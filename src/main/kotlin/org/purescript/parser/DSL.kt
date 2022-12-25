@@ -31,37 +31,37 @@ sealed interface DSL {
                     else -> Failure
                 }
 
-                is Optional -> when (val info1 = parse(dsl.child, context)) {
-                    Failure -> Success
-                    else -> info1
+                is Optional -> {
+                    parse(dsl.child, context)
+                    Success
                 }
 
-                is Choice -> when (val info: Info = parse(dsl.first, context)) {
-                    Success -> return info
-                    else -> return parse(dsl.next, context)
+                is Choice -> when (parse(dsl.first, context)) {
+                    Success -> Success
+                    Failure -> parse(dsl.next, context)
                 }
 
-                is Seq -> when (val info = parse(dsl.first, context)) {
-                    Failure -> return info
-                    else -> parse(dsl.next, context)
+                is Seq -> when (parse(dsl.first, context)) {
+                    Success -> parse(dsl.next, context)
+                    Failure -> Failure
                 }
 
                 is NoneOrMore -> when (parse(dsl.child, context)) {
                     Failure -> Success
-                    else -> parse(dsl, context)
+                    Success -> parse(dsl, context)
                 }
 
                 is Transaction -> {
                     val pack = context.start()
-                    return when (val info = parse(dsl.child, context)) {
+                    return when (parse(dsl.child, context)) {
                         Failure -> {
                             pack.rollbackTo()
                             Failure
                         }
 
-                        else -> {
+                        Success -> {
                             pack.drop()
-                            info
+                            Success
                         }
                     }
                 }
@@ -73,15 +73,14 @@ sealed interface DSL {
                     return when (val info = parse(dsl.child, context)) {
                         Failure -> {
                             pack.drop()
-                            info
+                            Failure
                         }
 
-                        else -> {
+                        Success -> {
                             pack.done(dsl.symbol)
-                            info
+                            Success
                         }
                     }
-
                 }
             }
         }
