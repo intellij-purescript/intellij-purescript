@@ -1,6 +1,8 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
+import org.purescript.parser.Info.Failure
+import org.purescript.parser.Info.Success
 
 sealed interface DSL {
     val compile: Parsec
@@ -13,6 +15,89 @@ sealed interface DSL {
     val oneOrMore get() = this + noneOrMore
     val noneOrMore get() = NoneOrMore(this)
     val withRollback get() = Transaction(this)
+
+    companion object {
+        fun parse(dsl: DSL, context: ParserContext): Info {
+            return when (dsl) {
+                is ElementToken -> when {
+                    context.eat(dsl.token) -> Success
+                    else -> Failure
+                }
+
+                is StringToken -> when (context.text()) {
+                    dsl.token -> {
+                        context.advance()
+                        Success
+                    }
+
+                    else -> Failure
+                }
+
+                is Optional -> when (val info1 = parse(dsl.child, context)) {
+                    Failure -> Success
+                    else -> info1
+                }
+                is Choice -> {
+                    val headInfo: Info = parse(dsl.first, context)
+                    if (headInfo != Failure) return headInfo
+                    for (p in dsl.rest) {
+                        val info = parse(p, context)
+                        if (info != Failure) return info
+                    }
+                    return Failure
+                }
+                is Seq -> {
+                    var info = parse(dsl.first,context)
+                    for (p in dsl.rest) {
+                        info = when (info) {
+                            Failure -> return info
+                            else -> parse(p, context)
+                        }
+                    }
+                    return info
+                }
+                is NoneOrMore -> {
+                    when (parse(dsl.child, context)) {
+                        Failure -> Success
+                        else -> parse(dsl, context)
+                    }
+                }
+                is Transaction -> {
+                    val pack = context.start()
+                    return when (val info = parse(dsl.child, context)) {
+                        Failure -> {
+                            pack.rollbackTo()
+                            Failure
+                        }
+                        else -> {
+                            pack.drop()
+                            info
+                        }
+                    }
+                }
+                is Reference -> {
+                    parse(dsl.init(dsl), context )
+                }
+                is Wrapper -> {
+                    dsl.parsec.parse(context)
+                }
+                is Symbolic -> {
+                    val pack = context.start()
+                    return when (val info = parse(dsl.child, context)) {
+                        Failure -> {
+                            pack.drop()
+                            info
+                        }
+                        else -> {
+                            pack.done(dsl.symbol)
+                            info
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 }
 
 data class ElementToken(val token: IElementType) : DSL {
