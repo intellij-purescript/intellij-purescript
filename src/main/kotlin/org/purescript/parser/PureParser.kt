@@ -11,14 +11,14 @@ class PureParser : PsiParser {
         val context = ParserContext(builder)
         val mark = context.start()
         val info = parser.parse(context)
-        var nextType: IElementType? = null
         if (!context.eof()) {
+            var nextType: IElementType? = null
             var errorMarker: PsiBuilder.Marker? = null
+            if (info is Info.Failure) {
+                errorMarker = context.start()
+                nextType = builder.tokenType
+            }
             while (!context.eof()) {
-                if (errorMarker == null && info is Info.Failure && context.position >= info.position) {
-                    errorMarker = context.start()
-                    nextType = builder.tokenType
-                }
                 context.advance()
             }
             errorMarker?.error(
