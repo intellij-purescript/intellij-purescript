@@ -1,7 +1,5 @@
 package org.purescript.parser
 
-import com.intellij.psi.tree.TokenSet
-
 class StringTokenParser(private val token: String) : Parsec() {
     override fun parse(context: ParserContext): Info {
         val start = context.position
@@ -13,6 +11,4 @@ class StringTokenParser(private val token: String) : Parsec() {
         }
     }
 
-    override val canStartWithSet: TokenSet = TokenSet.ANY
-    override val canBeEmpty: Boolean = false
 }

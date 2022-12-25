@@ -1,6 +1,5 @@
 package org.purescript.parser
 
-import com.intellij.psi.tree.TokenSet
 import org.purescript.parser.Info.Failure
 
 class ChoiceParser(
@@ -9,43 +8,14 @@ class ChoiceParser(
 ) : Parsec() {
     override fun parse(context: ParserContext): Info {
         val start = context.position
-        val headInfo: Info =
-            if (head.canBeEmpty || head.canStartWithSet.contains(context.peek())) {
-                head.parse(context)
-            } else {
-                Failure(context.position, setOf(head))
-            }
+        val headInfo: Info =  head.parse(context)
         if (headInfo !is Failure) return headInfo
         for (p in tail) {
-            val info =
-                if (p.canBeEmpty || p.canStartWithSet.contains(context.peek())) {
-                    p.parse(context)
-                } else {
-                    Failure(context.position, setOf(p))
-                }
+            val info = p.parse(context)
             if (info !is Failure) return info
         }
         return Failure(start, setOf(head, *tail))
     }
 
-    override val canStartWithSet: TokenSet
-        by lazy {
-            TokenSet.orSet(
-                head.canStartWithSet,
-                *tail.map { it.canStartWithSet }.toTypedArray()
-            )
-        }
 
-
-    override val canBeEmpty: Boolean by lazy {
-        if (!head.canBeEmpty) {
-            return@lazy false
-        }
-        for (parsec in tail) {
-            if (!parsec.canBeEmpty) {
-                return@lazy false
-            }
-        }
-        true
-    }
 }

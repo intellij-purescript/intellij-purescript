@@ -1,7 +1,6 @@
 package org.purescript.parser
 
 import com.intellij.psi.tree.IElementType
-import com.intellij.psi.tree.TokenSet
 
 class ElementTokenParser(private val tokenType: IElementType) : Parsec() {
     override fun parse(context: ParserContext): Info {
@@ -12,7 +11,5 @@ class ElementTokenParser(private val tokenType: IElementType) : Parsec() {
     }
 
 
-    override val canStartWithSet: TokenSet get() = TokenSet.create(tokenType)
-    override val canBeEmpty: Boolean = false
 }
 

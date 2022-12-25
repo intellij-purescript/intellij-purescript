@@ -1,6 +1,5 @@
 package org.purescript.parser
 
-import com.intellij.psi.tree.TokenSet
 import org.purescript.parser.Info.Failure
 
 class SeqParser(
@@ -29,16 +28,5 @@ class SeqParser(
         return info
     }
 
-    override val canStartWithSet: TokenSet
-        by lazy {
-            var ret = TokenSet.EMPTY
-            for (p in all()) {
-                ret = TokenSet.orSet(ret, p.canStartWithSet)
-                if (!p.canBeEmpty) return@lazy ret
-            }
-            ret
-        }
-
     private fun all() = sequenceOf(first, *ps)
-    override val canBeEmpty: Boolean by lazy { all().all { it.canBeEmpty } }
 }

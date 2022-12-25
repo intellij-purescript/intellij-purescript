@@ -1,6 +1,5 @@
 package org.purescript.parser
 
-import com.intellij.psi.tree.TokenSet
 import org.purescript.parser.Info.Failure
 
 class NoneOrMoreParser(private val p: Parsec) : Parsec() {
@@ -12,6 +11,4 @@ class NoneOrMoreParser(private val p: Parsec) : Parsec() {
         }
     }
 
-    override val canStartWithSet: TokenSet get() = p.canStartWithSet
-    override val canBeEmpty = true
 }
