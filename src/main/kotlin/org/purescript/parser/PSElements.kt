@@ -1,91 +1,134 @@
 package org.purescript.parser
 
-import org.purescript.psi.PSElementType
+import org.purescript.psi.*
+import org.purescript.psi.PSElementType.WithPsi
+import org.purescript.psi.binder.*
+import org.purescript.psi.char.PSCharBinder
+import org.purescript.psi.char.PSCharLiteral
+import org.purescript.psi.classes.*
+import org.purescript.psi.data.PSDataConstructor
+import org.purescript.psi.data.PSDataConstructorList
+import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSFixityDeclaration
+import org.purescript.psi.declaration.PSSignature
+import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.dostmt.PSDoBlock
+import org.purescript.psi.dostmt.PSDoNotationBind
+import org.purescript.psi.dostmt.PSDoNotationLet
+import org.purescript.psi.dostmt.PSDoNotationValue
+import org.purescript.psi.exports.*
+import org.purescript.psi.expression.*
+import org.purescript.psi.imports.*
+import org.purescript.psi.name.*
+import org.purescript.psi.newtype.PSNewTypeConstructor
+import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.typeconstructor.PSTypeConstructor
+import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.typevar.PSTypeVarKinded
+import org.purescript.psi.typevar.PSTypeVarName
 
-val Module = PSElementType("Module")
-val ExportList = PSElementType("ExportList")
-val ExportedClass = PSElementType("ExportedClass")
-val ExportedData = PSElementType("ExportedData")
-val ExportedDataMember = PSElementType("ExportedDataMember")
-val ExportedDataMemberList = PSElementType("ExportedDataMemberList")
-val ExportedKind = PSElementType("ExportedKind")
-val ExportedModule = PSElementType("ExportedModule")
-val ExportedOperator = PSElementType("ExportedOperator")
-val ExportedType = PSElementType("ExportedType")
-val ExportedValue = PSElementType("ExportedValue")
-val Star = PSElementType("Star")
-val Bang = PSElementType("Bang")
-val RowKind = PSElementType("RowKind")
-val FunKind = PSElementType("FunKind")
-val DocComment = PSElementType("DocComment")
-val Type = PSElementType("Type")
-val TypeArgs = PSElementType("TypeArgs")
-val ForAll = PSElementType("ForAll")
-val ConstrainedType = PSElementType("ConstrainedType")
-val Row = PSElementType("Row")
-val ObjectType = PSElementType("ObjectType")
-val TypeVar = PSElementType("TypeVar")
-val TypeVarName = PSElementType("TypeVarName")
-val TypeVarKinded = PSElementType("TypeVarKinded")
-val TypeConstructor = PSElementType("TypeConstructor")
-val TypeAtom = PSElementType("TypeAtom")
-val GenericIdentifier = PSElementType("GenericIdentifier")
-val LocalIdentifier = PSElementType("LocalIdentifier")
-val DataDeclaration = PSElementType("DataDeclaration")
-val DataConstructorList = PSElementType("DataConstructorList")
-val DataConstructor = PSElementType("DataConstructor")
-val Signature = PSElementType("Signature")
-val TypeSynonymDeclaration = PSElementType("TypeSynonymDeclaration")
-val ValueDeclaration = PSElementType("ValueDeclaration")
-val ForeignDataDeclaration = PSElementType("ForeignDataDeclaration")
-val ExternInstanceDeclaration = PSElementType("ExternInstanceDeclaration")
-val ForeignValueDeclaration = PSElementType("ForeignValueDeclaration")
-val FixityDeclaration = PSElementType("FixityDeclaration")
-val ImportDeclaration = PSElementType("ImportDeclaration")
-val ImportAlias = PSElementType("ImportAlias")
-val ImportList = PSElementType("ImportList")
-val ImportedClass = PSElementType("ImportedClass")
-val ImportedData = PSElementType("ImportedData")
-val ImportedDataMemberList = PSElementType("ImportedDataMemberList")
-val ImportedDataMember = PSElementType("ImportedDataMember")
-val ImportedKind = PSElementType("ImportedKind")
-val ImportedOperator = PSElementType("ImportedOperator")
-val ImportedType = PSElementType("ImportedType")
-val ImportedValue = PSElementType("ImportedValue")
-val PositionedDeclarationRef = PSElementType("PositionedDeclarationRef")
-val ClassDeclaration = PSElementType("ClassDeclaration")
-val ClassConstraintList = PSElementType("ClassConstraintList")
-val ClassConstraint = PSElementType("ClassConstraint")
+val Module = WithPsi("Module") { PSModule(it) }
+val ExportList = WithPsi("ExportList") { PSExportList(it) }
+val ExportedClass = WithPsi("ExportedClass") { PSExportedClass(it) }
+val ExportedData = WithPsi("ExportedData") { PSExportedData(it) }
+val ExportedDataMember =
+    WithPsi("ExportedDataMember") { PSExportedDataMember(it) }
+val ExportedDataMemberList =
+    WithPsi("ExportedDataMemberList") { PSExportedDataMemberList(it) }
+val ExportedKind = WithPsi("ExportedKind") { PSExportedKind(it) }
+val ExportedModule = WithPsi("ExportedModule") { PSExportedModule(it) }
+val ExportedOperator = WithPsi("ExportedOperator") { PSExportedOperator(it) }
+val ExportedType = WithPsi("ExportedType") { PSExportedType(it) }
+val ExportedValue = WithPsi("ExportedValue") { PSExportedValue(it) }
+val Star = WithPsi("Star") { PSStar(it) }
+val Bang = WithPsi("Bang") { PSBang(it) }
+val RowKind = WithPsi("RowKind") { PSRowKind(it) }
+val FunKind = WithPsi("FunKind") { PSFunKind(it) }
+val Type = WithPsi("Type") { PSType(it) }
+val TypeArgs = WithPsi("TypeArgs") { PSTypeArgs(it) }
+val ForAll = WithPsi("ForAll") { PSForAll(it) }
+val ConstrainedType = WithPsi("ConstrainedType") { PSConstrainedType(it) }
+val Row = WithPsi("Row") { PSRow(it) }
+val ObjectType = WithPsi("ObjectType") { PSObjectType(it) }
+val TypeVar = WithPsi("TypeVar") { PSTypeVar(it) }
+val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
+val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
+val TypeConstructor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
+val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
+val GenericIdentifier = WithPsi("GenericIdentifier") { PSIdentifier(it) }
+val LocalIdentifier = WithPsi("LocalIdentifier") { PSIdentifier(it) }
+val DataDeclaration = WithPsi("DataDeclaration") { PSDataDeclaration(it) }
+val DataConstructorList =
+    WithPsi("DataConstructorList") { PSDataConstructorList(it) }
+val DataConstructor = WithPsi("DataConstructor") { PSDataConstructor(it) }
+val Signature = WithPsi("Signature") { PSSignature(it) }
+val TypeSynonymDeclaration = 
+    WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }
+val ValueDeclaration = WithPsi("ValueDeclaration") { PSValueDeclaration(it) }
+val ForeignDataDeclaration =
+    WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
+val ExternInstanceDeclaration =
+    WithPsi("ExternInstanceDeclaration") { PSExternInstanceDeclaration(it) }
+val ForeignValueDeclaration =
+    WithPsi("ForeignValueDeclaration") { PSForeignValueDeclaration(it) }
+val FixityDeclaration = WithPsi("FixityDeclaration") { PSFixityDeclaration(it) }
+val ImportDeclaration = WithPsi("ImportDeclaration") { PSImportDeclaration(it) }
+val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
+val ImportList = WithPsi("ImportList") { PSImportList(it) }
+val ImportedClass = WithPsi("ImportedClass") { PSImportedClass(it) }
+val ImportedData = WithPsi("ImportedData") { PSImportedData(it) }
+val ImportedDataMemberList = 
+    WithPsi("ImportedDataMemberList") { PSImportedDataMemberList(it) }
+val ImportedDataMember =
+    WithPsi("ImportedDataMember") { PSImportedDataMember(it) }
+val ImportedKind = WithPsi("ImportedKind") { PSImportedKind(it) }
+val ImportedOperator = WithPsi("ImportedOperator") { PSImportedOperator(it) }
+val ImportedType = WithPsi("ImportedType") { PSImportedType(it) }
+val ImportedValue = WithPsi("ImportedValue") { PSImportedValue(it) }
+val PositionedDeclarationRef =
+    WithPsi("PositionedDeclarationRef") { PSPositionedDeclarationRef(it) }
+val ClassDeclaration = WithPsi("ClassDeclaration") { PSClassDeclaration(it) }
+val ClassConstraintList =
+    WithPsi("ClassConstraintList") { PSClassConstraintList(it) }
+val ClassConstraint = WithPsi("ClassConstraint") { PSClassConstraint(it) }
 val ClassFunctionalDependencyList =
-    PSElementType("ClassFunctionalDependencyList")
-val ClassFunctionalDependency = PSElementType("ClassFunctionalDependency")
-val ClassMember = PSElementType("ClassMember")
-val ClassMemberList = PSElementType("ClassMemberList")
-val InstanceDeclaration = PSElementType("TypeInstanceDeclaration")
-val NewtypeDeclaration = PSElementType("NewtypeDeclaration")
-val NewTypeConstructor = PSElementType("NewTypeConstructor")
-val Guard = PSElementType("Guard")
-val NullBinder = PSElementType("NullBinder")
-val StringBinder = PSElementType("StringBinder")
-val CharBinder = PSElementType("CharBinder")
-val BooleanBinder = PSElementType("BooleanBinder")
-val NumberBinder = PSElementType("NumberBinder")
-val NamedBinder = PSElementType("NamedBinder")
-val VarBinder = PSElementType("VarBinder")
-val ConstructorBinder = PSElementType("ConstructorBinder")
-val ObjectBinder = PSElementType("ObjectBinder")
-val ObjectBinderField = PSElementType("ObjectBinderField")
-val ValueRef = PSElementType("ValueRef")
-val BooleanLiteral = PSElementType("BooleanLiteral")
-val NumericLiteral = PSElementType("NumericLiteral")
-val StringLiteral = PSElementType("StringLiteral")
-val CharLiteral = PSElementType("CharLiteral")
-val ArrayLiteral = PSElementType("ArrayLiteral")
-val ObjectLiteral = PSElementType("ObjectLiteral")
-val Lambda = PSElementType("Lambda")
-val IdentInfix = PSElementType("IdentInfix")
-val ExpressionConstructor = PSElementType("ExpressionConstructor")
-val ExpressionIdentifier = PSElementType("ExpressionIdentifier")
+    WithPsi("ClassFunctionalDependencyList")
+    { PSClassFunctionalDependencyList(it) }
+val ClassFunctionalDependency =
+    WithPsi("ClassFunctionalDependency")
+    { PSClassFunctionalDependency(it) }
+val ClassMember = WithPsi("ClassMember") { PSClassMember(it) }
+val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
+val InstanceDeclaration = 
+    WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
+val NewtypeDeclaration =
+    WithPsi("NewtypeDeclaration") { PSNewTypeDeclaration(it) }
+val NewTypeConstructor =
+    WithPsi("NewTypeConstructor") { PSNewTypeConstructor(it) }
+val Guard = WithPsi("Guard") { PSGuard(it) }
+val NullBinder = WithPsi("NullBinder") { PSNullBinder(it) }
+val StringBinder = WithPsi("StringBinder") { PSStringBinder(it) }
+val CharBinder = WithPsi("CharBinder") { PSCharBinder(it) }
+val BooleanBinder = WithPsi("BooleanBinder") { PSBooleanBinder(it) }
+val NumberBinder = WithPsi("NumberBinder") { PSNumberBinder(it) }
+val NamedBinder = WithPsi("NamedBinder") { PSNamedBinder(it) }
+val VarBinder = WithPsi("VarBinder") { PSVarBinder(it) }
+val ConstructorBinder = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
+val ObjectBinder = WithPsi("ObjectBinder") { PSObjectBinder(it) }
+val ObjectBinderField = WithPsi("ObjectBinderField") { PSObjectBinderField(it) }
+val ValueRef = WithPsi("ValueRef") { PSValueRef(it) }
+val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
+val NumericLiteral = WithPsi("NumericLiteral") { PSNumericLiteral(it) }
+val StringLiteral = WithPsi("StringLiteral") { PSStringLiteral(it) }
+val CharLiteral = WithPsi("CharLiteral") { PSCharLiteral(it) }
+val ArrayLiteral = WithPsi("ArrayLiteral") { PSArrayLiteral(it) }
+val ObjectLiteral = WithPsi("ObjectLiteral") { PSObjectLiteral(it) }
+val Lambda = WithPsi("Lambda") { PSLambda(it) }
+val ExpressionConstructor = 
+    WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
+val ExpressionIdentifier =
+    WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
+
 /** Symbol is a operator in parenthesis
 `(+)`
 in
@@ -93,7 +136,8 @@ in
 addOne = (+) 1
 ```
  */
-val ExpressionSymbol = PSElementType("ExpressionSymbol")
+val ExpressionSymbol = WithPsi("ExpressionSymbol") { PSExpressionSymbol(it) }
+
 /**  Operator in expression
 `+`
 in
@@ -101,31 +145,33 @@ in
 addOne a = a + 1
 ```
  */
-val ExpressionOperator = PSElementType("ExpressionOperator")
-val ExpressionWhere = PSElementType("ExpressionWhere")
-val Case = PSElementType("Case")
-val CaseAlternative = PSElementType("CaseAlternative")
-val IfThenElse = PSElementType("IfThenElse")
-val Let = PSElementType("Let")
-val Parens = PSElementType("Parens")
-val UnaryMinus = PSElementType("UnaryMinus")
-val Accessor = PSElementType("Accessor")
-val DoBlock = PSElementType("DoBlock")
-val DoNotationLet = PSElementType("DoNotationLet")
-val DoNotationBind = PSElementType("DoNotationBind")
-val DoNotationValue = PSElementType("DoNotationValue")
-val Value = PSElementType("Value")
-val Fixity = PSElementType("Fixity")
-val ModuleName = PSElementType("ModuleName")
-val Identifier = PSElementType("identifier")
-val Symbol = PSElementType("symbol")
-val QualifiedSymbol = PSElementType("symbol")
-val ProperName = PSElementType("ProperName")
-val OperatorName = PSElementType("OperatorName")
-val QualifiedIdentifier = PSElementType("QualifiedIdentifier")
-val QualifiedProperName = PSElementType("QualifiedProperName")
-val QualifiedOperatorName = PSElementType("QualifiedOperatorName")
-val importModuleName = PSElementType("ImportModuleName")
-val ClassName = PSElementType("ClassName")
-val pImplies = PSElementType("Implies")
-val TypeHole = PSElementType("TypeHole")
+val ExpressionOperator = WithPsi("ExpressionOperator") { PSExpressionOperator(it) }
+val ExpressionWhere = WithPsi("ExpressionWhere") { PSExpressionWhere(it) }
+val Case = WithPsi("Case") { PSCase(it) }
+val CaseAlternative = WithPsi("CaseAlternative") { PSCaseAlternative(it) }
+val IfThenElse = WithPsi("IfThenElse") { PSIfThenElse(it) }
+val Let = WithPsi("Let") { PSLet(it) }
+val Parens = WithPsi("Parens") { PSParens(it) }
+val UnaryMinus = WithPsi("UnaryMinus") { PSUnaryMinus(it) }
+val Accessor = WithPsi("Accessor") { PSAccessor(it) }
+val DoBlock = WithPsi("DoBlock") { PSDoBlock(it) }
+val DoNotationLet = WithPsi("DoNotationLet") { PSDoNotationLet(it) }
+val DoNotationBind = WithPsi("DoNotationBind") { PSDoNotationBind(it) }
+val DoNotationValue = WithPsi("DoNotationValue") { PSDoNotationValue(it) }
+val Value = WithPsi("Value") { PSValue(it) }
+val Fixity = WithPsi("Fixity") { PSFixity(it) }
+val ModuleName = WithPsi("ModuleName") { PSModuleName(it) }
+val Identifier = WithPsi("identifier") { PSIdentifier(it) }
+val Symbol = WithPsi("symbol") { PSSymbol(it) }
+val QualifiedSymbol = WithPsi("symbol") { PSQualifiedSymbol(it) }
+val ProperName = WithPsi("ProperName") { PSProperName(it) }
+val OperatorName = WithPsi("OperatorName") { PSOperatorName(it) }
+val QualifiedIdentifier = 
+    WithPsi("QualifiedIdentifier") { PSQualifiedIdentifier(it) }
+val QualifiedProperName = 
+    WithPsi("QualifiedProperName") { PSQualifiedProperName(it) }
+val QualifiedOperatorName =
+    WithPsi("QualifiedOperatorName") { PSQualifiedOperatorName(it) }
+val ClassName = WithPsi("ClassName") { PSClassName(it) }
+val pImplies = WithPsi("Implies") { PSImplies(it) }
+val TypeHole = WithPsi("TypeHole") { PSTypeHole(it) }
