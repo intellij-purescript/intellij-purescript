@@ -133,6 +133,7 @@
     <fileBasedIndex implementation="org.purescript.file.ExportedFixityIndex" />
     <fileBasedIndex implementation="org.purescript.file.ExportedTypesIndex" />
     <fileBasedIndex implementation="org.purescript.file.ImportedModuleIndex" />
+    <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex" />
   </extensions>
 
   <actions>

@@ -26,6 +26,7 @@ import org.purescript.psi.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.imports.*
+import org.purescript.psi.module.ModuleNameIndex
 import org.purescript.psi.module.PSModule
 import org.purescript.psi.module.PSModuleStub
 import org.purescript.psi.name.*
@@ -70,6 +71,7 @@ val Module = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
     }
 
     override fun indexStub(stub: PSModuleStub, sink: IndexSink) {
+        sink.occurrence(ModuleNameIndex.KEY, stub.name)
     }
 
 }

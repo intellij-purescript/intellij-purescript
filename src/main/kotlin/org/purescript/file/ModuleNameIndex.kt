@@ -59,13 +59,6 @@ class ModuleNameIndex : ScalarIndexExtension<String>() {
             }
         }
 
-        fun getAllModuleNames(project: Project): List<String> {
-            val fileBasedIndex = FileBasedIndex.getInstance()
-            return fileBasedIndex.getAllKeys(NAME, project)
-                .filter { fileContainingModule(project, it) != null }
-                .toList()
-        }
-
         fun getModuleNameFromFile(project: Project,file: VirtualFile) =
             FileBasedIndex
                 .getInstance()
