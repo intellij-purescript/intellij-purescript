@@ -93,24 +93,22 @@ class ParserDefinitions {
             )
             ).`as`(FunKind)
     }
-    private val parseKindPrefixRef: DSL = Reference { parseKindPrefix }
     private val parseKindAtom = Choice.of(
         StringToken("*").`as`(START).`as`(Star),
         StringToken("!").`as`(BANG).`as`(Bang),
         qualified(properName).withRollback.`as`(TypeConstructor),
         parens(parseKind)
     )
-    private val parseKindPrefix =
-        ((StringToken("#") + parseKindPrefixRef).`as`(RowKind)).or(parseKindAtom)
+    private val parseKindPrefix = Reference {
+        ((StringToken("#") + this).`as`(RowKind)).or(parseKindAtom)
+    }
+    private val type: DSL = Reference{ type1 }.sepBy1(dcolon).`as`(Type)
 
-    private val type: DSL = Reference { type1.sepBy1(dcolon).`as`(Type) }
-
-    private val parseForAll: DSL = Reference {
+    private val parseForAll: DSL =
         (forall + idents
             .`as`(GenericIdentifier)
-            .oneOrMore + dot + parseConstrainedType)
+            .oneOrMore + dot + Reference { parseConstrainedType })
             .`as`(ForAll)
-    }
 
     private val rowLabel =
         lname.or(string.withRollback).`as`(GenericIdentifier) + dcolon + type
@@ -188,24 +186,28 @@ class ParserDefinitions {
             parens(binder).withRollback
         )
     }
-    private val binder: DSL = Reference { binder1 + Optional(dcolon + type) }
-    private val expr: DSL =
-        Reference { (expr1 + Optional(dcolon + type)).`as`(Value) }
-    private val qualOp =
-        qualified(operator.`as`(OperatorName)).`as`(QualifiedOperatorName)
+    private val binder: DSL = Reference { binder1 } + Optional(dcolon + type)
+    private val expr: DSL = (Reference {expr1} + Optional(dcolon + type))
+        .`as`(Value)
+    private val qualOp = qualified(operator.`as`(OperatorName))
+        .`as`(QualifiedOperatorName)
     private val type5 = typeAtom.oneOrMore
     private val type4 =
         (StringToken("-") + number)
             .withRollback
             .or(StringToken("#").noneOrMore + type5)
-    private val type3 = Reference { type4.sepBy1(qualOp) }
-    private val type2: DSL =
-        Reference { type3 + Optional(arrow.or(darrow) + type1) }
-    private val type1 =
-        (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
-    private val parsePropertyUpdate: DSL =
-        Reference { label + Optional(eq) + expr }
-    private val exprAtom = Reference {
+    private val type3 = type4.sepBy1(qualOp)
+    private val type2: DSL = type3 + Optional(arrow.or(darrow) + Reference { type1 })
+    private val type1 = (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
+    private val parsePropertyUpdate: DSL = label + Optional(eq) + expr
+    private val hole = (StringToken("?") + idents).`as`(TypeHole)
+    val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
+    private val recordLabel = Choice.of(
+        (label + StringToken(":")).withRollback + expr,
+        (label + eq).withRollback + expr,
+        label.`as`(QualifiedIdentifier).`as`(ExpressionIdentifier),
+    ).`as`(ObjectBinderField)
+    private val exprAtom =
         Choice.of(
             `_`,
             hole.withRollback,
@@ -225,21 +227,20 @@ class ParserDefinitions {
             braces(recordLabel.sepBy(ElementToken(COMMA))).`as`(ObjectLiteral),
             parens(expr).`as`(Parens),
         )
-    }
     private val expr7 = exprAtom + (dot + label).`as`(Accessor).noneOrMore
 
+
+    private val parseBadSingleCaseBranch: DSL =
+        Reference { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
     /*
     * if there is only one case branch it can ignore layout so we need
     * to allow layout end at any time.
     */
-    private val exprCase: DSL = Reference {
+    private val exprCase: DSL = 
         (case + expr.sepBy1(ElementToken(COMMA)) + of + Choice.of(
             parseBadSingleCaseBranch.withRollback,
-            `L{` + caseBranch.sepBy1(`L-sep`) + `L}`
+            `L{` + Reference { caseBranch }.sepBy1(`L-sep`) + `L}`
         )).`as`(Case)
-    }
-    private val parseBadSingleCaseBranch: DSL =
-        Reference { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
     private val expr5 = Reference {
         Choice.of(
             braces(parsePropertyUpdate.sepBy1(ElementToken(COMMA))).withRollback,
@@ -276,12 +277,11 @@ class ParserDefinitions {
         (ident + dcolon + type).`as`(Signature)
     private val newtypeHead =
         `'newtype'` + properName + typeVarBinding.noneOrMore.`as`(TypeArgs)
-    private val exprWhere: DSL = Reference {
+    private val exprWhere: DSL =
         expr + Optional(
-            (where + `L{` + letBinding.sepBy1(`L-sep`) + `L}`)
+            (where + `L{` + Reference { letBinding }.sepBy1(`L-sep`) + `L}`)
                 .`as`(ExpressionWhere)
         )
-    }
     private val guardedDeclExpr = parseGuard + eq + exprWhere
     private val guardedDecl =
         Choice.of(eq.withRollback + exprWhere, guardedDeclExpr.oneOrMore)
@@ -291,12 +291,6 @@ class ParserDefinitions {
             (ident + binderAtom.noneOrMore + guardedDecl)
                 .`as`(ValueDeclaration)
         )
-    private val parseDeps =
-        parens(
-            (qualified(properName).withRollback.`as`(TypeConstructor)
-                + typeAtom.noneOrMore
-                ).sepBy1(ElementToken(COMMA))
-        ) + darrow
     private val parseForeignDeclaration =
         `'foreign'` + `'import'` + Choice.of(
             data + properName + dcolon + type `as` ForeignDataDeclaration,
@@ -361,7 +355,6 @@ class ParserDefinitions {
             )
         )
             .`as`(ImportedDataMemberList)
-    val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
     private val importedItem =
         Choice.of(
             (`'type'` + parens(operator.`as`(Identifier))).`as`(ImportedType),
@@ -461,12 +454,6 @@ class ParserDefinitions {
     val parseModuleBody = (decl.sepBy(elseDecl) + `L-sep`).noneOrMore + `L}`
     val parseModule = ( parseModuleHeader + parseModuleBody).`as`(Module)
 
-    private val hole = (StringToken("?") + idents).`as`(TypeHole)
-    private val recordLabel = Choice.of(
-        (label + StringToken(":")).withRollback + expr,
-        (label + eq).withRollback + expr,
-        label.`as`(QualifiedIdentifier).`as`(ExpressionIdentifier),
-    ).`as`(ObjectBinderField)
 
     private val binder2 = Choice.of(
         (qualProperName.`as`(ConstructorBinder) + binderAtom.noneOrMore).withRollback,
