@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
-import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 

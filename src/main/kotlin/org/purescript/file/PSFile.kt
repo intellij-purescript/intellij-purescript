@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import org.purescript.PSLanguage
-import org.purescript.psi.PSModule
+import org.purescript.psi.module.PSModule
 import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSFile(viewProvider: FileViewProvider) :

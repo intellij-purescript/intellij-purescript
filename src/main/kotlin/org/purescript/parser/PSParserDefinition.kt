@@ -41,7 +41,7 @@ class PSParserDefinition : ParserDefinition {
 
     override fun createElement(node: ASTNode): PsiElement {
         val elementType = node.elementType
-        if (elementType is PSElementType.WithPsi) return elementType.constructor(node)
+        if (elementType is PSElementType.HasPsi) return elementType.createPsi(node)
         return ASTWrapperPsiElement(node) // this should never happen
     }
 

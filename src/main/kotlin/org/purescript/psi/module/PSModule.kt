@@ -1,13 +1,15 @@
-package org.purescript.psi
+package org.purescript.psi.module
 
+import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiComment
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.*
+import com.intellij.psi.stubs.IStubElementType
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.parser.WHERE
+import org.purescript.psi.PSForeignDataDeclaration
+import org.purescript.psi.PSForeignValueDeclaration
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -23,12 +25,18 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
 
-class PSModule(node: ASTNode) :
-    PSPsiElement(node),
+class PSModule :
     PsiNameIdentifierOwner,
-    DocCommentOwner {
+    DocCommentOwner,
+    StubBasedPsiElement<PSModuleStub>,
+    StubBasedPsiElementBase<PSModuleStub> {
 
-    var cache = Cache()
+    constructor(stub: PSModuleStub, nodeType: IStubElementType<*, *>) :
+        super(stub, nodeType)
+
+    constructor(node: ASTNode) : super(node)
+
+    var cache: Cache = Cache()
 
     inner class Cache {
         val name: String by lazy { nameIdentifier.name }
@@ -39,7 +47,7 @@ class PSModule(node: ASTNode) :
 
         val importDeclarationByName: Map<String?, List<PSImportDeclaration>>
             by lazy { importDeclarations.groupBy { it.name } }
-        
+
         val valueDeclarations: Array<PSValueDeclaration>
             by lazy { findChildrenByClass(PSValueDeclaration::class.java) }
 
@@ -47,21 +55,21 @@ class PSModule(node: ASTNode) :
             by lazy { findChildrenByClass(PSDataDeclaration::class.java) }
         val dataConstructors
             by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
-        
+
         val newTypeDeclarations: Array<PSNewTypeDeclaration>
             by lazy { findChildrenByClass(PSNewTypeDeclaration::class.java) }
         val newTypeConstructors: List<PSNewTypeConstructor>
             by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
-        
+
         val typeSynonymDeclarations: Array<PSTypeSynonymDeclaration>
             by lazy { findChildrenByClass(PSTypeSynonymDeclaration::class.java) }
-        
+
         val classDeclarations: Array<PSClassDeclaration>
             by lazy { findChildrenByClass(PSClassDeclaration::class.java) }
 
         val fixityDeclarations: Array<PSFixityDeclaration>
             by lazy { findChildrenByClass(PSFixityDeclaration::class.java) }
-        
+
         val foreignValueDeclarations: Array<PSForeignValueDeclaration>
             by lazy { findChildrenByClass(PSForeignValueDeclaration::class.java) }
         val foreignDataDeclarations: Array<PSForeignDataDeclaration>
@@ -335,6 +343,10 @@ class PSModule(node: ASTNode) :
         get() =
             cache.exportsList?.exportedItems
                 ?.filterIsInstance<PSExportedModule>()
-                ?.any { it.name == module?.name }
+                ?.any { it.name == name }
                 ?: true
+    
+    override fun toString(): String {
+        return "${javaClass.simpleName}($elementType)"
+    }
 }

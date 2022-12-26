@@ -1,7 +1,14 @@
 package org.purescript.parser
 
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.stubs.IndexSink
+import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.stubs.StubInputStream
+import com.intellij.psi.stubs.StubOutputStream
 import org.purescript.psi.*
 import org.purescript.psi.PSElementType.WithPsi
+import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.binder.*
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
@@ -19,6 +26,8 @@ import org.purescript.psi.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.imports.*
+import org.purescript.psi.module.PSModule
+import org.purescript.psi.module.PSModuleStub
 import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
@@ -27,7 +36,43 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
-val Module = WithPsi("Module") { PSModule(it) }
+val Module = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
+
+    override fun createStub(
+        psi: PSModule,
+        parent: StubElement<out PsiElement>?
+    ): PSModuleStub {
+        return PSModuleStub(psi.name, parent)
+    }
+    
+    override fun createPsi(node: ASTNode): PsiElement {
+        return PSModule(node)
+    }
+    
+    override fun createPsi(stub: PSModuleStub): PSModule {
+        return PSModule(stub, this)
+    }
+
+    override fun serialize(stub: PSModuleStub, dataStream: StubOutputStream) {
+        dataStream.writeName(stub.name)
+    }
+
+
+    override fun getExternalId(): String {
+        return "purescript.module"
+    }
+
+    override fun deserialize(
+        dataStream: StubInputStream,
+        parentStub: StubElement<*>?
+    ): PSModuleStub {
+        return PSModuleStub(dataStream.readNameString()!!, parentStub)
+    }
+
+    override fun indexStub(stub: PSModuleStub, sink: IndexSink) {
+    }
+
+}
 val ExportList = WithPsi("ExportList") { PSExportList(it) }
 val ExportedClass = WithPsi("ExportedClass") { PSExportedClass(it) }
 val ExportedData = WithPsi("ExportedData") { PSExportedData(it) }
@@ -62,7 +107,7 @@ val DataConstructorList =
     WithPsi("DataConstructorList") { PSDataConstructorList(it) }
 val DataConstructor = WithPsi("DataConstructor") { PSDataConstructor(it) }
 val Signature = WithPsi("Signature") { PSSignature(it) }
-val TypeSynonymDeclaration = 
+val TypeSynonymDeclaration =
     WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }
 val ValueDeclaration = WithPsi("ValueDeclaration") { PSValueDeclaration(it) }
 val ForeignDataDeclaration =
@@ -77,7 +122,7 @@ val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
 val ImportList = WithPsi("ImportList") { PSImportList(it) }
 val ImportedClass = WithPsi("ImportedClass") { PSImportedClass(it) }
 val ImportedData = WithPsi("ImportedData") { PSImportedData(it) }
-val ImportedDataMemberList = 
+val ImportedDataMemberList =
     WithPsi("ImportedDataMemberList") { PSImportedDataMemberList(it) }
 val ImportedDataMember =
     WithPsi("ImportedDataMember") { PSImportedDataMember(it) }
@@ -99,7 +144,7 @@ val ClassFunctionalDependency =
     { PSClassFunctionalDependency(it) }
 val ClassMember = WithPsi("ClassMember") { PSClassMember(it) }
 val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
-val InstanceDeclaration = 
+val InstanceDeclaration =
     WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
 val NewtypeDeclaration =
     WithPsi("NewtypeDeclaration") { PSNewTypeDeclaration(it) }
@@ -124,7 +169,7 @@ val CharLiteral = WithPsi("CharLiteral") { PSCharLiteral(it) }
 val ArrayLiteral = WithPsi("ArrayLiteral") { PSArrayLiteral(it) }
 val ObjectLiteral = WithPsi("ObjectLiteral") { PSObjectLiteral(it) }
 val Lambda = WithPsi("Lambda") { PSLambda(it) }
-val ExpressionConstructor = 
+val ExpressionConstructor =
     WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
 val ExpressionIdentifier =
     WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
@@ -145,7 +190,8 @@ in
 addOne a = a + 1
 ```
  */
-val ExpressionOperator = WithPsi("ExpressionOperator") { PSExpressionOperator(it) }
+val ExpressionOperator =
+    WithPsi("ExpressionOperator") { PSExpressionOperator(it) }
 val ExpressionWhere = WithPsi("ExpressionWhere") { PSExpressionWhere(it) }
 val Case = WithPsi("Case") { PSCase(it) }
 val CaseAlternative = WithPsi("CaseAlternative") { PSCaseAlternative(it) }
@@ -166,9 +212,9 @@ val Symbol = WithPsi("symbol") { PSSymbol(it) }
 val QualifiedSymbol = WithPsi("symbol") { PSQualifiedSymbol(it) }
 val ProperName = WithPsi("ProperName") { PSProperName(it) }
 val OperatorName = WithPsi("OperatorName") { PSOperatorName(it) }
-val QualifiedIdentifier = 
+val QualifiedIdentifier =
     WithPsi("QualifiedIdentifier") { PSQualifiedIdentifier(it) }
-val QualifiedProperName = 
+val QualifiedProperName =
     WithPsi("QualifiedProperName") { PSQualifiedProperName(it) }
 val QualifiedOperatorName =
     WithPsi("QualifiedOperatorName") { PSQualifiedOperatorName(it) }

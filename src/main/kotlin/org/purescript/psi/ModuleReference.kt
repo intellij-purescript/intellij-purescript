@@ -6,6 +6,7 @@ import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ModuleNameIndex.Companion.fileContainingModule
 import org.purescript.file.ModuleNameIndex.Companion.getAllModuleNames
 import org.purescript.psi.imports.PSImportDeclaration
+import org.purescript.psi.module.PSModule
 
 class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportDeclaration>(
     element,

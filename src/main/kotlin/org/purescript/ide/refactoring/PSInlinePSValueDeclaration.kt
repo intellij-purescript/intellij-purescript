@@ -8,7 +8,6 @@ import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSType
 import org.purescript.psi.declaration.PSSignature
 import org.purescript.psi.declaration.PSValueDeclaration
 

@@ -1,7 +1,6 @@
 package org.purescript.psi.binder
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
 
 class PSVarBinderTest : BasePlatformTestCase() {
     fun `test rename of parameter` () {

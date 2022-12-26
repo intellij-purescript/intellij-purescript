@@ -36,7 +36,7 @@ import org.purescript.parser.STRING_ESCAPED
 import org.purescript.parser.STRING_GAP
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
-import org.purescript.psi.PSModule
+import org.purescript.psi.module.PSModule
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember

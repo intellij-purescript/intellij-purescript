@@ -2,15 +2,27 @@ package org.purescript.psi
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.tree.IElementType
-import org.purescript.PSLanguage
 import org.jetbrains.annotations.NonNls
+import org.purescript.PSLanguage
 
 open class PSElementType(@NonNls debugName: String) :
     IElementType(debugName, PSLanguage.INSTANCE) {
+    interface HasPsi {
+        fun createPsi(node: ASTNode): PsiElement
+    }
     class WithPsi(
         @NonNls debugName: String,
         val constructor: (ASTNode) -> PsiElement
-    ) :
-        PSElementType(debugName)
+    ) : HasPsi, PSElementType(debugName) {
+        override fun createPsi(node: ASTNode): PsiElement = constructor(node)
+    }
+
+    abstract class WithPsiAndStub<S : StubElement<*>?, E : PsiElement?>(
+        @NonNls debugName: String
+    ) : HasPsi, IStubElementType<S, E>(debugName, PSLanguage.INSTANCE) {
+        
+    }
 }

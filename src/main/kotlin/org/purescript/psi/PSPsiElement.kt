@@ -8,6 +8,7 @@ import com.intellij.psi.search.SearchScope
 import org.purescript.file.ImportedModuleIndex
 import org.purescript.file.ModuleNameIndex
 import org.purescript.file.PSFile
+import org.purescript.psi.module.PSModule
 
 abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
 

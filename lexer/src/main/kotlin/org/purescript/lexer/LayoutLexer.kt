@@ -7,7 +7,6 @@ import com.intellij.lexer.Lexer
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.intellij.util.containers.tail
 import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken

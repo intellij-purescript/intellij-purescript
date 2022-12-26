@@ -2,7 +2,7 @@ package org.purescript.ide.refactoring
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
-import org.purescript.psi.PSModule
+import org.purescript.psi.module.PSModule
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration

@@ -59,6 +59,7 @@
 
     <lang.parserDefinition language="Purescript" implementationClass="org.purescript.parser.PSParserDefinition"/>
 
+    <stubElementTypeHolder class="org.purescript.parser.PSElementsKt"/>
     <lang.syntaxHighlighterFactory language="Purescript"
                                    implementationClass="org.purescript.highlighting.PSSyntaxHighlighterFactory"/>
 
