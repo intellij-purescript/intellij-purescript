@@ -6,6 +6,8 @@ import com.intellij.lexer.DelegateLexer
 import com.intellij.lexer.Lexer
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
+import com.intellij.util.containers.tail
 import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
@@ -779,30 +781,25 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         index = 0
     }
 
+    private val trailingTokens =
+        TokenSet.create(WHITE_SPACE, MLCOMMENT, SLCOMMENT, DOC_COMMENT)
+
     private fun toLexemes(sourceTokens: List<SourceToken>): List<Lexeme> {
-        var token: SourceToken? = null
-        var trailing = mutableListOf<SourceToken>()
-        val lexemes = mutableListOf<Lexeme>()
-        for (t in sourceTokens) {
-            if (token == null) {
-                token = t
+        if (sourceTokens.isEmpty()) return emptyList()
+        var trailing = ArrayList<SourceToken>(4)
+        val lexemes = ArrayList<Lexeme>(sourceTokens.size)
+        var token: SourceToken = sourceTokens.first()
+        for (t in sourceTokens.subList(1, sourceTokens.size)) {
+            if (trailingTokens.contains(t.value)) {
+                trailing.add(t)
             } else {
-                when (t.value) {
-                    WHITE_SPACE -> trailing.add(t)
-                    MLCOMMENT -> trailing.add(t)
-                    SLCOMMENT -> trailing.add(t)
-                    DOC_COMMENT -> trailing.add(t)
-                    else -> {
-                        lexemes.add(Lexeme(token, trailing))
-                        token = t
-                        trailing = mutableListOf()
-                    }
-                }
+                lexemes.add(Lexeme(token, trailing))
+                token = t
+                trailing = ArrayList(4)
             }
         }
-        if (token != null) lexemes.add(Lexeme(token, trailing))
+        lexemes.add(Lexeme(token, trailing))
         return lexemes
-
     }
 
     private fun toSupers(sourceTokens: List<SourceToken>): List<SuperToken> {
