@@ -1,13 +1,19 @@
 package org.purescript.psi.module
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.*
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.parser.FixityDeclaration
 import org.purescript.parser.WHERE
-import org.purescript.psi.*
+import org.purescript.psi.PSForeignDataDeclaration
+import org.purescript.psi.PSForeignValueDeclaration
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSStubbedElement
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -102,7 +108,9 @@ class PSModule :
      * both directly and through re-exported modules
      */
     val exportedFixityDeclarations: List<PSFixityDeclaration>
-        get() = getExportedDeclarations<PSFixityDeclaration, PSExportedOperator>(cache.fixityDeclarations) {it.importedFixityDeclarations}
+        get() = getExportedDeclarations<PSFixityDeclaration, PSExportedOperator>(
+            cache.fixityDeclarations
+        ) { it.importedFixityDeclarations }
 
     /**
      * @return the where keyword in the module header
@@ -116,7 +124,7 @@ class PSModule :
      * @param declarations The declarations of the wanted type in this module
      * @return the [Declaration] element that this module exports
      */
-    private inline fun <Declaration : PsiNamedElement, reified Wanted: PSExportedItem> getExportedDeclarations(
+    private inline fun <Declaration : PsiNamedElement, reified Wanted : PSExportedItem> getExportedDeclarations(
         declarations: Array<Declaration>,
         getDeclarations: (PSImportDeclaration) -> List<Declaration>
     ): List<Declaration> {
@@ -129,12 +137,12 @@ class PSModule :
                 .map { it.name }
                 .toSet()
 
-            val exportedDeclarations = mutableListOf<Declaration>()
-
             val exportsSelf = explicitlyExportedItems
                 .filterIsInstance<PSExportedModule>()
                 .any { it.name == name }
 
+            val exportedDeclarations = mutableListOf<Declaration>()
+            
             declarations.filterTo(exportedDeclarations) {
                 exportsSelf || it.name in explicitlyNames
             }
@@ -164,7 +172,7 @@ class PSModule :
     val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
         get() = getExportedDeclarations<PSForeignValueDeclaration, PSExportedValue>(
             cache.foreignValueDeclarations,
-        ) { it. importedForeignValueDeclarations}
+        ) { it.importedForeignValueDeclarations }
 
     /**
      * @return the [PSForeignDataDeclaration] elements that this module exports,
@@ -173,7 +181,7 @@ class PSModule :
     val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
         get() = getExportedDeclarations<PSForeignDataDeclaration, PSExportedData>(
             cache.foreignDataDeclarations,
-        ) {it.importedForeignDataDeclarations}
+        ) { it.importedForeignDataDeclarations }
 
     /**
      * @return the [PSNewTypeDeclaration] elements that this module exports,
@@ -182,7 +190,7 @@ class PSModule :
     val exportedNewTypeDeclarations: List<PSNewTypeDeclaration>
         get() = getExportedDeclarations<PSNewTypeDeclaration, PSExportedData>(
             cache.newTypeDeclarations,
-        ) { it.importedNewTypeDeclarations}
+        ) { it.importedNewTypeDeclarations }
 
     /**
      * @return the [PSNewTypeConstructor] elements that this module exports,
@@ -220,7 +228,7 @@ class PSModule :
     val exportedDataDeclarations: List<PSDataDeclaration>
         get() = getExportedDeclarations<PSDataDeclaration, PSExportedData>(
             cache.dataDeclarations,
-        ) { it.importedDataDeclarations}
+        ) { it.importedDataDeclarations }
 
     /**
      * @return the [PSDataConstructor] elements that this module exports,
@@ -258,7 +266,7 @@ class PSModule :
     val exportedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
         get() = getExportedDeclarations<PSTypeSynonymDeclaration, PSExportedData>(
             cache.typeSynonymDeclarations,
-        ) { it.importedTypeSynonymDeclarations}
+        ) { it.importedTypeSynonymDeclarations }
 
     /**
      * @return the [PSClassDeclaration] elements that this module exports,
@@ -267,7 +275,7 @@ class PSModule :
     val exportedClassDeclarations: List<PSClassDeclaration>
         get() = getExportedDeclarations<PSClassDeclaration, PSExportedClass>(
             cache.classDeclarations,
-        ) {it.importedClassDeclarations}
+        ) { it.importedClassDeclarations }
 
     /**
      * @return the [PSClassMember] elements that this module exports,
@@ -278,7 +286,7 @@ class PSModule :
             cache.classDeclarations
                 .flatMap { it.classMembers.asSequence() }
                 .toTypedArray(),
-        ) { it.importedClassMembers}
+        ) { it.importedClassMembers }
 
     val reexportedModuleNames: List<String>
         get() =
