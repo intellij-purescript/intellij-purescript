@@ -81,7 +81,7 @@ class PSModule :
         super.subtreeChanged()
     }
 
-    override fun getName(): String = cache.name
+    override fun getName(): String = stub?.name ?: cache.name
 
     override fun setName(name: String): PsiElement? {
         val properName = PSPsiFactory(project).createModuleName(name)
