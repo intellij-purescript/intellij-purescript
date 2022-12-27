@@ -2,11 +2,15 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
-import org.purescript.psi.*
+import org.purescript.psi.ModuleReference
+import org.purescript.psi.PSForeignDataDeclaration
+import org.purescript.psi.PSForeignValueDeclaration
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.module.PSModule
 import org.purescript.psi.name.PSModuleName
@@ -23,7 +27,8 @@ import kotlin.reflect.KProperty1
  * import Foo.Bar hiding (a, b, c) as FB
  * ```
  */
-class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImportDeclaration> {
+class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
+    Comparable<PSImportDeclaration> {
 
     /**
      * The identifier specifying module being imported, e.g.
@@ -55,8 +60,9 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
      * @return all the items in [importList], or an empty array if
      * the import list is null.
      */
-    val importedItems: Array<PSImportedItem> get() =
-        importList?.importedItems ?: emptyArray()
+    val importedItems: Array<PSImportedItem>
+        get() =
+            importList?.importedItems ?: emptyArray()
 
     /**
      * @return the import alias of this import declaration,
@@ -121,17 +127,16 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
      * @param importedItemClass The class of the [PSImportedItem] to use when filtering the results
      * @return the [Declaration] elements that this declaration imports
      */
-    private fun <Declaration : PsiNamedElement> getImportedDeclarations(
-        exportedDeclarationProperty: KProperty1<PSModule, List<Declaration>>,
-        importedItemClass: Class<out PSImportedItem>
-    ): List<Declaration> {
+    private inline fun <Declaration : PsiNamedElement, reified Wanted : PSImportedItem>
+        getImportedDeclarations(exportedDeclarationProperty: KProperty1<PSModule, List<Declaration>>): List<Declaration> {
         val importedModule = importedModule ?: return emptyList()
-        val exportedDeclarations = exportedDeclarationProperty.get(importedModule)
+        val exportedDeclarations =
+            exportedDeclarationProperty.get(importedModule)
 
         val importedItems = importList?.importedItems
             ?: return exportedDeclarations
 
-        val importedNames = importedItems.filterIsInstance(importedItemClass)
+        val importedNames = importedItems.filterIsInstance(Wanted::class.java)
             .map { it.name }
             .toSet()
 
@@ -151,36 +156,32 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
      * @return the [PSValueDeclaration] elements imported by this declaration
      */
     val importedValueDeclarations: List<PSValueDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedValueDeclarations,
-            PSImportedValue::class.java
+        get() = getImportedDeclarations<PSValueDeclaration, PSImportedValue>(
+            PSModule::exportedValueDeclarations
         )
 
     /**
      * @return the [PSForeignValueDeclaration] elements imported by this declaration
      */
     val importedForeignValueDeclarations: List<PSForeignValueDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedForeignValueDeclarations,
-            PSImportedValue::class.java
+        get() = getImportedDeclarations<PSForeignValueDeclaration, PSImportedValue>(
+            PSModule::exportedForeignValueDeclarations
         )
 
     /**
      * @return the [PSForeignDataDeclaration] elements imported by this declaration
      */
     val importedForeignDataDeclarations: List<PSForeignDataDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedForeignDataDeclarations,
-            PSImportedData::class.java
+        get() = getImportedDeclarations<PSForeignDataDeclaration, PSImportedData>(
+            PSModule::exportedForeignDataDeclarations
         )
 
     /**
      * @return the [PSNewTypeDeclaration] elements imported by this declaration
      */
     val importedNewTypeDeclarations: List<PSNewTypeDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedNewTypeDeclarations,
-            PSImportedData::class.java
+        get() = getImportedDeclarations<PSNewTypeDeclaration, PSImportedData>(
+            PSModule::exportedNewTypeDeclarations
         )
 
     /**
@@ -189,13 +190,16 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
     val importedNewTypeConstructors: List<PSNewTypeConstructor>
         get() {
             val importedModule = importedModule ?: return emptyList()
-            val exportedNewTypeConstructors = importedModule.exportedNewTypeConstructors
+            val exportedNewTypeConstructors =
+                importedModule.exportedNewTypeConstructors
 
             val importedItems = importList?.importedItems
                 ?: return exportedNewTypeConstructors
 
-            val importedNewTypeConstructors = mutableListOf<PSNewTypeConstructor>()
-            val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
+            val importedNewTypeConstructors =
+                mutableListOf<PSNewTypeConstructor>()
+            val importedDataElements =
+                importedItems.filterIsInstance<PSImportedData>()
             if (isHiding) {
                 /*
                  * Partially hiding imported data does not work in an intuitive way.
@@ -225,7 +229,9 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
                 }
             } else {
                 for (importedData in importedDataElements) {
-                    val newTypeConstructor = importedData.newTypeDeclaration?.newTypeConstructor ?: continue
+                    val newTypeConstructor =
+                        importedData.newTypeDeclaration?.newTypeConstructor
+                            ?: continue
                     if (importedData.importsAll || newTypeConstructor.name in importedData.importedDataMembers.map { it.name }) {
                         importedNewTypeConstructors.add(newTypeConstructor)
                     }
@@ -239,9 +245,8 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
      * @return the [PSDataDeclaration] elements imported by this declaration
      */
     val importedDataDeclarations: List<PSDataDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedDataDeclarations,
-            PSImportedData::class.java
+        get() = getImportedDeclarations<PSDataDeclaration, PSImportedData>(
+            PSModule::exportedDataDeclarations
         )
 
     /**
@@ -250,13 +255,15 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
     val importedDataConstructors: List<PSDataConstructor>
         get() {
             val importedModule = importedModule ?: return emptyList()
-            val exportedDataConstructors = importedModule.exportedDataConstructors
+            val exportedDataConstructors =
+                importedModule.exportedDataConstructors
 
             val importedItems = importList?.importedItems
                 ?: return exportedDataConstructors
 
             val importedDataConstructors = mutableListOf<PSDataConstructor>()
-            val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
+            val importedDataElements =
+                importedItems.filterIsInstance<PSImportedData>()
             if (isHiding) {
                 // TODO See todo in [importedNewTypeConstructors]
                 val hiddenDataConstructors = importedDataElements
@@ -266,11 +273,14 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
                 exportedDataConstructors.filterTo(importedDataConstructors) { it !in hiddenDataConstructors }
             } else {
                 for (importedData in importedDataElements) {
-                    val dataConstructors = importedData.dataDeclaration?.dataConstructors ?: continue
+                    val dataConstructors =
+                        importedData.dataDeclaration?.dataConstructors
+                            ?: continue
                     if (importedData.importsAll) {
                         importedDataConstructors.addAll(dataConstructors)
                     } else {
-                        val importedDataConstructorNames = importedData.importedDataMembers.map { it.name }
+                        val importedDataConstructorNames =
+                            importedData.importedDataMembers.map { it.name }
                         dataConstructors.filterTo(importedDataConstructors) { it.name in importedDataConstructorNames }
                     }
                 }
@@ -283,27 +293,24 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
      * @return the [PSTypeSynonymDeclaration] elements imported by this declaration
      */
     val importedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedTypeSynonymDeclarations,
-            PSImportedData::class.java
+        get() = getImportedDeclarations<PSTypeSynonymDeclaration, PSImportedData>(
+            PSModule::exportedTypeSynonymDeclarations
         )
 
     /**
      * @return the [PSClassDeclaration] elements imported by this declaration
      */
     val importedClassDeclarations: List<PSClassDeclaration>
-        get() = getImportedDeclarations(
-            PSModule::exportedClassDeclarations,
-            PSImportedClass::class.java
+        get() = getImportedDeclarations<PSClassDeclaration, PSImportedClass>(
+            PSModule::exportedClassDeclarations
         )
 
     /**
      * @return the [PSClassMember] elements imported by this declaration
      */
     val importedClassMembers: List<PSClassMember>
-        get() = getImportedDeclarations(
-            PSModule::exportedClassMembers,
-            PSImportedValue::class.java
+        get() = getImportedDeclarations<PSClassMember, PSImportedValue>(
+            PSModule::exportedClassMembers
         )
 
     /**
@@ -311,9 +318,8 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node), Comparable<PSImpo
      */
     val importedFixityDeclarations
         get() =
-            getImportedDeclarations(
-                PSModule::exportedFixityDeclarations,
-                PSImportedOperator::class.java
+            getImportedDeclarations<PSFixityDeclaration, PSImportedOperator>(
+                PSModule::exportedFixityDeclarations
             )
 
 }
