@@ -23,6 +23,8 @@ open class PSElementType(@NonNls debugName: String) :
     abstract class WithPsiAndStub<S : StubElement<*>?, E : PsiElement?>(
         @NonNls debugName: String
     ) : HasPsi, IStubElementType<S, E>(debugName, PSLanguage.INSTANCE) {
-        
+        override fun getExternalId(): String {
+            return "purescript.$debugName"
+        }
     }
 }

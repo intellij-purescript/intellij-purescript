@@ -10,6 +10,7 @@ import org.purescript.parser.WHERE
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSStubbedElement
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -28,8 +29,7 @@ import kotlin.reflect.KProperty1
 class PSModule :
     PsiNameIdentifierOwner,
     DocCommentOwner,
-    StubBasedPsiElement<PSModuleStub>,
-    StubBasedPsiElementBase<PSModuleStub> {
+    PSStubbedElement<PSModuleStub> {
 
     constructor(stub: PSModuleStub, nodeType: IStubElementType<*, *>) :
         super(stub, nodeType)
@@ -345,8 +345,5 @@ class PSModule :
                 ?.filterIsInstance<PSExportedModule>()
                 ?.any { it.name == name }
                 ?: true
-    
-    override fun toString(): String {
-        return "${javaClass.simpleName}($elementType)"
-    }
+
 }

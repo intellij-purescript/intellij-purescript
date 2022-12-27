@@ -16,9 +16,7 @@ import org.purescript.psi.classes.*
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataConstructorList
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.PSFixityDeclaration
-import org.purescript.psi.declaration.PSSignature
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.*
 import org.purescript.psi.dostmt.PSDoBlock
 import org.purescript.psi.dostmt.PSDoNotationBind
 import org.purescript.psi.dostmt.PSDoNotationLet
@@ -45,22 +43,17 @@ val Module = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
     ): PSModuleStub {
         return PSModuleStub(psi.name, parent)
     }
-    
+
     override fun createPsi(node: ASTNode): PsiElement {
         return PSModule(node)
     }
-    
+
     override fun createPsi(stub: PSModuleStub): PSModule {
         return PSModule(stub, this)
     }
 
     override fun serialize(stub: PSModuleStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
-    }
-
-
-    override fun getExternalId(): String {
-        return "purescript.module"
     }
 
     override fun deserialize(
@@ -73,6 +66,33 @@ val Module = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
     override fun indexStub(stub: PSModuleStub, sink: IndexSink) {
         sink.occurrence(ModuleNameIndex.KEY, stub.name)
     }
+
+}
+val FixityDeclaration = object :
+    WithPsiAndStub<PSFixityDeclarationStub, PSFixityDeclaration>("FixityDeclaration") {
+    override fun createPsi(node: ASTNode) = PSFixityDeclaration(node)
+    override fun createPsi(stub: PSFixityDeclarationStub) =
+        PSFixityDeclaration(stub, this)
+
+    override fun createStub(psi: PSFixityDeclaration, parent: StubElement<*>?) =
+        PSFixityDeclarationStub(psi.name, parent)
+
+    override fun indexStub(stub: PSFixityDeclarationStub, sink: IndexSink) {
+        // if there is a parser error the module might not exist
+        stub.getParentStubOfType(PSModule::class.java)?.let { module ->
+            sink.occurrence(ExportedFixityDeclarationsIndex.KEY, module.name)
+        }
+    }
+
+    override fun serialize(stub: PSFixityDeclarationStub, data: StubOutputStream) {
+        data.writeName(stub.name)
+    }
+
+    override fun deserialize(
+        dataStream: StubInputStream,
+        parent: StubElement<*>?
+    ): PSFixityDeclarationStub =
+        PSFixityDeclarationStub(dataStream.readNameString()!!, parent)
 
 }
 val ExportList = WithPsi("ExportList") { PSExportList(it) }
@@ -115,7 +135,6 @@ val ForeignDataDeclaration =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
 val ForeignValueDeclaration =
     WithPsi("ForeignValueDeclaration") { PSForeignValueDeclaration(it) }
-val FixityDeclaration = WithPsi("FixityDeclaration") { PSFixityDeclaration(it) }
 val ImportDeclaration = WithPsi("ImportDeclaration") { PSImportDeclaration(it) }
 val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
 val ImportList = WithPsi("ImportList") { PSImportList(it) }

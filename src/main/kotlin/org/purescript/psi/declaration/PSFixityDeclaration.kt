@@ -3,25 +3,27 @@ package org.purescript.psi.declaration
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import org.purescript.psi.PSPsiElement
+import com.intellij.psi.stubs.IStubElementType
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSStubbedElement
 import org.purescript.psi.name.PSOperatorName
 
-class PSFixityDeclaration(node: ASTNode) : PSPsiElement(node),
+class PSFixityDeclaration : PSStubbedElement<PSFixityDeclarationStub>,
     PsiNameIdentifierOwner {
+
+    constructor(node: ASTNode) : super(node)
+
+    constructor(stub: PSFixityDeclarationStub, type: IStubElementType<*, *>)
+        : super(stub, type)
+
     private val operatorName
-        get() =
-            findNotNullChildByClass(PSOperatorName::class.java)
+        get() = findNotNullChildByClass(PSOperatorName::class.java)
 
     override fun getTextOffset(): Int = nameIdentifier.textOffset
 
-    override fun getNameIdentifier(): PsiElement {
-        return operatorName
-    }
+    override fun getNameIdentifier() = operatorName
 
-    override fun getName(): String {
-        return operatorName.name
-    }
+    override fun getName() = stub?.name ?: operatorName.name
 
     override fun setName(name: String): PsiElement? {
         val identifier = PSPsiFactory(project).createOperatorName(name)
