@@ -80,6 +80,7 @@ val FixityDeclaration = object :
     override fun indexStub(stub: PSFixityDeclarationStub, sink: IndexSink) {
         // if there is a parser error the module might not exist
         stub.getParentStubOfType(PSModule::class.java)?.let { module ->
+            // TODO only index exported declarations
             sink.occurrence(ExportedFixityDeclarationsIndex.KEY, module.name)
         }
     }

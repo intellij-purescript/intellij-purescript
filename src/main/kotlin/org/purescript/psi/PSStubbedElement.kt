@@ -15,5 +15,8 @@ abstract class PSStubbedElement<Stub: StubElement<*>>:
     override fun toString(): String {
         return "${javaClass.simpleName}($elementType)"
     }
-        
+    
+    inline fun <Stub: StubElement<Out>, reified Out: StubBasedPsiElement<Stub>>
+        children(childType: IStubElementType<Stub, Out>): Array<Out> =
+        getStubOrPsiChildren(childType, arrayOf<Out>())
 }

@@ -1,21 +1,20 @@
 package org.purescript.psi.module
 
-import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.lang.ASTNode
 import com.intellij.psi.*
 import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.stubs.StubElement
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
+import org.purescript.parser.FixityDeclaration
 import org.purescript.parser.WHERE
-import org.purescript.psi.PSForeignDataDeclaration
-import org.purescript.psi.PSForeignValueDeclaration
-import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.PSFixityDeclaration
+import org.purescript.psi.declaration.PSFixityDeclarationStub
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclaration
@@ -67,8 +66,7 @@ class PSModule :
         val classDeclarations: Array<PSClassDeclaration>
             by lazy { findChildrenByClass(PSClassDeclaration::class.java) }
 
-        val fixityDeclarations: Array<PSFixityDeclaration>
-            by lazy { findChildrenByClass(PSFixityDeclaration::class.java) }
+        val fixityDeclarations by lazy { children(FixityDeclaration) }
 
         val foreignValueDeclarations: Array<PSForeignValueDeclaration>
             by lazy { findChildrenByClass(PSForeignValueDeclaration::class.java) }
