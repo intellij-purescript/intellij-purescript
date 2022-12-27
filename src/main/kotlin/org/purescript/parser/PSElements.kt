@@ -113,8 +113,6 @@ val TypeSynonymDeclaration =
 val ValueDeclaration = WithPsi("ValueDeclaration") { PSValueDeclaration(it) }
 val ForeignDataDeclaration =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
-val ExternInstanceDeclaration =
-    WithPsi("ExternInstanceDeclaration") { PSExternInstanceDeclaration(it) }
 val ForeignValueDeclaration =
     WithPsi("ForeignValueDeclaration") { PSForeignValueDeclaration(it) }
 val FixityDeclaration = WithPsi("FixityDeclaration") { PSFixityDeclaration(it) }
