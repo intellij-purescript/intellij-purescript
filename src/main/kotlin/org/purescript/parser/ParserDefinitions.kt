@@ -452,7 +452,7 @@ class ParserDefinitions {
         module + moduleName + Optional(exportList) + where + `L{` +
             (parseImportDeclaration + `L-sep`).noneOrMore
     val parseModuleBody = (decl.sepBy(elseDecl) + `L-sep`).noneOrMore + `L}`
-    val parseModule = ( parseModuleHeader + parseModuleBody).`as`(Module)
+    val parseModule = ( parseModuleHeader + parseModuleBody).`as`(ModuleType)
 
 
     private val binder2 = Choice.of(

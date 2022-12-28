@@ -35,7 +35,7 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
-val Module = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
+val ModuleType = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
 
     override fun createStub(
         psi: PSModule,
