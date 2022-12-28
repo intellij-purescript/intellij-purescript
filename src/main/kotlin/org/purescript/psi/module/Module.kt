@@ -54,10 +54,10 @@ interface Module {
         // TODO clean up this name
         override fun toString(): String = "PSModule($elementType)"
         var cache: Cache = Cache()
-
+        
+        val exports get() = child<ExportList.Psi>()
+        
         inner class Cache {
-            val name: String by lazy { nameIdentifier.name }
-            val exports by lazy { child<ExportList.Psi>() }
             val imports by lazy { findChildrenByClass<PSImportDeclaration>() }
             val importsByName by lazy { imports.groupBy { it.name } }
             val valueDeclarations
@@ -85,7 +85,7 @@ interface Module {
             super.subtreeChanged()
         }
 
-        override fun getName(): String = stub?.name ?: cache.name
+        override fun getName(): String = greenStub?.name ?: nameIdentifier.name
 
         override fun setName(name: String): PsiElement? {
             val properName = PSPsiFactory(project).createModuleName(name)
@@ -125,7 +125,7 @@ interface Module {
             declarations: Array<Declaration>,
             getDeclarations: (PSImportDeclaration) -> List<Declaration>
         ): List<Declaration> {
-            val explicitlyExportedItems = cache.exports?.exportedItems
+            val explicitlyExportedItems = exports?.exportedItems
             return if (explicitlyExportedItems == null) {
                 declarations.toList()
             } else {
@@ -195,7 +195,7 @@ interface Module {
          */
         val exportedNewTypeConstructors: List<PSNewTypeConstructor>
             get() {
-                val explicitlyExportedItems = cache.exports?.exportedItems
+                val explicitlyExportedItems = exports?.exportedItems
                     ?: return cache.newTypeConstructors
 
                 val exportedNewTypeConstructors =
@@ -233,7 +233,7 @@ interface Module {
          */
         val exportedDataConstructors: List<PSDataConstructor>
             get() {
-                val explicitlyExportedItems = cache.exports?.exportedItems
+                val explicitlyExportedItems = exports?.exportedItems
                     ?: return cache.dataConstructors
 
                 val exportedDataConstructors =
@@ -288,7 +288,7 @@ interface Module {
 
         val reexportedModuleNames: List<String>
             get() =
-                cache.exports?.exportedItems
+                exports?.exportedItems
                     ?.filterIsInstance(ExportedModule.Psi::class.java)
                     ?.map { it.name }
                     ?.toList()
@@ -296,7 +296,7 @@ interface Module {
 
         val exportedNames: List<String>
             get() =
-                cache.exports?.exportedItems
+                exports?.exportedItems
                     ?.filter { it !is ExportedModule.Psi }
                     ?.map { it.text.trim() }
                     ?.toList()
@@ -318,7 +318,7 @@ interface Module {
 
         val exportsSelf: Boolean
             get() =
-                cache.exports?.exportedItems
+                exports?.exportedItems
                     ?.filterIsInstance<ExportedModule.Psi>()
                     ?.any { it.name == name }
                     ?: true

@@ -6,7 +6,6 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.imports.PSImportDeclaration
-import org.purescript.psi.module.Module.*
 
 class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportDeclaration>(
     element,
@@ -17,7 +16,7 @@ class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportD
         return ModuleNameIndex().getAllKeys(element.project).toTypedArray()
     }
 
-    override fun resolve(): Psi? {
+    override fun resolve(): Module.Psi? {
         val moduleName = element.moduleName?.name ?: return null
         val project = element.project
         return ModuleNameIndex()

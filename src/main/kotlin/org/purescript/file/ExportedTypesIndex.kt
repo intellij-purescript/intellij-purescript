@@ -26,7 +26,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun map(inputData: FileContent): Map<String, Void?> {
         val file = inputData.psiFile as? PSFile ?: return emptyMap()
         val module = file.module ?: return emptyMap()
-        val exportList = module.cache.exports
+        val exportList = module.exports
         return if (exportList == null) {
             declarations(module)
         } else {

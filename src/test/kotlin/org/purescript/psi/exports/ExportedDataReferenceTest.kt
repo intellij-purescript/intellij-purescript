@@ -15,7 +15,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
         val exportedData =
-            module.cache.exports!!.exportedItems.single() as ExportedData.Psi
+            module.exports!!.exportedItems.single() as ExportedData.Psi
         val dataDeclaration = module.cache.dataDeclarations.single()
 
         TestCase.assertEquals(dataDeclaration, exportedData.reference.resolve())
@@ -28,7 +28,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 module Foo (Bar) where
             """.trimIndent()
         ).getModule()
-        val exportedData = module.cache.exports!!.exportedItems.single() as ExportedData.Psi
+        val exportedData = module.exports!!.exportedItems.single() as ExportedData.Psi
 
         TestCase.assertNull(exportedData.reference.resolve())
     }
@@ -53,7 +53,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 data <caret>Bar = Qux
             """.trimIndent()
         ).getModule()
-        val exportedData = module.cache.exports!!.exportedItems.single() as ExportedData.Psi
+        val exportedData = module.exports!!.exportedItems.single() as ExportedData.Psi
         val usageInfo = myFixture.testFindUsages("Foo.purs").single()
 
         TestCase.assertEquals(exportedData, usageInfo.element)
@@ -68,7 +68,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
         val exportedData =
-            module.cache.exports!!.exportedItems.single() as ExportedData.Psi
+            module.exports!!.exportedItems.single() as ExportedData.Psi
         val newtypeDeclaration = module.cache.newTypeDeclarations.single()
 
         TestCase.assertEquals(
@@ -84,7 +84,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 module Foo (Bar) where
             """.trimIndent()
         ).getModule()
-        val exportedData = module.cache.exports!!.exportedItems.single() as ExportedData.Psi
+        val exportedData = module.exports!!.exportedItems.single() as ExportedData.Psi
 
         TestCase.assertNull(exportedData.reference.resolve())
     }
@@ -109,7 +109,7 @@ class ExportedDataReferenceTest : BasePlatformTestCase() {
                 newtype <caret>Bar = Qux Int
             """.trimIndent()
         ).getModule()
-        val exportedData = module.cache.exports!!.exportedItems.single() as ExportedData.Psi
+        val exportedData = module.exports!!.exportedItems.single() as ExportedData.Psi
         val usageInfo = myFixture.testFindUsages("Foo.purs").single()
 
         TestCase.assertEquals(exportedData, usageInfo.element)

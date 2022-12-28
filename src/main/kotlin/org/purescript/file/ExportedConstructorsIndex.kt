@@ -21,7 +21,7 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.let { it.cache.exports } == null -> {
+                        file.module?.let { it.exports } == null -> {
                             val dataConstructors = file.module
                                 ?.let { it.cache.dataConstructors }
                                 ?.map { it.name }
@@ -38,7 +38,7 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                         }
                         // exports named in the export list
                         else -> {
-                            file.module!!.cache.exports!!.exportedItems
+                            file.module?.exports!!.exportedItems
                                 .mapNotNull {
                                     when (it) {
                                         is ExportedData.Psi -> it.dataDeclaration
