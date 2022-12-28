@@ -3,11 +3,8 @@ package org.purescript.psi.exports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
 import org.purescript.psi.AStub
-import org.purescript.psi.PSElementType
-import org.purescript.psi.PSElementType.*
+import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
-import org.purescript.psi.declaration.ExportedFixityDeclarationsIndex
-import org.purescript.psi.module.Module
 
 /**
  * The export list in the module signature.
@@ -36,6 +33,6 @@ interface ExportList {
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
         // Todo clean this up
         override fun toString(): String = "PSExportList($elementType)"
-        val exportedItems: Array<PSExportedItem> = children()
+        val exportedItems: Array<ExportedItem<*>> = children()
     }
 }

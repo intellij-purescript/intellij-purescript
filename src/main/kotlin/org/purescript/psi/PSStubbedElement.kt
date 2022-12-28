@@ -6,16 +6,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.util.parentOfType
+import org.purescript.psi.module.Module
 
 abstract class PSStubbedElement<Stub: StubElement<*>>: 
     StubBasedPsiElement<Stub>,
     StubBasedPsiElementBase<Stub> {
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, nodeType: IStubElementType<*, *>) : super(stub, nodeType)
-
-    override fun toString(): String {
-        return "${javaClass.simpleName}($elementType)"
-    }
+    val module get() = parentOfType<Module.Psi>() 
+    override fun toString() = "${javaClass.simpleName}($elementType)"
     
     inline fun <Stub: StubElement<Out>, reified Out: StubBasedPsiElement<Stub>>
         children(childType: IStubElementType<Stub, Out>): Array<Out> =

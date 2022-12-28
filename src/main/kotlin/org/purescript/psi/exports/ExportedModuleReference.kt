@@ -5,7 +5,7 @@ import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.imports.PSImportDeclaration
 
-class ExportedModuleReference(exportedModule: PSExportedModule) : PsiReferenceBase<PSExportedModule>(
+class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReferenceBase<ExportedModule.Psi>(
     exportedModule,
     exportedModule.moduleName.textRangeInParent,
     false

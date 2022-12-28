@@ -7,7 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.jetbrains.annotations.NonNls
-import org.purescript.psi.exports.PSExportedValue
+import org.purescript.psi.exports.ExportedValue
 
 class ExportedValuesIndex : ScalarIndexExtension<String>() {
     override fun getName(): ID<String, Void?> = NAME
@@ -38,7 +38,7 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
                             file.module!!.cache.exports!!.exportedItems
                                 .mapNotNull {
                                     when (it) {
-                                        is PSExportedValue -> it.name
+                                        is ExportedValue.Psi -> it.name
                                         else -> null
                                     }
                                 }

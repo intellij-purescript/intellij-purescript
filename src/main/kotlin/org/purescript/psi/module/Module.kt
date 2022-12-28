@@ -112,7 +112,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedFixityDeclarations: List<FixityDeclaration.Psi>
-            get() = getExportedDeclarations<FixityDeclaration.Psi, PSExportedOperator>(
+            get() = getExportedDeclarations<FixityDeclaration.Psi, ExportedOperator.Psi>(
                 cache.fixityDeclarations
             ) { it.importedFixityDeclarations }
 
@@ -128,7 +128,7 @@ interface Module {
          * @param declarations The declarations of the wanted type in this module
          * @return the [Declaration] element that this module exports
          */
-        private inline fun <Declaration : PsiNamedElement, reified Wanted : PSExportedItem> getExportedDeclarations(
+        private inline fun <Declaration : PsiNamedElement, reified Wanted : ExportedItem<*>> getExportedDeclarations(
             declarations: Array<Declaration>,
             getDeclarations: (PSImportDeclaration) -> List<Declaration>
         ): List<Declaration> {
@@ -142,7 +142,7 @@ interface Module {
                     .toSet()
 
                 val exportsSelf = explicitlyExportedItems
-                    .filterIsInstance<PSExportedModule>()
+                    .filterIsInstance<ExportedModule.Psi>()
                     .any { it.name == name }
 
                 val exportedDeclarations = mutableListOf<Declaration>()
@@ -151,7 +151,7 @@ interface Module {
                     exportsSelf || it.name in explicitlyNames
                 }
 
-                explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                explicitlyExportedItems.filterIsInstance<ExportedModule.Psi>()
                     .flatMap { it.importDeclarations }
                     .flatMapTo(exportedDeclarations) {
                         getDeclarations(it)
@@ -165,7 +165,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedValueDeclarations: List<PSValueDeclaration>
-            get() = getExportedDeclarations<PSValueDeclaration, PSExportedValue>(
+            get() = getExportedDeclarations<PSValueDeclaration, ExportedValue.Psi>(
                 cache.valueDeclarations,
             ) { it.importedValueDeclarations }
 
@@ -174,7 +174,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
-            get() = getExportedDeclarations<PSForeignValueDeclaration, PSExportedValue>(
+            get() = getExportedDeclarations<PSForeignValueDeclaration, ExportedValue.Psi>(
                 cache.foreignValueDeclarations,
             ) { it.importedForeignValueDeclarations }
 
@@ -183,7 +183,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
-            get() = getExportedDeclarations<PSForeignDataDeclaration, PSExportedData>(
+            get() = getExportedDeclarations<PSForeignDataDeclaration, ExportedData.Psi>(
                 cache.foreignDataDeclarations,
             ) { it.importedForeignDataDeclarations }
 
@@ -192,7 +192,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedNewTypeDeclarations: List<PSNewTypeDeclaration>
-            get() = getExportedDeclarations<PSNewTypeDeclaration, PSExportedData>(
+            get() = getExportedDeclarations<PSNewTypeDeclaration, ExportedData.Psi>(
                 cache.newTypeDeclarations,
             ) { it.importedNewTypeDeclarations }
 
@@ -208,7 +208,7 @@ interface Module {
                 val exportedNewTypeConstructors =
                     mutableListOf<PSNewTypeConstructor>()
 
-                for (exportedData in explicitlyExportedItems.filterIsInstance<PSExportedData>()) {
+                for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
                     if (exportedData.exportsAll) {
                         exportedNewTypeConstructors.addIfNotNull(exportedData.newTypeDeclaration?.newTypeConstructor)
                     } else {
@@ -218,7 +218,7 @@ interface Module {
                     }
                 }
 
-                explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                explicitlyExportedItems.filterIsInstance<ExportedModule.Psi>()
                     .flatMap { it.importDeclarations }
                     .flatMapTo(exportedNewTypeConstructors) { it.importedNewTypeConstructors }
 
@@ -230,7 +230,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedDataDeclarations: List<PSDataDeclaration>
-            get() = getExportedDeclarations<PSDataDeclaration, PSExportedData>(
+            get() = getExportedDeclarations<PSDataDeclaration, ExportedData.Psi>(
                 cache.dataDeclarations,
             ) { it.importedDataDeclarations }
 
@@ -246,7 +246,7 @@ interface Module {
                 val exportedDataConstructors =
                     mutableListOf<PSDataConstructor>()
 
-                for (exportedData in explicitlyExportedItems.filterIsInstance<PSExportedData>()) {
+                for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
                     if (exportedData.exportsAll) {
                         exportedData.dataDeclaration?.dataConstructors
                             ?.mapTo(exportedDataConstructors) { it }
@@ -257,7 +257,7 @@ interface Module {
                     }
                 }
 
-                explicitlyExportedItems.filterIsInstance<PSExportedModule>()
+                explicitlyExportedItems.filterIsInstance<ExportedModule.Psi>()
                     .flatMap { it.importDeclarations }
                     .flatMapTo(exportedDataConstructors) { it.importedDataConstructors }
 
@@ -269,7 +269,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
-            get() = getExportedDeclarations<PSTypeSynonymDeclaration, PSExportedData>(
+            get() = getExportedDeclarations<PSTypeSynonymDeclaration, ExportedData.Psi>(
                 cache.typeSynonymDeclarations,
             ) { it.importedTypeSynonymDeclarations }
 
@@ -278,7 +278,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedClassDeclarations: List<PSClassDeclaration>
-            get() = getExportedDeclarations<PSClassDeclaration, PSExportedClass>(
+            get() = getExportedDeclarations<PSClassDeclaration, ExportedClass.Psi>(
                 cache.classes,
             ) { it.importedClassDeclarations }
 
@@ -287,7 +287,7 @@ interface Module {
          * both directly and through re-exported modules
          */
         val exportedClassMembers: List<PSClassMember>
-            get() = getExportedDeclarations<PSClassMember, PSExportedValue>(
+            get() = getExportedDeclarations<PSClassMember, ExportedValue.Psi>(
                 cache.classes
                     .flatMap { it.classMembers.asSequence() }
                     .toTypedArray(),
@@ -296,7 +296,7 @@ interface Module {
         val reexportedModuleNames: List<String>
             get() =
                 cache.exports?.exportedItems
-                    ?.filterIsInstance(PSExportedModule::class.java)
+                    ?.filterIsInstance(ExportedModule.Psi::class.java)
                     ?.map { it.name }
                     ?.toList()
                     ?: emptyList()
@@ -304,7 +304,7 @@ interface Module {
         val exportedNames: List<String>
             get() =
                 cache.exports?.exportedItems
-                    ?.filter { it !is PSExportedModule }
+                    ?.filter { it !is ExportedModule.Psi }
                     ?.map { it.text.trim() }
                     ?.toList()
                     ?: emptyList()
@@ -326,7 +326,7 @@ interface Module {
         val exportsSelf: Boolean
             get() =
                 cache.exports?.exportedItems
-                    ?.filterIsInstance<PSExportedModule>()
+                    ?.filterIsInstance<ExportedModule.Psi>()
                     ?.any { it.name == name }
                     ?: true
 

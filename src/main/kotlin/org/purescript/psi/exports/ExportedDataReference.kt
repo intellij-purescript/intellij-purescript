@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 
-class ExportedDataReference(exportedData: PSExportedData) : PsiReferenceBase<PSExportedData>(
+class ExportedDataReference(exportedData: ExportedData.Psi) : PsiReferenceBase<ExportedData.Psi>(
     exportedData,
     exportedData.properName.textRangeInParent,
     false

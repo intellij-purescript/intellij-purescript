@@ -414,7 +414,7 @@ class ParserDefinitions {
             + Optional(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
             ).`as`(InstanceDeclaration)
     )
-    private val exportedClass = (`class` + properName).`as`(ExportedClass)
+    private val exportedClass = (`class` + properName).`as`(ExportedClassType)
     private val dataMembers =
         parens(
             ddot.or(
@@ -425,15 +425,15 @@ class ParserDefinitions {
         )
             .`as`(ExportedDataMemberList)
     private val exportedData =
-        (properName + Optional(dataMembers)).`as`(ExportedData)
+        (properName + Optional(dataMembers)).`as`(ExportedDataType)
     private val exportedKind =
-        (ElementToken(KIND) + properName).`as`(ExportedKind)
+        (ElementToken(KIND) + properName).`as`(ExportedKindType)
     private val exportedModule =
-        (module + moduleName).`as`(ExportedModule)
-    private val exportedOperator = symbol.`as`(ExportedOperator)
+        (module + moduleName).`as`(ExportedModuleType)
+    private val exportedOperator = symbol.`as`(ExportedOperatorType)
     private val exportedType =
-        (`'type'` + parens(operator.`as`(Identifier))).`as`(ExportedType)
-    private val exportedValue = ident.`as`(ExportedValue)
+        (`'type'` + parens(operator.`as`(Identifier))).`as`(ExportedTypeType)
+    private val exportedValue = ident.`as`(ExportedValueType)
     private val exportList = parens(
         Choice.of(
             exportedClass,

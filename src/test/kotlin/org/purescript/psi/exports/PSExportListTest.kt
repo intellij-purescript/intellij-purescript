@@ -12,8 +12,8 @@ class PSExportListTest : BasePlatformTestCase() {
         ).getExportedItems()
 
         assertEquals(3, exportedItems.size)
-        assertTrue(exportedItems[0] is PSExportedValue)
-        assertTrue(exportedItems[1] is PSExportedKind)
-        assertTrue(exportedItems[2] is PSExportedClass)
+        assertTrue(exportedItems[0] is ExportedValue.Psi)
+        assertTrue(exportedItems[1] is ExportedKind.Psi)
+        assertTrue(exportedItems[2] is ExportedClass.Psi)
     }
 }

@@ -9,9 +9,9 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.siblings
 import org.purescript.PSLanguage
 import org.purescript.psi.binder.PSConstructorBinder
-import org.purescript.psi.exports.PSExportedModule
-import org.purescript.psi.exports.PSExportedOperator
-import org.purescript.psi.exports.PSExportedValue
+import org.purescript.psi.exports.ExportedModule
+import org.purescript.psi.exports.ExportedOperator
+import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionOperator
@@ -29,9 +29,9 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
                 when (element) {
-                    is PSExportedValue -> visitReference(element.reference)
-                    is PSExportedOperator -> visitReference(element.reference)
-                    is PSExportedModule -> visitModuleReference(element.reference)
+                    is ExportedValue.Psi -> visitReference(element.reference)
+                    is ExportedOperator.Psi -> visitReference(element.reference)
+                    is ExportedModule.Psi -> visitModuleReference(element.reference)
                     is PSImportDeclaration -> visitModuleReference(element.reference)
                     is PSImportedOperator -> visitReference(element.reference)
                     is PSExpressionConstructor -> visitReference(element.reference)

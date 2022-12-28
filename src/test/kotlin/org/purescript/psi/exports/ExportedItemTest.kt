@@ -3,7 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getExportedItem
 
-class PSExportedItemTest : BasePlatformTestCase() {
+class ExportedItemTest : BasePlatformTestCase() {
 
     fun `test parses exported class`() {
         val exportedItem = myFixture.addFileToProject(
@@ -11,7 +11,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (class Foo) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedClass)
+        assertTrue(exportedItem is ExportedClass.Psi)
         assertEquals("Foo", exportedItem.name)
     }
 
@@ -21,8 +21,8 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (Foo) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedData)
-        val exportedData = exportedItem as PSExportedData
+        assertTrue(exportedItem is ExportedData.Psi)
+        val exportedData = exportedItem as ExportedData.Psi
 
         assertEquals("Foo", exportedItem.name)
         assertNull(exportedData.dataMemberList)
@@ -34,8 +34,8 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (Foo(..)) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedData)
-        val exportedData = exportedItem as PSExportedData
+        assertTrue(exportedItem is ExportedData.Psi)
+        val exportedData = exportedItem as ExportedData.Psi
 
         assertEquals("Foo", exportedItem.name)
         val dataMemberList = exportedData.dataMemberList
@@ -51,8 +51,8 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (Foo(Bar, Baz)) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedData)
-        val exportedData = exportedItem as PSExportedData
+        assertTrue(exportedItem is ExportedData.Psi)
+        val exportedData = exportedItem as ExportedData.Psi
 
         assertEquals("Foo", exportedItem.name)
         val dataMemberList = exportedData.dataMemberList
@@ -68,7 +68,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (kind Foo) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedKind)
+        assertTrue(exportedItem is ExportedKind.Psi)
         assertEquals("Foo", exportedItem.name)
     }
 
@@ -78,7 +78,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (module Foo) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedModule)
+        assertTrue(exportedItem is ExportedModule.Psi)
         assertEquals("Foo", exportedItem.name)
     }
 
@@ -88,7 +88,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main ((<~>)) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedOperator)
+        assertTrue(exportedItem is ExportedOperator.Psi)
         assertEquals("<~>", exportedItem.name)
     }
 
@@ -98,7 +98,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (type (<<=>>)) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedType)
+        assertTrue(exportedItem is ExportedType.Psi)
         assertEquals("<<=>>", exportedItem.name)
     }
 
@@ -108,7 +108,7 @@ class PSExportedItemTest : BasePlatformTestCase() {
             """module Main (foo) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is PSExportedValue)
+        assertTrue(exportedItem is ExportedValue.Psi)
         assertEquals("foo", exportedItem.name)
     }
 }

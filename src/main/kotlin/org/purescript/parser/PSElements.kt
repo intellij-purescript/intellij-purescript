@@ -29,17 +29,15 @@ import org.purescript.psi.typevar.PSTypeVarName
 val ModuleType = Module.Type
 val FixityDeclarationType = FixityDeclaration.Type
 val ExportListType = ExportList.Type
-val ExportedClass = WithPsi("ExportedClass") { PSExportedClass(it) }
-val ExportedData = WithPsi("ExportedData") { PSExportedData(it) }
-val ExportedDataMember =
-    WithPsi("ExportedDataMember") { PSExportedDataMember(it) }
-val ExportedDataMemberList =
-    WithPsi("ExportedDataMemberList") { PSExportedDataMemberList(it) }
-val ExportedKind = WithPsi("ExportedKind") { PSExportedKind(it) }
-val ExportedModule = WithPsi("ExportedModule") { PSExportedModule(it) }
-val ExportedOperator = WithPsi("ExportedOperator") { PSExportedOperator(it) }
-val ExportedType = WithPsi("ExportedType") { PSExportedType(it) }
-val ExportedValue = WithPsi("ExportedValue") { PSExportedValue(it) }
+val ExportedClassType = ExportedClass.Type
+val ExportedDataType = ExportedData.Type
+val ExportedKindType = ExportedKind.Type
+val ExportedModuleType = ExportedModule.Type
+val ExportedOperatorType = ExportedOperator.Type
+val ExportedTypeType = ExportedType.Type
+val ExportedValueType = ExportedValue.Type
+val ExportedDataMember = WithPsi("ExportedDataMember") { PSExportedDataMember(it) }
+val ExportedDataMemberList = WithPsi("ExportedDataMemberList") { PSExportedDataMemberList(it) }
 val Star = WithPsi("Star") { PSStar(it) }
 val Bang = WithPsi("Bang") { PSBang(it) }
 val RowKind = WithPsi("RowKind") { PSRowKind(it) }

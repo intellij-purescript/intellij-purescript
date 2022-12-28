@@ -6,8 +6,8 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
-import org.purescript.psi.exports.PSExportedData
-import org.purescript.psi.exports.PSExportedType
+import org.purescript.psi.exports.ExportedData
+import org.purescript.psi.exports.ExportedType
 
 class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
 
@@ -41,12 +41,12 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                             file.module!!.cache.exports!!.exportedItems
                                 .mapNotNull {
                                     when (it) {
-                                        is PSExportedData -> it.dataDeclaration
+                                        is ExportedData.Psi -> it.dataDeclaration
                                             ?.dataConstructors
                                             ?.map { it.name }
                                             ?.asSequence()
 
-                                        is PSExportedType -> sequenceOf(it.name)
+                                        is ExportedType.Psi -> sequenceOf(it.name)
                                         else -> null
                                     }
                                 }

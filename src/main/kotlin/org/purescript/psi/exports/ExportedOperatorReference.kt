@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
 
-class ExportedOperatorReference(operator: PSExportedOperator) :
-    PsiReferenceBase<PSExportedOperator>(
+class ExportedOperatorReference(operator: ExportedOperator.Psi) :
+    PsiReferenceBase<ExportedOperator.Psi>(
         operator,
         operator.symbol.operator.textRangeInParent,
         false

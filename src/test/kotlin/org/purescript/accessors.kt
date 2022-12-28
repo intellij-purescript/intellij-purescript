@@ -149,20 +149,20 @@ fun PsiFile.getImportedValue(): PSImportedValue =
 fun PsiFile.getImportedOperator(): PSImportedOperator =
     getImportedItem() as PSImportedOperator
 
-fun PsiFile.getExportedItems(): Array<PSExportedItem> =
+fun PsiFile.getExportedItems(): Array<ExportedItem<*>> =
     getModule().cache.exports!!.exportedItems
 
-fun PsiFile.getExportedItem(): PSExportedItem =
+fun PsiFile.getExportedItem(): ExportedItem<*> =
     getExportedItems().single()
 
-fun PsiFile.getExportedData(): PSExportedData =
-    getExportedItem() as PSExportedData
+fun PsiFile.getExportedData(): ExportedData.Psi =
+    getExportedItem() as ExportedData.Psi
 
-fun PsiFile.getExportedValue(): PSExportedValue =
-    getExportedItem() as PSExportedValue
+fun PsiFile.getExportedValue(): ExportedValue.Psi =
+    getExportedItem() as ExportedValue.Psi
 
-fun PsiFile.getExportedModule(): PSExportedModule =
-    getExportedItem() as PSExportedModule
+fun PsiFile.getExportedModule(): ExportedModule.Psi =
+    getExportedItem() as ExportedModule.Psi
 
 fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()

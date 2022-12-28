@@ -7,7 +7,7 @@ import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
 
 /**
- * An exported data member in an [PSExportedData], e.g.
+ * An exported data member in an [ExportedData.Psi], e.g.
  *
  * ```
  * Nothing
@@ -26,9 +26,9 @@ class PSExportedDataMember(node: ASTNode) : PSPsiElement(node) {
             findNotNullChildByClass(PSProperName::class.java)
 
     /**
-     * @return the [PSExportedData] element containing this member
+     * @return the [ExportedData.Psi] element containing this member
      */
-    internal val exportedData: PSExportedData?
+    internal val exportedData: ExportedData.Psi?
         get() = parentOfType()
 
     override fun getName(): String = properName.name

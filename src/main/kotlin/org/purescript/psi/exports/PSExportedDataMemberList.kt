@@ -6,7 +6,7 @@ import org.purescript.parser.DDOT
 import org.purescript.psi.PSPsiElement
 
 /**
- * The exported member list in an [PSExportedData], e.g.
+ * The exported member list in an [ExportedData.Psi], e.g.
  *
  * ```
  * (Nothing, Just)

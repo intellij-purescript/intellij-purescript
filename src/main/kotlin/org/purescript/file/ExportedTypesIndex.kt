@@ -7,9 +7,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.purescript.psi.PSForeignDataDeclaration
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.module.Module
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.exports.PSExportedData
+import org.purescript.psi.exports.ExportedData
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
@@ -31,7 +31,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
             declarations(module)
         } else {
             val explicitlyExported = exportList.exportedItems
-                .filterIsInstance<PSExportedData>()
+                .filterIsInstance<ExportedData.Psi>()
                 .associate { it.name to null }
             if (module.exportsSelf) {
                 explicitlyExported + declarations(module)
@@ -41,7 +41,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
         }
     }
 
-    private fun declarations(module: Psi): Map<String, Nothing?> {
+    private fun declarations(module: Module.Psi): Map<String, Nothing?> {
         val exportedNames = mutableSetOf<String>()
         module.cache.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
         module.cache.dataDeclarations.mapTo(exportedNames) { it.name }

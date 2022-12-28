@@ -7,7 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.jetbrains.annotations.NonNls
-import org.purescript.psi.exports.PSExportedOperator
+import org.purescript.psi.exports.ExportedOperator
 
 class ExportedFixityIndex : ScalarIndexExtension<String>() {
     override fun getName(): ID<String, Void?> = NAME
@@ -29,7 +29,7 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
                             file.module!!.cache.exports!!.exportedItems
                                 .mapNotNull {
                                     when (it) {
-                                        is PSExportedOperator -> it.name
+                                        is ExportedOperator.Psi -> it.name
                                         else -> null
                                     }
                                 }.associateWith { null }

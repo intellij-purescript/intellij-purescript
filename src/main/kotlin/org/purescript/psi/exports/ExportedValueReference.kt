@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import org.purescript.psi.PSPsiFactory
 
-class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase<PSExportedValue>(
+class ExportedValueReference(exportedValue: ExportedValue.Psi) : PsiReferenceBase<ExportedValue.Psi>(
     exportedValue,
     exportedValue.identifier.textRangeInParent,
     false
