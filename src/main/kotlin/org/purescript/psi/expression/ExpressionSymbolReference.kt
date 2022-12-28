@@ -29,7 +29,7 @@ class ExpressionSymbolReference(
     val candidates
         get() = sequence {
             val module = element.module ?: return@sequence
-            yieldAll(module.cache.fixityDeclarations.asSequence())
+            yieldAll(module.fixityDeclarations.asSequence())
             yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations })
         }
 

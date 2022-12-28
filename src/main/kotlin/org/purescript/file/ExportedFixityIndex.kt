@@ -21,8 +21,7 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
                         file.module == null -> emptyMap()
                         // exports all
                         file.module?.let { it.exports } == null -> {
-                            file.module!!
-                                .cache.fixityDeclarations
+                            file.module!!.fixityDeclarations
                                 .map { it.name }.associateWith { null }
                         }
                         else -> {

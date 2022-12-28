@@ -23,7 +23,7 @@ class ExportedOperatorReference(operator: ExportedOperator.Psi) :
 
     private val localCandidates
         get() = element.module
-            ?.let { it.cache.fixityDeclarations }
+            ?.let { it.fixityDeclarations }
             ?.asSequence()
             ?: sequenceOf()
 

@@ -56,7 +56,8 @@ interface Module {
         var cache: Cache = Cache()
         
         val exports get() = child<ExportList.Psi>()
-        
+        val fixityDeclarations get() = children(FixityDeclarationType)
+
         inner class Cache {
             val imports by lazy { findChildrenByClass<PSImportDeclaration>() }
             val importsByName by lazy { imports.groupBy { it.name } }
@@ -73,7 +74,6 @@ interface Module {
             val typeSynonymDeclarations
                 by lazy { findChildrenByClass<PSTypeSynonymDeclaration>() }
             val classes by lazy { findChildrenByClass<PSClassDeclaration>() }
-            val fixityDeclarations by lazy { children(FixityDeclarationType) }
             val foreignValueDeclarations
                 by lazy { findChildrenByClass<PSForeignValueDeclaration>() }
             val foreignDataDeclarations
@@ -106,7 +106,7 @@ interface Module {
          */
         val exportedFixityDeclarations: List<FixityDeclaration.Psi>
             get() = getExportedDeclarations<FixityDeclaration.Psi, ExportedOperator.Psi>(
-                cache.fixityDeclarations
+                fixityDeclarations
             ) { it.importedFixityDeclarations }
 
         /**
