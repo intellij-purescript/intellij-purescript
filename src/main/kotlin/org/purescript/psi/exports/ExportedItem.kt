@@ -2,7 +2,6 @@ package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.parentOfType
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
@@ -12,7 +11,6 @@ import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.module.Module
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 
 sealed class ExportedItem<Stub : AStub<*>> : PSStubbedElement<Stub> {
