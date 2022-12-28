@@ -2,15 +2,14 @@ package org.purescript.psi.declaration
 
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
-import org.purescript.psi.module.Module.*
 
-class ExportedFixityDeclarationsIndex: StringStubIndexExtension<PSFixityDeclaration>()  {
+class ExportedFixityDeclarationsIndex: StringStubIndexExtension<FixityDeclaration.Psi>()  {
 
-    override fun getKey(): StubIndexKey<String, PSFixityDeclaration> = KEY
+    override fun getKey(): StubIndexKey<String, FixityDeclaration.Psi> = KEY
 
     companion object {
         val KEY =
-            StubIndexKey.createIndexKey<String, PSFixityDeclaration>(
+            StubIndexKey.createIndexKey<String, FixityDeclaration.Psi>(
                 "purescript.exported.fixity.by.module.name"
             )
     }

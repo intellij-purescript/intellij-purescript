@@ -15,7 +15,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.PSFixityDeclaration
+import org.purescript.psi.declaration.FixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.imports.PSImportDeclaration
@@ -109,11 +109,11 @@ interface Module {
         override fun getTextOffset(): Int = nameIdentifier.textOffset
 
         /**
-         * @return the [PSFixityDeclaration] that this module exports,
+         * @return the [FixityDeclaration.Psi] that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedFixityDeclarations: List<PSFixityDeclaration>
-            get() = getExportedDeclarations<PSFixityDeclaration, PSExportedOperator>(
+        val exportedFixityDeclarations: List<FixityDeclaration.Psi>
+            get() = getExportedDeclarations<FixityDeclaration.Psi, PSExportedOperator>(
                 cache.fixityDeclarations
             ) { it.importedFixityDeclarations }
 

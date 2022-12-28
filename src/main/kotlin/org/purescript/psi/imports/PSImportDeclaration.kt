@@ -10,7 +10,7 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.PSFixityDeclaration
+import org.purescript.psi.declaration.FixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.module.Module.*
 import org.purescript.psi.name.PSModuleName
@@ -318,7 +318,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedFixityDeclarations
         get() =
-            getImportedDeclarations<PSFixityDeclaration, PSImportedOperator>(
+            getImportedDeclarations<FixityDeclaration.Psi, PSImportedOperator>(
                 Psi::exportedFixityDeclarations
             )
 

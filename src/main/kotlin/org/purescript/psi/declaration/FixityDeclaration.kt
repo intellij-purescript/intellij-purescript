@@ -12,13 +12,13 @@ import org.purescript.psi.name.PSOperatorName
 
 interface FixityDeclaration {
     object Type : PSElementType.WithPsiAndStub<PSFixityDeclarationStub,
-        PSFixityDeclaration>("FixityDeclaration") {
-        override fun createPsi(node: ASTNode) = PSFixityDeclaration(node)
+        Psi>("FixityDeclaration") {
+        override fun createPsi(node: ASTNode) = Psi(node)
         override fun createPsi(stub: PSFixityDeclarationStub) =
-            PSFixityDeclaration(stub, this)
+            Psi(stub, this)
 
         override fun createStub(
-            psi: PSFixityDeclaration,
+            psi: Psi,
             parent: StubElement<*>?
         ) =
             PSFixityDeclarationStub(psi.name, parent)
@@ -48,29 +48,28 @@ interface FixityDeclaration {
             PSFixityDeclarationStub(dataStream.readNameString()!!, parent)
 
     }
-}
+    class Psi : PSStubbedElement<PSFixityDeclarationStub>,
+        PsiNameIdentifierOwner {
 
-class PSFixityDeclaration : PSStubbedElement<PSFixityDeclarationStub>,
-    PsiNameIdentifierOwner {
+        constructor(node: ASTNode) : super(node)
 
-    constructor(node: ASTNode) : super(node)
+        constructor(stub: PSFixityDeclarationStub, type: IStubElementType<*, *>)
+            : super(stub, type)
 
-    constructor(stub: PSFixityDeclarationStub, type: IStubElementType<*, *>)
-        : super(stub, type)
+        private val operatorName
+            get() = findNotNullChildByClass(PSOperatorName::class.java)
 
-    private val operatorName
-        get() = findNotNullChildByClass(PSOperatorName::class.java)
+        override fun getTextOffset(): Int = nameIdentifier.textOffset
 
-    override fun getTextOffset(): Int = nameIdentifier.textOffset
+        override fun getNameIdentifier() = operatorName
 
-    override fun getNameIdentifier() = operatorName
+        override fun getName() = stub?.name ?: operatorName.name
 
-    override fun getName() = stub?.name ?: operatorName.name
-
-    override fun setName(name: String): PsiElement? {
-        val identifier = PSPsiFactory(project).createOperatorName(name)
-            ?: return null
-        nameIdentifier.replace(identifier)
-        return this
+        override fun setName(name: String): PsiElement? {
+            val identifier = PSPsiFactory(project).createOperatorName(name)
+                ?: return null
+            nameIdentifier.replace(identifier)
+            return this
+        }
     }
 }

@@ -36,13 +36,13 @@ import org.purescript.parser.STRING_ESCAPED
 import org.purescript.parser.STRING_GAP
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.PSFixityDeclaration
+import org.purescript.psi.declaration.FixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.imports.PSImportAlias
 import org.purescript.psi.newtype.PSNewTypeConstructor
@@ -53,7 +53,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
         psiElement is PSValueDeclaration
             || psiElement is PSVarBinder
-            || psiElement is Psi
+            || psiElement is Module.Psi
             || psiElement is PSForeignValueDeclaration
             || psiElement is PSNewTypeDeclaration
             || psiElement is PSNewTypeConstructor
@@ -63,7 +63,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSClassDeclaration
             || psiElement is PSTypeSynonymDeclaration
             || psiElement is PSClassMember
-            || psiElement is PSFixityDeclaration
+            || psiElement is FixityDeclaration.Psi
             || psiElement is PSForeignDataDeclaration
 
     override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(
@@ -106,7 +106,7 @@ class PSFindUsageProvider : FindUsagesProvider {
         return when (element) {
             is PSValueDeclaration -> "value"
             is PSVarBinder -> "parameter"
-            is Psi -> "module"
+            is Module.Psi -> "module"
             is PSNewTypeDeclaration -> "newtype"
             is PSNewTypeConstructor -> "newtype constructor"
             is PSImportAlias -> "import alias"
@@ -117,7 +117,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSForeignDataDeclaration -> "foreign data"
             is PSTypeSynonymDeclaration -> "type synonym"
             is PSClassMember -> "class member"
-            is PSFixityDeclaration -> "operator"
+            is FixityDeclaration.Psi -> "operator"
             else -> "unknown"
         }
     }
