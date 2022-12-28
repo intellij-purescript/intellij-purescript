@@ -33,34 +33,7 @@ import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
 val ModuleType = Module.Type
-val FixityDeclarationType = object :
-    WithPsiAndStub<PSFixityDeclarationStub, PSFixityDeclaration>("FixityDeclaration") {
-    override fun createPsi(node: ASTNode) = PSFixityDeclaration(node)
-    override fun createPsi(stub: PSFixityDeclarationStub) =
-        PSFixityDeclaration(stub, this)
-
-    override fun createStub(psi: PSFixityDeclaration, parent: StubElement<*>?) =
-        PSFixityDeclarationStub(psi.name, parent)
-
-    override fun indexStub(stub: PSFixityDeclarationStub, sink: IndexSink) {
-        // if there is a parser error the module might not exist
-        stub.getParentStubOfType(Module.Psi::class.java)?.let { module ->
-            // TODO only index exported declarations
-            sink.occurrence(ExportedFixityDeclarationsIndex.KEY, module.name)
-        }
-    }
-
-    override fun serialize(stub: PSFixityDeclarationStub, data: StubOutputStream) {
-        data.writeName(stub.name)
-    }
-
-    override fun deserialize(
-        dataStream: StubInputStream,
-        parent: StubElement<*>?
-    ): PSFixityDeclarationStub =
-        PSFixityDeclarationStub(dataStream.readNameString()!!, parent)
-
-}
+val FixityDeclarationType = FixityDeclaration.Type
 val ExportList = WithPsi("ExportList") { PSExportList(it) }
 val ExportedClass = WithPsi("ExportedClass") { PSExportedClass(it) }
 val ExportedData = WithPsi("ExportedData") { PSExportedData(it) }

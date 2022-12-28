@@ -3,10 +3,52 @@ package org.purescript.psi.declaration
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.stubs.*
+import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
+
+interface FixityDeclaration {
+    object Type : PSElementType.WithPsiAndStub<PSFixityDeclarationStub,
+        PSFixityDeclaration>("FixityDeclaration") {
+        override fun createPsi(node: ASTNode) = PSFixityDeclaration(node)
+        override fun createPsi(stub: PSFixityDeclarationStub) =
+            PSFixityDeclaration(stub, this)
+
+        override fun createStub(
+            psi: PSFixityDeclaration,
+            parent: StubElement<*>?
+        ) =
+            PSFixityDeclarationStub(psi.name, parent)
+
+        override fun indexStub(stub: PSFixityDeclarationStub, sink: IndexSink) {
+            // if there is a parser error the module might not exist
+            stub.getParentStubOfType(Module.Psi::class.java)?.let { module ->
+                // TODO only index exported declarations
+                sink.occurrence(
+                    ExportedFixityDeclarationsIndex.KEY,
+                    module.name
+                )
+            }
+        }
+
+        override fun serialize(
+            stub: PSFixityDeclarationStub,
+            data: StubOutputStream
+        ) {
+            data.writeName(stub.name)
+        }
+
+        override fun deserialize(
+            dataStream: StubInputStream,
+            parent: StubElement<*>?
+        ): PSFixityDeclarationStub =
+            PSFixityDeclarationStub(dataStream.readNameString()!!, parent)
+
+    }
+}
 
 class PSFixityDeclaration : PSStubbedElement<PSFixityDeclarationStub>,
     PsiNameIdentifierOwner {
