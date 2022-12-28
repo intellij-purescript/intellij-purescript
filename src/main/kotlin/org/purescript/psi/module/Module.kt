@@ -42,8 +42,7 @@ interface Module {
 
     }
 
-    class Stub(val name: String, p: StubElement<*>?) : StubBase<Psi>(p, Type),
-        StubElement<Psi>
+    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
 
     class Psi :
         PsiNameIdentifierOwner,

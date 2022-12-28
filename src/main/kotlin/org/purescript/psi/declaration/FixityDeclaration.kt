@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
@@ -11,8 +12,7 @@ import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
 
 interface FixityDeclaration {
-    class Stub(val name: String, parent: StubElement<*>?) :
-        StubBase<Psi>(parent, Type), StubElement<Psi>
+    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
 
     object Type : WithPsiAndStub<Stub, Psi>("FixityDeclaration") {
         override fun createPsi(node: ASTNode) = Psi(node)
