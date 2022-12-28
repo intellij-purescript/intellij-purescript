@@ -2,7 +2,7 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
-import org.purescript.psi.ModuleReference
+import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSPsiElement

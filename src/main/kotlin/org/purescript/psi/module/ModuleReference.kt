@@ -1,11 +1,11 @@
-package org.purescript.psi
+package org.purescript.psi.module
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.imports.PSImportDeclaration
-import org.purescript.psi.module.ModuleNameIndex
 import org.purescript.psi.module.Module.*
 
 class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportDeclaration>(
