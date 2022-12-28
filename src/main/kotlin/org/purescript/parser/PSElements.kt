@@ -1,7 +1,6 @@
 package org.purescript.parser
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.IndexSink
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.stubs.StubInputStream
@@ -34,7 +33,7 @@ import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
 val ModuleType = Module.Type
-val FixityDeclaration = object :
+val FixityDeclarationType = object :
     WithPsiAndStub<PSFixityDeclarationStub, PSFixityDeclaration>("FixityDeclaration") {
     override fun createPsi(node: ASTNode) = PSFixityDeclaration(node)
     override fun createPsi(stub: PSFixityDeclarationStub) =

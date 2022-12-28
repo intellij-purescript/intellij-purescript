@@ -8,7 +8,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
-import org.purescript.parser.FixityDeclaration
+import org.purescript.parser.FixityDeclarationType
 import org.purescript.parser.WHERE
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
@@ -80,7 +80,7 @@ interface Module {
             val classes: Array<PSClassDeclaration>
                 by lazy { findChildrenByClass(PSClassDeclaration::class.java) }
 
-            val fixityDeclarations by lazy { children(FixityDeclaration) }
+            val fixityDeclarations by lazy { children(FixityDeclarationType) }
 
             val foreignValueDeclarations: Array<PSForeignValueDeclaration>
                 by lazy { findChildrenByClass(PSForeignValueDeclaration::class.java) }

@@ -311,7 +311,7 @@ class ParserDefinitions {
             (Optional(`'type'`) + properName.or(qualProperName)).withRollback,
             ident.or(qualIdentifier)
         ) + `as` + operator.`as`(OperatorName))
-            .`as`(FixityDeclaration)
+            .`as`(FixityDeclarationType)
 
     private val fundep = type.`as`(ClassFunctionalDependency)
     private val fundeps = pipe + fundep.sepBy1(ElementToken(COMMA))
