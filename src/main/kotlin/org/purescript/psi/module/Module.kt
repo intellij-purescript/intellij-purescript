@@ -5,15 +5,12 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.stubs.*
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.parser.FixityDeclaration
 import org.purescript.parser.WHERE
-import org.purescript.psi.PSForeignDataDeclaration
-import org.purescript.psi.PSForeignValueDeclaration
-import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -28,12 +25,53 @@ import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 interface Module {
-    class PSModule :
+    object Type : PSElementType.WithPsiAndStub<Stub, Psi>("Module") {
+        override fun createStub(
+            psi: Psi,
+            parent: StubElement<out PsiElement>?
+        ): Stub {
+            return Stub(psi.name, parent)
+        }
+
+        override fun createPsi(node: ASTNode): PsiElement {
+            return Psi(node)
+        }
+
+        override fun createPsi(stub: Stub): Psi {
+            return Psi(stub, this)
+        }
+
+        override fun serialize(stub: Stub, dataStream: StubOutputStream) {
+            dataStream.writeName(stub.name)
+        }
+
+        override fun deserialize(
+            dataStream: StubInputStream,
+            parentStub: StubElement<*>?
+        ): Stub {
+            return Stub(dataStream.readNameString()!!, parentStub)
+        }
+
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            sink.occurrence(ModuleNameIndex.KEY, stub.name)
+        }
+
+    }
+    
+    class Stub(val name: String, parent: StubElement<*>?) :
+        StubBase<Psi>(parent, Type), StubElement<Psi>
+
+    class Psi :
         PsiNameIdentifierOwner,
         DocCommentOwner,
-        PSStubbedElement<PSModuleStub> {
+        PSStubbedElement<Stub> {
 
-        constructor(stub: PSModuleStub, nodeType: IStubElementType<*, *>) :
+        override fun toString(): String {
+            // TODO clean up this name
+            return "PSModule($elementType)"
+        }
+
+        constructor(stub: Stub, nodeType: IStubElementType<*, *>) :
             super(stub, nodeType)
 
         constructor(node: ASTNode) : super(node)
@@ -239,7 +277,8 @@ interface Module {
                 val explicitlyExportedItems = cache.exportsList?.exportedItems
                     ?: return cache.dataConstructors
 
-                val exportedDataConstructors = mutableListOf<PSDataConstructor>()
+                val exportedDataConstructors =
+                    mutableListOf<PSDataConstructor>()
 
                 for (exportedData in explicitlyExportedItems.filterIsInstance<PSExportedData>()) {
                     if (exportedData.exportsAll) {
@@ -326,5 +365,4 @@ interface Module {
                     ?: true
 
     }
-
 }

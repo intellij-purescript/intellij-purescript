@@ -13,9 +13,9 @@ import org.purescript.psi.module.Module.*
 abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
 
     /**
-     * @return the [PSModule] containing this element
+     * @return the [Psi] containing this element
      */
-    val module: PSModule? get() = (containingFile as? PSFile)?.module
+    val module: Psi? get() = (containingFile as? PSFile)?.module
 
     override fun getUseScope(): SearchScope = module
         ?.name

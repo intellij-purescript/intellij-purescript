@@ -2,7 +2,6 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.ModuleReference
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
@@ -11,7 +10,6 @@ import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.ExportedFixityDeclarationsIndex
 import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.module.Module.*
@@ -101,7 +99,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
             importList?.isHiding ?: false
 
     /**
-     * @return a reference to the [PSModule] that this declaration is
+     * @return a reference to the [Psi] that this declaration is
      * importing from
      */
     override fun getReference(): ModuleReference =
@@ -130,7 +128,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      * @return the [Declaration] elements that this declaration imports
      */
     private inline fun <Declaration : PsiNamedElement, reified Wanted : PSImportedItem>
-        getImportedDeclarations(exportedDeclarationProperty: KProperty1<PSModule, List<Declaration>>): List<Declaration> {
+        getImportedDeclarations(exportedDeclarationProperty: KProperty1<Psi, List<Declaration>>): List<Declaration> {
         val importedModule = importedModule ?: return emptyList()
         val exportedDeclarations =
             exportedDeclarationProperty.get(importedModule)
@@ -150,16 +148,16 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
     }
 
     /**
-     * @return the [PSModule] that this declaration is importing from
+     * @return the [Psi] that this declaration is importing from
      */
-    val importedModule get(): PSModule? = reference.resolve()
+    val importedModule get(): Psi? = reference.resolve()
 
     /**
      * @return the [PSValueDeclaration] elements imported by this declaration
      */
     val importedValueDeclarations: List<PSValueDeclaration>
         get() = getImportedDeclarations<PSValueDeclaration, PSImportedValue>(
-            PSModule::exportedValueDeclarations
+            Psi::exportedValueDeclarations
         )
 
     /**
@@ -167,7 +165,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedForeignValueDeclarations: List<PSForeignValueDeclaration>
         get() = getImportedDeclarations<PSForeignValueDeclaration, PSImportedValue>(
-            PSModule::exportedForeignValueDeclarations
+            Psi::exportedForeignValueDeclarations
         )
 
     /**
@@ -175,7 +173,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedForeignDataDeclarations: List<PSForeignDataDeclaration>
         get() = getImportedDeclarations<PSForeignDataDeclaration, PSImportedData>(
-            PSModule::exportedForeignDataDeclarations
+            Psi::exportedForeignDataDeclarations
         )
 
     /**
@@ -183,7 +181,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedNewTypeDeclarations: List<PSNewTypeDeclaration>
         get() = getImportedDeclarations<PSNewTypeDeclaration, PSImportedData>(
-            PSModule::exportedNewTypeDeclarations
+            Psi::exportedNewTypeDeclarations
         )
 
     /**
@@ -248,7 +246,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedDataDeclarations: List<PSDataDeclaration>
         get() = getImportedDeclarations<PSDataDeclaration, PSImportedData>(
-            PSModule::exportedDataDeclarations
+            Psi::exportedDataDeclarations
         )
 
     /**
@@ -296,7 +294,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
         get() = getImportedDeclarations<PSTypeSynonymDeclaration, PSImportedData>(
-            PSModule::exportedTypeSynonymDeclarations
+            Psi::exportedTypeSynonymDeclarations
         )
 
     /**
@@ -304,7 +302,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedClassDeclarations: List<PSClassDeclaration>
         get() = getImportedDeclarations<PSClassDeclaration, PSImportedClass>(
-            PSModule::exportedClassDeclarations
+            Psi::exportedClassDeclarations
         )
 
     /**
@@ -312,7 +310,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
      */
     val importedClassMembers: List<PSClassMember>
         get() = getImportedDeclarations<PSClassMember, PSImportedValue>(
-            PSModule::exportedClassMembers
+            Psi::exportedClassMembers
         )
 
     /**
@@ -321,7 +319,7 @@ class PSImportDeclaration(node: ASTNode) : PSPsiElement(node),
     val importedFixityDeclarations
         get() =
             getImportedDeclarations<PSFixityDeclaration, PSImportedOperator>(
-                PSModule::exportedFixityDeclarations
+                Psi::exportedFixityDeclarations
             )
 
 }

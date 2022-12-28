@@ -74,7 +74,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is PSClassDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
-            is PSModule ->
+            is Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
 
             is PSPsiElement ->

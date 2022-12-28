@@ -15,12 +15,12 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
     override fun visitElement(element: PsiElement) {
         super.visitElement(element)
         when (element) {
-            is PSModule -> visitModule(element)
+            is Psi -> visitModule(element)
             is PSExportList -> visitExportList(element)
         }
     }
 
-    private fun visitModule(module: PSModule) {
+    private fun visitModule(module: Psi) {
         val importDeclarations = module.cache.importDeclarations
         if (importDeclarations.size < 2) {
             return

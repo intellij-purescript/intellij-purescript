@@ -9,7 +9,7 @@ import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
-        element is PSModule ||
+        element is Psi ||
             element is PSValueDeclaration ||
             element is PSFixityDeclaration ||
             element is PSVarBinder

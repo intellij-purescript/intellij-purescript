@@ -24,9 +24,7 @@ import org.purescript.psi.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.imports.*
-import org.purescript.psi.module.ModuleNameIndex
-import org.purescript.psi.module.Module.*
-import org.purescript.psi.module.PSModuleStub
+import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
@@ -35,39 +33,7 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
 import org.purescript.psi.typevar.PSTypeVarName
 
-val ModuleType = object : WithPsiAndStub<PSModuleStub, PSModule>("Module") {
-
-    override fun createStub(
-        psi: PSModule,
-        parent: StubElement<out PsiElement>?
-    ): PSModuleStub {
-        return PSModuleStub(psi.name, parent)
-    }
-
-    override fun createPsi(node: ASTNode): PsiElement {
-        return PSModule(node)
-    }
-
-    override fun createPsi(stub: PSModuleStub): PSModule {
-        return PSModule(stub, this)
-    }
-
-    override fun serialize(stub: PSModuleStub, dataStream: StubOutputStream) {
-        dataStream.writeName(stub.name)
-    }
-
-    override fun deserialize(
-        dataStream: StubInputStream,
-        parentStub: StubElement<*>?
-    ): PSModuleStub {
-        return PSModuleStub(dataStream.readNameString()!!, parentStub)
-    }
-
-    override fun indexStub(stub: PSModuleStub, sink: IndexSink) {
-        sink.occurrence(ModuleNameIndex.KEY, stub.name)
-    }
-
-}
+val ModuleType = Module.Type
 val FixityDeclaration = object :
     WithPsiAndStub<PSFixityDeclarationStub, PSFixityDeclaration>("FixityDeclaration") {
     override fun createPsi(node: ASTNode) = PSFixityDeclaration(node)
@@ -79,7 +45,7 @@ val FixityDeclaration = object :
 
     override fun indexStub(stub: PSFixityDeclarationStub, sink: IndexSink) {
         // if there is a parser error the module might not exist
-        stub.getParentStubOfType(PSModule::class.java)?.let { module ->
+        stub.getParentStubOfType(Module.Psi::class.java)?.let { module ->
             // TODO only index exported declarations
             sink.occurrence(ExportedFixityDeclarationsIndex.KEY, module.name)
         }

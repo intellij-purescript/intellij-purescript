@@ -41,7 +41,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
         }
     }
 
-    private fun declarations(module: PSModule): Map<String, Nothing?> {
+    private fun declarations(module: Psi): Map<String, Nothing?> {
         val exportedNames = mutableSetOf<String>()
         module.cache.typeSynonymDeclarations.mapTo(exportedNames) { it.name }
         module.cache.dataDeclarations.mapTo(exportedNames) { it.name }

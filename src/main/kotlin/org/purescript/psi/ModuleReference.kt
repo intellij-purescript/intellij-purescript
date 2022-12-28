@@ -4,9 +4,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.util.indexing.FileBasedIndex
-import org.purescript.file.ModuleNameIndex.Companion.NAME
-import org.purescript.file.ModuleNameIndex.Companion.fileContainingModule
 import org.purescript.psi.imports.PSImportDeclaration
 import org.purescript.psi.module.ModuleNameIndex
 import org.purescript.psi.module.Module.*
@@ -20,7 +17,7 @@ class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportD
         return ModuleNameIndex().getAllKeys(element.project).toTypedArray()
     }
 
-    override fun resolve(): PSModule? {
+    override fun resolve(): Psi? {
         val moduleName = element.moduleName?.name ?: return null
         val project = element.project
         return ModuleNameIndex()
