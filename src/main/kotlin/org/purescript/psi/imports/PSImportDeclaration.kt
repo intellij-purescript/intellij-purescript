@@ -14,7 +14,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.ExportedFixityDeclarationsIndex
 import org.purescript.psi.declaration.PSFixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
-import org.purescript.psi.module.PSModule
+import org.purescript.psi.module.Module.*
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration

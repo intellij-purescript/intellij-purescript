@@ -6,7 +6,7 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
-import org.purescript.psi.module.PSModule
+import org.purescript.psi.module.Module.*
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.classes.PSClassConstraint

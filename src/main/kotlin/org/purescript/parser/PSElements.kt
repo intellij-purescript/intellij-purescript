@@ -25,7 +25,7 @@ import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.imports.*
 import org.purescript.psi.module.ModuleNameIndex
-import org.purescript.psi.module.PSModule
+import org.purescript.psi.module.Module.*
 import org.purescript.psi.module.PSModuleStub
 import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor

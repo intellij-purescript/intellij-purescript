@@ -4,11 +4,11 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.psi.stubs.StubIndexKey.createIndexKey
 
-class ModuleNameIndex: StringStubIndexExtension<PSModule>() {
+class ModuleNameIndex: StringStubIndexExtension<Module.PSModule>() {
 
-    override fun getKey(): StubIndexKey<String, PSModule> = KEY
+    override fun getKey(): StubIndexKey<String, Module.PSModule> = KEY
 
     companion object {
-        val KEY = createIndexKey<String, PSModule>("purescript.module.name")
+        val KEY = createIndexKey<String, Module.PSModule>("purescript.module.name")
     }
 }

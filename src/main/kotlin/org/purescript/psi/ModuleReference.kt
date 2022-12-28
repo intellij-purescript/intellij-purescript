@@ -9,7 +9,7 @@ import org.purescript.file.ModuleNameIndex.Companion.NAME
 import org.purescript.file.ModuleNameIndex.Companion.fileContainingModule
 import org.purescript.psi.imports.PSImportDeclaration
 import org.purescript.psi.module.ModuleNameIndex
-import org.purescript.psi.module.PSModule
+import org.purescript.psi.module.Module.*
 
 class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportDeclaration>(
     element,

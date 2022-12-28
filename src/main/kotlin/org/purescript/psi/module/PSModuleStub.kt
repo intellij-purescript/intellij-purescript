@@ -5,6 +5,6 @@ import com.intellij.psi.stubs.StubElement
 import org.purescript.parser.Module
 
 class PSModuleStub(val name: String, parent: StubElement<*>?) : 
-    StubBase<PSModule>(parent, Module), StubElement<PSModule> {
+    StubBase<Module.PSModule>(parent, Module), StubElement<Module.PSModule> {
     
 }

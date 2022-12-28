@@ -2,7 +2,7 @@ package org.purescript.psi.declaration
 
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
-import org.purescript.psi.module.PSModule
+import org.purescript.psi.module.Module.*
 
 class ExportedFixityDeclarationsIndex: StringStubIndexExtension<PSFixityDeclaration>()  {
 
