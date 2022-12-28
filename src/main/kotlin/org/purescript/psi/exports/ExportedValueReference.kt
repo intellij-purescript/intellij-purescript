@@ -28,7 +28,7 @@ class ExportedValueReference(exportedValue: PSExportedValue) : PsiReferenceBase.
                 listOf(
                     *cache.valueDeclarations,
                     *cache.foreignValueDeclarations,
-                    *cache.classDeclarations
+                    *cache.classes
                         .flatMap { it.classMembers.toList() }
                         .toTypedArray()
                 )

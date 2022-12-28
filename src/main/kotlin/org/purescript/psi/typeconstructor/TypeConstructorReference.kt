@@ -39,7 +39,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     private fun candidatesFor(name: String): List<PsiNamedElement> {
         val module: Psi = element.module ?: return emptyList()
         val importDeclaration = module
-            .cache.importDeclarations
+            .cache.imports
             .firstOrNull { it.importAlias?.name == name }
             ?: return emptyList()
         val candidates = mutableListOf<PsiNamedElement>()
@@ -57,7 +57,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         candidates.addAll(module.cache.newTypeDeclarations)
         candidates.addAll(module.cache.typeSynonymDeclarations)
         candidates.addAll(module.cache.foreignDataDeclarations)
-        for (importDeclaration in module.cache.importDeclarations) {
+        for (importDeclaration in module.cache.imports) {
             candidates.addAll(importDeclaration.importedDataDeclarations)
             candidates.addAll(importDeclaration.importedNewTypeDeclarations)
             candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)

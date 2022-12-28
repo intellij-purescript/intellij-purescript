@@ -18,7 +18,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val module = psFile.module ?: error("File contains no Purescript module: ${file.name} ")
         val factory = PSPsiFactory(file.project)
         val importDeclarations = mergeImportDeclarations(
-            module.cache.importDeclarations.map(
+            module.cache.imports.map(
                 ::fromPsiElement
             )
         )
@@ -40,7 +40,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
         }
 
         return Runnable {
-            for (importDeclaration in module.cache.importDeclarations) {
+            for (importDeclaration in module.cache.imports) {
                 importDeclaration.delete()
             }
             val where = module.whereKeyword

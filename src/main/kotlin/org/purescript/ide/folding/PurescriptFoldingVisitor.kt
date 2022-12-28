@@ -21,7 +21,7 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
     }
 
     private fun visitModule(module: Psi) {
-        val importDeclarations = module.cache.importDeclarations
+        val importDeclarations = module.cache.imports
         if (importDeclarations.size < 2) {
             return
         }

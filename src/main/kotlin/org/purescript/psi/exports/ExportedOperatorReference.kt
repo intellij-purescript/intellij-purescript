@@ -16,7 +16,7 @@ class ExportedOperatorReference(operator: PSExportedOperator) :
     private val importedCandidates
         get() =
             element.module
-                ?.let { it.cache.importDeclarations }
+                ?.let { it.cache.imports }
                 ?.flatMap { it.importedFixityDeclarations }
                 ?.asSequence()
                 ?: sequenceOf()

@@ -26,68 +26,41 @@ import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 interface Module {
     object Type : PSElementType.WithPsiAndStub<Stub, Psi>("Module") {
-        override fun createStub(
-            psi: Psi,
-            parent: StubElement<out PsiElement>?
-        ): Stub {
-            return Stub(psi.name, parent)
+        override fun createPsi(node: ASTNode) = Psi(node)
+        override fun createPsi(stub: Stub) = Psi(stub, this)
+        override fun createStub(psi: Psi, p: StubElement<*>) = Stub(psi.name, p)
+        override fun serialize(stub: Stub, data: StubOutputStream) {
+            data.writeName(stub.name)
         }
 
-        override fun createPsi(node: ASTNode): PsiElement {
-            return Psi(node)
-        }
-
-        override fun createPsi(stub: Stub): Psi {
-            return Psi(stub, this)
-        }
-
-        override fun serialize(stub: Stub, dataStream: StubOutputStream) {
-            dataStream.writeName(stub.name)
-        }
-
-        override fun deserialize(
-            dataStream: StubInputStream,
-            parentStub: StubElement<*>?
-        ): Stub {
-            return Stub(dataStream.readNameString()!!, parentStub)
-        }
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?) =
+            Stub(d.readNameString()!!, p)
 
         override fun indexStub(stub: Stub, sink: IndexSink) {
             sink.occurrence(ModuleNameIndex.KEY, stub.name)
         }
 
     }
-    
-    class Stub(val name: String, parent: StubElement<*>?) :
-        StubBase<Psi>(parent, Type), StubElement<Psi>
+
+    class Stub(val name: String, p: StubElement<*>?) : StubBase<Psi>(p, Type),
+        StubElement<Psi>
 
     class Psi :
         PsiNameIdentifierOwner,
         DocCommentOwner,
         PSStubbedElement<Stub> {
-
-        override fun toString(): String {
-            // TODO clean up this name
-            return "PSModule($elementType)"
-        }
-
-        constructor(stub: Stub, nodeType: IStubElementType<*, *>) :
-            super(stub, nodeType)
-
+        constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
         constructor(node: ASTNode) : super(node)
-
+        // TODO clean up this name
+        override fun toString(): String = "PSModule($elementType)"
         var cache: Cache = Cache()
 
         inner class Cache {
             val name: String by lazy { nameIdentifier.name }
-            val exportsList by lazy { findChildByClass(PSExportList::class.java) }
-
-            val importDeclarations: Array<PSImportDeclaration>
+            val exports by lazy { findChildByClass(PSExportList::class.java) }
+            val imports: Array<PSImportDeclaration>
                 by lazy { findChildrenByClass(PSImportDeclaration::class.java) }
-
-            val importDeclarationByName: Map<String?, List<PSImportDeclaration>>
-                by lazy { importDeclarations.groupBy { it.name } }
-
+            val importsByName by lazy { imports.groupBy { it.name } }
             val valueDeclarations: Array<PSValueDeclaration>
                 by lazy { findChildrenByClass(PSValueDeclaration::class.java) }
 
@@ -104,7 +77,7 @@ interface Module {
             val typeSynonymDeclarations: Array<PSTypeSynonymDeclaration>
                 by lazy { findChildrenByClass(PSTypeSynonymDeclaration::class.java) }
 
-            val classDeclarations: Array<PSClassDeclaration>
+            val classes: Array<PSClassDeclaration>
                 by lazy { findChildrenByClass(PSClassDeclaration::class.java) }
 
             val fixityDeclarations by lazy { children(FixityDeclaration) }
@@ -136,7 +109,7 @@ interface Module {
         override fun getTextOffset(): Int = nameIdentifier.textOffset
 
         fun getImportDeclarationByName(name: String): PSImportDeclaration? {
-            return cache.importDeclarations
+            return cache.imports
                 .asSequence()
                 .find { (it.name ?: "") == name }
         }
@@ -166,7 +139,7 @@ interface Module {
             declarations: Array<Declaration>,
             getDeclarations: (PSImportDeclaration) -> List<Declaration>
         ): List<Declaration> {
-            val explicitlyExportedItems = cache.exportsList?.exportedItems
+            val explicitlyExportedItems = cache.exports?.exportedItems
             return if (explicitlyExportedItems == null) {
                 declarations.toList()
             } else {
@@ -236,7 +209,7 @@ interface Module {
          */
         val exportedNewTypeConstructors: List<PSNewTypeConstructor>
             get() {
-                val explicitlyExportedItems = cache.exportsList?.exportedItems
+                val explicitlyExportedItems = cache.exports?.exportedItems
                     ?: return cache.newTypeConstructors
 
                 val exportedNewTypeConstructors =
@@ -274,7 +247,7 @@ interface Module {
          */
         val exportedDataConstructors: List<PSDataConstructor>
             get() {
-                val explicitlyExportedItems = cache.exportsList?.exportedItems
+                val explicitlyExportedItems = cache.exports?.exportedItems
                     ?: return cache.dataConstructors
 
                 val exportedDataConstructors =
@@ -313,7 +286,7 @@ interface Module {
          */
         val exportedClassDeclarations: List<PSClassDeclaration>
             get() = getExportedDeclarations<PSClassDeclaration, PSExportedClass>(
-                cache.classDeclarations,
+                cache.classes,
             ) { it.importedClassDeclarations }
 
         /**
@@ -322,14 +295,14 @@ interface Module {
          */
         val exportedClassMembers: List<PSClassMember>
             get() = getExportedDeclarations<PSClassMember, PSExportedValue>(
-                cache.classDeclarations
+                cache.classes
                     .flatMap { it.classMembers.asSequence() }
                     .toTypedArray(),
             ) { it.importedClassMembers }
 
         val reexportedModuleNames: List<String>
             get() =
-                cache.exportsList?.exportedItems
+                cache.exports?.exportedItems
                     ?.filterIsInstance(PSExportedModule::class.java)
                     ?.map { it.name }
                     ?.toList()
@@ -337,7 +310,7 @@ interface Module {
 
         val exportedNames: List<String>
             get() =
-                cache.exportsList?.exportedItems
+                cache.exports?.exportedItems
                     ?.filter { it !is PSExportedModule }
                     ?.map { it.text.trim() }
                     ?.toList()
@@ -347,7 +320,7 @@ interface Module {
             get() = getDocComments()
 
         fun addImportDeclaration(importDeclaration: PSImportDeclaration) {
-            val lastImportDeclaration = cache.importDeclarations.lastOrNull()
+            val lastImportDeclaration = cache.imports.lastOrNull()
             val insertPosition = lastImportDeclaration ?: whereKeyword
             val newLine = PSPsiFactory(project).createNewLine()
             addAfter(importDeclaration, insertPosition)
@@ -359,7 +332,7 @@ interface Module {
 
         val exportsSelf: Boolean
             get() =
-                cache.exportsList?.exportedItems
+                cache.exports?.exportedItems
                     ?.filterIsInstance<PSExportedModule>()
                     ?.any { it.name == name }
                     ?: true

@@ -30,7 +30,7 @@ class ExpressionSymbolReference(
         get() = sequence {
             val module = element.module ?: return@sequence
             yieldAll(module.cache.fixityDeclarations.asSequence())
-            yieldAll(module.cache.importDeclarations.flatMap { it.importedFixityDeclarations })
+            yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations })
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {

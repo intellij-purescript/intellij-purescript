@@ -66,13 +66,13 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                     yieldAll(module.cache.valueDeclarations.toList())
                     yieldAll(module.cache.foreignValueDeclarations.toList())
                     val localClassMembers = module
-                        .cache.classDeclarations
+                        .cache.classes
                         .asSequence()
                         .flatMap { it.classMembers.asSequence() }
                     yieldAll(localClassMembers)
                 }
                 val importDeclarations =
-                    module.cache.importDeclarations.filter { it.importAlias?.name == qualifyingName }
+                    module.cache.imports.filter { it.importAlias?.name == qualifyingName }
                 yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
                 yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
                 yieldAll(importDeclarations.flatMap { it.importedClassMembers })

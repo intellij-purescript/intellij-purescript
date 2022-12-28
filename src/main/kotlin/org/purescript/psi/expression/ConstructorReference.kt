@@ -37,7 +37,7 @@ class ConstructorReference(
                     yieldAll(module.cache.newTypeConstructors)
                     yieldAll(module.cache.dataConstructors)
                 }
-                val importDeclarations = module.cache.importDeclarations
+                val importDeclarations = module.cache.imports
                     .filter { it.importAlias?.name == qualifyingName }
                 yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
                 yieldAll(importDeclarations.flatMap { it.importedDataConstructors })
