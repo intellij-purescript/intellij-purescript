@@ -40,7 +40,6 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
         val valueDeclarations = file.getValueDeclarations()
 
         assertTrue(exportedValue.reference.isReferenceTo(valueDeclarations[0]))
-        assertTrue(exportedValue.reference.isReferenceTo(valueDeclarations[1]))
         assertFalse(exportedValue.reference.isReferenceTo(valueDeclarations[2]))
     }
 
