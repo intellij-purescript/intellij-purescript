@@ -36,7 +36,6 @@ interface ExportList {
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
         // Todo clean this up
         override fun toString(): String = "PSExportList($elementType)"
-        val exportedItems: Array<PSExportedItem> =
-            findChildrenByClass(PSExportedItem::class.java)
+        val exportedItems: Array<PSExportedItem> = children()
     }
 }
