@@ -21,7 +21,7 @@ abstract class PSStubbedElement<Stub: StubElement<*>>:
         children(childType: IStubElementType<Stub, Out>): Array<Out> =
         getStubOrPsiChildren(childType, arrayOf<Out>())
     
-    inline fun <reified Psi : PsiElement?> children(): Array<Psi> {
+    inline fun <reified Psi : PSStubbedElement<*>> children(): Array<Psi> {
         return greenStub
             ?.childrenStubs
             ?.map { it.psi }
@@ -29,6 +29,7 @@ abstract class PSStubbedElement<Stub: StubElement<*>>:
             ?.toTypedArray()
             ?: `access$findChildrenByClass`(Psi::class.java) 
     }
+    inline fun <reified P: PSStubbedElement<*>> child() = children<P>().firstOrNull()
 
     // Todo clean up
     @PublishedApi
