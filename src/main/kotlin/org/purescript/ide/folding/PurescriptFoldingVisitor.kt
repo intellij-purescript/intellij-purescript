@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
-import org.purescript.psi.exports.PSExportList
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.exports.ExportList
+import org.purescript.psi.module.Module
 
 class PurescriptFoldingVisitor : PsiElementVisitor() {
     val descriptors: ArrayList<FoldingDescriptor> = ArrayList()
@@ -15,12 +15,12 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
     override fun visitElement(element: PsiElement) {
         super.visitElement(element)
         when (element) {
-            is Psi -> visitModule(element)
-            is PSExportList -> visitExportList(element)
+            is Module.Psi -> visitModule(element)
+            is ExportList.Psi -> visitExportList(element)
         }
     }
 
-    private fun visitModule(module: Psi) {
+    private fun visitModule(module: Module.Psi) {
         val importDeclarations = module.cache.imports
         if (importDeclarations.size < 2) {
             return
@@ -36,7 +36,7 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
         descriptors += descriptor
     }
 
-    private fun visitExportList(exportList: PSExportList) {
+    private fun visitExportList(exportList: ExportList.Psi) {
         val startOffset = exportList.startOffset + 1
         val endOffset = exportList.endOffset - 1
         if (startOffset >= endOffset) {

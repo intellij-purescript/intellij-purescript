@@ -444,7 +444,7 @@ class ParserDefinitions {
             exportedType,
             exportedValue,
         ).sepBy1(ElementToken(COMMA))
-    ).`as`(ExportList)
+    ).`as`(ExportListType)
 
     private val elseDecl = `else` + Optional(`L-sep`)
 

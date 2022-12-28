@@ -9,7 +9,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.file.PSFile
-import org.purescript.parser.ExportList
+import org.purescript.parser.ExportListType
 import org.purescript.parser.ImportDeclaration
 
 class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
@@ -30,7 +30,7 @@ class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
         return with(CodeFoldingSettings.getInstance()) {
             when (node.elementType) {
                 ImportDeclaration -> COLLAPSE_IMPORTS
-                ExportList -> COLLAPSE_FILE_HEADER
+                ExportListType -> COLLAPSE_FILE_HEADER
                 else -> false
             }
         }

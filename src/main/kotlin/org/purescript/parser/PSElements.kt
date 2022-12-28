@@ -1,13 +1,7 @@
 package org.purescript.parser
 
-import com.intellij.lang.ASTNode
-import com.intellij.psi.stubs.IndexSink
-import com.intellij.psi.stubs.StubElement
-import com.intellij.psi.stubs.StubInputStream
-import com.intellij.psi.stubs.StubOutputStream
 import org.purescript.psi.*
 import org.purescript.psi.PSElementType.WithPsi
-import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.binder.*
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
@@ -34,7 +28,7 @@ import org.purescript.psi.typevar.PSTypeVarName
 
 val ModuleType = Module.Type
 val FixityDeclarationType = FixityDeclaration.Type
-val ExportList = WithPsi("ExportList") { PSExportList(it) }
+val ExportListType = ExportList.Type
 val ExportedClass = WithPsi("ExportedClass") { PSExportedClass(it) }
 val ExportedData = WithPsi("ExportedData") { PSExportedData(it) }
 val ExportedDataMember =
