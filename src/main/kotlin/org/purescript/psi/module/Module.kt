@@ -50,6 +50,7 @@ interface Module {
         PSStubbedElement<Stub> {
         constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
         constructor(node: ASTNode) : super(node)
+
         // TODO clean up this name
         override fun toString(): String = "PSModule($elementType)"
         var cache: Cache = Cache()
@@ -57,34 +58,26 @@ interface Module {
         inner class Cache {
             val name: String by lazy { nameIdentifier.name }
             val exports by lazy { child<ExportList.Psi>() }
-            val imports: Array<PSImportDeclaration>
-                by lazy { findChildrenByClass(PSImportDeclaration::class.java) }
+            val imports by lazy { findChildrenByClass<PSImportDeclaration>() }
             val importsByName by lazy { imports.groupBy { it.name } }
-            val valueDeclarations: Array<PSValueDeclaration>
-                by lazy { findChildrenByClass(PSValueDeclaration::class.java) }
-
-            val dataDeclarations: Array<PSDataDeclaration>
-                by lazy { findChildrenByClass(PSDataDeclaration::class.java) }
+            val valueDeclarations
+                by lazy { findChildrenByClass<PSValueDeclaration>() }
+            val dataDeclarations
+                by lazy { findChildrenByClass<PSDataDeclaration>() }
             val dataConstructors
                 by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
-
-            val newTypeDeclarations: Array<PSNewTypeDeclaration>
-                by lazy { findChildrenByClass(PSNewTypeDeclaration::class.java) }
+            val newTypeDeclarations
+                by lazy { findChildrenByClass<PSNewTypeDeclaration>() }
             val newTypeConstructors: List<PSNewTypeConstructor>
                 by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
-
-            val typeSynonymDeclarations: Array<PSTypeSynonymDeclaration>
-                by lazy { findChildrenByClass(PSTypeSynonymDeclaration::class.java) }
-
-            val classes: Array<PSClassDeclaration>
-                by lazy { findChildrenByClass(PSClassDeclaration::class.java) }
-
+            val typeSynonymDeclarations
+                by lazy { findChildrenByClass<PSTypeSynonymDeclaration>() }
+            val classes by lazy { findChildrenByClass<PSClassDeclaration>() }
             val fixityDeclarations by lazy { children(FixityDeclarationType) }
-
-            val foreignValueDeclarations: Array<PSForeignValueDeclaration>
-                by lazy { findChildrenByClass(PSForeignValueDeclaration::class.java) }
-            val foreignDataDeclarations: Array<PSForeignDataDeclaration>
-                by lazy { findChildrenByClass(PSForeignDataDeclaration::class.java) }
+            val foreignValueDeclarations
+                by lazy { findChildrenByClass<PSForeignValueDeclaration>() }
+            val foreignDataDeclarations
+                by lazy { findChildrenByClass<PSForeignDataDeclaration>() }
         }
 
         override fun subtreeChanged() {
