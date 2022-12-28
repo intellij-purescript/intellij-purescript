@@ -108,12 +108,6 @@ interface Module {
 
         override fun getTextOffset(): Int = nameIdentifier.textOffset
 
-        fun getImportDeclarationByName(name: String): PSImportDeclaration? {
-            return cache.imports
-                .asSequence()
-                .find { (it.name ?: "") == name }
-        }
-
         /**
          * @return the [PSFixityDeclaration] that this module exports,
          * both directly and through re-exported modules

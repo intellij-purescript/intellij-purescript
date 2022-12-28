@@ -22,7 +22,8 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             module Foo where
             """.trimIndent()
         )
-        val psImportDeclaration = module.getImportDeclarationByName("Foo")!!
+        val psImportDeclaration =
+            module.cache.importsByName["Foo"]?.firstOrNull()!!
 
         val psModule = psImportDeclaration.reference.resolve()!!
 
@@ -38,7 +39,8 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        val psImportDeclaration = module.getImportDeclarationByName("Foo")!!
+        val psImportDeclaration =
+            module.cache.importsByName["Foo"]?.firstOrNull()!!
 
         val psModule = psImportDeclaration.reference.resolve()
         TestCase.assertNull(psModule)
@@ -59,7 +61,8 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             module Bar.Foo where
             """.trimIndent()
         )
-        val psImportDeclaration = module.getImportDeclarationByName("Bar.Foo")!!
+        val psImportDeclaration =
+            module.cache.importsByName["Bar.Foo"]?.firstOrNull()!!
 
         val psModule = psImportDeclaration.reference.resolve()!!
 
@@ -86,7 +89,8 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             module Foo where
             """.trimIndent()
         )
-        val psImportDeclaration = module.getImportDeclarationByName("Bar.Foo")!!
+        val psImportDeclaration =
+            module.cache.importsByName["Bar.Foo"]?.firstOrNull()!!
 
         val resolve = psImportDeclaration.reference.resolve()
         val psModule = resolve!!
@@ -106,19 +110,19 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        val foo = module.getImportDeclarationByName("Foo")!!
+        val foo = module.cache.importsByName["Foo"]?.firstOrNull()!!
         assertTrue(foo.isHiding)
         assertContainsElements(foo.namedImports, "x")
 
-        val bar = module.getImportDeclarationByName("Bar")!!
+        val bar = module.cache.importsByName["Bar"]?.firstOrNull()!!
         assertFalse(bar.isHiding)
         assertDoesntContain(bar.namedImports, "x")
 
-        val buz = module.getImportDeclarationByName("Buz")!!
+        val buz = module.cache.importsByName["Buz"]?.firstOrNull()!!
         assertFalse(buz.isHiding)
         assertContainsElements(buz.namedImports, "x")
 
-        val fuz = module.getImportDeclarationByName("Fuz")!!
+        val fuz = module.cache.importsByName["Fuz"]?.firstOrNull()!!
         assertFalse(fuz.isHiding)
         assertContainsElements(fuz.namedImports, "hiding")
     }
