@@ -67,7 +67,7 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
     override fun getVersion() = 1
 
     override fun getInputFilter() =
-        DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
+        DefaultFileTypeSpecificInputFilter(PSFileType)
 
     override fun dependsOnFileContent() = true
 

@@ -14,7 +14,7 @@ interface PSFile {
     object Type : IStubFileElementType<Stub>(PSLanguage.INSTANCE)
     class Psi(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
         override fun getFileType(): FileType {
-            return PSFileType.INSTANCE
+            return PSFileType
         }
 
         override fun toString(): String {

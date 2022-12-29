@@ -60,7 +60,7 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun getVersion() = 2
 
     override fun getInputFilter() =
-        DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
+        DefaultFileTypeSpecificInputFilter(PSFileType)
 
     override fun dependsOnFileContent() = true
 

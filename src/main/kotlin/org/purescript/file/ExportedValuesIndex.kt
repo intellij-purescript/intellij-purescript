@@ -52,7 +52,7 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
     override fun getKeyDescriptor() = EnumeratorStringDescriptor.INSTANCE
     override fun getVersion() = 1
     override fun getInputFilter() =
-        DefaultFileTypeSpecificInputFilter(PSFileType.INSTANCE)
+        DefaultFileTypeSpecificInputFilter(PSFileType)
 
     override fun dependsOnFileContent() = true
 
