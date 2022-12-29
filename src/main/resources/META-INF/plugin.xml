@@ -1,10 +1,10 @@
 <idea-plugin>
-  <id>net.kenro.ji.jin.intellij.purescript</id>
-  <name>Purescript</name>
-  <version>1.0</version>
-  <vendor>intellij-purescript</vendor>
+    <id>net.kenro.ji.jin.intellij.purescript</id>
+    <name>Purescript</name>
+    <version>1.0</version>
+    <vendor>intellij-purescript</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       This plugin provides Purescript language support
       Features:<br>
       <ul>
@@ -17,131 +17,153 @@
       </ul>
     ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
       change notes is not updated on release, sorry
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="202.6397"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="202.6397"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <depends>com.intellij.modules.lang</depends>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-    <internalFileTemplate name="Purescript Module"/>
-    <lang.documentationProvider language="Purescript" implementationClass="org.purescript.features.PSDocumentationProvider"/>
-    <lang.foldingBuilder language="Purescript" implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
-    <lang.refactoringSupport language="Purescript" implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
-    <inlineActionHandler implementation="org.purescript.ide.refactoring.PSInline"/>
-    <lang.namesValidator language="Purescript" implementationClass="org.purescript.ide.refactoring.PSNamesValidator" />
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <internalFileTemplate name="Purescript Module"/>
+        <lang.documentationProvider language="Purescript"
+                                    implementationClass="org.purescript.features.PSDocumentationProvider"/>
+        <lang.foldingBuilder language="Purescript"
+                             implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
+        <lang.refactoringSupport language="Purescript"
+                                 implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
+        <inlineActionHandler
+            implementation="org.purescript.ide.refactoring.PSInline"/>
+        <lang.namesValidator language="Purescript"
+                             implementationClass="org.purescript.ide.refactoring.PSNamesValidator"/>
 
-    <lang.findUsagesProvider
-        language="Purescript"
-        implementationClass="org.purescript.features.PSFindUsageProvider"
-    />
-    <completion.contributor 
-        language="Purescript"
-        implementationClass="org.purescript.keyword.KeywordCompletionContributor"
-        id="KeywordCompletionContributor"
-        order="first"
-    />
+        <lang.findUsagesProvider
+            language="Purescript"
+            implementationClass="org.purescript.features.PSFindUsageProvider"
+        />
+        <completion.contributor
+            language="Purescript"
+            implementationClass="org.purescript.keyword.KeywordCompletionContributor"
+            id="KeywordCompletionContributor"
+            order="first"
+        />
 
-    <fileType
-        name="Purescript file"
-        implementationClass="org.purescript.file.PSFileType"
-        fieldName="INSTANCE"
-        language="Purescript"
-        extensions="purs"
-    />
+        <fileType
+            name="Purescript file"
+            implementationClass="org.purescript.file.PSFileType"
+            fieldName="INSTANCE"
+            language="Purescript"
+            extensions="purs"
+        />
 
-    <lang.parserDefinition language="Purescript" implementationClass="org.purescript.parser.PSParserDefinition"/>
+        <lang.parserDefinition language="Purescript"
+                               implementationClass="org.purescript.parser.PSParserDefinition"/>
 
-    <stubElementTypeHolder class="org.purescript.parser.PSElementsKt"/>
-    <lang.syntaxHighlighterFactory language="Purescript"
-                                   implementationClass="org.purescript.highlighting.PSSyntaxHighlighterFactory"/>
+        <stubElementTypeHolder class="org.purescript.parser.PSElementsKt"/>
+        <lang.syntaxHighlighterFactory language="Purescript"
+                                       implementationClass="org.purescript.highlighting.PSSyntaxHighlighterFactory"/>
 
-    <annotator
+        <annotator
             language="Purescript"
             implementationClass="org.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
 
-    <additionalTextAttributes scheme="Default" file="colorSchemes/PurescriptDefault.xml"/>
-    <additionalTextAttributes scheme="Darcula" file="colorSchemes/PurescriptDarcula.xml"/>
+        <additionalTextAttributes scheme="Default"
+                                  file="colorSchemes/PurescriptDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula"
+                                  file="colorSchemes/PurescriptDarcula.xml"/>
 
-    <colorSettingsPage
-            implementation="org.purescript.highlighting.PSColorSettingsPage" />
+        <colorSettingsPage
+            implementation="org.purescript.highlighting.PSColorSettingsPage"/>
 
-    <lang.commenter
+        <lang.commenter
             language="Purescript"
             implementationClass="org.purescript.features.PSCommenter"/>
 
-    <lang.braceMatcher
+        <lang.braceMatcher
             language="Purescript"
             implementationClass="org.purescript.features.PSPairedBraceMatcher"/>
 
-    <!-- Templates -->
-    <liveTemplateContext
-        implementation="org.purescript.PurescriptLiveTemplateContext"/>
-    <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
+        <!-- Templates -->
+        <liveTemplateContext
+            implementation="org.purescript.PurescriptLiveTemplateContext"/>
+        <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
 
 
-    <!-- Inspections -->
+        <!-- Inspections -->
 
-    <localInspection
+        <localInspection
             language="Purescript" groupName="Purescript"
             displayName="Unresolved reference"
             enabledByDefault="true" level="ERROR"
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
-    />
-    <!-- purs ide -->
-    <localInspection
-        language="Purescript"
-        groupName="Purescript"
-        displayName="Purs IDE rebuild"
-        shortName="Rebuild"
-        enabledByDefault="true"
-        level="ERROR"
-        implementationClass="org.purescript.ide.purs.PursIdeRebuildInspection"
-    />
+        />
+        <!-- purs ide -->
+        <localInspection
+            language="Purescript"
+            groupName="Purescript"
+            displayName="Purs IDE rebuild"
+            shortName="Rebuild"
+            enabledByDefault="true"
+            level="ERROR"
+            implementationClass="org.purescript.ide.purs.PursIdeRebuildInspection"
+        />
 
-    <externalAnnotator
+        <externalAnnotator
             language="Purescript"
             implementationClass="org.purescript.ide.purs.PursIdeRebuildExternalAnnotator"
-    />
-    <projectConfigurable
-        parentId="build"
-        instance="org.purescript.ide.purs.PursConfigurable"
-        id="org.purescript.ide.purs.PursConfigurable"
-        displayName="Purs"
-        nonDefaultProject="true"/>
+        />
+        <projectConfigurable
+            parentId="build"
+            instance="org.purescript.ide.purs.PursConfigurable"
+            id="org.purescript.ide.purs.PursConfigurable"
+            displayName="Purs"
+            nonDefaultProject="true"/>
 
-    <!-- Formatting -->
+        <!-- Formatting -->
 
-    <formattingService implementation="org.purescript.ide.formatting.PSExternalFormatter"/>
+        <formattingService
+            implementation="org.purescript.ide.formatting.PSExternalFormatter"/>
 
-    <lang.importOptimizer
+        <lang.importOptimizer
             language="Purescript"
             implementationClass="org.purescript.ide.formatting.PurescriptImportOptimizer"
-    />
+        />
+        <!-- Run Configurations -->
+        <configurationType
+            implementation="org.purescript.run.SpagoConfigurationType"/>
+        <runConfigurationProducer
+            implementation="org.purescript.run.SpagoRunConfigurationProducer"/>
+        <runLineMarkerContributor
+            language="Purescript"
+            implementationClass="org.purescript.run.SpagoRunLineMarkerContributor"/>
+        <!-- Indexes -->
+        <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex"/>
+        <fileBasedIndex
+            implementation="org.purescript.file.ExportedConstructorsIndex"/>
+        <fileBasedIndex
+            implementation="org.purescript.file.ExportedValuesIndex"/>
+        <fileBasedIndex
+            implementation="org.purescript.file.ExportedFixityIndex"/>
+        <fileBasedIndex
+            implementation="org.purescript.file.ExportedTypesIndex"/>
+        <fileBasedIndex
+            implementation="org.purescript.file.ImportedModuleIndex"/>
+        <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex"/>
+    </extensions>
 
-    <!-- Indexes -->
-    <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex" />
-    <fileBasedIndex implementation="org.purescript.file.ExportedConstructorsIndex" />
-    <fileBasedIndex implementation="org.purescript.file.ExportedValuesIndex" />
-    <fileBasedIndex implementation="org.purescript.file.ExportedFixityIndex" />
-    <fileBasedIndex implementation="org.purescript.file.ExportedTypesIndex" />
-    <fileBasedIndex implementation="org.purescript.file.ImportedModuleIndex" />
-    <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex" />
-  </extensions>
-
-  <actions>
-    <action id="Purescript.NewFile"
-            class="org.purescript.ide.actions.CreateFileAction"
-            text="Purescript File"
-            description="Create new Purescript file">
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-    </action>
-  </actions>
+    <actions>
+        <action id="Purescript.NewFile"
+                class="org.purescript.ide.actions.CreateFileAction"
+                text="Purescript File"
+                description="Create new Purescript file">
+            <add-to-group group-id="NewGroup" anchor="before"
+                          relative-to-action="NewFile"/>
+        </action>
+    </actions>
 </idea-plugin>
