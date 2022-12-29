@@ -20,16 +20,7 @@ interface FixityDeclaration {
         override fun createStub(psi: Psi, p: StubElement<*>?) =
             Stub(psi.name, p)
 
-        override fun indexStub(stub: Stub, sink: IndexSink) {
-            // if there is a parser error the module might not exist
-            stub.getParentStubOfType(Module.Psi::class.java)?.let { module ->
-                // TODO only index exported declarations
-                sink.occurrence(
-                    ExportedFixityDeclarationsIndex.KEY,
-                    module.name
-                )
-            }
-        }
+        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
 
         override fun serialize(stub: Stub, d: StubOutputStream) =
             d.writeName(stub.name)
