@@ -4,13 +4,14 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.stubs.PsiFileStub
+import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
 import org.purescript.psi.module.Module
 import org.purescript.psi.declaration.PSValueDeclaration
 
 interface PSFile {
-    interface Stub: PsiFileStub<Psi>
+    class Stub(file: Psi) : PsiFileStubImpl<Psi>(file)
     object Type : IStubFileElementType<Stub>(PSLanguage.INSTANCE)
     class Psi(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
         override fun getFileType(): FileType {
