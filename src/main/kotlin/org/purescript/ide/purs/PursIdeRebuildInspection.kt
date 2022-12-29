@@ -10,6 +10,6 @@ class PursIdeRebuildInspection: LocalInspectionTool(), ExternalAnnotatorBatchIns
     }
 
     companion object {
-        val SHORT_NAME = "Rebuild"
+        const val SHORT_NAME = "Rebuild"
     }
 }

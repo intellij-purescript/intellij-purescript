@@ -20,7 +20,7 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.let { it.exports } == null -> {
+                        file.module?.exports == null -> {
                             file.module!!.fixityDeclarations
                                 .map { it.name }.associateWith { null }
                         }

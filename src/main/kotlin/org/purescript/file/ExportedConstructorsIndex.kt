@@ -21,14 +21,16 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.let { it.exports } == null -> {
+                        file.module?.exports == null -> {
                             val dataConstructors = file.module
-                                ?.let { it.cache.dataConstructors }
+                                ?.cache
+                                ?.dataConstructors
                                 ?.map { it.name }
                                 ?.asSequence()
                                 ?: emptySequence()
                             val typeConstructors = file.module
-                                ?.let { it.cache.newTypeConstructors }
+                                ?.cache
+                                ?.newTypeConstructors
                                 ?.map { it.name }
                                 ?.asSequence()
                                 ?: emptySequence()
@@ -51,8 +53,7 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
                                     }
                                 }
                                 .flatMap { it }
-                                .map { it to null }
-                                .toMap()
+                                .associateWith { null }
                         }
                     }
                 }

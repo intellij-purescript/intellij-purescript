@@ -116,4 +116,3 @@ import org.purescript.psi.PSElementType
     OPTIMISTIC,
     OPERATOR
 )
-@JvmField val EOF = PSElementType("<<eof>>")

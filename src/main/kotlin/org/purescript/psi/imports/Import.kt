@@ -67,13 +67,6 @@ interface Import {
                 findChildByClass(PSImportList::class.java)
 
         /**
-         * @return true if the import declaration implicitly imports
-         * all available items.
-         */
-        val importsAll: Boolean
-            get() = importList == null
-
-        /**
          * @return all the items in [importList], or an empty array if
          * the import list is null.
          */
@@ -129,7 +122,7 @@ interface Import {
                 else -> compareValuesBy(
                     this,
                     other,
-                    { it.moduleName?.name },
+                    { it.moduleName.name },
                     { it.isHiding },
                     { it.importAlias?.name },
                     { it.text } // TODO We probably want to compare by import list instead
@@ -141,7 +134,6 @@ interface Import {
          * Helper method for retrieving various types of imported declarations.
          *
          * @param exportedDeclarationProperty The property for the exported declarations of the wanted type in the module
-         * @param importedItemClass The class of the [PSImportedItem] to use when filtering the results
          * @return the [Declaration] elements that this declaration imports
          */
         private inline fun <Declaration : PsiNamedElement, reified Wanted : PSImportedItem>
@@ -335,7 +327,7 @@ interface Import {
             )
 
         /**
-         * @return the [org.purescript.psi.declaration.PSFixityDeclaration] elements imported by this declaration
+         * @return the [org.purescript.psi.declaration.FixityDeclaration.Psi] elements imported by this declaration
          */
         val importedFixityDeclarations
             get() =

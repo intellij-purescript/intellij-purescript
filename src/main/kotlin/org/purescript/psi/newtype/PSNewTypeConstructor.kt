@@ -29,15 +29,6 @@ class PSNewTypeConstructor(node: ASTNode) :
     internal val identifier: PSProperName
         get() = findNotNullChildByClass(PSProperName::class.java)
 
-    /**
-     * In contrast to [PSDataConstructor], a valid [PSNewTypeConstructor]
-     * must contain one single type atom.
-     *
-     * @return the [PSTypeAtom] element in this constructor.
-     */
-    internal val typeAtom: PSTypeAtom
-        get() = findNotNullChildByClass(PSTypeAtom::class.java)
-
     override fun setName(name: String): PsiElement? = null
 
     override fun getNameIdentifier(): PSProperName = identifier

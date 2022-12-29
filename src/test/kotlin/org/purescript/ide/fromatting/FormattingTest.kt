@@ -14,7 +14,7 @@ class FormattingTest : BasePlatformTestCase() {
         myFixture.configureByFile("Formatting.purs")
         
         val psiFile = myFixture.file
-        val textRanges = ArrayList(Arrays.asList(psiFile.textRange))
+        val textRanges = listOf(psiFile.textRange)
         val codeStyleManager = CodeStyleManager.getInstance(project)
         val action = WriteCommandAction.writeCommandAction(project)
         

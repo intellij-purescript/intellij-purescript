@@ -40,25 +40,6 @@ class ModuleNameIndex : ScalarIndexExtension<String>() {
         val NAME =
             ID.create<String, Void?>("org.purescript.file.ModuleNameIndex")
 
-        fun fileContainingModule(
-            project: Project,
-            moduleName: String
-        ): PSFile? {
-            val fileBasedIndex = FileBasedIndex.getInstance()
-            return ReadAction.compute<PSFile?, Throwable> {
-                val files = fileBasedIndex.getContainingFiles(
-                    NAME,
-                    moduleName,
-                    GlobalSearchScope.allScope(project)
-                )
-                files
-                    //.filter { it.isValid }
-                    .map { PsiManager.getInstance(project).findFile(it) }
-                    .filterIsInstance(PSFile::class.java)
-                    .firstOrNull()
-            }
-        }
-
         fun getModuleNameFromFile(project: Project,file: VirtualFile) =
             FileBasedIndex
                 .getInstance()

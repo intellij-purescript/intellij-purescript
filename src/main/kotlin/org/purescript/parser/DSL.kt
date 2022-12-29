@@ -57,11 +57,13 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
         first.parse(builder) || next.parse(builder)
 }
 
+@Suppress("KotlinConstantConditions")
 data class NoneOrMore(val child: DSL) : DSL {
     override fun parse(builder: PsiBuilder): Boolean =
         child.parse(builder) && parse(builder) || true
 }
 
+@Suppress("KotlinConstantConditions")
 data class Optional(val child: DSL) : DSL {
     override fun parse(builder: PsiBuilder): Boolean =
         child.parse(builder) || true

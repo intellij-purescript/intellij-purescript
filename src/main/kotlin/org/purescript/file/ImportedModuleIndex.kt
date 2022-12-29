@@ -17,11 +17,9 @@ class ImportedModuleIndex : ScalarIndexExtension<String>() {
     override fun getIndexer(): DataIndexer<String, Void?, FileContent> {
         return DataIndexer<String, Void?, FileContent> {
             when (val file = it.psiFile) {
-                is PSFile -> file.module
-                    ?.let { it.cache.imports }
-                    ?.mapNotNull { it.moduleName?.name }
-                    ?.map { it to null }
-                    ?.toMap()
+                is PSFile -> file.module?.cache?.imports
+                    ?.mapNotNull { it.moduleName.name }
+                    ?.associateWith { null }
                     ?: emptyMap()
                 else -> emptyMap()
             }

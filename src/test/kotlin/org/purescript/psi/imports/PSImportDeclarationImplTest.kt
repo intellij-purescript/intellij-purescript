@@ -146,7 +146,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Adam
         importDeclarations[0].run {
-            assertEquals("Adam", moduleName!!.name)
+            assertEquals("Adam", moduleName.name)
             assertNull(importList)
             assertFalse(isHiding)
             assertNull(importAlias)
@@ -154,7 +154,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Adam.Nested
         importDeclarations[1].run {
-            assertEquals("Adam.Nested", moduleName!!.name)
+            assertEquals("Adam.Nested", moduleName.name)
             assertNull(importList)
             assertFalse(isHiding)
             assertNull(importAlias)
@@ -162,7 +162,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Adam.Aliased as A
         importDeclarations[2].run {
-            assertEquals("Adam.Aliased", moduleName!!.name)
+            assertEquals("Adam.Aliased", moduleName.name)
             assertNull(importList)
             assertFalse(isHiding)
             assertEquals("A", importAlias!!.name)
@@ -170,7 +170,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Bertil (b)
         importDeclarations[3].run {
-            assertEquals("Bertil", moduleName!!.name)
+            assertEquals("Bertil", moduleName.name)
             assertNotNull(importList)
             assertFalse(isHiding)
             assertNull(importAlias)
@@ -178,7 +178,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Bertil.Nested (b)
         importDeclarations[4].run {
-            assertEquals("Bertil.Nested", moduleName!!.name)
+            assertEquals("Bertil.Nested", moduleName.name)
             assertNotNull(importList)
             assertFalse(isHiding)
             assertNull(importAlias)
@@ -186,7 +186,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Bertil.Aliased (b) as B
         importDeclarations[5].run {
-            assertEquals("Bertil.Aliased", moduleName!!.name)
+            assertEquals("Bertil.Aliased", moduleName.name)
             assertNotNull(importList)
             assertFalse(isHiding)
             assertEquals("B", importAlias!!.name)
@@ -194,7 +194,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Caesar hiding (c)
         importDeclarations[6].run {
-            assertEquals("Caesar", moduleName!!.name)
+            assertEquals("Caesar", moduleName.name)
             assertNotNull(importList)
             assertTrue(isHiding)
             assertNull(importAlias)
@@ -202,7 +202,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Caesar.Nested hiding (c)
         importDeclarations[7].run {
-            assertEquals("Caesar.Nested", moduleName!!.name)
+            assertEquals("Caesar.Nested", moduleName.name)
             assertNotNull(importList)
             assertTrue(isHiding)
             assertNull(importAlias)
@@ -210,7 +210,7 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         // import Caesar.Aliased hiding (c) as C
         importDeclarations[8].run {
-            assertEquals("Caesar.Aliased", moduleName!!.name)
+            assertEquals("Caesar.Aliased", moduleName.name)
             assertNotNull(importList)
             assertTrue(isHiding)
             assertEquals("C", importAlias!!.name)

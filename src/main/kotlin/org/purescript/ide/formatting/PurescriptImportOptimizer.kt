@@ -69,8 +69,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
 
     private fun fromPsiElement(importDeclaration: Import.Psi): ImportDeclaration =
         ImportDeclaration(
-            importDeclaration.moduleName?.name
-                ?: error("Import declaration is missing module name: ${importDeclaration.text}"),
+            importDeclaration.moduleName.name,
             importDeclaration.isHiding,
             importDeclaration.importedItems.map(::fromPsiElement).toSet(),
             importDeclaration.importAlias?.name

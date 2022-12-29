@@ -37,11 +37,11 @@ class PSColorSettingsPage : ColorSettingsPage {
                 PSSyntaxHighlighter.TYPE_NAME
             ),
             AttributesDescriptor(
-                "Type Variable",
+                "Type variable",
                 PSSyntaxHighlighter.TYPE_VARIABLE
             ),
             AttributesDescriptor(
-                "Type Annotation//Name",
+                "Type annotation//name",
                 PSSyntaxHighlighter.TYPE_ANNOTATION_NAME
             ),
             AttributesDescriptor(
@@ -73,7 +73,7 @@ class PSColorSettingsPage : ColorSettingsPage {
                 PSSyntaxHighlighter.PS_EQ
             ),
             AttributesDescriptor(
-                "Import Reference",
+                "Import reference",
                 PSSyntaxHighlighter.IMPORT_REF
             )
         )

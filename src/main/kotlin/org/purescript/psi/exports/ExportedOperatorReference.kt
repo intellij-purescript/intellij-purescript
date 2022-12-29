@@ -15,15 +15,13 @@ class ExportedOperatorReference(operator: ExportedOperator.Psi) :
 
     private val importedCandidates
         get() =
-            element.module
-                ?.let { it.cache.imports }
+            element.module?.cache?.imports
                 ?.flatMap { it.importedFixityDeclarations }
                 ?.asSequence()
                 ?: sequenceOf()
 
     private val localCandidates
-        get() = element.module
-            ?.let { it.fixityDeclarations }
+        get() = element.module?.fixityDeclarations
             ?.asSequence()
             ?: sequenceOf()
 

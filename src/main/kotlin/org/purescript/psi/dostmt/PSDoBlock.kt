@@ -4,7 +4,8 @@ import com.intellij.lang.ASTNode
 import org.purescript.psi.PSPsiElement
 
 class PSDoBlock(node: ASTNode) : PSPsiElement(node) {
-    val letDeclarations get() =
+    val letDeclarations: Array<PSDoNotationLet>
+        get() =
         findChildrenByClass(PSDoNotationLet::class.java)
 
     val valueDeclarations get () =

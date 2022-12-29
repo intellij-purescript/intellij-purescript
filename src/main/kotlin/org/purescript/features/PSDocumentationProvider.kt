@@ -52,7 +52,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         val spagoPath = path
             .normalize()
             .map { it.fileName.toString() }
-            .dropWhile { !".spago".equals(it) }
+            .dropWhile { ".spago" != it }
             .drop(1)
             .toList()
         if (spagoPath.size < 2) {

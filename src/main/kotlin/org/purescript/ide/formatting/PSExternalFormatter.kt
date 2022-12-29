@@ -66,6 +66,7 @@ class PSExternalFormatter : AsyncDocumentFormattingService() {
         return "Purescript"
     }
 
+    @Suppress("UnstableApiUsage")
     override fun getName(): @NlsSafe String {
         return "Purs Tidy"
     }

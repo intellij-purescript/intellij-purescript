@@ -77,10 +77,10 @@ class PSValueDeclaration(node: ASTNode) :
 
     override fun getReference(): PsiReference? {
         val valueDeclarationSelfReference = ValueDeclarationSelfReference(this)
-        if (valueDeclarationSelfReference.resolve() == this) {
-            return null
+        return if (valueDeclarationSelfReference.resolve() == this) {
+            null
         } else {
-            return valueDeclarationSelfReference
+            valueDeclarationSelfReference
         }
     }
 

@@ -11,14 +11,14 @@ class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReference
     false
 ) {
     override fun getVariants(): Array<String> {
-        return candidates.mapNotNull { it.name }.toTypedArray()
+        return candidates.map { it.name }.toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
-        if (element.name == myElement.module?.name) {
-            return myElement.module
+        return if (element.name == myElement.module?.name) {
+            myElement.module
         } else {
-            return candidates.firstOrNull { it.name == myElement.name }
+            candidates.firstOrNull { it.name == myElement.name }
                 ?.run { importAlias ?: importedModule }
         }
     }
@@ -32,6 +32,6 @@ class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReference
 
     private val candidates: Array<Import.Psi>
         get() =
-            myElement.module?.let { it.cache.imports }
+            myElement.module?.cache?.imports
                 ?: emptyArray()
 }

@@ -5,6 +5,7 @@ import org.purescript.psi.PSPsiElement
 import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSDoNotationLet(node: ASTNode) : PSPsiElement(node) {
-    val valueDeclarations get() =
+    val valueDeclarations: Array<PSValueDeclaration>
+        get() =
         findChildrenByClass(PSValueDeclaration::class.java)
 }

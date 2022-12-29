@@ -20,7 +20,7 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
                         // failed parsing file
                         file.module == null -> emptyMap()
                         // exports all
-                        file.module?.let { it.exports } == null -> {
+                        file.module?.exports == null -> {
                             val exportedValues = file.module!!
                                 .cache.valueDeclarations
                                 .map { it.name }
@@ -41,9 +41,7 @@ class ExportedValuesIndex : ScalarIndexExtension<String>() {
                                         is ExportedValue.Psi -> it.name
                                         else -> null
                                     }
-                                }
-                                .map { it to null }
-                                .toMap()
+                                }.associateWith { null }
                         }
                     }
                 }

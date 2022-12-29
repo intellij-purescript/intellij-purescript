@@ -9,7 +9,7 @@ import org.purescript.psi.imports.Import
 
 class ModuleReference(element: Import.Psi) : PsiReferenceBase<Import.Psi>(
     element,
-    element.moduleName?.textRangeInParent ?: TextRange.allOf(element.text.trim()),
+    element.moduleName.textRangeInParent,
     false
 ) {
     override fun getVariants(): Array<String> {
@@ -17,7 +17,7 @@ class ModuleReference(element: Import.Psi) : PsiReferenceBase<Import.Psi>(
     }
 
     override fun resolve(): Module.Psi? {
-        val moduleName = element.moduleName?.name ?: return null
+        val moduleName = element.moduleName.name
         val project = element.project
         return ModuleNameIndex()
             .get( moduleName, project, GlobalSearchScope.allScope(project))
@@ -26,7 +26,6 @@ class ModuleReference(element: Import.Psi) : PsiReferenceBase<Import.Psi>(
 
     override fun handleElementRename(name: String): PsiElement? {
         val oldProperName = element.moduleName
-            ?: return null
         val newProperName = PSPsiFactory(element.project).createModuleName(name)
             ?: return null
         oldProperName.replace(newProperName)

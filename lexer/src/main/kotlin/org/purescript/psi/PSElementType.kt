@@ -24,7 +24,7 @@ open class PSElementType(@NonNls debugName: String) :
         @NonNls debugName: String
     ) : HasPsi, IStubElementType<S, E>(debugName, PSLanguage.INSTANCE) {
         override fun getExternalId(): String {
-            return "purescript.$debugName"
+            return "purescript.$this"
         }
     }
 }
