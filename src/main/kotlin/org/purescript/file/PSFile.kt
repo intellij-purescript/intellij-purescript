@@ -14,13 +14,8 @@ interface PSFile {
     class Stub(file: Psi) : PsiFileStubImpl<Psi>(file)
     object Type : IStubFileElementType<Stub>(PSLanguage.INSTANCE)
     class Psi(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
-        override fun getFileType(): FileType {
-            return PSFileType
-        }
-
-        override fun toString(): String {
-            return "Purescript File"
-        }
+        override fun getFileType(): FileType = PSFileType
+        override fun toString(): String = "Purescript File"
 
         /**
          * @return the [Module.Psi] that this file contains,
