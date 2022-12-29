@@ -3,17 +3,28 @@ package org.purescript.file
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
-import com.intellij.psi.stubs.PsiFileStub
+import com.intellij.psi.PsiFile
+import com.intellij.psi.StubBuilder
+import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
-import org.purescript.psi.module.Module
 import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.module.Module
 
 interface PSFile {
-    class Stub(file: Psi) : PsiFileStubImpl<Psi>(file)
-    object Type : IStubFileElementType<Stub>(PSLanguage.INSTANCE)
-    class Psi(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
+    class Stub(file: Psi) : PsiFileStubImpl<Psi>(file) {
+        override fun getType() = Type
+    }
+
+    object Type : IStubFileElementType<Stub>(PSLanguage.INSTANCE) {
+        override fun getBuilder(): StubBuilder = object : DefaultStubBuilder() {
+            override fun createStubForFile(file: PsiFile): Stub = Stub(file as Psi)
+        }
+    }
+
+    class Psi(viewProvider: FileViewProvider) :
+        PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
         override fun getFileType(): FileType = PSFileType
         override fun toString(): String = "Purescript File"
 
