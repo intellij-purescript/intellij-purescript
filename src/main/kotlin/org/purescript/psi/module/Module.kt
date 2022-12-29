@@ -18,7 +18,7 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.FixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.exports.*
-import org.purescript.psi.imports.PSImportDeclaration
+import org.purescript.psi.imports.Import
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
@@ -59,7 +59,7 @@ interface Module {
         val fixityDeclarations get() = children(FixityDeclarationType)
 
         inner class Cache {
-            val imports by lazy { findChildrenByClass<PSImportDeclaration>() }
+            val imports by lazy { findChildrenByClass<Import.Psi>() }
             val importsByName by lazy { imports.groupBy { it.name } }
             val valueDeclarations
                 by lazy { findChildrenByClass<PSValueDeclaration>() }
@@ -123,7 +123,7 @@ interface Module {
          */
         private inline fun <Declaration : PsiNamedElement, reified Wanted : ExportedItem<*>> getExportedDeclarations(
             declarations: Array<Declaration>,
-            getDeclarations: (PSImportDeclaration) -> List<Declaration>
+            getDeclarations: (Import.Psi) -> List<Declaration>
         ): List<Declaration> {
             val explicitlyExportedItems = exports?.exportedItems
             return if (explicitlyExportedItems == null) {
@@ -305,7 +305,7 @@ interface Module {
         override val docComments: List<PsiComment>
             get() = getDocComments()
 
-        fun addImportDeclaration(importDeclaration: PSImportDeclaration) {
+        fun addImportDeclaration(importDeclaration: Import.Psi) {
             val lastImportDeclaration = cache.imports.lastOrNull()
             val insertPosition = lastImportDeclaration ?: whereKeyword
             val newLine = PSPsiFactory(project).createNewLine()

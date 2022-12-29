@@ -1,10 +1,8 @@
 package org.purescript.psi.exports
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
 import org.purescript.psi.PSPsiFactory
 
 class ExportedValueReference(exportedValue: ExportedValue.Psi) : PsiReferenceBase<ExportedValue.Psi>(

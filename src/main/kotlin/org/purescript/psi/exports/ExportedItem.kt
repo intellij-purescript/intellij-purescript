@@ -6,7 +6,8 @@ import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
 import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.imports.PSImportDeclaration
+import org.purescript.psi.imports.Import
+import org.purescript.psi.imports.Import.Psi
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
@@ -148,7 +149,7 @@ interface ExportedModule {
         // Todo clean this up
         override fun toString(): String = "PSExportedModule($elementType)"
         val moduleName get() = findNotNullChildByClass(PSModuleName::class.java)
-        val importDeclarations: Sequence<PSImportDeclaration>
+        val importDeclarations: Sequence<Import.Psi>
             get() = module
                 ?.cache
                 ?.importsByName

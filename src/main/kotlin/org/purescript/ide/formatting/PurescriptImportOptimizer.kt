@@ -67,7 +67,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
             .thenBy { it.alias }
             .thenBy { it.hiding }
 
-    private fun fromPsiElement(importDeclaration: PSImportDeclaration): ImportDeclaration =
+    private fun fromPsiElement(importDeclaration: Import.Psi): ImportDeclaration =
         ImportDeclaration(
             importDeclaration.moduleName?.name
                 ?: error("Import declaration is missing module name: ${importDeclaration.text}"),

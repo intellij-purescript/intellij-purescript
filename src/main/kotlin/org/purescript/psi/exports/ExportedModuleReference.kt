@@ -3,7 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.imports.PSImportDeclaration
+import org.purescript.psi.imports.Import
 
 class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReferenceBase<ExportedModule.Psi>(
     exportedModule,
@@ -11,8 +11,7 @@ class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReference
     false
 ) {
     override fun getVariants(): Array<String> {
-        return candidates.mapNotNull { it.name }
-            .toTypedArray()
+        return candidates.mapNotNull { it.name }.toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
@@ -31,7 +30,7 @@ class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReference
         return element
     }
 
-    private val candidates: Array<PSImportDeclaration>
+    private val candidates: Array<Import.Psi>
         get() =
             myElement.module?.let { it.cache.imports }
                 ?: emptyArray()

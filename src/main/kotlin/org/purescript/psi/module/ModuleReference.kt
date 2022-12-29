@@ -5,9 +5,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.imports.PSImportDeclaration
+import org.purescript.psi.imports.Import
 
-class ModuleReference(element: PSImportDeclaration) : PsiReferenceBase<PSImportDeclaration>(
+class ModuleReference(element: Import.Psi) : PsiReferenceBase<Import.Psi>(
     element,
     element.moduleName?.textRangeInParent ?: TextRange.allOf(element.text.trim()),
     false
