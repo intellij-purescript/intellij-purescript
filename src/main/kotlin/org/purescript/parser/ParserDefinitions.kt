@@ -378,7 +378,7 @@ class ParserDefinitions {
             moduleName +
             Optional(importList) +
             Optional((`as` + moduleName).`as`(ImportAlias))
-        ).`as`(ImportDeclaration)
+        ).`as`(ImportType)
 
     /**
      * nominal = the type can never be coerced to another type.

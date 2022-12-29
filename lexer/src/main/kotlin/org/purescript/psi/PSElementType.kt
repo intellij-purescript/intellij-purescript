@@ -13,7 +13,7 @@ open class PSElementType(@NonNls debugName: String) :
     interface HasPsi {
         fun createPsi(node: ASTNode): PsiElement
     }
-    class WithPsi(
+    open class WithPsi(
         @NonNls debugName: String,
         val constructor: (ASTNode) -> PsiElement
     ) : HasPsi, PSElementType(debugName) {

@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.file.PSFile
 import org.purescript.parser.ExportListType
-import org.purescript.parser.ImportDeclaration
+import org.purescript.parser.ImportType
 
 class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
@@ -29,7 +29,7 @@ class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
         return with(CodeFoldingSettings.getInstance()) {
             when (node.elementType) {
-                ImportDeclaration -> COLLAPSE_IMPORTS
+                ImportType -> COLLAPSE_IMPORTS
                 ExportListType -> COLLAPSE_FILE_HEADER
                 else -> false
             }

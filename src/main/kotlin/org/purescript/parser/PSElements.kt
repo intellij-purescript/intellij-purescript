@@ -66,7 +66,7 @@ val ForeignDataDeclaration =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
 val ForeignValueDeclaration =
     WithPsi("ForeignValueDeclaration") { PSForeignValueDeclaration(it) }
-val ImportDeclaration = WithPsi("ImportDeclaration") { Import.Psi(it) }
+val ImportType = Import.Type
 val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
 val ImportList = WithPsi("ImportList") { PSImportList(it) }
 val ImportedClass = WithPsi("ImportedClass") { PSImportedClass(it) }

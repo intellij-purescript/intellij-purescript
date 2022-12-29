@@ -3,6 +3,7 @@ package org.purescript.psi.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.elementType
+import org.purescript.psi.PSElementType
 import org.purescript.psi.PSForeignDataDeclaration
 import org.purescript.psi.PSForeignValueDeclaration
 import org.purescript.psi.PSPsiElement
@@ -29,6 +30,7 @@ import kotlin.reflect.KProperty1
  * ```
  */
 interface Import {
+    object Type: PSElementType.WithPsi("ImportDeclaration", { Psi(it) })
     class Psi(node: ASTNode) : PSPsiElement(node), Comparable<Psi> {
         override fun toString() = "PSImportDeclaration($elementType)"
 
