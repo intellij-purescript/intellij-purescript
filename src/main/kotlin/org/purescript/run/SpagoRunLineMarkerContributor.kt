@@ -3,7 +3,6 @@ package org.purescript.run
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
 import org.purescript.psi.declaration.PSValueDeclaration
 
