@@ -25,7 +25,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
-                        PSLanguage.INSTANCE,
+                        PSLanguage,
                         element.signature?.text ?: element.name,
                         1f
                     ) ,

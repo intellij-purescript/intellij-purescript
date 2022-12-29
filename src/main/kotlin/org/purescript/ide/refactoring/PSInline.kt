@@ -10,7 +10,7 @@ import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSInline: InlineActionHandler() {
     override fun isEnabledForLanguage(l: Language?): Boolean =
-        l == PSLanguage.INSTANCE
+        l == PSLanguage
 
     override fun canInlineElement(element: PsiElement?): Boolean =
         if (element is PSValueDeclaration) {

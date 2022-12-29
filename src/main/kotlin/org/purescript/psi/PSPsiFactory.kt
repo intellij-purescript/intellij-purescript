@@ -181,7 +181,7 @@ class PSPsiFactory(private val project: Project) {
 
     private inline fun <reified T : PsiElement> createFromText(@Language("Purescript") code: String): T? =
         PsiFileFactory.getInstance(project)
-            .createFileFromText(PSLanguage.INSTANCE, code)
+            .createFileFromText(PSLanguage, code)
             .findDescendantOfType()
 
     fun createIdentifier(name: String): PSIdentifier? {

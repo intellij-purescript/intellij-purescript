@@ -17,14 +17,14 @@ interface PSFile {
         override fun getType() = Type
     }
 
-    object Type : IStubFileElementType<Stub>(PSLanguage.INSTANCE) {
+    object Type : IStubFileElementType<Stub>(PSLanguage) {
         override fun getBuilder(): StubBuilder = object : DefaultStubBuilder() {
             override fun createStubForFile(file: PsiFile): Stub = Stub(file as Psi)
         }
     }
 
     class Psi(viewProvider: FileViewProvider) :
-        PsiFileBase(viewProvider, PSLanguage.INSTANCE) {
+        PsiFileBase(viewProvider, PSLanguage) {
         override fun getFileType(): FileType = PSFileType
         override fun toString(): String = "Purescript File"
 

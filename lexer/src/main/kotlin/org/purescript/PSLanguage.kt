@@ -2,10 +2,7 @@ package org.purescript
 
 import com.intellij.lang.Language
 
-class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript", "application/x-purescript") {
-    companion object {
-        val INSTANCE = PSLanguage()
-
+object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript", "application/x-purescript") {
         /**
          * These modules are built into the purescript compiler,
          * and have no corresponding source files.
@@ -84,5 +81,4 @@ class PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript"
             "Beside",
             "Above",
         )
-    }
 }
