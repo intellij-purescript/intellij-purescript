@@ -11,10 +11,10 @@ import org.purescript.psi.imports.*
 
 class PurescriptImportOptimizer : ImportOptimizer {
     override fun supports(file: PsiFile): Boolean =
-        file is PSFile
+        file is PSFile.Psi
 
     override fun processFile(file: PsiFile): Runnable {
-        val psFile = file as PSFile
+        val psFile = file as PSFile.Psi
         val module = psFile.module ?: error("File contains no Purescript module: ${file.name} ")
         val factory = PSPsiFactory(file.project)
         val importDeclarations = mergeImportDeclarations(

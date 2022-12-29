@@ -18,7 +18,7 @@ class ModuleNameIndex : ScalarIndexExtension<String>() {
     override fun getIndexer(): DataIndexer<String, Void?, FileContent> {
         return DataIndexer<String, Void?, FileContent> {
             when (val file = it.psiFile) {
-                is PSFile -> file.module?.name?.let { mapOf(it to null) }
+                is PSFile.Psi -> file.module?.name?.let { mapOf(it to null) }
                     ?: emptyMap()
                 else -> emptyMap()
             }

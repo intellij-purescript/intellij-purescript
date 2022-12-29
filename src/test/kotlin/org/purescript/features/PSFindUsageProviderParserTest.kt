@@ -13,7 +13,7 @@ class PSFindUsageProviderParserTest : PSLanguageParserTestBase("parser") {
             """module Main where
                 |x = 1
             """.trimMargin()
-        ) as PSFile
+        ) as PSFile.Psi
         val x = file.topLevelValueDeclarations["x"]!!.first()
         TestCase.assertEquals("Main.x", provider.getDescriptiveName(x))
     }
@@ -25,7 +25,7 @@ class PSFindUsageProviderParserTest : PSLanguageParserTestBase("parser") {
             """module Main where
                 |x = 1
             """.trimMargin()
-        ) as PSFile
+        ) as PSFile.Psi
         val x = file.topLevelValueDeclarations["x"]!!.first()
         TestCase.assertEquals("Main.x", provider.getNodeText(x, true))
     }

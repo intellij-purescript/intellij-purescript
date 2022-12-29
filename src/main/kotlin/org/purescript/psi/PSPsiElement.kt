@@ -15,7 +15,7 @@ abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
     /**
      * @return the [Psi] containing this element
      */
-    val module: Psi? get() = (containingFile as? PSFile)?.module
+    val module: Psi? get() = (containingFile as? PSFile.Psi)?.module
 
     override fun getUseScope(): SearchScope = module
         ?.name

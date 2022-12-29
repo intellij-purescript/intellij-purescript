@@ -14,7 +14,7 @@ import org.purescript.parser.ImportType
 
 class PurescriptFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (root !is PSFile) return emptyArray()
+        if (root !is PSFile.Psi) return emptyArray()
 
         val visitor = PurescriptFoldingVisitor()
         PsiTreeUtil.processElements(root) {

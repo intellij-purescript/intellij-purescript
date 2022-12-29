@@ -13,7 +13,7 @@ class LightFindUsageTest : BasePlatformTestCase() {
                 fn x = x + 1
                 y = fn 2
                 """.trimIndent()
-        ) as PSFile
+        ) as PSFile.Psi
         val fn = main.topLevelValueDeclarations["fn"]!!.first()
         val usages = myFixture.findUsages(fn)
         assertNotEmpty(usages)
@@ -26,7 +26,7 @@ class LightFindUsageTest : BasePlatformTestCase() {
                 fn x = x + 1
                 y = fn 2
                 """.trimIndent()
-        ) as PSFile
+        ) as PSFile.Psi
         val fn = main.topLevelValueDeclarations["fn"]!!.first()
         val x = fn.varBindersInParameters["x"]!!
         val usages = myFixture.findUsages(x)

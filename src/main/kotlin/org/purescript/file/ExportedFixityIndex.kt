@@ -15,7 +15,7 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
     override fun getIndexer(): DataIndexer<String, Void?, FileContent> =
         DataIndexer<String, Void?, FileContent> {
             when (val file = it.psiFile) {
-                is PSFile -> {
+                is PSFile.Psi -> {
                     when {
                         // failed parsing file
                         file.module == null -> emptyMap()
@@ -54,15 +54,15 @@ class ExportedFixityIndex : ScalarIndexExtension<String>() {
         fun filesExportingFixity(
             project: Project,
             value: String
-        ): List<PSFile> =
-            ReadAction.compute<List<PSFile>, Throwable> {
+        ): List<PSFile.Psi> =
+            ReadAction.compute<List<PSFile.Psi>, Throwable> {
                 val allScope = GlobalSearchScope.allScope(project)
                 val files = FileBasedIndex
                     .getInstance()
                     .getContainingFiles(NAME, value, allScope)
                 files
                     .map { PsiManager.getInstance(project).findFile(it) }
-                    .filterIsInstance(PSFile::class.java)
+                    .filterIsInstance(PSFile.Psi::class.java)
             }
     }
 

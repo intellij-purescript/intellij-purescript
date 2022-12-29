@@ -13,7 +13,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.file.PSFile
-import org.purescript.file.PSFileStubType
 import org.purescript.lexer.LayoutLexer
 import org.purescript.lexer.PSLexer
 import org.purescript.psi.PSElementType
@@ -28,7 +27,7 @@ class PSParserDefinition : ParserDefinition {
     }
 
     override fun getFileNodeType(): IFileElementType {
-        return PSFileStubType.INSTANCE
+        return PSFile.Type
     }
 
     override fun getCommentTokens(): TokenSet {
@@ -46,7 +45,7 @@ class PSParserDefinition : ParserDefinition {
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
-        return PSFile(viewProvider)
+        return PSFile.Psi(viewProvider)
     }
 
     override fun spaceExistenceTypeBetweenTokens(

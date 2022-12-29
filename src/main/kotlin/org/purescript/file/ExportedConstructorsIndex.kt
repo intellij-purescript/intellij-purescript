@@ -16,7 +16,7 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
     override fun getIndexer(): DataIndexer<String, Void?, FileContent> =
         DataIndexer<String, Void?, FileContent> {
             when (val file = it.psiFile) {
-                is PSFile -> {
+                is PSFile.Psi -> {
                     when {
                         // failed parsing file
                         file.module == null -> emptyMap()
@@ -78,15 +78,15 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
         fun filesExportingConstructor(
             project: Project,
             constructor: String
-        ): List<PSFile> =
-            ReadAction.compute<List<PSFile>, Throwable> {
+        ): List<PSFile.Psi> =
+            ReadAction.compute<List<PSFile.Psi>, Throwable> {
                 val allScope = GlobalSearchScope.allScope(project)
                 val files = FileBasedIndex
                     .getInstance()
                     .getContainingFiles(NAME, constructor, allScope)
                 files
                     .map { PsiManager.getInstance(project).findFile(it) }
-                    .filterIsInstance(PSFile::class.java)
+                    .filterIsInstance(PSFile.Psi::class.java)
             }
     }
 

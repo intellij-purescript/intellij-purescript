@@ -13,7 +13,7 @@ class PSForeignValueDeclarationTest : BasePlatformTestCase() {
             -- | Returns the substrings of the second string separated
             foreign import <caret>split :: Pattern -> String -> Array String
             """.trimIndent()
-        ) as PSFile
+        ) as PSFile.Psi
 
         val elementAtCaret = myFixture.elementAtCaret as PSForeignValueDeclaration
 

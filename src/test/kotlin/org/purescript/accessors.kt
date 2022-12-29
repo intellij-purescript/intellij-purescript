@@ -79,7 +79,7 @@ inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(
 
 
 fun PsiFile.getModule(): Psi =
-    (this as PSFile).module!!
+    (this as PSFile.Psi).module!!
 
 fun PsiFile.getDataDeclaration(): PSDataDeclaration =
     getModule().cache.dataDeclarations.single()
