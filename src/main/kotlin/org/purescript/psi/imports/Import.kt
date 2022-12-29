@@ -2,11 +2,9 @@ package org.purescript.psi.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.util.elementType
-import org.purescript.psi.PSElementType
-import org.purescript.psi.PSForeignDataDeclaration
-import org.purescript.psi.PSForeignValueDeclaration
-import org.purescript.psi.PSPsiElement
+import com.intellij.psi.stubs.*
+import org.purescript.psi.*
+import org.purescript.psi.PSElementType.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
 import org.purescript.psi.data.PSDataConstructor
@@ -30,8 +28,23 @@ import kotlin.reflect.KProperty1
  * ```
  */
 interface Import {
-    object Type: PSElementType.WithPsi("ImportDeclaration", { Psi(it) })
-    class Psi(node: ASTNode) : PSPsiElement(node), Comparable<Psi> {
+    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
+    object Type : WithPsiAndStub<Stub, Psi>("ImportDeclaration") {
+        override fun createPsi(node: ASTNode) = Psi(node)
+        override fun createPsi(stub: Stub) = Psi(stub, this)
+        override fun createStub(my: Psi, p: StubElement<*>?) = Stub(my.name, p)
+        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
+        override fun serialize(stub: Stub, d: StubOutputStream) =
+            d.writeName(stub.name)
+
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
+            Stub(d.readNameString()!!, p)
+    }
+
+    class Psi : PSStubbedElement<Stub>, Comparable<Psi> {
+        constructor(node: ASTNode) : super(node)
+        constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
+
         override fun toString() = "PSImportDeclaration($elementType)"
 
         /**
@@ -42,8 +55,8 @@ interface Import {
          * import Foo.Bar as Bar
          * ```
          */
-        val moduleName: PSModuleName?
-            get() = findChildByClass(PSModuleName::class.java)
+        val moduleName: PSModuleName
+            get() = findChildByClass(PSModuleName::class.java)!!
 
         /**
          * The import list of this import declaration.
@@ -81,7 +94,7 @@ interface Import {
          * or the name of the module this declaration is importing from.
          */
         override fun getName() =
-            importAlias?.name ?: moduleName?.name
+            importAlias?.name ?: moduleName.name
 
         /** the names that are exposed or hidden
          *
