@@ -16,8 +16,7 @@ class SpagoRunConfigurationProducer :
         context: ConfigurationContext,
         sourceElement: Ref<PsiElement>
     ): Boolean {
-        val psi = sourceElement.get()
-        val module = when (psi) {
+        val module = when (val psi = sourceElement.get()) {
             is PSFile.Psi -> psi.module
             is PSValueDeclaration -> psi.parentOfType()
             else -> null
