@@ -12,7 +12,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
-import org.purescript.ide.purs.Npm
+import org.purescript.run.Npm
 import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.ExecutionException

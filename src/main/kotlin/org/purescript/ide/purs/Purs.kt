@@ -11,6 +11,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import org.purescript.run.Npm
 
 @Service
 class Purs(val project: Project) {

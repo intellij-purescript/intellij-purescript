@@ -1,4 +1,4 @@
-package org.purescript.ide.purs
+package org.purescript.run
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.GeneralCommandLine.ParentEnvironmentType.CONSOLE

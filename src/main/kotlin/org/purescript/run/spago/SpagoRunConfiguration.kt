@@ -12,7 +12,7 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.ui.dsl.builder.panel
-import org.purescript.ide.purs.Npm
+import org.purescript.run.Npm
 import javax.swing.JComponent
 
 class SpagoRunConfiguration(
