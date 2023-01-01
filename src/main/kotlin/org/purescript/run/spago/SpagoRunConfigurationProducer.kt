@@ -6,7 +6,6 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.PSFile
-import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.module.Module
 
 class SpagoRunConfigurationProducer :
@@ -16,11 +15,14 @@ class SpagoRunConfigurationProducer :
         context: ConfigurationContext,
         sourceElement: Ref<PsiElement>
     ): Boolean {
-        val module = when (val psi = sourceElement.get()) {
+        val psi = sourceElement.get()
+        val module = when (psi) {
             is PSFile.Psi -> psi.module
-            is PSValueDeclaration -> psi.parentOfType()
-            else -> null
+            else -> psi.parentOfType()
         } ?: return false
+        val main = module.exportedValueDeclarations
+            .firstOrNull { it.name == "main" } ?: return false
+        if (psi != main.nameIdentifier.firstChild && psi !is PSFile.Psi) return false
         configuration.name = module.name
         configuration.options.moduleName = module.name
         return module.exportedValueDeclarations.any { it.name == "main" }
@@ -29,13 +31,12 @@ class SpagoRunConfigurationProducer :
     override fun isConfigurationFromContext(
         configuration: SpagoRunConfiguration,
         context: ConfigurationContext
-    ): Boolean = when (val psi = context.psiLocation) {
-        is PSFile.Psi -> psi.module?.name == configuration.options.moduleName
-        is PSValueDeclaration ->
-            psi.parentOfType<Module.Psi>()?.name == configuration.options.moduleName
+    ): Boolean =
+        context.psiLocation
+            ?.parentOfType<PSFile.Psi>()
+            ?.module
+            ?.name == configuration.options.moduleName
 
-        else -> false
-    }
 
     override fun getConfigurationFactory() = SpagoConfigurationFactory()
 }
