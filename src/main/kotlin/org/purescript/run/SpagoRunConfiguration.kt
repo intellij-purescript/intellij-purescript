@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.LocatableConfigurationBase
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
 import com.intellij.execution.process.CapturingProcessHandler
+import com.intellij.execution.process.ColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.components.service
@@ -37,7 +38,8 @@ class SpagoRunConfiguration(
                 val commandLine =
                     GeneralCommandLine(spago, "run", "--main", options.moduleName ?: "Main")
                         .withWorkDirectory(project.guessProjectDir()?.path.toString())
-                return CapturingProcessHandler(commandLine)
+                        .withCharset(charset("UTF8"))
+                return ColoredProcessHandler(commandLine)
             }
         }
 
