@@ -4,7 +4,7 @@ import com.intellij.execution.Executor
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.LocatableConfigurationBase
-import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.execution.configurations.LocatableRunConfigurationOptions
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -19,32 +19,36 @@ import javax.swing.JComponent
 class SpagoRunConfiguration(
     private val project: Project,
     factory: SpagoConfigurationFactory
-) : LocatableConfigurationBase<SpagoConfigurationType>(project, factory) {
+) : LocatableConfigurationBase<SpagoRunConfigurationOptions>(project, factory) {
+
+    public override fun getOptions(): SpagoRunConfigurationOptions {
+        return super.getOptions() as SpagoRunConfigurationOptions
+    }
+
+
     override fun getState(
         executor: Executor,
         environment: ExecutionEnvironment
     ) =
         object : CommandLineState(environment) {
-            override fun startProcess(): ProcessHandler =
-                CapturingProcessHandler(
-                    GeneralCommandLine(
-                        project
-                            .service<Npm>()
-                            .pathFor("spago")
-                            ?.toString(), "run"
-                    )
+            override fun startProcess(): ProcessHandler {
+                val spago =
+                    project.service<Npm>().pathFor("spago")?.toString()
+                val commandLine =
+                    GeneralCommandLine(spago, "run", "--main", options.moduleName ?: "Main")
                         .withWorkDirectory(project.guessProjectDir()?.path.toString())
-                )
+                return CapturingProcessHandler(commandLine)
+            }
         }
 
-    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
-        return object : SettingsEditor<RunConfiguration>() {
-            override fun resetEditorFrom(s: RunConfiguration) = Unit
-            override fun applyEditorTo(s: RunConfiguration) = Unit
+    override fun getConfigurationEditor(): SettingsEditor<SpagoRunConfiguration> {
+        return object : SettingsEditor<SpagoRunConfiguration>() {
+            override fun resetEditorFrom(s: SpagoRunConfiguration) = Unit
+            override fun applyEditorTo(s: SpagoRunConfiguration) = Unit
             override fun createEditor(): JComponent {
                 return panel {
-                    row {
-                        comment("TODO")
+                    row("Module") {
+                        comment(options.moduleName ?: "Main")
                     }
                 }
             }

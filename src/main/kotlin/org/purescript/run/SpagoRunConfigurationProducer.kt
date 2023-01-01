@@ -2,14 +2,12 @@ package org.purescript.run
 
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
-import com.intellij.execution.actions.RunConfigurationProducer
-import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.PSFile
-import org.purescript.psi.module.Module
 import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.module.Module
 
 class SpagoRunConfigurationProducer :
     LazyRunConfigurationProducer<SpagoRunConfiguration>() {
@@ -18,20 +16,27 @@ class SpagoRunConfigurationProducer :
         context: ConfigurationContext,
         sourceElement: Ref<PsiElement>
     ): Boolean {
-        configuration.name = "Main"
-        return when (val psi = sourceElement.get()) {
-            is PSFile.Psi -> psi.module?.name == "Main"
-            is PSValueDeclaration -> psi.name == "main" &&
-                psi.parentOfType<Module.Psi>()?.name == "Main"
-            else -> psi.parentOfType<PSValueDeclaration>()?.name == "main" &&
-                psi.parentOfType<Module.Psi>()?.name == "Main"
-        }
+        val psi = sourceElement.get()
+        val module = when (psi) {
+            is PSFile.Psi -> psi.module
+            is PSValueDeclaration -> psi.parentOfType()
+            else -> null
+        } ?: return false
+        configuration.name = module.name
+        configuration.options.moduleName = module.name
+        return module.exportedValueDeclarations.any { it.name == "main" }
     }
 
     override fun isConfigurationFromContext(
         configuration: SpagoRunConfiguration,
         context: ConfigurationContext
-    ): Boolean = true
+    ): Boolean = when (val psi = context.psiLocation) {
+        is PSFile.Psi -> psi.module?.name == configuration.options.moduleName
+        is PSValueDeclaration ->
+            psi.parentOfType<Module.Psi>()?.name == configuration.options.moduleName
+
+        else -> false
+    }
 
     override fun getConfigurationFactory() = SpagoConfigurationFactory()
 }
