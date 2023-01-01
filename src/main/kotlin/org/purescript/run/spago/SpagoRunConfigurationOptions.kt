@@ -1,4 +1,4 @@
-package org.purescript.run
+package org.purescript.run.spago
 
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
 

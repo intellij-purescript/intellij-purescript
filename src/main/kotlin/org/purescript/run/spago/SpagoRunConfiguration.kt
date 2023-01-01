@@ -1,11 +1,9 @@
-package org.purescript.run
+package org.purescript.run.spago
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.LocatableConfigurationBase
-import com.intellij.execution.configurations.LocatableRunConfigurationOptions
-import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.process.ColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment

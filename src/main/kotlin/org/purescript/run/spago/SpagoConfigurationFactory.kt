@@ -1,7 +1,6 @@
-package org.purescript.run
+package org.purescript.run.spago
 
 import com.intellij.execution.configurations.*
-import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.project.Project
 
 class SpagoConfigurationFactory: ConfigurationFactory(SpagoConfigurationType) {

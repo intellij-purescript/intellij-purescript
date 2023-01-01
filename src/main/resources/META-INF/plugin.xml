@@ -136,12 +136,12 @@
         />
         <!-- Run Configurations -->
         <configurationType
-            implementation="org.purescript.run.SpagoConfigurationType"/>
+            implementation="org.purescript.run.spago.SpagoConfigurationType"/>
         <runConfigurationProducer
-            implementation="org.purescript.run.SpagoRunConfigurationProducer"/>
+            implementation="org.purescript.run.spago.SpagoRunConfigurationProducer"/>
         <runLineMarkerContributor
             language="Purescript"
-            implementationClass="org.purescript.run.SpagoRunLineMarkerContributor"/>
+            implementationClass="org.purescript.run.spago.SpagoRunLineMarkerContributor"/>
         <!-- Indexes -->
         <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex"/>
         <fileBasedIndex
