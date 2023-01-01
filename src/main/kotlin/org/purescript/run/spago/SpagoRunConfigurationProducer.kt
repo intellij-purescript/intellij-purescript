@@ -33,7 +33,7 @@ class SpagoRunConfigurationProducer :
         context: ConfigurationContext
     ): Boolean =
         context.psiLocation
-            ?.parentOfType<PSFile.Psi>()
+            ?.parentOfType<PSFile.Psi>(true)
             ?.module
             ?.name == configuration.options.moduleName
 
