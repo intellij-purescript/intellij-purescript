@@ -1,4 +1,4 @@
-package org.purescript.ide.purs
+package org.purescript.run.purs
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ex.ExternalAnnotatorBatchInspection

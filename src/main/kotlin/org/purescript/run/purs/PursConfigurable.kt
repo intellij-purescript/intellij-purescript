@@ -1,4 +1,4 @@
-package org.purescript.ide.purs
+package org.purescript.run.purs
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable

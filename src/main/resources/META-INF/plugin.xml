@@ -111,17 +111,17 @@
             shortName="Rebuild"
             enabledByDefault="true"
             level="ERROR"
-            implementationClass="org.purescript.ide.purs.PursIdeRebuildInspection"
+            implementationClass="org.purescript.run.purs.PursIdeRebuildInspection"
         />
 
         <externalAnnotator
             language="Purescript"
-            implementationClass="org.purescript.ide.purs.PursIdeRebuildExternalAnnotator"
+            implementationClass="org.purescript.run.purs.PursIdeRebuildExternalAnnotator"
         />
         <projectConfigurable
             parentId="build"
-            instance="org.purescript.ide.purs.PursConfigurable"
-            id="org.purescript.ide.purs.PursConfigurable"
+            instance="org.purescript.run.purs.PursConfigurable"
+            id="org.purescript.run.purs.PursConfigurable"
             displayName="Purs"
             nonDefaultProject="true"/>
 

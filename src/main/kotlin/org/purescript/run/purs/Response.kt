@@ -1,4 +1,4 @@
-package org.purescript.ide.purs
+package org.purescript.run.purs
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange

@@ -1,4 +1,4 @@
-package org.purescript.ide.purs
+package org.purescript.run.purs
 
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.openapi.editor.Editor
