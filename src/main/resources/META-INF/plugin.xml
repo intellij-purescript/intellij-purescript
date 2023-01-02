@@ -139,6 +139,10 @@
             implementation="org.purescript.run.spago.SpagoConfigurationType"/>
         <runConfigurationProducer
             implementation="org.purescript.run.spago.SpagoRunConfigurationProducer"/>
+        <configurationType
+            implementation="org.purescript.run.spago.test.SpagoTestConfigurationType"/>
+        <runConfigurationProducer
+            implementation="org.purescript.run.spago.test.SpagoTestRunConfigurationProducer"/>
         <runLineMarkerContributor
             language="Purescript"
             implementationClass="org.purescript.run.spago.SpagoRunLineMarkerContributor"/>
