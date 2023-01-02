@@ -20,7 +20,7 @@ class SpagoTestState(
 ) : CommandLineState(environment) {
     override fun startProcess(): ProcessHandler {
         val commandLine =
-            GeneralCommandLine(spago, "run", "--main", moduleName)
+            GeneralCommandLine(spago, "test", "--main", moduleName)
                 .withWorkDirectory(workDirectory)
                 .withCharset(charset("UTF8"))
         return ColoredProcessHandler(commandLine)
