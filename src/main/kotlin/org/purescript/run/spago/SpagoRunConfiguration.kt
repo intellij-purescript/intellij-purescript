@@ -11,6 +11,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import org.purescript.run.Npm
 import javax.swing.JComponent
@@ -20,9 +22,8 @@ class SpagoRunConfiguration(
     factory: SpagoConfigurationFactory
 ) : LocatableConfigurationBase<SpagoRunConfigurationOptions>(project, factory) {
 
-    public override fun getOptions(): SpagoRunConfigurationOptions {
-        return super.getOptions() as SpagoRunConfigurationOptions
-    }
+    public override fun getOptions() =
+        super.getOptions() as SpagoRunConfigurationOptions
 
 
     override fun getState(
@@ -34,7 +35,7 @@ class SpagoRunConfiguration(
                 val spago =
                     project.service<Npm>().pathFor("spago")?.toString()
                 val commandLine =
-                    GeneralCommandLine(spago, "run", "--main", options.moduleName ?: "Main")
+                    GeneralCommandLine(spago, "-x", options.config, options.command, "--main", options.moduleName ?: "Main")
                         .withWorkDirectory(project.guessProjectDir()?.path.toString())
                         .withCharset(charset("UTF8"))
                 return ColoredProcessHandler(commandLine)
@@ -43,14 +44,28 @@ class SpagoRunConfiguration(
 
     override fun getConfigurationEditor(): SettingsEditor<SpagoRunConfiguration> {
         return object : SettingsEditor<SpagoRunConfiguration>() {
-            override fun resetEditorFrom(s: SpagoRunConfiguration) = Unit
-            override fun applyEditorTo(s: SpagoRunConfiguration) = Unit
+            private lateinit var panel: DialogPanel
+            override fun resetEditorFrom(s: SpagoRunConfiguration) = panel.reset()
+            override fun applyEditorTo(s: SpagoRunConfiguration) = panel.apply()
             override fun createEditor(): JComponent {
-                return panel {
+                panel = panel {
                     row("Module") {
                         comment(options.moduleName ?: "Main")
                     }
+                    row("Command") {
+                        textField().bindText(
+                            {options.command ?: "run"},
+                            {options.command = it}
+                        )
+                    }
+                    row("Config") {
+                        textField().bindText(
+                            {options.config ?: "spago.dhall"},
+                            {options.config = it}
+                        )
+                    }
                 }
+                return panel
             }
         }
     }

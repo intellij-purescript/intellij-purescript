@@ -4,4 +4,6 @@ import com.intellij.execution.configurations.LocatableRunConfigurationOptions
 
 class SpagoRunConfigurationOptions: LocatableRunConfigurationOptions() {
     var moduleName by string("Main")
+    var command by string("run")
+    var config by string("spago.dhall")
 }
