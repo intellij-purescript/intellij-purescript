@@ -4,9 +4,14 @@ import com.intellij.execution.Executor
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.LocatableConfigurationBase
+import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.process.ColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
+import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
+import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
+import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
@@ -29,23 +34,53 @@ class SpagoRunConfiguration(
     override fun getState(
         executor: Executor,
         environment: ExecutionEnvironment
-    ) =
-        object : CommandLineState(environment) {
-            override fun startProcess(): ProcessHandler {
-                val spago =
-                    project.service<Npm>().pathFor("spago")?.toString()
-                val commandLine =
-                    GeneralCommandLine(spago, "-x", options.config, options.command, "--main", options.moduleName ?: "Main")
-                        .withWorkDirectory(project.guessProjectDir()?.path.toString())
-                        .withCharset(charset("UTF8"))
-                return ColoredProcessHandler(commandLine)
+    ) = object : CommandLineState(environment) {
+        override fun startProcess(): ProcessHandler {
+            val spago =
+                project.service<Npm>().pathFor("spago")?.toString()
+
+            val commandLine =
+                GeneralCommandLine(
+                    spago,
+                    "-x",
+                    options.config,
+                    options.command,
+                    "--main",
+                    options.moduleName ?: "Main"
+                )
+                    .withWorkDirectory(project.guessProjectDir()?.path.toString())
+                    .withCharset(charset("UTF8"))
+            return ColoredProcessHandler(commandLine)
+        }
+
+        override fun createConsole(executor: Executor): ConsoleView? {
+            return if (options.command == "test") {
+                val runConfiguration =
+                    environment.runProfile as RunConfiguration
+                val properties =
+                    SMTRunnerConsoleProperties(
+                        runConfiguration,
+                        "SpagoTest",
+                        executor
+                    )
+                SMTRunnerConsoleView(properties).also {
+                    SMTestRunnerConnectionUtil.initConsoleView(
+                        it,
+                        properties.testFrameworkName
+                    )
+                }
+            } else {
+                super.createConsole(executor)
             }
         }
+    }
 
     override fun getConfigurationEditor(): SettingsEditor<SpagoRunConfiguration> {
         return object : SettingsEditor<SpagoRunConfiguration>() {
             private lateinit var panel: DialogPanel
-            override fun resetEditorFrom(s: SpagoRunConfiguration) = panel.reset()
+            override fun resetEditorFrom(s: SpagoRunConfiguration) =
+                panel.reset()
+
             override fun applyEditorTo(s: SpagoRunConfiguration) = panel.apply()
             override fun createEditor(): JComponent {
                 panel = panel {
@@ -54,14 +89,14 @@ class SpagoRunConfiguration(
                     }
                     row("Command") {
                         textField().bindText(
-                            {options.command ?: "run"},
-                            {options.command = it}
+                            { options.command ?: "run" },
+                            { options.command = it }
                         )
                     }
                     row("Config") {
                         textField().bindText(
-                            {options.config ?: "spago.dhall"},
-                            {options.config = it}
+                            { options.config ?: "spago.dhall" },
+                            { options.config = it }
                         )
                     }
                 }
