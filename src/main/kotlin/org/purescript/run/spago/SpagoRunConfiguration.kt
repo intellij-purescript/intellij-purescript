@@ -59,10 +59,12 @@ class SpagoRunConfiguration(
                     environment.runProfile as RunConfiguration
                 val properties =
                     SMTRunnerConsoleProperties(
+                        project,
                         runConfiguration,
                         "SpagoTest",
                         executor
                     )
+                properties.isIdBasedTestTree = true
                 SMTRunnerConsoleView(properties).also {
                     SMTestRunnerConnectionUtil.initConsoleView(
                         it,
