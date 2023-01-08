@@ -81,6 +81,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             else -> HighlightSeverity.WARNING
         }
         for (result in annotationResult.result) {
+            if (result.errorCode == "UnusedDeclaration") continue
             val textRange = result.position.textRange(document)
             val annotationBuilder = holder
                 .newAnnotation(severity, "Purs ide rebuild")
