@@ -8,8 +8,10 @@ import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
-import org.purescript.psi.module.Module
+import org.purescript.psi.expression.ExpressionIdentifierReference
+import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSOperatorName
+import org.purescript.psi.name.PSQualifiedIdentifier
 
 interface FixityDeclaration {
     class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
@@ -39,7 +41,8 @@ interface FixityDeclaration {
 
         private val operatorName
             get() = findNotNullChildByClass(PSOperatorName::class.java)
-
+        val qualifiedIdentifier: PSQualifiedIdentifier
+            get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
         override fun getTextOffset(): Int = nameIdentifier.textOffset
         override fun getNameIdentifier() = operatorName
         override fun getName() = stub?.name ?: operatorName.name
@@ -49,5 +52,7 @@ interface FixityDeclaration {
             nameIdentifier.replace(identifier)
             return this
         }
+
+        override fun getReference() = FixityReference(this)
     }
 }
