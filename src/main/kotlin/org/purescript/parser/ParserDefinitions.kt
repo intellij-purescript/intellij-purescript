@@ -309,7 +309,7 @@ class ParserDefinitions {
             // that would mean that when there is a `type` prefix we parse as Type
             // otherwise if it's a capital name it's a DataConstructor
             (Optional(`'type'`) + properName.or(qualProperName)).withRollback,
-            ident.or(qualIdentifier)
+            qualIdentifier
         ) + `as` + operator.`as`(OperatorName))
             .`as`(FixityDeclarationType)
 
