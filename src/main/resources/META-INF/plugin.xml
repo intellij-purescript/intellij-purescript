@@ -106,6 +106,12 @@
             enabledByDefault="true" level="ERROR"
             implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
         />
+        <localInspection
+            language="Purescript" groupName="Purescript"
+            displayName="Unused declaration"
+            enabledByDefault="true"
+            implementationClass="org.purescript.ide.inspections.UnusedInspection"
+        />
         <!-- purs ide -->
         <localInspection
             language="Purescript"
