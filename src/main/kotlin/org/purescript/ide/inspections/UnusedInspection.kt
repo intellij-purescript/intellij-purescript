@@ -1,11 +1,15 @@
 package org.purescript.ide.inspections
 
-import com.intellij.codeInspection.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFixOnPsiElement
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.psi.declaration.PSSignature
@@ -33,12 +37,25 @@ class UnusedInspection : LocalInspectionTool() {
 
     }
 
-    class SafeDelete(private val element: PsiElement) : LocalQuickFix {
+    class SafeDelete(element: PsiElement) : LocalQuickFixOnPsiElement(element) {
         override fun getFamilyName() = "Safe delete"
-        override fun applyFix(project: Project, descriptor: ProblemDescriptor) =
+        override fun getText(): String = "Safe delete"
+
+        override fun invoke(
+            project: Project,
+            file: PsiFile,
+            startElement: PsiElement,
+            endElement: PsiElement
+        ) {
+            safeDelete(project, startElement)
+        }
+
+
+        private fun safeDelete(project: Project, element: PsiElement) {
             ApplicationManager.getApplication().invokeLater(
                 { SafeDeleteHandler.invoke(project, arrayOf(element), false) },
                 ModalityState.NON_MODAL
             )
+        }
     }
 }
