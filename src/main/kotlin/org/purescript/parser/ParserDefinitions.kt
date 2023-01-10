@@ -39,7 +39,8 @@ class ParserDefinitions {
     )
 
     private val rowLabel = GenericIdentifier(lname / string) + dcolon + type
-    private val parseRow = Row((`|` + type) / (rowLabel.sepBy(COMMA) + !(`|` + type)))
+    private val parseRow =
+        Row((`|` + type) / (rowLabel.sepBy(COMMA) + !(`|` + type)))
 
     private val typeAtom: DSL = TypeAtom(
         squares(!type) /
@@ -70,17 +71,17 @@ class ParserDefinitions {
         TypeVarKinded(parens(GenericIdentifier(idents) + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
-            NullBinder(`_`).heal,
-            NamedBinder((VarBinder(ident) + `@` + this).heal),
-            VarBinder(ident).heal,
-            ConstructorBinder(qualProperName).heal,
-            BooleanBinder(boolean).heal,
-            CharBinder(char).heal,
-            StringBinder(string).heal,
-            NumberBinder(number).heal,
-            ObjectBinder(squares(binder.sepBy(COMMA))).heal,
-            braces(recordBinder.sepBy(COMMA)).heal,
-            parens(binder).heal
+            NullBinder(`_`),
+            CharBinder(char),
+            StringBinder(string),
+            NumberBinder(number),
+            ObjectBinder(squares(binder.sepBy(COMMA))),
+            braces(recordBinder.sepBy(COMMA)),
+            parens(binder),
+            BooleanBinder(boolean),
+            ConstructorBinder(qualProperName),
+            NamedBinder(VarBinder(ident) + `@` + this).heal,
+            VarBinder(ident),
         )
     }
     private val binder: DSL = Reference { binder1 } + !(dcolon + type)
@@ -324,8 +325,7 @@ class ParserDefinitions {
         DoNotationValue(expr).heal
     )
     private val doBlock = DoBlock(
-        qualified(`do`).heal +
-            `L{` + (doStatement).sepBy1(`L-sep`) + `L}`
+        qualified(`do`).heal + `L{` + (doStatement).sepBy1(`L-sep`) + `L}`
     )
 
     private val adoBlock = ado + `L{` + doStatement.sepBy(`L-sep`) + `L}`
