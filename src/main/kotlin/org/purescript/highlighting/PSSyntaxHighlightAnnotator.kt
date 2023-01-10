@@ -11,7 +11,6 @@ import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_VARIABLE
 import org.purescript.parser.ExpressionConstructor
 import org.purescript.parser.GenericIdentifier
 import org.purescript.parser.LocalIdentifier
-import org.purescript.parser.PositionedDeclarationRef
 import org.purescript.parser.TypeConstructor
 import org.purescript.parser.ValueRef
 import org.purescript.parser.ClassName
@@ -24,7 +23,7 @@ class PSSyntaxHighlightAnnotator : Annotator {
                     .textAttributes(IMPORT_REF)
                     .create()
             }
-            PositionedDeclarationRef, TypeConstructor, ClassName -> {
+            TypeConstructor, ClassName -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_NAME)
                     .create()

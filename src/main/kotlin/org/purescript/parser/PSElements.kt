@@ -86,8 +86,6 @@ val ImportedKind = WithPsi("ImportedKind") { PSImportedKind(it) }
 val ImportedOperator = WithPsi("ImportedOperator") { PSImportedOperator(it) }
 val ImportedType = WithPsi("ImportedType") { PSImportedType(it) }
 val ImportedValue = WithPsi("ImportedValue") { PSImportedValue(it) }
-val PositionedDeclarationRef =
-    WithPsi("PositionedDeclarationRef") { PSPositionedDeclarationRef(it) }
 val ClassDeclaration = WithPsi("ClassDeclaration") { PSClassDeclaration(it) }
 val ClassConstraintList =
     WithPsi("ClassConstraintList") { PSClassConstraintList(it) }
