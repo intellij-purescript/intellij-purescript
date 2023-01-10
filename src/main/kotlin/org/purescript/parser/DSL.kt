@@ -20,6 +20,10 @@ val IElementType.dsl get() = ElementToken(this)
 val String.dsl get() = StringToken(this)
 val DSL.dsl get() = this
 
+operator fun DSL.not() = Optional(dsl)
+operator fun IElementType.not() = Optional(dsl)
+operator fun String.not() = Optional(dsl)
+
 operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
 operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
 operator fun IElementType.invoke(o: IElementType) = Symbolic(o.dsl, this)
