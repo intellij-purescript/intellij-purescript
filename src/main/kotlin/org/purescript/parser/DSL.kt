@@ -7,20 +7,37 @@ import com.intellij.psi.tree.IElementType
 
 sealed interface DSL {
     fun sepBy(delimiter: DSL) = Optional(sepBy1(delimiter))
+    fun sepBy(sep: IElementType) = Optional(sepBy1(sep))
     fun sepBy1(delimiter: DSL) = this + NoneOrMore(delimiter + this)
+    fun sepBy1(sep: IElementType) = this + NoneOrMore(sep.dsl + this)
     val oneOrMore get() = this + noneOrMore
     val noneOrMore get() = NoneOrMore(this)
     val withRollback get() = Transaction(this)
     fun parse(builder: PsiBuilder): Boolean
 }
 
-operator fun IElementType.invoke(dsl:DSL) = Symbolic(dsl, this) 
+val IElementType.dsl get() = ElementToken(this)
+val String.dsl get() = StringToken(this)
+val DSL.dsl get() = this
 
-operator fun DSL.plus(other: DSL) = Seq(this, other)
-operator fun DSL.div(other: DSL) = Choice(this, other)
+operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
+operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
+operator fun IElementType.invoke(o: IElementType) = Symbolic(o.dsl, this)
+
+operator fun DSL.plus(other: DSL) = Seq(dsl, other.dsl)
+operator fun DSL.plus(other: String) = Seq(dsl, other.dsl)
+operator fun DSL.plus(other: IElementType) = Seq(dsl, other.dsl)
+operator fun IElementType.plus(other: DSL) = Seq(dsl, other.dsl)
+operator fun IElementType.plus(other: IElementType) = Seq(dsl, other.dsl)
+operator fun DSL.div(other: DSL) = Choice(dsl, other.dsl)
+operator fun DSL.div(other: IElementType) = Choice(dsl, other.dsl)
+operator fun IElementType.div(other: DSL) = Choice(dsl, other.dsl)
+operator fun IElementType.div(other: IElementType) = Choice(dsl, other.dsl)
+operator fun String.div(other: DSL) = Choice(dsl, other.dsl)
+operator fun DSL.div(other: String) = Choice(dsl, other.dsl)
 
 data class ElementToken(val token: IElementType) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean = 
+    override fun parse(builder: PsiBuilder): Boolean =
         if (builder.tokenType === token) {
             builder.advanceLexer()
             true
@@ -66,6 +83,8 @@ data class NoneOrMore(val child: DSL) : DSL {
 
 @Suppress("KotlinConstantConditions")
 data class Optional(val child: DSL) : DSL {
+    constructor(child: IElementType) : this(child.dsl)
+
     override fun parse(builder: PsiBuilder): Boolean =
         child.parse(builder) || true
 }
