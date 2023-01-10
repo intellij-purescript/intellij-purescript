@@ -50,8 +50,8 @@ class ParserDefinitions {
             string /
             number /
             parseForAll.withRollback /
-            GenericIdentifier(idents.withRollback) /
-            TypeConstructor(qualifiedProperName.withRollback) /
+            GenericIdentifier(idents).withRollback /
+            TypeConstructor(qualifiedProperName).withRollback /
             parens(arrow / parseRow).withRollback /
             parens(type)
     )
