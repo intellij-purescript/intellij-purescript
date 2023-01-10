@@ -112,7 +112,6 @@ val VarBinder = WithPsi("VarBinder") { PSVarBinder(it) }
 val ConstructorBinder = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
 val ObjectBinder = WithPsi("ObjectBinder") { PSObjectBinder(it) }
 val ObjectBinderField = WithPsi("ObjectBinderField") { PSObjectBinderField(it) }
-val ValueRef = WithPsi("ValueRef") { PSValueRef(it) }
 val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
 val NumericLiteral = WithPsi("NumericLiteral") { PSNumericLiteral(it) }
 val StringLiteral = WithPsi("StringLiteral") { PSStringLiteral(it) }
