@@ -31,6 +31,7 @@ class ParserDefinitions {
 
     private val properName: DSL = ProperName(PROPER_NAME)
     private val qualifiedProperName = qualified(properName)
+    private val qualProperName =  QualifiedProperName(qualifiedProperName)
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
 
     private val parseForAll: DSL = ForAll(
@@ -108,7 +109,7 @@ class ParserDefinitions {
         ExpressionIdentifier(QualifiedIdentifier(qualified(Identifier(idents))))
             .heal,
         ExpressionSymbol(QualifiedSymbol(qualified(symbol))).heal,
-        ExpressionConstructor(QualifiedProperName(qualifiedProperName)).heal,
+        ExpressionConstructor(qualProperName).heal,
         BooleanLiteral(boolean),
         CharLiteral(char),
         StringLiteral(string),
@@ -176,7 +177,6 @@ class ParserDefinitions {
     private val parseAssociativity = infixl / infixr / infix
     private val parseFixity = Fixity(parseAssociativity + NATURAL)
     private val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
-    private val qualProperName = QualifiedProperName(!qualifier + properName)
     private val parseFixityDeclaration = FixityDeclarationType(
         parseFixity + Choice.of(
             // TODO Should we differentiate Types and DataConstructors?
@@ -205,9 +205,7 @@ class ParserDefinitions {
         (`class` + classSuper + classNameAndFundeps).heal,
         `class` + classNameAndFundeps
     )
-    private val classMember =
-        ClassMember((Identifier(idents) + dcolon + type))
-
+    private val classMember = ClassMember(Identifier(idents) + dcolon + type)
     private val classDeclaration = ClassDeclaration(
         classHead + !ClassMemberList(
             where + `L{` + classMember.sepBy1(`L-sep`) + `L}`
