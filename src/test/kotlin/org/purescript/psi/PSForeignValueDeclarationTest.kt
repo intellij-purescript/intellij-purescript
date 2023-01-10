@@ -2,6 +2,7 @@ package org.purescript.psi
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.file.PSFile
+import org.purescript.psi.foreign.PSForeignValueDeclaration
 
 class PSForeignValueDeclarationTest : BasePlatformTestCase() {
     fun `test knows its name`() {

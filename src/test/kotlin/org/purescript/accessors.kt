@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
-import org.purescript.psi.PSForeignDataDeclaration
-import org.purescript.psi.PSForeignValueDeclaration
+import org.purescript.psi.foreign.PSForeignDataDeclaration
+import org.purescript.psi.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module.*
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.binder.PSVarBinder

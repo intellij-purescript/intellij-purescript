@@ -16,7 +16,10 @@ import org.purescript.psi.dostmt.PSDoNotationLet
 import org.purescript.psi.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
+import org.purescript.psi.foreign.PSForeignDataDeclaration
+import org.purescript.psi.foreign.PSForeignValueDeclaration
 import org.purescript.psi.imports.*
+import org.purescript.psi.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor

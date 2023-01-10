@@ -11,6 +11,8 @@ import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.FixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.foreign.PSForeignDataDeclaration
+import org.purescript.psi.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName

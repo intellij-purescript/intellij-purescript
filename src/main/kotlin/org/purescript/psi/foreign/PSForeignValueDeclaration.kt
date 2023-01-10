@@ -1,10 +1,11 @@
-package org.purescript.psi
+package org.purescript.psi.foreign
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.features.DocCommentOwner
+import org.purescript.psi.PSPsiElement
 import org.purescript.psi.name.PSIdentifier
 
 /**

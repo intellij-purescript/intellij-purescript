@@ -18,6 +18,8 @@ import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.FixityDeclaration
 import org.purescript.psi.declaration.PSValueDeclaration
 import org.purescript.psi.exports.*
+import org.purescript.psi.foreign.PSForeignDataDeclaration
+import org.purescript.psi.foreign.PSForeignValueDeclaration
 import org.purescript.psi.imports.Import
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
