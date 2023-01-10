@@ -12,7 +12,7 @@ sealed interface DSL {
     fun sepBy1(sep: IElementType) = this + NoneOrMore(sep.dsl + this)
     val oneOrMore get() = this + noneOrMore
     val noneOrMore get() = NoneOrMore(this)
-    val recover get() = Transaction(this)
+    val heal get() = Transaction(this)
     fun parse(builder: PsiBuilder): Boolean
 }
 
