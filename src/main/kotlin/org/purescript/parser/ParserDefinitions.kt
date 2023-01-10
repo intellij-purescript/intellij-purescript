@@ -61,7 +61,7 @@ class ParserDefinitions {
 
     private val parseConstrainedType = ConstrainedType(
         !(parens(
-            (TypeConstructor(qualifiedProperName.heal) + typeAtom.noneOrMore)
+            (TypeConstructor(qualifiedProperName).heal + typeAtom.noneOrMore)
                 .sepBy1(COMMA)
         ) + darrow).heal + type
     )
