@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSClassName
-import org.purescript.psi.typevar.PSTypeVarBinding
+import org.purescript.psi.type.PSTypeVarBinding
 
 /**
  * A class declaration, e.g.
