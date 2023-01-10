@@ -99,16 +99,13 @@ class ParserDefinitions {
         Choice.of(
             squares(Optional(type)).withRollback,
             parens(arrow).withRollback,
-            braces(parseRow).`as`(ObjectType).withRollback,
+            braces(parseRow).withRollback.`as`(ObjectType),
             `_`.withRollback,
             string.withRollback,
             number.withRollback,
             parseForAll.withRollback,
-            idents.`as`(GenericIdentifier).withRollback,
-            qualifiedProperName
-                .withRollback
-                .`as`(TypeConstructor)
-                .withRollback,
+            idents.withRollback.`as`(GenericIdentifier),
+            qualifiedProperName.withRollback.`as`(TypeConstructor),
             parens(parseRow).withRollback,
             parens(type).withRollback
         ).`as`(TypeAtom)
