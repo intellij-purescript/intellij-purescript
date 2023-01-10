@@ -38,12 +38,9 @@ class ParserDefinitions {
             Reference { parseConstrainedType }
     )
 
-    private val rowLabel =
-        GenericIdentifier(lname / string.withRollback) + dcolon + type
-
+    private val rowLabel = GenericIdentifier(lname / string) + dcolon + type
     private val parseRow: DSL = Row(
-        (pipe + type) /
-            (rowLabel.sepBy(COMMA) + !(pipe + type))
+        (pipe + type) / (rowLabel.sepBy(COMMA) + !(pipe + type))
     )
 
     private val typeAtom: DSL = TypeAtom(
