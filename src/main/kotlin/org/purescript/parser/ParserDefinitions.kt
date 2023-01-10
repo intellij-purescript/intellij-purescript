@@ -97,17 +97,17 @@ class ParserDefinitions {
 
     private val typeAtom: DSL =
         Choice.of(
-            squares(Optional(type)).withRollback,
-            parens(arrow).withRollback,
-            braces(parseRow).withRollback.`as`(ObjectType),
-            `_`.withRollback,
-            string.withRollback,
-            number.withRollback,
+            squares(Optional(type)),
+            braces(parseRow).`as`(ObjectType),
+            `_`,
+            string,
+            number,
             parseForAll.withRollback,
             idents.withRollback.`as`(GenericIdentifier),
             qualifiedProperName.withRollback.`as`(TypeConstructor),
+            parens(arrow).withRollback,
             parens(parseRow).withRollback,
-            parens(type).withRollback
+            parens(type)
         ).`as`(TypeAtom)
 
     private fun braces(p: DSL): DSL =
