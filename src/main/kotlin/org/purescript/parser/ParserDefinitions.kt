@@ -61,12 +61,10 @@ class ParserDefinitions {
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     private val parseConstrainedType = ConstrainedType(
-        !(
-            (parens(
-                (TypeConstructor(qualifiedProperName.withRollback) + typeAtom.noneOrMore)
-                    .sepBy1(COMMA)
-            ) + darrow).withRollback
-            ) + type
+        !(parens(
+            (TypeConstructor(qualifiedProperName.withRollback) + typeAtom.noneOrMore)
+                .sepBy1(COMMA)
+        ) + darrow).withRollback + type
     )
 
     private val ident = Identifier(idents) /
