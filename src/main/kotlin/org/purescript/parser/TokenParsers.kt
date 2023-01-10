@@ -45,6 +45,7 @@ val string = STRING.dsl
 val then = THEN.dsl 
 val tick = TICK.dsl
 val where = WHERE.dsl
+val `,` = COMMA.dsl
 
 @Suppress("ObjectPropertyName")
 val `@` = "@".dsl
