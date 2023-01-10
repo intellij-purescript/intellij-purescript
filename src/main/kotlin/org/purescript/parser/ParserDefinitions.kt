@@ -89,8 +89,7 @@ class ParserDefinitions {
     private val qualOp =
         QualifiedOperatorName(qualified(OperatorName(operator)))
     private val type5 = typeAtom.oneOrMore
-    private val type4 = ("-".dsl + number).heal /
-        ("#".dsl.noneOrMore + type5)
+    private val type4 = ("-".dsl + number) / ("#".dsl.noneOrMore + type5)
     private val type3 = type4.sepBy1(qualOp)
     private val type2: DSL = type3 + !(arrow / darrow + Reference { type1 })
     private val type1 =
