@@ -3,7 +3,7 @@ package org.purescript.psi.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import org.purescript.parser.DDOT
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 class PSImportedDataMemberList(node: ASTNode) : PSPsiElement(node) {
     val doubleDot: PsiElement? get() = findChildByType(DDOT)

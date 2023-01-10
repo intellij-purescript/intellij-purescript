@@ -9,7 +9,7 @@ import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.PSLanguage
 import org.purescript.psi.module.Module.*
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration

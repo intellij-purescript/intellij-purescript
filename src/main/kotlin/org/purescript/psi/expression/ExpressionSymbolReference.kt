@@ -5,7 +5,7 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedFixityIndex
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSOperatorName

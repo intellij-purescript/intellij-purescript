@@ -1,7 +1,7 @@
 package org.purescript.psi.typevar
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 sealed class PSTypeVarBinding(node: ASTNode) : PSPsiElement(node)
 

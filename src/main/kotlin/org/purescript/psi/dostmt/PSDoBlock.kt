@@ -1,7 +1,7 @@
 package org.purescript.psi.dostmt
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 class PSDoBlock(node: ASTNode) : PSPsiElement(node) {
     val letDeclarations: Array<PSDoNotationLet>

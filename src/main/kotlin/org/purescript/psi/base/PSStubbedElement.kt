@@ -1,4 +1,4 @@
-package org.purescript.psi
+package org.purescript.psi.base
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.lang.ASTNode

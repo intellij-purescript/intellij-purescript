@@ -2,9 +2,9 @@ package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
-import org.purescript.psi.AStub
+import org.purescript.psi.base.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
-import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.base.PSStubbedElement
 
 /**
  * The export list in the module signature.

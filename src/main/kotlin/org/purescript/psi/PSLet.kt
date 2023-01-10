@@ -1,6 +1,7 @@
 package org.purescript.psi
 
 import com.intellij.lang.ASTNode
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.PSValueDeclaration
 
 class PSLet(node: ASTNode) : PSPsiElement(node) {

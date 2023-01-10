@@ -1,7 +1,7 @@
 package org.purescript.psi.name
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 /**
  * A operator in parenthesis without qualifier, example `(+)`

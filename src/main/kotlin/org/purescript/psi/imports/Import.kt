@@ -3,7 +3,6 @@ package org.purescript.psi.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import org.purescript.psi.*
 import org.purescript.psi.PSElementType.*
 import org.purescript.psi.classes.PSClassDeclaration
 import org.purescript.psi.classes.PSClassMember
@@ -18,6 +17,8 @@ import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.base.AStub
+import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 

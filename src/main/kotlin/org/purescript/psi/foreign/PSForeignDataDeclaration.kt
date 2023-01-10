@@ -3,7 +3,7 @@ package org.purescript.psi.foreign
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSProperName
 
 /**

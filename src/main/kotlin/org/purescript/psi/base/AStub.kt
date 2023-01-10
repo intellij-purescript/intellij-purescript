@@ -1,4 +1,4 @@
-package org.purescript.psi
+package org.purescript.psi.base
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.IStubElementType

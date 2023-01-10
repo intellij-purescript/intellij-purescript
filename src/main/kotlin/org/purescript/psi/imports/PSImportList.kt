@@ -3,7 +3,7 @@ package org.purescript.psi.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import org.purescript.parser.HIDING
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 /**
  * The import list in an import declaration.

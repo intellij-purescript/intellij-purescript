@@ -2,12 +2,11 @@ package org.purescript.psi.exports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
-import org.purescript.psi.AStub
+import org.purescript.psi.base.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
-import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.imports.Import
-import org.purescript.psi.imports.Import.Psi
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName

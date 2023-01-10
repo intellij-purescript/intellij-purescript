@@ -3,7 +3,7 @@ package org.purescript.psi.expression
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 
 class ImportQuickFix(

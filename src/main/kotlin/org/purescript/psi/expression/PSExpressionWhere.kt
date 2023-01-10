@@ -1,7 +1,7 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.PSValueDeclaration
 
 /**

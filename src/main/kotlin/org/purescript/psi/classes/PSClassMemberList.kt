@@ -1,7 +1,7 @@
 package org.purescript.psi.classes
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 /**
  * The members part of a class declaration, e.g.

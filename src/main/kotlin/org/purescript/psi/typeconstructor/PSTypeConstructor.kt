@@ -2,6 +2,7 @@ package org.purescript.psi.typeconstructor
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.*
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.PSSignature

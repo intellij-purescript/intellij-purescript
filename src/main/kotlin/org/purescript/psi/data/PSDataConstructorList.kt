@@ -1,7 +1,7 @@
 package org.purescript.psi.data
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 /**
  * The data constructors in a data declaration, e.g.

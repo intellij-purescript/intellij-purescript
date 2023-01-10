@@ -3,7 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import org.purescript.parser.DDOT
-import org.purescript.psi.PSPsiElement
+import org.purescript.psi.base.PSPsiElement
 
 /**
  * The exported member list in an [ExportedData.Psi], e.g.

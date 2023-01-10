@@ -24,6 +24,8 @@ import org.purescript.psi.imports.Import
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.base.AStub
+import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 interface Module {
