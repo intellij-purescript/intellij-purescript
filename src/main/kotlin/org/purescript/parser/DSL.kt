@@ -6,7 +6,6 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 
 sealed interface DSL {
-    fun or(next: DSL) = this / next
     fun sepBy(delimiter: DSL) = Optional(sepBy1(delimiter))
     fun sepBy1(delimiter: DSL) = this + NoneOrMore(delimiter + this)
     infix fun `as`(node: IElementType) = Symbolic(this, node)

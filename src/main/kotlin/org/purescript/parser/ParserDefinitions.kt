@@ -3,9 +3,9 @@ package org.purescript.parser
 class ParserDefinitions {
 
     // Literals
-    private val boolean = `true`.or(`false`)
+    private val boolean = `true` / `false`
     private val number =
-        ElementToken(NATURAL).or(ElementToken(FLOAT)).`as`(NumericLiteral)
+        (ElementToken(NATURAL) / ElementToken(FLOAT)).`as`(NumericLiteral)
 
     private val moduleName =
         (Optional(ElementToken(MODULE_PREFIX)) + ElementToken(PROPER_NAME)).`as`(
@@ -88,11 +88,11 @@ class ParserDefinitions {
             .`as`(ForAll)
 
     private val rowLabel =
-        lname.or(string.withRollback).`as`(GenericIdentifier) + dcolon + type
+        (lname / string.withRollback).`as`(GenericIdentifier) + dcolon + type
 
     private val parseRow: DSL =
-        (pipe + type)
-            .or(rowLabel.sepBy(ElementToken(COMMA)) + Optional(pipe + type))
+        ((pipe + type)
+            / (rowLabel.sepBy(ElementToken(COMMA)) + Optional(pipe + type)))
             .`as`(Row)
 
     private val typeAtom: DSL =
@@ -127,9 +127,7 @@ class ParserDefinitions {
         ) + type).`as`(ConstrainedType)
 
     private val ident =
-        idents
-            .`as`(Identifier)
-            .or(parens(operator.`as`(Identifier)).withRollback)
+        (idents.`as`(Identifier) / parens(operator.`as`(Identifier)).withRollback)
 
     private val typeVarBinding = Choice.of(
         idents.`as`(TypeVarName),
@@ -161,13 +159,11 @@ class ParserDefinitions {
     private val qualOp = qualified(operator.`as`(OperatorName))
         .`as`(QualifiedOperatorName)
     private val type5 = typeAtom.oneOrMore
-    private val type4 =
-        (StringToken("-") + number)
-            .withRollback
-            .or(StringToken("#").noneOrMore + type5)
+    private val type4 = (StringToken("-") + number).withRollback /
+        (StringToken("#").noneOrMore + type5)
     private val type3 = type4.sepBy1(qualOp)
     private val type2: DSL =
-        type3 + Optional(arrow.or(darrow) + Reference { type1 })
+        type3 + Optional(arrow / darrow + Reference { type1 })
     private val type1 =
         (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
     private val parsePropertyUpdate: DSL = label + Optional(eq) + expr
@@ -202,7 +198,7 @@ class ParserDefinitions {
 
 
     private val parseBadSingleCaseBranch: DSL =
-        Reference { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
+        Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 
     /*
     * if there is only one case branch it can ignore layout so we need
@@ -227,7 +223,7 @@ class ParserDefinitions {
     }
     private val expr4 = expr5.oneOrMore
     private val expr3 =
-        (StringToken("-").oneOrMore + expr4).`as`(UnaryMinus).or(expr4)
+        (StringToken("-").oneOrMore + expr4).`as`(UnaryMinus) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(
@@ -280,7 +276,7 @@ class ParserDefinitions {
             // TODO Should we differentiate Types and DataConstructors?
             // that would mean that when there is a `type` prefix we parse as Type
             // otherwise if it's a capital name it's a DataConstructor
-            (Optional(`'type'`) + properName.or(qualProperName)).withRollback,
+            (Optional(`'type'`) + properName / qualProperName).withRollback,
             qualIdentifier
         ) + `as` + operator.`as`(OperatorName))
             .`as`(FixityDeclarationType)
@@ -291,7 +287,7 @@ class ParserDefinitions {
         (qualProperName.`as`(ClassName) + typeAtom.noneOrMore)
             .`as`(ClassConstraint)
     private val constraints =
-        parens(constraint.sepBy1(ElementToken(COMMA))).or(constraint)
+        parens(constraint.sepBy1(ElementToken(COMMA))) / constraint
 
     private val classSuper =
         (constraints + ldarrow.`as`(pImplies)).`as`(ClassConstraintList)
@@ -320,11 +316,9 @@ class ParserDefinitions {
             constraint // this constraint is the instance type
     private val importedDataMembers =
         parens(
-            ddot.or(
-                properName
-                    .`as`(ImportedDataMember)
-                    .sepBy(ElementToken(COMMA))
-            )
+            ddot / properName
+                .`as`(ImportedDataMember)
+                .sepBy(ElementToken(COMMA))
         )
             .`as`(ImportedDataMemberList)
     private val importedItem =
@@ -388,13 +382,7 @@ class ParserDefinitions {
     )
     private val exportedClass = (`class` + properName).`as`(ExportedClassType)
     private val dataMembers =
-        parens(
-            ddot.or(
-                properName
-                    .`as`(ExportedDataMember)
-                    .sepBy(ElementToken(COMMA))
-            )
-        )
+        parens(ddot / properName.`as`(ExportedDataMember).sepBy(ElementToken(COMMA)))
             .`as`(ExportedDataMemberList)
     private val exportedData =
         (properName + Optional(dataMembers)).`as`(ExportedDataType)
@@ -435,7 +423,7 @@ class ParserDefinitions {
     private val binder1 = binder2.sepBy1(qualOp)
     private val guardedCaseExpr = parseGuard + (arrow + exprWhere)
     private val guardedCase =
-        (arrow + exprWhere).withRollback.or(guardedCaseExpr.noneOrMore)
+        (arrow + exprWhere).withRollback / guardedCaseExpr.noneOrMore
     private val caseBranch =
         (binder1.sepBy1(ElementToken(COMMA)) + guardedCase).`as`(CaseAlternative)
 
@@ -465,9 +453,7 @@ class ParserDefinitions {
     private val adoBlock = ado + `L{` + (doStatement).sepBy(`L-sep`) + `L}`
 
     private val recordBinder =
-        ((label + eq.or(StringToken(":"))).withRollback + binder).or(
-            label.`as`(
-                VarBinder
-            )
+        ((label + eq / StringToken(":")).withRollback + binder) / label.`as`(
+            VarBinder
         )
 }
