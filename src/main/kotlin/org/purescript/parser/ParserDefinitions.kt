@@ -64,7 +64,7 @@ class ParserDefinitions {
     )
 
     private val ident = idents / parens(Identifier(operator)).heal
-    private val typeVarBinding = TypeVarName(idents) /
+    private val typeVar = TypeVarName(idents) /
         TypeVarKinded(parens(idents + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
@@ -90,7 +90,7 @@ class ParserDefinitions {
     private val type3 = type4.sepBy1(qualOp)
     private val type2: DSL = type3 + !(arrow / darrow + Reference { type1 })
     private val type1 =
-        (`'forall'` + typeVarBinding.oneOrMore + dot).noneOrMore + type2
+        (`'forall'` + typeVar.oneOrMore + dot).noneOrMore + type2
     private val propertyUpdate: DSL = label + !eq + expr
     private val hole = TypeHole("?".dsl + idents)
     val symbol = Symbol(parens(operatorName))
@@ -149,11 +149,11 @@ class ParserDefinitions {
     private val patternGuard = !(binder + larrow).heal + expr
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
     private val dataHead =
-        data + properName + TypeArgs(typeVarBinding.noneOrMore)
+        data + properName + TypeArgs(typeVar.noneOrMore)
     private val dataCtor = DataConstructor(properName + typeAtom.noneOrMore)
     private val typeDeclaration = Signature(ident + dcolon + type)
     private val newtypeHead =
-        `'newtype'` + properName + TypeArgs(typeVarBinding.noneOrMore)
+        `'newtype'` + properName + TypeArgs(typeVar.noneOrMore)
     private val exprWhere: DSL = expr + !ExpressionWhere(
         where + `L{` + Reference { letBinding }.sepBy1(`L-sep`) + `L}`
     )
@@ -190,7 +190,7 @@ class ParserDefinitions {
     private val classSuper =
         ClassConstraintList(constraints + pImplies(ldarrow))
     private val classNameAndFundeps =
-        ClassName(properName) + typeVarBinding.noneOrMore +
+        ClassName(properName) + typeVar.noneOrMore +
             !ClassFunctionalDependencyList(fundeps)
     private val classSignature = ClassName(properName) + dcolon + type
     private val classHead = Choice.of(
@@ -246,7 +246,7 @@ class ParserDefinitions {
         (`'type'` + `'role'`).heal + properName + role.noneOrMore,
         (`'type'` + properName + dcolon).heal + type,
         TypeSynonymDeclaration(
-            `'type'` + properName + typeVarBinding.noneOrMore + eq + type
+            `'type'` + properName + typeVar.noneOrMore + eq + type
         ),
         ValueDeclaration
             (ident.heal + binderAtom.noneOrMore + guardedDecl),
