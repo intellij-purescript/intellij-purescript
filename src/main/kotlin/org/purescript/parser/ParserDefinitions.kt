@@ -79,29 +79,6 @@ class ParserDefinitions {
 
     private val properName: DSL = ElementToken(PROPER_NAME).`as`(ProperName)
 
-    // Kinds.hs
-    private val parseKind: DSL = Reference {
-        (parseKindPrefix +
-            Optional(
-                arrow.or(
-                    Optional(
-                        qualified(properName)
-                            .withRollback
-                            .`as`(TypeConstructor)
-                    )
-                ) + Optional(this)
-            )
-            ).`as`(FunKind)
-    }
-    private val parseKindAtom = Choice.of(
-        StringToken("*").`as`(START).`as`(Star),
-        StringToken("!").`as`(BANG).`as`(Bang),
-        qualified(properName).withRollback.`as`(TypeConstructor),
-        parens(parseKind)
-    )
-    private val parseKindPrefix = Reference {
-        ((StringToken("#") + this).`as`(RowKind)).or(parseKindAtom)
-    }
     private val type: DSL = Reference{ type1 }.sepBy1(dcolon).`as`(Type)
 
     private val parseForAll: DSL =
