@@ -3,6 +3,8 @@ package org.purescript.parser
 import org.purescript.psi.*
 import org.purescript.psi.PSElementType.WithPsi
 import org.purescript.psi.binder.*
+import org.purescript.psi.caseof.PSCaseAlternative
+import org.purescript.psi.caseof.PSConstrainedType
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.*
