@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSTypeAtom
+import org.purescript.psi.type.PSTypeAtom
 
 /**
  * A data constructor in a data declaration, e.g.

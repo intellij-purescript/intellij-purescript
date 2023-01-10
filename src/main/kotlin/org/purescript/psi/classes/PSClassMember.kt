@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSType
+import org.purescript.psi.type.PSType
 
 /**
  * The a member function of a class declaration, e.g.

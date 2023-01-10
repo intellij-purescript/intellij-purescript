@@ -24,6 +24,10 @@ import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
 import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.type.PSType
+import org.purescript.psi.type.PSTypeArgs
+import org.purescript.psi.type.PSTypeAtom
+import org.purescript.psi.type.PSTypeHole
 import org.purescript.psi.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.typevar.PSTypeVarKinded
