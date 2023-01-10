@@ -49,9 +49,9 @@ class ParserDefinitions {
             `_` /
             string /
             number /
+            TypeConstructor(qualifiedProperName) /
             parseForAll.withRollback /
-            GenericIdentifier(idents).withRollback /
-            TypeConstructor(qualifiedProperName).withRollback /
+            GenericIdentifier(idents) /
             parens(arrow / parseRow).withRollback /
             parens(type)
     )
