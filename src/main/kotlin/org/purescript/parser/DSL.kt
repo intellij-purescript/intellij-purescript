@@ -8,13 +8,14 @@ import com.intellij.psi.tree.IElementType
 sealed interface DSL {
     fun sepBy(delimiter: DSL) = Optional(sepBy1(delimiter))
     fun sepBy1(delimiter: DSL) = this + NoneOrMore(delimiter + this)
-    infix fun `as`(node: IElementType) = Symbolic(this, node)
     val oneOrMore get() = this + noneOrMore
     val noneOrMore get() = NoneOrMore(this)
     val withRollback get() = Transaction(this)
     fun parse(builder: PsiBuilder): Boolean
     operator fun div(other: DSL) = Choice(this, other)
 }
+
+operator fun IElementType.invoke(dsl:DSL) = Symbolic(dsl, this) 
 
 operator fun DSL.plus(other: DSL) = Seq(this, other)
 
