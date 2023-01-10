@@ -39,9 +39,7 @@ class ParserDefinitions {
     )
 
     private val rowLabel = GenericIdentifier(lname / string) + dcolon + type
-    private val parseRow: DSL = Row(
-        (pipe + type) / (rowLabel.sepBy(COMMA) + !(pipe + type))
-    )
+    private val parseRow = Row((`|` + type) / (rowLabel.sepBy(COMMA) + !(`|` + type)))
 
     private val typeAtom: DSL = TypeAtom(
         squares(!type) /
@@ -153,7 +151,7 @@ class ParserDefinitions {
 
     // TODO: pattern guards should parse expr1 not expr
     private val patternGuard = !(binder + larrow).heal + expr
-    private val parseGuard = Guard(pipe + patternGuard.sepBy(COMMA))
+    private val parseGuard = Guard(`|` + patternGuard.sepBy(COMMA))
     private val dataHead =
         data + properName + TypeArgs(typeVarBinding.noneOrMore)
     private val dataCtor = DataConstructor(properName + typeAtom.noneOrMore)
@@ -190,7 +188,7 @@ class ParserDefinitions {
     )
 
     private val fundep = ClassFunctionalDependency(type)
-    private val fundeps = pipe + fundep.sepBy1(COMMA)
+    private val fundeps = `|` + fundep.sepBy1(COMMA)
     private val constraint =
         ClassConstraint(ClassName(qualProperName) + typeAtom.noneOrMore)
     private val constraints = parens(constraint.sepBy1(COMMA)) / constraint
@@ -245,7 +243,7 @@ class ParserDefinitions {
     private val decl = Choice.of(
         (dataHead + dcolon).heal + type,
         DataDeclaration(
-            dataHead + !DataConstructorList(eq + dataCtor.sepBy1(PIPE))
+            dataHead + !DataConstructorList(eq + dataCtor.sepBy1(`|`))
         ),
         (`'newtype'` + properName + dcolon).heal + type,
         NewtypeDeclaration(
