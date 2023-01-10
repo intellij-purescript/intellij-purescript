@@ -78,8 +78,8 @@ class ParserDefinitions {
         )
 
     private val properName: DSL = ElementToken(PROPER_NAME).`as`(ProperName)
-
-    private val type: DSL = Reference{ type1 }.sepBy1(dcolon).`as`(Type)
+    private val qualifiedProperName = qualified(properName)
+    private val type: DSL = Reference { type1 }.sepBy1(dcolon).`as`(Type)
 
     private val parseForAll: DSL =
         (forall + idents
@@ -105,7 +105,7 @@ class ParserDefinitions {
             number.withRollback,
             parseForAll.withRollback,
             idents.`as`(GenericIdentifier).withRollback,
-            qualified(properName)
+            qualifiedProperName
                 .withRollback
                 .`as`(TypeConstructor)
                 .withRollback,
@@ -125,11 +125,8 @@ class ParserDefinitions {
     private val parseConstrainedType: DSL =
         (Optional(
             (parens(
-                (qualified(properName)
-                    .withRollback
-                    .`as`(TypeConstructor) +
-                    typeAtom.noneOrMore
-                    ).sepBy1(ElementToken(COMMA))
+                (qualifiedProperName.withRollback.`as`(TypeConstructor) +
+                    typeAtom.noneOrMore).sepBy1(ElementToken(COMMA))
             ) + darrow
                 ).withRollback
         ) + type).`as`(ConstrainedType)
@@ -164,7 +161,7 @@ class ParserDefinitions {
         )
     }
     private val binder: DSL = Reference { binder1 } + Optional(dcolon + type)
-    private val expr: DSL = (Reference {expr1} + Optional(dcolon + type))
+    private val expr: DSL = (Reference { expr1 } + Optional(dcolon + type))
         .`as`(Value)
     private val qualOp = qualified(operator.`as`(OperatorName))
         .`as`(QualifiedOperatorName)
@@ -174,8 +171,10 @@ class ParserDefinitions {
             .withRollback
             .or(StringToken("#").noneOrMore + type5)
     private val type3 = type4.sepBy1(qualOp)
-    private val type2: DSL = type3 + Optional(arrow.or(darrow) + Reference { type1 })
-    private val type1 = (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
+    private val type2: DSL =
+        type3 + Optional(arrow.or(darrow) + Reference { type1 })
+    private val type1 =
+        (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
     private val parsePropertyUpdate: DSL = label + Optional(eq) + expr
     private val hole = (StringToken("?") + idents).`as`(TypeHole)
     val symbol = parens(operator.`as`(OperatorName)).`as`(Symbol)
@@ -193,7 +192,7 @@ class ParserDefinitions {
                 .`as`(ExpressionIdentifier).withRollback,
             qualified(symbol).`as`(QualifiedSymbol)
                 .`as`(ExpressionSymbol).withRollback,
-            qualified(properName)
+            qualifiedProperName
                 .`as`(QualifiedProperName)
                 .`as`(ExpressionConstructor).withRollback,
             boolean.`as`(BooleanLiteral),
@@ -209,11 +208,12 @@ class ParserDefinitions {
 
     private val parseBadSingleCaseBranch: DSL =
         Reference { `L{` + binder1 + (arrow + `L}` + exprWhere).or(`L}` + guardedCase) }
+
     /*
     * if there is only one case branch it can ignore layout so we need
     * to allow layout end at any time.
     */
-    private val exprCase: DSL = 
+    private val exprCase: DSL =
         (case + expr.sepBy1(ElementToken(COMMA)) + of + Choice.of(
             parseBadSingleCaseBranch.withRollback,
             `L{` + Reference { caseBranch }.sepBy1(`L-sep`) + `L}`
@@ -425,11 +425,11 @@ class ParserDefinitions {
 
     private val elseDecl = `else` + Optional(`L-sep`)
 
-    val parseModuleHeader = 
+    val parseModuleHeader =
         module + moduleName + Optional(exportList) + where + `L{` +
             (parseImportDeclaration + `L-sep`).noneOrMore
     val parseModuleBody = (decl.sepBy(elseDecl) + `L-sep`).noneOrMore + `L}`
-    val parseModule = ( parseModuleHeader + parseModuleBody).`as`(ModuleType)
+    val parseModule = (parseModuleHeader + parseModuleBody).`as`(ModuleType)
 
 
     private val binder2 = Choice.of(
