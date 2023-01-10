@@ -9,7 +9,7 @@ class PureParser : PsiParser {
 
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         val mark = builder.mark()
-        var success = definitions.parseModule.parse(builder)
+        var success = definitions.module.parse(builder)
         while (!builder.eof()) {
             if (!success) {
                 builder.mark().error(
@@ -18,7 +18,7 @@ class PureParser : PsiParser {
                 )
             }
             builder.advanceLexer()
-            success = definitions.parseModuleBody.parse(builder)
+            success = definitions.moduleBody.parse(builder)
         }
         mark.done(root)
         return builder.treeBuilt

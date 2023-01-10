@@ -11,14 +11,14 @@ class ParserDefinitions {
 
     // ElementTokens
 
-    private val idents = 
-        Identifier(IDENT / `as` / HIDING / forall / QUALIFIED / KIND / `'type'`)
+    private val idents =
+        Identifier(IDENT / `as` / HIDING / `'forall'` / QUALIFIED / KIND / `'type'`)
 
     private val lname = Identifier(
         IDENT / data / `'newtype'` / `'type'` / `'foreign'` / `'import'` /
             infixl / infixr / infix / `class` / `'derive'` / KIND /
-            `'instance'` / module / case / of / `if` / then / `else` / `do` /
-            ado / let / `true` / `false` / `in` / where / forall / QUALIFIED /
+            `'instance'` / `'module'` / case / of / `if` / then / `else` / `do` /
+            ado / let / `true` / `false` / `in` / where / `'forall'` / QUALIFIED /
             HIDING / `as`
     )
 
@@ -33,24 +33,24 @@ class ParserDefinitions {
     private val qualProperName = QualifiedProperName(qualified(properName))
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
 
-    private val parseForAll: DSL = ForAll(
-        forall + idents.oneOrMore + dot + Reference { parseConstrainedType }
+    private val forAll = ForAll(
+        `'forall'` + idents.oneOrMore + dot + Reference { constrainedType }
     )
 
     private val rowLabel = Identifier(label) + dcolon + type
-    private val parseRow =
+    private val row =
         Row((`|` + type) / (rowLabel.sepBy(COMMA) + !(`|` + type)))
 
     private val typeAtom: DSL = TypeAtom(
         squares(!type) /
-            ObjectType(braces(parseRow)) /
+            ObjectType(braces(row)) /
             `_` /
             string /
             number /
             TypeConstructor(qualProperName) /
-            parseForAll.heal /
+            forAll.heal /
             idents /
-            parens(arrow / parseRow).heal /
+            parens(arrow / row).heal /
             parens(type)
     )
 
@@ -58,7 +58,7 @@ class ParserDefinitions {
     private fun parens(p: DSL) = LPAREN + p + RPAREN
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
-    private val parseConstrainedType = ConstrainedType(
+    private val constrainedType = ConstrainedType(
         !(parens(
             (TypeConstructor(qualProperName).heal + typeAtom.noneOrMore)
                 .sepBy1(COMMA)
@@ -92,8 +92,8 @@ class ParserDefinitions {
     private val type3 = type4.sepBy1(qualOp)
     private val type2: DSL = type3 + !(arrow / darrow + Reference { type1 })
     private val type1 =
-        (forall + typeVarBinding.oneOrMore + dot).noneOrMore + type2
-    private val parsePropertyUpdate: DSL = label + !eq + expr
+        (`'forall'` + typeVarBinding.oneOrMore + dot).noneOrMore + type2
+    private val propertyUpdate: DSL = label + !eq + expr
     private val hole = TypeHole("?".dsl + idents)
     val symbol = Symbol(parens(OperatorName(operator)))
     private val recordLabel = ObjectBinderField(
@@ -118,7 +118,7 @@ class ParserDefinitions {
     private val expr7 = exprAtom + Accessor(dot + label).noneOrMore
 
 
-    private val parseBadSingleCaseBranch: DSL =
+    private val badSingleCaseBranch: DSL =
         Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 
     /*
@@ -127,19 +127,19 @@ class ParserDefinitions {
     */
     private val exprCase: DSL = Case(
         case + expr.sepBy1(COMMA) + of + Choice.of(
-            parseBadSingleCaseBranch.heal,
+            badSingleCaseBranch.heal,
             `L{` + Reference { caseBranch }.sepBy1(`L-sep`) + `L}`
         )
     )
     private val expr5 = Reference {
-        braces(parsePropertyUpdate.sepBy1(COMMA)).heal /
+        braces(propertyUpdate.sepBy1(COMMA)).heal /
             expr7 /
             Lambda(backslash + binderAtom.oneOrMore + arrow + expr) /
             exprCase /
-            parseIfThenElse /
+            ifThenElse /
             doBlock /
             (adoBlock + `in` + expr) /
-            parseLet
+            letIn
     }
     private val expr4: DSL = expr5.oneOrMore
     private val expr3 = UnaryMinus("-".dsl.oneOrMore + expr4) / expr4
@@ -149,17 +149,17 @@ class ParserDefinitions {
 
     // TODO: pattern guards should parse expr1 not expr
     private val patternGuard = !(binder + larrow).heal + expr
-    private val parseGuard = Guard(`|` + patternGuard.sepBy(COMMA))
+    private val guard = Guard(`|` + patternGuard.sepBy(COMMA))
     private val dataHead =
         data + properName + TypeArgs(typeVarBinding.noneOrMore)
     private val dataCtor = DataConstructor(properName + typeAtom.noneOrMore)
-    private val parseTypeDeclaration = Signature(ident + dcolon + type)
+    private val typeDeclaration = Signature(ident + dcolon + type)
     private val newtypeHead =
         `'newtype'` + properName + TypeArgs(typeVarBinding.noneOrMore)
     private val exprWhere: DSL = expr + !ExpressionWhere(
         where + `L{` + Reference { letBinding }.sepBy1(`L-sep`) + `L}`
     )
-    private val guardedDeclExpr = parseGuard + eq + exprWhere
+    private val guardedDeclExpr = guard + eq + exprWhere
     private val guardedDecl = (eq.heal + exprWhere) /
         guardedDeclExpr.oneOrMore
     private val instBinder =
@@ -167,15 +167,15 @@ class ParserDefinitions {
             (ident + dcolon).heal + type,
             ValueDeclaration(ident + binderAtom.noneOrMore + guardedDecl)
         )
-    private val parseForeignDeclaration = `'foreign'` + `'import'` + Choice.of(
+    private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
         ForeignDataDeclaration(data + properName + dcolon + type),
         ForeignValueDeclaration(ident.heal + dcolon + type)
     )
-    private val parseAssociativity = infixl / infixr / infix
-    private val parseFixity = Fixity(parseAssociativity + NATURAL)
+    private val associativity = infixl / infixr / infix
+    private val fixity = Fixity(associativity + NATURAL)
     private val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
-    private val parseFixityDeclaration = FixityDeclarationType(
-        parseFixity + Choice.of(
+    private val fixityDeclaration = FixityDeclarationType(
+        fixity + Choice.of(
             // TODO Should we differentiate Types and DataConstructors?
             // that would mean that when there is a `type` prefix we parse as Type
             // otherwise if it's a capital name it's a DataConstructor
@@ -225,7 +225,7 @@ class ParserDefinitions {
         )
     private val importList =
         ImportList(!HIDING + parens(importedItem.sepBy(COMMA)))
-    private val parseImportDeclaration = ImportType(
+    private val importDeclaration = ImportType(
         `'import'` + moduleName + !importList + !ImportAlias(`as` + moduleName)
     )
 
@@ -244,7 +244,7 @@ class ParserDefinitions {
         NewtypeDeclaration(
             newtypeHead + eq + NewTypeConstructor(properName + typeAtom)
         ),
-        parseTypeDeclaration.heal,
+        typeDeclaration.heal,
         (`'type'` + `'role'`).heal + properName + role.noneOrMore,
         (`'type'` + properName + dcolon).heal + type,
         TypeSynonymDeclaration(
@@ -252,8 +252,8 @@ class ParserDefinitions {
         ),
         ValueDeclaration
             (ident.heal + binderAtom.noneOrMore + guardedDecl),
-        parseForeignDeclaration,
-        parseFixityDeclaration,
+        foreignDeclaration,
+        fixityDeclaration,
         classDeclaration,
         InstanceDeclaration(
             !(`'derive'` + !`'newtype'`) + instHead
@@ -266,7 +266,7 @@ class ParserDefinitions {
     )
     private val exportedData = ExportedDataType(properName + !dataMembers)
     private val exportedKind = ExportedKindType(KIND + properName)
-    private val exportedModule = ExportedModuleType(module + moduleName)
+    private val exportedModule = ExportedModuleType(`'module'` + moduleName)
     private val exportedOperator = ExportedOperatorType(symbol)
     private val exportedType =
         ExportedTypeType(`'type'` + parens(Identifier(operator)))
@@ -287,33 +287,33 @@ class ParserDefinitions {
 
     private val elseDecl = `else` + !`L-sep`
 
-    val parseModuleHeader =
-        module + moduleName + !exportList + where + `L{` +
-            (parseImportDeclaration + `L-sep`).noneOrMore
-    val parseModuleBody = (decl.sepBy(elseDecl) + `L-sep`).noneOrMore + `L}`
-    val parseModule = ModuleType(parseModuleHeader + parseModuleBody)
+    val moduleHeader =
+        `'module'` + moduleName + !exportList + where + `L{` +
+            (importDeclaration + `L-sep`).noneOrMore
+    val moduleBody = (decl.sepBy(elseDecl) + `L-sep`).noneOrMore + `L}`
+    val module = ModuleType(moduleHeader + moduleBody)
     private val binder2 = Choice.of(
         (ConstructorBinder(qualProperName) + binderAtom.noneOrMore).heal,
         NumberBinder(("-".dsl + number).heal),
         binderAtom,
     )
     private val binder1 = binder2.sepBy1(qualOp)
-    private val guardedCaseExpr = parseGuard + arrow + exprWhere
+    private val guardedCaseExpr = guard + arrow + exprWhere
     private val guardedCase =
         (arrow + exprWhere).heal / guardedCaseExpr.noneOrMore
     private val caseBranch =
         CaseAlternative(binder1.sepBy1(COMMA) + guardedCase)
 
-    private val parseIfThenElse =
+    private val ifThenElse =
         IfThenElse(`if` + expr + then + expr + `else` + expr)
     private val letBinding =
         Choice.of(
-            parseTypeDeclaration.heal,
+            typeDeclaration.heal,
             ValueDeclaration(ident + binderAtom.noneOrMore + guardedDecl).heal,
             (binder1 + eq + exprWhere).heal,
             (ident + binderAtom.noneOrMore + guardedDecl).heal
         )
-    private val parseLet =
+    private val letIn =
         Let(let + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
     private val doStatement = Choice.of(
         DoNotationLet(let + `L{` + letBinding.sepBy1(`L-sep`) + `L}`),
