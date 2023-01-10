@@ -12,12 +12,12 @@ sealed interface DSL {
     val noneOrMore get() = NoneOrMore(this)
     val withRollback get() = Transaction(this)
     fun parse(builder: PsiBuilder): Boolean
-    operator fun div(other: DSL) = Choice(this, other)
 }
 
 operator fun IElementType.invoke(dsl:DSL) = Symbolic(dsl, this) 
 
 operator fun DSL.plus(other: DSL) = Seq(this, other)
+operator fun DSL.div(other: DSL) = Choice(this, other)
 
 data class ElementToken(val token: IElementType) : DSL {
     override fun parse(builder: PsiBuilder): Boolean = 
