@@ -96,19 +96,17 @@ class ParserDefinitions {
             .`as`(Row)
 
     private val typeAtom: DSL =
-        Choice.of(
-            squares(Optional(type)),
-            braces(parseRow).`as`(ObjectType),
-            `_`,
-            string,
-            number,
-            parseForAll.withRollback,
-            idents.withRollback.`as`(GenericIdentifier),
-            qualifiedProperName.withRollback.`as`(TypeConstructor),
-            parens(arrow).withRollback,
-            parens(parseRow).withRollback,
+        (squares(Optional(type)) /
+            braces(parseRow).`as`(ObjectType) /
+            `_` /
+            string /
+            number /
+            parseForAll.withRollback /
+            idents.withRollback.`as`(GenericIdentifier) /
+            qualifiedProperName.withRollback.`as`(TypeConstructor) /
+            parens(arrow / parseRow).withRollback /
             parens(type)
-        ).`as`(TypeAtom)
+            ).`as`(TypeAtom)
 
     private fun braces(p: DSL): DSL =
         ElementToken(LCURLY) + p + ElementToken(RCURLY)
