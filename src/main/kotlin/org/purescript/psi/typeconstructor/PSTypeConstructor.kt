@@ -7,7 +7,7 @@ import org.purescript.psi.data.PSDataConstructor
 import org.purescript.psi.data.PSDataDeclaration
 import org.purescript.psi.declaration.PSSignature
 import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.name.PSProperName
+import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 
 /**
@@ -22,18 +22,13 @@ import org.purescript.psi.newtype.PSNewTypeDeclaration
  *  - [PSTypeAtom]
  */
 class PSTypeConstructor(node: ASTNode) : PSPsiElement(node) {
-    val moduleName: PSModuleName?
-        get() = findChildByClass(PSModuleName::class.java)
-
     /**
-     * @return the [PSProperName] identifying this type constructor
+     * @return the [PSQualifiedProperName] identifying this type constructor
      */
-    private val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    private val identifier: PSQualifiedProperName
+        get() = findNotNullChildByClass(PSQualifiedProperName::class.java)
 
-    override fun getName(): String =
-        identifier.name
-
-    override fun getReference(): TypeConstructorReference =
-        TypeConstructorReference(this)
+    val moduleName get() = identifier.moduleName
+    override fun getName(): String = identifier.name
+    override fun getReference() = TypeConstructorReference(this)
 }

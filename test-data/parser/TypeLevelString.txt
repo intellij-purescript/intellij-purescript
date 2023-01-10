@@ -37,5 +37,6 @@ Purescript File
               PsiElement(proper name)('Bar')
         PSTypeAtom(TypeAtom)
           PSTypeConstructor(TypeConstructor)
-            PSProperName(ProperName)
-              PsiElement(proper name)('Foo')
+            PSQualifiedProperName(QualifiedProperName)
+              PSProperName(ProperName)
+                PsiElement(proper name)('Foo')

@@ -30,8 +30,7 @@ class ParserDefinitions {
         OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / "#" / ":"
 
     private val properName: DSL = ProperName(PROPER_NAME)
-    private val qualifiedProperName = qualified(properName)
-    private val qualProperName =  QualifiedProperName(qualifiedProperName)
+    private val qualProperName = QualifiedProperName(qualified(properName))
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
 
     private val parseForAll: DSL = ForAll(
@@ -48,7 +47,7 @@ class ParserDefinitions {
             `_` /
             string /
             number /
-            TypeConstructor(qualifiedProperName) /
+            TypeConstructor(qualProperName) /
             parseForAll.heal /
             GenericIdentifier(idents) /
             parens(arrow / parseRow).heal /
@@ -61,7 +60,7 @@ class ParserDefinitions {
 
     private val parseConstrainedType = ConstrainedType(
         !(parens(
-            (TypeConstructor(qualifiedProperName).heal + typeAtom.noneOrMore)
+            (TypeConstructor(qualProperName).heal + typeAtom.noneOrMore)
                 .sepBy1(COMMA)
         ) + darrow).heal + type
     )

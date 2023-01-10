@@ -25,10 +25,8 @@ class PSQualifiedProperName(node: ASTNode) : PSPsiElement(node) {
      * Data.Maybe.Nothing
      * ```
      */
-    val moduleName: PSModuleName?
-        get() = findChildByClass(PSModuleName::class.java)
-
-
+    val moduleName get() = findChildByClass(PSModuleName::class.java)
+    
     /**
      * @return the proper name part of this element, e.g.
      * ```
@@ -39,8 +37,7 @@ class PSQualifiedProperName(node: ASTNode) : PSPsiElement(node) {
      * Data.Maybe.Nothing
      * ```
      */
-    val properName: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    val properName get() = findNotNullChildByClass(PSProperName::class.java)
 
     /**
      * @return the name of the [PSProperName] that this element contains
