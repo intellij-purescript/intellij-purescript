@@ -29,7 +29,7 @@ Purescript File
       PSTypeArgs(TypeArgs)
         PSTypeVarKinded(TypeVarKinded)
           PsiElement(()('(')
-          PSIdentifier(GenericIdentifier)
+          PSIdentifier(identifier)
             PsiElement(identifier)('m')
           PsiElement(::)('::')
           PSType(Type)

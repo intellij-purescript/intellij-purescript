@@ -11,8 +11,8 @@ class ParserDefinitions {
 
     // ElementTokens
 
-    private val idents =
-        IDENT / `as` / HIDING / forall / QUALIFIED / KIND / `'type'`
+    private val idents = 
+        Identifier(IDENT / `as` / HIDING / forall / QUALIFIED / KIND / `'type'`)
 
     private val lname = Identifier(
         IDENT / data / `'newtype'` / `'type'` / `'foreign'` / `'import'` /
@@ -34,11 +34,10 @@ class ParserDefinitions {
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
 
     private val parseForAll: DSL = ForAll(
-        forall + GenericIdentifier(idents).oneOrMore + dot +
-            Reference { parseConstrainedType }
+        forall + idents.oneOrMore + dot + Reference { parseConstrainedType }
     )
 
-    private val rowLabel = GenericIdentifier(lname / string) + dcolon + type
+    private val rowLabel = Identifier(label) + dcolon + type
     private val parseRow =
         Row((`|` + type) / (rowLabel.sepBy(COMMA) + !(`|` + type)))
 
@@ -50,7 +49,7 @@ class ParserDefinitions {
             number /
             TypeConstructor(qualProperName) /
             parseForAll.heal /
-            GenericIdentifier(idents) /
+            idents /
             parens(arrow / parseRow).heal /
             parens(type)
     )
@@ -66,9 +65,9 @@ class ParserDefinitions {
         ) + darrow).heal + type
     )
 
-    private val ident = Identifier(idents) / parens(Identifier(operator)).heal
+    private val ident = idents / parens(Identifier(operator)).heal
     private val typeVarBinding = TypeVarName(idents) /
-        TypeVarKinded(parens(GenericIdentifier(idents) + dcolon + type))
+        TypeVarKinded(parens(idents + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
             NullBinder(`_`),
@@ -105,8 +104,7 @@ class ParserDefinitions {
     private val exprAtom = Choice.of(
         `_`,
         hole.heal,
-        ExpressionIdentifier(QualifiedIdentifier(qualified(Identifier(idents))))
-            .heal,
+        ExpressionIdentifier(QualifiedIdentifier(qualified(idents))).heal,
         ExpressionSymbol(QualifiedSymbol(qualified(symbol))).heal,
         ExpressionConstructor(qualProperName).heal,
         BooleanLiteral(boolean),
@@ -204,7 +202,7 @@ class ParserDefinitions {
         (`class` + classSuper + classNameAndFundeps).heal,
         `class` + classNameAndFundeps
     )
-    private val classMember = ClassMember(Identifier(idents) + dcolon + type)
+    private val classMember = ClassMember(idents + dcolon + type)
     private val classDeclaration = ClassDeclaration(
         classHead + !ClassMemberList(
             where + `L{` + classMember.sepBy1(`L-sep`) + `L}`
@@ -266,8 +264,7 @@ class ParserDefinitions {
     private val dataMembers = ExportedDataMemberList(
         parens(ddot / ExportedDataMember(properName).sepBy(COMMA))
     )
-    private val exportedData =
-        ExportedDataType(properName + !dataMembers)
+    private val exportedData = ExportedDataType(properName + !dataMembers)
     private val exportedKind = ExportedKindType(KIND + properName)
     private val exportedModule = ExportedModuleType(module + moduleName)
     private val exportedOperator = ExportedOperatorType(symbol)

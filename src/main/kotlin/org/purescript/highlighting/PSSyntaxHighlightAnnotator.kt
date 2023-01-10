@@ -7,11 +7,7 @@ import com.intellij.psi.PsiElement
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.NUMBER
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.Companion.TYPE_VARIABLE
-import org.purescript.parser.ExpressionConstructor
-import org.purescript.parser.GenericIdentifier
-import org.purescript.parser.LocalIdentifier
-import org.purescript.parser.TypeConstructor
-import org.purescript.parser.ClassName
+import org.purescript.parser.*
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -21,14 +17,9 @@ class PSSyntaxHighlightAnnotator : Annotator {
                     .textAttributes(TYPE_NAME)
                     .create()
             }
-            GenericIdentifier, ExpressionConstructor -> {
+            ExpressionConstructor -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_VARIABLE)
-                    .create()
-            }
-            LocalIdentifier -> {
-                holder.newSilentAnnotation(INFORMATION)
-                    .textAttributes(NUMBER)
                     .create()
             }
         }

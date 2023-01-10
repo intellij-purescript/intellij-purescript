@@ -117,7 +117,7 @@ Purescript File
             PSTypeAtom(TypeAtom)
               PsiElement(()('(')
               PSRow(Row)
-                PSIdentifier(GenericIdentifier)
+                PSIdentifier(identifier)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('console')
                 PsiElement(::)('::')

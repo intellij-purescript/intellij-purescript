@@ -14,7 +14,7 @@ Purescript File
           PSObjectType(ObjectType)
             PsiElement({)('{')
             PSRow(Row)
-              PSIdentifier(GenericIdentifier)
+              PSIdentifier(identifier)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('users')
               PsiElement(::)('::')

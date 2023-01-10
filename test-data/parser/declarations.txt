@@ -23,4 +23,5 @@ Purescript File
         PsiElement(proper name)('User')
       PSTypeArgs(TypeArgs)
         PSTypeVarName(TypeVarName)
-          PsiElement(identifier)('a')
+          PSIdentifier(identifier)
+            PsiElement(identifier)('a')

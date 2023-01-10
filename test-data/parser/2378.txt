@@ -22,7 +22,7 @@ Purescript File
           PsiElement(proper name)('Foo')
       PSTypeVarKinded(TypeVarKinded)
         PsiElement(()('(')
-        PSIdentifier(GenericIdentifier)
+        PSIdentifier(identifier)
           PsiElement(identifier)('a')
         PsiElement(::)('::')
         PSType(Type)

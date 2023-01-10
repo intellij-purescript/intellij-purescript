@@ -54,8 +54,6 @@ val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
 val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
 val TypeConstructor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
-val GenericIdentifier = WithPsi("GenericIdentifier") { PSIdentifier(it) }
-val LocalIdentifier = WithPsi("LocalIdentifier") { PSIdentifier(it) }
 val DataDeclaration = WithPsi("DataDeclaration") { PSDataDeclaration(it) }
 val DataConstructorList =
     WithPsi("DataConstructorList") { PSDataConstructorList(it) }
