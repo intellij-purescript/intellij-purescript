@@ -128,7 +128,7 @@ class PSClassDeclarationTest : BasePlatformTestCase() {
                 module Data.Codec.Argonaut.Record where
                 -- | The class used to enable the building of `Record` codecs by providing a
                 -- | record of codecs.
-                class RowListCodec (rl ∷ RL.RowList) (ri ∷ # Type) (ro ∷ # Type) | rl → ri ro where
+                class RowListCodec (rl ∷ RL.RowList) (ri ∷ Row Type) (ro ∷ Row Type) | rl → ri ro where
                     rowListCodec ∷ RLProxy rl → Record ri → CA.JPropCodec (Record ro)
             """.trimIndent()
         ).getClassDeclaration()

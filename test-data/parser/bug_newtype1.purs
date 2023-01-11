@@ -91,7 +91,7 @@ import Unsafe.Coerce (unsafeCoerce)
 
 -- | The phantom row `r` can be thought of as a context which is synthesized in
 -- | the course of constructing a refined HTML expression.
-newtype IProp (r :: # Type) i = IProp (Prop (InputF Unit i))
+newtype IProp (r :: Row Type) i = IProp (Prop (InputF Unit i))
 
 derive instance newtypeIProp :: Newtype (IProp r i) _
 
@@ -107,7 +107,7 @@ prop = (unsafeCoerce :: (PropName value -> value -> Prop (InputF Unit i)) -> Pro
 -- | Creates an indexed HTML attribute.
 attr :: forall r i. AttrName -> String -> IProp r i
 attr =
-  Core.attr Nothing #
+  Core.attr Nothing Row
     (unsafeCoerce
       :: (AttrName -> String -> Prop (InputF Unit i))
       -> AttrName

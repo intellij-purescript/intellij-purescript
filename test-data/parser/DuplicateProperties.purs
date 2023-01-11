@@ -3,7 +3,7 @@ module Main where
 import Prelude
 import Control.Monad.Eff.Console (log)
 
-data RProxy (r :: # Type) = RProxy
+data RProxy (r :: Row Type) = RProxy
 
 data Proxy (a :: Type) = Proxy
 

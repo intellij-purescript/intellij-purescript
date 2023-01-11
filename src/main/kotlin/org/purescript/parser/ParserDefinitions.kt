@@ -14,8 +14,9 @@ class ParserDefinitions {
     private fun parens(p: DSL) = LPAREN + p + RPAREN
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
-    private val idents =
-        Identifier(LOWER / `'as'` / HIDING / `'forall'` / QUALIFIED / `'type'`)
+    // TODO: add 'representational' and 'phantom'
+    private val idents = 
+        Identifier(LOWER / `'as'` / `'hiding'` / `'role'`/ `'nominal'`)
 
     private val label = Identifier(
         Choice.of(
@@ -43,15 +44,14 @@ class ParserDefinitions {
             `'let'`,
             `'module'`,
             `'newtype'`,
-            // TODO: nominal
-            `'type'`,
+            `'nominal'`,
             `'of'`,
             // TODO: phantom
             // TODO: representational
-            // TODO: role
+            `'role'`,
             `'then'`,
             `'true'`,
-            // TODO: type
+            `'type'`,
             `'where'`,
         )
     )
@@ -59,7 +59,7 @@ class ParserDefinitions {
     // this doesn't match parser.y but i dont feel like changing it right now
     // it might be due to differences in the lexer
     private val operator =
-        OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / "#" / ":"
+        OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / ":"
 
     private val properName: DSL = ProperName(PROPER_NAME)
     private val qualProperName = QualifiedProperName(qualified(properName))
@@ -114,7 +114,7 @@ class ParserDefinitions {
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
     private val type5 = +typeAtom
-    private val type4 = ("-".dsl + number) / (!+"#" + type5)
+    private val type4 = ("-".dsl + number) / type5
     private val type3 = type4.sepBy1(qualOp)
     private val type2: DSL = type3 + !(arrow / darrow + Reference { type1 })
     private val type1 = !+(`'forall'` + +typeVar + dot) + type2
@@ -247,7 +247,7 @@ class ParserDefinitions {
      * representational = the type can be coerced to another type if certain conditions apply.
      * phantom - the type can always be coerced to another type.
      * */
-    private val role = nominal / representational / phantom
+    private val role = `'nominal'` / representational / phantom
     private val decl = Choice.of(
         (dataHead + dcolon).heal + type,
         DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
