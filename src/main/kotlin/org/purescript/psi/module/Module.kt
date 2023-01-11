@@ -8,7 +8,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
-import org.purescript.parser.FixityDeclarationType
+import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
 import org.purescript.psi.*
 import org.purescript.psi.classes.PSClassDeclaration
@@ -60,7 +60,7 @@ interface Module {
         var cache: Cache = Cache()
         
         val exports get() = child<ExportList.Psi>()
-        val fixityDeclarations get() = children(FixityDeclarationType)
+        val fixityDeclarations get() = children(FixityDeclType)
 
         inner class Cache {
             val imports by lazy { findChildrenByClass<Import.Psi>() }

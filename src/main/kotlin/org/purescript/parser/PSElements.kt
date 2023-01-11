@@ -33,7 +33,7 @@ import org.purescript.psi.type.PSTypeVarKinded
 import org.purescript.psi.type.PSTypeVarName
 
 val ModuleType = Module.Type
-val FixityDeclarationType = FixityDeclaration.Type
+val FixityDeclType = FixityDeclaration.Type
 val ExportListType = ExportList.Type
 val ExportedClassType = ExportedClass.Type
 val ExportedDataType = ExportedData.Type
@@ -52,19 +52,18 @@ val Row = WithPsi("Row") { PSRow(it) }
 val ObjectType = WithPsi("ObjectType") { PSObjectType(it) }
 val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
 val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
-val TypeConstructor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
+val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
-val DataDeclaration = WithPsi("DataDeclaration") { PSDataDeclaration(it) }
-val DataConstructorList =
-    WithPsi("DataConstructorList") { PSDataConstructorList(it) }
-val DataConstructor = WithPsi("DataConstructor") { PSDataConstructor(it) }
+val DataDecl = WithPsi("DataDeclaration") { PSDataDeclaration(it) }
+val DataCtorList = WithPsi("DataConstructorList") { PSDataConstructorList(it) }
+val DataCtor = WithPsi("DataConstructor") { PSDataConstructor(it) }
 val Signature = WithPsi("Signature") { PSSignature(it) }
-val TypeSynonymDeclaration =
+val TypeSynonymDecl =
     WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }
-val ValueDeclaration = WithPsi("ValueDeclaration") { PSValueDeclaration(it) }
-val ForeignDataDeclaration =
+val ValueDecl = WithPsi("ValueDeclaration") { PSValueDeclaration(it) }
+val ForeignDataDecl =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
-val ForeignValueDeclaration =
+val ForeignValueDecl =
     WithPsi("ForeignValueDeclaration") { PSForeignValueDeclaration(it) }
 val ImportType = Import.Type
 val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
@@ -79,7 +78,7 @@ val ImportedKind = WithPsi("ImportedKind") { PSImportedKind(it) }
 val ImportedOperator = WithPsi("ImportedOperator") { PSImportedOperator(it) }
 val ImportedType = WithPsi("ImportedType") { PSImportedType(it) }
 val ImportedValue = WithPsi("ImportedValue") { PSImportedValue(it) }
-val ClassDeclaration = WithPsi("ClassDeclaration") { PSClassDeclaration(it) }
+val ClassDecl = WithPsi("ClassDeclaration") { PSClassDeclaration(it) }
 val ClassConstraintList =
     WithPsi("ClassConstraintList") { PSClassConstraintList(it) }
 val ClassConstraint = WithPsi("ClassConstraint") { PSClassConstraint(it) }
@@ -87,16 +86,13 @@ val ClassFunctionalDependencyList =
     WithPsi("ClassFunctionalDependencyList")
     { PSClassFunctionalDependencyList(it) }
 val ClassFunctionalDependency =
-    WithPsi("ClassFunctionalDependency")
-    { PSClassFunctionalDependency(it) }
+    WithPsi("ClassFunctionalDependency") { PSClassFunctionalDependency(it) }
 val ClassMember = WithPsi("ClassMember") { PSClassMember(it) }
 val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
-val InstanceDeclaration =
+val InstanceDecl =
     WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
-val NewtypeDeclaration =
-    WithPsi("NewtypeDeclaration") { PSNewTypeDeclaration(it) }
-val NewTypeConstructor =
-    WithPsi("NewTypeConstructor") { PSNewTypeConstructor(it) }
+val NewtypeDecl = WithPsi("NewtypeDeclaration") { PSNewTypeDeclaration(it) }
+val NewTypeCtor = WithPsi("NewTypeConstructor") { PSNewTypeConstructor(it) }
 val Guard = WithPsi("Guard") { PSGuard(it) }
 val NullBinder = WithPsi("NullBinder") { PSNullBinder(it) }
 val StringBinder = WithPsi("StringBinder") { PSStringBinder(it) }
@@ -105,7 +101,7 @@ val BooleanBinder = WithPsi("BooleanBinder") { PSBooleanBinder(it) }
 val NumberBinder = WithPsi("NumberBinder") { PSNumberBinder(it) }
 val NamedBinder = WithPsi("NamedBinder") { PSNamedBinder(it) }
 val VarBinder = WithPsi("VarBinder") { PSVarBinder(it) }
-val ConstructorBinder = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
+val CtorBinder = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
 val ObjectBinder = WithPsi("ObjectBinder") { PSObjectBinder(it) }
 val ObjectBinderField = WithPsi("ObjectBinderField") { PSObjectBinderField(it) }
 val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
@@ -115,7 +111,7 @@ val CharLiteral = WithPsi("CharLiteral") { PSCharLiteral(it) }
 val ArrayLiteral = WithPsi("ArrayLiteral") { PSArrayLiteral(it) }
 val ObjectLiteral = WithPsi("ObjectLiteral") { PSObjectLiteral(it) }
 val Lambda = WithPsi("Lambda") { PSLambda(it) }
-val ExpressionConstructor =
+val ExpressionCtor =
     WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
 val ExpressionIdentifier =
     WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }

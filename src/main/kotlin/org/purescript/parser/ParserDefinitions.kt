@@ -46,7 +46,7 @@ class ParserDefinitions {
     private val row =
         Row((`|` + type) / (rowLabel.sepBy(`,`) + !(`|` + type)))
 
-    private val typeCtor = TypeConstructor(qualProperName)
+    private val typeCtor = TypeCtor(qualProperName)
     private val typeAtom: DSL = TypeAtom(
         squares(!type) /
             ObjectType(braces(row)) /
@@ -77,7 +77,7 @@ class ParserDefinitions {
             braces(recordBinder.sepBy(`,`)),
             parens(binder),
             BooleanBinder(boolean),
-            ConstructorBinder(qualProperName),
+            CtorBinder(qualProperName),
             NamedBinder(VarBinder(ident) + `@` + this).heal,
             VarBinder(ident),
         )
@@ -104,7 +104,7 @@ class ParserDefinitions {
         hole.heal,
         ExpressionIdentifier(QualifiedIdentifier(qualified(idents))).heal,
         ExpressionSymbol(QualifiedSymbol(qualified(symbol))).heal,
-        ExpressionConstructor(qualProperName).heal,
+        ExpressionCtor(qualProperName).heal,
         BooleanLiteral(boolean),
         CharLiteral(char),
         StringLiteral(string),
@@ -149,7 +149,7 @@ class ParserDefinitions {
     private val patternGuard = !(binder + larrow).heal + expr
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
     private val dataHead = data + properName + TypeArgs(!+typeVar)
-    private val dataCtor = DataConstructor(properName + !+typeAtom)
+    private val dataCtor = DataCtor(properName + !+typeAtom)
     private val typeDeclaration = Signature(ident + dcolon + type)
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
     private val exprWhere: DSL = expr + !ExpressionWhere(
@@ -160,15 +160,15 @@ class ParserDefinitions {
     private val instBinder =
         Choice.of(
             (ident + dcolon).heal + type,
-            ValueDeclaration(ident + !+binderAtom + guardedDecl)
+            ValueDecl(ident + !+binderAtom + guardedDecl)
         )
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
-        ForeignDataDeclaration(data + properName + dcolon + type),
-        ForeignValueDeclaration(ident.heal + dcolon + type)
+        ForeignDataDecl(data + properName + dcolon + type),
+        ForeignValueDecl(ident.heal + dcolon + type)
     )
     private val fixity = Fixity(infixl / infixr / infix + NATURAL)
     private val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
-    private val fixityDeclaration = FixityDeclarationType(
+    private val fixityDeclaration = FixityDeclType(
         fixity + Choice.of(
             // TODO Should we differentiate Types and DataConstructors?
             // that would mean that when there is a `type` prefix we parse as Type
@@ -195,7 +195,7 @@ class ParserDefinitions {
     private val classHead = 
         `class` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
     private val classMember = ClassMember(idents + dcolon + type)
-    private val classDeclaration = ClassDeclaration(
+    private val classDeclaration = ClassDecl(
         classHead + !ClassMemberList(
             where + `L{` + classMember.sepBy1(`L-sep`) + `L}`
         ).heal
@@ -229,22 +229,18 @@ class ParserDefinitions {
     private val role = Choice.of(nominal, representational, phantom)
     private val decl = Choice.of(
         (dataHead + dcolon).heal + type,
-        DataDeclaration(
-            dataHead + !DataConstructorList(eq + dataCtor.sepBy1(`|`))
-        ),
+        DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
         (`'newtype'` + properName + dcolon).heal + type,
-        NewtypeDeclaration(
-            newtypeHead + eq + NewTypeConstructor(properName + typeAtom)
-        ),
+        NewtypeDecl(newtypeHead + eq + NewTypeCtor(properName + typeAtom)),
         typeDeclaration.heal,
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,
-        TypeSynonymDeclaration(`'type'` + properName + !+typeVar + eq + type),
-        ValueDeclaration(ident.heal + !+binderAtom + guardedDecl),
+        TypeSynonymDecl(`'type'` + properName + !+typeVar + eq + type),
+        ValueDecl(ident.heal + !+binderAtom + guardedDecl),
         foreignDeclaration,
         fixityDeclaration,
         classDeclaration,
-        InstanceDeclaration(
+        InstanceDecl(
             !(`'derive'` + !`'newtype'`) + instHead
                 + !(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
         )
@@ -282,7 +278,7 @@ class ParserDefinitions {
     val moduleBody = !+(decl.sepBy(elseDecl) + `L-sep`) + `L}`
     val module = ModuleType(moduleHeader + moduleBody)
     private val binder2 = Choice.of(
-        (ConstructorBinder(qualProperName) + !+binderAtom).heal,
+        (CtorBinder(qualProperName) + !+binderAtom).heal,
         NumberBinder(("-".dsl + number).heal),
         binderAtom,
     )
@@ -296,7 +292,7 @@ class ParserDefinitions {
     private val letBinding =
         Choice.of(
             typeDeclaration.heal,
-            ValueDeclaration(ident + !+binderAtom + guardedDecl).heal,
+            ValueDecl(ident + !+binderAtom + guardedDecl).heal,
             (binder1 + eq + exprWhere).heal,
             (ident + !+binderAtom + guardedDecl).heal
         )
