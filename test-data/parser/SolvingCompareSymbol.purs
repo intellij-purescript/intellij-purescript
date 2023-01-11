@@ -3,7 +3,7 @@ module Main where
 import Prelude
 import Control.Monad.Eff.Console (log)
 import Type.Data.Symbol (SProxy(..), class CompareSymbol, compareSymbol)
-import Type.Data.Ordering (OProxy(..), kind Ordering, LT, EQ, GT, reflectOrdering)
+import Type.Data.Ordering (OProxy(..), LT, EQ, GT, reflectOrdering)
 
 symA :: SProxy "A"
 symA = SProxy

@@ -18,7 +18,6 @@ import org.purescript.psi.PSElementType
 @JvmField val INFIXR = PSElementType("infixr")
 @JvmField val INFIX = PSElementType("infix")
 @JvmField val CLASS = PSElementType("class")
-@JvmField val KIND = PSElementType("kind")
 @JvmField val INSTANCE = PSElementType("instance")
 @JvmField val DERIVE = PSElementType("derive")
 @JvmField val MODULE = PSElementType("module")

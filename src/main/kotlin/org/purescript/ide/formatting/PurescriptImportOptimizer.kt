@@ -78,7 +78,6 @@ class PurescriptImportOptimizer : ImportOptimizer {
     private fun fromPsiElement(importedItem: PSImportedItem): ImportedItem =
         when (importedItem) {
             is PSImportedClass -> ImportedClass(importedItem.name)
-            is PSImportedKind -> ImportedKind(importedItem.name)
             is PSImportedType -> ImportedType(importedItem.name)
             is PSImportedData -> ImportedData(
                 importedItem.name,

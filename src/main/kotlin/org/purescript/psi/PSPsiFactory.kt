@@ -70,7 +70,6 @@ class PSPsiFactory(private val project: Project) {
                 .sortedBy {
                     when (it) {
                         is ImportedClass -> 1
-                        is ImportedKind -> 2
                         is ImportedType -> 3
                         is ImportedData -> 4
                         is ImportedValue -> 5
@@ -88,7 +87,6 @@ class PSPsiFactory(private val project: Project) {
                 importedItem.doubleDot,
                 importedItem.dataMembers
             )
-            is ImportedKind -> createImportedKind(importedItem.name)
             is ImportedOperator -> createImportedOperator(importedItem.name)
             is ImportedType -> createImportedType(importedItem.name)
             is ImportedValue -> createImportedValue(importedItem.name)
@@ -122,14 +120,6 @@ class PSPsiFactory(private val project: Project) {
             """
                 module Foo where
                 import Bar (class $name)
-            """.trimIndent()
-        )
-
-    private fun createImportedKind(name: String): PSImportedKind? =
-        createFromText(
-            """
-                module Foo where
-                import Bar (kind $name)
             """.trimIndent()
         )
 

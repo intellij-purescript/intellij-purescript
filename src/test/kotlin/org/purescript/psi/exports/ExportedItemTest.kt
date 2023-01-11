@@ -62,16 +62,6 @@ class ExportedItemTest : BasePlatformTestCase() {
         assertEquals(2, dataMemberList.dataMembers.size)
     }
 
-    fun `test parses exported kind`() {
-        val exportedItem = myFixture.addFileToProject(
-            "Main.purs",
-            """module Main (kind Foo) where"""
-        ).getExportedItem()
-
-        assertTrue(exportedItem is ExportedKind.Psi)
-        assertEquals("Foo", exportedItem.name)
-    }
-
     fun `test parses exported module`() {
         val exportedItem = myFixture.addFileToProject(
             "Main.purs",

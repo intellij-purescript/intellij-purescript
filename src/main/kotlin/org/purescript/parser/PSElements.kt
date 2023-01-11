@@ -37,7 +37,6 @@ val FixityDeclType = FixityDeclaration.Type
 val ExportListType = ExportList.Type
 val ExportedClassType = ExportedClass.Type
 val ExportedDataType = ExportedData.Type
-val ExportedKindType = ExportedKind.Type
 val ExportedModuleType = ExportedModule.Type
 val ExportedOperatorType = ExportedOperator.Type
 val ExportedTypeType = ExportedType.Type
@@ -74,7 +73,6 @@ val ImportedDataMemberList =
     WithPsi("ImportedDataMemberList") { PSImportedDataMemberList(it) }
 val ImportedDataMember =
     WithPsi("ImportedDataMember") { PSImportedDataMember(it) }
-val ImportedKind = WithPsi("ImportedKind") { PSImportedKind(it) }
 val ImportedOperator = WithPsi("ImportedOperator") { PSImportedOperator(it) }
 val ImportedType = WithPsi("ImportedType") { PSImportedType(it) }
 val ImportedValue = WithPsi("ImportedValue") { PSImportedValue(it) }

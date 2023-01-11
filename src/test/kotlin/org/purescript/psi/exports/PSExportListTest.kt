@@ -8,12 +8,11 @@ class PSExportListTest : BasePlatformTestCase() {
     fun `test export list contains exported items`() {
         val exportedItems = myFixture.addFileToProject(
             "Main.purs",
-            """module Main (foo, kind Boolean, class Eq) where"""
+            """module Main (foo, class Eq) where"""
         ).getExportedItems()
 
-        assertEquals(3, exportedItems.size)
+        assertEquals(2, exportedItems.size)
         assertTrue(exportedItems[0] is ExportedValue.Psi)
-        assertTrue(exportedItems[1] is ExportedKind.Psi)
-        assertTrue(exportedItems[2] is ExportedClass.Psi)
+        assertTrue(exportedItems[1] is ExportedClass.Psi)
     }
 }

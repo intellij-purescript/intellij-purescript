@@ -66,28 +66,6 @@ interface ExportedClass {
     }
 }
 
-interface ExportedKind {
-    class Stub(val name:String, p: StubElement<*>?) : AStub<Psi>(p, Type)
-    object Type : WithPsiAndStub<Stub, Psi>("ExportedKind") {
-        override fun createPsi(node: ASTNode) = Psi(node)
-        override fun createPsi(stub: Stub) = Psi(stub, this)
-        override fun createStub(psi: Psi, p: StubElement<*>?) = Stub(psi.name, p)
-        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
-        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?) =
-            Stub(d.readNameString()!!, p)
-    }
-    class Psi: ExportedItem<Stub> {
-        constructor(node: ASTNode) : super(node)
-        constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
-        // Todo clean this up
-        override fun toString(): String = "PSExportedKind($elementType)"
-        private val properName get() = findNotNullChildByClass(PSProperName::class.java)
-        override fun getName(): String = properName.name
-    }
-
-}
-
 interface ExportedOperator {
     class Stub(val name:String, p: StubElement<*>?) : AStub<Psi>(p, Type)
     object Type : WithPsiAndStub<Stub, Psi>("ExportedOperator") {

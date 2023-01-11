@@ -15,7 +15,7 @@ class ParserDefinitions {
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     private val idents =
-        Identifier(LOWER / `'as'` / HIDING / `'forall'` / QUALIFIED / KIND / `'type'`)
+        Identifier(LOWER / `'as'` / HIDING / `'forall'` / QUALIFIED / `'type'`)
 
     private val label = Identifier(
         Choice.of(
@@ -69,7 +69,7 @@ class ParserDefinitions {
         `'forall'` + +idents + dot + Reference { constrainedType }
     )
 
-    private val rowLabel = Identifier(label) + dcolon + type
+    private val rowLabel = label + dcolon + type
     private val row =
         Row((`|` + type) / (rowLabel.sepBy(`,`) + !(`|` + type)))
 
@@ -232,7 +232,6 @@ class ParserDefinitions {
     private val importedItem = Choice.of(
         ImportedType(`'type'` + parens(Identifier(operator))),
         ImportedClass(`'class'` + properName),
-        ImportedKind(KIND + properName),
         ImportedOperator(symbol),
         ImportedValue(ident),
         ImportedData(properName + !importedDataMembers),
@@ -273,7 +272,6 @@ class ParserDefinitions {
     private val exportedItem = Choice.of(
         ExportedClassType(`'class'` + properName),
         ExportedDataType(properName + !dataMembers),
-        ExportedKindType(KIND + properName),
         ExportedModuleType(`'module'` + moduleName),
         ExportedOperatorType(symbol),
         ExportedTypeType(`'type'` + parens(Identifier(operator))),

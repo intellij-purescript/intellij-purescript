@@ -12,7 +12,6 @@ data class ImportDeclaration(
 sealed class ImportedItem(open val name: String)
 
 data class ImportedClass(override val name: String) : ImportedItem(name)
-data class ImportedKind(override val name: String) : ImportedItem(name)
 data class ImportedType(override val name: String) : ImportedItem(name)
 data class ImportedValue(override val name: String) : ImportedItem(name)
 data class ImportedOperator(override val name: String) : ImportedItem(name)

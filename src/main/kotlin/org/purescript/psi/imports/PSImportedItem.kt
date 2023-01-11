@@ -28,7 +28,6 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSIm
      *
      * Different classes of [PSImportedItem] are ordered accordingly, in ascending order:
      *  - [PSImportedClass]
-     *  - [PSImportedKind]
      *  - [PSImportedType]
      *  - [PSImportedData]
      *  - [PSImportedValue]
@@ -43,7 +42,6 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSIm
             {
                 when (it) {
                     is PSImportedClass -> 0
-                    is PSImportedKind -> 1
                     is PSImportedType -> 2
                     is PSImportedData -> 3
                     is PSImportedValue -> 4
@@ -131,24 +129,6 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
 
     override fun getReference(): ImportedDataReference =
         ImportedDataReference(this)
-}
-
-/**
- * An imported kind declaration, e.g.
- * ```
- * kind Boolean
- * ```
- * in
- * ```
- * import Type.Data.Boolean (kind Boolean)
- * ```
- */
-class PSImportedKind(node: ASTNode) : PSImportedItem(node) {
-    private val properName: PSProperName
-        get() =
-            findNotNullChildByClass(PSProperName::class.java)
-
-    override fun getName(): String = properName.name
 }
 
 /**

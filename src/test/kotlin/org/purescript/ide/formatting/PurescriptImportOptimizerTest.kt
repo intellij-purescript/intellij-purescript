@@ -173,13 +173,12 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
                 import Prelude (type (~>))
                 import Prelude (class Applicative)
                 import Prelude (Unit)
-                import Prelude (kind Kind)
                 
             """.trimIndent(),
             """
                 module Foo where
                 
-                import Prelude (class Applicative, kind Kind, type (~>), Unit, pure, (<*>))
+                import Prelude (class Applicative, type (~>), Unit, pure, (<*>))
                 
             """.trimIndent()
         )
@@ -263,19 +262,17 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
                 import Prelude (type (~>))
                 import Prelude (class Applicative)
                 import Prelude (Unit)
-                import Prelude (kind Kind)
                 import Prelude (pure, pure)
                 import Prelude ((<*>), (<*>))
                 import Prelude (type (~>), type (~>))
                 import Prelude (class Applicative, class Applicative)
                 import Prelude (Unit, Unit)
-                import Prelude (kind Kind, kind Kind)
                 
             """.trimIndent(),
             """
                 module Foo where
                 
-                import Prelude (class Applicative, kind Kind, type (~>), Unit, pure, (<*>))
+                import Prelude (class Applicative, type (~>), Unit, pure, (<*>))
             
             """.trimIndent()
         )
