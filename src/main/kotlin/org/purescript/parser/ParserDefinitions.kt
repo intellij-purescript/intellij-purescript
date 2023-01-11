@@ -7,7 +7,12 @@ class ParserDefinitions {
     private val number = NumericLiteral(NATURAL / FLOAT)
     private val moduleName = ModuleName(!MODULE_PREFIX + PROPER_NAME)
     private val qualifier = ModuleName(MODULE_PREFIX)
+    
+    // Utils
     private fun qualified(p: DSL) = !(qualifier) + p
+    private fun braces(p: DSL) = LCURLY + p + RCURLY
+    private fun parens(p: DSL) = LPAREN + p + RPAREN
+    private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     // ElementTokens
 
@@ -54,10 +59,6 @@ class ParserDefinitions {
             parens(arrow / row).heal /
             parens(type)
     )
-
-    private fun braces(p: DSL) = LCURLY + p + RCURLY
-    private fun parens(p: DSL) = LPAREN + p + RPAREN
-    private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     private val constrainedType = ConstrainedType(
         !(parens((typeCtor + !+typeAtom).sepBy1(`,`)) + darrow).heal + type
