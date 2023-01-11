@@ -57,9 +57,10 @@ class ValueDeclarationMoveHandlerDelegate : MoveHandlerDelegate() {
         override fun createCenterPanel() = panel {
             row("To:") {
                 val modules = moduleNameIndex
-                    .getAllKeys(project)
+                    .getAllKeys(GlobalSearchScope.projectScope(project))
                     .sorted()
                 comboBox(modules)
+                    .focused()
                     .bindItem(
                         { targetModuleName },
                         { targetModuleName = it ?: "" }
@@ -72,20 +73,24 @@ class ValueDeclarationMoveHandlerDelegate : MoveHandlerDelegate() {
             val modules: MutableCollection<Module.Psi> = moduleNameIndex.get(
                 targetModuleName,
                 project,
-                GlobalSearchScope.allScope(project)
+                GlobalSearchScope.projectScope(project)
             )
-            val targetModule = modules.single()
-            invokeRefactoring(object: BaseRefactoringProcessor(project) {
+            val targetModule = modules
+                .single { ".spago" !in it.containingFile.virtualFile.path }
+            invokeRefactoring(object : BaseRefactoringProcessor(project) {
                 override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor {
                     return BaseUsageViewDescriptor(element)
                 }
 
-                override fun findUsages(): Array<UsageInfo>  =
+                override fun findUsages(): Array<UsageInfo> =
                     ReferencesSearch
-                    .search(element, GlobalSearchScope.projectScope(project))
-                    .findAll()
-                    .map(::UsageInfo)
-                    .toTypedArray()
+                        .search(
+                            element,
+                            GlobalSearchScope.projectScope(project)
+                        )
+                        .findAll()
+                        .map(::UsageInfo)
+                        .toTypedArray()
 
                 override fun performRefactoring(usages: Array<out UsageInfo>) {
                     val first = element.signature ?: element
@@ -93,7 +98,8 @@ class ValueDeclarationMoveHandlerDelegate : MoveHandlerDelegate() {
                     element.module?.deleteChildRange(first, element)
                 }
 
-                override fun getCommandName(): String = MoveHandler.getRefactoringName()
+                override fun getCommandName(): String =
+                    MoveHandler.getRefactoringName()
 
             })
         }
