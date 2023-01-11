@@ -15,7 +15,7 @@ class ParserDefinitions {
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     // TODO: add 'representational' and 'phantom'
-    private val idents = 
+    private val ident = 
         Identifier(LOWER / `'as'` / `'hiding'` / `'role'`/ `'nominal'`)
 
     private val label = Identifier(
@@ -66,7 +66,7 @@ class ParserDefinitions {
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
 
     private val forAll = ForAll(
-        `'forall'` + +idents + dot + Reference { constrainedType }
+        `'forall'` + +ident + dot + Reference { constrainedType }
     )
 
     private val rowLabel = label + dcolon + type
@@ -82,7 +82,7 @@ class ParserDefinitions {
             number /
             typeCtor /
             forAll.heal /
-            idents /
+            ident /
             parens(arrow / row).heal /
             parens(type)
     )
@@ -91,9 +91,8 @@ class ParserDefinitions {
         !(parens((typeCtor + !+typeAtom).sepBy1(`,`)) + darrow).heal + type
     )
 
-    private val ident = idents / parens(Identifier(operator)).heal
-    private val typeVar = TypeVarName(idents) /
-        TypeVarKinded(parens(idents + dcolon + type))
+    private val typeVar = TypeVarName(ident) /
+        TypeVarKinded(parens(ident + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
             NullBinder(`_`),
@@ -119,7 +118,7 @@ class ParserDefinitions {
     private val type2: DSL = type3 + !(arrow / darrow + Reference { type1 })
     private val type1 = !+(`'forall'` + +typeVar + dot) + type2
     private val propertyUpdate: DSL = label + !eq + expr
-    private val hole = TypeHole("?".dsl + idents)
+    private val hole = TypeHole("?".dsl + ident)
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
         ((label + ":").heal + expr) /
@@ -129,7 +128,7 @@ class ParserDefinitions {
     private val exprAtom = Choice.of(
         `_`,
         hole.heal,
-        ExpressionIdentifier(QualifiedIdentifier(qualified(idents))).heal,
+        ExpressionIdentifier(QualifiedIdentifier(qualified(ident))).heal,
         ExpressionSymbol(QualifiedSymbol(qualified(symbol))).heal,
         ExpressionCtor(qualProperName).heal,
         BooleanLiteral(boolean),
@@ -217,7 +216,7 @@ class ParserDefinitions {
     // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
     private val classHead =
         `'class'` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
-    private val classMember = ClassMember(idents + dcolon + type)
+    private val classMember = ClassMember(ident + dcolon + type)
     private val classDeclaration = ClassDecl(
         classHead + !ClassMemberList(
             `'where'` + `L{` + classMember.sepBy1(`L-sep`) + `L}`
