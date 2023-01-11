@@ -201,15 +201,14 @@ class ParserDefinitions {
     private val importedDataMembers = ImportedDataMemberList(
         parens(ddot / ImportedDataMember(properName).sepBy(`,`))
     )
-    private val importedItem =
-        Choice.of(
-            ImportedType(`'type'` + parens(Identifier(operator))),
-            ImportedClass(`class` + properName),
-            ImportedKind(KIND + properName),
-            ImportedOperator(symbol),
-            ImportedValue(ident),
-            ImportedData(properName + !importedDataMembers),
-        )
+    private val importedItem = Choice.of(
+        ImportedType(`'type'` + parens(Identifier(operator))),
+        ImportedClass(`class` + properName),
+        ImportedKind(KIND + properName),
+        ImportedOperator(symbol),
+        ImportedValue(ident),
+        ImportedData(properName + !importedDataMembers),
+    )
     private val importList =
         ImportList(!HIDING + parens(importedItem.sepBy(`,`)))
     private val importDeclaration = ImportType(
@@ -243,22 +242,17 @@ class ParserDefinitions {
     private val dataMembers = ExportedDataMemberList(
         parens(ddot / ExportedDataMember(properName).sepBy(`,`))
     )
-    private val exportList = ExportListType(
-        parens(
-            Choice.of(
-                ExportedClassType(`class` + properName),
-                ExportedDataType(properName + !dataMembers),
-                ExportedKindType(KIND + properName),
-                ExportedModuleType(`'module'` + moduleName),
-                ExportedOperatorType(symbol),
-                ExportedTypeType(`'type'` + parens(Identifier(operator))),
-                ExportedValueType(ident),
-            ).sepBy1(`,`)
-        )
+    private val exportedItem = Choice.of(
+        ExportedClassType(`class` + properName),
+        ExportedDataType(properName + !dataMembers),
+        ExportedKindType(KIND + properName),
+        ExportedModuleType(`'module'` + moduleName),
+        ExportedOperatorType(symbol),
+        ExportedTypeType(`'type'` + parens(Identifier(operator))),
+        ExportedValueType(ident),
     )
-
+    private val exportList = ExportListType(parens(exportedItem.sepBy1(`,`)))
     private val elseDecl = `else` + !`L-sep`
-
     val moduleHeader =
         `'module'` + moduleName + !exportList + where + `L{` +
             !+(importDeclaration + `L-sep`)
@@ -276,13 +270,12 @@ class ParserDefinitions {
 
     private val ifThenElse =
         IfThenElse(`if` + expr + then + expr + `else` + expr)
-    private val letBinding =
-        Choice.of(
-            typeDeclaration.heal,
-            ValueDecl(ident + !+binderAtom + guardedDecl).heal,
-            (binder1 + eq + exprWhere).heal,
-            (ident + !+binderAtom + guardedDecl).heal
-        )
+    private val letBinding = Choice.of(
+        typeDeclaration.heal,
+        ValueDecl(ident + !+binderAtom + guardedDecl).heal,
+        (binder1 + eq + exprWhere).heal,
+        (ident + !+binderAtom + guardedDecl).heal
+    )
     private val letIn =
         Let(let + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `in` + expr)
     private val doStatement = Choice.of(
