@@ -7,7 +7,7 @@ class ParserDefinitions {
     private val number = NumericLiteral(NATURAL / FLOAT)
     private val moduleName = ModuleName(!MODULE_PREFIX + PROPER_NAME)
     private val qualifier = ModuleName(MODULE_PREFIX)
-    
+
     // Utils
     private fun qualified(p: DSL) = !(qualifier) + p
     private fun braces(p: DSL) = LCURLY + p + RCURLY
@@ -140,7 +140,8 @@ class ParserDefinitions {
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal))
-    private val patternGuard = !(binder + larrow).heal + Reference { Value(expr1) }
+    private val patternGuard =
+        !(binder + larrow).heal + Reference { Value(expr1) }
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
     private val dataHead = data + properName + TypeArgs(!+typeVar)
     private val dataCtor = DataCtor(properName + !+typeAtom)
@@ -186,7 +187,7 @@ class ParserDefinitions {
 
     // this first is described in haskell code and not in normal happy expression
     // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
-    private val classHead = 
+    private val classHead =
         `class` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
     private val classMember = ClassMember(idents + dcolon + type)
     private val classDeclaration = ClassDecl(
@@ -220,7 +221,7 @@ class ParserDefinitions {
      * representational = the type can be coerced to another type if certain conditions apply.
      * phantom - the type can always be coerced to another type.
      * */
-    private val role = Choice.of(nominal, representational, phantom)
+    private val role = nominal / representational / phantom
     private val decl = Choice.of(
         (dataHead + dcolon).heal + type,
         DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
