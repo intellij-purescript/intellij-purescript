@@ -240,27 +240,19 @@ class ParserDefinitions {
                 + !(where + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
         )
     )
-    private val exportedClass = ExportedClassType(`class` + properName)
     private val dataMembers = ExportedDataMemberList(
         parens(ddot / ExportedDataMember(properName).sepBy(`,`))
     )
-    private val exportedData = ExportedDataType(properName + !dataMembers)
-    private val exportedKind = ExportedKindType(KIND + properName)
-    private val exportedModule = ExportedModuleType(`'module'` + moduleName)
-    private val exportedOperator = ExportedOperatorType(symbol)
-    private val exportedType =
-        ExportedTypeType(`'type'` + parens(Identifier(operator)))
-    private val exportedValue = ExportedValueType(ident)
     private val exportList = ExportListType(
         parens(
             Choice.of(
-                exportedClass,
-                exportedData,
-                exportedKind,
-                exportedModule,
-                exportedOperator,
-                exportedType,
-                exportedValue,
+                ExportedClassType(`class` + properName),
+                ExportedDataType(properName + !dataMembers),
+                ExportedKindType(KIND + properName),
+                ExportedModuleType(`'module'` + moduleName),
+                ExportedOperatorType(symbol),
+                ExportedTypeType(`'type'` + parens(Identifier(operator))),
+                ExportedValueType(ident),
             ).sepBy1(`,`)
         )
     )
