@@ -15,8 +15,8 @@ class ParserDefinitions {
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     // TODO: add 'representational' and 'phantom'
-    private val ident = 
-        Identifier(LOWER / `'as'` / `'hiding'` / `'role'`/ `'nominal'`)
+    private val ident =
+        Identifier(LOWER / `'as'` / `'hiding'` / `'role'` / `'nominal'`)
 
     private val label = Identifier(
         Choice.of(
@@ -74,8 +74,10 @@ class ParserDefinitions {
         Row((`|` + type) / (rowLabel.sepBy(`,`) + !(`|` + type)))
 
     private val typeCtor = TypeCtor(qualProperName)
+    private val hole = TypeHole("?".dsl + ident)
     private val typeAtom: DSL = TypeAtom(
-        squares(!type) /
+        hole /
+            squares(!type) /
             ObjectType(braces(row)) /
             `_` /
             string /
@@ -118,7 +120,6 @@ class ParserDefinitions {
     private val type2: DSL = type3 + !(arrow / darrow + Reference { type1 })
     private val type1 = !+(`'forall'` + +typeVar + dot) + type2
     private val propertyUpdate: DSL = label + !eq + expr
-    private val hole = TypeHole("?".dsl + ident)
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
         ((label + ":").heal + expr) /
