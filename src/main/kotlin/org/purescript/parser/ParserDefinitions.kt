@@ -112,8 +112,6 @@ class ParserDefinitions {
         Parens(parens(expr)),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
-
-
     private val badSingleCaseBranch: DSL =
         Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 
@@ -142,9 +140,7 @@ class ParserDefinitions {
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal))
-
-    // TODO: pattern guards should parse expr1 not expr
-    private val patternGuard = !(binder + larrow).heal + expr
+    private val patternGuard = !(binder + larrow).heal + Reference { Value(expr1) }
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
     private val dataHead = data + properName + TypeArgs(!+typeVar)
     private val dataCtor = DataCtor(properName + !+typeAtom)
