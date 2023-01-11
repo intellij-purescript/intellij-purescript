@@ -93,7 +93,7 @@ class ValueDeclarationMoveHandlerDelegate : MoveHandlerDelegate() {
                         .toTypedArray()
 
                 override fun performRefactoring(usages: Array<out UsageInfo>) {
-                    val first = element.signature ?: element
+                    val first = (element.signature?: element).prevSibling // whitespace
                     targetModule.addRange(first, element)
                     element.module?.deleteChildRange(first, element)
                 }
