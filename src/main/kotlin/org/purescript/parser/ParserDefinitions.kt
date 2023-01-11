@@ -166,8 +166,7 @@ class ParserDefinitions {
         ForeignDataDeclaration(data + properName + dcolon + type),
         ForeignValueDeclaration(ident.heal + dcolon + type)
     )
-    private val associativity = infixl / infixr / infix
-    private val fixity = Fixity(associativity + NATURAL)
+    private val fixity = Fixity(infixl / infixr / infix + NATURAL)
     private val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
     private val fixityDeclaration = FixityDeclarationType(
         fixity + Choice.of(
