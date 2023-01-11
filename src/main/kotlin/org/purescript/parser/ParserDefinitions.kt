@@ -152,11 +152,10 @@ class ParserDefinitions {
     )
     private val guardedDeclExpr = guard + eq + exprWhere
     private val guardedDecl = (eq.heal + exprWhere) / +guardedDeclExpr
-    private val instBinder =
-        Choice.of(
-            (ident + dcolon).heal + type,
-            ValueDecl(ident + !+binderAtom + guardedDecl)
-        )
+    private val instBinder = Choice.of(
+        (ident + dcolon).heal + type,
+        ValueDecl(ident + !+binderAtom + guardedDecl)
+    )
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
         ForeignDataDecl(data + properName + dcolon + type),
         ForeignValueDecl(ident.heal + dcolon + type)
