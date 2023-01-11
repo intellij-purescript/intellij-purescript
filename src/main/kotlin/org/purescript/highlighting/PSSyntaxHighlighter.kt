@@ -115,7 +115,7 @@ class PSSyntaxHighlighter : SyntaxHighlighterBase() {
             fillMap(keys, kOperators, OPERATOR)
             fillMap(
                 keys,
-                TokenSet.create(IDENT, org.purescript.parser.OPERATOR),
+                TokenSet.create(LOWER, org.purescript.parser.OPERATOR),
                 VARIABLE
             )
             fillMap(keys, TokenSet.create(PROPER_NAME), METHOD_DECLARATION)

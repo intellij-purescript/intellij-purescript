@@ -18,7 +18,7 @@ import org.purescript.parser.DOC_COMMENT
 import org.purescript.parser.DOT
 import org.purescript.parser.EQ
 import org.purescript.parser.FLOAT
-import org.purescript.parser.IDENT
+import org.purescript.parser.LOWER
 import org.purescript.parser.LARROW
 import org.purescript.parser.LDARROW
 import org.purescript.parser.MLCOMMENT
@@ -68,7 +68,7 @@ class PSFindUsageProvider : FindUsagesProvider {
 
     override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(
         PSLexer(),
-        TokenSet.create(IDENT, PROPER_NAME, MODULE_PREFIX),
+        TokenSet.create(LOWER, PROPER_NAME, MODULE_PREFIX),
         TokenSet.create(MLCOMMENT, SLCOMMENT, DOC_COMMENT),
         TokenSet.create(
             STRING,

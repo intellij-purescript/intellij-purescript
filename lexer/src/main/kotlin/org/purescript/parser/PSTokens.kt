@@ -64,7 +64,7 @@ import org.purescript.psi.PSElementType
 @JvmField val OPERATOR = PSElementType("operator")
 @JvmField val MODULE_PREFIX = PSElementType("module prefix")
 @JvmField val PROPER_NAME = PSElementType("proper name")
-@JvmField val IDENT = PSElementType("identifier")
+@JvmField val LOWER = PSElementType("identifier")
 @JvmField val STRING_ESCAPED = PSElementType("string escaping")
 @JvmField val STRING_GAP = PSElementType("string escaping")
 @JvmField val STRING_ERROR = PSElementType("string escaping error")
