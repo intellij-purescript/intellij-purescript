@@ -41,6 +41,8 @@
             implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
         <refactoring.safeDeleteProcessor
             implementation="org.purescript.psi.declaration.ValueDeclarationSafeDeleteProcessorDelegate"/>
+        <refactoring.moveHandler
+            implementation="org.purescript.psi.declaration.ValueDeclarationMoveHandlerDelegate"/>
         <inlineActionHandler
             implementation="org.purescript.ide.refactoring.PSInline"/>
         <lang.namesValidator language="Purescript"
