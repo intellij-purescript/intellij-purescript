@@ -190,13 +190,11 @@ class ParserDefinitions {
         ClassName(properName) + !+typeVar +
             !ClassFunctionalDependencyList(fundeps)
     private val classSignature = ClassName(properName) + dcolon + type
-    private val classHead = `class` + Choice.of(
-        // this first is described in haskell code and not in normal happy expression
-        // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
-        classSignature.heal,
-        (classSuper + classNameAndFundeps).heal,
-        classNameAndFundeps
-    )
+
+    // this first is described in haskell code and not in normal happy expression
+    // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
+    private val classHead = 
+        `class` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
     private val classMember = ClassMember(idents + dcolon + type)
     private val classDeclaration = ClassDeclaration(
         classHead + !ClassMemberList(
