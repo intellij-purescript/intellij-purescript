@@ -14,8 +14,6 @@ class ParserDefinitions {
     private fun parens(p: DSL) = LPAREN + p + RPAREN
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
-    // ElementTokens
-
     private val idents =
         Identifier(IDENT / `as` / HIDING / `'forall'` / QUALIFIED / KIND / `'type'`)
 
