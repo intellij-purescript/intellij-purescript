@@ -6,12 +6,8 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 
 sealed interface DSL {
-    fun sepBy(delimiter: DSL) = Optional(sepBy1(delimiter))
-    fun sepBy(sep: IElementType) = Optional(sepBy1(sep))
-    fun sepBy1(delimiter: DSL) = this + NoneOrMore(delimiter + this)
-    fun sepBy1(sep: IElementType) = this + NoneOrMore(sep.dsl + this)
-    val oneOrMore get() = this + noneOrMore
-    val noneOrMore get() = NoneOrMore(this)
+    fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
+    fun sepBy1(delimiter: DSL) = this + !+(delimiter + this)
     val heal get() = Transaction(this)
     fun parse(builder: PsiBuilder): Boolean
 }
@@ -23,6 +19,9 @@ val DSL.dsl get() = this
 operator fun DSL.not() = Optional(dsl)
 operator fun IElementType.not() = Optional(dsl)
 operator fun String.not() = Optional(dsl)
+
+operator fun DSL.unaryPlus() = OneOrMore(this)
+operator fun String.unaryPlus() = OneOrMore(this.dsl)
 
 operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
 operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
@@ -80,14 +79,13 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
 }
 
 @Suppress("KotlinConstantConditions")
-data class NoneOrMore(val child: DSL) : DSL {
+data class OneOrMore(val child: DSL) : DSL {
     override fun parse(builder: PsiBuilder): Boolean =
-        child.parse(builder) && parse(builder) || true
+        child.parse(builder) && (parse(builder) || true)
 }
 
 @Suppress("KotlinConstantConditions")
 data class Optional(val child: DSL) : DSL {
-    constructor(child: IElementType) : this(child.dsl)
 
     override fun parse(builder: PsiBuilder): Boolean =
         child.parse(builder) || true
