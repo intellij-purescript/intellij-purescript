@@ -53,7 +53,6 @@ class MoveValueDeclarationRefactoring(
                         toPatch.delete()
                     }
                 }
-                else -> println(toPatch.toString())
             }
         }
     }
