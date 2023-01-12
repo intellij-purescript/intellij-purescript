@@ -33,10 +33,10 @@ class MoveValueDeclarationRefactoring(
         // dependencies needs to be imported or moved to targetModule
         val dependencies = toMove.expressionIdentifiers.mapNotNull { element ->
             element.reference.resolve()?.let { element to it }
-        }.filter { (element, reference) ->
+        }.filter { (_, reference) ->
             // dependency to self is fine
             reference != toMove
-        }.filter { (element, reference) ->
+        }.filter { (_, reference) ->
             // dependency to locals are fine    
             !(reference.containingFile == toMove.containingFile &&
                 toMove.textRange.contains(reference.textRange))
@@ -66,7 +66,7 @@ class MoveValueDeclarationRefactoring(
                             toPatch.importDeclaration.importAlias?.name,
                             listOf(toPatch.name)
                         )
-                        toPatch.module?.addImportDeclaration(newImport)
+                        toPatch.module.addImportDeclaration(newImport)
                     }
                     // remove old one
                     val importDeclaration = toPatch.importDeclaration
