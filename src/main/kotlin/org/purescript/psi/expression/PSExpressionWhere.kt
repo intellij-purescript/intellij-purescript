@@ -16,6 +16,10 @@ import org.purescript.psi.declaration.PSValueDeclaration
  * ```
  */
 class PSExpressionWhere(node: ASTNode) : PSPsiElement(node)  {
+    val expressionIdentifiers: List<PSExpressionIdentifier>
+        get() = valueDeclarations
+            .flatMap { it.expressionIdentifiers } +
+            (where?.expressionIdentifiers ?: emptyList())
     val where get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarations: Array<PSValueDeclaration>
         get() =

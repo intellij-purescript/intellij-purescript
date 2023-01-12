@@ -106,8 +106,10 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Foo (foo) where
                 
+                import Numbers (one)
+                
                 foo :: Int -> Int
-                foo _ = 1
+                foo _ = one
                 
                 foz :: Int
                 foz = foo 10
@@ -129,6 +131,15 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 baz = foo 10
             """.trimIndent()
         )
+        myFixture.configureByText(
+            "Numbers.purs",
+            """
+                module Numbers where
+                
+                one :: Int
+                one = 1
+            """.trimIndent()
+        )
         
         MoveValueDeclarationRefactoring(foo, main).also {
             it.executeEx(it.findUsages())
@@ -139,6 +150,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Foo () where
                 
+                import Numbers (one)
                 import Main (foo)
                 
                 foz :: Int
@@ -154,6 +166,8 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Main (class Box, x, foo) where
                 
+                import Numbers (one)
+                
                 class Box a where
                     get :: a
                 
@@ -161,7 +175,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 x = foo 0
                 
                 foo :: Int -> Int
-                foo _ = 1
+                foo _ = one
             """.trimIndent(),
             false
         )

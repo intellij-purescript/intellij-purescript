@@ -100,7 +100,7 @@ class PSPsiFactory(private val project: Project) {
         hiding: Boolean = false,
         alias: String? = null,
         items: List<String>
-    ): Import.Psi? =
+    ): Import.Psi =
         createFromText(
             buildString {
                 appendLine("module Foo where")
@@ -115,7 +115,7 @@ class PSPsiFactory(private val project: Project) {
                     append(" as $alias")
                 }
             }
-        )
+        )!!
 
     private fun createImportedClass(name: String): PSImportedClass? =
         createFromText(

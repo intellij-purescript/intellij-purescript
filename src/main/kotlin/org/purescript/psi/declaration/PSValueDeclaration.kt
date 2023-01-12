@@ -4,11 +4,12 @@ import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
-import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSValue
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
@@ -18,7 +19,11 @@ class PSValueDeclaration(node: ASTNode) :
     PsiNameIdentifierOwner,
     DocCommentOwner {
 
-    val value get() = findChildByClass(PSValue::class.java)
+    val value get() = findChildByClass(PSValue::class.java)!!
+    val expressionIdentifiers: List<PSExpressionIdentifier>
+        get() = 
+            value.expressionIdentifiers.toList() +
+            (where?.expressionIdentifiers ?: emptyList())
 
     override fun getName(): String {
         return findChildByClass(PSIdentifier::class.java)!!
@@ -41,6 +46,7 @@ class PSValueDeclaration(node: ASTNode) :
             is PSValueDeclaration ->
                 if (sibling.name == name) sibling.signature
                 else null
+
             is PSSignature -> sibling
             else -> null
         }

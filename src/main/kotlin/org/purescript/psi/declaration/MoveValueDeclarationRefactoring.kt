@@ -29,15 +29,29 @@ class MoveValueDeclarationRefactoring(
     override fun performRefactoring(usages: Array<out UsageInfo>) {
         val factory = PSPsiFactory(toMove.project)
         val sourceModule = toMove.module!!
-        val first = (toMove.signature?: toMove)
+
+        // dependencies needs to be imported or moved to targetModule
+        val dependencies = toMove.expressionIdentifiers.mapNotNull { element ->
+            element.reference.resolve()?.let { element to it }
+        }.filter { (element, reference) ->
+            // dependency to self is fine
+            reference != toMove
+        }.filter { (element, reference) ->
+            // dependency to locals are fine    
+            !(reference.containingFile == toMove.containingFile &&
+                toMove.textRange.contains(reference.textRange))
+        }
+
+        val first = (toMove.signature ?: toMove)
         targetModule.add(factory.createNewLines(2))
         targetModule.addRange(first, toMove)
         sourceModule.deleteChildRange(first, toMove)
         targetModule.exports?.let { exportList ->
-            val oldNames = exportList.exportedItems.map { 
+            val oldNames = exportList.exportedItems.map {
                 it.text
             }
-            val newExportList = factory.createExportList(*oldNames.toTypedArray(), toMove.name)
+            val newExportList =
+                factory.createExportList(*oldNames.toTypedArray(), toMove.name)
             exportList.replace(newExportList)
         }
         var importedInSource = false
@@ -51,7 +65,7 @@ class MoveValueDeclarationRefactoring(
                             false,
                             toPatch.importDeclaration.importAlias?.name,
                             listOf(toPatch.name)
-                        )!!
+                        )
                         toPatch.module?.addImportDeclaration(newImport)
                     }
                     // remove old one
@@ -66,19 +80,41 @@ class MoveValueDeclarationRefactoring(
                         toPatch.delete()
                     }
                 }
+
                 is PSExpressionIdentifier -> {
                     if (toPatch.module == targetModule) {
                         toPatch.qualifiedIdentifier.moduleName?.delete()
-                    } else if( toPatch.module == sourceModule && !importedInSource) {
+                    } else if (toPatch.module == sourceModule && !importedInSource) {
                         val newImport = factory.createImportDeclaration(
                             targetModule.name,
                             false,
                             null,
                             listOf(toPatch.name)
-                        )!!
+                        )
                         sourceModule.addImportDeclaration(newImport)
                         importedInSource = true
                     }
+                }
+            }
+        }
+        val done = mutableSetOf<Triple<String, String?, String>>()
+        for ((element, reference) in dependencies) {
+            when (reference) {
+                is PSValueDeclaration -> {
+                    val moduleName = reference.module.name
+                    val alias = element.qualifiedIdentifier.moduleName?.name
+                    val name = element.name
+                    when (val address = Triple(moduleName, alias, name)) {
+                        in done -> continue
+                        else -> done.add(address)
+                    }
+                    val newImport = factory.createImportDeclaration(
+                        moduleName,
+                        false,
+                        alias,
+                        listOf(name)
+                    )
+                    targetModule.addImportDeclaration(newImport)
                 }
             }
         }
