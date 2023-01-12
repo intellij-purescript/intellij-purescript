@@ -1,5 +1,13 @@
 package org.purescript.psi.declaration
 
+import com.intellij.codeInspection.CommonProblemDescriptor
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.QuickFix
+import com.intellij.lang.annotation.ProblemGroup
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.BaseRefactoringProcessor
@@ -9,6 +17,8 @@ import com.intellij.usageView.UsageInfo
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.exports.ExportedValue
+import org.purescript.psi.expression.ImportQuickFix
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.imports.PSImportedValue
 import org.purescript.psi.module.Module
 
@@ -51,6 +61,19 @@ class MoveValueDeclarationRefactoring(
                         }
                     } else {
                         toPatch.delete()
+                    }
+                }
+                is PSExpressionIdentifier -> {
+                    if (toPatch.module == targetModule) {
+                        toPatch.qualifiedIdentifier.moduleName?.delete()
+                    } else {
+                        val importDeclaration = factory.createImportDeclaration(
+                            targetModule.name,
+                            false,
+                            toPatch.qualifiedIdentifier.moduleName?.name,
+                            listOf(toPatch.name)
+                        )!!
+                        toPatch.module?.addImportDeclaration(importDeclaration)
                     }
                 }
             }

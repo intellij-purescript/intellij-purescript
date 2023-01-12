@@ -85,7 +85,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
         assertEquals(first, reference.resolve())
     }
 
-    fun `test move between files`() {
+    fun `test move to module that imports it by name`() {
         val  main = myFixture.configureByText(
             "Main.purs",
             """
@@ -109,6 +109,17 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 foo _ = 1
             """.trimIndent()
         ).getValueDeclaration()
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                import Foo (foo)
+                
+                bar :: Int
+                bar = foo 10
+            """.trimIndent()
+        )
         
         MoveValueDeclarationRefactoring(foo, main).also {
             it.executeEx(it.findUsages())
@@ -134,6 +145,96 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 
                 foo :: Int -> Int
                 foo _ = 1
+            """.trimIndent(),
+            false
+        )
+        myFixture.checkResult(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                import Main (foo)
+                
+                bar :: Int
+                bar = foo 10
+            """.trimIndent(),
+            false
+        )
+    }
+    
+    fun `test move to module that imports it with alias`() {
+        val  main = myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main (class Box, x) where
+                
+                import Foo (foo) as Foo
+                
+                class Box a where
+                    get :: a
+                
+                x :: Int
+                x = Foo.foo 0
+            """.trimIndent()
+        ).getModule()
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (foo) where
+                
+                foo :: Int -> Int
+                foo _ = 1
+            """.trimIndent()
+        ).getValueDeclaration()
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                import Foo (foo) as Foo
+                
+                bar :: Int
+                bar = Foo.foo 10
+            """.trimIndent()
+        )
+        
+        MoveValueDeclarationRefactoring(foo, main).also {
+            it.executeEx(it.findUsages())
+        }
+        
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                module Foo () where
+            """.trimIndent(),
+            false
+        )
+        myFixture.checkResult(
+            "Main.purs",
+            """
+                module Main (class Box, x, foo) where
+                
+                class Box a where
+                    get :: a
+                
+                x :: Int
+                x = foo 0
+                
+                foo :: Int -> Int
+                foo _ = 1
+            """.trimIndent(),
+            false
+        )
+
+        myFixture.checkResult(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                import Main (foo) as Foo
+                
+                bar :: Int
+                bar = Foo.foo 10
             """.trimIndent(),
             false
         )
