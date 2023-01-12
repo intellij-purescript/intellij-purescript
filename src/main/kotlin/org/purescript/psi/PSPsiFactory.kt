@@ -9,6 +9,8 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
+import org.purescript.psi.exports.ExportList
+import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -98,7 +100,7 @@ class PSPsiFactory(private val project: Project) {
         hiding: Boolean = false,
         alias: String? = null,
         items: List<String>
-    ): Import.Psi? =
+    ): Import.Psi =
         createFromText(
             buildString {
                 appendLine("module Foo where")
@@ -113,7 +115,7 @@ class PSPsiFactory(private val project: Project) {
                     append(" as $alias")
                 }
             }
-        )
+        )!!
 
     private fun createImportedClass(name: String): PSImportedClass? =
         createFromText(
@@ -166,8 +168,11 @@ class PSPsiFactory(private val project: Project) {
             """.trimIndent()
         )
 
-    fun createNewLine(): PsiElement =
-        project.service<PsiParserFacade>().createWhiteSpaceFromText("\n")
+    fun createNewLine(): PsiElement = createNewLines()
+    
+    fun createNewLines(n:Int = 1): PsiElement =
+        project.service<PsiParserFacade>()
+            .createWhiteSpaceFromText("\n".repeat(n))
 
     private inline fun <reified T : PsiElement> createFromText(@Language("Purescript") code: String): T? =
         PsiFileFactory.getInstance(project)
@@ -200,4 +205,10 @@ class PSPsiFactory(private val project: Project) {
         """.trimMargin()
         )
     }
+
+    fun createExportList(vararg names: String): ExportList.Psi = createFromText(
+        """
+        |module Main (${names.joinToString(", ")}) where
+    """.trimMargin()
+    )!!
 }
