@@ -1,6 +1,7 @@
 package org.purescript.psi.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.purescript.getModule
 import org.purescript.getValueDeclaration
 import org.purescript.getValueDeclarations
 
@@ -82,5 +83,59 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
         ).getValueDeclarations().first()
         val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
         assertEquals(first, reference.resolve())
+    }
+
+    fun `test move between files`() {
+        val  main = myFixture.configureByText(
+            "Main.purs",
+            """
+                module Main (class Box, x) where
+                
+                import Foo (foo)
+                
+                class Box a where
+                    get :: a
+                
+                x :: Int
+                x = foo 0
+            """.trimIndent()
+        ).getModule()
+        val foo = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo (foo) where
+                
+                foo :: Int -> Int
+                foo _ = 1
+            """.trimIndent()
+        ).getValueDeclaration()
+        
+        MoveValueDeclarationRefactoring(foo, main).also {
+            it.executeEx(it.findUsages())
+        }
+        
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                module Foo () where
+            """.trimIndent(),
+            false
+        )
+        myFixture.checkResult(
+            "Main.purs",
+            """
+                module Main (class Box, x, foo) where
+                
+                class Box a where
+                    get :: a
+                
+                x :: Int
+                x = foo 0
+                
+                foo :: Int -> Int
+                foo _ = 1
+            """.trimIndent(),
+            false
+        )
     }
 }

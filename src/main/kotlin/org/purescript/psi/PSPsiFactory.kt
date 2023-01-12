@@ -9,6 +9,8 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
+import org.purescript.psi.exports.ExportList
+import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -200,4 +202,10 @@ class PSPsiFactory(private val project: Project) {
         """.trimMargin()
         )
     }
+
+    fun createExportList(vararg names: String): ExportList.Psi = createFromText(
+        """
+        |module Main (${names.joinToString(", ")}) where
+    """.trimMargin()
+    )!!
 }

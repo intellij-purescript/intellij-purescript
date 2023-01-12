@@ -16,9 +16,9 @@ import org.purescript.psi.newtype.PSNewTypeDeclaration
 sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSImportedItem> {
     abstract override fun getName(): String
 
-    internal val importDeclaration: Import.Psi?
+    internal val importDeclaration: Import.Psi
         get() =
-            PsiTreeUtil.getParentOfType(this, Import.Psi::class.java)
+            PsiTreeUtil.getParentOfType(this, Import.Psi::class.java)!!
 
     /**
      * Compares this [PSImportedItem] with the specified [PSImportedItem] for order.
