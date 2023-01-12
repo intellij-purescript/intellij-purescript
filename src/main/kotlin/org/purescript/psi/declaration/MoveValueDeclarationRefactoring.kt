@@ -28,7 +28,7 @@ class MoveValueDeclarationRefactoring(
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
         val factory = PSPsiFactory(toMove.project)
-        val sourceModule = toMove.module!!
+        val sourceModule = toMove.module
 
         // dependencies needs to be imported or moved to targetModule
         val dependencies = toMove.expressionIdentifiers.mapNotNull { element ->
