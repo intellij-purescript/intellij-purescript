@@ -31,16 +31,28 @@ class MoveValueDeclarationRefactoring(
         val sourceModule = toMove.module
 
         // dependencies needs to be imported or moved to targetModule
-        val dependencies = toMove.expressionIdentifiers.mapNotNull { element ->
-            element.reference.resolve()?.let { element to it }
-        }.filter { (_, reference) ->
-            // dependency to self is fine
-            reference != toMove
-        }.filter { (_, reference) ->
-            // dependency to locals are fine    
-            !(reference.containingFile == toMove.containingFile &&
-                toMove.textRange.contains(reference.textRange))
-        }
+        val identifierDependencies = toMove.expressionIdentifiers
+            .mapNotNull { element ->
+                element.reference?.resolve()?.let { element to it }
+            }.filter { (_, reference) ->
+                // dependency to self is fine
+                reference != toMove
+            }.filter { (_, reference) ->
+                // dependency to locals are fine    
+                !(reference.containingFile == toMove.containingFile &&
+                    toMove.textRange.contains(reference.textRange))
+            }
+        val operatorDependencies = toMove.expressionOperators
+            .mapNotNull { element ->
+                element.reference?.resolve()?.let { element to it }
+            }.filter { (_, reference) ->
+                // dependency to self is fine
+                reference != toMove
+            }.filter { (_, reference) ->
+                // dependency to locals are fine    
+                !(reference.containingFile == toMove.containingFile &&
+                    toMove.textRange.contains(reference.textRange))
+            }
 
         val first = (toMove.signature ?: toMove)
         targetModule.add(factory.createNewLines(2))
@@ -97,22 +109,44 @@ class MoveValueDeclarationRefactoring(
                 }
             }
         }
-        val done = mutableSetOf<Triple<String, String?, String>>()
-        for ((element, reference) in dependencies) {
+        val doneIdentifiers = mutableSetOf<Triple<String, String?, String>>()
+        for ((element, reference) in identifierDependencies) {
             when (reference) {
                 is PSValueDeclaration -> {
                     val moduleName = reference.module.name
                     val alias = element.qualifiedIdentifier.moduleName?.name
                     val name = element.name
                     when (val address = Triple(moduleName, alias, name)) {
-                        in done -> continue
-                        else -> done.add(address)
+                        in doneIdentifiers -> continue
+                        else -> doneIdentifiers.add(address)
                     }
                     val newImport = factory.createImportDeclaration(
                         moduleName,
                         false,
                         alias,
                         listOf(name)
+                    )
+                    targetModule.addImportDeclaration(newImport)
+                    
+                }
+            }
+        }
+        val doneOperators = mutableSetOf<Triple<String, String?, String>>()
+        for ((element, reference) in operatorDependencies) {
+            when (reference) {
+                is FixityDeclaration.Psi -> {
+                    val moduleName = reference.module.name
+                    val alias = element.qualifiedOperator.moduleName?.name
+                    val name = element.name
+                    when (val address = Triple(moduleName, alias, name)) {
+                        in doneOperators -> continue
+                        else -> doneOperators.add(address)
+                    }
+                    val newImport = factory.createImportDeclaration(
+                        moduleName,
+                        false,
+                        alias,
+                        listOf("($name)")
                     )
                     targetModule.addImportDeclaration(newImport)
                 }

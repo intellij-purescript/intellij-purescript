@@ -106,10 +106,10 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Foo (foo) where
                 
-                import Numbers (one)
+                import Numbers (one, (+))
                 
                 foo :: Int -> Int
-                foo _ = one
+                foo _ = one + one
                 
                 foz :: Int
                 foz = foo 10
@@ -136,6 +136,10 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Numbers where
                 
+                infixl 6 add as +
+                
+                add a b = a
+                
                 one :: Int
                 one = 1
             """.trimIndent()
@@ -150,7 +154,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Foo () where
                 
-                import Numbers (one)
+                import Numbers (one, (+))
                 import Main (foo)
                 
                 foz :: Int
@@ -167,6 +171,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 module Main (class Box, x, foo) where
                 
                 import Numbers (one)
+                import Numbers ((+))
                 
                 class Box a where
                     get :: a
@@ -175,7 +180,7 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 x = foo 0
                 
                 foo :: Int -> Int
-                foo _ = one
+                foo _ = one + one
             """.trimIndent(),
             false
         )
