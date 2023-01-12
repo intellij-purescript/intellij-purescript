@@ -118,6 +118,8 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 
                 bar :: Int
                 bar = foo 10
+                baz :: Int
+                baz = foo 10
             """.trimIndent()
         )
         
@@ -157,6 +159,8 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 
                 bar :: Int
                 bar = foo 10
+                baz :: Int
+                baz = foo 10
             """.trimIndent(),
             false
         )

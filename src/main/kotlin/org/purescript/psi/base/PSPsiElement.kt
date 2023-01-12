@@ -8,14 +8,14 @@ import com.intellij.psi.search.SearchScope
 import org.purescript.file.ImportedModuleIndex
 import org.purescript.file.ModuleNameIndex
 import org.purescript.file.PSFile
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.module.Module
 
 abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
 
     /**
-     * @return the [Psi] containing this element
+     * @return the [Module.Psi] containing this element
      */
-    val module: Psi? get() = (containingFile as? PSFile.Psi)?.module
+    val module: Module.Psi? get() = (containingFile as? PSFile.Psi)?.module
 
     override fun getUseScope(): SearchScope = module
         ?.name

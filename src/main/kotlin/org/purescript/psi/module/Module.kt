@@ -65,6 +65,7 @@ interface Module {
         inner class Cache {
             val imports by lazy { findChildrenByClass<Import.Psi>() }
             val importsByName by lazy { imports.groupBy { it.name } }
+            val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
             val valueDeclarations
                 by lazy { findChildrenByClass<PSValueDeclaration>() }
             val dataDeclarations
