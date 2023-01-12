@@ -33,7 +33,7 @@ class MoveValueDeclarationRefactoring(
         // dependencies needs to be imported or moved to targetModule
         val identifierDependencies = toMove.expressionIdentifiers
             .mapNotNull { element ->
-                element.reference?.resolve()?.let { element to it }
+                element.reference.resolve()?.let { element to it }
             }.filter { (_, reference) ->
                 // dependency to self is fine
                 reference != toMove
@@ -44,7 +44,7 @@ class MoveValueDeclarationRefactoring(
             }
         val operatorDependencies = toMove.expressionOperators
             .mapNotNull { element ->
-                element.reference?.resolve()?.let { element to it }
+                element.reference.resolve()?.let { element to it }
             }.filter { (_, reference) ->
                 // dependency to self is fine
                 reference != toMove
@@ -57,7 +57,7 @@ class MoveValueDeclarationRefactoring(
         val first = (toMove.signature ?: toMove)
         targetModule.add(factory.createNewLines(2))
         targetModule.addRange(first, toMove)
-        sourceModule.deleteChildRange(first, toMove)
+        sourceModule?.deleteChildRange(first, toMove)
         targetModule.exports?.let { exportList ->
             val oldNames = exportList.exportedItems.map {
                 it.text
@@ -78,7 +78,7 @@ class MoveValueDeclarationRefactoring(
                             toPatch.importDeclaration.importAlias?.name,
                             listOf(toPatch.name)
                         )
-                        toPatch.module.addImportDeclaration(newImport)
+                        toPatch.module?.addImportDeclaration(newImport)
                     }
                     // remove old one
                     val importDeclaration = toPatch.importDeclaration
@@ -103,7 +103,7 @@ class MoveValueDeclarationRefactoring(
                             null,
                             listOf(toPatch.name)
                         )
-                        sourceModule.addImportDeclaration(newImport)
+                        sourceModule?.addImportDeclaration(newImport)
                         importedInSource = true
                     }
                 }
@@ -113,7 +113,7 @@ class MoveValueDeclarationRefactoring(
         for ((element, reference) in identifierDependencies) {
             when (reference) {
                 is PSValueDeclaration -> {
-                    val moduleName = reference.module.name
+                    val moduleName = reference.module?.name ?: continue
                     val alias = element.qualifiedIdentifier.moduleName?.name
                     val name = element.name
                     when (val address = Triple(moduleName, alias, name)) {
