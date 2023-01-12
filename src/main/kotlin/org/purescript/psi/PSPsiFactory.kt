@@ -168,8 +168,11 @@ class PSPsiFactory(private val project: Project) {
             """.trimIndent()
         )
 
-    fun createNewLine(): PsiElement =
-        project.service<PsiParserFacade>().createWhiteSpaceFromText("\n")
+    fun createNewLine(): PsiElement = createNewLines()
+    
+    fun createNewLines(n:Int = 1): PsiElement =
+        project.service<PsiParserFacade>()
+            .createWhiteSpaceFromText("\n".repeat(n))
 
     private inline fun <reified T : PsiElement> createFromText(@Language("Purescript") code: String): T? =
         PsiFileFactory.getInstance(project)

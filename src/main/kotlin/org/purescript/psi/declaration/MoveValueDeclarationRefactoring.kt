@@ -27,10 +27,11 @@ class MoveValueDeclarationRefactoring(
             .toTypedArray()
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
-        val first = (toMove.signature?: toMove).prevSibling // whitespace
+        val factory = PSPsiFactory(toMove.project)
+        val first = (toMove.signature?: toMove)
+        targetModule.add(factory.createNewLines(2))
         targetModule.addRange(first, toMove)
         toMove.module?.deleteChildRange(first, toMove)
-        val factory = PSPsiFactory(toMove.project)
         targetModule.exports?.let { exportList ->
             val oldNames = exportList.exportedItems.map { 
                 it.text

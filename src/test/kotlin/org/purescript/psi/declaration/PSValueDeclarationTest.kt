@@ -131,6 +131,8 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             "Foo.purs",
             """
                 module Foo () where
+                
+                
             """.trimIndent(),
             false
         )
@@ -210,6 +212,8 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             "Foo.purs",
             """
                 module Foo () where
+                
+                
             """.trimIndent(),
             false
         )
