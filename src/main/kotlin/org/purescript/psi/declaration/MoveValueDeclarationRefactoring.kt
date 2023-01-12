@@ -28,10 +28,11 @@ class MoveValueDeclarationRefactoring(
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
         val factory = PSPsiFactory(toMove.project)
+        val sourceModule = toMove.module!!
         val first = (toMove.signature?: toMove)
         targetModule.add(factory.createNewLines(2))
         targetModule.addRange(first, toMove)
-        toMove.module?.deleteChildRange(first, toMove)
+        sourceModule.deleteChildRange(first, toMove)
         targetModule.exports?.let { exportList ->
             val oldNames = exportList.exportedItems.map { 
                 it.text
@@ -39,6 +40,7 @@ class MoveValueDeclarationRefactoring(
             val newExportList = factory.createExportList(*oldNames.toTypedArray(), toMove.name)
             exportList.replace(newExportList)
         }
+        var importedInSource = false
         for (usage in usages) {
             when (val toPatch = usage.element) {
                 is ExportedValue.Psi -> toPatch.delete()
@@ -67,6 +69,15 @@ class MoveValueDeclarationRefactoring(
                 is PSExpressionIdentifier -> {
                     if (toPatch.module == targetModule) {
                         toPatch.qualifiedIdentifier.moduleName?.delete()
+                    } else if( toPatch.module == sourceModule && !importedInSource) {
+                        val newImport = factory.createImportDeclaration(
+                            targetModule.name,
+                            false,
+                            null,
+                            listOf(toPatch.name)
+                        )!!
+                        sourceModule.addImportDeclaration(newImport)
+                        importedInSource = true
                     }
                 }
             }

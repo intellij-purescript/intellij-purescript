@@ -3,6 +3,7 @@ package org.purescript.psi.declaration
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getModule
 import org.purescript.getValueDeclaration
+import org.purescript.getValueDeclarationByName
 import org.purescript.getValueDeclarations
 
 class PSValueDeclarationTest : BasePlatformTestCase() {
@@ -107,8 +108,14 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
                 
                 foo :: Int -> Int
                 foo _ = 1
+                
+                foz :: Int
+                foz = foo 10
+                
+                fox :: Int
+                fox = foo 10
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationByName("foo")
         myFixture.configureByText(
             "Bar.purs",
             """
@@ -132,7 +139,13 @@ class PSValueDeclarationTest : BasePlatformTestCase() {
             """
                 module Foo () where
                 
+                import Main (foo)
                 
+                foz :: Int
+                foz = foo 10
+                
+                fox :: Int
+                fox = foo 10
             """.trimIndent(),
             false
         )

@@ -113,6 +113,9 @@ fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
 fun PsiFile.getValueDeclaration(): PSValueDeclaration =
     getValueDeclarations().single()
 
+fun PsiFile.getValueDeclarationByName(name: String): PSValueDeclaration =
+    getValueDeclarations().single { it.name == name}
+
 fun PsiFile.getVarBinders(): List<PSVarBinder> =
     collectDescendantsOfType()
 
