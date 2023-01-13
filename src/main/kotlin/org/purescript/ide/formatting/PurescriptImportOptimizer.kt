@@ -11,12 +11,11 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.imports.*
 
 class PurescriptImportOptimizer : ImportOptimizer {
-    override fun supports(file: PsiFile): Boolean =
-        file is PSFile.Psi
-
+    override fun supports(file: PsiFile): Boolean = file is PSFile.Psi
     override fun processFile(file: PsiFile): Runnable {
         val psFile = file as PSFile.Psi
-        val module = psFile.module ?: error("File contains no Purescript module: ${file.name} ")
+        val module = psFile.module
+            ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()
         val importDeclarations = mergeImportDeclarations(
             module.cache.imports.map(
@@ -24,9 +23,13 @@ class PurescriptImportOptimizer : ImportOptimizer {
             )
         )
         val psiElements = mutableListOf<PsiElement>()
-        val implicitImportDeclarations = importDeclarations.filter { it.implicit }
-        val regularImportDeclarations = importDeclarations - implicitImportDeclarations.toSet()
-        for (importDeclaration in implicitImportDeclarations.sortedWith(importDeclarationComparator)) {
+        val implicitImportDeclarations =
+            importDeclarations.filter { it.implicit }
+        val regularImportDeclarations =
+            importDeclarations - implicitImportDeclarations.toSet()
+        for (importDeclaration in implicitImportDeclarations.sortedWith(
+            importDeclarationComparator
+        )) {
             psiElements += factory.createImportDeclaration(importDeclaration)
                 ?: error("Could not create import declaration: $importDeclaration")
             psiElements += factory.createNewLine()
@@ -34,7 +37,9 @@ class PurescriptImportOptimizer : ImportOptimizer {
         if (implicitImportDeclarations.isNotEmpty() && regularImportDeclarations.isNotEmpty()) {
             psiElements += factory.createNewLine()
         }
-        for (importDeclaration in regularImportDeclarations.sortedWith(importDeclarationComparator)) {
+        for (importDeclaration in regularImportDeclarations.sortedWith(
+            importDeclarationComparator
+        )) {
             psiElements += factory.createImportDeclaration(importDeclaration)
                 ?: error("Could not create import declaration: $importDeclaration")
             psiElements += factory.createNewLine()
@@ -85,6 +90,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
                 importedItem.importsAll,
                 importedItem.importedDataMembers.map { it.name }.toSet()
             )
+
             is PSImportedValue -> ImportedValue(importedItem.name)
             is PSImportedOperator -> ImportedOperator(importedItem.name)
         }
