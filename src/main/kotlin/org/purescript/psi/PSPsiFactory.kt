@@ -78,34 +78,18 @@ class PSPsiFactory(private val project: Project) {
                         is ImportedOperator -> 6
                     }
                 }
-                .map { importItemToString(it) }
+                .map { createImportedItem(it) }
         )
 
-    private fun importItemToString(it: ImportedItem) = when (it) {
-        is ImportedValue -> it.name
-        is ImportedOperator -> "(${it.name})"
-        is ImportedClass -> "class ${it.name}"
-        is ImportedType -> "type (${it.name})"
+    private fun createImportedItem(item: ImportedItem) = when (item) {
+        is ImportedValue -> item.name
+        is ImportedOperator -> "(${item.name})"
+        is ImportedClass -> "class ${item.name}"
+        is ImportedType -> "type (${item.name})"
         is ImportedData -> when {
-            it.doubleDot -> "${it.name}(..)"
-            it.dataMembers.isEmpty() -> it.name
-            else -> "${it.name}(${it.dataMembers.sorted().joinToString()})"
-        }
-    }
-
-    private fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
-        return when (importedItem) {
-            is ImportedClass -> createImportedClass(importedItem.name)
-            is ImportedData -> createImportedData(
-                importedItem.name,
-                importedItem.doubleDot,
-                importedItem.dataMembers
-            )
-
-            is ImportedOperator -> createImportedOperator(importedItem.name)
-
-            is ImportedType -> createImportedType(importedItem.name)
-            is ImportedValue -> createImportedValue(importedItem.name)
+            item.doubleDot -> "${item.name}(..)"
+            item.dataMembers.isEmpty() -> item.name
+            else -> "${item.name}(${item.dataMembers.sorted().joinToString()})"
         }
     }
 
