@@ -24,8 +24,7 @@ data class ImportedData(
 fun mergeImportDeclarations(importDeclarations: Iterable<ImportDeclaration>): Set<ImportDeclaration> {
     return importDeclarations.toSet()
         .groupBy { it.moduleName to it.alias }
-        .map {
-            val (moduleNameAndAlias, group) = it
+        .map {(moduleNameAndAlias, group) ->
             val (moduleName, alias) = moduleNameAndAlias
             mergeGroup(moduleName, alias, group)
         }.toSet()
