@@ -11,7 +11,6 @@ import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
 import org.purescript.psi.exports.ExportList
-import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -66,8 +65,7 @@ class PSPsiFactory(private val project: Project) {
         createImportDeclaration(
             importDeclaration.moduleName,
             importDeclaration.hiding,
-            importDeclaration.alias
-            ,
+            importDeclaration.alias,
             importDeclaration
                 .importedItems
                 .sortedBy { it.name }
@@ -80,8 +78,20 @@ class PSPsiFactory(private val project: Project) {
                         is ImportedOperator -> 6
                     }
                 }
-                .map { createImportedItem(it) ?: return null }.map { it.text }
+                .map { importItemToString(it) }
         )
+
+    private fun importItemToString(it: ImportedItem) = when (it) {
+        is ImportedValue -> it.name
+        is ImportedOperator -> "(${it.name})"
+        is ImportedClass -> "class ${it.name}"
+        is ImportedType -> "type (${it.name})"
+        is ImportedData -> when {
+            it.doubleDot -> "${it.name}(..)"
+            it.dataMembers.isEmpty() -> it.name
+            else -> "${it.name}(${it.dataMembers.sorted().joinToString()})"
+        }
+    }
 
     private fun createImportedItem(importedItem: ImportedItem): PSImportedItem? {
         return when (importedItem) {
@@ -91,7 +101,9 @@ class PSPsiFactory(private val project: Project) {
                 importedItem.doubleDot,
                 importedItem.dataMembers
             )
+
             is ImportedOperator -> createImportedOperator(importedItem.name)
+
             is ImportedType -> createImportedType(importedItem.name)
             is ImportedValue -> createImportedValue(importedItem.name)
         }
@@ -111,7 +123,11 @@ class PSPsiFactory(private val project: Project) {
                     if (hiding) {
                         append(" hiding")
                     }
-                    append(items.joinToString(prefix = " (", postfix = ")") { it })
+                    append(
+                        items.joinToString(
+                            prefix = " (",
+                            postfix = ")"
+                        ) { it })
                 }
                 if (alias != null) {
                     append(" as $alias")
@@ -156,7 +172,12 @@ class PSPsiFactory(private val project: Project) {
                 if (doubleDot) {
                     append("(..)")
                 } else if (importedDataMembers.isNotEmpty()) {
-                    append(importedDataMembers.joinToString(prefix = "(", postfix = ")"))
+                    append(
+                        importedDataMembers.joinToString(
+                            prefix = "(",
+                            postfix = ")"
+                        )
+                    )
                 }
                 append(")")
             }
@@ -171,12 +192,16 @@ class PSPsiFactory(private val project: Project) {
         )
 
     fun createNewLine(): PsiElement = createNewLines()
-    
-    fun createNewLines(n:Int = 1): PsiElement =
+
+    fun createNewLines(n: Int = 1): PsiElement =
         project.service<PsiParserFacade>()
             .createWhiteSpaceFromText("\n".repeat(n))
 
-    private inline fun <reified T : PsiElement> createFromText(@Language("Purescript") code: String): T? =
+    private inline fun <reified T : PsiElement> createFromText(
+        @Language(
+            "Purescript"
+        ) code: String
+    ): T? =
         PsiFileFactory.getInstance(project)
             .createFileFromText(PSLanguage, code)
             .findDescendantOfType()
@@ -189,7 +214,7 @@ class PSPsiFactory(private val project: Project) {
         """.trimMargin()
         )
     }
-    
+
     fun createOperatorName(name: String): PSOperatorName? {
         return createFromText(
             """
@@ -208,9 +233,10 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createExportList(vararg names: String): ExportList.Psi = createFromText(
-        """
+    fun createExportList(vararg names: String): ExportList.Psi =
+        createFromText(
+            """
         |module Main (${names.joinToString(", ")}) where
     """.trimMargin()
-    )!!
+        )!!
 }

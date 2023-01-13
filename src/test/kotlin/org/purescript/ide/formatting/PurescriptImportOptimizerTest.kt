@@ -183,4 +183,21 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent()
         )
     }
+    
+    fun `test sorts data members`() {
+        test(
+            """
+                module Foo where
+                
+                import Bar (Data(Foo, Bar))
+                
+            """.trimIndent(),
+            """
+                module Foo where
+                
+                import Bar (Data(Bar, Foo))
+                
+            """.trimIndent()
+        )
+    }
 }
