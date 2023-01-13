@@ -1,6 +1,7 @@
 package org.purescript.ide.formatting
 
 import com.intellij.lang.ImportOptimizer
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
@@ -16,7 +17,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
     override fun processFile(file: PsiFile): Runnable {
         val psFile = file as PSFile.Psi
         val module = psFile.module ?: error("File contains no Purescript module: ${file.name} ")
-        val factory = PSPsiFactory(file.project)
+        val factory: PSPsiFactory = file.project.service()
         val importDeclarations = mergeImportDeclarations(
             module.cache.imports.map(
                 ::fromPsiElement

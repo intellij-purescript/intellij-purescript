@@ -1,6 +1,7 @@
 package org.purescript.psi.module
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
@@ -93,7 +94,7 @@ interface Module {
         override fun getName(): String = greenStub?.name ?: nameIdentifier.name
 
         override fun setName(name: String): PsiElement? {
-            val properName = PSPsiFactory(project).createModuleName(name)
+            val properName = project.service<PSPsiFactory>().createModuleName(name)
                 ?: return null
             nameIdentifier.replace(properName)
             return this
@@ -313,7 +314,7 @@ interface Module {
         fun addImportDeclaration(importDeclaration: Import.Psi) {
             val lastImportDeclaration = cache.imports.lastOrNull()
             val insertPosition = lastImportDeclaration ?: whereKeyword
-            val newLine = PSPsiFactory(project).createNewLine()
+            val newLine = project.service<PSPsiFactory>().createNewLine()
             addAfter(importDeclaration, insertPosition)
             addAfter(newLine, insertPosition)
             if (lastImportDeclaration == null) {

@@ -2,6 +2,7 @@ package org.purescript.psi.declaration
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.components.service
 import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.psi.PSPsiFactory
@@ -37,7 +38,7 @@ class PSValueDeclaration(node: ASTNode) :
     }
 
     override fun setName(name: String): PsiElement? {
-        val identifier = PSPsiFactory(project).createIdentifier(name)
+        val identifier = project.service<PSPsiFactory>().createIdentifier(name)
             ?: return null
         nameIdentifier.replace(identifier)
         return this

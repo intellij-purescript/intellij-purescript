@@ -2,6 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
@@ -29,7 +30,7 @@ class ImportQuickFix(
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val hostModule =
             (descriptor.psiElement as? PSPsiElement)?.module ?: return
-        val psiFactory = PSPsiFactory(project)
+        val psiFactory = project.service<PSPsiFactory>()
         val importDeclaration = psiFactory.createImportDeclaration(
             moduleName = moduleName,
             alias = alias,

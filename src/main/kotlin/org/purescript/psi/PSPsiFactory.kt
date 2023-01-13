@@ -1,5 +1,6 @@
 package org.purescript.psi
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -55,6 +56,7 @@ inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(
 }
 
 @Suppress("PSUnresolvedReference")
+@Service
 class PSPsiFactory(private val project: Project) {
 
     fun createModuleName(name: String): PSModuleName? =

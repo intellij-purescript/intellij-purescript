@@ -1,6 +1,7 @@
 package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
@@ -15,7 +16,7 @@ class PSVarBinder(node: ASTNode) :
 
     override fun setName(name: String): PsiElement? {
         val newName =
-            PSPsiFactory(project).createIdentifier(name) ?: return null
+            project.service<PSPsiFactory>().createIdentifier(name) ?: return null
         this.nameIdentifier.replace(newName)
         return this
     }

@@ -1,6 +1,7 @@
 package org.purescript.psi.declaration
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
@@ -45,7 +46,7 @@ interface FixityDeclaration {
         override fun getNameIdentifier() = operatorName
         override fun getName() = stub?.name ?: operatorName.name
         override fun setName(name: String): PsiElement? {
-            val identifier = PSPsiFactory(project).createOperatorName(name)
+            val identifier = project.service<PSPsiFactory>().createOperatorName(name)
                 ?: return null
             nameIdentifier.replace(identifier)
             return this

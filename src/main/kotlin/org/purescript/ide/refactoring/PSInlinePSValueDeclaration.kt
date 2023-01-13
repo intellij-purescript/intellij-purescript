@@ -1,5 +1,6 @@
 package org.purescript.ide.refactoring
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
@@ -36,7 +37,8 @@ class PSInlinePSValueDeclaration(val project: Project, val toInline: PSValueDecl
             if (parent.children.size == 1) {
                 parent.addRangeAfter(copy.firstChild, copy.lastChild, element)
             } else {
-                val parenthesis = PSPsiFactory(project).createParenthesis(copy.text) ?: return@loop
+                val parenthesis = project.service<PSPsiFactory>()
+                    .createParenthesis(copy.text) ?: return@loop
                 element.replace(parenthesis)
             }
 
