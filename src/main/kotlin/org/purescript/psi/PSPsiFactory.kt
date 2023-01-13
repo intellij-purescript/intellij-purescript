@@ -78,20 +78,8 @@ class PSPsiFactory(private val project: Project) {
                         is ImportedOperator -> 6
                     }
                 }
-                .map { createImportedItem(it) }
+                .map { it.text }
         )
-
-    private fun createImportedItem(item: ImportedItem) = when (item) {
-        is ImportedValue -> item.name
-        is ImportedOperator -> "(${item.name})"
-        is ImportedClass -> "class ${item.name}"
-        is ImportedType -> "type (${item.name})"
-        is ImportedData -> when {
-            item.doubleDot -> "${item.name}(..)"
-            item.dataMembers.isEmpty() -> item.name
-            else -> "${item.name}(${item.dataMembers.sorted().joinToString()})"
-        }
-    }
 
     fun createImportDeclaration(
         moduleName: String,
