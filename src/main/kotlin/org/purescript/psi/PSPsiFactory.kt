@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import com.intellij.psi.util.descendantsOfType
 import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
@@ -61,25 +62,19 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
-    fun createImportDeclaration(importDeclaration: ImportDeclaration): Import.Psi? =
-        createImportDeclaration(
-            importDeclaration.moduleName,
-            importDeclaration.hiding,
-            importDeclaration.alias,
-            importDeclaration
-                .importedItems
-                .sortedBy { it.name }
-                .sortedBy {
-                    when (it) {
-                        is ImportedClass -> 1
-                        is ImportedType -> 3
-                        is ImportedData -> 4
-                        is ImportedValue -> 5
-                        is ImportedOperator -> 6
-                    }
-                }
-                .map { it.text }
-        )
+    fun createImportDeclaration(importDeclaration: ImportDeclaration): Import.Psi? {
+        return createFromText(
+            """module Foo where
+                    ${importDeclaration.text}
+            """.trimIndent()
+        )!!
+    }
+    fun createImportDeclarations(importDeclarations: List<ImportDeclaration>): Pair<Import.Psi?, Import.Psi?> {
+        val code = """module Foo where
+${importDeclarations.joinToString("\n") { it.text }}
+"""
+        return createRangeFromText(code)
+    }
 
     fun createImportDeclaration(
         moduleName: String,
@@ -177,6 +172,15 @@ class PSPsiFactory(private val project: Project) {
         PsiFileFactory.getInstance(project)
             .createFileFromText(PSLanguage, code)
             .findDescendantOfType()
+
+    private inline fun <reified S : PsiElement, reified E : PsiElement> createRangeFromText(
+        @Language("Purescript") code: String
+    ): Pair<S?, E?> {
+        val file = PsiFileFactory.getInstance(project)
+            .createFileFromText(PSLanguage, code)
+        return file.descendantsOfType<S>().firstOrNull() to
+            file.descendantsOfType<E>().lastOrNull()
+    }
 
     fun createIdentifier(name: String): PSIdentifier? {
         return createFromText(

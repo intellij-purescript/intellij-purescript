@@ -7,6 +7,29 @@ data class ImportDeclaration(
     val alias: String? = null
 ) {
     val implicit = alias == null && (hiding || importedItems.isEmpty())
+    private val sortedItems: List<ImportedItem>
+        get() = importedItems
+            .sortedBy { it.name }
+            .sortedBy {
+                when (it) {
+                    is ImportedClass -> 1
+                    is ImportedType -> 3
+                    is ImportedData -> 4
+                    is ImportedValue -> 5
+                    is ImportedOperator -> 6
+                }
+            }
+    val text
+        get() = buildString {
+            append("import $moduleName")
+            if (importedItems.isNotEmpty()) {
+                if (hiding) append(" hiding")
+                append(" (${sortedItems.joinToString { it.text }})")
+            }
+            if (alias != null) {
+                append(" as $alias")
+            }
+        }
 }
 
 sealed class ImportedItem(open val name: String) {

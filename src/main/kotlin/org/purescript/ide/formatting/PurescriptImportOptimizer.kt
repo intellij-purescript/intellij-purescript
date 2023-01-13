@@ -2,7 +2,6 @@ package org.purescript.ide.formatting
 
 import com.intellij.lang.ImportOptimizer
 import com.intellij.openapi.components.service
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
@@ -22,29 +21,21 @@ class PurescriptImportOptimizer : ImportOptimizer {
                 ::fromPsiElement
             )
         )
-        val psiElements = mutableListOf<PsiElement>()
         val implicitImportDeclarations =
             importDeclarations.filter { it.implicit }
         val regularImportDeclarations =
             importDeclarations - implicitImportDeclarations.toSet()
-        for (importDeclaration in implicitImportDeclarations.sortedWith(
-            importDeclarationComparator
-        )) {
-            psiElements += factory.createImportDeclaration(importDeclaration)
-                ?: error("Could not create import declaration: $importDeclaration")
-            psiElements += factory.createNewLine()
-        }
-        if (implicitImportDeclarations.isNotEmpty() && regularImportDeclarations.isNotEmpty()) {
-            psiElements += factory.createNewLine()
-        }
-        for (importDeclaration in regularImportDeclarations.sortedWith(
-            importDeclarationComparator
-        )) {
-            psiElements += factory.createImportDeclaration(importDeclaration)
-                ?: error("Could not create import declaration: $importDeclaration")
-            psiElements += factory.createNewLine()
-        }
 
+        val implicitPsi = if (implicitImportDeclarations.isEmpty()) {
+            null
+        } else factory.createImportDeclarations(
+            implicitImportDeclarations.sortedWith(
+                importDeclarationComparator
+            )
+        );
+
+        val regularPsi = if (regularImportDeclarations.isEmpty()) null 
+        else factory.createImportDeclarations(regularImportDeclarations.sortedWith(importDeclarationComparator))
         return Runnable {
             for (importDeclaration in module.cache.imports) {
                 importDeclaration.delete()
@@ -53,17 +44,32 @@ class PurescriptImportOptimizer : ImportOptimizer {
             where.siblings(forward = true, withSelf = false)
                 .takeWhile { it is PsiWhiteSpace }
                 .forEach { it.delete() }
-            val toAdd = mutableListOf<PsiElement>()
-            toAdd.add(factory.createNewLine())
-            if (psiElements.isNotEmpty()) {
-                toAdd.add(factory.createNewLine())
-                toAdd.addAll(psiElements)
-            }
             if (where.nextSibling != null) {
-                toAdd.add(factory.createNewLine())
+                module.addAfter(factory.createNewLines(2), where)
+            } else {
+                module.addAfter(factory.createNewLines(1), where)
             }
-            for (element in toAdd.reversed()) {
-                module.addAfter(element, where)
+            when (regularPsi) {
+                null , null to null -> {}
+                else -> {
+                    module.addRangeAfter(
+                        regularPsi.first,
+                        regularPsi.second,
+                        where
+                    )
+                    module.addAfter(factory.createNewLines(2), where)
+                }
+            }
+            when (implicitPsi) {
+                null , null to null -> {}
+                else -> {
+                    module.addRangeAfter(
+                        implicitPsi.first,
+                        implicitPsi.second,
+                        where
+                    )
+                    module.addAfter(factory.createNewLines(2), where)
+                }
             }
         }
     }
