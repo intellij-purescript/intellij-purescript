@@ -8,18 +8,25 @@ data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
                 val (moduleName, alias) = moduleNameAndAlias
                 mergeGroup(moduleName, alias, group)
             }.toSet()
-    private val implicit get() = mergedImports
-        .filter { it.implicit }
-        .sortedBy { it.moduleName }
-    private val explicit get() = mergedImports
-        .filter { it.explicit }
-        .sortedBy { it.moduleName }
-        .sortedBy { it.alias }
-        .sortedBy { it.hiding }
     val text
-        get() : String =
-            "\n${implicit.joinToString("\n") { it.text }}" +
-                "\n\n${explicit.joinToString("\n") { it.text }}\n"
+        get() : String = buildString {
+            val imports = mergedImports
+                .sortedBy { it.moduleName }
+                .sortedBy { it.alias }
+                .sortedBy { it.hiding }
+            val implicit = imports.filter { it.implicit }
+            if (implicit.isNotEmpty()) {
+                append(implicit.joinToString("\n") { it.text })
+            }
+            val explicit = imports.filter { it.explicit }
+            if (implicit.isNotEmpty() && explicit.isNotEmpty()) {
+                appendLine()
+                appendLine()
+            }
+            if (explicit.isNotEmpty()) {
+                append(explicit.joinToString("\n") { it.text })
+            }
+        }
 
     companion object {
         private fun mergeGroup(

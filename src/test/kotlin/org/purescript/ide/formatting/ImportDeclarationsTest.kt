@@ -14,11 +14,23 @@ class ImportDeclarationsTest : TestCase() {
 
     fun `test merges import declarations from same module without alias`() {
         val importDeclarations = setOf(
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("map"))),
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("unit")))
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedValue("map"))
+            ),
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedValue("unit"))
+            )
         )
         val expected = setOf(
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("map"), ImportedValue("unit")))
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(
+                    ImportedValue("map"),
+                    ImportedValue("unit")
+                )
+            )
         )
         assertEquals(
             expected,
@@ -28,8 +40,16 @@ class ImportDeclarationsTest : TestCase() {
 
     fun `test does not merge import declarations from same module with different alias`() {
         val importDeclarations = setOf(
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("map")), alias = "A"),
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("unit")), alias = "B")
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedValue("map")),
+                alias = "A"
+            ),
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedValue("unit")),
+                alias = "B"
+            )
         )
         assertEquals(
             importDeclarations,
@@ -40,7 +60,10 @@ class ImportDeclarationsTest : TestCase() {
     fun `test importing everything trumps importing something`() {
         val importDeclarations = setOf(
             ImportDeclaration("Prelude"),
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("unit")))
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedValue("unit"))
+            )
         )
         val expected = setOf(ImportDeclaration("Prelude"))
         assertEquals(
@@ -52,7 +75,11 @@ class ImportDeclarationsTest : TestCase() {
     fun `test importing everything trumps importing something, even with alias`() {
         val importDeclarations = setOf(
             ImportDeclaration("Prelude", alias = "A"),
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedValue("unit")), alias = "A")
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedValue("unit")),
+                alias = "A"
+            )
         )
         val expected = setOf(ImportDeclaration("Prelude", alias = "A"))
         assertEquals(
@@ -63,7 +90,13 @@ class ImportDeclarationsTest : TestCase() {
 
     fun `test retains hiding import declaration`() {
         val importDeclarations =
-            setOf(ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Eq"))))
+            setOf(
+                ImportDeclaration(
+                    "Prelude",
+                    hiding = true,
+                    importedItems = setOf(ImportedClass("Eq"))
+                )
+            )
         assertEquals(
             importDeclarations,
             ImportDeclarations(importDeclarations).mergedImports
@@ -78,9 +111,19 @@ class ImportDeclarationsTest : TestCase() {
                     ImportedClass("Show"),
                 )
             ),
-            ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Show")))
+            ImportDeclaration(
+                "Prelude",
+                hiding = true,
+                importedItems = setOf(ImportedClass("Show"))
+            )
         )
-        val expected = setOf(ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Show"))))
+        val expected = setOf(
+            ImportDeclaration(
+                "Prelude",
+                hiding = true,
+                importedItems = setOf(ImportedClass("Show"))
+            )
+        )
         assertEquals(
             expected,
             ImportDeclarations(importDeclarations).mergedImports
@@ -95,9 +138,18 @@ class ImportDeclarationsTest : TestCase() {
                     ImportedClass("Show"),
                 )
             ),
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedClass("Show")))
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedClass("Show"))
+            )
         )
-        val expected = setOf(ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Eq"))))
+        val expected = setOf(
+            ImportDeclaration(
+                "Prelude",
+                hiding = true,
+                importedItems = setOf(ImportedClass("Eq"))
+            )
+        )
         assertEquals(
             expected,
             ImportDeclarations(importDeclarations).mergedImports
@@ -106,8 +158,15 @@ class ImportDeclarationsTest : TestCase() {
 
     fun `test imports everything if difference between hiding and regular imports is empty`() {
         val importDeclarations = setOf(
-            ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Show"))),
-            ImportDeclaration("Prelude", importedItems = setOf(ImportedClass("Show")))
+            ImportDeclaration(
+                "Prelude",
+                hiding = true,
+                importedItems = setOf(ImportedClass("Show"))
+            ),
+            ImportDeclaration(
+                "Prelude",
+                importedItems = setOf(ImportedClass("Show"))
+            )
         )
         val expected = setOf(ImportDeclaration("Prelude"))
         assertEquals(
@@ -118,34 +177,36 @@ class ImportDeclarationsTest : TestCase() {
 
     fun `test merges imported data with double dot`() {
         val importDeclarations = setOf(
-            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe"))),
-            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", dataMembers = setOf("Just")))),
-            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", doubleDot = true))),
+            ImportDeclaration(
+                "Data.Maybe",
+                importedItems = setOf(ImportedData("Maybe"))
+            ),
+            ImportDeclaration(
+                "Data.Maybe",
+                importedItems = setOf(
+                    ImportedData(
+                        "Maybe",
+                        dataMembers = setOf("Just")
+                    )
+                )
+            ),
+            ImportDeclaration(
+                "Data.Maybe",
+                importedItems = setOf(ImportedData("Maybe", doubleDot = true))
+            ),
         )
-        val expected = setOf(ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", doubleDot = true))))
+        val expected = setOf(
+            ImportDeclaration(
+                "Data.Maybe",
+                importedItems = setOf(ImportedData("Maybe", doubleDot = true))
+            )
+        )
         assertEquals(
             expected,
             ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
-    @Suppress("unused")
-    fun `failing test, does not merge hiding and regular import declarations that hide only data constructors`() {
-        val importDeclarations = setOf(
-            ImportDeclaration(
-                "Data.Maybe",
-                hiding = true,
-                importedItems = setOf(ImportedData("Maybe", doubleDot = true))
-            ),
-            ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe")))
-        )
-        assertEquals(
-            importDeclarations,
-            ImportDeclarations(importDeclarations).mergedImports
-        )
-    }
-    
-    @Suppress("unused")
     fun `test renders the two groups correctly`() {
         val importDeclarations = setOf(
             ImportDeclaration("Data.Array"),
@@ -157,12 +218,26 @@ class ImportDeclarationsTest : TestCase() {
         )
         assertEquals(
             """
-                
                 import Data.Array
                 import Prelude
                 
                 import Data.Maybe (Maybe(..))
-                
+            """.trimIndent(),
+            ImportDeclarations(importDeclarations).text
+        )
+    }
+
+    fun `test sorts according to alias`() {
+        val importDeclarations = setOf(
+            ImportDeclaration("Alphabet", alias = "C"),
+            ImportDeclaration("Alphabet", alias = "A"),
+            ImportDeclaration("Alphabet", alias = "B"),
+        )
+        assertEquals(
+            """
+                import Alphabet as A
+                import Alphabet as B
+                import Alphabet as C
             """.trimIndent(),
             ImportDeclarations(importDeclarations).text
         )
