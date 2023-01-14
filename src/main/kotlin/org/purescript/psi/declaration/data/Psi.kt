@@ -3,6 +3,7 @@ package org.purescript.psi.declaration.data
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.purescript.psi.PSElementType
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.type.PSTypeAtom
@@ -19,8 +20,9 @@ import org.purescript.psi.type.PSTypeAtom
  * ```
  */
 interface DataConstructor {
+    object Type: PSElementType.WithPsi("DataConstructor", { Psi(it) })
     class Psi(node: ASTNode) :
-        PSPsiElement(node),
+        PSPsiElement(node, "PSDataConstructor"),
         PsiNameIdentifierOwner {
 
         /**

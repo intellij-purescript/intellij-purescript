@@ -58,7 +58,7 @@ val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
 val DataDecl = WithPsi("DataDeclaration") { PSDataDeclaration(it) }
 val DataCtorList = WithPsi("DataConstructorList") { PSDataConstructorList(it) }
-val DataCtor = WithPsi("DataConstructor") { DataConstructor.Psi(it) }
+val DataCtor = DataConstructor.Type
 val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeSynonymDecl =
     WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }

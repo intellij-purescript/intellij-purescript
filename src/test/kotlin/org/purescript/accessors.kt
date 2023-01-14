@@ -6,12 +6,13 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
 import org.purescript.psi.foreign.PSForeignDataDeclaration
 import org.purescript.psi.foreign.PSForeignValueDeclaration
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.module.Module
 import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.PSClassConstraint
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
+import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.exports.*
@@ -78,13 +79,13 @@ inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(
 }
 
 
-fun PsiFile.getModule(): Psi =
+fun PsiFile.getModule(): Module.Psi =
     (this as PSFile.Psi).module!!
 
 fun PsiFile.getDataDeclaration(): PSDataDeclaration =
     getModule().cache.dataDeclarations.single()
 
-fun PsiFile.getDataConstructor(): Psi =
+fun PsiFile.getDataConstructor(): DataConstructor.Psi =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
 fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> =
