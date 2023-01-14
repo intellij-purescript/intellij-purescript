@@ -1,6 +1,5 @@
 package org.purescript.parser
 
-import org.purescript.psi.*
 import org.purescript.psi.PSElementType.WithPsi
 import org.purescript.psi.binder.*
 import org.purescript.psi.caseof.PSCase
