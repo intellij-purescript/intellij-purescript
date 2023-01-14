@@ -16,10 +16,10 @@ import org.purescript.psi.declaration.fixity.PSFixity
 import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.PSValueDeclaration
-import org.purescript.psi.dostmt.PSDoBlock
-import org.purescript.psi.dostmt.PSDoNotationBind
-import org.purescript.psi.dostmt.PSDoNotationLet
-import org.purescript.psi.dostmt.PSDoNotationValue
+import org.purescript.psi.expression.dostmt.PSDoBlock
+import org.purescript.psi.expression.dostmt.PSDoNotationBind
+import org.purescript.psi.expression.dostmt.PSDoNotationLet
+import org.purescript.psi.expression.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.foreign.PSForeignDataDeclaration

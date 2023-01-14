@@ -1,4 +1,4 @@
-package org.purescript.psi.dostmt
+package org.purescript.psi.expression.dostmt
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
