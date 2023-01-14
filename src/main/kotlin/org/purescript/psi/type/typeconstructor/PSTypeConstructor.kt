@@ -1,4 +1,4 @@
-package org.purescript.psi.typeconstructor
+package org.purescript.psi.type.typeconstructor
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.*

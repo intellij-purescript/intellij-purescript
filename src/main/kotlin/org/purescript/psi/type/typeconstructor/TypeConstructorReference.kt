@@ -1,4 +1,4 @@
-package org.purescript.psi.typeconstructor
+package org.purescript.psi.type.typeconstructor
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
