@@ -31,10 +31,10 @@ class PSDataDeclaration(node: ASTNode) :
         get() = findChildByClass(PSDataConstructorList::class.java)
 
     /**
-     * @return the [DataConstructor.PSDataConstructor] elements belonging to this
+     * @return the [DataConstructor.Psi] elements belonging to this
      * declaration, or an empty array if it's an empty declaration
      */
-    val dataConstructors: Array<DataConstructor.PSDataConstructor>
+    val dataConstructors: Array<DataConstructor.Psi>
         get() = dataConstructorList?.dataConstructors
             ?: emptyArray()
 

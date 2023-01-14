@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.psi.PSElementType.*
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.DataConstructor.PSDataConstructor
+import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
@@ -266,9 +266,9 @@ interface Import {
             )
 
         /**
-         * @return the [DataConstructor.PSDataConstructor] elements imported by this declaration
+         * @return the [DataConstructor.Psi] elements imported by this declaration
          */
-        val importedDataConstructors: List<DataConstructor.PSDataConstructor>
+        val importedDataConstructors: List<DataConstructor.Psi>
             get() {
                 val importedModule = importedModule ?: return emptyList()
                 val exportedDataConstructors =
@@ -278,7 +278,7 @@ interface Import {
                     ?: return exportedDataConstructors
 
                 val importedDataConstructors =
-                    mutableListOf<DataConstructor.PSDataConstructor>()
+                    mutableListOf<DataConstructor.Psi>()
                 val importedDataElements =
                     importedItems.filterIsInstance<PSImportedData>()
                 if (isHiding) {

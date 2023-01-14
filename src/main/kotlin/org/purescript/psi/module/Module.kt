@@ -234,16 +234,16 @@ interface Module {
             ) { it.importedDataDeclarations }
 
         /**
-         * @return the [DataConstructor.PSDataConstructor] elements that this module exports,
+         * @return the [DataConstructor.Psi] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedDataConstructors: List<DataConstructor.PSDataConstructor>
+        val exportedDataConstructors: List<DataConstructor.Psi>
             get() {
                 val explicitlyExportedItems = exports?.exportedItems
                     ?: return cache.dataConstructors
 
                 val exportedDataConstructors =
-                    mutableListOf<DataConstructor.PSDataConstructor>()
+                    mutableListOf<DataConstructor.Psi>()
 
                 for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
                     if (exportedData.exportsAll) {

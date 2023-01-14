@@ -19,7 +19,7 @@ import org.purescript.psi.type.PSTypeAtom
  * ```
  */
 interface DataConstructor {
-    class PSDataConstructor(node: ASTNode) :
+    class Psi(node: ASTNode) :
         PSPsiElement(node),
         PsiNameIdentifierOwner {
 

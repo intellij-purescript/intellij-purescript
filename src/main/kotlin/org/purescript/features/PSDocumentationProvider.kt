@@ -65,7 +65,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is PSValueDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
-            is DataConstructor.PSDataConstructor ->
+            is DataConstructor.Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
             is PSDataDeclaration ->
