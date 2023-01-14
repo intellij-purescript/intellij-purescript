@@ -16,15 +16,15 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val module = psFile.module
             ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()
-        val importDeclarations = mergeImportDeclarations(
-            module.cache.imports.map(
-                ::fromPsiElement
-            )
-        )
+        val importDeclarationsFromModule = 
+            module.cache.imports.map(::fromPsiElement)
+        val importDeclarations = 
+            ImportDeclarations(importDeclarationsFromModule.toSet())
+        val mergedImports = importDeclarations.mergedImports
         val implicitImportDeclarations =
-            importDeclarations.filter { it.implicit }
+            mergedImports.filter { it.implicit }
         val regularImportDeclarations =
-            importDeclarations - implicitImportDeclarations.toSet()
+            mergedImports - implicitImportDeclarations.toSet()
 
         val implicitPsi = if (implicitImportDeclarations.isEmpty()) {
             null
