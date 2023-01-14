@@ -8,11 +8,8 @@ data class ImportDeclaration(
 ) {
     val implicit = alias == null && (hiding || importedItems.isEmpty())
     private val sortedItems: List<ImportedItem>
-        get() = importedItems
-            .sortedBy { it.name }
-            .sortedBy { sortKey(it) }
-
-
+        get() = importedItems.sortedBy { it.name }.sortedBy { sortKey(it) }
+    
     val text
         get() = buildString {
             append("import $moduleName")
@@ -24,6 +21,7 @@ data class ImportDeclaration(
                 append(" as $alias")
             }
         }
+
     companion object {
         private fun sortKey(it: ImportedItem) = when (it) {
             is ImportedClass -> 1
