@@ -49,21 +49,8 @@ class PurescriptImportOptimizer : ImportOptimizer {
         ImportDeclaration(
             importDeclaration.moduleName.name,
             importDeclaration.isHiding,
-            importDeclaration.importedItems.map(::fromPsiElement).toSet(),
+            importDeclaration.importedItems.map { it.asData() }.toSet(),
             importDeclaration.importAlias?.name
         )
 
-    private fun fromPsiElement(importedItem: PSImportedItem): ImportedItem =
-        when (importedItem) {
-            is PSImportedClass -> ImportedClass(importedItem.name)
-            is PSImportedType -> ImportedType(importedItem.name)
-            is PSImportedData -> ImportedData(
-                importedItem.name,
-                importedItem.importsAll,
-                importedItem.importedDataMembers.map { it.name }.toSet()
-            )
-
-            is PSImportedValue -> ImportedValue(importedItem.name)
-            is PSImportedOperator -> ImportedOperator(importedItem.name)
-        }
 }

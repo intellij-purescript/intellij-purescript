@@ -3,6 +3,7 @@ package org.purescript.psi.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
+import org.purescript.ide.formatting.*
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.name.PSIdentifier
@@ -19,6 +20,8 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSIm
     internal val importDeclaration: Import.Psi
         get() =
             PsiTreeUtil.getParentOfType(this, Import.Psi::class.java)!!
+    
+    abstract fun asData(): ImportedItem
 
     /**
      * Compares this [PSImportedItem] with the specified [PSImportedItem] for order.
@@ -68,6 +71,7 @@ class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
             findNotNullChildByClass(PSProperName::class.java)
 
     override fun getName(): String = properName.name
+    override fun asData() = ImportedClass(name)
 
     override fun getReference(): ImportedClassReference =
         ImportedClassReference(this)
@@ -126,6 +130,13 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
         get() = reference.resolve() as? DataDeclaration.Psi
 
     override fun getName(): String = properName.name
+    override fun asData(): ImportedItem {
+        return ImportedData(
+            name,
+            importsAll,
+            importedDataMembers.map { it.name }.toSet()
+        )
+    }
 
     override fun getReference(): ImportedDataReference =
         ImportedDataReference(this)
@@ -147,6 +158,7 @@ class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
             findNotNullChildByClass(PSSymbol::class.java)
 
     override fun getName(): String = symbol.name
+    override fun asData() = ImportedOperator(name)
 
     override fun getReference(): PsiReference {
         return ImportedOperatorReference(this)
@@ -169,6 +181,7 @@ class PSImportedType(node: ASTNode) : PSImportedItem(node) {
             findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
+    override fun asData() = ImportedType(name)
 }
 
 /**
@@ -187,6 +200,7 @@ class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
             findNotNullChildByClass(PSIdentifier::class.java)
 
     override fun getName(): String = identifier.name
+    override fun asData() = ImportedValue(name)
 
     override fun getReference(): ImportedValueReference =
         ImportedValueReference(this)
