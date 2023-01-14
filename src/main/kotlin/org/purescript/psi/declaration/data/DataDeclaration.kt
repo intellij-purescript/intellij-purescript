@@ -7,7 +7,6 @@ import com.intellij.psi.stubs.*
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.name.PSProperName
-import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.base.PSStubbedElement
 
 /**
