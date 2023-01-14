@@ -108,24 +108,19 @@ class MoveValueDeclarationRefactoring(
                 }
             }
         }
-        val done = mutableSetOf<Triple<String, String?, String>>()
+        val done = mutableSetOf<ImportDeclaration>()
         for ((element, reference) in atomDependencies) {
             when (element) {
                 is PSExpressionIdentifier -> when (reference) {
                     is PSValueDeclaration -> {
-                        val moduleName = reference.module?.name ?: continue
-                        val alias = element.qualifiedIdentifier.moduleName?.name
-                        val name = element.name
-                        when (val address = Triple(moduleName, alias, name)) {
-                            in done -> continue
-                            else -> done.add(address)
-                        }
                         val importDeclaration = ImportDeclaration(
-                            moduleName,
+                            reference.module?.name ?: continue,
                             false,
-                            setOf(ImportedValue(name)),
-                            alias
+                            setOf(ImportedValue(element.name)),
+                            element.qualifiedIdentifier.moduleName?.name
                         )
+                        if (importDeclaration in done) continue
+                        else done.add(importDeclaration)
                         val newImport =
                             factory.createImportDeclaration(importDeclaration)
                         targetModule.addImportDeclaration(newImport)
@@ -134,19 +129,14 @@ class MoveValueDeclarationRefactoring(
 
                 is PSExpressionOperator -> when (reference) {
                     is FixityDeclaration.Psi -> {
-                        val moduleName = reference.module.name
-                        val alias = element.qualifiedOperator.moduleName?.name
-                        val name = element.name
-                        when (val address = Triple(moduleName, alias, name)) {
-                            in done -> continue
-                            else -> done.add(address)
-                        }
                         val importDeclaration = ImportDeclaration(
-                            moduleName,
+                            reference.module.name,
                             false,
-                            setOf(ImportedOperator(name)),
-                            alias
+                            setOf(ImportedOperator(element.name)),
+                            element.qualifiedOperator.moduleName?.name
                         )
+                        if (importDeclaration in done) continue
+                        else done.add(importDeclaration)
                         val newImport =
                             factory.createImportDeclaration(importDeclaration)
                         targetModule.addImportDeclaration(newImport)
