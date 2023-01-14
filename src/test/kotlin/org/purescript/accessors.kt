@@ -19,8 +19,8 @@ import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.imports.*
-import org.purescript.psi.newtype.PSNewTypeConstructor
-import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
+import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 

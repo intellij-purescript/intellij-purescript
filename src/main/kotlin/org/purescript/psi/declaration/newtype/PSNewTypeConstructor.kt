@@ -1,4 +1,4 @@
-package org.purescript.psi.newtype
+package org.purescript.psi.declaration.newtype
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement

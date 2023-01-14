@@ -15,8 +15,8 @@ import org.purescript.psi.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.newtype.PSNewTypeConstructor
-import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
+import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor

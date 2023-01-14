@@ -8,7 +8,7 @@ import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 
 /**
  * Any element that can occur in a [PSImportList]

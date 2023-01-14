@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 
 class ExportedDataMemberReference(exportedDataMember: PSExportedDataMember) : PsiReferenceBase<PSExportedDataMember>(
     exportedDataMember,

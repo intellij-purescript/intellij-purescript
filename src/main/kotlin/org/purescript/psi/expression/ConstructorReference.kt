@@ -9,7 +9,7 @@ import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.name.PSQualifiedProperName
-import org.purescript.psi.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 
 class ConstructorReference(
     element: PSPsiElement,
