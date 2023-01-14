@@ -6,10 +6,11 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.ExportedConstructorsIndex
+import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.name.PSQualifiedProperName
 
 class ConstructorReference(
     element: PSPsiElement,
@@ -51,7 +52,7 @@ class ConstructorReference(
             quickFixes += ImportQuickFix.allCombinations(
                 moduleName,
                 alias = qualifyingName,
-                item = "$typeName(..)"
+                item = ImportedData(typeName, doubleDot = true)
             )
         }
         return quickFixes.toTypedArray()

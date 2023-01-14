@@ -5,6 +5,7 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedFixityIndex
+import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSModuleName
@@ -42,7 +43,7 @@ class ExpressionSymbolReference(
                 ImportQuickFix.allCombinations(
                     it,
                     alias = qualifyingName,
-                    item = "(${element.name})",
+                    item = ImportedOperator(element.name!!),
                 )
             }
             .toTypedArray()

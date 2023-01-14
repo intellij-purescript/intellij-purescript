@@ -91,6 +91,13 @@ class PSPsiFactory(private val project: Project) {
                 }
             }
         )!!
+    fun createImportDeclaration(import: ImportDeclaration): Import.Psi =
+        createFromText(
+            buildString {
+                appendLine("module Foo where")
+                append(import.text)
+            }
+        )!!
 
     fun createNewLine(): PsiElement = createNewLines()
 

@@ -4,38 +4,25 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import org.purescript.psi.base.PSPsiElement
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedItem
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.base.PSPsiElement
+import java.util.*
 
-class ImportQuickFix(
-    private val moduleName: String,
-    private val alias: String? = null,
-    private val item: String? = null
-) : LocalQuickFix {
+class ImportQuickFix(val import: ImportDeclaration) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
 
-    override fun getName(): String = when (item) {
-        null -> when (alias) {
-            null -> "Import $moduleName"
-            else -> "Import $moduleName as $alias"
-        }
-
-        else -> when (alias) {
-            null -> "Import $moduleName ($item)"
-            else -> "Import $moduleName ($item) as $alias"
-        }
+    override fun getName(): String = import.text.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
     }
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val hostModule =
-            (descriptor.psiElement as? PSPsiElement)?.module ?: return
+        val hostModule = (descriptor.psiElement as? PSPsiElement)?.module
+            ?: return
         val psiFactory = project.service<PSPsiFactory>()
-        val importDeclaration = psiFactory.createImportDeclaration(
-            moduleName = moduleName,
-            items = listOfNotNull(item),
-            alias = alias
-        ) ?: return
+        val importDeclaration = psiFactory.createImportDeclaration(import)
         hostModule.addImportDeclaration(importDeclaration)
     }
 
@@ -43,10 +30,15 @@ class ImportQuickFix(
         fun allCombinations(
             moduleName: String,
             alias: String? = null,
-            item: String
+            item: ImportedItem
         ): Sequence<ImportQuickFix> = sequence {
-            yield(ImportQuickFix(moduleName, alias, item))
-            yield(ImportQuickFix(moduleName, alias))
+            val importWithItem = ImportDeclaration(
+                moduleName,
+                alias = alias,
+                importedItems = setOf(item)
+            )
+            yield(ImportQuickFix(importWithItem))
+            yield(ImportQuickFix(ImportDeclaration(moduleName, alias = alias)))
         }
     }
 }

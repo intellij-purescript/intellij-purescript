@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.expression.dostmt.PSDoBlock
@@ -92,7 +93,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             .flatMap { ImportQuickFix.allCombinations(
                 it,
                 alias = qualifyingName,
-                item = element.name,
+                item = ImportedValue(element.name),
             ) }
             .toTypedArray()
     }

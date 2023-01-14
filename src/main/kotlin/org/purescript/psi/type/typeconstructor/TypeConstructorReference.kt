@@ -5,6 +5,8 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedTypesIndex
+import org.purescript.ide.formatting.ImportedData
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.expression.ImportQuickFix
 import org.purescript.psi.module.Module.*
 
@@ -68,7 +70,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         return importCandidates
-            .flatMap { ImportQuickFix.allCombinations(it, item = element.name) }
+            .flatMap { ImportQuickFix.allCombinations(it, item = ImportedData(element.name)) }
             .toTypedArray()
     }
 
