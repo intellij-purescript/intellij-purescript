@@ -8,7 +8,7 @@ class ImportMergerTest : TestCase() {
         val importDeclarations = setOf(ImportDeclaration("Prelude"))
         assertEquals(
             importDeclarations,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -22,7 +22,7 @@ class ImportMergerTest : TestCase() {
         )
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -33,7 +33,7 @@ class ImportMergerTest : TestCase() {
         )
         assertEquals(
             importDeclarations,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -45,7 +45,7 @@ class ImportMergerTest : TestCase() {
         val expected = setOf(ImportDeclaration("Prelude"))
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -57,7 +57,7 @@ class ImportMergerTest : TestCase() {
         val expected = setOf(ImportDeclaration("Prelude", alias = "A"))
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -66,7 +66,7 @@ class ImportMergerTest : TestCase() {
             setOf(ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Eq"))))
         assertEquals(
             importDeclarations,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -83,7 +83,7 @@ class ImportMergerTest : TestCase() {
         val expected = setOf(ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Show"))))
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -100,7 +100,7 @@ class ImportMergerTest : TestCase() {
         val expected = setOf(ImportDeclaration("Prelude", hiding = true, importedItems = setOf(ImportedClass("Eq"))))
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -112,7 +112,7 @@ class ImportMergerTest : TestCase() {
         val expected = setOf(ImportDeclaration("Prelude"))
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -125,7 +125,7 @@ class ImportMergerTest : TestCase() {
         val expected = setOf(ImportDeclaration("Data.Maybe", importedItems = setOf(ImportedData("Maybe", doubleDot = true))))
         assertEquals(
             expected,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 
@@ -141,7 +141,7 @@ class ImportMergerTest : TestCase() {
         )
         assertEquals(
             importDeclarations,
-            ImportDeclarations(importDeclarations.toSet()).mergedImports
+            ImportDeclarations(importDeclarations).mergedImports
         )
     }
 }
