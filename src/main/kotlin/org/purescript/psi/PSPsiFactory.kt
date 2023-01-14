@@ -69,8 +69,8 @@ class PSPsiFactory(private val project: Project) {
     fun createImportDeclaration(
         moduleName: String,
         hiding: Boolean = false,
-        alias: String? = null,
-        items: List<String>
+        items: List<String>,
+        alias: String? = null
     ): Import.Psi =
         createFromText(
             buildString {

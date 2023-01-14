@@ -33,8 +33,8 @@ class ImportQuickFix(
         val psiFactory = project.service<PSPsiFactory>()
         val importDeclaration = psiFactory.createImportDeclaration(
             moduleName = moduleName,
-            alias = alias,
-            items = listOfNotNull(item)
+            items = listOfNotNull(item),
+            alias = alias
         ) ?: return
         hostModule.addImportDeclaration(importDeclaration)
     }

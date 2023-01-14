@@ -68,8 +68,8 @@ class MoveValueDeclarationRefactoring(
                         val newImport = factory.createImportDeclaration(
                             targetModule.name,
                             false,
-                            toPatch.importDeclaration.importAlias?.name,
-                            listOf(toPatch.name)
+                            listOf(toPatch.name),
+                            toPatch.importDeclaration.importAlias?.name
                         )
                         toPatch.module?.addImportDeclaration(newImport)
                     }
@@ -93,8 +93,8 @@ class MoveValueDeclarationRefactoring(
                         val newImport = factory.createImportDeclaration(
                             targetModule.name,
                             false,
-                            null,
-                            listOf(toPatch.name)
+                            listOf(toPatch.name),
+                            null
                         )
                         sourceModule?.addImportDeclaration(newImport)
                         importedInSource = true
@@ -117,8 +117,8 @@ class MoveValueDeclarationRefactoring(
                         val newImport = factory.createImportDeclaration(
                             moduleName,
                             false,
-                            alias,
-                            listOf(name)
+                            listOf(name),
+                            alias
                         )
                         targetModule.addImportDeclaration(newImport)
                     }
@@ -136,8 +136,8 @@ class MoveValueDeclarationRefactoring(
                         val newImport = factory.createImportDeclaration(
                             moduleName,
                             false,
-                            alias,
-                            listOf("($name)")
+                            listOf("($name)"),
+                            alias
                         )
                         targetModule.addImportDeclaration(newImport)
                     }
