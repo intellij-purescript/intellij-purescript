@@ -8,6 +8,18 @@ data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
                 val (moduleName, alias) = moduleNameAndAlias
                 mergeGroup(moduleName, alias, group)
             }.toSet()
+    private val implicit get() = mergedImports
+        .filter { it.implicit }
+        .sortedBy { it.moduleName }
+    private val explicit get() = mergedImports
+        .filter { it.explicit }
+        .sortedBy { it.moduleName }
+        .sortedBy { it.alias }
+        .sortedBy { it.hiding }
+    val text
+        get() : String =
+            "\n${implicit.joinToString("\n") { it.text }}" +
+                "\n\n${explicit.joinToString("\n") { it.text }}\n"
 
     companion object {
         private fun mergeGroup(
@@ -77,7 +89,22 @@ data class ImportDeclaration(
     val importedItems: Set<ImportedItem> = emptySet(),
     val alias: String? = null
 ) {
+    /**
+     * Implicit is for example
+     * @code {
+     * import Prelude
+     * }
+     */
     val implicit = alias == null && (hiding || importedItems.isEmpty())
+
+    /**
+     * Explicit is for example
+     * @code {
+     * import Prelude ((+))
+     * }
+     * where (+) is explicitly imported
+     */
+    val explicit = !implicit
     private val sortedItems: List<ImportedItem>
         get() = importedItems.sortedBy { it.name }.sortedBy { sortKey(it) }
 

@@ -62,19 +62,8 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
-    fun createImportDeclaration(importDeclaration: ImportDeclaration): Import.Psi? {
-        return createFromText(
-            """module Foo where
-                    ${importDeclaration.text}
-            """.trimIndent()
-        )!!
-    }
-    fun createImportDeclarations(importDeclarations: List<ImportDeclaration>): Pair<Import.Psi?, Import.Psi?> {
-        val code = """module Foo where
-${importDeclarations.joinToString("\n") { it.text }}
-"""
-        return createRangeFromText(code)
-    }
+    fun createImportDeclarations(importDeclarations: ImportDeclarations): Pair<Import.Psi?, Import.Psi?> =
+        createRangeFromText("module Foo where\n${importDeclarations.text}\n")
 
     fun createImportDeclaration(
         moduleName: String,

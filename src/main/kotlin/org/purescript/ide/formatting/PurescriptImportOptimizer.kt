@@ -16,26 +16,12 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val module = psFile.module
             ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()
-        val importDeclarationsFromModule = 
-            module.cache.imports.map(::fromPsiElement)
-        val importDeclarations = 
-            ImportDeclarations(importDeclarationsFromModule.toSet())
-        val mergedImports = importDeclarations.mergedImports
-        val implicitImportDeclarations =
-            mergedImports.filter { it.implicit }
-        val regularImportDeclarations =
-            mergedImports - implicitImportDeclarations.toSet()
-
-        val implicitPsi = if (implicitImportDeclarations.isEmpty()) {
-            null
-        } else factory.createImportDeclarations(
-            implicitImportDeclarations.sortedWith(
-                importDeclarationComparator
-            )
-        );
-
-        val regularPsi = if (regularImportDeclarations.isEmpty()) null 
-        else factory.createImportDeclarations(regularImportDeclarations.sortedWith(importDeclarationComparator))
+        val fromModule = module.cache.imports.map(::fromPsiElement)
+        val psiPair = if (fromModule.isEmpty()) null
+        else {
+            val importDeclarations = ImportDeclarations(fromModule.toSet())
+            factory.createImportDeclarations(importDeclarations)
+        }
         return Runnable {
             for (importDeclaration in module.cache.imports) {
                 importDeclaration.delete()
@@ -49,35 +35,15 @@ class PurescriptImportOptimizer : ImportOptimizer {
             } else {
                 module.addAfter(factory.createNewLines(1), where)
             }
-            when (regularPsi) {
+            when (psiPair) {
                 null , null to null -> {}
                 else -> {
-                    module.addRangeAfter(
-                        regularPsi.first,
-                        regularPsi.second,
-                        where
-                    )
-                    module.addAfter(factory.createNewLines(2), where)
-                }
-            }
-            when (implicitPsi) {
-                null , null to null -> {}
-                else -> {
-                    module.addRangeAfter(
-                        implicitPsi.first,
-                        implicitPsi.second,
-                        where
-                    )
+                    module.addRangeAfter(psiPair.first, psiPair.second, where)
                     module.addAfter(factory.createNewLines(2), where)
                 }
             }
         }
     }
-
-    private val importDeclarationComparator: Comparator<in ImportDeclaration> =
-        Comparator.comparing<ImportDeclaration, String> { it.moduleName }
-            .thenBy { it.alias }
-            .thenBy { it.hiding }
 
     private fun fromPsiElement(importDeclaration: Import.Psi): ImportDeclaration =
         ImportDeclaration(

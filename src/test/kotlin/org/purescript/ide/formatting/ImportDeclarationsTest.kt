@@ -2,7 +2,7 @@ package org.purescript.ide.formatting
 
 import junit.framework.TestCase
 
-class ImportMergerTest : TestCase() {
+class ImportDeclarationsTest : TestCase() {
 
     fun `test does not change already merged import declarations`() {
         val importDeclarations = setOf(ImportDeclaration("Prelude"))
@@ -142,6 +142,29 @@ class ImportMergerTest : TestCase() {
         assertEquals(
             importDeclarations,
             ImportDeclarations(importDeclarations).mergedImports
+        )
+    }
+    
+    @Suppress("unused")
+    fun `test renders the two groups correctly`() {
+        val importDeclarations = setOf(
+            ImportDeclaration("Data.Array"),
+            ImportDeclaration("Prelude"),
+            ImportDeclaration(
+                "Data.Maybe",
+                importedItems = setOf(ImportedData("Maybe", doubleDot = true))
+            )
+        )
+        assertEquals(
+            """
+                
+                import Data.Array
+                import Prelude
+                
+                import Data.Maybe (Maybe(..))
+                
+            """.trimIndent(),
+            ImportDeclarations(importDeclarations).text
         )
     }
 }
