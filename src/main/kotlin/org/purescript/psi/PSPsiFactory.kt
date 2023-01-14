@@ -66,31 +66,6 @@ class PSPsiFactory(private val project: Project) {
     fun createImportDeclarations(importDeclarations: ImportDeclarations): Pair<Import.Psi?, Import.Psi?> =
         createRangeFromText("module Foo where\n${importDeclarations.text}\n")
 
-    fun createImportDeclaration(
-        moduleName: String,
-        hiding: Boolean = false,
-        items: List<String>,
-        alias: String? = null
-    ): Import.Psi =
-        createFromText(
-            buildString {
-                appendLine("module Foo where")
-                append("import $moduleName")
-                if (items.isNotEmpty()) {
-                    if (hiding) {
-                        append(" hiding")
-                    }
-                    append(
-                        items.joinToString(
-                            prefix = " (",
-                            postfix = ")"
-                        ) { it })
-                }
-                if (alias != null) {
-                    append(" as $alias")
-                }
-            }
-        )!!
     fun createImportDeclaration(import: ImportDeclaration): Import.Psi =
         createFromText(
             buildString {
