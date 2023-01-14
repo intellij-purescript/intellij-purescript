@@ -6,7 +6,7 @@ import org.purescript.psi.base.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.imports.Import
+import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName

@@ -1,4 +1,4 @@
-package org.purescript.psi.imports
+package org.purescript.psi.declaration.imports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
@@ -7,5 +7,6 @@ import org.purescript.psi.base.PSPsiElement
 
 class PSImportedDataMemberList(node: ASTNode) : PSPsiElement(node) {
     val doubleDot: PsiElement? get() = findChildByType(DDOT)
-    val dataMembers: Array<PSImportedDataMember> get() = findChildrenByClass(PSImportedDataMember::class.java)
+    val dataMembers: Array<PSImportedDataMember> get() = findChildrenByClass(
+        PSImportedDataMember::class.java)
 }

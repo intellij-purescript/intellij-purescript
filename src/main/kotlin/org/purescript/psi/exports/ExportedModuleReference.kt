@@ -3,7 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.imports.Import
+import org.purescript.psi.declaration.imports.Import
 
 class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReferenceBase<ExportedModule.Psi>(
     exportedModule,

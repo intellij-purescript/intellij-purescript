@@ -13,6 +13,7 @@ import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.data.DataConstructorList
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.fixity.PSFixity
+import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock

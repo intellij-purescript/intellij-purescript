@@ -16,8 +16,8 @@ import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionSymbol
-import org.purescript.psi.imports.Import
-import org.purescript.psi.imports.PSImportedOperator
+import org.purescript.psi.declaration.imports.Import
+import org.purescript.psi.declaration.imports.PSImportedOperator
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {

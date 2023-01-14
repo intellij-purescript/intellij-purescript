@@ -15,6 +15,7 @@ import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.DataDeclaration
+import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
