@@ -10,7 +10,7 @@ import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.declaration.classes.*
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.data.PSDataConstructorList
+import org.purescript.psi.declaration.data.DataConstructorList
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.fixity.PSFixity
 import org.purescript.psi.declaration.signature.PSSignature
@@ -57,7 +57,7 @@ val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
 val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
 val DataDecl = DataDeclaration.Type
-val DataCtorList = WithPsi("DataConstructorList") { PSDataConstructorList(it) }
+val DataCtorList = DataConstructorList.Type
 val DataCtor = DataConstructor.Type
 val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeSynonymDecl =

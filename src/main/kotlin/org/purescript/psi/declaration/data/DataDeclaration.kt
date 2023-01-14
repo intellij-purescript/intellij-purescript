@@ -48,11 +48,11 @@ interface DataDeclaration {
             get() = findNotNullChildByClass(PSProperName::class.java)
 
         /**
-         * @return the [PSDataConstructorList] in this declaration,
+         * @return the [DataConstructorList.Psi] in this declaration,
          * or null if it's an empty declaration
          */
-        internal val dataConstructorList: PSDataConstructorList?
-            get() = findChildByClass(PSDataConstructorList::class.java)
+        internal val dataConstructorList: DataConstructorList.Psi?
+            get() = findChildByClass(DataConstructorList.Psi::class.java)
 
         /**
          * @return the [DataConstructor.Psi] elements belonging to this
