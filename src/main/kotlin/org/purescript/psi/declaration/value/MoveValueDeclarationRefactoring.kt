@@ -7,14 +7,17 @@ import com.intellij.refactoring.BaseRefactoringProcessor
 import com.intellij.refactoring.move.MoveHandler
 import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedOperator
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.fixity.FixityDeclaration
+import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionSymbol
-import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.module.Module
 
 class MoveValueDeclarationRefactoring(
@@ -65,12 +68,14 @@ class MoveValueDeclarationRefactoring(
                 is ExportedValue.Psi -> toPatch.delete()
                 is PSImportedValue -> {
                     if (toPatch.module != targetModule) {
-                        val newImport = factory.createImportDeclaration(
+                        val importDeclaration = ImportDeclaration(
                             targetModule.name,
                             false,
-                            listOf(toPatch.name),
+                            setOf(ImportedValue(toPatch.name)),
                             toPatch.importDeclaration.importAlias?.name
                         )
+                        val newImport =
+                            factory.createImportDeclaration(importDeclaration)
                         toPatch.module?.addImportDeclaration(newImport)
                     }
                     // remove old one
@@ -90,12 +95,13 @@ class MoveValueDeclarationRefactoring(
                     if (toPatch.module == targetModule) {
                         toPatch.qualifiedIdentifier.moduleName?.delete()
                     } else if (toPatch.module == sourceModule && !importedInSource) {
-                        val newImport = factory.createImportDeclaration(
+                        val importDeclaration = ImportDeclaration(
                             targetModule.name,
                             false,
-                            listOf(toPatch.name),
-                            null
+                            setOf(ImportedValue(toPatch.name)),
                         )
+                        val newImport =
+                            factory.createImportDeclaration(importDeclaration)
                         sourceModule?.addImportDeclaration(newImport)
                         importedInSource = true
                     }
@@ -114,12 +120,14 @@ class MoveValueDeclarationRefactoring(
                             in done -> continue
                             else -> done.add(address)
                         }
-                        val newImport = factory.createImportDeclaration(
+                        val importDeclaration = ImportDeclaration(
                             moduleName,
                             false,
-                            listOf(name),
+                            setOf(ImportedValue(name)),
                             alias
                         )
+                        val newImport =
+                            factory.createImportDeclaration(importDeclaration)
                         targetModule.addImportDeclaration(newImport)
                     }
                 }
@@ -133,12 +141,14 @@ class MoveValueDeclarationRefactoring(
                             in done -> continue
                             else -> done.add(address)
                         }
-                        val newImport = factory.createImportDeclaration(
+                        val importDeclaration = ImportDeclaration(
                             moduleName,
                             false,
-                            listOf("($name)"),
+                            setOf(ImportedOperator(name)),
                             alias
                         )
+                        val newImport =
+                            factory.createImportDeclaration(importDeclaration)
                         targetModule.addImportDeclaration(newImport)
                     }
                 }
