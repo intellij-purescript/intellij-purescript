@@ -6,7 +6,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
-import org.purescript.psi.foreign.PSForeignDataDeclaration
+import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.exports.ExportedData

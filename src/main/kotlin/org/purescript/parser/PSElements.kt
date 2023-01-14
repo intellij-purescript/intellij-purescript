@@ -22,8 +22,8 @@ import org.purescript.psi.expression.dostmt.PSDoNotationLet
 import org.purescript.psi.expression.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
-import org.purescript.psi.foreign.PSForeignDataDeclaration
-import org.purescript.psi.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
+import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*

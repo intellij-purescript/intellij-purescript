@@ -1,4 +1,4 @@
-package org.purescript.psi.foreign
+package org.purescript.psi.declaration.foreign
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
