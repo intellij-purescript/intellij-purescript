@@ -92,62 +92,6 @@ class PSPsiFactory(private val project: Project) {
             }
         )!!
 
-    private fun createImportedClass(name: String): PSImportedClass? =
-        createFromText(
-            """
-                module Foo where
-                import Bar (class $name)
-            """.trimIndent()
-        )
-
-    private fun createImportedOperator(name: String): PSImportedOperator? =
-        createFromText(
-            """
-                module Foo where
-                import Bar (($name))
-            """.trimIndent()
-        )
-
-    private fun createImportedType(name: String): PSImportedType? =
-        createFromText(
-            """
-                module Foo where
-                import Bar (type ($name))
-            """.trimIndent()
-        )
-
-    private fun createImportedData(
-        name: String,
-        doubleDot: Boolean = false,
-        importedDataMembers: Collection<String> = emptyList()
-    ): PSImportedData? =
-        createFromText(
-            buildString {
-                appendLine("module Foo where")
-                append("import Bar (")
-                append(name)
-                if (doubleDot) {
-                    append("(..)")
-                } else if (importedDataMembers.isNotEmpty()) {
-                    append(
-                        importedDataMembers.joinToString(
-                            prefix = "(",
-                            postfix = ")"
-                        )
-                    )
-                }
-                append(")")
-            }
-        )
-
-    private fun createImportedValue(name: String): PSImportedValue? =
-        createFromText(
-            """
-                module Foo where
-                import Bar ($name)
-            """.trimIndent()
-        )
-
     fun createNewLine(): PsiElement = createNewLines()
 
     fun createNewLines(n: Int = 1): PsiElement =
