@@ -10,7 +10,13 @@ import org.purescript.file.ModuleNameIndex
 import org.purescript.file.PSFile
 import org.purescript.psi.module.Module
 
-abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
+abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
+    ASTWrapperPsiElement(node) {
+
+    override fun toString(): String {
+        if (string != null) return string + "(" + node.elementType + ")"
+        else return super.toString()
+    }
 
     /**
      * @return the [Module.Psi] containing this element
@@ -27,10 +33,18 @@ abstract class PSPsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
             while (queue.isNotEmpty()) {
                 val moduleName = queue.removeFirst()
                 val filesImportingModule =
-                    ImportedModuleIndex.filesImportingModule(project, moduleName)
+                    ImportedModuleIndex.filesImportingModule(
+                        project,
+                        moduleName
+                    )
                 val toQueue = filesImportingModule subtract visited
                 visited.addAll(filesImportingModule)
-                queue.addAll(toQueue.mapNotNull {ModuleNameIndex.getModuleNameFromFile(project, it)})
+                queue.addAll(toQueue.mapNotNull {
+                    ModuleNameIndex.getModuleNameFromFile(
+                        project,
+                        it
+                    )
+                })
             }
             GlobalSearchScope.filesScope(project, visited)
         }
