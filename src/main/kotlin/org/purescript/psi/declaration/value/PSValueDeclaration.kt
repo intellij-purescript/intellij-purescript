@@ -6,7 +6,7 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSValue
+import org.purescript.psi.expression.PSValue
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.binder.PSVarBinder
