@@ -3,14 +3,14 @@ package org.purescript.psi.typeconstructor
 import com.intellij.lang.ASTNode
 import org.purescript.psi.*
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 
 /**
  * A type constructor is a PSI element that references one of the following PSI elements:
- *  - [PSDataDeclaration]
+ *  - [DataDeclaration.Psi]
  *  - [PSNewTypeDeclaration]
  *  - [PSSignature]
  *

@@ -14,7 +14,7 @@ import org.purescript.parser.WHERE
 import org.purescript.psi.*
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.exports.*
@@ -70,7 +70,7 @@ interface Module {
             val valueDeclarations
                 by lazy { findChildrenByClass<PSValueDeclaration>() }
             val dataDeclarations
-                by lazy { findChildrenByClass<PSDataDeclaration>() }
+                by lazy { findChildrenByClass<DataDeclaration.Psi>() }
             val dataConstructors
                 by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
             val newTypeDeclarations
@@ -225,11 +225,11 @@ interface Module {
             }
 
         /**
-         * @return the [PSDataDeclaration] elements that this module exports,
+         * @return the [DataDeclaration.Psi] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedDataDeclarations: List<PSDataDeclaration>
-            get() = getExportedDeclarations<PSDataDeclaration, ExportedData.Psi>(
+        val exportedDataDeclarations: List<DataDeclaration.Psi>
+            get() = getExportedDeclarations<DataDeclaration.Psi, ExportedData.Psi>(
                 cache.dataDeclarations,
             ) { it.importedDataDeclarations }
 

@@ -7,7 +7,7 @@ import org.purescript.psi.PSElementType.*
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor.Psi
-import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.foreign.PSForeignDataDeclaration
@@ -258,10 +258,10 @@ interface Import {
             }
 
         /**
-         * @return the [PSDataDeclaration] elements imported by this declaration
+         * @return the [DataDeclaration.Psi] elements imported by this declaration
          */
-        val importedDataDeclarations: List<PSDataDeclaration>
-            get() = getImportedDeclarations<PSDataDeclaration, PSImportedData>(
+        val importedDataDeclarations: List<DataDeclaration.Psi>
+            get() = getImportedDeclarations<DataDeclaration.Psi, PSImportedData>(
                 Module.Psi::exportedDataDeclarations
             )
 

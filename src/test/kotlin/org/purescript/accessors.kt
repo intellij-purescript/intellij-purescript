@@ -14,7 +14,7 @@ import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataConstructor.Psi
-import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
@@ -82,13 +82,13 @@ inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(
 fun PsiFile.getModule(): Module.Psi =
     (this as PSFile.Psi).module!!
 
-fun PsiFile.getDataDeclaration(): PSDataDeclaration =
+fun PsiFile.getDataDeclaration(): DataDeclaration.Psi =
     getModule().cache.dataDeclarations.single()
 
 fun PsiFile.getDataConstructor(): DataConstructor.Psi =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
-fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> =
+fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration.Psi> =
     getModule().exportedDataDeclarations
 
 fun PsiFile.getExportedClassDeclarations(): List<PSClassDeclaration> =

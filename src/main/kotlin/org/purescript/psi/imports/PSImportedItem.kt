@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
@@ -119,11 +119,11 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
         get() = reference.resolve() as? PSNewTypeDeclaration
 
     /**
-     * @return the [PSDataDeclaration] that this element references to,
+     * @return the [DataDeclaration.Psi] that this element references to,
      * if it exists
      */
-    val dataDeclaration: PSDataDeclaration?
-        get() = reference.resolve() as? PSDataDeclaration
+    val dataDeclaration: DataDeclaration.Psi?
+        get() = reference.resolve() as? DataDeclaration.Psi
 
     override fun getName(): String = properName.name
 

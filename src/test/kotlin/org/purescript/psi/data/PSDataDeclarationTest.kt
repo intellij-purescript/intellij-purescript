@@ -3,7 +3,7 @@ package org.purescript.psi.data
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getDataDeclaration
 
-class PSDataDeclarationTest : BasePlatformTestCase() {
+class DataDeclarationTest : BasePlatformTestCase() {
 
     fun `test empty data declaration`() {
         val dataDeclaration = myFixture.configureByText(

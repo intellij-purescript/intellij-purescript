@@ -8,11 +8,11 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.PSLanguage
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.module.Module
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
@@ -68,13 +68,13 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is DataConstructor.Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
-            is PSDataDeclaration ->
+            is DataDeclaration.Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
             is PSClassDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
-            is Psi ->
+            is Module.Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
 
             is PSPsiElement ->
