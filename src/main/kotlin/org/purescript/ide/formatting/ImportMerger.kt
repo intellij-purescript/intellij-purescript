@@ -10,15 +10,9 @@ data class ImportDeclaration(
     private val sortedItems: List<ImportedItem>
         get() = importedItems
             .sortedBy { it.name }
-            .sortedBy {
-                when (it) {
-                    is ImportedClass -> 1
-                    is ImportedType -> 3
-                    is ImportedData -> 4
-                    is ImportedValue -> 5
-                    is ImportedOperator -> 6
-                }
-            }
+            .sortedBy { sortKey(it) }
+
+
     val text
         get() = buildString {
             append("import $moduleName")
@@ -30,6 +24,15 @@ data class ImportDeclaration(
                 append(" as $alias")
             }
         }
+    companion object {
+        private fun sortKey(it: ImportedItem) = when (it) {
+            is ImportedClass -> 1
+            is ImportedType -> 3
+            is ImportedData -> 4
+            is ImportedValue -> 5
+            is ImportedOperator -> 6
+        }
+    }
 }
 
 sealed class ImportedItem(open val name: String) {
