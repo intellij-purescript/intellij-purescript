@@ -5,9 +5,11 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
-import org.purescript.psi.base.AStub
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.name.PSOperatorName
 import org.purescript.psi.name.PSQualifiedIdentifier
@@ -38,16 +40,21 @@ interface FixityDeclaration {
         // Todo clean this up
         override fun toString(): String = "PSFixityDeclaration($elementType)"
 
+        fun asImport() =
+            ImportDeclaration(module.name, false, setOf(ImportedOperator(name)))
+
         private val operatorName
             get() = findNotNullChildByClass(PSOperatorName::class.java)
         val qualifiedIdentifier: PSQualifiedIdentifier
             get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
+
         override fun getTextOffset(): Int = nameIdentifier.textOffset
         override fun getNameIdentifier() = operatorName
         override fun getName() = stub?.name ?: operatorName.name
         override fun setName(name: String): PsiElement? {
-            val identifier = project.service<PSPsiFactory>().createOperatorName(name)
-                ?: return null
+            val identifier =
+                project.service<PSPsiFactory>().createOperatorName(name)
+                    ?: return null
             nameIdentifier.replace(identifier)
             return this
         }

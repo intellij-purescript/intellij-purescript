@@ -22,7 +22,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
      */
     internal val qualifiedOperator: PSQualifiedOperatorName
         get() = findNotNullChildByClass(PSQualifiedOperatorName::class.java)
-
+    val qualifierName: String? = qualifiedOperator.moduleName?.name
     override fun getName(): String = qualifiedOperator.name
 
     override fun getReference() =

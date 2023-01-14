@@ -113,12 +113,9 @@ class MoveValueDeclarationRefactoring(
             when (element) {
                 is PSExpressionIdentifier -> when (reference) {
                     is PSValueDeclaration -> {
-                        val importDeclaration = ImportDeclaration(
-                            reference.module?.name ?: continue,
-                            false,
-                            setOf(ImportedValue(element.name)),
-                            element.qualifiedIdentifier.moduleName?.name
-                        )
+                        val importDeclaration = reference.asImport()
+                            ?.withAlias(element.qualifierName)
+                            ?: continue
                         if (importDeclaration in done) continue
                         else done.add(importDeclaration)
                         val newImport =
@@ -129,12 +126,8 @@ class MoveValueDeclarationRefactoring(
 
                 is PSExpressionOperator -> when (reference) {
                     is FixityDeclaration.Psi -> {
-                        val importDeclaration = ImportDeclaration(
-                            reference.module.name,
-                            false,
-                            setOf(ImportedOperator(element.name)),
-                            element.qualifiedOperator.moduleName?.name
-                        )
+                        val importDeclaration = reference.asImport()
+                            .withAlias(element.qualifierName)
                         if (importDeclaration in done) continue
                         else done.add(importDeclaration)
                         val newImport =

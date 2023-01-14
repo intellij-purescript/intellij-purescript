@@ -21,7 +21,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
      */
     internal val qualifiedIdentifier: PSQualifiedIdentifier
         get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
-
+    
+    val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
+    
     override fun getName(): String = qualifiedIdentifier.name
 
     override fun getReference(): ExpressionIdentifierReference =

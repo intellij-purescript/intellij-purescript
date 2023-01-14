@@ -96,6 +96,9 @@ data class ImportDeclaration(
     val importedItems: Set<ImportedItem> = emptySet(),
     val alias: String? = null
 ) {
+    fun withAlias(alias: String?) =
+        ImportDeclaration(moduleName, hiding, importedItems, alias)
+
     /**
      * Implicit is for example
      * @code {
