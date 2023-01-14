@@ -14,7 +14,7 @@ import org.purescript.psi.name.PSQualifiedIdentifier
  * f = add 1 3
  * ```
  */
-class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node) {
+class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
 
     /**
      * @return the [PSQualifiedIdentifier] identifying this constructor

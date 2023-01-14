@@ -16,15 +16,10 @@ import org.purescript.psi.declaration.PSValueDeclaration
  * ```
  */
 class PSExpressionWhere(node: ASTNode) : PSPsiElement(node) {
-    val expressionOperators: List<PSExpressionOperator>
+    val expressionAtoms: List<ExpressionAtom>
         get() = valueDeclarations
-            .flatMap { it.expressionOperators } +
-            (where?.expressionOperators ?: emptyList())
-
-    val expressionIdentifiers: List<PSExpressionIdentifier>
-        get() = valueDeclarations
-            .flatMap { it.expressionIdentifiers } +
-            (where?.expressionIdentifiers ?: emptyList())
+            .flatMap { it.expressionAtoms } +
+            (where?.expressionAtoms ?: emptyList())
     val where get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarations: Array<PSValueDeclaration>
         get() =

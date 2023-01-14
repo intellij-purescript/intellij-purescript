@@ -15,7 +15,7 @@ import org.purescript.psi.name.PSQualifiedProperName
  * just3 = Just 3
  * ```
  */
-class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node) {
+class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
 
     /**
      * @return the [PSQualifiedProperName] identifying this constructor

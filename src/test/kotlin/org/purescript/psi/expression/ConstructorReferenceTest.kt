@@ -20,7 +20,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
         val dataConstructor = dataDeclaration.dataConstructors[1]
         val expressionConstructor = file.getExpressionConstructor()
 
-        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+        assertEquals(dataConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test resolves imported data declaration constructors`() {
@@ -41,7 +41,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
         ).getExpressionConstructor()
         val dataConstructor = dataDeclaration.dataConstructors[1]
 
-        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+        assertEquals(dataConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test completes data declaration constructors`() {
@@ -98,7 +98,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
         val newTypeConstructor = file.getNewTypeConstructor()
         val expressionConstructor = file.getExpressionConstructor()
 
-        assertEquals(newTypeConstructor, expressionConstructor.reference.resolve())
+        assertEquals(newTypeConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test resolves imported newtype declaration constructors`() {
@@ -118,7 +118,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertEquals(newTypeConstructor, expressionConstructor.reference.resolve())
+        assertEquals(newTypeConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test completes newtype declaration constructors`() {
@@ -180,7 +180,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve imported newtype constructor when constructor not imported`() {
@@ -200,7 +200,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve imported data constructor when constructor not exported`() {
@@ -220,7 +220,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve imported data constructor when constructor not imported`() {
@@ -240,7 +240,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve imported data constructor when constructor is hidden`() {
@@ -260,7 +260,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test resolves imported data constructor with explicitly imported constructor`() {
@@ -280,7 +280,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+        assertEquals(dataConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test resolves alias imported data declaration constructors`() {
@@ -301,7 +301,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
         ).getExpressionConstructor()
         val dataConstructor = dataDeclaration.dataConstructors[1]
 
-        assertEquals(dataConstructor, expressionConstructor.reference.resolve())
+        assertEquals(dataConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test resolves alias imported newtype declaration constructors`() {
@@ -321,7 +321,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertEquals(newTypeConstructor, expressionConstructor.reference.resolve())
+        assertEquals(newTypeConstructor, expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve when missing qualifier`() {
@@ -341,7 +341,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve when wrong qualifier`() {
@@ -361,7 +361,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test does not resolve locally when qualifier`() {
@@ -374,7 +374,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionConstructor()
 
-        assertNull(expressionConstructor.reference.resolve())
+        assertNull(expressionConstructor.getReference().resolve())
     }
 
     fun `test completes with qualifier`() {

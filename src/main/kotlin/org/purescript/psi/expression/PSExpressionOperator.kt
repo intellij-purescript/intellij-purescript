@@ -15,7 +15,7 @@ import org.purescript.psi.name.PSQualifiedOperatorName
  * f = 1 P.+ 3
  * ```
  */
-class PSExpressionOperator(node: ASTNode) : PSPsiElement(node) {
+class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
 
     /**
      * @return the [PSQualifiedOperatorName] identifying this constructor

@@ -15,7 +15,7 @@ import org.purescript.psi.name.PSQualifiedSymbol
  * f = P.(+) 1 3
  * ```
  */
-class PSExpressionSymbol(node: ASTNode) : PSPsiElement(node) {
+class PSExpressionSymbol(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
 
     /**
      * @return the [PSQualifiedSymbol] identifying this constructor

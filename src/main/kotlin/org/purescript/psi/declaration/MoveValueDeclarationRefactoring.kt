@@ -9,7 +9,10 @@ import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.exports.ExportedValue
+import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.PSExpressionOperator
+import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.imports.PSImportedValue
 import org.purescript.psi.module.Module
 
@@ -32,9 +35,9 @@ class MoveValueDeclarationRefactoring(
         val sourceModule = toMove.module
 
         // dependencies needs to be imported or moved to targetModule
-        val identifierDependencies = toMove.expressionIdentifiers
+        val atomDependencies = toMove.expressionAtoms
             .mapNotNull { element ->
-                element.reference.resolve()?.let { element to it }
+                element.getReference()?.resolve()?.let { element to it }
             }.filter { (_, reference) ->
                 // dependency to self is fine
                 reference != toMove
@@ -43,18 +46,6 @@ class MoveValueDeclarationRefactoring(
                 !(reference.containingFile == toMove.containingFile &&
                     toMove.textRange.contains(reference.textRange))
             }
-        val operatorDependencies = toMove.expressionOperators
-            .mapNotNull { element ->
-                element.reference.resolve()?.let { element to it }
-            }.filter { (_, reference) ->
-                // dependency to self is fine
-                reference != toMove
-            }.filter { (_, reference) ->
-                // dependency to locals are fine    
-                !(reference.containingFile == toMove.containingFile &&
-                    toMove.textRange.contains(reference.textRange))
-            }
-
         val first = (toMove.signature ?: toMove)
         targetModule.add(factory.createNewLines(2))
         targetModule.addRange(first, toMove)
@@ -110,47 +101,49 @@ class MoveValueDeclarationRefactoring(
                 }
             }
         }
-        val doneIdentifiers = mutableSetOf<Triple<String, String?, String>>()
-        for ((element, reference) in identifierDependencies) {
-            when (reference) {
-                is PSValueDeclaration -> {
-                    val moduleName = reference.module?.name ?: continue
-                    val alias = element.qualifiedIdentifier.moduleName?.name
-                    val name = element.name
-                    when (val address = Triple(moduleName, alias, name)) {
-                        in doneIdentifiers -> continue
-                        else -> doneIdentifiers.add(address)
+        val done = mutableSetOf<Triple<String, String?, String>>()
+        for ((element, reference) in atomDependencies) {
+            when (element) {
+                is PSExpressionIdentifier -> when (reference) {
+                    is PSValueDeclaration -> {
+                        val moduleName = reference.module?.name ?: continue
+                        val alias = element.qualifiedIdentifier.moduleName?.name
+                        val name = element.name
+                        when (val address = Triple(moduleName, alias, name)) {
+                            in done -> continue
+                            else -> done.add(address)
+                        }
+                        val newImport = factory.createImportDeclaration(
+                            moduleName,
+                            false,
+                            alias,
+                            listOf(name)
+                        )
+                        targetModule.addImportDeclaration(newImport)
                     }
-                    val newImport = factory.createImportDeclaration(
-                        moduleName,
-                        false,
-                        alias,
-                        listOf(name)
-                    )
-                    targetModule.addImportDeclaration(newImport)
-                    
                 }
-            }
-        }
-        val doneOperators = mutableSetOf<Triple<String, String?, String>>()
-        for ((element, reference) in operatorDependencies) {
-            when (reference) {
-                is FixityDeclaration.Psi -> {
-                    val moduleName = reference.module.name
-                    val alias = element.qualifiedOperator.moduleName?.name
-                    val name = element.name
-                    when (val address = Triple(moduleName, alias, name)) {
-                        in doneOperators -> continue
-                        else -> doneOperators.add(address)
+
+                is PSExpressionOperator -> when (reference) {
+                    is FixityDeclaration.Psi -> {
+                        val moduleName = reference.module.name
+                        val alias = element.qualifiedOperator.moduleName?.name
+                        val name = element.name
+                        when (val address = Triple(moduleName, alias, name)) {
+                            in done -> continue
+                            else -> done.add(address)
+                        }
+                        val newImport = factory.createImportDeclaration(
+                            moduleName,
+                            false,
+                            alias,
+                            listOf("($name)")
+                        )
+                        targetModule.addImportDeclaration(newImport)
                     }
-                    val newImport = factory.createImportDeclaration(
-                        moduleName,
-                        false,
-                        alias,
-                        listOf("($name)")
-                    )
-                    targetModule.addImportDeclaration(newImport)
                 }
+
+                is PSExpressionConstructor -> TODO()
+                is PSExpressionSymbol -> TODO()
             }
         }
     }

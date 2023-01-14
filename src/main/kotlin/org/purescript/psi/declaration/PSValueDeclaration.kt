@@ -10,6 +10,7 @@ import org.purescript.psi.PSValue
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.expression.ExpressionAtom
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionWhere
@@ -22,15 +23,10 @@ class PSValueDeclaration(node: ASTNode) :
     DocCommentOwner {
 
     val value get() = findChildByClass(PSValue::class.java)!!
-    val expressionIdentifiers: List<PSExpressionIdentifier>
+    val expressionAtoms: List<ExpressionAtom>
         get() = 
-            value.expressionIdentifiers.toList() +
-            (where?.expressionIdentifiers ?: emptyList())
-    
-    val expressionOperators: List<PSExpressionOperator>
-        get() = 
-            value.expressionOperators.toList() +
-            (where?.expressionOperators ?: emptyList())
+            value.expressionAtoms.toList() +
+            (where?.expressionAtoms ?: emptyList())
 
     override fun getName(): String {
         return findChildByClass(PSIdentifier::class.java)!!

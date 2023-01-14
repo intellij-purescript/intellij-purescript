@@ -19,7 +19,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val expressionIdentifier = file.getExpressionIdentifier()
         val valueDeclaration = file.getValueDeclarations()[1]
 
-        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves imported value declarations`() {
@@ -39,7 +39,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves deep imported value declarations`() {
@@ -66,7 +66,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
 
     fun `test does not resolve unexported value declarations`() {
@@ -87,7 +87,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertNull(expressionIdentifier.reference.resolve())
+        assertNull(expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves value declaration exported using export all`() {
@@ -107,7 +107,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
 
     fun `test does not resolve hidden value declaration`() {
@@ -127,7 +127,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertNull(expressionIdentifier.reference.resolve())
+        assertNull(expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves imported value declarations when hiding others`() {
@@ -148,7 +148,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
 
     fun `test does not resolve unimported value declarations`() {
@@ -169,7 +169,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertNull(expressionIdentifier.reference.resolve())
+        assertNull(expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves explicitly imported and exported value declarations`() {
@@ -190,7 +190,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
 
     fun `test completes value declarations`() {
@@ -247,7 +247,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val varBinder = file.getVarBinder()
         val expressionIdentifier = file.getExpressionIdentifier()
 
-        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+        assertEquals(varBinder, expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves complex var binders`() {
@@ -261,7 +261,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val varBinder = file.getVarBinder()
         val expressionIdentifier = file.getExpressionIdentifier()
 
-        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+        assertEquals(varBinder, expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves record var binders`() {
@@ -275,7 +275,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val varBinder = file.getVarBinder()
         val expressionIdentifier = file.getExpressionIdentifier()
 
-        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+        assertEquals(varBinder, expressionIdentifier.getReference().resolve())
     }
 
     fun `test resolves var binders used in record expressions`() {
@@ -289,7 +289,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val varBinder = file.getVarBinder()
         val expressionIdentifier = file.getExpressionIdentifier()
 
-        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+        assertEquals(varBinder, expressionIdentifier.getReference().resolve())
     }
 
     fun `test completes var binders`() {
@@ -320,7 +320,8 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val expressionIdentifier = file.getExpressionIdentifier()
         val foreignValueDeclaration = file.getForeignValueDeclaration()
 
-        assertEquals(foreignValueDeclaration, expressionIdentifier.reference.resolve())
+        assertEquals(foreignValueDeclaration, expressionIdentifier.getReference()
+            .resolve())
     }
 
     fun `test completes foreign value declarations`() {
