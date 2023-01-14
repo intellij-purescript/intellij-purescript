@@ -5,6 +5,7 @@ import org.purescript.getModule
 import org.purescript.getValueDeclaration
 import org.purescript.getValueDeclarationByName
 import org.purescript.getValueDeclarations
+import org.purescript.psi.declaration.value.MoveValueDeclarationRefactoring
 
 class PSValueDeclarationTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {

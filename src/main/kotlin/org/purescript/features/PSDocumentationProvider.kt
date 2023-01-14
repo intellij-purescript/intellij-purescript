@@ -11,9 +11,9 @@ import org.purescript.PSLanguage
 import org.purescript.psi.module.Module.*
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.classes.PSClassDeclaration
-import org.purescript.psi.data.PSDataConstructor
-import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.data.PSDataConstructor
+import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.value.PSValueDeclaration
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(

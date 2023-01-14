@@ -8,10 +8,13 @@ import org.purescript.psi.caseof.PSConstrainedType
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.classes.*
-import org.purescript.psi.data.PSDataConstructor
-import org.purescript.psi.data.PSDataConstructorList
-import org.purescript.psi.data.PSDataDeclaration
-import org.purescript.psi.declaration.*
+import org.purescript.psi.declaration.data.PSDataConstructor
+import org.purescript.psi.declaration.data.PSDataConstructorList
+import org.purescript.psi.declaration.data.PSDataDeclaration
+import org.purescript.psi.declaration.fixity.FixityDeclaration
+import org.purescript.psi.declaration.fixity.PSFixity
+import org.purescript.psi.declaration.signature.PSSignature
+import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
 import org.purescript.psi.dostmt.PSDoNotationBind
 import org.purescript.psi.dostmt.PSDoNotationLet

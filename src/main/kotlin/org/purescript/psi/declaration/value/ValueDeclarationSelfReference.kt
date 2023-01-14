@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.value
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase

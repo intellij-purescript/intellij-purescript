@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.fixity
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service

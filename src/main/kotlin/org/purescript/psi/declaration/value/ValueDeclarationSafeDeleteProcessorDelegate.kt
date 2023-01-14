@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.value
 
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project

@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.fixity
 
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase

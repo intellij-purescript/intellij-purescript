@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.module.Module
 
 interface PSFile {

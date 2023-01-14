@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.signature
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference

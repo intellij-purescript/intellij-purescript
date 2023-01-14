@@ -1,4 +1,4 @@
-package org.purescript.psi.data
+package org.purescript.psi.declaration.data
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement

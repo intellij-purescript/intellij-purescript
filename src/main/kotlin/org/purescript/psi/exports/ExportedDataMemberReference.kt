@@ -3,7 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 
 class ExportedDataMemberReference(exportedDataMember: PSExportedDataMember) : PsiReferenceBase<PSExportedDataMember>(

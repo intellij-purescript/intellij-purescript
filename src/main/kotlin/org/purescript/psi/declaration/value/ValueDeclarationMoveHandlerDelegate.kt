@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.value
 
 import com.intellij.lang.Language
 import com.intellij.openapi.actionSystem.DataContext

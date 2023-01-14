@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.value
 
 import com.intellij.openapi.components.service
 import com.intellij.psi.search.GlobalSearchScope
@@ -8,6 +8,7 @@ import com.intellij.refactoring.move.MoveHandler
 import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier

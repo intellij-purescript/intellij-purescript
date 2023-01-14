@@ -5,7 +5,7 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.value.PSValueDeclaration
 
 class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {
     override fun getInfo(element: PsiElement): Info? {

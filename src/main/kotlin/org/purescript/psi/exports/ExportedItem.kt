@@ -5,7 +5,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.psi.base.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.imports.Import
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 

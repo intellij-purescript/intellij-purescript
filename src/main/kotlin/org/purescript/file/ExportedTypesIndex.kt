@@ -8,7 +8,7 @@ import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import org.purescript.psi.foreign.PSForeignDataDeclaration
 import org.purescript.psi.module.Module
-import org.purescript.psi.data.PSDataDeclaration
+import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.exports.ExportedData
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration

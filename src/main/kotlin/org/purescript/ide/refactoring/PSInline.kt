@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.purescript.PSLanguage
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.value.PSValueDeclaration
 
 class PSInline: InlineActionHandler() {
     override fun isEnabledForLanguage(l: Language?): Boolean =

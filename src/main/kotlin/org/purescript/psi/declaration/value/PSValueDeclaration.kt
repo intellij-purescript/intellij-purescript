@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.psi.declaration.value
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
@@ -10,9 +10,8 @@ import org.purescript.psi.PSValue
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.ExpressionAtom
-import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon

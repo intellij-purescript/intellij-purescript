@@ -9,7 +9,7 @@ import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
 import org.purescript.psi.PSLet
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :

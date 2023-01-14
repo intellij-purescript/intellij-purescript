@@ -12,8 +12,8 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
-import org.purescript.psi.declaration.PSSignature
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.signature.PSSignature
+import org.purescript.psi.declaration.value.PSValueDeclaration
 
 class UnusedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =

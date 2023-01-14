@@ -2,7 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.declaration.PSValueDeclaration
+import org.purescript.psi.declaration.value.PSValueDeclaration
 
 /**
  * A where claus un a expression, e.g.
