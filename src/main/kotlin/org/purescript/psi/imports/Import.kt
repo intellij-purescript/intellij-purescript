@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.psi.PSElementType.*
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.PSDataConstructor
+import org.purescript.psi.declaration.data.DataConstructor.PSDataConstructor
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
@@ -19,6 +19,7 @@ import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 import kotlin.reflect.KProperty1
 
@@ -265,9 +266,9 @@ interface Import {
             )
 
         /**
-         * @return the [PSDataConstructor] elements imported by this declaration
+         * @return the [DataConstructor.PSDataConstructor] elements imported by this declaration
          */
-        val importedDataConstructors: List<PSDataConstructor>
+        val importedDataConstructors: List<DataConstructor.PSDataConstructor>
             get() {
                 val importedModule = importedModule ?: return emptyList()
                 val exportedDataConstructors =
@@ -277,7 +278,7 @@ interface Import {
                     ?: return exportedDataConstructors
 
                 val importedDataConstructors =
-                    mutableListOf<PSDataConstructor>()
+                    mutableListOf<DataConstructor.PSDataConstructor>()
                 val importedDataElements =
                     importedItems.filterIsInstance<PSImportedData>()
                 if (isHiding) {

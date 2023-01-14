@@ -16,8 +16,8 @@ import org.purescript.psi.base.PSPsiElement
  */
 class PSDataConstructorList(node: ASTNode) : PSPsiElement(node) {
     /**
-     * @return the [PSDataConstructor] elements in this list
+     * @return the [DataConstructor.PSDataConstructor] elements in this list
      */
-    internal val dataConstructors: Array<PSDataConstructor>
-        get() = findChildrenByClass(PSDataConstructor::class.java)
+    internal val dataConstructors: Array<DataConstructor.PSDataConstructor>
+        get() = findChildrenByClass(DataConstructor.PSDataConstructor::class.java)
 }

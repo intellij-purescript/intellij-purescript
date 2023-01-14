@@ -8,7 +8,7 @@ import org.purescript.psi.caseof.PSConstrainedType
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.declaration.classes.*
-import org.purescript.psi.declaration.data.PSDataConstructor
+import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.PSDataConstructorList
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
@@ -58,7 +58,7 @@ val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
 val DataDecl = WithPsi("DataDeclaration") { PSDataDeclaration(it) }
 val DataCtorList = WithPsi("DataConstructorList") { PSDataConstructorList(it) }
-val DataCtor = WithPsi("DataConstructor") { PSDataConstructor(it) }
+val DataCtor = WithPsi("DataConstructor") { DataConstructor.PSDataConstructor(it) }
 val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeSynonymDecl =
     WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }

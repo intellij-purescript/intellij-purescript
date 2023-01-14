@@ -12,7 +12,8 @@ import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.PSClassConstraint
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.PSDataConstructor
+import org.purescript.psi.declaration.data.DataConstructor
+import org.purescript.psi.declaration.data.DataConstructor.PSDataConstructor
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
@@ -84,7 +85,7 @@ fun PsiFile.getModule(): Psi =
 fun PsiFile.getDataDeclaration(): PSDataDeclaration =
     getModule().cache.dataDeclarations.single()
 
-fun PsiFile.getDataConstructor(): PSDataConstructor =
+fun PsiFile.getDataConstructor(): DataConstructor.PSDataConstructor =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
 fun PsiFile.getExportedDataDeclarations(): List<PSDataDeclaration> =

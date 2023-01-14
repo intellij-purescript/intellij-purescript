@@ -18,25 +18,27 @@ import org.purescript.psi.type.PSTypeAtom
  * data CatQueue a = CatQueue (List a) (List a)
  * ```
  */
-class PSDataConstructor(node: ASTNode) :
-    PSPsiElement(node),
-    PsiNameIdentifierOwner {
+interface DataConstructor {
+    class PSDataConstructor(node: ASTNode) :
+        PSPsiElement(node),
+        PsiNameIdentifierOwner {
 
-    /**
-     * @return the [PSProperName] identifying this constructor
-     */
-    internal val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+        /**
+         * @return the [PSProperName] identifying this constructor
+         */
+        internal val identifier: PSProperName
+            get() = findNotNullChildByClass(PSProperName::class.java)
 
-    /**
-     * @return the [PSTypeAtom] elements in this constructor
-     */
-    internal val typeAtoms: Array<PSTypeAtom>
-        get() = findChildrenByClass(PSTypeAtom::class.java)
+        /**
+         * @return the [PSTypeAtom] elements in this constructor
+         */
+        internal val typeAtoms: Array<PSTypeAtom>
+            get() = findChildrenByClass(PSTypeAtom::class.java)
 
-    override fun setName(name: String): PsiElement? = null
+        override fun setName(name: String): PsiElement? = null
 
-    override fun getNameIdentifier(): PSProperName = identifier
+        override fun getNameIdentifier(): PSProperName = identifier
 
-    override fun getName(): String = identifier.name
+        override fun getName(): String = identifier.name
+    }
 }

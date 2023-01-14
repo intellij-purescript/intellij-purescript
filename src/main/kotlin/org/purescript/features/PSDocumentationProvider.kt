@@ -11,7 +11,7 @@ import org.purescript.PSLanguage
 import org.purescript.psi.module.Module.*
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.classes.PSClassDeclaration
-import org.purescript.psi.declaration.data.PSDataConstructor
+import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
 
@@ -65,7 +65,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is PSValueDeclaration ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
-            is PSDataConstructor ->
+            is DataConstructor.PSDataConstructor ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
             is PSDataDeclaration ->

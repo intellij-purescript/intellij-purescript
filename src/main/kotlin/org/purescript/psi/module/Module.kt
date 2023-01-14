@@ -14,7 +14,6 @@ import org.purescript.parser.WHERE
 import org.purescript.psi.*
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.PSDataConstructor
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.PSValueDeclaration
@@ -27,6 +26,7 @@ import org.purescript.psi.newtype.PSNewTypeConstructor
 import org.purescript.psi.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
 
 interface Module {
@@ -234,16 +234,16 @@ interface Module {
             ) { it.importedDataDeclarations }
 
         /**
-         * @return the [PSDataConstructor] elements that this module exports,
+         * @return the [DataConstructor.PSDataConstructor] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedDataConstructors: List<PSDataConstructor>
+        val exportedDataConstructors: List<DataConstructor.PSDataConstructor>
             get() {
                 val explicitlyExportedItems = exports?.exportedItems
                     ?: return cache.dataConstructors
 
                 val exportedDataConstructors =
-                    mutableListOf<PSDataConstructor>()
+                    mutableListOf<DataConstructor.PSDataConstructor>()
 
                 for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
                     if (exportedData.exportsAll) {
