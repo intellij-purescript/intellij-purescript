@@ -1,5 +1,6 @@
 package org.purescript.psi.declaration
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.BaseRefactoringProcessor
@@ -27,7 +28,7 @@ class MoveValueDeclarationRefactoring(
             .toTypedArray()
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
-        val factory = PSPsiFactory(toMove.project)
+        val factory = toMove.project.service<PSPsiFactory>()
         val sourceModule = toMove.module
 
         // dependencies needs to be imported or moved to targetModule
