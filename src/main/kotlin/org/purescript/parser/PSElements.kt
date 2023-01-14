@@ -31,7 +31,7 @@ import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.type.*
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
-import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
 import org.purescript.psi.type.PSTypeVarKinded
 import org.purescript.psi.type.PSTypeVarName
 

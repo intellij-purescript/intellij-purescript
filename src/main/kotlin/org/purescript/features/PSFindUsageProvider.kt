@@ -47,7 +47,7 @@ import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.imports.PSImportAlias
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
-import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =

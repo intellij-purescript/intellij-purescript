@@ -11,7 +11,7 @@ import org.purescript.psi.module.Module
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.exports.ExportedData
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
-import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
 
 /**
  * An index on what type declarations every module exports.

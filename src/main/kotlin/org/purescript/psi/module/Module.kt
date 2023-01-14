@@ -27,7 +27,7 @@ import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
 
 interface Module {
     object Type : PSElementType.WithPsiAndStub<Stub, Psi>("Module") {
