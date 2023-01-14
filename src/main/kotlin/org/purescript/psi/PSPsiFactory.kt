@@ -14,7 +14,6 @@ import org.purescript.ide.formatting.*
 import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.exports.ExportList
 import org.purescript.psi.expression.PSParens
-import org.purescript.psi.imports.*
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSOperatorName

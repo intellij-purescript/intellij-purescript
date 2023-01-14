@@ -8,7 +8,6 @@ import com.intellij.psi.util.siblings
 import org.purescript.file.PSFile
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.imports.*
-import org.purescript.psi.imports.*
 
 class PurescriptImportOptimizer : ImportOptimizer {
     override fun supports(file: PsiFile): Boolean = file is PSFile.Psi
