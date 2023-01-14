@@ -7,7 +7,7 @@ import org.purescript.psi.caseof.PSCaseAlternative
 import org.purescript.psi.caseof.PSConstrainedType
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
-import org.purescript.psi.classes.*
+import org.purescript.psi.declaration.classes.*
 import org.purescript.psi.declaration.data.PSDataConstructor
 import org.purescript.psi.declaration.data.PSDataConstructorList
 import org.purescript.psi.declaration.data.PSDataDeclaration

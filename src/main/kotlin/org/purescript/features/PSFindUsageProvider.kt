@@ -38,8 +38,8 @@ import org.purescript.psi.foreign.PSForeignDataDeclaration
 import org.purescript.psi.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
-import org.purescript.psi.classes.PSClassDeclaration
-import org.purescript.psi.classes.PSClassMember
+import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.PSDataConstructor
 import org.purescript.psi.declaration.data.PSDataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration

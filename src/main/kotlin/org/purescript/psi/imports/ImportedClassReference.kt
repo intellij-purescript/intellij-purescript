@@ -1,7 +1,7 @@
 package org.purescript.psi.imports
 
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.psi.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.PSClassDeclaration
 
 class ImportedClassReference(importedClass: PSImportedClass) : PsiReferenceBase<PSImportedClass>(
     importedClass,

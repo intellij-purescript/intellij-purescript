@@ -1,4 +1,4 @@
-package org.purescript.psi.classes
+package org.purescript.psi.declaration.classes
 
 import com.intellij.psi.PsiReferenceBase
 
