@@ -4,7 +4,7 @@ import org.purescript.psi.*
 import org.purescript.psi.PSElementType.WithPsi
 import org.purescript.psi.binder.*
 import org.purescript.psi.caseof.PSCaseAlternative
-import org.purescript.psi.caseof.PSConstrainedType
+import org.purescript.psi.type.PSConstrainedType
 import org.purescript.psi.char.PSCharBinder
 import org.purescript.psi.char.PSCharLiteral
 import org.purescript.psi.declaration.classes.*
@@ -24,7 +24,6 @@ import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.foreign.PSForeignDataDeclaration
 import org.purescript.psi.foreign.PSForeignValueDeclaration
-import org.purescript.psi.imports.*
 import org.purescript.psi.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*

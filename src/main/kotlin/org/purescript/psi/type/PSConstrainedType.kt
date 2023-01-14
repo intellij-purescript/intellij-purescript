@@ -1,4 +1,4 @@
-package org.purescript.psi.caseof
+package org.purescript.psi.type
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
