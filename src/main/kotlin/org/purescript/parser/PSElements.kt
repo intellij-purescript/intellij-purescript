@@ -5,8 +5,8 @@ import org.purescript.psi.binder.*
 import org.purescript.psi.caseof.PSCase
 import org.purescript.psi.caseof.PSCaseAlternative
 import org.purescript.psi.type.PSConstrainedType
-import org.purescript.psi.char.PSCharBinder
-import org.purescript.psi.char.PSCharLiteral
+import org.purescript.psi.binder.PSCharBinder
+import org.purescript.psi.literals.PSCharLiteral
 import org.purescript.psi.declaration.classes.*
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
