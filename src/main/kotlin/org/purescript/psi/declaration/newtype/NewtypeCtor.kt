@@ -17,7 +17,7 @@ import org.purescript.psi.base.PSPsiElement
  * newtype CatQueue a = CatQueue (List a) (List a)
  * ```
  */
-class PSNewTypeConstructor(node: ASTNode) :
+class NewtypeCtor(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner {
 

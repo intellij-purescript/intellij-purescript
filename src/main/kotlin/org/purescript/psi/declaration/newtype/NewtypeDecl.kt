@@ -37,10 +37,10 @@ class NewtypeDecl :
             findNotNullChildByClass(PSProperName::class.java)
 
     /**
-     * @return the [PSNewTypeConstructor] defined by this declaration
+     * @return the [NewtypeCtor] defined by this declaration
      */
-    val newTypeConstructor: PSNewTypeConstructor
-        get() = findNotNullChildByClass(PSNewTypeConstructor::class.java)
+    val newTypeConstructor: NewtypeCtor
+        get() = findNotNullChildByClass(NewtypeCtor::class.java)
 
     override fun setName(name: String): PsiElement? = null
 

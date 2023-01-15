@@ -588,7 +588,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('eff')
       PsiElement(=)('=')
-      PSNewTypeConstructor(NewTypeConstructor)
+      NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('RenderState')
         PSTypeAtom(TypeAtom)

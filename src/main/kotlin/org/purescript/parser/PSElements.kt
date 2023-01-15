@@ -26,7 +26,7 @@ import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
-import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
+import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.type.*
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
@@ -92,7 +92,7 @@ val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
 val InstanceDecl =
     WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
 val NewtypeDeclType = NewtypeDecl.Type
-val NewTypeCtor = WithPsi("NewTypeConstructor") { PSNewTypeConstructor(it) }
+val NewtypeCtorType = WithPsi("NewtypeCtor") { NewtypeCtor(it) }
 val Guard = WithPsi("Guard") { PSGuard(it) }
 val NullBinder = WithPsi("NullBinder") { PSNullBinder(it) }
 val StringBinder = WithPsi("StringBinder") { PSStringBinder(it) }

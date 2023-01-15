@@ -183,7 +183,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('b')
       PsiElement(=)('=')
-      PSNewTypeConstructor(NewTypeConstructor)
+      NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('Const')
         PSTypeAtom(TypeAtom)

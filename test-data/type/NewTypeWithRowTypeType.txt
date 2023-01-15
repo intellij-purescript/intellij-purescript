@@ -33,7 +33,7 @@ Purescript File
                     PsiElement(proper name)('Type')
           PsiElement())(')')
       PsiElement(=)('=')
-      PSNewTypeConstructor(NewTypeConstructor)
+      NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('Empty')
         PSTypeAtom(TypeAtom)

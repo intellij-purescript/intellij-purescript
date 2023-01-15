@@ -13,7 +13,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
       PsiElement(=)('=')
-      PSNewTypeConstructor(NewTypeConstructor)
+      NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('Ta')
         PSTypeAtom(TypeAtom)

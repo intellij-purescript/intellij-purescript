@@ -22,7 +22,7 @@ import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
+import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
@@ -83,7 +83,7 @@ interface Module {
                 by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
             val newTypeDeclarations
                 by lazy { findChildrenByClass<NewtypeDecl>() }
-            val newTypeConstructors: List<PSNewTypeConstructor>
+            val newTypeConstructors: List<NewtypeCtor>
                 by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
             val typeSynonymDeclarations
                 by lazy { findChildrenByClass<TypeDecl>() }
@@ -204,16 +204,16 @@ interface Module {
             ) { it.importedNewTypeDeclarations }
 
         /**
-         * @return the [PSNewTypeConstructor] elements that this module exports,
+         * @return the [NewtypeCtor] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedNewTypeConstructors: List<PSNewTypeConstructor>
+        val exportedNewTypeConstructors: List<NewtypeCtor>
             get() {
                 val explicitlyExportedItems = exports?.exportedItems
                     ?: return cache.newTypeConstructors
 
                 val exportedNewTypeConstructors =
-                    mutableListOf<PSNewTypeConstructor>()
+                    mutableListOf<NewtypeCtor>()
 
                 for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
                     if (exportedData.exportsAll) {

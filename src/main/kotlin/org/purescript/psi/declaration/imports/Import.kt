@@ -14,7 +14,7 @@ import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
+import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
@@ -199,9 +199,9 @@ interface Import {
             )
 
         /**
-         * @return the [PSNewTypeConstructor] elements imported by this declaration
+         * @return the [NewtypeCtor] elements imported by this declaration
          */
-        val importedNewTypeConstructors: List<PSNewTypeConstructor>
+        val importedNewTypeConstructors: List<NewtypeCtor>
             get() {
                 val importedModule = importedModule ?: return emptyList()
                 val exportedNewTypeConstructors =
@@ -211,7 +211,7 @@ interface Import {
                     ?: return exportedNewTypeConstructors
 
                 val importedNewTypeConstructors =
-                    mutableListOf<PSNewTypeConstructor>()
+                    mutableListOf<NewtypeCtor>()
                 val importedDataElements =
                     importedItems.filterIsInstance<PSImportedData>()
                 if (isHiding) {
