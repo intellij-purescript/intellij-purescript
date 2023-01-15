@@ -16,7 +16,7 @@ import org.purescript.psi.type.PSTypeVarBinding
  *     foldMapWithIndex :: forall a m. Monoid m => (i -> a -> m) -> f a -> m
  * ```
  */
-class PSClassDeclaration(node: ASTNode) :
+class ClassDecl(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner {
 

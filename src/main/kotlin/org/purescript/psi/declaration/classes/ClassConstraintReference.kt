@@ -8,13 +8,13 @@ class ClassConstraintReference(classConstraint: PSClassConstraint) : PsiReferenc
     false
 ) {
 
-    override fun getVariants(): Array<PSClassDeclaration> =
+    override fun getVariants(): Array<ClassDecl> =
         candidates.toTypedArray()
 
-    override fun resolve(): PSClassDeclaration? =
+    override fun resolve(): ClassDecl? =
         candidates.firstOrNull { it.name == myElement.name }
 
-    private val candidates: List<PSClassDeclaration>
+    private val candidates: List<ClassDecl>
         get() = myElement.module?.run {
             cache.classes.toList() + cache.imports.flatMap { it.importedClassDeclarations }
         } ?: emptyList()

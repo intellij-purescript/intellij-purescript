@@ -10,7 +10,7 @@ Purescript File
         PsiElement(proper name)('Foo')
       PSTypeArgs(TypeArgs)
         <empty list>
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

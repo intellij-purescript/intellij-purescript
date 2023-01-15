@@ -38,7 +38,7 @@ import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
-import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
@@ -60,7 +60,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSImportAlias
             || psiElement is DataDeclaration.Psi
             || psiElement is DataConstructor.Psi
-            || psiElement is PSClassDeclaration
+            || psiElement is ClassDecl
             || psiElement is TypeDecl
             || psiElement is PSClassMember
             || psiElement is FixityDeclaration
@@ -112,7 +112,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSImportAlias -> "import alias"
             is DataDeclaration.Psi -> "data"
             is DataConstructor.Psi -> "data constructor"
-            is PSClassDeclaration -> "class"
+            is ClassDecl -> "class"
             is PSForeignValueDeclaration -> "foreign value"
             is PSForeignDataDeclaration -> "foreign data"
             is TypeDecl -> "type synonym"

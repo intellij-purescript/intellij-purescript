@@ -10,7 +10,7 @@ import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.PSLanguage
 import org.purescript.psi.module.Module
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.value.ValueDecl
@@ -71,7 +71,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is DataDeclaration.Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
-            is PSClassDeclaration ->
+            is ClassDecl ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
             is Module.Psi ->

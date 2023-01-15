@@ -1,7 +1,7 @@
 package org.purescript.psi.declaration.imports
 
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.ClassDecl
 
 class ImportedClassReference(importedClass: PSImportedClass) : PsiReferenceBase<PSImportedClass>(
     importedClass,
@@ -12,10 +12,10 @@ class ImportedClassReference(importedClass: PSImportedClass) : PsiReferenceBase<
     override fun getVariants(): Array<Any> =
         candidates.toTypedArray()
 
-    override fun resolve(): PSClassDeclaration? =
+    override fun resolve(): ClassDecl? =
         candidates.firstOrNull { it.name == myElement.name }
 
-    private val candidates: List<PSClassDeclaration>
+    private val candidates: List<ClassDecl>
         get() = myElement.importDeclaration?.importedModule?.exportedClassDeclarations
             ?: emptyList()
 }

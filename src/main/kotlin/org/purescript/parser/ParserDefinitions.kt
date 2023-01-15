@@ -218,7 +218,7 @@ class ParserDefinitions {
     private val classHead =
         `'class'` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
     private val classMember = ClassMember(ident + dcolon + type)
-    private val classDeclaration = ClassDecl(
+    private val classDeclaration = ClassDeclType(
         classHead + !ClassMemberList(
             `'where'` + `L{` + classMember.sepBy1(`L-sep`) + `L}`
         ).heal

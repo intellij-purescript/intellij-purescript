@@ -743,7 +743,7 @@ Purescript File
               PSNumericLiteral(NumericLiteral)
                 PsiElement(natural)('2')
           PsiElement(})('}')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

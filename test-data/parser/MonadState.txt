@@ -136,7 +136,7 @@ Purescript File
                 PsiElement(operator)('<>')
           PSStringLiteral(StringLiteral)
             PsiElement(string)('")"')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassConstraintList(ClassConstraintList)
         PSClassConstraint(ClassConstraint)

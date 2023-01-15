@@ -250,7 +250,7 @@ Purescript File
             PSStringLiteral(StringLiteral)
               PsiElement(string)('"test"')
           PsiElement(])(']')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

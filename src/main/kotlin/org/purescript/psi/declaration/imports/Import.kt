@@ -4,9 +4,8 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import org.purescript.psi.PSElementType.*
-import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
@@ -315,10 +314,10 @@ interface Import {
             )
 
         /**
-         * @return the [PSClassDeclaration] elements imported by this declaration
+         * @return the [ClassDecl] elements imported by this declaration
          */
-        val importedClassDeclarations: List<PSClassDeclaration>
-            get() = getImportedDeclarations<PSClassDeclaration, PSImportedClass>(
+        val importedClassDeclarations: List<ClassDecl>
+            get() = getImportedDeclarations<ClassDecl, PSImportedClass>(
                 Module.Psi::exportedClassDeclarations
             )
 

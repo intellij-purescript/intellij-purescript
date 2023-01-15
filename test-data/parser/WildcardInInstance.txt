@@ -18,7 +18,7 @@ Purescript File
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassConstraintList(ClassConstraintList)
         PSClassConstraint(ClassConstraint)

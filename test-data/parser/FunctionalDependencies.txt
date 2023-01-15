@@ -32,7 +32,7 @@ Purescript File
         PSTypeVarName(TypeVarName)
           PSIdentifier(identifier)
             PsiElement(identifier)('xs')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

@@ -13,7 +13,7 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
 import org.purescript.psi.*
-import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
@@ -87,7 +87,7 @@ interface Module {
                 by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
             val typeSynonymDeclarations
                 by lazy { findChildrenByClass<TypeDecl>() }
-            val classes by lazy { findChildrenByClass<PSClassDeclaration>() }
+            val classes by lazy { findChildrenByClass<ClassDecl>() }
             val foreignValueDeclarations
                 by lazy { findChildrenByClass<PSForeignValueDeclaration>() }
             val foreignDataDeclarations
@@ -281,11 +281,11 @@ interface Module {
             ) { it.importedTypeSynonymDeclarations }
 
         /**
-         * @return the [PSClassDeclaration] elements that this module exports,
+         * @return the [ClassDecl] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedClassDeclarations: List<PSClassDeclaration>
-            get() = getExportedDeclarations<PSClassDeclaration, ExportedClass.Psi>(
+        val exportedClassDeclarations: List<ClassDecl>
+            get() = getExportedDeclarations<ClassDecl, ExportedClass.Psi>(
                 cache.classes,
             ) { it.importedClassDeclarations }
 

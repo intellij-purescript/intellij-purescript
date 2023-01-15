@@ -41,7 +41,7 @@ Purescript File
           PSTypeAtom(TypeAtom)
             PSIdentifier(identifier)
               PsiElement(identifier)('b')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

@@ -19,7 +19,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassConstraintList(ClassConstraintList)
         PSClassConstraint(ClassConstraint)

@@ -50,7 +50,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('unwrap')
         PsiElement())(')')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

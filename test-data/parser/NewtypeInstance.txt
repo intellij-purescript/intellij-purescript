@@ -145,7 +145,7 @@ Purescript File
                   PSProperName(ProperName)
                     PsiElement(proper name)('String')
           PsiElement())(')')
-    PSClassDeclaration(ClassDeclaration)
+    ClassDecl(ClassDecl)
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)

@@ -9,7 +9,7 @@ import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.PSClassConstraint
-import org.purescript.psi.declaration.classes.PSClassDeclaration
+import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
@@ -90,7 +90,7 @@ fun PsiFile.getDataConstructor(): DataConstructor.Psi =
 fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration.Psi> =
     getModule().exportedDataDeclarations
 
-fun PsiFile.getExportedClassDeclarations(): List<PSClassDeclaration> =
+fun PsiFile.getExportedClassDeclarations(): List<ClassDecl> =
     getModule().exportedClassDeclarations
 
 fun PsiFile.getImportDeclarations(): Array<Import.Psi> =
@@ -171,10 +171,10 @@ fun PsiFile.getExportedModule(): ExportedModule.Psi =
 fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()
 
-fun PsiFile.getClassDeclarations(): Array<PSClassDeclaration> =
+fun PsiFile.getClassDeclarations(): Array<ClassDecl> =
     getModule().cache.classes
 
-fun PsiFile.getClassDeclaration(): PSClassDeclaration =
+fun PsiFile.getClassDeclaration(): ClassDecl =
     getClassDeclarations().single()
 
 fun PsiFile.getClassMember(): PSClassMember =
