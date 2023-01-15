@@ -60,8 +60,7 @@ val DataDecl = DataDeclaration.Type
 val DataCtorList = DataConstructorList.Type
 val DataCtor = DataConstructor.Type
 val Signature = WithPsi("Signature") { PSSignature(it) }
-val TypeSynonymDecl =
-    WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }
+val TypeSynonymDecl = PSTypeSynonymDeclaration.Type
 val ValueDeclType = ValueDecl.Type 
 val ForeignDataDecl =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
