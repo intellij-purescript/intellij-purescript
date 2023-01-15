@@ -21,7 +21,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         originalElement: PsiElement?
     ): String? {
         return when  {
-            element is ValueDecl.Psi ->
+            element is ValueDecl ->
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
@@ -62,7 +62,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         val version = rawVersion.trimStart('v')
 
         return when (element) {
-            is ValueDecl.Psi ->
+            is ValueDecl ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
             is DataConstructor.Psi ->

@@ -43,15 +43,15 @@ import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.imports.PSImportAlias
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
-        psiElement is ValueDecl.Psi
+        psiElement is ValueDecl
             || psiElement is PSVarBinder
             || psiElement is Module.Psi
             || psiElement is PSForeignValueDeclaration
@@ -104,7 +104,7 @@ class PSFindUsageProvider : FindUsagesProvider {
 
     override fun getType(element: PsiElement): String {
         return when (element) {
-            is ValueDecl.Psi -> "value"
+            is ValueDecl -> "value"
             is PSVarBinder -> "parameter"
             is Module.Psi -> "module"
             is PSNewTypeDeclaration -> "newtype"
@@ -124,7 +124,7 @@ class PSFindUsageProvider : FindUsagesProvider {
 
     override fun getDescriptiveName(element: PsiElement): String {
         when (element) {
-            is ValueDecl.Psi -> {
+            is ValueDecl -> {
                 return "${element.module?.name}.${element.name}"
             }
             is PsiNamedElement -> {

@@ -25,7 +25,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
     ): Boolean {
         return reference == null &&
             elements.size == 1 &&
-            elements.first() is ValueDecl.Psi
+            elements.first() is ValueDecl
     }
 
     override fun tryToMove(
@@ -35,7 +35,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
         reference: PsiReference?,
         editor: Editor?
     ): Boolean = when (element) {
-        is ValueDecl.Psi -> {
+        is ValueDecl -> {
             Dialog(element, project).show()
             true
         }
@@ -43,7 +43,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
         else -> false
     }
 
-    class Dialog(val element: ValueDecl.Psi, project: Project) :
+    class Dialog(val element: ValueDecl, project: Project) :
         RefactoringDialog(project, false) {
 
         private var targetModuleName: String

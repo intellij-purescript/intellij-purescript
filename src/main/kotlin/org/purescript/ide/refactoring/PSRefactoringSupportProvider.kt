@@ -10,11 +10,11 @@ import org.purescript.psi.declaration.value.ValueDecl
 class PSRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
         element is Module.Psi ||
-            element is ValueDecl.Psi ||
+            element is ValueDecl ||
             element is FixityDeclaration.Psi ||
             element is PSVarBinder
 
     override fun isSafeDeleteAvailable(element: PsiElement): Boolean {
-        return element is ValueDecl.Psi
+        return element is ValueDecl
     }
 }

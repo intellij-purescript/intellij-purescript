@@ -10,7 +10,7 @@ import org.purescript.psi.declaration.value.ValueDecl
 class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {
     override fun getInfo(element: PsiElement): Info? {
         if (element.firstChild != null) return null
-        val decl = element.parentOfType<ValueDecl.Psi>() ?: return null
+        val decl = element.parentOfType<ValueDecl>() ?: return null
         return if (decl.nameIdentifier.firstChild == element && decl.name == "main") {
             val actions = ExecutorAction.getActions(0)
             Info(

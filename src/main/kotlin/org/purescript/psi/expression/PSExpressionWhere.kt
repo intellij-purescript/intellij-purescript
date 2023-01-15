@@ -21,7 +21,7 @@ class PSExpressionWhere(node: ASTNode) : PSPsiElement(node) {
             .flatMap { it.expressionAtoms } +
             (where?.expressionAtoms ?: emptyList())
     val where get() = findChildByClass(PSExpressionWhere::class.java)
-    val valueDeclarations: Array<ValueDecl.Psi>
+    val valueDeclarations: Array<ValueDecl>
         get() =
-            findChildrenByClass(ValueDecl.Psi::class.java)
+            findChildrenByClass(ValueDecl::class.java)
 }

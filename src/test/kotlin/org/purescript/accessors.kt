@@ -7,23 +7,21 @@ import org.purescript.file.PSFile
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.PSClassConstraint
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.imports.*
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 
 
 /**
@@ -109,13 +107,13 @@ fun PsiFile.getImportDeclaration(): Import.Psi =
 fun PsiFile.getImportAlias(): PSImportAlias =
     getImportAliases().single()
 
-fun PsiFile.getValueDeclarations(): Array<ValueDecl.Psi> =
+fun PsiFile.getValueDeclarations(): Array<ValueDecl> =
     getModule().cache.valueDeclarations
 
-fun PsiFile.getValueDeclaration(): ValueDecl.Psi =
+fun PsiFile.getValueDeclaration(): ValueDecl =
     getValueDeclarations().single()
 
-fun PsiFile.getValueDeclarationByName(name: String): ValueDecl.Psi =
+fun PsiFile.getValueDeclarationByName(name: String): ValueDecl =
     getValueDeclarations().single { it.name == name}
 
 fun PsiFile.getVarBinders(): List<PSVarBinder> =

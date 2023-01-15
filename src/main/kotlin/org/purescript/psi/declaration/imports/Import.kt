@@ -9,7 +9,6 @@ import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
@@ -21,6 +20,7 @@ import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import kotlin.reflect.KProperty1
 
 /**
@@ -167,10 +167,10 @@ interface Import {
         val importedModule get(): Module.Psi? = reference.resolve()
 
         /**
-         * @return the [ValueDecl.Psi] elements imported by this declaration
+         * @return the [ValueDecl] elements imported by this declaration
          */
-        val importedValueDeclarations: List<ValueDecl.Psi>
-            get() = getImportedDeclarations<ValueDecl.Psi, PSImportedValue>(
+        val importedValueDeclarations: List<ValueDecl>
+            get() = getImportedDeclarations<ValueDecl, PSImportedValue>(
                 Module.Psi::exportedValueDeclarations
             )
 

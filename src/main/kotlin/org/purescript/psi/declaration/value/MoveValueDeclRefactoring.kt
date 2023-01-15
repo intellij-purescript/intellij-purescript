@@ -20,7 +20,7 @@ import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.module.Module
 
 class MoveValueDeclRefactoring(
-    private val toMove: ValueDecl.Psi,
+    private val toMove: ValueDecl,
     private val targetModule: Module.Psi
 ) : BaseRefactoringProcessor(toMove.project) {
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) =
@@ -111,7 +111,7 @@ class MoveValueDeclRefactoring(
         for ((element, reference) in atomDependencies) {
             when (element) {
                 is PSExpressionIdentifier -> when (reference) {
-                    is ValueDecl.Psi -> {
+                    is ValueDecl -> {
                         val importDeclaration = reference.asImport()
                             ?.withAlias(element.qualifierName)
                             ?: continue

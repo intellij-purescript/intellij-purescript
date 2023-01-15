@@ -21,7 +21,7 @@ class UnusedInspection : LocalInspectionTool() {
 
     class Visitor(private val holder: ProblemsHolder) : PsiElementVisitor() {
         override fun visitElement(element: PsiElement) = when (element) {
-            is ValueDecl.Psi -> when {
+            is ValueDecl -> when {
                 element.name == "main" -> Unit
                 search(element).anyMatch { it.element !is PSSignature } -> Unit
                 else -> holder.registerProblem(

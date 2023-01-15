@@ -13,7 +13,7 @@ class PSInline: InlineActionHandler() {
         l == PSLanguage
 
     override fun canInlineElement(element: PsiElement?): Boolean =
-        if (element is ValueDecl.Psi) {
+        if (element is ValueDecl) {
             element.varBindersInParameters.isEmpty()
         } else {
             false
@@ -25,7 +25,7 @@ class PSInline: InlineActionHandler() {
         element: PsiElement?
     ) {
         when(element) {
-            is ValueDecl.Psi -> {
+            is ValueDecl -> {
                 InlineValueDecl(project, element).run()
             }
         }

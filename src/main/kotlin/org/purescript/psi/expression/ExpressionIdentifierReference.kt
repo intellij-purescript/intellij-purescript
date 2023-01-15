@@ -36,7 +36,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 if (qualifyingName == null) {
                     for (parent in element.parents(false)) {
                         when (parent) {
-                            is ValueDecl.Psi -> {
+                            is ValueDecl -> {
                                 yieldAll(parent.varBindersInParameters.values)
                                 val valueDeclarations = parent
                                     .where

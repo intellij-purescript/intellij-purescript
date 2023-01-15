@@ -12,7 +12,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.ValueDecl
 
-class InlineValueDecl(val project: Project, val toInline: ValueDecl.Psi) : BaseRefactoringProcessor(project) {
+class InlineValueDecl(val project: Project, val toInline: ValueDecl) : BaseRefactoringProcessor(project) {
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor {
         return BaseUsageViewDescriptor(toInline)
     }
