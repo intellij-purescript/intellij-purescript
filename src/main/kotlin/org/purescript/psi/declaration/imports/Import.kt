@@ -331,11 +331,11 @@ interface Import {
             )
 
         /**
-         * @return the [org.purescript.psi.declaration.FixityDeclaration.Psi] elements imported by this declaration
+         * @return the [org.purescript.psi.declaration.FixityDeclaration] elements imported by this declaration
          */
         val importedFixityDeclarations
             get() =
-                getImportedDeclarations<FixityDeclaration.Psi, PSImportedOperator>(
+                getImportedDeclarations<FixityDeclaration, PSImportedOperator>(
                     Module.Psi::exportedFixityDeclarations
                 )
 

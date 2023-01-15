@@ -11,7 +11,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
         element is Module.Psi ||
             element is ValueDecl ||
-            element is FixityDeclaration.Psi ||
+            element is FixityDeclaration ||
             element is PSVarBinder
 
     override fun isSafeDeleteAvailable(element: PsiElement): Boolean {

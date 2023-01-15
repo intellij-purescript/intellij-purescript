@@ -63,7 +63,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSClassDeclaration
             || psiElement is TypeDecl
             || psiElement is PSClassMember
-            || psiElement is FixityDeclaration.Psi
+            || psiElement is FixityDeclaration
             || psiElement is PSForeignDataDeclaration
 
     override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(
@@ -117,7 +117,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSForeignDataDeclaration -> "foreign data"
             is TypeDecl -> "type synonym"
             is PSClassMember -> "class member"
-            is FixityDeclaration.Psi -> "operator"
+            is FixityDeclaration -> "operator"
             else -> "unknown"
         }
     }

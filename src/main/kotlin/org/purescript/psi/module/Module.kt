@@ -115,11 +115,11 @@ interface Module {
         override fun getTextOffset(): Int = nameIdentifier.textOffset
 
         /**
-         * @return the [FixityDeclaration.Psi] that this module exports,
+         * @return the [FixityDeclaration] that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedFixityDeclarations: List<FixityDeclaration.Psi>
-            get() = getExportedDeclarations<FixityDeclaration.Psi, ExportedOperator.Psi>(
+        val exportedFixityDeclarations: List<FixityDeclaration>
+            get() = getExportedDeclarations<FixityDeclaration, ExportedOperator.Psi>(
                 fixityDeclarations
             ) { it.importedFixityDeclarations }
 

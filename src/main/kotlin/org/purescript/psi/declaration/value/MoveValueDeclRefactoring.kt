@@ -124,7 +124,7 @@ class MoveValueDeclRefactoring(
                 }
 
                 is PSExpressionOperator -> when (reference) {
-                    is FixityDeclaration.Psi -> {
+                    is FixityDeclaration -> {
                         val importDeclaration = reference.asImport()
                             .withAlias(element.qualifierName)
                         if (importDeclaration in done) continue

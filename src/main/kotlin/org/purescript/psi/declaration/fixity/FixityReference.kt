@@ -3,8 +3,8 @@ package org.purescript.psi.declaration.fixity
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 
-class FixityReference(fixity: FixityDeclaration.Psi) :
-    PsiReferenceBase<FixityDeclaration.Psi>(
+class FixityReference(fixity: FixityDeclaration) :
+    PsiReferenceBase<FixityDeclaration>(
         fixity,
         fixity.qualifiedIdentifier.textRangeInParent,
         false
