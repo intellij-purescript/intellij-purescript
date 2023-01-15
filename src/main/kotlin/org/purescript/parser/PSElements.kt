@@ -78,7 +78,7 @@ val ImportedDataMember =
 val ImportedOperator = WithPsi("ImportedOperator") { PSImportedOperator(it) }
 val ImportedType = WithPsi("ImportedType") { PSImportedType(it) }
 val ImportedValue = WithPsi("ImportedValue") { PSImportedValue(it) }
-val ClassDeclType = WithPsi("ClassDecl") { ClassDecl(it) }
+val ClassDeclType = ClassDecl.Type
 val ClassConstraintList =
     WithPsi("ClassConstraintList") { PSClassConstraintList(it) }
 val ClassConstraint = WithPsi("ClassConstraint") { PSClassConstraint(it) }
