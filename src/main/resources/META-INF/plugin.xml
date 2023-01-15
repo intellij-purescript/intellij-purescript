@@ -166,6 +166,7 @@
         <fileBasedIndex
             implementation="org.purescript.file.ImportedModuleIndex"/>
         <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex"/>
+        <stubIndex implementation="org.purescript.psi.declaration.value.ExportedValueDeclNameIndex"/>
     </extensions>
 
     <actions>

@@ -16,15 +16,27 @@ import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.signature.PSSignature
+import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.expression.ExpressionAtom
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.expression.PSValue
 import org.purescript.psi.name.PSIdentifier
+import org.purescript.psi.module.Module
 import javax.swing.Icon
 
 class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {
-    class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
+    class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type) {
+        val module get() = parentStub as? Module.Stub
+        val isExported get() = when {
+            module == null -> false
+            module?.exportList == null -> true
+            else -> module?.exportList?.childrenStubs
+                ?.filterIsInstance<ExportedValue.Stub>()
+                ?.find { it.name == name } != null
+        }
+    }
+    
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
         override fun createPsi(stub: Stub) = ValueDecl(stub, this)
@@ -37,7 +49,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
             Stub(d.readNameString()!!, p)
 
-        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            if (stub.isExported) {
+                sink.occurrence(ExportedValueDeclNameIndex.KEY, stub.name)
+            }
+        }
     }
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) :

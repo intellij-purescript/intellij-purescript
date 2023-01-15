@@ -48,7 +48,11 @@ interface Module {
 
     }
 
-    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
+    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type) {
+        val exportList: ExportList.Stub? get() = childrenStubs
+            .filterIsInstance<ExportList.Stub>()
+            .firstOrNull()
+    }
 
     class Psi :
         PsiNameIdentifierOwner,
