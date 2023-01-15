@@ -252,7 +252,7 @@ class ParserDefinitions {
         (dataHead + dcolon).heal + type,
         DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
         (`'newtype'` + properName + dcolon).heal + type,
-        NewtypeDecl(newtypeHead + eq + NewTypeCtor(properName + typeAtom)),
+        NewtypeDeclType(newtypeHead + eq + NewTypeCtor(properName + typeAtom)),
         typeDeclaration.heal,
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,

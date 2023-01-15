@@ -91,7 +91,7 @@ val ClassMember = WithPsi("ClassMember") { PSClassMember(it) }
 val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
 val InstanceDecl =
     WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
-val NewtypeDecl = WithPsi("NewtypeDecl") { NewtypeDecl(it) }
+val NewtypeDeclType = NewtypeDecl.Type
 val NewTypeCtor = WithPsi("NewTypeConstructor") { PSNewTypeConstructor(it) }
 val Guard = WithPsi("Guard") { PSGuard(it) }
 val NullBinder = WithPsi("NullBinder") { PSNullBinder(it) }
