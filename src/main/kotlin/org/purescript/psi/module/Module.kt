@@ -27,7 +27,7 @@ import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 
 interface Module {
@@ -86,7 +86,7 @@ interface Module {
             val newTypeConstructors: List<PSNewTypeConstructor>
                 by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
             val typeSynonymDeclarations
-                by lazy { findChildrenByClass<PSTypeSynonymDeclaration>() }
+                by lazy { findChildrenByClass<TypeDecl>() }
             val classes by lazy { findChildrenByClass<PSClassDeclaration>() }
             val foreignValueDeclarations
                 by lazy { findChildrenByClass<PSForeignValueDeclaration>() }
@@ -272,11 +272,11 @@ interface Module {
             }
 
         /**
-         * @return the [PSTypeSynonymDeclaration] elements that this module exports,
+         * @return the [TypeDecl] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
-            get() = getExportedDeclarations<PSTypeSynonymDeclaration, ExportedData.Psi>(
+        val exportedTypeSynonymDeclarations: List<TypeDecl>
+            get() = getExportedDeclarations<TypeDecl, ExportedData.Psi>(
                 cache.typeSynonymDeclarations,
             ) { it.importedTypeSynonymDeclarations }
 

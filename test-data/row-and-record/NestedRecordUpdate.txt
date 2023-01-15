@@ -13,7 +13,7 @@ Purescript File
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
-    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
+    TypeDecl(TypeDecl)
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('T')

@@ -80,7 +80,7 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('URI')
-    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
+    TypeDecl(TypeDecl)
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Host')

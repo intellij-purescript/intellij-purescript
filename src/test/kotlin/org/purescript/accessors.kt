@@ -20,7 +20,7 @@ import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
-import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 
 
@@ -189,10 +189,10 @@ fun PsiFile.getTypeConstructors(): List<PSTypeConstructor> =
 fun PsiFile.getTypeConstructor(): PSTypeConstructor =
     getTypeConstructors().single()
 
-fun PsiFile.getTypeSynonymDeclarations(): Array<PSTypeSynonymDeclaration> =
+fun PsiFile.getTypeSynonymDeclarations(): Array<TypeDecl> =
     getModule().cache.typeSynonymDeclarations
 
-fun PsiFile.getTypeSynonymDeclaration(): PSTypeSynonymDeclaration =
+fun PsiFile.getTypeSynonymDeclaration(): TypeDecl =
     getTypeSynonymDeclarations().single()
 
 fun PsiFile.getForeignDataDeclarations(): Array<PSForeignDataDeclaration> =

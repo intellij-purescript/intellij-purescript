@@ -256,7 +256,7 @@ class ParserDefinitions {
         typeDeclaration.heal,
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,
-        TypeSynonymDecl(`'type'` + properName + !+typeVar + eq + type),
+        TypeDeclType(`'type'` + properName + !+typeVar + eq + type),
         ValueDeclType(ident.heal + !+binderAtom + guardedDecl),
         foreignDeclaration,
         fixityDeclaration,

@@ -879,7 +879,7 @@ Purescript File
                     PSIdentifier(identifier)
                       PsiElement(identifier)('a')
           PsiElement())(')')
-    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
+    TypeDecl(TypeDecl)
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Int1')

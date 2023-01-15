@@ -46,7 +46,7 @@ import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportAlias
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
-import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 
 class PSFindUsageProvider : FindUsagesProvider {
@@ -61,7 +61,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is DataDeclaration.Psi
             || psiElement is DataConstructor.Psi
             || psiElement is PSClassDeclaration
-            || psiElement is PSTypeSynonymDeclaration
+            || psiElement is TypeDecl
             || psiElement is PSClassMember
             || psiElement is FixityDeclaration.Psi
             || psiElement is PSForeignDataDeclaration
@@ -115,7 +115,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSClassDeclaration -> "class"
             is PSForeignValueDeclaration -> "foreign value"
             is PSForeignDataDeclaration -> "foreign data"
-            is PSTypeSynonymDeclaration -> "type synonym"
+            is TypeDecl -> "type synonym"
             is PSClassMember -> "class member"
             is FixityDeclaration.Psi -> "operator"
             else -> "unknown"

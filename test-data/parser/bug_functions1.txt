@@ -1099,7 +1099,7 @@ Purescript File
                 PSQualifiedIdentifier(QualifiedIdentifier)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('result')
-    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
+    TypeDecl(TypeDecl)
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Renderer')

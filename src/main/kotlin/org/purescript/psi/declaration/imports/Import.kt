@@ -19,7 +19,7 @@ import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.typesynonym.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 import kotlin.reflect.KProperty1
 
@@ -307,10 +307,10 @@ interface Import {
             }
 
         /**
-         * @return the [PSTypeSynonymDeclaration] elements imported by this declaration
+         * @return the [TypeDecl] elements imported by this declaration
          */
-        val importedTypeSynonymDeclarations: List<PSTypeSynonymDeclaration>
-            get() = getImportedDeclarations<PSTypeSynonymDeclaration, PSImportedData>(
+        val importedTypeSynonymDeclarations: List<TypeDecl>
+            get() = getImportedDeclarations<TypeDecl, PSImportedData>(
                 Module.Psi::exportedTypeSynonymDeclarations
             )
 

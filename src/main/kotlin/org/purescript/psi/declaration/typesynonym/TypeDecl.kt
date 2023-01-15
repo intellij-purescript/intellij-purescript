@@ -4,16 +4,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
-import org.purescript.psi.PSElementType
 import org.purescript.psi.PSElementType.*
 import org.purescript.psi.base.AStub
 import org.purescript.psi.name.PSProperName
-import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
-import org.purescript.psi.declaration.value.ValueDecl
-import org.purescript.psi.exports.ExportedValue
-import org.purescript.psi.module.Module
 
 /**
  * A type synonym declaration, e.g.
@@ -21,14 +15,14 @@ import org.purescript.psi.module.Module
  * type GlobalEvents r = ( onContextMenu :: Event | r )
  * ```
  */
-class PSTypeSynonymDeclaration :
-    PSStubbedElement<PSTypeSynonymDeclaration.Stub>,
+class TypeDecl :
+    PSStubbedElement<TypeDecl.Stub>,
     PsiNameIdentifierOwner {
-    class Stub(val name: String, p: StubElement<*>?) : AStub<PSTypeSynonymDeclaration>(p, Type)
-    object Type : WithPsiAndStub<Stub, PSTypeSynonymDeclaration>("TypeSynonymDeclaration") {
-        override fun createPsi(node: ASTNode) = PSTypeSynonymDeclaration(node)
-        override fun createPsi(stub: Stub) = PSTypeSynonymDeclaration(stub, this)
-        override fun createStub(valueDecl: PSTypeSynonymDeclaration, p: StubElement<*>?) =
+    class Stub(val name: String, p: StubElement<*>?) : AStub<TypeDecl>(p, Type)
+    object Type : WithPsiAndStub<Stub, TypeDecl>("TypeDecl") {
+        override fun createPsi(node: ASTNode) = TypeDecl(node)
+        override fun createPsi(stub: Stub) = TypeDecl(stub, this)
+        override fun createStub(valueDecl: TypeDecl, p: StubElement<*>?) =
             Stub(valueDecl.name, p)
 
         override fun serialize(stub: Stub, d: StubOutputStream) =

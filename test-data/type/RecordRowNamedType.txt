@@ -15,7 +15,7 @@ Purescript File
         PSDataConstructor(DataConstructor)
           PSProperName(ProperName)
             PsiElement(proper name)('Unit')
-    PSTypeSynonymDeclaration(TypeSynonymDeclaration)
+    TypeDecl(TypeDecl)
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('TypeRecord')
