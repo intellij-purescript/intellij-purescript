@@ -75,7 +75,7 @@ Purescript File
             PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('Foo'')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(=)('=')

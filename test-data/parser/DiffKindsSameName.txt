@@ -63,7 +63,7 @@ Purescript File
                 PsiElement(module prefix)('LibB.')
               PSProperName(ProperName)
                 PsiElement(proper name)('DemoData')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('bProxy')
       PsiElement(=)('=')

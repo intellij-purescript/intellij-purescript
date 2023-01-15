@@ -44,7 +44,7 @@ Purescript File
               PsiElement(proper name)('Foo')
         PSTypeAtom(TypeAtom)
           PsiElement(string)('"x"')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(=)('=')

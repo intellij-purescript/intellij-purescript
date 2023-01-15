@@ -99,7 +99,7 @@ Purescript File
               <empty list>
             PsiElement(})('}')
       PsiElement(where)('where')
-      PSValueDeclaration(ValueDeclaration)
+      ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('c')
         PSNullBinder(NullBinder)
@@ -139,7 +139,7 @@ Purescript File
                         PsiElement(proper name)('Cons')
             PsiElement(})('}')
       PsiElement(where)('where')
-      PSValueDeclaration(ValueDeclaration)
+      ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('c')
         PSVarBinder(VarBinder)
@@ -236,7 +236,7 @@ Purescript File
               <empty list>
             PsiElement(})('}')
       PsiElement(where)('where')
-      PSValueDeclaration(ValueDeclaration)
+      ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('d')
         PSNullBinder(NullBinder)
@@ -484,7 +484,7 @@ Purescript File
             PSRow(Row)
               <empty list>
             PsiElement(})('}')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(=)('=')

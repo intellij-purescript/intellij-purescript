@@ -8,7 +8,7 @@ Purescript File
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('record')
       PsiElement(=)('=')

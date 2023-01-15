@@ -28,7 +28,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('A')
       PsiElement(where)('where')
-      PSValueDeclaration(ValueDeclaration)
+      ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('show')
         PSNullBinder(NullBinder)

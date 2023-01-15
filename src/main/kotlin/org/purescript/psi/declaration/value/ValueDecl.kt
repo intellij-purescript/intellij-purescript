@@ -25,7 +25,7 @@ import javax.swing.Icon
 class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
-    object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDeclaration") {
+    object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
         override fun createPsi(stub: Stub) = ValueDecl(stub, this)
         override fun createStub(valueDecl: ValueDecl, p: StubElement<*>?) =
@@ -43,8 +43,6 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     constructor(stub: Stub, type: IStubElementType<*, *>) :
         super(stub, type)
 
-    // Todo clean this up
-    override fun toString(): String = "PSValueDeclaration($elementType)"
     override fun asImport(): ImportDeclaration =
         ImportDeclaration(module.name, false, setOf(ImportedValue(name)))
 

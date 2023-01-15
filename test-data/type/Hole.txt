@@ -62,7 +62,7 @@ Purescript File
             PsiElement(operator)('?')
             PSIdentifier(identifier)
               PsiElement(identifier)('t')
-      PSValueDeclaration(ValueDeclaration)
+      ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('show')
         PsiElement(=)('=')

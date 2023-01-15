@@ -119,7 +119,7 @@ Purescript File
                 PsiElement(module prefix)('CB.')
               PSProperName(ProperName)
                 PsiElement(proper name)('Config')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('genConfig')
       PsiElement(=)('=')

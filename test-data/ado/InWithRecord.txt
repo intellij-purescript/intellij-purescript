@@ -4,7 +4,7 @@ Purescript File
     PSModuleName(ModuleName)
       PsiElement(proper name)('InWithRecord')
     PsiElement(where)('where')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('inWithRecord')
       PsiElement(=)('=')

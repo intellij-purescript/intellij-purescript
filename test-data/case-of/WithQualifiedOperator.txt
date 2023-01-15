@@ -17,7 +17,7 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('L')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('x')
       PsiElement(=)('=')

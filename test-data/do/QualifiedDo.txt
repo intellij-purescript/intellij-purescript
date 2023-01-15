@@ -19,7 +19,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(=)('=')

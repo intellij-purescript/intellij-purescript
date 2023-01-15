@@ -41,7 +41,7 @@ Purescript File
         PSTypeAtom(TypeAtom)
           PSIdentifier(identifier)
             PsiElement(identifier)('b')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('pure_sugar')
       PSVarBinder(VarBinder)

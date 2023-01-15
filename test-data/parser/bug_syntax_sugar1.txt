@@ -52,7 +52,7 @@ Purescript File
         PSTypeAtom(TypeAtom)
           PSIdentifier(identifier)
             PsiElement(identifier)('m')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('eval')
       PsiElement(()('(')

@@ -19,7 +19,7 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('Console')
-    PSValueDeclaration(ValueDeclaration)
+    ValueDecl(ValueDecl)
       PSIdentifier(identifier)
         PsiElement(identifier)('main')
       PsiElement(=)('=')
