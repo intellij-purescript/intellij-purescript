@@ -158,8 +158,6 @@
         <fileBasedIndex
             implementation="org.purescript.file.ExportedConstructorsIndex"/>
         <fileBasedIndex
-            implementation="org.purescript.file.ExportedValuesIndex"/>
-        <fileBasedIndex
             implementation="org.purescript.file.ExportedFixityIndex"/>
         <fileBasedIndex
             implementation="org.purescript.file.ExportedTypesIndex"/>

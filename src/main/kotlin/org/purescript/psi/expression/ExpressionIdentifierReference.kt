@@ -5,10 +5,10 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parents
-import org.purescript.file.ExportedValuesIndex
-import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.expression.dostmt.PSDoBlock
 
@@ -87,14 +87,11 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = element.qualifiedIdentifier.moduleName?.name
-        return ExportedValuesIndex
-            .filesExportingValue(element.project, element.name)
-            .mapNotNull { it.module?.name }
-            .flatMap { ImportQuickFix.allCombinations(
-                it,
-                alias = qualifyingName,
-                item = ImportedValue(element.name),
-            ) }
+        return ExportedValueDeclNameIndex()
+            .get(element.name, element.project, GlobalSearchScope.allScope(element.project))
+            .flatMap { valueDecl -> sequenceOf(valueDecl.asImport(), valueDecl.module.asImport()) }
+            .map { it.withAlias(qualifyingName) }
+            .map { ImportQuickFix(it) }
             .toTypedArray()
     }
 
