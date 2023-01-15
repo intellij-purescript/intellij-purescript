@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
+import org.purescript.psi.Importable
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
@@ -32,7 +33,7 @@ interface FixityDeclaration {
             Stub(d.readNameString()!!, p)
     }
 
-    class Psi : PSStubbedElement<Stub>, PsiNameIdentifierOwner {
+    class Psi : PSStubbedElement<Stub>, PsiNameIdentifierOwner, Importable {
         constructor(node: ASTNode) : super(node)
         constructor(stub: Stub, type: IStubElementType<*, *>) :
             super(stub, type)
@@ -40,7 +41,7 @@ interface FixityDeclaration {
         // Todo clean this up
         override fun toString(): String = "PSFixityDeclaration($elementType)"
 
-        fun asImport() =
+        override fun asImport() =
             ImportDeclaration(module.name, false, setOf(ImportedOperator(name)))
 
         private val operatorName

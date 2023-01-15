@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
+import org.purescript.psi.Importable
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.expression.PSValue
 import org.purescript.psi.base.PSPsiElement
@@ -21,8 +22,9 @@ import javax.swing.Icon
 class PSValueDeclaration(node: ASTNode) :
     PSPsiElement(node),
     PsiNameIdentifierOwner,
-    DocCommentOwner {
-    fun asImport(): ImportDeclaration? = module?.name?.let { moduleName ->
+    DocCommentOwner,
+    Importable {
+    override fun asImport(): ImportDeclaration? = module?.name?.let { moduleName ->
         ImportDeclaration(moduleName, false, setOf(ImportedValue(name)))
     } 
     val value get() = findChildByClass(PSValue::class.java)!!

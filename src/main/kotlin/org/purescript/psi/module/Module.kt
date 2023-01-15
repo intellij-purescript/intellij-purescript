@@ -9,6 +9,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
+import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
 import org.purescript.psi.*
@@ -52,9 +53,12 @@ interface Module {
     class Psi :
         PsiNameIdentifierOwner,
         DocCommentOwner,
-        PSStubbedElement<Stub> {
+        PSStubbedElement<Stub>,
+        Importable {
         constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
         constructor(node: ASTNode) : super(node)
+
+        override fun asImport() = ImportDeclaration(name)
 
         // TODO clean up this name
         override fun toString(): String = "PSModule($elementType)"
