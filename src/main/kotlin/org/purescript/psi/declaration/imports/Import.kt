@@ -15,7 +15,7 @@ import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
@@ -191,10 +191,10 @@ interface Import {
             )
 
         /**
-         * @return the [PSNewTypeDeclaration] elements imported by this declaration
+         * @return the [NewtypeDecl] elements imported by this declaration
          */
-        val importedNewTypeDeclarations: List<PSNewTypeDeclaration>
-            get() = getImportedDeclarations<PSNewTypeDeclaration, PSImportedData>(
+        val importedNewTypeDeclarations: List<NewtypeDecl>
+            get() = getImportedDeclarations<NewtypeDecl, PSImportedData>(
                 Module.Psi::exportedNewTypeDeclarations
             )
 

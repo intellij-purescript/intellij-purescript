@@ -171,7 +171,7 @@ Purescript File
       PsiElement(as)('as')
       PSOperatorName(OperatorName)
         PsiElement(operator)('*>')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Const')

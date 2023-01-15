@@ -573,7 +573,7 @@ Purescript File
         PsiElement())(')')
     PsiComment(doc comment)('-- | The phantom row `r` can be thought of as a context which is synthesized in')
     PsiComment(doc comment)('-- | the course of constructing a refined HTML expression.')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('IProp')

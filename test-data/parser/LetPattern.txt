@@ -155,7 +155,7 @@ Purescript File
                     PsiElement(operator)('==')
               PSNumericLiteral(NumericLiteral)
                 PsiElement(natural)('25252')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('X')

@@ -18,7 +18,7 @@ import org.purescript.psi.exports.*
 import org.purescript.psi.expression.PSExpressionConstructor
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
@@ -128,10 +128,10 @@ fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
 fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration =
     getForeignValueDeclarations().single()
 
-fun PsiFile.getNewTypeDeclarations(): Array<PSNewTypeDeclaration> =
+fun PsiFile.getNewTypeDeclarations(): Array<NewtypeDecl> =
     getModule().cache.newTypeDeclarations
 
-fun PsiFile.getNewTypeDeclaration(): PSNewTypeDeclaration =
+fun PsiFile.getNewTypeDeclaration(): NewtypeDecl =
     getNewTypeDeclarations().single()
 
 fun PsiFile.getNewTypeConstructor(): PSNewTypeConstructor =

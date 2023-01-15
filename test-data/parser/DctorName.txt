@@ -19,7 +19,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Bar'')

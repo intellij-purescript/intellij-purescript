@@ -9,7 +9,7 @@ import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.name.PSQualifiedProperName
 
 class ConstructorReference(
@@ -75,7 +75,7 @@ class ConstructorReference(
                 }
                 for (exportedNewTypeConstructor in module.exportedNewTypeConstructors) {
                     if (exportedNewTypeConstructor.name == qualifiedProperName.name) {
-                        val newTypeDeclaration = exportedNewTypeConstructor.parentOfType<PSNewTypeDeclaration>()
+                        val newTypeDeclaration = exportedNewTypeConstructor.parentOfType<NewtypeDecl>()
                             ?: continue
                         importCandidates += module.name to newTypeDeclaration.name
                     }

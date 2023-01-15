@@ -143,7 +143,7 @@ Purescript File
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('id')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('RecordNewtype')

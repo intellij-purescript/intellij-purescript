@@ -45,7 +45,7 @@ import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportAlias
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 
@@ -55,7 +55,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSVarBinder
             || psiElement is Module.Psi
             || psiElement is PSForeignValueDeclaration
-            || psiElement is PSNewTypeDeclaration
+            || psiElement is NewtypeDecl
             || psiElement is PSNewTypeConstructor
             || psiElement is PSImportAlias
             || psiElement is DataDeclaration.Psi
@@ -107,7 +107,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is ValueDecl -> "value"
             is PSVarBinder -> "parameter"
             is Module.Psi -> "module"
-            is PSNewTypeDeclaration -> "newtype"
+            is NewtypeDecl -> "newtype"
             is PSNewTypeConstructor -> "newtype constructor"
             is PSImportAlias -> "import alias"
             is DataDeclaration.Psi -> "data"

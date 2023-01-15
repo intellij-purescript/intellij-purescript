@@ -11,7 +11,7 @@ import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 
 sealed class ExportedItem<Stub : AStub<*>> : PSStubbedElement<Stub> {
     constructor(node: ASTNode) : super(node)
@@ -38,7 +38,7 @@ interface ExportedData {
         val dataMemberList get() = findChildByClass(PSExportedDataMemberList::class.java)
         val exportsAll get() = dataMemberList?.doubleDot != null
         val dataMembers get() = dataMemberList?.dataMembers ?: emptyArray()
-        val newTypeDeclaration get() = reference.resolve() as? PSNewTypeDeclaration
+        val newTypeDeclaration get() = reference.resolve() as? NewtypeDecl
         val dataDeclaration get() = reference.resolve() as? DataDeclaration.Psi
         override fun getName() = greenStub?.name ?: properName.name
         override fun getReference() = ExportedDataReference(this)

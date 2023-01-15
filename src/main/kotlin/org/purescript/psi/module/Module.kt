@@ -23,7 +23,7 @@ import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
@@ -82,7 +82,7 @@ interface Module {
             val dataConstructors
                 by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
             val newTypeDeclarations
-                by lazy { findChildrenByClass<PSNewTypeDeclaration>() }
+                by lazy { findChildrenByClass<NewtypeDecl>() }
             val newTypeConstructors: List<PSNewTypeConstructor>
                 by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
             val typeSynonymDeclarations
@@ -195,11 +195,11 @@ interface Module {
             ) { it.importedForeignDataDeclarations }
 
         /**
-         * @return the [PSNewTypeDeclaration] elements that this module exports,
+         * @return the [NewtypeDecl] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedNewTypeDeclarations: List<PSNewTypeDeclaration>
-            get() = getExportedDeclarations<PSNewTypeDeclaration, ExportedData.Psi>(
+        val exportedNewTypeDeclarations: List<NewtypeDecl>
+            get() = getExportedDeclarations<NewtypeDecl, ExportedData.Psi>(
                 cache.newTypeDeclarations,
             ) { it.importedNewTypeDeclarations }
 

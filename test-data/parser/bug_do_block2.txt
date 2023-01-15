@@ -232,7 +232,7 @@ Purescript File
               PsiElement(proper name)('Left')
         PSStringLiteral(StringLiteral)
           PsiElement(string)('"No host specified"')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Credentials')

@@ -44,7 +44,7 @@ Purescript File
                       PSProperName(ProperName)
                         PsiElement(proper name)('Int')
             PsiElement(})('}')
-    PSNewTypeDeclaration(NewtypeDeclaration)
+    NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Foo'')

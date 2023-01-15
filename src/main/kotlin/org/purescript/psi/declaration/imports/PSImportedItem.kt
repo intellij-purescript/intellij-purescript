@@ -9,7 +9,7 @@ import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 
 /**
  * Any element that can occur in a [PSImportList]
@@ -116,11 +116,11 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
         get() = importedDataMemberList?.dataMembers ?: emptyArray()
 
     /**
-     * @return the [PSNewTypeDeclaration] that this element references to,
+     * @return the [NewtypeDecl] that this element references to,
      * if it exists
      */
-    val newTypeDeclaration: PSNewTypeDeclaration?
-        get() = reference.resolve() as? PSNewTypeDeclaration
+    val newTypeDeclaration: NewtypeDecl?
+        get() = reference.resolve() as? NewtypeDecl
 
     /**
      * @return the [DataDeclaration.Psi] that this element references to,
