@@ -19,7 +19,7 @@ import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.typesynonym.TypeDecl
+import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 import kotlin.reflect.KProperty1
 

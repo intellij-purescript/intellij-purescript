@@ -20,7 +20,7 @@ import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
-import org.purescript.psi.declaration.typesynonym.TypeDecl
+import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 
 

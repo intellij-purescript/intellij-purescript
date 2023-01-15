@@ -46,7 +46,7 @@ import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportAlias
 import org.purescript.psi.declaration.newtype.PSNewTypeConstructor
 import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
-import org.purescript.psi.declaration.typesynonym.TypeDecl
+import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 
 class PSFindUsageProvider : FindUsagesProvider {

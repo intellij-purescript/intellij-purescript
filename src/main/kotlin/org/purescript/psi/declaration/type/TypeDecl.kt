@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration.typesynonym
+package org.purescript.psi.declaration.type
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
