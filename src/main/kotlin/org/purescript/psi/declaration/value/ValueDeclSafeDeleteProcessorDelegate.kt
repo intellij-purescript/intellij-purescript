@@ -11,7 +11,7 @@ import com.intellij.refactoring.safeDelete.SafeDeleteProcessorDelegateBase
 import com.intellij.usageView.UsageInfo
 
 
-class ValueDeclarationSafeDeleteProcessorDelegate :
+class ValueDeclSafeDeleteProcessorDelegate :
     SafeDeleteProcessorDelegateBase() {
 
     override fun handlesElement(it: PsiElement?): Boolean {

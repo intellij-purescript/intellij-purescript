@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
 
-class ValueDeclarationSelfReference(valueDeclaration: ValueDecl.Psi) :
+class ValueDeclSelfReference(valueDeclaration: ValueDecl.Psi) :
     PsiReferenceBase<ValueDecl.Psi>(
         valueDeclaration,
         valueDeclaration.nameIdentifier.textRangeInParent,

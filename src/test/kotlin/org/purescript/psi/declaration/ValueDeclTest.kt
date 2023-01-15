@@ -5,7 +5,7 @@ import org.purescript.getModule
 import org.purescript.getValueDeclaration
 import org.purescript.getValueDeclarationByName
 import org.purescript.getValueDeclarations
-import org.purescript.psi.declaration.value.MoveValueDeclarationRefactoring
+import org.purescript.psi.declaration.value.MoveValueDeclRefactoring
 
 class ValueDeclTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {
@@ -146,7 +146,7 @@ class ValueDeclTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         
-        MoveValueDeclarationRefactoring(foo, main).also {
+        MoveValueDeclRefactoring(foo, main).also {
             it.executeEx(it.findUsages())
         }
         
@@ -237,7 +237,7 @@ class ValueDeclTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         
-        MoveValueDeclarationRefactoring(foo, main).also {
+        MoveValueDeclRefactoring(foo, main).also {
             it.executeEx(it.findUsages())
         }
         

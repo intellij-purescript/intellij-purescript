@@ -8,7 +8,6 @@ import com.intellij.refactoring.move.MoveHandler
 import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.fixity.FixityDeclaration
@@ -20,7 +19,7 @@ import org.purescript.psi.expression.PSExpressionOperator
 import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.module.Module
 
-class MoveValueDeclarationRefactoring(
+class MoveValueDeclRefactoring(
     private val toMove: ValueDecl.Psi,
     private val targetModule: Module.Psi
 ) : BaseRefactoringProcessor(toMove.project) {

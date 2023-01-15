@@ -117,7 +117,7 @@ interface ValueDecl {
 
         override fun getReference(): PsiReference? {
             val valueDeclarationSelfReference =
-                ValueDeclarationSelfReference(this)
+                ValueDeclSelfReference(this)
             return if (valueDeclarationSelfReference.resolve() == this) {
                 null
             } else {

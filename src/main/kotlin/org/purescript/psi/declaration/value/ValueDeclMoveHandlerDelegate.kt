@@ -16,7 +16,7 @@ import org.purescript.PSLanguage
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleNameIndex
 
-class ValueDeclarationMoveHandlerDelegate : MoveHandlerDelegate() {
+class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
     override fun supportsLanguage(language: Language) = language == PSLanguage
     override fun canMove(
         elements: Array<out PsiElement>,
@@ -73,7 +73,7 @@ class ValueDeclarationMoveHandlerDelegate : MoveHandlerDelegate() {
             val targetModule = modules
                 .single { ".spago" !in it.containingFile.virtualFile.path }
             invokeRefactoring(
-                MoveValueDeclarationRefactoring(element, targetModule)
+                MoveValueDeclRefactoring(element, targetModule)
             )
         }
 
