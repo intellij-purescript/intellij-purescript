@@ -4,10 +4,12 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.file.ExportedFixityIndex
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.fixity.ExportedFixityNameIndex
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSOperatorName
 
@@ -36,16 +38,12 @@ class ExpressionSymbolReference(
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = moduleName?.name
-        return ExportedFixityIndex
-            .filesExportingFixity(element.project, operator.name)
-            .mapNotNull { it.module?.name }
-            .flatMap {
-                ImportQuickFix.allCombinations(
-                    it,
-                    alias = qualifyingName,
-                    item = ImportedOperator(element.name!!),
-                )
-            }
+        val scope = GlobalSearchScope.projectScope(element.project)
+        return ExportedFixityNameIndex()
+            .get(element.name!!, element.project, scope)
+            .flatMap { sequenceOf(it.asImport(), it.module.asImport()) }
+            .map { it.withAlias(qualifyingName) }
+            .map { ImportQuickFix(it) }
             .toTypedArray()
     }
 
