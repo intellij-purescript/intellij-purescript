@@ -92,7 +92,7 @@ val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
 val InstanceDecl =
     WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
 val NewtypeDeclType = NewtypeDecl.Type
-val NewtypeCtorType = WithPsi("NewtypeCtor") { NewtypeCtor(it) }
+val NewtypeCtorType = NewtypeCtor.Type
 val Guard = WithPsi("Guard") { PSGuard(it) }
 val NullBinder = WithPsi("NullBinder") { PSNullBinder(it) }
 val StringBinder = WithPsi("StringBinder") { PSStringBinder(it) }
