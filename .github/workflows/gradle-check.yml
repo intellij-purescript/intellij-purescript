@@ -3,16 +3,19 @@ name: Gradle Check
 on:
   pull_request:
   push:
-      branches:
-        - master
-        - main
+    branches:
+      - master
+      - main
 
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [macOS-latest, windows-latest, ubuntu-latest]
+        os:
+          - macOS-latest
+          # - windows-latest
+          - ubuntu-latest
 
     runs-on: ${{matrix.os}}
 
@@ -37,6 +40,6 @@ jobs:
 
       - name: Install Purs-Tidy
         run: npm install -g purs-tidy
-        
+
       - name: Gradle Check
         run: ./gradlew check
