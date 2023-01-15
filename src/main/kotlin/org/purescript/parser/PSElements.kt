@@ -15,7 +15,6 @@ import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.fixity.PSFixity
 import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.declaration.signature.PSSignature
-import org.purescript.psi.declaration.value.PSValueDeclaration
 import org.purescript.psi.expression.dostmt.PSDoBlock
 import org.purescript.psi.expression.dostmt.PSDoNotationBind
 import org.purescript.psi.expression.dostmt.PSDoNotationLet
@@ -32,6 +31,7 @@ import org.purescript.psi.declaration.newtype.PSNewTypeDeclaration
 import org.purescript.psi.type.*
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 import org.purescript.psi.declaration.typesynonym.PSTypeSynonymDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.type.PSTypeVarKinded
 import org.purescript.psi.type.PSTypeVarName
 
@@ -62,7 +62,7 @@ val DataCtor = DataConstructor.Type
 val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeSynonymDecl =
     WithPsi("TypeSynonymDeclaration") { PSTypeSynonymDeclaration(it) }
-val ValueDecl = WithPsi("ValueDeclaration") { PSValueDeclaration(it) }
+val ValueDeclType = ValueDecl.Type 
 val ForeignDataDecl =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
 val ForeignValueDecl =

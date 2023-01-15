@@ -9,7 +9,7 @@ import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor.Psi
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
@@ -167,10 +167,10 @@ interface Import {
         val importedModule get(): Module.Psi? = reference.resolve()
 
         /**
-         * @return the [PSValueDeclaration] elements imported by this declaration
+         * @return the [ValueDecl.Psi] elements imported by this declaration
          */
-        val importedValueDeclarations: List<PSValueDeclaration>
-            get() = getImportedDeclarations<PSValueDeclaration, PSImportedValue>(
+        val importedValueDeclarations: List<ValueDecl.Psi>
+            get() = getImportedDeclarations<ValueDecl.Psi, PSImportedValue>(
                 Module.Psi::exportedValueDeclarations
             )
 

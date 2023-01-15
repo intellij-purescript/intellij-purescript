@@ -17,7 +17,7 @@ import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.exports.*
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
@@ -72,7 +72,7 @@ interface Module {
             val importsByName by lazy { imports.groupBy { it.name } }
             val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
             val valueDeclarations
-                by lazy { findChildrenByClass<PSValueDeclaration>() }
+                by lazy { findChildrenByClass<ValueDecl.Psi>() }
             val dataDeclarations
                 by lazy { findChildrenByClass<DataDeclaration.Psi>() }
             val dataConstructors
@@ -164,11 +164,11 @@ interface Module {
         }
 
         /**
-         * @return the [PSValueDeclaration] that this module exports,
+         * @return the [ValueDecl.Psi] that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedValueDeclarations: List<PSValueDeclaration>
-            get() = getExportedDeclarations<PSValueDeclaration, ExportedValue.Psi>(
+        val exportedValueDeclarations: List<ValueDecl.Psi>
+            get() = getExportedDeclarations<ValueDecl.Psi, ExportedValue.Psi>(
                 cache.valueDeclarations,
             ) { it.importedValueDeclarations }
 

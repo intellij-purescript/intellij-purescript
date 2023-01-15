@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.module.Module
 
 interface PSFile {
@@ -35,7 +35,7 @@ interface PSFile {
         val module: Module.Psi?
             get() = findChildByClass(Module.Psi::class.java)
 
-        val topLevelValueDeclarations: Map<String, List<PSValueDeclaration>>
+        val topLevelValueDeclarations: Map<String, List<ValueDecl.Psi>>
             get() = module?.cache?.valueDeclarations?.groupBy { it.name }
                 ?: emptyMap()
 

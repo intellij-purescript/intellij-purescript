@@ -15,7 +15,7 @@ class ValueDeclarationSafeDeleteProcessorDelegate :
     SafeDeleteProcessorDelegateBase() {
 
     override fun handlesElement(it: PsiElement?): Boolean {
-        return it is PSValueDeclaration
+        return it is ValueDecl.Psi
     }
 
     override fun findUsages(
@@ -41,7 +41,7 @@ class ValueDeclarationSafeDeleteProcessorDelegate :
         toDelete: Collection<PsiElement?>,
         askUser: Boolean
     ): Collection<PsiElement>? = when (it) {
-        is PSValueDeclaration ->
+        is ValueDecl.Psi ->
             // TODO also remove export
             arrayListOf(it.signature).filterNotNull() + it.docComments
 

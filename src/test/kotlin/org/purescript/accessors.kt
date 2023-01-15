@@ -7,7 +7,7 @@ import org.purescript.file.PSFile
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
 import org.purescript.psi.module.Module
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.PSClassConstraint
 import org.purescript.psi.declaration.classes.PSClassDeclaration
@@ -109,13 +109,13 @@ fun PsiFile.getImportDeclaration(): Import.Psi =
 fun PsiFile.getImportAlias(): PSImportAlias =
     getImportAliases().single()
 
-fun PsiFile.getValueDeclarations(): Array<PSValueDeclaration> =
+fun PsiFile.getValueDeclarations(): Array<ValueDecl.Psi> =
     getModule().cache.valueDeclarations
 
-fun PsiFile.getValueDeclaration(): PSValueDeclaration =
+fun PsiFile.getValueDeclaration(): ValueDecl.Psi =
     getValueDeclarations().single()
 
-fun PsiFile.getValueDeclarationByName(name: String): PSValueDeclaration =
+fun PsiFile.getValueDeclarationByName(name: String): ValueDecl.Psi =
     getValueDeclarations().single { it.name == name}
 
 fun PsiFile.getVarBinders(): List<PSVarBinder> =

@@ -7,7 +7,7 @@ import org.purescript.getValueDeclarationByName
 import org.purescript.getValueDeclarations
 import org.purescript.psi.declaration.value.MoveValueDeclarationRefactoring
 
-class PSValueDeclarationTest : BasePlatformTestCase() {
+class ValueDeclTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {
         val valueDeclaration = myFixture.addFileToProject(
             "Main.purs",

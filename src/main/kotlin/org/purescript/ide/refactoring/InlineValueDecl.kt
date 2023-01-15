@@ -10,9 +10,9 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.signature.PSSignature
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 
-class PSInlinePSValueDeclaration(val project: Project, val toInline: PSValueDeclaration) : BaseRefactoringProcessor(project) {
+class InlineValueDecl(val project: Project, val toInline: ValueDecl.Psi) : BaseRefactoringProcessor(project) {
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor {
         return BaseUsageViewDescriptor(toInline)
     }

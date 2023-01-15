@@ -9,7 +9,7 @@ import com.intellij.psi.util.parents
 import org.purescript.file.ExportedValuesIndex
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.expression.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
@@ -36,7 +36,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 if (qualifyingName == null) {
                     for (parent in element.parents(false)) {
                         when (parent) {
-                            is PSValueDeclaration -> {
+                            is ValueDecl.Psi -> {
                                 yieldAll(parent.varBindersInParameters.values)
                                 val valueDeclarations = parent
                                     .where

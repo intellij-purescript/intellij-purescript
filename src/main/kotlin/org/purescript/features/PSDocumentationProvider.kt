@@ -13,7 +13,7 @@ import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.classes.PSClassDeclaration
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(
@@ -21,7 +21,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         originalElement: PsiElement?
     ): String? {
         return when  {
-            element is PSValueDeclaration ->
+            element is ValueDecl.Psi ->
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
@@ -62,7 +62,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         val version = rawVersion.trimStart('v')
 
         return when (element) {
-            is PSValueDeclaration ->
+            is ValueDecl.Psi ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
             is DataConstructor.Psi ->

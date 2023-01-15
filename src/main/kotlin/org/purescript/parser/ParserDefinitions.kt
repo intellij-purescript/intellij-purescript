@@ -183,7 +183,7 @@ class ParserDefinitions {
     private val guardedDecl = (eq.heal + exprWhere) / +guardedDeclExpr
     private val instBinder = Choice.of(
         (ident + dcolon).heal + type,
-        ValueDecl(ident + !+binderAtom + guardedDecl)
+        ValueDeclType(ident + !+binderAtom + guardedDecl)
     )
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
         ForeignDataDecl(`'data'` + properName + dcolon + type),
@@ -257,7 +257,7 @@ class ParserDefinitions {
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,
         TypeSynonymDecl(`'type'` + properName + !+typeVar + eq + type),
-        ValueDecl(ident.heal + !+binderAtom + guardedDecl),
+        ValueDeclType(ident.heal + !+binderAtom + guardedDecl),
         foreignDeclaration,
         fixityDeclaration,
         classDeclaration,
@@ -298,7 +298,7 @@ class ParserDefinitions {
         IfThenElse(`'if'` + expr + `'then'` + expr + `'else'` + expr)
     private val letBinding = Choice.of(
         typeDeclaration.heal,
-        ValueDecl(ident + !+binderAtom + guardedDecl).heal,
+        ValueDeclType(ident + !+binderAtom + guardedDecl).heal,
         (binder1 + eq + exprWhere).heal,
         (ident + !+binderAtom + guardedDecl).heal
     )

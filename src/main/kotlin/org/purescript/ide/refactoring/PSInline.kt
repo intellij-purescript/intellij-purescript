@@ -6,14 +6,14 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.purescript.PSLanguage
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 
 class PSInline: InlineActionHandler() {
     override fun isEnabledForLanguage(l: Language?): Boolean =
         l == PSLanguage
 
     override fun canInlineElement(element: PsiElement?): Boolean =
-        if (element is PSValueDeclaration) {
+        if (element is ValueDecl.Psi) {
             element.varBindersInParameters.isEmpty()
         } else {
             false
@@ -25,8 +25,8 @@ class PSInline: InlineActionHandler() {
         element: PsiElement?
     ) {
         when(element) {
-            is PSValueDeclaration -> {
-                PSInlinePSValueDeclaration(project, element).run()
+            is ValueDecl.Psi -> {
+                InlineValueDecl(project, element).run()
             }
         }
     }

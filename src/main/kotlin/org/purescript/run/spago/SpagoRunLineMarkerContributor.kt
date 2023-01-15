@@ -5,12 +5,12 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import org.purescript.psi.declaration.value.PSValueDeclaration
+import org.purescript.psi.declaration.value.ValueDecl
 
 class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {
     override fun getInfo(element: PsiElement): Info? {
         if (element.firstChild != null) return null
-        val decl = element.parentOfType<PSValueDeclaration>() ?: return null
+        val decl = element.parentOfType<ValueDecl.Psi>() ?: return null
         return if (decl.nameIdentifier.firstChild == element && decl.name == "main") {
             val actions = ExecutorAction.getActions(0)
             Info(
