@@ -16,6 +16,6 @@ class ImportedClassReference(importedClass: PSImportedClass) : PsiReferenceBase<
         candidates.firstOrNull { it.name == myElement.name }
 
     private val candidates: List<ClassDecl>
-        get() = myElement.importDeclaration?.importedModule?.exportedClassDeclarations
+        get() = myElement.importDeclaration.importedModule?.exportedClassDeclarations
             ?: emptyList()
 }
