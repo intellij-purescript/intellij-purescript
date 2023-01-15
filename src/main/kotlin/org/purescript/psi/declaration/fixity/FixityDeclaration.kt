@@ -12,13 +12,25 @@ import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.exports.ExportedOperator
+import org.purescript.psi.exports.ExportedValue
+import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
 import org.purescript.psi.name.PSQualifiedIdentifier
 
 class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     PsiNameIdentifierOwner, Importable {
     class Stub(val name: String, p: StubElement<*>?) :
-        AStub<FixityDeclaration>(p, Type)
+        AStub<FixityDeclaration>(p, Type) {
+        val module get() = parentStub as? Module.Stub
+        val isExported get() = when {
+            module == null -> false
+            module?.exportList == null -> true
+            else -> module?.exportList?.childrenStubs
+                ?.filterIsInstance<ExportedOperator.Stub>()
+                ?.find { it.name == name } != null
+        }
+    }
 
     object Type : WithPsiAndStub<Stub, FixityDeclaration>("FixityDeclaration") {
         override fun createPsi(node: ASTNode) = FixityDeclaration(node)
@@ -26,7 +38,11 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         override fun createStub(psi: FixityDeclaration, p: StubElement<*>?) =
             Stub(psi.name, p)
 
-        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            if (stub.isExported) {
+                sink.occurrence(ExportedFixityNameIndex.KEY, stub.name)
+            }
+        }
 
         override fun serialize(stub: Stub, d: StubOutputStream) =
             d.writeName(stub.name)
