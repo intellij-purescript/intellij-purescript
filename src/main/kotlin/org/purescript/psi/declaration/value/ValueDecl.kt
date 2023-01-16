@@ -59,8 +59,9 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     constructor(stub: Stub, type: IStubElementType<*, *>) :
         super(stub, type)
 
-    override fun asImport(): ImportDeclaration =
-        ImportDeclaration(module.name, false, setOf(ImportedValue(name)))
+    override fun asImport() = module?.name?.let {
+        ImportDeclaration(it, false, setOf(ImportedValue(name)))
+    }
 
     val value get() = findChildByClass(PSValue::class.java)!!
     val expressionAtoms: List<ExpressionAtom>

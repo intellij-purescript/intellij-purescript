@@ -12,8 +12,8 @@ class ValueDeclSelfReference(valueDeclaration: ValueDecl) :
     ) {
 
     override fun resolve(): PsiElement? {
-        return element.module.cache.valueDeclarations
-            .firstOrNull { it.name == element.name }
+        return element.module?.cache?.valueDeclarations
+            ?.firstOrNull { it.name == element.name }
     }
 
     override fun handleElementRename(name: String): PsiElement? {

@@ -58,8 +58,9 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
 
-    override fun asImport() =
-        ImportDeclaration(module.name, false, setOf(ImportedOperator(name)))
+    override fun asImport() = module?.name?.let {
+        ImportDeclaration(it, false, setOf(ImportedOperator(name)))
+    }
 
     private val operatorName
         get() = findNotNullChildByClass(PSOperatorName::class.java)

@@ -1,12 +1,19 @@
 package org.purescript.psi.expression
 
+import com.intellij.codeInsight.completion.InsertHandler
+import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parents
+import kotlinx.html.attributes.stringSetDecode
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 import org.purescript.psi.declaration.value.ValueDecl
@@ -89,7 +96,8 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         val qualifyingName = element.qualifiedIdentifier.moduleName?.name
         return ExportedValueDeclNameIndex()
             .get(element.name, element.project, GlobalSearchScope.allScope(element.project))
-            .flatMap { valueDecl -> sequenceOf(valueDecl.asImport(), valueDecl.module.asImport()) }
+            .flatMap { valueDecl -> sequenceOf(valueDecl.asImport(), valueDecl.module?.asImport()) }
+            .filterNotNull()
             .map { it.withAlias(qualifyingName) }
             .map { ImportQuickFix(it) }
             .toTypedArray()

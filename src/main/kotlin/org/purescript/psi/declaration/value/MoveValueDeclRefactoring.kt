@@ -126,7 +126,8 @@ class MoveValueDeclRefactoring(
                 is PSExpressionOperator -> when (reference) {
                     is FixityDeclaration -> {
                         val importDeclaration = reference.asImport()
-                            .withAlias(element.qualifierName)
+                            ?.withAlias(element.qualifierName)
+                            ?: continue
                         if (importDeclaration in done) continue
                         else done.add(importDeclaration)
                         val newImport =

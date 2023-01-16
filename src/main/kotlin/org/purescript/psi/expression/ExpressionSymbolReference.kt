@@ -41,7 +41,8 @@ class ExpressionSymbolReference(
         val scope = GlobalSearchScope.projectScope(element.project)
         return ExportedFixityNameIndex()
             .get(element.name!!, element.project, scope)
-            .flatMap { sequenceOf(it.asImport(), it.module.asImport()) }
+            .flatMap { sequenceOf(it.asImport(), it.module?.asImport()) }
+            .filterNotNull()
             .map { it.withAlias(qualifyingName) }
             .map { ImportQuickFix(it) }
             .toTypedArray()
