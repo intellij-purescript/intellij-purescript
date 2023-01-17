@@ -47,6 +47,9 @@
             implementation="org.purescript.ide.refactoring.PSInline"/>
         <lang.namesValidator language="Purescript"
                              implementationClass="org.purescript.ide.refactoring.PSNamesValidator"/>
+        <referenceImporter
+            implementation="org.purescript.features.PSReferenceImporter"
+        />
 
         <lang.findUsagesProvider
             language="Purescript"

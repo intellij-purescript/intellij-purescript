@@ -319,6 +319,12 @@ interface Module {
         override val docComments: List<PsiComment>
             get() = getDocComments()
 
+        fun addImportDeclaration(importDeclaration: ImportDeclaration) {
+            val asPsi = project
+                .service<PSPsiFactory>()
+                .createImportDeclaration(importDeclaration)
+            addImportDeclaration(asPsi)
+        }
         fun addImportDeclaration(importDeclaration: Import.Psi) {
             val lastImportDeclaration = cache.imports.lastOrNull()
             val insertPosition = lastImportDeclaration ?: whereKeyword
