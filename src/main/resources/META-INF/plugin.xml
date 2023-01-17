@@ -58,6 +58,11 @@
             id="KeywordCompletionContributor"
             order="first"
         />
+        <completion.contributor
+            language="Purescript"
+            implementationClass="org.purescript.psi.expression.ExpressionIdentifierCompletionContributor"
+            id="ExpressionIdentifierCompletionContributor"
+        />
 
         <fileType
             name="Purescript file"

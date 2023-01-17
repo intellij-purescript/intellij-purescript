@@ -1,10 +1,20 @@
 package org.purescript.psi.expression
 
+import com.intellij.psi.stubs.StubIndex
+import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.util.indexing.DumbModeAccessType
+import com.intellij.util.indexing.DumbModeAccessType.RELIABLE_DATA_ONLY
 import org.purescript.*
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 
+    override fun setUp() {
+        super.setUp()
+        val stubIndex = StubIndex.getInstance()
+        stubIndex.forceRebuild(Throwable("Clear index in test"))
+        PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
+    }
     // region value declarations
 
     fun `test resolves value declaration`() {
@@ -38,8 +48,9 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 x = y
             """.trimIndent()
         ).getExpressionIdentifier()
-
-        assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
+        @Suppress("UnstableApiUsage")
+        val resolve = expressionIdentifier.getReference().resolve()
+        assertEquals(valueDeclaration, resolve)
     }
 
     fun `test resolves deep imported value declarations`() {
@@ -229,7 +240,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Main.purs", "y0", "y1", "y2", "y5", "y6")
+        myFixture.testCompletionVariants("Main.purs", "y0", "y1", "y2", "y5", "y6", "y4", "y7")
     }
 
     // endregion
@@ -349,7 +360,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
 
     // region qualified
 
-    fun `test completes qualified values`() {
+    fun `test completes qualified values first`() {
         myFixture.configureByText(
             "Bar.purs",
             """
@@ -387,7 +398,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Foo.purs", "y2", "y5")
+        myFixture.testCompletionVariants("Foo.purs", "y2", "y5", "y0", "y4")
     }
 
     // endregion

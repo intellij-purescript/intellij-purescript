@@ -1,5 +1,7 @@
 package org.purescript.psi.module
 
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
@@ -19,9 +21,13 @@ class ModuleReference(element: Import.Psi) : PsiReferenceBase<Import.Psi>(
     override fun resolve(): Module.Psi? {
         val moduleName = element.moduleName.name
         val project = element.project
-        return ModuleNameIndex()
-            .get( moduleName, project, GlobalSearchScope.allScope(project))
-            .firstOrNull()
+        val index = ModuleNameIndex()
+        val dumbService = DumbService.getInstance(project)
+        return dumbService.runReadActionInSmartMode(Computable {
+            index
+                .get(moduleName, project, GlobalSearchScope.allScope(project))
+                .firstOrNull()
+        })
     }
 
     override fun handleElementRename(name: String): PsiElement? {
