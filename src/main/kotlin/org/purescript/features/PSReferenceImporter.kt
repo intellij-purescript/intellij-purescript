@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier
 
 class PSReferenceImporter: ReferenceImporter {
     override fun isAddUnambiguousImportsOnTheFlyEnabled(file: PsiFile): Boolean {
-        return file is PSFile.Psi
+        return file is PSFile.Psi && false
     }
 
     @Suppress("UnstableApiUsage")
