@@ -1,17 +1,14 @@
 package org.purescript.features
 
 import com.intellij.codeInsight.daemon.ReferenceImporter
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.command.CommandProcessor
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementsAtOffsetUp
 import org.purescript.file.PSFile
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
-import org.purescript.psi.expression.ExpressionIdentifierReference
 import org.purescript.psi.expression.PSExpressionIdentifier
 import java.util.function.BooleanSupplier
 
@@ -33,9 +30,10 @@ class PSReferenceImporter: ReferenceImporter {
         val module = (file as? PSFile.Psi)?.module ?: return@BooleanSupplier false
         val scope = GlobalSearchScope.allScope(element.project)
         val index = ExportedValueDeclNameIndex()
-        val toImport = index.get(element.name, element.project, scope)
-            .singleOrNull()
-            ?.asImport() ?: return@BooleanSupplier false
+        val possibleImports = index.get(element.name, element.project, scope)
+            .mapNotNull { it.asImport() }
+        val toImport = possibleImports
+            .singleOrNull() ?: return@BooleanSupplier false
         WriteAction.run<RuntimeException> {
             CommandProcessor.getInstance().runUndoTransparentAction {
                 module.addImportDeclaration(toImport.withAlias(element.qualifierName))
