@@ -8,8 +8,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementsAtOffsetUp
 import org.purescript.file.PSFile
+import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.module.Module
 import java.util.function.BooleanSupplier
 
 class PSReferenceImporter: ReferenceImporter {
@@ -32,13 +34,40 @@ class PSReferenceImporter: ReferenceImporter {
         val index = ExportedValueDeclNameIndex()
         val possibleImports = index.get(element.name, element.project, scope)
             .mapNotNull { it.asImport() }
-        val toImport = possibleImports
-            .singleOrNull() ?: return@BooleanSupplier false
+            .map { it.withAlias(element.qualifierName) }
+            .toList()
+        val qualifiedImports: List<String> = module.cache.importsByName
+            .getOrDefault(element.qualifierName, listOf())
+            .map { it.moduleName.name }
+        val possibleQualifiedImports = possibleImports
+            .filter { it.moduleName in qualifiedImports }
+        val possibleAlreadyImported = possibleImports
+            .filter {
+                it.alias == null && 
+                it.moduleName in module.cache.importsByModule &&
+                    module.cache.importsByModule.get(it.moduleName)!!.any { import ->
+                        import.importAlias == null
+                    }
+            }
+        
+        when {
+            possibleImports.isEmpty() -> false
+            possibleImports.size == 1 ->
+                import(module, possibleImports.single())
+            possibleQualifiedImports.size == 1 ->
+                import(module, possibleQualifiedImports.single())
+            possibleAlreadyImported.size == 1 ->
+                import(module, possibleAlreadyImported.single())
+            else -> false
+        }
+    }
+    
+    fun import(module: Module.Psi,toImport: ImportDeclaration): Boolean {
         WriteAction.run<RuntimeException> {
             CommandProcessor.getInstance().runUndoTransparentAction {
-                module.addImportDeclaration(toImport.withAlias(element.qualifierName))
+                module.addImportDeclaration(toImport)
             }
         }
-        true
+        return true
     }
 }
