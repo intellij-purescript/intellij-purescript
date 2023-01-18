@@ -16,7 +16,7 @@ data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
                 .sortedBy { it.hiding }
             val implicit = imports.filter { it.implicit }
             if (implicit.isNotEmpty()) {
-                append(implicit.joinToString("\n") { it.text })
+                append(implicit.joinToString("\n") { it.toString() })
             }
             val explicit = imports.filter { it.explicit }
             if (implicit.isNotEmpty() && explicit.isNotEmpty()) {
@@ -24,7 +24,7 @@ data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
                 appendLine()
             }
             if (explicit.isNotEmpty()) {
-                append(explicit.joinToString("\n") { it.text })
+                append(explicit.joinToString("\n") { it.toString() })
             }
         }
 
@@ -118,17 +118,16 @@ data class ImportDeclaration(
     private val sortedItems: List<ImportedItem>
         get() = importedItems.sortedBy { it.name }.sortedBy { sortKey(it) }
 
-    val text
-        get() = buildString {
-            append("import $moduleName")
-            if (importedItems.isNotEmpty()) {
-                if (hiding) append(" hiding")
-                append(" (${sortedItems.joinToString { it.text }})")
-            }
-            if (alias != null) {
-                append(" as $alias")
-            }
+    override fun toString() = buildString {
+        append("import $moduleName")
+        if (importedItems.isNotEmpty()) {
+            if (hiding) append(" hiding")
+            append(" (${sortedItems.joinToString { it.text }})")
         }
+        if (alias != null) {
+            append(" as $alias")
+        }
+    }
 
     companion object {
         private fun sortKey(it: ImportedItem) = when (it) {

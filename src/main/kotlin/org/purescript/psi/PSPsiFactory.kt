@@ -70,7 +70,7 @@ class PSPsiFactory(private val project: Project) {
         createFromText(
             buildString {
                 appendLine("module Foo where")
-                append(import.text)
+                append(import.toString())
             }
         )!!
 

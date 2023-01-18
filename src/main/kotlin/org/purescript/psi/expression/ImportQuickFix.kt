@@ -14,7 +14,7 @@ class ImportQuickFix(val import: ImportDeclaration) : LocalQuickFix {
 
     override fun getFamilyName(): String = "Import"
 
-    override fun getName(): String = import.text.replaceFirstChar {
+    override fun getName(): String = import.toString().replaceFirstChar {
         if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
     }
 

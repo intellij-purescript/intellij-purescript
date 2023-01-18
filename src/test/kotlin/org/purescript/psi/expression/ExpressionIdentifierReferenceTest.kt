@@ -8,13 +8,6 @@ import com.intellij.util.indexing.DumbModeAccessType.RELIABLE_DATA_ONLY
 import org.purescript.*
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
-
-    override fun setUp() {
-        super.setUp()
-        val stubIndex = StubIndex.getInstance()
-        stubIndex.forceRebuild(Throwable("Clear index in test"))
-        PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
-    }
     // region value declarations
 
     fun `test resolves value declaration`() {

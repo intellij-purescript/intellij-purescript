@@ -3,6 +3,7 @@ package org.purescript.psi.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 
@@ -22,12 +23,18 @@ class ExpressionIdentifierCompletionContributor : CompletionContributor() {
         ) {
             val project = parameters.editor.project ?: return
             val index = ExportedValueDeclNameIndex()
+            val scope = GlobalSearchScope.allScope(project)
+            
             val names = index.getAllKeys(project)
-            val elementBuilders = names
-                .map { name ->
-                    LookupElementBuilder.create(name)
+            for (name in names) {
+                if(result.isStopped) return
+                if(!result.prefixMatcher.prefixMatches(name)) continue
+                val elements = index.get(name, project, scope)
+                val elementBuilders = elements.map {
+                    LookupElementBuilder.create(it)
+                }
+                result.addAllElements(elementBuilders)
             }
-            result.addAllElements(elementBuilders)
         }
     }
 }

@@ -8,12 +8,6 @@ import org.purescript.getExpressionIdentifier
 import org.purescript.getValueDeclarations
 
 class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
-
-    override fun setUp() {
-        super.setUp()
-        StubIndex.getInstance().forceRebuild(Throwable("Clear index in test"))
-        PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
-    }
     
     fun `test finds values in other files`() {
         myFixture.configureByText(
