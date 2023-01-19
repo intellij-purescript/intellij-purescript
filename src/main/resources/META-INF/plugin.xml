@@ -143,7 +143,10 @@
             id="org.purescript.run.purs.PursConfigurable"
             displayName="Purs"
             nonDefaultProject="true"/>
-
+        <runAnything.executionProvider
+            implementation="org.purescript.run.spago.SpagoRunAnythingProvider"
+        />
+        
         <!-- Formatting -->
 
         <formattingService
