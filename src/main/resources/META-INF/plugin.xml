@@ -104,6 +104,7 @@
 
         <!-- Templates -->
         <liveTemplateContext
+            contextId="PURESCRIPT"
             implementation="org.purescript.PurescriptLiveTemplateContext"/>
         <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
 
