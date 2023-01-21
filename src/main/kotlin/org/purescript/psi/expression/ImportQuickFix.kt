@@ -21,9 +21,7 @@ class ImportQuickFix(val import: ImportDeclaration) : LocalQuickFix {
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val hostModule = (descriptor.psiElement as? PSPsiElement)?.module
             ?: return
-        val psiFactory = project.service<PSPsiFactory>()
-        val importDeclaration = psiFactory.createImportDeclaration(import)
-        hostModule.addImportDeclaration(importDeclaration)
+        hostModule.addImportDeclaration(import)
     }
 
     companion object {
