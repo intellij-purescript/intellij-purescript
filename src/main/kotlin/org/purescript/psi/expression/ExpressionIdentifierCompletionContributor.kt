@@ -22,7 +22,7 @@ class ExpressionIdentifierCompletionContributor : CompletionContributor() {
             result: CompletionResultSet
         ) {
             val project = parameters.editor.project ?: return
-            val index = ExportedValueDeclNameIndex()
+            val index = ExportedValueDeclNameIndex
             val scope = GlobalSearchScope.allScope(project)
             
             val names = index.getAllKeys(project)

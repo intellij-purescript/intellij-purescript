@@ -94,8 +94,10 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = element.qualifiedIdentifier.moduleName?.name
-        return ExportedValueDeclNameIndex()
-            .get(element.name, element.project, GlobalSearchScope.allScope(element.project))
+        val scope = GlobalSearchScope.allScope(element.project)
+        val valueDeclarations = ExportedValueDeclNameIndex
+            .get(element.name, element.project, scope)
+        return valueDeclarations
             .flatMap { valueDecl -> sequenceOf(valueDecl.asImport(), valueDecl.module?.asImport()) }
             .filterNotNull()
             .map { it.withAlias(qualifyingName) }

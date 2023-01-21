@@ -39,7 +39,7 @@ class PSReferenceImporter : ReferenceImporter {
         val module =
             (file as? PSFile.Psi)?.module ?: return@BooleanSupplier false
         val scope = GlobalSearchScope.allScope(element.project)
-        val index = ExportedValueDeclNameIndex()
+        val index = ExportedValueDeclNameIndex
         val possibleImports = index.get(element.name, element.project, scope)
             .mapNotNull { it.asImport() }
             .map { it.withAlias(element.qualifierName) }
