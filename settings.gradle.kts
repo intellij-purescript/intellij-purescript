@@ -12,4 +12,3 @@ pluginManagement {
 }
 
 rootProject.name = "Purescript"
-include("lexer")

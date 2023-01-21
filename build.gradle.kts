@@ -15,9 +15,10 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.intellij")
     java
     kotlin("jvm")
+    id("org.jetbrains.intellij")
+    id("org.jetbrains.grammarkit")
 }
 
 repositories {
@@ -27,7 +28,6 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":lexer"))
     implementation(kotlin("stdlib"))
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
@@ -72,5 +72,29 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("223")
+    }
+    generateLexer.configure {
+        source.set("src/main/grammar/Purescript.flex")
+        targetDir.set("src/main/gen/org/purescript/lexer/")
+        targetClass.set("_PSLexer")
+        purgeOldFiles.set(true)
+        skeleton.set(file("src/main/grammar/idea-flex.skeleton"))
+    }
+    withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+        options.release.set(11)
+        dependsOn(generateLexer)
+    }
+    withType<KotlinCompile>()
+        .configureEach {
+            kotlinOptions { jvmTarget = javaVersion }
+            dependsOn(generateLexer)
+        }
+}
+sourceSets {
+    main {
+        java {
+            setSrcDirs(listOf("src/main/gen"))
+        }
     }
 }
