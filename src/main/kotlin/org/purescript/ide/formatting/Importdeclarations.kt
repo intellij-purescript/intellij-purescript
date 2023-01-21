@@ -129,6 +129,8 @@ data class ImportDeclaration(
         }
     }
 
+    fun withItems(vararg items: ImportedItem) = copy(importedItems=items.toSet())
+
     companion object {
         private fun sortKey(it: ImportedItem) = when (it) {
             is ImportedClass -> 1

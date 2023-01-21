@@ -1,20 +1,17 @@
 package org.purescript.psi.expression
 
-import com.intellij.codeInsight.completion.InsertHandler
-import com.intellij.codeInsight.completion.InsertionContext
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
-import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parents
-import kotlinx.html.attributes.stringSetDecode
+import com.intellij.util.concurrency.Invoker
+import com.intellij.util.ui.EDT
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.expression.dostmt.PSDoBlock
@@ -94,12 +91,23 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = element.qualifiedIdentifier.moduleName?.name
-        val scope = GlobalSearchScope.allScope(element.project)
+        val project = element.project
+        val scope = GlobalSearchScope.allScope(project)
         val valueDeclarations = ExportedValueDeclNameIndex
-            .get(element.name, element.project, scope)
-        return valueDeclarations
-            .flatMap { valueDecl -> sequenceOf(valueDecl.asImport(), valueDecl.module?.asImport()) }
-            .filterNotNull()
+            .get(element.name, project, scope)
+            .toList()
+        val exported = valueDeclarations
+            .flatMap { valueDecl ->
+                sequenceOf(valueDecl.asImport(), valueDecl.module?.asImport())
+            }.filterNotNull()
+        val reExports = valueDeclarations
+            .mapNotNull { it.module?.name }
+            .flatMap { ReExportedImportIndex.get(it, project, scope) }
+            .mapNotNull { import -> (import.module?.asImport()) }
+            .flatMap {
+                sequenceOf(it, it.withItems(ImportedValue(element.name)))
+            }
+        return (exported)
             .map { it.withAlias(qualifyingName) }
             .map { ImportQuickFix(it) }
             .toTypedArray()
