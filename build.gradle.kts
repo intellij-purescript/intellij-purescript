@@ -56,6 +56,8 @@ tasks {
     }
     getByName<Test>("test") {
         useJUnitPlatform()
+        reports.html.required.set(false)
+        reports.junitXml.required.set(false)
     }
 
     processResources {
