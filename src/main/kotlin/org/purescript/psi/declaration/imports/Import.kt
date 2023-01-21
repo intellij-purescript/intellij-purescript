@@ -17,6 +17,7 @@ import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName
@@ -31,17 +32,32 @@ import kotlin.reflect.KProperty1
  * ```
  */
 class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
-    class Stub(val name: String, p: StubElement<*>?) : AStub<Import>(p, Type)
+    class Stub(val moduleName: String, val alias: String?, p: StubElement<*>?) : AStub<Import>(p, Type) {
+        val module get() = parentStub as? Module.Stub
+        val isExported get() = when {
+            module == null -> false
+            module?.exportList == null -> true
+            else -> module?.exportList?.childrenStubs
+                ?.filterIsInstance<ExportedModule.Stub>()
+                ?.find { it.name == alias } != null
+        }
+    }
     object Type : WithPsiAndStub<Stub, Import>("ImportDeclaration") {
         override fun createPsi(node: ASTNode) = Import(node)
         override fun createPsi(stub: Stub) = Import(stub, this)
-        override fun createStub(my: Import, p: StubElement<*>?) = Stub(my.name, p)
-        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
+        override fun createStub(my: Import, p: StubElement<*>?) = Stub(my.moduleName.name, my.importAlias?.name, p)
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            if (stub.isExported) {
+                sink.occurrence(ReExportedImportIndex.KEY, stub.moduleName)
+            }
+        }
+        override fun serialize(stub: Stub, d: StubOutputStream) {
+            d.writeName(stub.moduleName)
+            d.writeName(stub.alias)
+        }
 
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
+            Stub(d.readNameString()!!, d.readNameString(), p)
     }
 
     constructor(node: ASTNode) : super(node)

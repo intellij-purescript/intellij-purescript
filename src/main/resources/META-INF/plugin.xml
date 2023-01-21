@@ -180,6 +180,8 @@
             implementation="org.purescript.psi.declaration.value.ExportedValueDeclNameIndex"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.fixity.ExportedFixityNameIndex"/>
+        <stubIndex
+            implementation="org.purescript.psi.declaration.imports.ReExportedImportIndex"/>
     </extensions>
 
     <actions>
