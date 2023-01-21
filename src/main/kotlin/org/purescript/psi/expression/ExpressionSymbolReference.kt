@@ -5,8 +5,6 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import org.purescript.file.ExportedFixityIndex
-import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.fixity.ExportedFixityNameIndex

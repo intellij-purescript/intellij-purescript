@@ -169,11 +169,8 @@
             language="Purescript"
             implementationClass="org.purescript.run.spago.SpagoRunLineMarkerContributor"/>
         <!-- Indexes -->
-        <fileBasedIndex implementation="org.purescript.file.ModuleNameIndex"/>
         <fileBasedIndex
             implementation="org.purescript.file.ExportedConstructorsIndex"/>
-        <fileBasedIndex
-            implementation="org.purescript.file.ExportedFixityIndex"/>
         <fileBasedIndex
             implementation="org.purescript.file.ExportedTypesIndex"/>
         <fileBasedIndex
