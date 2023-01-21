@@ -30,7 +30,7 @@ class ExportedModuleReference(exportedModule: ExportedModule.Psi) : PsiReference
         return element
     }
 
-    private val candidates: Array<Import.Psi>
+    private val candidates: Array<Import>
         get() =
             myElement.module?.cache?.imports
                 ?: emptyArray()

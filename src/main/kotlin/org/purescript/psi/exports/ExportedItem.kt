@@ -126,7 +126,7 @@ interface ExportedModule {
         // Todo clean this up
         override fun toString(): String = "PSExportedModule($elementType)"
         val moduleName get() = findNotNullChildByClass(PSModuleName::class.java)
-        val importDeclarations: Sequence<Import.Psi>
+        val importDeclarations: Sequence<Import>
             get() = module
                 ?.cache
                 ?.importsByName

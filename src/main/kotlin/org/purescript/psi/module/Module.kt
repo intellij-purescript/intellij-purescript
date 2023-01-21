@@ -72,7 +72,7 @@ interface Module {
         val fixityDeclarations get() = children(FixityDeclType)
 
         inner class Cache {
-            val imports by lazy { findChildrenByClass<Import.Psi>() }
+            val imports by lazy { findChildrenByClass<Import>() }
             val importsByName by lazy { imports.groupBy { it.name } }
             val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
             val valueDeclarations
@@ -137,7 +137,7 @@ interface Module {
          */
         private inline fun <Declaration : PsiNamedElement, reified Wanted : ExportedItem<*>> getExportedDeclarations(
             declarations: Array<Declaration>,
-            getDeclarations: (Import.Psi) -> List<Declaration>
+            getDeclarations: (Import) -> List<Declaration>
         ): List<Declaration> {
             val explicitlyExportedItems = exports?.exportedItems
             return if (explicitlyExportedItems == null) {
@@ -325,7 +325,7 @@ interface Module {
                 .createImportDeclaration(importDeclaration)
             addImportDeclaration(asPsi)
         }
-        fun addImportDeclaration(importDeclaration: Import.Psi) {
+        fun addImportDeclaration(importDeclaration: Import) {
             val lastImportDeclaration = cache.imports.lastOrNull()
             val insertPosition = lastImportDeclaration ?: whereKeyword
             val newLine = project.service<PSPsiFactory>().createNewLine()

@@ -6,7 +6,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.imports.Import
 
-class ModuleReference(element: Import.Psi) : PsiReferenceBase<Import.Psi>(
+class ModuleReference(element: Import) : PsiReferenceBase<Import>(
     element,
     element.moduleName.textRangeInParent,
     false

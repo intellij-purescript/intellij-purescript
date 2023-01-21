@@ -32,7 +32,7 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                     is ExportedValue.Psi -> visitReference(element.reference)
                     is ExportedOperator.Psi -> visitReference(element.reference)
                     is ExportedModule.Psi -> visitModuleReference(element.reference)
-                    is Import.Psi -> visitModuleReference(element.reference)
+                    is Import -> visitModuleReference(element.reference)
                     is PSImportedOperator -> visitReference(element.reference)
                     is PSExpressionConstructor -> visitReference(element.getReference())
                     is PSConstructorBinder -> visitReference(element.reference)

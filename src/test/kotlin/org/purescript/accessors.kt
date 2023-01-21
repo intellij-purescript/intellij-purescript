@@ -93,7 +93,7 @@ fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration.Psi> =
 fun PsiFile.getExportedClassDeclarations(): List<ClassDecl> =
     getModule().exportedClassDeclarations
 
-fun PsiFile.getImportDeclarations(): Array<Import.Psi> =
+fun PsiFile.getImportDeclarations(): Array<Import> =
     getModule().cache.imports
 
 fun PsiFile.getImportAliases(): List<PSImportAlias> =
@@ -101,7 +101,7 @@ fun PsiFile.getImportAliases(): List<PSImportAlias> =
         .cache.imports
         .mapNotNull { it.importAlias }
 
-fun PsiFile.getImportDeclaration(): Import.Psi =
+fun PsiFile.getImportDeclaration(): Import =
     getImportDeclarations().single()
 
 fun PsiFile.getImportAlias(): PSImportAlias =

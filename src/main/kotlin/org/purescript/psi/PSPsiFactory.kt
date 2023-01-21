@@ -63,10 +63,10 @@ class PSPsiFactory(private val project: Project) {
     fun createModuleName(name: String): PSModuleName? =
         createFromText("module $name where")
 
-    fun createImportDeclarations(importDeclarations: ImportDeclarations): Pair<Import.Psi?, Import.Psi?> =
+    fun createImportDeclarations(importDeclarations: ImportDeclarations): Pair<Import?, Import?> =
         createRangeFromText("module Foo where\n${importDeclarations.text}\n")
 
-    fun createImportDeclaration(import: ImportDeclaration): Import.Psi =
+    fun createImportDeclaration(import: ImportDeclaration): Import =
         createFromText(
             buildString {
                 appendLine("module Foo where")

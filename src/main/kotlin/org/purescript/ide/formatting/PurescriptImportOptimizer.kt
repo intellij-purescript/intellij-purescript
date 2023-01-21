@@ -45,7 +45,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
         }
     }
 
-    private fun fromPsiElement(importDeclaration: Import.Psi): ImportDeclaration =
+    private fun fromPsiElement(importDeclaration: Import): ImportDeclaration =
         ImportDeclaration(
             importDeclaration.moduleName.name,
             importDeclaration.isHiding,
