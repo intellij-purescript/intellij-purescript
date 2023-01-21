@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlinVersion: String by project
 val javaVersion: String by project
 val version: String by project
 val ideaVersion: String by project
@@ -16,9 +15,9 @@ buildscript {
 
 plugins {
     java
-    kotlin("jvm")
-    id("org.jetbrains.intellij")
-    id("org.jetbrains.grammarkit")
+    kotlin("jvm") version "1.7.20"
+    id("org.jetbrains.intellij") version "1.10.0"
+    id("org.jetbrains.grammarkit") version "2021.2.2"
 }
 
 repositories {
