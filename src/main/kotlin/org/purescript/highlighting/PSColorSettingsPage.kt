@@ -91,7 +91,7 @@ class PSColorSettingsPage : ColorSettingsPage {
     }
 
     override fun getHighlighter(): SyntaxHighlighter {
-        return PSSyntaxHighlighter()
+        return PSSyntaxHighlighter
     }
 
     override fun getDemoText(): String {
