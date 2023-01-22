@@ -12,7 +12,7 @@ import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
 import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.type.TypeDecl
@@ -190,10 +190,10 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         )
 
     /**
-     * @return the [PSForeignValueDeclaration] elements imported by this declaration
+     * @return the [ForeignValueDecl] elements imported by this declaration
      */
-    val importedForeignValueDeclarations: List<PSForeignValueDeclaration>
-        get() = getImportedDeclarations<PSForeignValueDeclaration, PSImportedValue>(
+    val importedForeignValueDeclarations: List<ForeignValueDecl>
+        get() = getImportedDeclarations<ForeignValueDecl, PSImportedValue>(
             Module.Psi::exportedForeignValueDeclarations
         )
 

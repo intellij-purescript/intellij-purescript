@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
 import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.PSClassConstraint
@@ -122,10 +122,10 @@ fun PsiFile.getVarBinders(): List<PSVarBinder> =
 fun PsiFile.getVarBinder(): PSVarBinder =
     getVarBinders().single()
 
-fun PsiFile.getForeignValueDeclarations(): Array<PSForeignValueDeclaration> =
+fun PsiFile.getForeignValueDeclarations(): Array<ForeignValueDecl> =
     getModule().cache.foreignValueDeclarations
 
-fun PsiFile.getForeignValueDeclaration(): PSForeignValueDeclaration =
+fun PsiFile.getForeignValueDeclaration(): ForeignValueDecl =
     getForeignValueDeclarations().single()
 
 fun PsiFile.getNewTypeDeclarations(): Array<NewtypeDecl> =

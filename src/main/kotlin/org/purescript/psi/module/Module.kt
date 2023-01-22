@@ -19,7 +19,7 @@ import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.exports.*
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
 import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.declaration.newtype.NewtypeCtor
@@ -89,7 +89,7 @@ interface Module {
                 by lazy { findChildrenByClass<TypeDecl>() }
             val classes by lazy { findChildrenByClass<ClassDecl>() }
             val foreignValueDeclarations
-                by lazy { findChildrenByClass<PSForeignValueDeclaration>() }
+                by lazy { findChildrenByClass<ForeignValueDecl>() }
             val foreignDataDeclarations
                 by lazy { findChildrenByClass<PSForeignDataDeclaration>() }
         }
@@ -177,11 +177,11 @@ interface Module {
             ) { it.importedValueDeclarations }
 
         /**
-         * @return the [PSForeignValueDeclaration] elements that this module exports,
+         * @return the [ForeignValueDecl] elements that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedForeignValueDeclarations: List<PSForeignValueDeclaration>
-            get() = getExportedDeclarations<PSForeignValueDeclaration, ExportedValue.Psi>(
+        val exportedForeignValueDeclarations: List<ForeignValueDecl>
+            get() = getExportedDeclarations<ForeignValueDecl, ExportedValue.Psi>(
                 cache.foreignValueDeclarations,
             ) { it.importedForeignValueDeclarations }
 

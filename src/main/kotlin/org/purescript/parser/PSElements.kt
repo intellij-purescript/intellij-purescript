@@ -22,7 +22,7 @@ import org.purescript.psi.expression.dostmt.PSDoNotationValue
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
 import org.purescript.psi.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
@@ -64,8 +64,7 @@ val TypeDeclType = TypeDecl.Type
 val ValueDeclType = ValueDecl.Type 
 val ForeignDataDecl =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
-val ForeignValueDecl =
-    WithPsi("ForeignValueDeclaration") { PSForeignValueDeclaration(it) }
+val ForeignValueDeclType = ForeignValueDecl.Type
 val ImportType = Import.Type
 val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
 val ImportList = WithPsi("ImportList") { PSImportList(it) }

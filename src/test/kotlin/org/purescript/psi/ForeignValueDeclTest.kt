@@ -2,9 +2,9 @@ package org.purescript.psi
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.file.PSFile
-import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
 
-class PSForeignValueDeclarationTest : BasePlatformTestCase() {
+class ForeignValueDeclTest : BasePlatformTestCase() {
     fun `test knows its name`() {
         myFixture.configureByText(
             "Main.purs",
@@ -16,7 +16,7 @@ class PSForeignValueDeclarationTest : BasePlatformTestCase() {
             """.trimIndent()
         ) as PSFile.Psi
 
-        val elementAtCaret = myFixture.elementAtCaret as PSForeignValueDeclaration
+        val elementAtCaret = myFixture.elementAtCaret as ForeignValueDecl
 
         assertNotNull( elementAtCaret)
         assertEquals( "split", elementAtCaret.name)

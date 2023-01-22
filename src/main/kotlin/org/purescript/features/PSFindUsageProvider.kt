@@ -35,7 +35,7 @@ import org.purescript.parser.STRING_ERROR
 import org.purescript.parser.STRING_ESCAPED
 import org.purescript.parser.STRING_GAP
 import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.PSForeignValueDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
 import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.classes.ClassDecl
@@ -54,7 +54,7 @@ class PSFindUsageProvider : FindUsagesProvider {
         psiElement is ValueDecl
             || psiElement is PSVarBinder
             || psiElement is Module.Psi
-            || psiElement is PSForeignValueDeclaration
+            || psiElement is ForeignValueDecl
             || psiElement is NewtypeDecl
             || psiElement is NewtypeCtor
             || psiElement is PSImportAlias
@@ -113,7 +113,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is DataDeclaration.Psi -> "data"
             is DataConstructor.Psi -> "data constructor"
             is ClassDecl -> "class"
-            is PSForeignValueDeclaration -> "foreign value"
+            is ForeignValueDecl -> "foreign value"
             is PSForeignDataDeclaration -> "foreign data"
             is TypeDecl -> "type synonym"
             is PSClassMember -> "class member"

@@ -187,7 +187,7 @@ class ParserDefinitions {
     )
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
         ForeignDataDecl(`'data'` + properName + dcolon + type),
-        ForeignValueDecl(ident.heal + dcolon + type)
+        ForeignValueDeclType(ident.heal + dcolon + type)
     )
     private val fixity = Fixity(`'infixl'` / `'infixr'` / `'infix'` + NATURAL)
     private val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
