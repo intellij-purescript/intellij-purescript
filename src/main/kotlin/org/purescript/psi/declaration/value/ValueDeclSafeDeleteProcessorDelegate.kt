@@ -17,12 +17,12 @@ class ValueDeclSafeDeleteProcessorDelegate :
     override fun handlesElement(it: PsiElement?): Boolean {
         return it is ValueDecl
     }
-
+    
     override fun findUsages(
         it: PsiElement,
-        toDelete: Array<PsiElement?>,
-        result: MutableList<UsageInfo?>
-    ): NonCodeUsageSearchInfo? {
+        toDelete: Array<out PsiElement>,
+        result: MutableList<in UsageInfo>
+    ): NonCodeUsageSearchInfo {
         findGenericElementUsages(it, result, toDelete)
         val condition = getDefaultInsideDeletedCondition(toDelete)
         return NonCodeUsageSearchInfo(condition, it)
@@ -31,8 +31,8 @@ class ValueDeclSafeDeleteProcessorDelegate :
     override fun getElementsToSearch(
         it: PsiElement,
         module: Module?,
-        toDelete: MutableCollection<PsiElement>
-    ): MutableCollection<out PsiElement>? {
+        toDelete: MutableCollection<out PsiElement>
+    ): MutableCollection<out PsiElement> {
         return mutableSetOf(it)
     }
 
@@ -54,7 +54,7 @@ class ValueDeclSafeDeleteProcessorDelegate :
     override fun preprocessUsages(project: Project, usages: Array<UsageInfo>) =
         usages
 
-    override fun prepareForDeletion(it: PsiElement?) = Unit
+    override fun prepareForDeletion(it: PsiElement) = Unit
     override fun isToSearchInComments(it: PsiElement?): Boolean =
         RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_COMMENTS
 

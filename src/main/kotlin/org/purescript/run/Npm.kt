@@ -8,7 +8,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.util.io.exists
+import kotlin.io.path.exists
 import java.nio.file.Path
 
 @Service
