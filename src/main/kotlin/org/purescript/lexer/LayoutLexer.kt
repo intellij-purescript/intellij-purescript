@@ -761,27 +761,22 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         var qualified = mutableListOf<Lexeme>()
         var lexeme: Lexeme? = null
         val superTokens = mutableListOf<SuperToken>()
-        for (l in lexemes) {
-            if (lexeme == null) {
-                lexeme = l
-            } else {
-                when {
-                    lexeme.value == PROPER_NAME &&
-                        l.value == DOT &&
-                        l.trailingWhitespace.isEmpty() &&
-                        lexeme.trailingWhitespace.isEmpty() -> {
-                        // <Proper Name><.>
-                        qualified.add(lexeme)
-                        qualified.add(l)
-                        lexeme = null
-                    }
+        for (l in lexemes) when {
+            lexeme == null -> lexeme = l
+            lexeme.value == PROPER_NAME &&
+                l.value == DOT &&
+                l.trailingWhitespace.isEmpty() &&
+                lexeme.trailingWhitespace.isEmpty() -> {
+                // <Proper Name><.>
+                qualified.add(lexeme)
+                qualified.add(l)
+                lexeme = null
+            }
 
-                    else -> {
-                        superTokens.add(SuperToken(qualified, lexeme))
-                        qualified = mutableListOf()
-                        lexeme = l
-                    }
-                }
+            else -> {
+                superTokens.add(SuperToken(qualified, lexeme))
+                qualified = mutableListOf()
+                lexeme = l
             }
         }
         if (lexeme != null) superTokens.add(SuperToken(qualified, lexeme))
