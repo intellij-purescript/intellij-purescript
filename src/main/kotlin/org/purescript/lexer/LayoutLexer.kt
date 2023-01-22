@@ -744,10 +744,9 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         var trailing = ArrayList<SourceToken>(4)
         val lexemes = ArrayList<Lexeme>(sourceTokens.size)
         var token: SourceToken = sourceTokens.first()
-        for (t in sourceTokens.subList(1, sourceTokens.size)) {
-            if (trailingTokens.contains(t.value)) {
-                trailing.add(t)
-            } else {
+        for (t in sourceTokens.subList(1, sourceTokens.size)) when {
+            trailingTokens.contains(t.value) -> trailing.add(t)
+            else -> {
                 lexemes.add(Lexeme(token, trailing))
                 token = t
                 trailing = ArrayList(4)
