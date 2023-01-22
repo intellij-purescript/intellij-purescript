@@ -6,24 +6,15 @@ val ideaVersion: String by project
 val intellijPublishToken: String by project
 val publishChannels: String by project
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies") }
-    }
-}
-
 plugins {
     java
     kotlin("jvm") version "1.7.20"
-    id("org.jetbrains.intellij") version "1.10.0"
+    id("org.jetbrains.intellij") version "1.12.0"
     id("org.jetbrains.grammarkit") version "2021.2.2"
 }
 
 repositories {
     mavenCentral()
-    maven { setUrl("https://jitpack.io") }
-    maven { setUrl("https://cache-redirector.jetbrains.com/intellij-dependencies") }
 }
 
 dependencies {
@@ -34,25 +25,17 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(javaVersion))
-    }
+kotlin {
+    jvmToolchain(javaVersion.toInt())
 }
 
 // Plugin config
 intellij {
     pluginName.set("purity-intellij")
     version.set(ideaVersion)
-
 }
 
 tasks {
-    withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = javaVersion
-        }
-    }
     getByName<Test>("test") {
         useJUnitPlatform()
         reports.html.required.set(false)
@@ -80,14 +63,9 @@ tasks {
     }
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
-        options.release.set(javaVersion.toInt())
         dependsOn(generateLexer)
     }
-    withType<KotlinCompile>()
-        .configureEach {
-            kotlinOptions { jvmTarget = javaVersion }
-            dependsOn(generateLexer)
-        }
+    withType<KotlinCompile>().configureEach { dependsOn(generateLexer) }
 }
 sourceSets {
     main {
