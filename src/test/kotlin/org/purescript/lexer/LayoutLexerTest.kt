@@ -2,21 +2,21 @@ package org.purescript.lexer
 
 import com.intellij.psi.TokenType.WHITE_SPACE
 import junit.framework.TestCase
-import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.MODULE
 
 class LayoutLexerTest : TestCase() {
     private val psLexer = PSLexer()
     private val root = SourceToken(
-        SourceRange(posFromOffset(0), posFromOffset(0)),
-        WHITE_SPACE
+        WHITE_SPACE,
+        posFromOffset(0),
+        posFromOffset(0)
     )
 
     fun `test it sets correct column for first token`() {
         val source = "module"
         val module =
-            SourceToken(SourceRange(posFromOffset(0), posFromOffset(6)), MODULE)
+            SourceToken(MODULE, posFromOffset(0), posFromOffset(6))
         val first = correctLineAndColumn(source)(root, module)
         assertEquals(0, first.start.column)
         assertEquals(6, first.end.column)
