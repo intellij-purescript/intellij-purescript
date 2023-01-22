@@ -107,10 +107,9 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             .flatMap {
                 sequenceOf(it, it.withItems(ImportedValue(element.name)))
             }
-        return (exported)
+        return (reExports + exported)
             .map { it.withAlias(qualifyingName) }
-            .map { ImportQuickFix(it) }
-            .toTypedArray()
+            .let { arrayOf(ImportQuickFix(*it.toTypedArray())) }
     }
 
 

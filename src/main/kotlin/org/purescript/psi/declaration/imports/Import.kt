@@ -36,10 +36,11 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         val module get() = parentStub as? Module.Stub
         val isExported get() = when {
             module == null -> false
-            module?.exportList == null -> true
+            // can only explicitly reexport
+            module?.exportList == null -> false
             else -> module?.exportList?.childrenStubs
                 ?.filterIsInstance<ExportedModule.Stub>()
-                ?.find { it.name == alias } != null
+                ?.find { it.name == (alias ?: moduleName) } != null
         }
     }
     object Type : WithPsiAndStub<Stub, Import>("ImportDeclaration") {
