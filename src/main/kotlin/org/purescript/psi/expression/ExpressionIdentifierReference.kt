@@ -9,6 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parents
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 import org.purescript.psi.declaration.value.ValueDecl
@@ -94,7 +95,10 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         val valueDeclarations = ExportedValueDeclNameIndex
             .get(element.name, project, scope)
             .toList()
-        val exported = valueDeclarations
+        val foreignValueDeclarations = ExportedForeignValueDeclIndex
+            .get(element.name, project, scope)
+            .toList()
+        val exported = (valueDeclarations + foreignValueDeclarations)
             .mapNotNull { valueDecl -> valueDecl.module?.asImport() }
         val reExports = valueDeclarations
             .mapNotNull { it.module?.name }
