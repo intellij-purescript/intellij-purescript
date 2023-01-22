@@ -30,11 +30,8 @@ data class Lexeme(
     val trailingWhitespace: List<SourceToken>
 ) {
     val tokens get() = listOf(token) + trailingWhitespace
-    val range
-        get() = SourceRange(
-            token.range.start,
-            trailingWhitespace.lastOrNull()?.range?.end ?: token.range.end
-        )
+    val start get() = token.range.start
+    val end get() = trailingWhitespace.lastOrNull()?.range?.end ?: token.range.end
     val value = token.value
 }
 
@@ -43,11 +40,8 @@ data class SuperToken(
     val token: Lexeme,
 ) {
     val tokens get() = qualified.flatMap { it.tokens } + token.tokens
-    val range
-        get() = SourceRange(
-            qualified.firstOrNull()?.range?.start ?: token.range.start,
-            token.range.end
-        )
+    val start get() = qualified.firstOrNull()?.start ?: token.start
+    val end get() = token.end
     val value = token.value
 }
 
@@ -293,7 +287,7 @@ fun insertLayout(
     stack: LayoutStack?
 ): LayoutState {
     val tokenValue = src.value
-    val tokPos = src.range.start
+    val tokPos = src.start
     val state = LayoutState(stack, emptyList())
     val (stk, acc) = state
 
@@ -682,7 +676,7 @@ fun lex(
     val acc = mutableListOf<SuperToken>()
     var startPos = sourcePos
     for (posToken in tokens) {
-        val nextStart = posToken.range.end
+        val nextStart = posToken.end
         val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
         val ts = toks.map { it.first }
         acc += ts
