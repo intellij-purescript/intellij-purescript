@@ -21,7 +21,7 @@ class ValueDeclSafeDeleteProcessorDelegate :
     override fun findUsages(
         it: PsiElement,
         toDelete: Array<out PsiElement>,
-        result: MutableList<in UsageInfo>
+        result: MutableList<UsageInfo>
     ): NonCodeUsageSearchInfo {
         findGenericElementUsages(it, result, toDelete)
         val condition = getDefaultInsideDeletedCondition(toDelete)
