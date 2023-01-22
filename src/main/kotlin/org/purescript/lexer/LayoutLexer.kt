@@ -702,18 +702,16 @@ fun correctLineAndColumn(source: CharSequence) =
 
 fun posFromOffset(offset: Int) = SourcePos(0, 0, offset)
 
-fun getTokens(lexer: Lexer): Sequence<SourceToken> {
-    return generateSequence {
-        val sourceToken: SourceToken? = lexer.tokenType?.let { value ->
-            SourceToken(
-                value,
-                posFromOffset(lexer.tokenStart),
-                posFromOffset(lexer.tokenEnd)
-            )
-        }
-        lexer.advance()
-        sourceToken
+fun getTokens(lexer: Lexer) = generateSequence {
+    val sourceToken: SourceToken? = lexer.tokenType?.let { value ->
+        SourceToken(
+            value,
+            posFromOffset(lexer.tokenStart),
+            posFromOffset(lexer.tokenEnd)
+        )
     }
+    lexer.advance()
+    sourceToken
 }
 
 class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
