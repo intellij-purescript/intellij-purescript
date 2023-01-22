@@ -132,6 +132,30 @@ inline fun collapse(
     return LayoutState(stack, acc)
 }
 
+inline fun collapse(
+    tokPos: SourcePos,
+    state: LayoutState,
+    p: (LayoutDelimiter) -> Boolean
+): LayoutState {
+    var (stack, acc) = state
+    while (stack != null) {
+        val (_, lyt, tail) = stack
+        if (!p(lyt)) {
+            return LayoutState(stack, acc)
+        } else {
+            val nextAcc = if (isIndented(lyt)) {
+                val pair = lytToken(tokPos, LAYOUT_END) to tail
+                snoc(acc, pair)
+            } else {
+                acc
+            }
+            stack = tail
+            acc = nextAcc
+        }
+    }
+    return LayoutState(stack, acc)
+}
+
 fun offsideP(
     tokPos: SourcePos,
     lytPos: SourcePos,
@@ -406,9 +430,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             )
 
         OF -> {
-            val state2 = collapse(tokPos, state) { _, _, lyt ->
-                isIndented(lyt)
-            }
+            val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
             return if (state2.stack?.layoutDelimiter == LayoutDelimiter.Case) {
                 LayoutState(state2.stack.tail, state2.acc)
                     .let { insertToken(src, it) }
@@ -436,8 +458,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             )
 
         THEN -> {
-            val state2 =
-                collapse(tokPos, state) { _, _, lyt -> isIndented(lyt) }
+            val state2 = collapse(tokPos, state) {lyt -> isIndented(lyt) }
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.If) {
                 LayoutState(state2.stack.tail, state2.acc)
                     .let { insertToken(src, it) }
@@ -450,7 +471,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
 
         ELSE -> {
             val state2 =
-                collapse(tokPos, state) { _, _, lyt -> isIndented(lyt) }
+                collapse(tokPos, state) { lyt -> isIndented(lyt) }
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Then) {
                 LayoutState(state2.stack.tail, state2.acc)
                     .let { insertToken(src, it) }
@@ -503,16 +524,14 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         }
 
         EQ -> {
-            val equalsP: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean =
-                { _, _, lyt ->
-                    when (lyt) {
-                        LayoutDelimiter.Where -> true
-                        LayoutDelimiter.Let -> true
-                        LayoutDelimiter.LetStmt -> true
-                        else -> false
-                    }
+            val (stk2, acc2) = collapse(tokPos, state) { lyt ->
+                when (lyt) {
+                    LayoutDelimiter.Where -> true
+                    LayoutDelimiter.Let -> true
+                    LayoutDelimiter.LetStmt -> true
+                    else -> false
                 }
-            val (stk2, acc2) = collapse(tokPos, state, equalsP)
+            }
             when (stk2?.layoutDelimiter) {
                 LayoutDelimiter.DeclGuard -> LayoutState(stk2.tail, acc2)
                     .let { insertToken(src, it) }
@@ -554,8 +573,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         }
 
         TICK -> {
-            val state2 =
-                collapse(tokPos, state) { _, _, lyt -> isIndented(lyt) }
+            val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Tick) {
                 LayoutState(state2.stack.tail, state2.acc)
                     .let { insertToken(src, it) }
@@ -567,8 +585,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         }
 
         COMMA -> {
-            val state2 =
-                collapse(tokPos, state) { _, _, lyt -> isIndented(lyt) }
+            val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Brace) {
                 state2
                     .let { insertToken(src, it) }
@@ -604,14 +621,14 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
 
         RPAREN -> state
             .let {
-                collapse(tokPos, it) { _, _, lyt -> isIndented(lyt) }
+                collapse(tokPos, it) { lyt -> isIndented(lyt) }
             }
             .let { state1 -> popStack(state1) { it == LayoutDelimiter.Paren } }
             .let { insertToken(src, it) }
 
         RCURLY -> state
             .let {
-                collapse(tokPos, it) { _, _, lyt -> isIndented(lyt) }
+                collapse(tokPos, it) { lyt -> isIndented(lyt) }
             }
             .let { state1 -> popStack(state1) { it == LayoutDelimiter.Property } }
             .let { state1 -> popStack(state1) { it == LayoutDelimiter.Brace } }
@@ -619,7 +636,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
 
         RBRACK -> state
             .let {
-                collapse(tokPos, it) { _, _, lyt -> isIndented(lyt) }
+                collapse(tokPos, it) { lyt -> isIndented(lyt) }
             }
             .let { state1 -> popStack(state1) { it == LayoutDelimiter.Square } }
             .let { insertToken(src, it) }
