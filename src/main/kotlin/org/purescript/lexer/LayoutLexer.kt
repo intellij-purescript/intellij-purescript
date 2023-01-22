@@ -684,7 +684,7 @@ fun correctLineAndColumn(source: CharSequence) =
         val end = current.end
         // might be expensive
         val subSequence = source.subSequence(start.offset, end.offset)
-        val newlineIndex = subSequence.lastIndexOf("\n")
+        val newlineIndex = subSequence.lastIndexOf('\n')
         val tokenLength = end.offset - start.offset
         val newEnd = when (newlineIndex) {
             -1 -> SourcePos(start.line, start.column + tokenLength, end.offset)
