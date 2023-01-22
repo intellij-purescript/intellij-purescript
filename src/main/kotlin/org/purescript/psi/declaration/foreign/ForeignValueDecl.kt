@@ -49,8 +49,7 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
 
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
-                val key: StubIndexKey<String, ForeignValueDecl> = ExportedForeignValueDeclIndex.KEY
-                sink.occurrence(key, stub.name)
+                sink.occurrence(ExportedForeignValueDeclIndex.KEY, stub.name)
             }
         }
     }
