@@ -331,7 +331,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                     .let { pushStack(tokPos, LayoutDelimiter.Property, it) }
             }
         }
-        
+
         ARROW -> {
             fun arrowP(
                 tokPos: SourcePos,
@@ -380,7 +380,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 { pushStack(tokPos, LayoutDelimiter.Forall, it) },
                 state
             )
-        
+
         DATA -> {
             val state2 = insertDefault(src, tokPos, state)
             if (isTopDecl(tokPos, state2.stack)) {
@@ -573,7 +573,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             )
 
         THEN -> {
-            val state2 = collapse(tokPos, state) {lyt -> isIndented(lyt) }
+            val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.If) {
                 LayoutState(state2.stack.tail, state2.acc)
                     .let { insertToken(src, it) }
@@ -670,14 +670,10 @@ fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
     }
 }
 
-fun unwindLayout(
-    pos: SourcePos,
-    stkIn: LayoutStack?
-): Sequence<SuperToken> {
-    return getTokensFromStack(stkIn)
+fun unwindLayout(pos: SourcePos, stkIn: LayoutStack?) =
+    getTokensFromStack(stkIn)
         .filter { isIndented(it) }
         .map { lytToken(pos, LAYOUT_END) }
-}
 
 fun lex(tokens: List<SuperToken>): List<SuperToken> {
     val sourcePos = SourcePos(0, 0, 0)
