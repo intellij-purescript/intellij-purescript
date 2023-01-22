@@ -678,39 +678,25 @@ fun lex(
     return acc
 }
 
-fun correctLineAndColumn(
-    source: CharSequence
-): (SourceToken, SourceToken) -> SourceToken {
-    fun go(
-        previous: SourceToken,
-        current: SourceToken,
-    ): SourceToken {
-        val rangeStart = previous.end
+fun correctLineAndColumn(source: CharSequence) =
+    { previous: SourceToken, current: SourceToken ->
+        val start = previous.end
         val end = current.end
         // might be expensive
-        val subSequence = source
-            .subSequence(rangeStart.offset, end.offset)
-        val newlineIndex = subSequence
-            .lastIndexOf("\n")
-        val noNewline = newlineIndex == -1
-        val tokenLength = end.offset - rangeStart.offset
-        val newEnd = if (noNewline) {
-            SourcePos(
-                rangeStart.line,
-                rangeStart.column + tokenLength,
-                end.offset
-            )
-        } else {
-            SourcePos(
-                rangeStart.line + subSequence.count { it == '\n' },
+        val subSequence = source.subSequence(start.offset, end.offset)
+        val newlineIndex = subSequence.lastIndexOf("\n")
+        val tokenLength = end.offset - start.offset
+        val newEnd = when (newlineIndex) {
+            -1 -> SourcePos(start.line, start.column + tokenLength, end.offset)
+
+            else -> SourcePos(
+                start.line + subSequence.count { it == '\n' },
                 tokenLength - newlineIndex - 1,
                 end.offset
             )
         }
-        return SourceToken(current.value, rangeStart, newEnd)
+        SourceToken(current.value, start, newEnd)
     }
-    return ::go
-}
 
 fun posFromOffset(offset: Int) = SourcePos(0, 0, offset)
 
@@ -732,7 +718,7 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var tokens: List<SourceToken> = listOf()
     private var index = 0
-    private val root = 
+    private val root =
         SourceToken(WHITE_SPACE, posFromOffset(0), posFromOffset(0))
 
     override fun start(
