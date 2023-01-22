@@ -721,16 +721,11 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
     private val root =
         SourceToken(WHITE_SPACE, posFromOffset(0), posFromOffset(0))
 
-    override fun start(
-        buffer: CharSequence,
-        startOffset: Int,
-        endOffset: Int,
-        initialState: Int
-    ) {
-        require(startOffset == 0) { "does not support incremental lexing: startOffset must be 0" }
-        require(initialState == 0) { "does not support incremental lexing: initialState must be 0" }
+    override fun start(buffer: CharSequence, start: Int, end: Int, state: Int) {
+        require(start == 0) { "does not support incremental lexing: startOffset must be 0" }
+        require(state == 0) { "does not support incremental lexing: initialState must be 0" }
 
-        super.start(buffer, startOffset, endOffset, initialState)
+        super.start(buffer, start, end, state)
         this.tokens = getTokens(delegate)
             .runningFold(root, correctLineAndColumn(buffer))
             .drop(1)
