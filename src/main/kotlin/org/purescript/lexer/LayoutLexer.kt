@@ -30,8 +30,8 @@ data class Lexeme(
     val trailingWhitespace: List<SourceToken>
 ) {
     val tokens get() = listOf(token) + trailingWhitespace
-    val start get() = token.range.start
-    val end get() = trailingWhitespace.lastOrNull()?.range?.end ?: token.range.end
+    val start get() = token.start
+    val end get() = trailingWhitespace.lastOrNull()?.end ?: token.end
     val value = token.value
 }
 
@@ -102,14 +102,7 @@ fun toSuper(token: Lexeme): SuperToken = SuperToken(emptyList(), token)
 fun toLexeme(token: SourceToken): Lexeme = Lexeme(token, emptyList())
 
 fun lytToken(pos: SourcePos, value: PSElementType): SuperToken =
-    toSuper(
-        toLexeme(
-            SourceToken(
-                range = SourceRange(pos, pos),
-                value = value
-            )
-        )
-    )
+    toSuper(toLexeme(SourceToken(SourceRange(pos, pos), value)))
 
 fun <A> snoc(acc: List<A>, pair: A): List<A> {
     val acc2 = acc.toMutableList()
@@ -694,8 +687,8 @@ fun correctLineAndColumn(
         previous: SourceToken,
         current: SourceToken,
     ): SourceToken {
-        val (_, rangeStart) = previous.range
-        val (_, end) = current.range
+        val rangeStart = previous.end
+        val end =  current.end
         // might be expensive
         val subSequence = source
             .subSequence(rangeStart.offset, end.offset)
@@ -716,10 +709,7 @@ fun correctLineAndColumn(
                 end.offset
             )
         }
-        return SourceToken(
-            range = SourceRange(rangeStart, newEnd),
-            value = current.value
-        )
+        return SourceToken(SourceRange(rangeStart, newEnd), current.value)
     }
     return ::go
 }
@@ -728,19 +718,14 @@ fun posFromOffset(offset: Int): SourcePos {
     return SourcePos(0, 0, offset)
 }
 
-fun rangeFromOffsets(start: Int, end: Int): SourceRange {
-    return SourceRange(posFromOffset(start), posFromOffset(end))
-}
-
 fun getTokens(lexer: Lexer): Sequence<SourceToken> {
     return generateSequence {
         val sourceToken: SourceToken? = lexer.tokenType?.let { value ->
             SourceToken(
-                range = rangeFromOffsets(
-                    lexer.tokenStart,
-                    lexer.tokenEnd
-                ),
-                value = value
+                SourceRange(
+                    posFromOffset(lexer.tokenStart),
+                    posFromOffset(lexer.tokenEnd)
+                ), value
             )
         }
         lexer.advance()
@@ -752,7 +737,10 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
 
     private var tokens: List<SourceToken> = listOf()
     private var index = 0
-    private val root = SourceToken(rangeFromOffsets(0, 0), WHITE_SPACE)
+    private val root = SourceToken(
+        SourceRange(posFromOffset(0), posFromOffset(0)),
+        WHITE_SPACE
+    )
 
     override fun start(
         buffer: CharSequence,
@@ -826,20 +814,8 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         if (lexeme != null) superTokens.add(SuperToken(qualified, lexeme))
         return superTokens
     }
-
-    override fun advance() {
-        index++
-    }
-
-    override fun getTokenType(): IElementType? {
-        return tokens.getOrNull(index)?.value
-    }
-
-    override fun getTokenEnd(): Int {
-        return tokens[index].range.end.offset
-    }
-
-    override fun getTokenStart(): Int {
-        return tokens[index].range.start.offset
-    }
+    override fun advance() { index++ }
+    override fun getTokenType() = tokens.getOrNull(index)?.value
+    override fun getTokenEnd() = tokens[index].end.offset
+    override fun getTokenStart() = tokens[index].start.offset
 }

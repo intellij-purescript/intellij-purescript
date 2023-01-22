@@ -2,20 +2,24 @@ package org.purescript.lexer
 
 import com.intellij.psi.TokenType.WHITE_SPACE
 import junit.framework.TestCase
+import org.purescript.lexer.token.SourceRange
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.MODULE
 
 class LayoutLexerTest : TestCase() {
     private val psLexer = PSLexer()
-    private val root = SourceToken(rangeFromOffsets(0, 0), WHITE_SPACE)
+    private val root = SourceToken(
+        SourceRange(posFromOffset(0), posFromOffset(0)),
+        WHITE_SPACE
+    )
 
     fun `test it sets correct column for first token`() {
         val source = "module"
-        val module = SourceToken(rangeFromOffsets(0, 6), MODULE)
+        val module =
+            SourceToken(SourceRange(posFromOffset(0), posFromOffset(6)), MODULE)
         val first = correctLineAndColumn(source)(root, module)
-        val (start, end) = first.range
-        assertEquals(0, start.column)
-        assertEquals(6, end.column)
+        assertEquals(0, first.start.column)
+        assertEquals(6, first.end.column)
     }
 
     fun `test it sets correct column for second token`() {
@@ -25,9 +29,8 @@ class LayoutLexerTest : TestCase() {
         val corrected =
             tokens.runningFold(root, correctLineAndColumn(source)).drop(1)
         val (_, second) = corrected.toList()
-        val (start, end) = second.range
-        assertEquals(6, start.column)
-        assertEquals(7, end.column)
+        assertEquals(6, second.start.column)
+        assertEquals(7, second.end.column)
     }
 
     fun `test it handle newlines`() {
@@ -45,19 +48,16 @@ class LayoutLexerTest : TestCase() {
         val (moduleKeyword, newline, moduleName, _, where) =
             corrected.toList()
 
-        val (newlineStart, newlineEnd) = newline.range
-        assertEquals(moduleKeyword.range.end, newlineStart)
-        assertEquals(1, newlineEnd.line)
-        assertEquals(0, newlineEnd.column)
+        assertEquals(moduleKeyword.end, newline.start)
+        assertEquals(1, newline.end.line)
+        assertEquals(0, newline.end.column)
 
-        val (moduleNameStart, moduleNameEnd) = moduleName.range
-        assertEquals(newlineEnd, moduleNameStart)
-        assertEquals(1, moduleNameEnd.line)
-        assertEquals(4, moduleNameEnd.column)
-
-        val (whereStart, whereEnd) = where.range
-        assertEquals(3, whereEnd.line)
-        assertEquals(6, whereEnd.column)
+        assertEquals(newline.end, moduleName.start)
+        assertEquals(1, moduleName.end.line)
+        assertEquals(4, moduleName.end.column)
+        
+        assertEquals(3, where.end.line)
+        assertEquals(6, where.end.column)
     }
 
     fun `test it calculate offset`() {
