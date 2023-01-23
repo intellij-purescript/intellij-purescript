@@ -79,21 +79,10 @@ fun isIndented(lyt: LayoutDelimiter): Boolean = when (lyt) {
 }
 
 fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
-    stk?.tail == null || stk.tail.tail != null -> {
-        false
-    }
-
-    stk.tail.layoutDelimiter != LayoutDelimiter.Root -> {
-        false
-    }
-
-    stk.layoutDelimiter != LayoutDelimiter.Where -> {
-        false
-    }
-
-    else -> {
-        tokPos.column == stk.sourcePos.column
-    }
+    stk?.tail == null || stk.tail.tail != null -> false
+    stk.tail.layoutDelimiter != LayoutDelimiter.Root -> false
+    stk.layoutDelimiter != LayoutDelimiter.Where -> false
+    else -> tokPos.column == stk.sourcePos.column
 }
 
 fun toSuper(token: Lexeme): SuperToken = SuperToken(emptyList(), token)
