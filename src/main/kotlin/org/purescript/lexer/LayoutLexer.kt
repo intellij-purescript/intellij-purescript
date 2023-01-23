@@ -55,9 +55,32 @@ data class LayoutState(
 
     fun insertToken(token: SuperToken) =
         copy(acc = acc.toMutableList() + (token to stack))
-    
+
     fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
         copy(stack = LayoutStack(lytPos, lyt, stack))
+
+    fun insertSep(tokPos: SourcePos): LayoutState {
+        val (stk, acc) = this
+        val (lytPos, lyt, tail) = stk ?: return this
+        val sepTok = lytToken(tokPos, LAYOUT_SEP)
+        return when {
+            LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
+                LayoutState(tail, acc).insertToken(sepTok)
+
+            LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
+                LayoutState(tail, acc).insertToken(sepTok)
+
+            identSepP(tokPos, lytPos, lyt) -> when (lyt) {
+                LayoutDelimiter.Of ->
+                    insertToken(sepTok)
+                        .pushStack(tokPos, LayoutDelimiter.CaseBinders)
+
+                else -> insertToken(sepTok)
+            }
+
+            else -> this
+        }
+    }
 }
 
 data class Lexeme(
@@ -143,31 +166,6 @@ fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
 fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     isIndented(lyt) && sepP(tokPos, lytPos)
 
-fun insertSep(tokPos: SourcePos, state: LayoutState): LayoutState {
-    val (stk, acc) = state
-    val (lytPos, lyt, tail) = stk ?: return state
-    val sepTok = lytToken(tokPos, LAYOUT_SEP)
-    return when {
-        LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
-            LayoutState(tail, acc).insertToken(sepTok)
-
-        LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
-            LayoutState(tail, acc).insertToken(sepTok)
-
-        identSepP(tokPos, lytPos, lyt) -> when (lyt) {
-            LayoutDelimiter.Of -> state.insertToken(sepTok)
-                .pushStack(
-                    tokPos,
-                    LayoutDelimiter.CaseBinders
-                )
-
-            else -> state.insertToken(sepTok)
-        }
-
-        else -> state
-    }
-}
-
 
 inline fun popStack(
     state: LayoutState,
@@ -194,13 +192,11 @@ fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
 
 
 fun insertDefault(src: SuperToken, tokPos: SourcePos, state: LayoutState)
-    : LayoutState = insertSep(
-    tokPos,
-    state.collapse(tokPos)
-    { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
-        offsideP(tokPos, lytPos, lyt)
-    }
-)
+    : LayoutState = state.collapse(tokPos)
+{ tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+    offsideP(tokPos, lytPos, lyt)
+}
+    .insertSep(tokPos)
     .insertToken(src)
 
 inline fun insertKwProperty(
@@ -261,7 +257,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                     )
                 }
             }
-            .let { insertSep(tokPos, it) }
+            .let { it.insertSep(tokPos) }
             .let { it.insertToken(src) }
 
         EQ -> {
@@ -618,7 +614,8 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 if (isTopDecl(tokPos, state3.stack)) {
                     state3.insertToken(src)
                 } else {
-                    insertSep(tokPos, state3)
+                    state3
+                        .insertSep(tokPos)
                         .let { it.insertToken(src) }
                         .let { state1 -> popStack(state1) { it == LayoutDelimiter.Property } }
                 }
