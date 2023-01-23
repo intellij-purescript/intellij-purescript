@@ -6,7 +6,7 @@ import com.intellij.lexer.DelegateLexer
 import com.intellij.lexer.Lexer
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.TokenSet
-import org.purescript.lexer.LayoutDelimiter.*
+import org.purescript.lexer.LayoutDelimiter.Root
 import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.*
@@ -97,10 +97,8 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         var trailing = ArrayList<SourceToken>(4)
         val lexemes = ArrayList<Lexeme>(sourceTokens.size)
         var token: SourceToken = sourceTokens.first()
-        for (t in sourceTokens.subList(1, sourceTokens.size)) when {
-            t.value in trailingTokens ->
-                trailing.add(t)
-
+        for (t in sourceTokens.subList(1, sourceTokens.size)) when (t.value) {
+            in trailingTokens -> trailing.add(t)
             else -> {
                 lexemes.add(Lexeme(token, trailing))
                 token = t
