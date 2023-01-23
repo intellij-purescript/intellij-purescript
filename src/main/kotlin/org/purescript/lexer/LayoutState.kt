@@ -20,7 +20,7 @@ data class LayoutState(
             stack != null &&
             p(tokPos, stack.sourcePos, stack.layoutDelimiter)
         ) {
-            if (stack.layoutDelimiter.isIndent()) {
+            if (stack.layoutDelimiter.isIndent) {
                 val pair = lytToken(tokPos, LAYOUT_END) to stack.tail
                 acc = snoc(acc, pair)
             }
