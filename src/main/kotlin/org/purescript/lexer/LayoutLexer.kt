@@ -226,17 +226,12 @@ inline fun popStack(
     }
 }
 
-fun find(
-    stack: LayoutStack?,
-    function: (LayoutStack) -> Boolean
-): LayoutStack? =
-    if (stack == null) {
-        null
-    } else if (function(stack)) {
-        stack
-    } else {
-        find(stack.tail, function)
-    }
+tailrec fun find(stack: LayoutStack?, filter: (LayoutStack) -> Boolean)
+    : LayoutStack? = when {
+    stack == null -> null
+    filter(stack) -> stack
+    else -> find(stack.tail, filter)
+}
 
 
 fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
