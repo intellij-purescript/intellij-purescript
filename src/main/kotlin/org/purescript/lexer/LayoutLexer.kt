@@ -467,15 +467,12 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .let { insertToken(src, it) }
 
         IN -> {
-            val inP = { _: SourcePos, _: SourcePos, lyt: LayoutDelimiter ->
-                when (lyt) {
+            val (stk1, acc2) = collapse(tokPos, state) { lyt -> when (lyt) {
                     LayoutDelimiter.Let -> false
                     LayoutDelimiter.Ado -> false
                     else -> isIndented(lyt)
-                }
+                } 
             }
-
-            val (stk1, acc2) = collapse(tokPos, state, inP)
             val (_, lyt, stk2) = stk1 ?: return state
                 .let { insertDefault(src, tokPos, it) }
                 .let { state1 -> popStack(state1) { it == LayoutDelimiter.Property } }
