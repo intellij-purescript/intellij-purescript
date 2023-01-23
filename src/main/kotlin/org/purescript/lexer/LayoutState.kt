@@ -39,7 +39,7 @@ data class LayoutState(
         collapse(tokPos, ::offsideP).insertSep(tokPos).insertToken(src)
 
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
-        stack?.layoutDelimiter == null -> this
+        stack == null -> this
         p(stack.layoutDelimiter) -> copy(stack = stack.tail)
         else -> this
     }
