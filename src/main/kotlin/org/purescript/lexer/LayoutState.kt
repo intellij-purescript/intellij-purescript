@@ -66,20 +66,14 @@ data class LayoutState(
     }
 
     fun insertSep(tokPos: SourcePos): LayoutState {
-        val (_, lyt, _) = stack ?: return this
-        val sepTok = lytToken(tokPos, LAYOUT_SEP)
+        val (sourcePos, lyt, _) = stack ?: return this
         return when {
-            TopDecl == lyt && sepP(tokPos, stack.sourcePos) ->
-                popStack().insertToken(sepTok)
-
-            TopDeclHead == lyt && sepP(tokPos, stack.sourcePos) ->
-                popStack().insertToken(sepTok)
-
-            lyt.isIndent && sepP(tokPos, stack.sourcePos) -> when (lyt) {
-                Of -> insertToken(sepTok).pushStack(tokPos, CaseBinders)
-                else -> insertToken(sepTok)
-            }
-
+            tokPos.column != sourcePos.column || tokPos.line == sourcePos.line -> this
+            TopDecl == lyt || TopDeclHead == lyt ->
+                popStack().insertToken(lytToken(tokPos, LAYOUT_SEP))
+            Of == lyt -> insertToken(lytToken(tokPos, LAYOUT_SEP))
+                .pushStack(tokPos, CaseBinders)
+            lyt.isIndent -> insertToken(lytToken(tokPos, LAYOUT_SEP))
             else -> this
         }
     }

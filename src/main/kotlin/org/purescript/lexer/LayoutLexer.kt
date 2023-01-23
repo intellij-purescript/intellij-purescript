@@ -72,9 +72,6 @@ fun lytToken(pos: SourcePos, value: PSElementType) =
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     lyt.isIndent && tokPos.column < lytPos.column
 
-fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
-    tokPos.column == lytPos.column && tokPos.line != lytPos.line
-
 
 fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
     : LayoutState {
