@@ -284,8 +284,7 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
     for (posToken in tokens) {
         val nextStart = posToken.end
         val (nextStack, toks) = insertLayout(posToken, nextStart, stack)
-        val ts = toks.map { it.first }
-        acc += ts
+        acc += toks.map { it.first }
         stack = nextStack
         startPos = nextStart
     }
