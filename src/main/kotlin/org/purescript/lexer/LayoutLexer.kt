@@ -12,52 +12,6 @@ import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.*
 
 
-data class Lexeme(
-    val token: SourceToken,
-    val trailingWhitespace: List<SourceToken>
-) {
-    val tokens get() = listOf(token) + trailingWhitespace
-    val start get() = token.start
-    val end get() = trailingWhitespace.lastOrNull()?.end ?: token.end
-    val value = token.value
-    val asSuper get() = SuperToken(emptyList(), this)
-}
-
-data class SuperToken(
-    val qualified: List<Lexeme>,
-    val token: Lexeme,
-) {
-    val tokens get() = qualified.flatMap { it.tokens } + token.tokens
-    val start get() = qualified.firstOrNull()?.start ?: token.start
-    val end get() = token.end
-    val value = token.value
-}
-
-enum class LayoutDelimiter(val isIndent: Boolean) {
-    Root(false),
-    TopDecl(false),
-    TopDeclHead(false),
-    DeclGuard(false),
-    Case(false),
-    CaseBinders(false),
-    CaseGuard(false),
-    LambdaBinders(false),
-    Paren(false),
-    Brace(false),
-    Square(false),
-    If(false),
-    Then(false),
-    Property(false),
-    Forall(false),
-    Tick(false),
-    Let(true),
-    LetStmt(true),
-    Where(true),
-    Of(true),
-    Do(true),
-    Ado(true),
-}
-
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     lyt.isIndent && tokPos.column < lytPos.column
 
