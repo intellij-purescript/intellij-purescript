@@ -349,26 +349,24 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         }
 
         ARROW -> {
-            fun arrowP(
-                tokPos: SourcePos,
-                lytPos: SourcePos,
-                lyt: LayoutDelimiter
-            ): Boolean =
+
+            collapse(tokPos, state) { tokPos, lytPos, lyt ->
                 when (lyt) {
                     LayoutDelimiter.Do -> true
                     LayoutDelimiter.Of -> false
                     else -> offsideEndP(tokPos, lytPos, lyt)
                 }
-
-            fun guardP(lyt: LayoutDelimiter): Boolean = when (lyt) {
-                LayoutDelimiter.CaseBinders -> true
-                LayoutDelimiter.CaseGuard -> true
-                LayoutDelimiter.LambdaBinders -> true
-                else -> false
             }
-            state
-                .let { collapse(tokPos, it, ::arrowP) }
-                .let { popStack(it, ::guardP) }
+                .let {
+                    popStack(it) {
+                        when (it) {
+                            LayoutDelimiter.CaseBinders -> true
+                            LayoutDelimiter.CaseGuard -> true
+                            LayoutDelimiter.LambdaBinders -> true
+                            else -> false
+                        }
+                    }
+                }
                 .let { insertToken(src, it) }
         }
 
