@@ -29,13 +29,9 @@ data class LayoutState(
         src: SuperToken,
         tokPos: SourcePos,
         k: (LayoutState) -> LayoutState
-    ): LayoutState {
-        val state2 = insertDefault(src, tokPos)
-        return if (stack?.layoutDelimiter == Property) {
-            state2.popStack()
-        } else {
-            k(state2)
-        }
+    ) = when (stack?.layoutDelimiter) {
+        Property -> insertDefault(src, tokPos).popStack()
+        else -> k(insertDefault(src, tokPos))
     }
 
     inline fun collapse(
