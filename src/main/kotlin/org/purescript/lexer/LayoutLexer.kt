@@ -174,11 +174,7 @@ fun insertToken(token: SuperToken, state: LayoutState): LayoutState {
     return LayoutState(stk, acc2)
 }
 
-fun pushStack(
-    lytPos: SourcePos,
-    lyt: LayoutDelimiter,
-    state: LayoutState
-): LayoutState =
+fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter, state: LayoutState) =
     LayoutState(LayoutStack(lytPos, lyt, state.stack), state.acc)
 
 fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
