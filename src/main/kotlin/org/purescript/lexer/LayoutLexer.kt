@@ -172,27 +172,20 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .pushStack(tokPos, Property)
 
         RPAREN -> state
-            .let {
-                it.collapse(tokPos) { lyt: LayoutDelimiter -> lyt.isIndent }
-            }
-            .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Paren } }
+            .collapse(tokPos) { lyt: LayoutDelimiter -> lyt.isIndent }
+            .popStack { it: LayoutDelimiter -> it == Paren }
             .insertToken(src)
 
         RCURLY -> state
-            .let {
-                it.collapse(tokPos) { lyt: LayoutDelimiter -> lyt.isIndent }
-            }
-            .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Property } }
-            .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Brace } }
+            .collapse(tokPos) { lyt: LayoutDelimiter -> lyt.isIndent }
+            .popStack { it: LayoutDelimiter -> it == Property }
+            .popStack { it: LayoutDelimiter -> it == Brace }
             .insertToken(src)
 
         LBRACK -> state.insertDefault(src, tokPos).pushStack(tokPos, Square)
-
         RBRACK -> state
-            .let {
-                it.collapse(tokPos) { lyt: LayoutDelimiter -> lyt.isIndent }
-            }
-            .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Square } }
+            .collapse(tokPos) { lyt: LayoutDelimiter -> lyt.isIndent }
+            .popStack { it: LayoutDelimiter -> it == Square }
             .insertToken(src)
 
         IN -> {
@@ -216,7 +209,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                     .insertToken(src)
             } else {
                 return state.insertDefault(src, tokPos)
-                    .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Property } }
+                    .popStack { it: LayoutDelimiter -> it == Property }
             }
         }
 
@@ -238,25 +231,14 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 }
             }
 
-            return state.insertKwProperty(
-                src,
-                tokPos
-            ) { it: LayoutState -> next(it) }
+            return state.insertKwProperty(src, tokPos) { next(it) }
         }
 
         DO ->
-            state
-                .insertKwProperty(
-                    src,
-                    tokPos
-                ) { it: LayoutState -> it.insertStart(nextPos, Do) }
+            state.insertKwProperty(src, tokPos) { it.insertStart(nextPos, Do) }
 
         ADO ->
-            state
-                .insertKwProperty(
-                    src,
-                    tokPos
-                ) { it: LayoutState -> it.insertStart(nextPos, Ado) }
+            state.insertKwProperty(src, tokPos) { it.insertStart(nextPos, Ado) }
 
         CASE ->
             state
