@@ -137,19 +137,14 @@ inline fun collapse(
     p: (LayoutDelimiter) -> Boolean
 ): LayoutState {
     var (stack, acc) = state
-    while (stack != null) {
-        val (_, lyt, tail) = stack
-        if (!p(lyt)) {
-            return LayoutState(stack, acc)
-        } else {
-            if (isIndented(lyt)) {
-                val pair = lytToken(tokPos, LAYOUT_END) to tail
-                acc = snoc(acc, pair)
-            }
-            stack = tail
+    while (stack != null && p(stack.layoutDelimiter)) {
+        if (isIndented(stack.layoutDelimiter)) {
+            val pair = lytToken(tokPos, LAYOUT_END) to stack.tail
+            acc = snoc(acc, pair)
         }
+        stack = stack.tail
     }
-    return LayoutState(null, acc)
+    return LayoutState(stack, acc)
 }
 
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
