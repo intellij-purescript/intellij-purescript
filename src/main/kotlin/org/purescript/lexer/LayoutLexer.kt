@@ -181,11 +181,7 @@ fun pushStack(
 ): LayoutState =
     LayoutState(LayoutStack(lytPos, lyt, state.stack), state.acc)
 
-fun identSepP(
-    tokPos: SourcePos,
-    lytPos: SourcePos,
-    lyt: LayoutDelimiter
-): Boolean =
+fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     isIndented(lyt) && sepP(tokPos, lytPos)
 
 fun insertSep(tokPos: SourcePos, state: LayoutState): LayoutState {
