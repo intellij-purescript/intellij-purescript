@@ -94,16 +94,18 @@ inline fun insertKwProperty(
 
 fun insertStart(
     nextPos: SourcePos, lyt: LayoutDelimiter, state: LayoutState
-): LayoutState {
-    val stk = state.stack
-    val (pos, _, _) = stk?.find { it.isIndent } 
-        ?: return state.pushStack(nextPos, lyt)
-        .insertToken(lytToken(nextPos, LAYOUT_START))
-    return if (nextPos.column <= pos.column) {
-        state
-    } else {
-        state.pushStack(nextPos, lyt)
-            .insertToken(lytToken(nextPos, LAYOUT_START))
+): LayoutState = when (val indent = state.stack?.find { it.isIndent }) {
+    null -> state
+       .pushStack(nextPos, lyt)
+       .insertToken(lytToken(nextPos, LAYOUT_START))
+    else -> {
+        val (pos, _, _) = indent
+        if (nextPos.column <= pos.column) {
+            state
+        } else {
+            state.pushStack(nextPos, lyt)
+                .insertToken(lytToken(nextPos, LAYOUT_START))
+        }
     }
 }
 
