@@ -12,22 +12,6 @@ import org.purescript.parser.*
 import org.purescript.psi.PSElementType
 
 
-data class LayoutStack(
-    val sourcePos: SourcePos,
-    val layoutDelimiter: LayoutDelimiter,
-    val tail: LayoutStack?
-) {
-    inline fun count(filter: (LayoutDelimiter) -> Boolean): Int {
-        var tail = this.tail
-        var count = if (filter(layoutDelimiter)) 1 else 0
-        while (tail != null) {
-            if (filter(tail.layoutDelimiter)) count++
-            tail = tail.tail
-        }
-        return count
-    }
-}
-
 data class LayoutState(
     val stack: LayoutStack?,
     val acc: List<Pair<SuperToken, LayoutStack?>>
