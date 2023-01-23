@@ -16,4 +16,8 @@ data class LayoutStack(
         }
         return count
     }
+    fun find(filter: (LayoutStack) -> Boolean): LayoutStack? = when {
+        filter(this) -> this
+        else -> tail?.find(filter)
+    }
 }

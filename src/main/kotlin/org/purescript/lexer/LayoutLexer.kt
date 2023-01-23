@@ -78,14 +78,6 @@ fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     lyt.isIndent && sepP(tokPos, lytPos)
 
 
-tailrec fun find(stack: LayoutStack?, filter: (LayoutStack) -> Boolean)
-    : LayoutStack? = when {
-    stack == null -> null
-    filter(stack) -> stack
-    else -> find(stack.tail, filter)
-}
-
-
 inline fun insertKwProperty(
     src: SuperToken,
     tokPos: SourcePos,
@@ -104,7 +96,7 @@ fun insertStart(
     nextPos: SourcePos, lyt: LayoutDelimiter, state: LayoutState
 ): LayoutState {
     val stk = state.stack
-    val (pos, _, _) = find(stk) { stack: LayoutStack ->
+    val (pos, _, _) = stk?.find { stack: LayoutStack ->
         stack.layoutDelimiter.isIndent
     } ?: return state.pushStack(nextPos, lyt)
         .insertToken(lytToken(nextPos, LAYOUT_START))
