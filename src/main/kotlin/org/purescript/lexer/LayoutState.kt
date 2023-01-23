@@ -13,9 +13,7 @@ data class LayoutState(
 
     fun insertStart(nextPos: SourcePos, lyt: LayoutDelimiter): LayoutState =
         when (val indent = stack.find { it.isIndent }) {
-            null -> pushStack(nextPos, lyt)
-                .insertToken(nextPos.asStart)
-
+            null -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
             else -> when {
                 nextPos.column <= indent.sourcePos.column -> this
                 else -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
