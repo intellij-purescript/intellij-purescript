@@ -1,5 +1,6 @@
 package org.purescript.lexer
 
+import org.purescript.lexer.LayoutDelimiter.CaseBinders
 import org.purescript.lexer.token.SourcePos
 import org.purescript.parser.LAYOUT_END
 import org.purescript.parser.LAYOUT_SEP
@@ -45,20 +46,18 @@ data class LayoutState(
     }
 
     fun insertSep(tokPos: SourcePos): LayoutState {
-        val (stk, acc) = this
-        val (lytPos, lyt, tail) = stk ?: return this
+        val (lytPos, lyt, tail) = this.stack ?: return this
         val sepTok = lytToken(tokPos, LAYOUT_SEP)
         return when {
             LayoutDelimiter.TopDecl == lyt && sepP(tokPos, lytPos) ->
-                LayoutState(tail, acc).insertToken(sepTok)
+                copy(stack = tail).insertToken(sepTok)
 
             LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
-                LayoutState(tail, acc).insertToken(sepTok)
+                copy(stack = tail).insertToken(sepTok)
 
             identSepP(tokPos, lytPos, lyt) -> when (lyt) {
                 LayoutDelimiter.Of ->
-                    insertToken(sepTok)
-                        .pushStack(tokPos, LayoutDelimiter.CaseBinders)
+                    insertToken(sepTok).pushStack(tokPos, CaseBinders)
 
                 else -> insertToken(sepTok)
             }
