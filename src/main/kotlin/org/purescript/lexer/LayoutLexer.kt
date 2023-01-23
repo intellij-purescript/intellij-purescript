@@ -16,7 +16,22 @@ data class LayoutStack(
     val sourcePos: SourcePos,
     val layoutDelimiter: LayoutDelimiter,
     val tail: LayoutStack?
-)
+) {
+    fun convertToLayoutEndTokensAt(startPos: SourcePos): List<SuperToken> {
+        return tokens { isIndented(it) }
+            .map { lytToken(startPos, LAYOUT_END) }
+            .toList()
+    }
+    fun tokens(filter: (LayoutDelimiter) -> Boolean): Sequence<LayoutDelimiter> {
+        return if (filter(layoutDelimiter)) sequence { 
+            yield(layoutDelimiter)
+            tail?.tokens(filter)?.let { yieldAll(it) }
+        }
+        else {
+            tail?.tokens(filter) ?: emptySequence()
+        }
+    }
+}
 
 data class LayoutState(
     val stack: LayoutStack?,
@@ -648,20 +663,6 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
     }
 }
 
-fun getTokensFromStack(stkIn: LayoutStack?): Sequence<LayoutDelimiter> {
-    var stk = stkIn
-    return generateSequence {
-        val (_, lyt, tail) = stk ?: return@generateSequence null
-        stk = tail
-        lyt
-    }
-}
-
-fun unwindLayout(pos: SourcePos, stkIn: LayoutStack?) =
-    getTokensFromStack(stkIn)
-        .filter { isIndented(it) }
-        .map { lytToken(pos, LAYOUT_END) }
-
 fun lex(tokens: List<SuperToken>): List<SuperToken> {
     val sourcePos = SourcePos(0, 0, 0)
     var stack: LayoutStack? = LayoutStack(
@@ -679,7 +680,9 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
         stack = nextStack
         startPos = nextStart
     }
-    acc += unwindLayout(startPos, stack)
+    if (stack != null) {
+        acc += stack.convertToLayoutEndTokensAt(startPos)
+    }
     return acc
 }
 
