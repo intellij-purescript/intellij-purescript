@@ -396,40 +396,37 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             }
         }
 
-        WHERE -> {
+        WHERE -> when (stk?.layoutDelimiter) {
+            LayoutDelimiter.TopDeclHead ->
+                LayoutState(stk.tail, acc)
+                    .let { insertToken(src, it) }
+                    .let {
+                        insertStart(
+                            nextPos,
+                            LayoutDelimiter.Where,
+                            it
+                        )
+                    }
 
-            when (stk?.layoutDelimiter) {
-                LayoutDelimiter.TopDeclHead ->
-                    LayoutState(stk.tail, acc)
-                        .let { insertToken(src, it) }
-                        .let {
-                            insertStart(
-                                nextPos,
-                                LayoutDelimiter.Where,
-                                it
-                            )
-                        }
+            LayoutDelimiter.Property ->
+                insertToken(src, LayoutState(stk.tail, acc))
 
-                LayoutDelimiter.Property ->
-                    insertToken(src, LayoutState(stk.tail, acc))
-
-                else ->
-                    state
-                        .let {
-                            collapse(tokPos, it) { tokPos, lytPos, lyt ->
-                                if (lyt == LayoutDelimiter.Do) true
-                                else offsideEndP(tokPos, lytPos, lyt)
-                            }
+            else ->
+                state
+                    .let {
+                        collapse(tokPos, it) { tokPos, lytPos, lyt ->
+                            if (lyt == LayoutDelimiter.Do) true
+                            else offsideEndP(tokPos, lytPos, lyt)
                         }
-                        .let { insertToken(src, it) }
-                        .let {
-                            insertStart(
-                                nextPos,
-                                LayoutDelimiter.Where,
-                                it
-                            )
-                        }
-            }
+                    }
+                    .let { insertToken(src, it) }
+                    .let {
+                        insertStart(
+                            nextPos,
+                            LayoutDelimiter.Where,
+                            it
+                        )
+                    }
         }
 
         LPAREN -> state
