@@ -252,11 +252,11 @@ fun insertDefault(
     )
 }
 
-fun insertKwProperty(
+inline fun insertKwProperty(
     src: SuperToken,
     tokPos: SourcePos,
-    k: (LayoutState) -> LayoutState,
-    state: LayoutState
+    state: LayoutState,
+    k: (LayoutState) -> LayoutState
 ): LayoutState {
     val state2 = insertDefault(src, tokPos, state)
     return if (state.stack?.layoutDelimiter == LayoutDelimiter.Property) {
@@ -375,9 +375,8 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             insertKwProperty(
                 src,
                 tokPos,
-                { pushStack(tokPos, LayoutDelimiter.Forall, it) },
                 state
-            )
+            ) { pushStack(tokPos, LayoutDelimiter.Forall, it) }
 
         DATA -> {
             val state2 = insertDefault(src, tokPos, state)
@@ -513,32 +512,29 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 }
             }
 
-            return insertKwProperty(src, tokPos, ::next, state)
+            return insertKwProperty(src, tokPos, state, ::next)
         }
 
         DO ->
             insertKwProperty(
                 src,
                 tokPos,
-                { insertStart(nextPos, LayoutDelimiter.Do, it) },
                 state
-            )
+            ) { insertStart(nextPos, LayoutDelimiter.Do, it) }
 
         ADO ->
             insertKwProperty(
                 src,
                 tokPos,
-                { insertStart(nextPos, LayoutDelimiter.Ado, it) },
                 state
-            )
+            ) { insertStart(nextPos, LayoutDelimiter.Ado, it) }
 
         CASE ->
             insertKwProperty(
                 src,
                 tokPos,
-                { pushStack(tokPos, LayoutDelimiter.Case, it) },
                 state
-            )
+            ) { pushStack(tokPos, LayoutDelimiter.Case, it) }
 
         OF -> {
             val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
@@ -616,9 +612,8 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             insertKwProperty(
                 src,
                 tokPos,
-                { pushStack(tokPos, LayoutDelimiter.If, it) },
                 state
-            )
+            ) { pushStack(tokPos, LayoutDelimiter.If, it) }
 
         THEN -> {
             val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
