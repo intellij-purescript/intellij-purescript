@@ -186,10 +186,7 @@ tailrec fun find(stack: LayoutStack?, filter: (LayoutStack) -> Boolean)
 
 fun insertDefault(src: SuperToken, tokPos: SourcePos, state: LayoutState)
     : LayoutState = state
-        .collapse(tokPos) 
-            { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
-                offsideP(tokPos, lytPos, lyt)
-            }
+        .collapse(tokPos, ::offsideP)
         .insertSep(tokPos)
         .insertToken(src)
 
