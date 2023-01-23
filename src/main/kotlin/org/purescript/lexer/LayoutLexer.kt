@@ -240,35 +240,19 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         ADO ->
             state.insertKwProperty(src, tokPos) { it.insertStart(nextPos, Ado) }
 
-        CASE ->
-            state
-                .insertKwProperty(
-                    src,
-                    tokPos
-                ) { it: LayoutState ->
-                    it.pushStack(
-                        tokPos,
-                        LayoutDelimiter.Case
-                    )
-                }
-
+        CASE -> state.insertKwProperty(src, tokPos) 
+        { it.pushStack(tokPos, LayoutDelimiter.Case) }
         OF -> {
-            val state2 = state.collapse(tokPos) { lyt: LayoutDelimiter ->
-                lyt
-                    .isIndent
-            }
+            val state2 = state.collapse(tokPos) { lyt-> lyt.isIndent }
             return if (state2.stack?.layoutDelimiter == LayoutDelimiter.Case) {
                 LayoutState(state2.stack.tail, state2.acc)
                     .insertToken(src)
                     .insertStart(nextPos, Of)
-                    .pushStack(
-                        nextPos,
-                        CaseBinders
-                    )
+                    .pushStack(nextPos, CaseBinders)
             } else {
                 state2
                     .insertDefault(src, tokPos)
-                    .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Property } }
+                    .popStack { it: LayoutDelimiter -> it == Property }
             }
         }
 
