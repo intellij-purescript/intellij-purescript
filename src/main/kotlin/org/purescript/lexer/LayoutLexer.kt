@@ -68,12 +68,6 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
 fun lytToken(pos: SourcePos, value: PSElementType) =
     SourceToken(value, pos, pos).asLexeme.asSuper
 
-fun <A> snoc(acc: List<A>, pair: A): List<A> {
-    val acc2 = acc.toMutableList()
-    acc2 += pair
-    return acc2
-}
-
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     lyt.isIndent && tokPos.column < lytPos.column
 

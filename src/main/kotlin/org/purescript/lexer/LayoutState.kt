@@ -22,7 +22,7 @@ data class LayoutState(
         ) {
             if (stack.layoutDelimiter.isIndent) {
                 val pair = lytToken(tokPos, LAYOUT_END) to stack.tail
-                acc = snoc(acc, pair)
+                acc =  acc.toMutableList() + pair
             }
             stack = stack.tail
         }
