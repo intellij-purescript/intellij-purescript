@@ -124,10 +124,8 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             }.insertToken(src)
 
 
-        FORALL -> state.insertKwProperty(
-            src,
-            tokPos
-        ) { it: LayoutState -> it.pushStack(tokPos, Forall) }
+        FORALL -> state.insertKwProperty(src, tokPos)
+        { it.pushStack(tokPos, Forall) }
 
         DATA -> {
             val state2 = state.insertDefault(src, tokPos)
@@ -288,10 +286,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .insertDefault(src, tokPos)
             .popStack { it: LayoutDelimiter -> it == Property }
 
-        IF -> state.insertKwProperty(
-            src,
-            tokPos
-        ) { it: LayoutState -> it.pushStack(tokPos, If) }
+        IF -> state.insertKwProperty(src, tokPos) { it.pushStack(tokPos, If) }
 
         THEN -> {
             val state2 = state.collapse(tokPos) { lyt -> lyt.isIndent }
@@ -302,7 +297,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             } else {
                 state
                     .insertDefault(src, tokPos)
-                    .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Property } }
+                    .popStack { it: LayoutDelimiter -> it == Property }
             }
         }
 
