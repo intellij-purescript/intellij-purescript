@@ -61,10 +61,7 @@ tasks {
         purgeOldFiles.set(true)
         skeleton.set(file("src/main/grammar/idea-flex.skeleton"))
     }
-    withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        dependsOn(generateLexer)
-    }
+    withType<JavaCompile>().configureEach { options.encoding = "UTF-8" }
     withType<KotlinCompile>().configureEach { dependsOn(generateLexer) }
 }
 sourceSets {
