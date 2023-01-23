@@ -142,14 +142,11 @@ inline fun collapse(
         if (!p(lyt)) {
             return LayoutState(stack, acc)
         } else {
-            val nextAcc = if (isIndented(lyt)) {
+            if (isIndented(lyt)) {
                 val pair = lytToken(tokPos, LAYOUT_END) to tail
-                snoc(acc, pair)
-            } else {
-                acc
+                acc = snoc(acc, pair)
             }
             stack = tail
-            acc = nextAcc
         }
     }
     return LayoutState(null, acc)
