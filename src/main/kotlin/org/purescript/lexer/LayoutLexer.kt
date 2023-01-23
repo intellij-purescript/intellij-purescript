@@ -17,11 +17,15 @@ data class LayoutStack(
     val layoutDelimiter: LayoutDelimiter,
     val tail: LayoutStack?
 ) {
-
-    fun count(filter: (LayoutDelimiter) -> Boolean) = count(0, filter)
-    private tailrec fun count(c: Int, f: (LayoutDelimiter) -> Boolean): Int =
-        if (f(layoutDelimiter)) count(1 + c, f)
-        else count(c, f)
+    inline fun count(filter: (LayoutDelimiter) -> Boolean): Int {
+        var tail = this.tail
+        var count = if (filter(layoutDelimiter)) 1 else 0
+        while (tail != null) {
+            if (filter(tail.layoutDelimiter)) count++
+            tail = tail.tail
+        }
+        return count
+    }
 }
 
 data class LayoutState(
@@ -467,11 +471,12 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .let { insertToken(src, it) }
 
         IN -> {
-            val (stk1, acc2) = collapse(tokPos, state) { lyt -> when (lyt) {
+            val (stk1, acc2) = collapse(tokPos, state) { lyt ->
+                when (lyt) {
                     LayoutDelimiter.Let -> false
                     LayoutDelimiter.Ado -> false
                     else -> isIndented(lyt)
-                } 
+                }
             }
             val (_, lyt, stk2) = stk1 ?: return state
                 .let { insertDefault(src, tokPos, it) }
