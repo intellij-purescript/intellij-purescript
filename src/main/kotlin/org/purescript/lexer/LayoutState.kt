@@ -22,7 +22,7 @@ data class LayoutState(
         ) {
             if (stack.layoutDelimiter.isIndent) {
                 val pair = lytToken(tokPos, LAYOUT_END) to stack.tail
-                acc =  acc.toMutableList() + pair
+                acc = acc.toMutableList() + pair
             }
             stack = stack.tail
         }
@@ -35,16 +35,13 @@ data class LayoutState(
     fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
         copy(stack = LayoutStack(lytPos, lyt, stack))
 
-    fun insertDefault(src: SuperToken, tokPos: SourcePos) = 
+    fun insertDefault(src: SuperToken, tokPos: SourcePos) =
         collapse(tokPos, ::offsideP).insertSep(tokPos).insertToken(src)
-    
-    inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState {
-        val lyt = this.stack?.layoutDelimiter
-        return if (lyt != null && p(lyt)) {
-            LayoutState(this.stack?.tail, this.acc)
-        } else {
-            this
-        }
+
+    inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
+        stack?.layoutDelimiter == null -> this
+        p(stack.layoutDelimiter) -> copy(stack = stack.tail)
+        else -> this
     }
 
     fun insertSep(tokPos: SourcePos): LayoutState {
