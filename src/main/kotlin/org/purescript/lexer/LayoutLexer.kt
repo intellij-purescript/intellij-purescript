@@ -371,12 +371,9 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         }
 
 
-        FORALL ->
-            insertKwProperty(
-                src,
-                tokPos,
-                state
-            ) { pushStack(tokPos, LayoutDelimiter.Forall, it) }
+        FORALL -> insertKwProperty(src, tokPos, state) {
+            pushStack(tokPos, LayoutDelimiter.Forall, it)
+        }
 
         DATA -> {
             val state2 = insertDefault(src, tokPos, state)
