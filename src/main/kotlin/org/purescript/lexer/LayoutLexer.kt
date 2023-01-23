@@ -152,7 +152,7 @@ inline fun collapse(
             acc = nextAcc
         }
     }
-    return LayoutState(stack, acc)
+    return LayoutState(null, acc)
 }
 
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
