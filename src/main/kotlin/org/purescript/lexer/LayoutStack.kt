@@ -7,6 +7,12 @@ data class LayoutStack(
     val layoutDelimiter: LayoutDelimiter,
     val tail: LayoutStack?
 ) {
+    fun isTopDecl(tokPos: SourcePos): Boolean = when {
+        tail == null || tail.tail != null -> false
+        tail.layoutDelimiter != LayoutDelimiter.Root -> false
+        layoutDelimiter != LayoutDelimiter.Where -> false
+        else -> tokPos.column == sourcePos.column
+    }
     inline fun count(filter: (LayoutDelimiter) -> Boolean): Int {
         var tail = this.tail
         var count = if (filter(layoutDelimiter)) 1 else 0

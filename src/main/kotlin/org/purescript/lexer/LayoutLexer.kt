@@ -58,13 +58,6 @@ enum class LayoutDelimiter(val isIndent: Boolean) {
     Ado(true),
 }
 
-fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
-    stk?.tail == null || stk.tail.tail != null -> false
-    stk.tail.layoutDelimiter != Root -> false
-    stk.layoutDelimiter != Where -> false
-    else -> tokPos.column == stk.sourcePos.column
-}
-
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     lyt.isIndent && tokPos.column < lytPos.column
 
@@ -143,7 +136,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
 
         DATA -> {
             val state2 = state.insertDefault(src, tokPos)
-            if (isTopDecl(tokPos, state2.stack)) {
+            if (state2.isTopDecl(tokPos)) {
                 state2.pushStack(tokPos, TopDecl)
             } else {
                 state2.popStack { it == Property }
@@ -152,7 +145,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
 
         CLASS -> {
             val state2 = state.insertDefault(src, tokPos)
-            if (isTopDecl(tokPos, state2.stack)) {
+            if (state2.isTopDecl(tokPos)) {
                 state2.pushStack(tokPos, TopDeclHead)
             } else {
                 state2.popStack { it == Property }
@@ -357,7 +350,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 LayoutState(state2.stack.tail, state2.acc).insertToken(src)
             } else {
                 val state3 = state.collapse(tokPos, ::offsideP)
-                if (isTopDecl(tokPos, state3.stack)) {
+                if (state3.isTopDecl(tokPos)) {
                     state3.insertToken(src)
                 } else {
                     state3
