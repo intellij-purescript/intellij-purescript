@@ -4,6 +4,7 @@ import org.purescript.lexer.LayoutDelimiter.CaseBinders
 import org.purescript.lexer.token.SourcePos
 import org.purescript.parser.LAYOUT_END
 import org.purescript.parser.LAYOUT_SEP
+import org.purescript.parser.LAYOUT_START
 
 data class LayoutState(
     val stack: LayoutStack?,
@@ -11,6 +12,18 @@ data class LayoutState(
 ) {
     inline fun collapse(tokPos: SourcePos, p: (LayoutDelimiter) -> Boolean)
         : LayoutState = this.collapse(tokPos) { _, _, lyt -> p(lyt) }
+
+    fun insertStart(nextPos: SourcePos, lyt: LayoutDelimiter): LayoutState =
+        when (val indent = stack?.find { it.isIndent }) {
+            null -> pushStack(nextPos, lyt)
+                .insertToken(lytToken(nextPos, LAYOUT_START))
+
+            else -> when {
+                nextPos.column <= indent.sourcePos.column -> this
+                else -> pushStack(nextPos, lyt)
+                    .insertToken(lytToken(nextPos, LAYOUT_START))
+            }
+        }
 
     inline fun collapse(
         tokPos: SourcePos,
