@@ -10,7 +10,6 @@ import org.purescript.lexer.LayoutDelimiter.*
 import org.purescript.lexer.token.SourcePos
 import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.*
-import org.purescript.psi.PSElementType
 
 
 data class Lexeme(
@@ -65,9 +64,6 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
     stk.layoutDelimiter != Where -> false
     else -> tokPos.column == stk.sourcePos.column
 }
-
-fun lytToken(pos: SourcePos, value: PSElementType) =
-    SourceToken(value, pos, pos).asLexeme.asSuper
 
 fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
     lyt.isIndent && tokPos.column < lytPos.column
@@ -223,12 +219,12 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == Property } }
             if (lyt == LetStmt && stk2?.layoutDelimiter == Ado) {
                 return LayoutState(stk2.tail, acc2)
-                    .insertToken(lytToken(tokPos, LAYOUT_END))
-                    .insertToken(lytToken(tokPos, LAYOUT_END))
+                    .insertToken(tokPos.asEnd)
+                    .insertToken(tokPos.asEnd)
                     .insertToken(src)
             } else if (lyt.isIndent) {
                 return LayoutState(stk2, acc2)
-                    .insertToken(lytToken(tokPos, LAYOUT_END))
+                    .insertToken(tokPos.asEnd)
                     .insertToken(src)
             } else {
                 return state.insertDefault(src, tokPos)
@@ -390,7 +386,7 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
         startPos = nextStart
     }
     if (stack != null) {
-        val layoutEnd = lytToken(startPos, LAYOUT_END)
+        val layoutEnd = startPos.asEnd
         acc += List(stack.count { it.isIndent }) { layoutEnd }
     }
     return acc

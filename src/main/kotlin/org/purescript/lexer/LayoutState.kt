@@ -2,9 +2,6 @@ package org.purescript.lexer
 
 import org.purescript.lexer.LayoutDelimiter.*
 import org.purescript.lexer.token.SourcePos
-import org.purescript.parser.LAYOUT_END
-import org.purescript.parser.LAYOUT_SEP
-import org.purescript.parser.LAYOUT_START
 
 data class LayoutState(
     val stack: LayoutStack?,
@@ -16,12 +13,11 @@ data class LayoutState(
     fun insertStart(nextPos: SourcePos, lyt: LayoutDelimiter): LayoutState =
         when (val indent = stack?.find { it.isIndent }) {
             null -> pushStack(nextPos, lyt)
-                .insertToken(lytToken(nextPos, LAYOUT_START))
+                .insertToken(nextPos.asStart)
 
             else -> when {
                 nextPos.column <= indent.sourcePos.column -> this
-                else -> pushStack(nextPos, lyt)
-                    .insertToken(lytToken(nextPos, LAYOUT_START))
+                else -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
             }
         }
 
@@ -44,7 +40,7 @@ data class LayoutState(
             p(tokPos, stack.sourcePos, stack.layoutDelimiter)
         ) {
             if (stack.layoutDelimiter.isIndent) {
-                acc = acc + (lytToken(tokPos, LAYOUT_END) to stack.tail)
+                acc = acc + (tokPos.asEnd to stack.tail)
             }
             stack = stack.tail
         }
@@ -70,10 +66,12 @@ data class LayoutState(
         return when {
             tokPos.column != srcPos.column || tokPos.line == srcPos.line -> this
             TopDecl == lyt || TopDeclHead == lyt ->
-                popStack().insertToken(lytToken(tokPos, LAYOUT_SEP))
-            Of == lyt -> insertToken(lytToken(tokPos, LAYOUT_SEP))
-                .pushStack(tokPos, CaseBinders)
-            lyt.isIndent -> insertToken(lytToken(tokPos, LAYOUT_SEP))
+                popStack().insertToken(tokPos.asSep)
+
+            Of == lyt ->
+                insertToken(tokPos.asSep).pushStack(tokPos, CaseBinders)
+
+            lyt.isIndent -> insertToken(tokPos.asSep)
             else -> this
         }
     }
