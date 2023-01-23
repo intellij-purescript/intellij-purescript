@@ -96,9 +96,8 @@ fun insertStart(
     nextPos: SourcePos, lyt: LayoutDelimiter, state: LayoutState
 ): LayoutState {
     val stk = state.stack
-    val (pos, _, _) = stk?.find { stack: LayoutStack ->
-        stack.layoutDelimiter.isIndent
-    } ?: return state.pushStack(nextPos, lyt)
+    val (pos, _, _) = stk?.find { it.isIndent } 
+        ?: return state.pushStack(nextPos, lyt)
         .insertToken(lytToken(nextPos, LAYOUT_START))
     return if (nextPos.column <= pos.column) {
         state

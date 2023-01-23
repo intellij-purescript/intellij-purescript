@@ -16,10 +16,10 @@ data class LayoutStack(
         }
         return count
     }
-    inline fun find(filter: (LayoutStack) -> Boolean): LayoutStack? {
+    inline fun find(filter: (LayoutDelimiter) -> Boolean): LayoutStack? {
         var stack: LayoutStack? = this
         while (stack != null) {
-            if (filter(stack)) return stack
+            if (filter(stack.layoutDelimiter)) return stack
             stack = stack.tail
         }
         return null
