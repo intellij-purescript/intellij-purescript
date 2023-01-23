@@ -20,6 +20,7 @@ data class Lexeme(
     val start get() = token.start
     val end get() = trailingWhitespace.lastOrNull()?.end ?: token.end
     val value = token.value
+    val asSuper get() = SuperToken(emptyList(), this)
 }
 
 data class SuperToken(
@@ -64,10 +65,8 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
     else -> tokPos.column == stk.sourcePos.column
 }
 
-fun toSuper(token: Lexeme): SuperToken = SuperToken(emptyList(), token)
-
 fun lytToken(pos: SourcePos, value: PSElementType) =
-    toSuper(SourceToken(value, pos, pos).asLexeme)
+    SourceToken(value, pos, pos).asLexeme.asSuper
 
 fun <A> snoc(acc: List<A>, pair: A): List<A> {
     val acc2 = acc.toMutableList()
