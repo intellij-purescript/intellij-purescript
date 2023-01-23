@@ -65,10 +65,9 @@ fun isTopDecl(tokPos: SourcePos, stk: LayoutStack?): Boolean = when {
 }
 
 fun toSuper(token: Lexeme): SuperToken = SuperToken(emptyList(), token)
-fun toLexeme(token: SourceToken): Lexeme = Lexeme(token, emptyList())
 
 fun lytToken(pos: SourcePos, value: PSElementType) =
-    toSuper(toLexeme(SourceToken(value, pos, pos)))
+    toSuper(SourceToken(value, pos, pos).asLexeme)
 
 fun <A> snoc(acc: List<A>, pair: A): List<A> {
     val acc2 = acc.toMutableList()
