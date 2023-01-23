@@ -79,36 +79,31 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .insertSep(tokPos)
             .insertToken(src)
 
-        EQ -> {
-            val (stk2, acc2) = state.collapse(tokPos) { lyt: LayoutDelimiter ->
-                when (lyt) {
-                    Where -> true
-                    LayoutDelimiter.Let -> true
-                    LetStmt -> true
-                    else -> false
-                }
+        EQ -> state.collapse(tokPos) { lyt ->
+            when (lyt) {
+                Where -> true
+                LayoutDelimiter.Let -> true
+                LetStmt -> true
+                else -> false
             }
-            when (stk2?.layoutDelimiter) {
-                DeclGuard -> LayoutState(stk2.tail, acc2).insertToken(src)
+        }.let {
+            when (it.stack?.layoutDelimiter) {
+                DeclGuard -> it.popStack().insertToken(src)
                 else -> state.insertDefault(src, tokPos)
             }
         }
 
-        COMMA -> {
-            val state2 = state.collapse(tokPos) { it -> it.isIndent }
-            if (state2.stack?.layoutDelimiter == Brace) {
-                state2.insertToken(src).pushStack(tokPos, Property)
-            } else {
-                state2.insertToken(src)
+        COMMA -> state.collapse(tokPos) { it -> it.isIndent }.let {
+            when (it.stack?.layoutDelimiter) {
+                Brace -> it.insertToken(src).pushStack(tokPos, Property)
+                else -> it.insertToken(src)
             }
         }
 
-        DOT -> {
-            val state2 = state.insertDefault(src, tokPos)
-            if (state2.stack?.layoutDelimiter == Forall) {
-                LayoutState(state2.stack.tail, state2.acc)
-            } else {
-                state2.pushStack(tokPos, Property)
+        DOT -> state.insertDefault(src, tokPos).let {
+            when (it.stack?.layoutDelimiter) {
+                Forall -> it.popStack()
+                else -> it.pushStack(tokPos, Property)
             }
         }
 
@@ -300,7 +295,8 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .pushStack(tokPos, LambdaBinders)
 
         PIPE -> {
-            val state2 = state.collapse(tokPos) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column <= lytPos.column }
+            val state2 =
+                state.collapse(tokPos) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column <= lytPos.column }
             when (state2.stack?.layoutDelimiter) {
                 Of -> state2.pushStack(tokPos, CaseGuard).insertToken(src)
                 LayoutDelimiter.Let -> state2
@@ -347,7 +343,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
         ELSE -> {
             val state2 = state.collapse(tokPos) { lyt -> lyt.isIndent }
             if (state2.stack?.layoutDelimiter == Then) {
-                LayoutState(state2.stack.tail, state2.acc).insertToken(src)
+                state2.popStack().insertToken(src)
             } else {
                 val state3 = state.collapse(tokPos, ::offsideP)
                 if (state3.isTopDecl(tokPos)) {
