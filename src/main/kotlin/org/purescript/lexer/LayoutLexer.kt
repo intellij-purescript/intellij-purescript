@@ -155,14 +155,8 @@ inline fun collapse(
     return LayoutState(stack, acc)
 }
 
-fun offsideP(
-    tokPos: SourcePos,
-    lytPos: SourcePos,
-    lyt: LayoutDelimiter
-): Boolean {
-    return isIndented(lyt) && tokPos.column < lytPos.column
-}
-
+fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
+    isIndented(lyt) && tokPos.column < lytPos.column
 
 fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
     tokPos.column == lytPos.column && tokPos.line != lytPos.line
