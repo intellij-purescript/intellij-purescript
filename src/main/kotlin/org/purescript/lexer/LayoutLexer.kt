@@ -98,14 +98,10 @@ fun insertStart(
     null -> state
        .pushStack(nextPos, lyt)
        .insertToken(lytToken(nextPos, LAYOUT_START))
-    else -> {
-        val (pos, _, _) = indent
-        if (nextPos.column <= pos.column) {
-            state
-        } else {
-            state.pushStack(nextPos, lyt)
-                .insertToken(lytToken(nextPos, LAYOUT_START))
-        }
+    else -> when {
+        nextPos.column <= indent.sourcePos.column -> state
+        else -> state.pushStack(nextPos, lyt)
+            .insertToken(lytToken(nextPos, LAYOUT_START))
     }
 }
 
