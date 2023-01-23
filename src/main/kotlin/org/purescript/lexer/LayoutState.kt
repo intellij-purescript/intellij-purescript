@@ -66,9 +66,9 @@ data class LayoutState(
     }
 
     fun insertSep(tokPos: SourcePos): LayoutState {
-        val (sourcePos, lyt, _) = stack ?: return this
+        val (srcPos, lyt, _) = stack ?: return this
         return when {
-            tokPos.column != sourcePos.column || tokPos.line == sourcePos.line -> this
+            tokPos.column != srcPos.column || tokPos.line == srcPos.line -> this
             TopDecl == lyt || TopDeclHead == lyt ->
                 popStack().insertToken(lytToken(tokPos, LAYOUT_SEP))
             Of == lyt -> insertToken(lytToken(tokPos, LAYOUT_SEP))
