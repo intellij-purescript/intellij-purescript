@@ -197,21 +197,17 @@ fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
     insertToken(lytToken(tokPos, LAYOUT_END), state)
 
 
-fun insertDefault(
-    src: SuperToken, tokPos: SourcePos, state: LayoutState
-): LayoutState {
-    return insertToken(
-        src,
-        insertSep(tokPos,
-            state.collapse(tokPos) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
-                offsideP(
-                    tokPos,
-                    lytPos,
-                    lyt
-                )
-            })
+fun insertDefault(src: SuperToken, tokPos: SourcePos, state: LayoutState)
+    : LayoutState = insertToken(
+    src,
+    insertSep(
+        tokPos,
+        state.collapse(tokPos)
+        { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+            offsideP(tokPos, lytPos, lyt)
+        }
     )
-}
+)
 
 inline fun insertKwProperty(
     src: SuperToken,
@@ -266,13 +262,15 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .let { state1 -> popStack(state1) { it == LayoutDelimiter.Property } }
 
         OPERATOR -> state
-            .let { it.collapse(tokPos) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
-                offsideP(
-                    tokPos,
-                    lytPos,
-                    lyt
-                )
-            } }
+            .let {
+                it.collapse(tokPos) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+                    offsideP(
+                        tokPos,
+                        lytPos,
+                        lyt
+                    )
+                }
+            }
             .let { insertSep(tokPos, it) }
             .let { insertToken(src, it) }
 
