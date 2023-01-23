@@ -58,6 +58,7 @@ data class LayoutState(
 
     fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
         copy(stack = LayoutStack(lytPos, lyt, stack))
+
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState {
         val lyt = this.stack?.layoutDelimiter
         return if (lyt != null && p(lyt)) {
@@ -183,17 +184,14 @@ tailrec fun find(stack: LayoutStack?, filter: (LayoutStack) -> Boolean)
 }
 
 
-fun insertEnd(tokPos: SourcePos, state: LayoutState): LayoutState =
-    state.insertToken(lytToken(tokPos, LAYOUT_END))
-
-
 fun insertDefault(src: SuperToken, tokPos: SourcePos, state: LayoutState)
-    : LayoutState = state.collapse(tokPos)
-{ tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
-    offsideP(tokPos, lytPos, lyt)
-}
-    .insertSep(tokPos)
-    .insertToken(src)
+    : LayoutState = state
+        .collapse(tokPos) 
+            { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+                offsideP(tokPos, lytPos, lyt)
+            }
+        .insertSep(tokPos)
+        .insertToken(src)
 
 inline fun insertKwProperty(
     src: SuperToken,
@@ -426,12 +424,12 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 .let { state1 -> state1.popStack { it: LayoutDelimiter -> it == LayoutDelimiter.Property } }
             if (lyt == LayoutDelimiter.LetStmt && stk2?.layoutDelimiter == LayoutDelimiter.Ado) {
                 return LayoutState(stk2.tail, acc2)
-                    .let { insertEnd(tokPos, it) }
-                    .let { insertEnd(tokPos, it) }
+                    .let { it.insertToken(lytToken(tokPos, LAYOUT_END)) }
+                    .let { it.insertToken(lytToken(tokPos, LAYOUT_END)) }
                     .let { it.insertToken(src) }
             } else if (isIndented(lyt)) {
                 return LayoutState(stk2, acc2)
-                    .let { insertEnd(tokPos, it) }
+                    .let { it.insertToken(lytToken(tokPos, LAYOUT_END)) }
                     .let { it.insertToken(src) }
             } else {
                 return state
