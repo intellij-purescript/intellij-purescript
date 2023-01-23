@@ -17,20 +17,11 @@ data class LayoutStack(
     val layoutDelimiter: LayoutDelimiter,
     val tail: LayoutStack?
 ) {
-    fun convertToLayoutEndTokensAt(startPos: SourcePos): List<SuperToken> {
-        return tokens { isIndented(it) }
-            .map { lytToken(startPos, LAYOUT_END) }
-            .toList()
-    }
-    fun tokens(filter: (LayoutDelimiter) -> Boolean): Sequence<LayoutDelimiter> {
-        return if (filter(layoutDelimiter)) sequence { 
-            yield(layoutDelimiter)
-            tail?.tokens(filter)?.let { yieldAll(it) }
-        }
-        else {
-            tail?.tokens(filter) ?: emptySequence()
-        }
-    }
+
+    fun count(filter: (LayoutDelimiter) -> Boolean) = count(0, filter)
+    private tailrec fun count(c: Int, f: (LayoutDelimiter) -> Boolean): Int =
+        if (f(layoutDelimiter)) count(1 + c, f)
+        else count(c, f)
 }
 
 data class LayoutState(
@@ -330,7 +321,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 else -> insertDefault(src, tokPos, state)
             }
         }
-        
+
         COMMA -> {
             val state2 = collapse(tokPos, state) { lyt -> isIndented(lyt) }
             if (state2.stack?.layoutDelimiter == LayoutDelimiter.Brace) {
@@ -681,7 +672,8 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
         startPos = nextStart
     }
     if (stack != null) {
-        acc += stack.convertToLayoutEndTokensAt(startPos)
+        val layoutEnd = lytToken(startPos, LAYOUT_END)
+        acc += List(stack.count(::isIndented)) { layoutEnd }
     }
     return acc
 }
