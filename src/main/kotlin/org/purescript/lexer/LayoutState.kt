@@ -68,7 +68,7 @@ data class LayoutState(
             LayoutDelimiter.TopDeclHead == lyt && sepP(tokPos, lytPos) ->
                 copy(stack = tail).insertToken(sepTok)
 
-            identSepP(tokPos, lytPos, lyt) -> when (lyt) {
+            lyt.isIndent && sepP(tokPos, lytPos) -> when (lyt) {
                 LayoutDelimiter.Of ->
                     insertToken(sepTok).pushStack(tokPos, CaseBinders)
 

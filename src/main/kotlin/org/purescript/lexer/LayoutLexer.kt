@@ -75,9 +75,6 @@ fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
 fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
     tokPos.column == lytPos.column && tokPos.line != lytPos.line
 
-fun identSepP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
-    lyt.isIndent && sepP(tokPos, lytPos)
-
 
 inline fun insertKwProperty(
     src: SuperToken,
