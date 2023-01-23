@@ -24,7 +24,18 @@ data class LayoutState(
                     .insertToken(lytToken(nextPos, LAYOUT_START))
             }
         }
-
+    inline fun insertKwProperty(
+        src: SuperToken,
+        tokPos: SourcePos,
+        k: (LayoutState) -> LayoutState
+    ): LayoutState {
+        val state2 = insertDefault(src, tokPos)
+        return if (stack?.layoutDelimiter == LayoutDelimiter.Property) {
+            LayoutState(state2.stack?.tail, state2.acc)
+        } else {
+            k(state2)
+        }
+    }
     inline fun collapse(
         tokPos: SourcePos,
         p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean
