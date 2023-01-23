@@ -76,12 +76,6 @@ fun sepP(tokPos: SourcePos, lytPos: SourcePos): Boolean =
     tokPos.column == lytPos.column && tokPos.line != lytPos.line
 
 
-fun offsideEndP(
-    tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter
-): Boolean {
-    return lyt.isIndent && tokPos.column <= lytPos.column
-}
-
 fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
     : LayoutState {
     val tokenValue = src.value
@@ -137,7 +131,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                 when (lyt) {
                     Do -> true
                     Of -> false
-                    else -> offsideEndP(tokPos, lytPos, lyt)
+                    else -> lyt.isIndent && tokPos.column <= lytPos.column
                 }
             }.popStack {
                 when (it) {
@@ -183,7 +177,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
                     .let {
                         it.collapse(tokPos) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
                             if (lyt == Do) true
-                            else offsideEndP(tokPos, lytPos, lyt)
+                            else lyt.isIndent && tokPos.column <= lytPos.column
                         }
                     }.insertToken(src)
                     .insertStart(
@@ -320,7 +314,7 @@ fun insertLayout(src: SuperToken, nextPos: SourcePos, stack: LayoutStack?)
             .pushStack(tokPos, LambdaBinders)
 
         PIPE -> {
-            val state2 = state.collapse(tokPos, ::offsideEndP)
+            val state2 = state.collapse(tokPos) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column <= lytPos.column }
             when (state2.stack?.layoutDelimiter) {
                 Of -> state2.pushStack(tokPos, CaseGuard).insertToken(src)
                 LayoutDelimiter.Let -> state2
