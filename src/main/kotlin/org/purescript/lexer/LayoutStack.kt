@@ -41,7 +41,7 @@ data class LayoutStack(
     fun pop() = tail ?: this
 
     fun insertLayout(src: SuperToken, nextPos: SourcePos) = when (src.value) {
-        LOWER, TYPE -> {
+        LOWER, TYPE, FALSE, TRUE -> {
             var (stack, acc) = collapse(src)
             if (stack.layoutDelimiter == Property) stack = stack.pop()
             stack to acc + src

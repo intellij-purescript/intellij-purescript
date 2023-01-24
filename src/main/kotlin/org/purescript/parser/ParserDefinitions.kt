@@ -126,6 +126,21 @@ class ParserDefinitions {
             ((label + eq).heal + expr) /
             ExpressionIdentifier(QualifiedIdentifier(label))
     )
+    /**
+     * exprAtom :: { Expr () }
+     *   : '_' { ExprSection () $1 }
+     *   | hole { ExprHole () $1 }
+     *   | qualIdent { ExprIdent () $1 }
+     *   | qualProperName { ExprConstructor () (getQualifiedProperName $1) }
+     *   | qualSymbol { ExprOpName () (getQualifiedOpName $1) }
+     *   | boolean { uncurry (ExprBoolean ()) $1 }
+     *   | char { uncurry (ExprChar ()) $1 }
+     *   | string { uncurry (ExprString ()) $1 }
+     *   | number { uncurry (ExprNumber ()) $1 }
+     *   | delim('[', expr, ',', ']') { ExprArray () $1 }
+     *   | delim('{', recordLabel, ',', '}') { ExprRecord () $1 }
+     *   | '(' expr ')' { ExprParens () (Wrapped $1 $2 $3) }
+     *   */
     private val exprAtom = Choice.of(
         `_`,
         hole.heal,

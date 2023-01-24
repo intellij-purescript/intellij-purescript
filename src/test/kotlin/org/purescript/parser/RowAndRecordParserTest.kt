@@ -1,6 +1,7 @@
 package org.purescript.parser
 
 class RowAndRecordParserTest : PSLanguageParserTestBase("row-and-record") {
+    fun testFieldNamedFalse() = doTest(true, true)
     fun testRowConstructors() = doTest(true, true)
     fun testRowConstructorsWithWildcards() = doTest(true, true)
     fun testRowInInstanceHeadDetermined() = doTest(true, true)
