@@ -60,26 +60,25 @@ data class LayoutStack(
                     }
                     stack = stack.tail as LayoutStack
                 }
-                val (srcPos, lyt, _) = stack
                 when {
-                    src.start.column != srcPos.column || src.start.line == srcPos.line -> {}
-                    TopDecl == lyt || TopDeclHead == lyt -> {
+                    src.start.column != stack.sourcePos.column ||
+                        src.start.line == stack.sourcePos.line -> {}
+                    TopDecl == stack.layoutDelimiter ||
+                        TopDeclHead == stack.layoutDelimiter -> {
                         stack = stack.pop()
                         acc = acc + (src.start.asSep to stack)
                     }
 
-                    Of == lyt -> {
+                    Of == stack.layoutDelimiter -> {
                         acc = acc + (src.start.asSep to stack)
                         stack = stack.push(src.start, CaseBinders)
                     }
 
-                    lyt.isIndent -> acc = acc + (src.start.asSep to stack)
+                    stack.layoutDelimiter.isIndent -> 
+                        acc = acc + (src.start.asSep to stack)
                 }
-                LayoutState(when {
-                    stack.tail == null -> stack
-                    stack.layoutDelimiter == Property -> stack.pop()
-                    else -> stack
-                },  acc + (src to stack))
+                if (stack.layoutDelimiter == Property) stack = stack.pop()
+                LayoutState(stack,  acc + (src to stack))
             }
 
             OPERATOR -> state
