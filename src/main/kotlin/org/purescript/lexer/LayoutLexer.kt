@@ -19,18 +19,18 @@ fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
 fun lex(tokens: List<SuperToken>): List<SuperToken> {
     val sourcePos = SourcePos(0, 0, 0)
     var stack = LayoutStack(sourcePos, Root, null)
-    val acc = mutableListOf<SuperToken>()
+    val tokensOut = mutableListOf<SuperToken>()
     var startPos = sourcePos
     for (posToken in tokens) {
         val nextStart = posToken.end
         val (nextStack, toks) = stack.insertLayout(posToken, nextStart)
-        acc += toks.map { it.first }
+        tokensOut += toks.map { it.first }
         startPos = nextStart
         stack = nextStack
     }
     val layoutEnd = startPos.asEnd
-    acc += List(stack.count { it.isIndent }) { layoutEnd }
-    return acc
+    tokensOut += List(stack.count { it.isIndent }) { layoutEnd }
+    return tokensOut
 }
 
 fun correctLineAndColumn(source: CharSequence) =
