@@ -65,10 +65,8 @@ data class LayoutStack(
 
             COMMA -> state.collapse(src.start) { it -> it.isIndent }.let {
                 when (it.stack.layoutDelimiter) {
-                    LayoutDelimiter.Brace -> it.insertToken(src).pushStack(
-                        src.start,
-                        LayoutDelimiter.Property
-                    )
+                    LayoutDelimiter.Brace -> it.insertToken(src)
+                        .pushStack(src.start, LayoutDelimiter.Property)
 
                     else -> it.insertToken(src)
                 }
