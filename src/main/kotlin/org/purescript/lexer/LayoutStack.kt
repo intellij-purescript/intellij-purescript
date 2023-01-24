@@ -38,10 +38,7 @@ data class LayoutStack(
     fun push(sourcePos: SourcePos, layoutDelimiter: LayoutDelimiter) =
         LayoutStack(sourcePos, layoutDelimiter, this)
 
-    fun pop(): LayoutStack = when (this.tail) {
-        null -> this
-        else -> this.tail
-    }
+    fun pop() = tail ?: this
 
     fun insertLayout(src: SuperToken, nextPos: SourcePos) = when (src.value) {
         LOWER, TYPE -> {
