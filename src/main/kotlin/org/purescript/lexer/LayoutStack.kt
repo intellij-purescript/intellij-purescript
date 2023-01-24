@@ -33,6 +33,9 @@ data class LayoutStack(
         }
         return null
     }
+    
+    fun push(sourcePos: SourcePos, layoutDelimiter: LayoutDelimiter) =
+        LayoutStack(sourcePos, layoutDelimiter, this)
 
     fun insertLayout(src: SuperToken, nextPos: SourcePos): LayoutState {
         val state = LayoutState(this, emptyList())

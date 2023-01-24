@@ -47,7 +47,7 @@ data class LayoutState(
 
     fun insertToken(token: SuperToken) = copy(acc = acc + (token to stack))
     fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
-        copy(stack = LayoutStack(lytPos, lyt, stack))
+        copy(stack = stack.push(lytPos, lyt))
 
     fun insertDefault(src: SuperToken) =
         collapse(src.start, ::offsideP).insertSep(src.start).insertToken(src)
