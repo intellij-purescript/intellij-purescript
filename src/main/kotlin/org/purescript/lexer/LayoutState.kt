@@ -40,7 +40,7 @@ data class LayoutState(
             if (stack.layoutDelimiter.isIndent) {
                 acc = acc + (tokPos.asEnd to (stack.tail as LayoutStack))
             }
-            stack = stack.tail as LayoutStack
+            stack = stack.pop()
         }
         return LayoutState(stack, acc)
     }
