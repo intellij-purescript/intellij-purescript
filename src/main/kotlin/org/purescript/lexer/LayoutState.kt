@@ -61,8 +61,8 @@ data class LayoutState(
             stack.layoutDelimiter.isIndent &&
             src.start.column < stack.sourcePos.column
         ) {
-            acc += (src.start.asEnd to (stack.tail as LayoutStack))
             stack = stack.pop()
+            acc += src.start.asEnd to stack
         }
         when {
             src.start.column != stack.sourcePos.column ||
@@ -71,16 +71,16 @@ data class LayoutState(
             TopDecl == stack.layoutDelimiter ||
                 TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
-                acc += (src.start.asSep to stack.pop())
+                acc += src.start.asSep to stack.pop()
             }
 
             Of == stack.layoutDelimiter -> {
                 stack = stack.push(src.start, CaseBinders)
-                acc += (src.start.asSep to stack)
+                acc += src.start.asSep to stack
             }
 
             stack.layoutDelimiter.isIndent -> {
-                acc += (src.start.asSep to stack)
+                acc += src.start.asSep to stack
             }
         }
         return LayoutState(stack, acc + (src to stack))
