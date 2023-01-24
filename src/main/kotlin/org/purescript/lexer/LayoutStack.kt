@@ -38,7 +38,7 @@ data class LayoutStack(
     fun push(sourcePos: SourcePos, layoutDelimiter: LayoutDelimiter) =
         LayoutStack(sourcePos, layoutDelimiter, this)
 
-    inline fun pop(): LayoutStack = pop { true }
+    fun pop(): LayoutStack = pop { true }
     inline fun pop(p: (LayoutDelimiter) -> Boolean): LayoutStack = when {
         tail == null || !p(layoutDelimiter) -> this
         else -> tail
