@@ -147,10 +147,7 @@ data class LayoutStack(
             }.toPair()
         }
 
-        WHERE -> when (LayoutState(
-            this,
-            emptyList()
-        ).stack.layoutDelimiter) {
+        WHERE -> when (this.layoutDelimiter) {
             TopDeclHead -> {
                 val layoutState = LayoutState(this, emptyList())
                 layoutState.copy(stack = layoutState.stack.pop())
