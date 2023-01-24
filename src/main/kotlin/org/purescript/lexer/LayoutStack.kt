@@ -113,7 +113,7 @@ data class LayoutStack(
         }
 
         EQ -> {
-            var stack  = this
+            var stack = this
             var acc = emptyList<Pair<SuperToken, LayoutStack>>()
             while (
                 stack.tail != null &&
@@ -128,9 +128,53 @@ data class LayoutStack(
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
-                DeclGuard -> LayoutState(stack.pop(), acc + (src to stack.pop()))
-                else -> LayoutState(this, emptyList()).insertDefault(src)
-            }.toPair()
+                DeclGuard -> LayoutState(
+                    stack.pop(),
+                    acc + (src to stack.pop())
+                ).toPair()
+
+                else -> {
+                    val layoutState = LayoutState(this, emptyList())
+                    var stack1 = layoutState.stack
+                    var acc1 = layoutState.acc
+                    while (
+                        stack1.tail != null &&
+                        stack1.layoutDelimiter.isIndent &&
+                        src.start.column < stack1.sourcePos.column
+                    ) {
+                        acc1 = acc1 + (src.start.asEnd to (stack1.tail as LayoutStack))
+                        stack1 = stack1.pop()
+                    }
+                    val state = when {
+                        src.start.column != stack1.sourcePos.column ||
+                            src.start.line == stack1.sourcePos.line -> LayoutState(
+                            stack1,
+                            acc1
+                        )
+
+                        TopDecl == stack1.layoutDelimiter ||
+                            TopDeclHead == stack1.layoutDelimiter ->
+                            LayoutState(
+                                stack1.pop(),
+                                acc1 + (src.start.asSep to stack1.pop())
+                            )
+
+                        Of == stack1.layoutDelimiter -> LayoutState(
+                            stack1.push(src.start, CaseBinders),
+                            acc1 + (src.start.asSep to stack1)
+                        )
+
+                        stack1.layoutDelimiter.isIndent ->
+                            LayoutState(
+                                stack1,
+                                acc1 + (src.start.asSep to stack1)
+                            )
+
+                        else -> LayoutState(stack1, acc1)
+                    }
+                    state.copy(acc = state.acc + (src to state.stack)).toPair()
+                }
+            }
         }
 
         COMMA -> LayoutState(this, emptyList())
