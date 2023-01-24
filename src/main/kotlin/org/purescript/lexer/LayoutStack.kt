@@ -114,7 +114,7 @@ data class LayoutStack(
 
         EQ -> {
             var stack = this
-            var acc = emptyList<Pair<SuperToken, LayoutStack>>()
+            var acc = emptyList<SuperToken>()
             while (
                 stack.tail != null &&
                 when (stack.layoutDelimiter) {
@@ -123,54 +123,44 @@ data class LayoutStack(
                 }
             ) {
                 if (stack.layoutDelimiter.isIndent) {
-                    acc = acc + (src.start.asEnd to (stack.tail as LayoutStack))
+                    acc = acc + src.start.asEnd
                 }
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
-                DeclGuard -> stack.pop() to (acc.map { it.first } + src)
+                DeclGuard -> stack.pop() to (acc + src)
 
                 else -> {
-                    val layoutState = LayoutState(this, emptyList())
-                    var stack1 = layoutState.stack
-                    var acc1 = layoutState.acc
+                    var stack = this
+                    var acc = emptyList<SuperToken>()
                     while (
-                        stack1.tail != null &&
-                        stack1.layoutDelimiter.isIndent &&
-                        src.start.column < stack1.sourcePos.column
+                        stack.tail != null &&
+                        stack.layoutDelimiter.isIndent &&
+                        src.start.column < stack.sourcePos.column
                     ) {
-                        acc1 =
-                            acc1 + (src.start.asEnd to (stack1.tail as LayoutStack))
-                        stack1 = stack1.pop()
+                        acc = acc + src.start.asEnd
+                        stack = stack.pop()
                     }
-                    val state = when {
-                        src.start.column != stack1.sourcePos.column ||
-                            src.start.line == stack1.sourcePos.line -> LayoutState(
-                            stack1,
-                            acc1
-                        )
+                    when {
+                        src.start.column != stack.sourcePos.column ||
+                            src.start.line == stack.sourcePos.line -> Unit
 
-                        TopDecl == stack1.layoutDelimiter ||
-                            TopDeclHead == stack1.layoutDelimiter ->
-                            LayoutState(
-                                stack1.pop(),
-                                acc1 + (src.start.asSep to stack1.pop())
-                            )
+                        TopDecl == stack.layoutDelimiter ||
+                            TopDeclHead == stack.layoutDelimiter -> {
+                            stack = stack.pop()
+                            acc = acc + src.start.asSep
+                        }
 
-                        Of == stack1.layoutDelimiter -> LayoutState(
-                            stack1.push(src.start, CaseBinders),
-                            acc1 + (src.start.asSep to stack1)
-                        )
+                        Of == stack.layoutDelimiter -> {
+                            stack = stack.push(src.start, CaseBinders)
+                            acc = acc + src.start.asSep
+                        }
 
-                        stack1.layoutDelimiter.isIndent ->
-                            LayoutState(
-                                stack1,
-                                acc1 + (src.start.asSep to stack1)
-                            )
-
-                        else -> LayoutState(stack1, acc1)
+                        stack.layoutDelimiter.isIndent -> {
+                            acc = acc + src.start.asSep
+                        }
                     }
-                    state.copy(acc = state.acc + (src to state.stack)).toPair()
+                    stack to (acc + src)
                 }
             }
         }
