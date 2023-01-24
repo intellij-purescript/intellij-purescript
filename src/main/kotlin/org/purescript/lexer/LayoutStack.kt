@@ -43,11 +43,6 @@ data class LayoutStack(
         else -> this.tail
     }
 
-    inline fun pop(p: (LayoutDelimiter) -> Boolean): LayoutStack = when {
-        tail == null || !p(layoutDelimiter) -> this
-        else -> tail
-    }
-
     fun insertLayout(src: SuperToken, nextPos: SourcePos) = when (src.value) {
         LOWER, TYPE -> {
             var stack = this
