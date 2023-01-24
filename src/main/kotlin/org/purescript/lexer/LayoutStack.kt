@@ -52,15 +52,14 @@ data class LayoutStack(
         return when (src.value) {
             LOWER, TYPE -> {
                 var stack = this
-                var acc = emptyList<Pair<SuperToken, LayoutStack>>()
+                var acc = emptyList<SuperToken>()
                 while (
                     stack.tail != null &&
                     stack.layoutDelimiter.isIndent &&
                     src.start.column < stack.sourcePos.column
                 ) {
                     if (stack.layoutDelimiter.isIndent) {
-                        acc =
-                            acc + (src.start.asEnd to (stack.tail as LayoutStack))
+                        acc = acc + src.start.asEnd
                     }
                     stack = stack.tail as LayoutStack
                 }
@@ -72,19 +71,19 @@ data class LayoutStack(
                     TopDecl == stack.layoutDelimiter ||
                         TopDeclHead == stack.layoutDelimiter -> {
                         stack = stack.pop()
-                        acc = acc + (src.start.asSep to stack)
+                        acc = acc + src.start.asSep
                     }
 
                     Of == stack.layoutDelimiter -> {
-                        acc = acc + (src.start.asSep to stack)
+                        acc = acc + src.start.asSep 
                         stack = stack.push(src.start, CaseBinders)
                     }
 
                     stack.layoutDelimiter.isIndent ->
-                        acc = acc + (src.start.asSep to stack)
+                        acc = acc + src.start.asSep
                 }
                 if (stack.layoutDelimiter == Property) stack = stack.pop()
-                LayoutState(stack, acc + (src to stack)).toPair()
+                stack to acc + src
             }
 
             OPERATOR -> state
