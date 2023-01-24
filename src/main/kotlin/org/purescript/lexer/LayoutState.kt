@@ -24,7 +24,11 @@ data class LayoutState(
         t: SuperToken,
         k: (LayoutState) -> LayoutState
     ) = when (stack.layoutDelimiter) {
-        Property -> insertDefault(t).popStack()
+        Property -> {
+            val insertDefault = insertDefault(t)
+            insertDefault.copy(stack = insertDefault.stack.pop())
+        }
+
         else -> k(insertDefault(t))
     }
 
@@ -84,10 +88,8 @@ data class LayoutState(
         return state.copy(acc = state.acc + (src to state.stack))
     }
 
-    fun popStack() = copy(stack = stack.pop())
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
-        stack.tail == null -> this
-        p(stack.layoutDelimiter) -> copy(stack = stack.tail)
+        p(stack.layoutDelimiter) -> copy(stack = stack.pop())
         else -> this
     }
 

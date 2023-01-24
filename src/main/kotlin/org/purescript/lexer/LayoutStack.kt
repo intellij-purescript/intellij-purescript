@@ -173,7 +173,7 @@ data class LayoutStack(
 
         DOT -> LayoutState(this, emptyList()).insertDefault(src).let {
             when (it.stack.layoutDelimiter) {
-                Forall -> it.popStack()
+                Forall -> it.copy(stack = it.stack.pop())
                 else -> it.pushStack(src.start, Property)
             }
         }.toPair()
@@ -220,14 +220,18 @@ data class LayoutStack(
             this,
             emptyList()
         ).stack.layoutDelimiter) {
-            TopDeclHead -> LayoutState(this, emptyList())
-                .popStack()
-                .insertToken(src)
-                .insertStart(nextPos, Where)
+            TopDeclHead -> {
+                val layoutState = LayoutState(this, emptyList())
+                layoutState.copy(stack = layoutState.stack.pop())
+                    .insertToken(src)
+                    .insertStart(nextPos, Where)
+            }
 
-            Property -> LayoutState(this, emptyList())
-                .popStack()
-                .insertToken(src)
+            Property -> {
+                val layoutState = LayoutState(this, emptyList())
+                layoutState.copy(stack = layoutState.stack.pop())
+                    .insertToken(src)
+            }
 
             else ->
                 LayoutState(this, emptyList())
@@ -297,14 +301,14 @@ data class LayoutStack(
             val (_, lyt, stack3) = state2.stack
             when {
                 lyt == LetStmt && stack3?.layoutDelimiter == Ado -> {
-                    state2.popStack()
+                    state2.copy(stack = state2.stack.pop())
                         .insertToken(src.start.asEnd)
                         .insertToken(src.start.asEnd)
                         .insertToken(src).toPair()
                 }
 
                 lyt.isIndent -> {
-                    state2.popStack()
+                    state2.copy(stack = state2.stack.pop())
                         .insertToken(src.start.asEnd)
                         .insertToken(src).toPair()
                 }
@@ -363,7 +367,7 @@ data class LayoutStack(
                 emptyList()
             ).collapse(src.start) { lyt -> lyt.isIndent }
             if (state2.stack.layoutDelimiter == LayoutDelimiter.Case) {
-                state2.popStack()
+                state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
                     .insertStart(nextPos, Of)
                     .pushStack(nextPos, CaseBinders)
@@ -415,7 +419,7 @@ data class LayoutStack(
                 emptyList()
             ).collapse(src.start) { lyt -> lyt.isIndent }
             if (state2.stack.layoutDelimiter == Tick) {
-                state2.popStack().insertToken(src)
+                state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
                 LayoutState(this, emptyList()).insertDefault(src)
                     .pushStack(src.start, Tick)
@@ -440,7 +444,7 @@ data class LayoutStack(
                 emptyList()
             ).collapse(src.start) { lyt -> lyt.isIndent }
             if (state2.stack.layoutDelimiter == If) {
-                state2.popStack()
+                state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
                     .pushStack(src.start, Then)
             } else {
@@ -456,7 +460,7 @@ data class LayoutStack(
                 emptyList()
             ).collapse(src.start) { lyt -> lyt.isIndent }
             if (state2.stack.layoutDelimiter == Then) {
-                state2.popStack().insertToken(src)
+                state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
                 val state3 = LayoutState(this, emptyList()).collapse(
                     src.start,
