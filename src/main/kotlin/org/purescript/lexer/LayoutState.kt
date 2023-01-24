@@ -55,37 +55,35 @@ data class LayoutState(
 
     fun insertDefault(src: SuperToken): LayoutState {
         var stack = stack
-        var acc = acc
+        val acc = acc.toMutableList()
         while (
             stack.tail != null &&
             stack.layoutDelimiter.isIndent &&
             src.start.column < stack.sourcePos.column
         ) {
-            acc = acc + (src.start.asEnd to (stack.tail as LayoutStack))
+            acc += (src.start.asEnd to (stack.tail as LayoutStack))
             stack = stack.pop()
         }
-        val state = when {
+        when {
             src.start.column != stack.sourcePos.column ||
-                src.start.line == stack.sourcePos.line -> LayoutState(
-                stack,
-                acc
-            )
+                src.start.line == stack.sourcePos.line -> Unit
 
             TopDecl == stack.layoutDelimiter ||
-                TopDeclHead == stack.layoutDelimiter ->
-                LayoutState(stack.pop(), acc + (src.start.asSep to stack.pop()))
+                TopDeclHead == stack.layoutDelimiter -> {
+                stack = stack.pop()
+                acc += (src.start.asSep to stack.pop())
+            }
 
-            Of == stack.layoutDelimiter -> LayoutState(
-                stack.push(src.start, CaseBinders),
-                acc + (src.start.asSep to stack)
-            )
+            Of == stack.layoutDelimiter -> {
+                stack = stack.push(src.start, CaseBinders)
+                acc += (src.start.asSep to stack)
+            }
 
-            stack.layoutDelimiter.isIndent ->
-                LayoutState(stack, acc + (src.start.asSep to stack))
-
-            else -> LayoutState(stack, acc)
+            stack.layoutDelimiter.isIndent -> {
+                acc += (src.start.asSep to stack)
+            }
         }
-        return state.copy(acc = state.acc + (src to state.stack))
+        return LayoutState(stack, acc + (src to stack))
     }
 
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
