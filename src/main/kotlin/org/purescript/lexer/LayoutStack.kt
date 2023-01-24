@@ -90,7 +90,7 @@ data class LayoutStack(
         }
 
         DOT -> {
-            var (stack, acc) = collapse(src)
+            val (stack, acc) = collapse(src)
             when (stack.layoutDelimiter) {
                 Forall -> stack.pop()
                 else -> stack.push(src.start, Property)
