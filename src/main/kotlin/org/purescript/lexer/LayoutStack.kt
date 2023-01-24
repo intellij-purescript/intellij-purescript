@@ -385,30 +385,21 @@ data class LayoutStack(
             .pushStack(src.start, LambdaBinders).toPair()
 
         PIPE -> {
-            val state2 =
-                LayoutState(
-                    this,
-                    emptyList()
-                ).collapse(src.start) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column <= lytPos.column }
+            val state2 = LayoutState(this, emptyList())
+                .collapse(src.start)
+                { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column <= lytPos.column }
             when (state2.stack.layoutDelimiter) {
-                Of -> state2.pushStack(
-                    src.start,
-                    CaseGuard
-                ).insertToken(src)
-
-                LayoutDelimiter.Let -> state2
-                    .pushStack(src.start, DeclGuard)
+                Of -> state2.pushStack(src.start, CaseGuard)
                     .insertToken(src)
 
-                LetStmt -> state2.pushStack(
-                    src.start,
-                    DeclGuard
-                ).insertToken(src)
+                LayoutDelimiter.Let -> state2.pushStack(src.start, DeclGuard)
+                    .insertToken(src)
 
-                Where -> state2.pushStack(
-                    src.start,
-                    DeclGuard
-                ).insertToken(src)
+                LetStmt -> state2.pushStack(src.start, DeclGuard)
+                    .insertToken(src)
+
+                Where -> state2.pushStack(src.start, DeclGuard)
+                    .insertToken(src)
 
                 else -> LayoutState(this, emptyList()).insertDefault(src)
             }.toPair()
