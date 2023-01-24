@@ -23,13 +23,40 @@ data class LayoutState(
     inline fun insertKwProperty(
         t: SuperToken,
         k: (LayoutState) -> LayoutState
-    ) = when (stack.layoutDelimiter) {
-        Property -> {
-            val insertDefault = insertDefault(t)
-            insertDefault.copy(stack = insertDefault.stack.pop())
+    ): LayoutState {
+        var stack1 = stack
+        val acc1 = acc.toMutableList()
+        while (
+            stack1.tail != null &&
+            stack1.layoutDelimiter.isIndent &&
+            t.start.column < stack1.sourcePos.column
+        ) {
+            stack1 = stack1.pop()
+            acc1 += t.start.asEnd
         }
+        when {
+            t.start.column != stack1.sourcePos.column ||
+                t.start.line == stack1.sourcePos.line -> Unit
 
-        else -> k(insertDefault(t))
+            TopDecl == stack1.layoutDelimiter ||
+                TopDeclHead == stack1.layoutDelimiter -> {
+                stack1 = stack1.pop()
+                acc1 += t.start.asSep
+            }
+
+            Of == stack1.layoutDelimiter -> {
+                stack1 = stack1.push(t.start, CaseBinders)
+                acc1 += t.start.asSep
+            }
+
+            stack1.layoutDelimiter.isIndent -> {
+                acc1 += t.start.asSep
+            }
+        }
+        return when (stack.layoutDelimiter) {
+            Property -> LayoutState(stack1.pop(), acc1 + (t))
+            else -> k(LayoutState(stack1, acc1 + (t)))
+        }
     }
 
     inline fun collapse(
