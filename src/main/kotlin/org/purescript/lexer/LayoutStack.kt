@@ -169,12 +169,41 @@ data class LayoutStack(
             } to (acc + src)
         }
 
-        DOT -> LayoutState(this, emptyList()).insertDefault(src).let {
-            when (it.stack.layoutDelimiter) {
-                Forall -> it.copy(stack = it.stack.pop())
-                else -> it.pushStack(src.start, Property)
+        DOT -> {
+            var stack = this
+            val acc = mutableListOf<SuperToken>()
+            while (
+                stack.tail != null &&
+                stack.layoutDelimiter.isIndent &&
+                src.start.column < stack.sourcePos.column
+            ) {
+                acc += src.start.asEnd
+                stack = stack.pop()
             }
-        }.toPair()
+            when {
+                src.start.column != stack.sourcePos.column ||
+                    src.start.line == stack.sourcePos.line -> Unit
+
+                TopDecl == stack.layoutDelimiter ||
+                    TopDeclHead == stack.layoutDelimiter -> {
+                    stack = stack.pop()
+                    acc += src.start.asSep
+                }
+
+                Of == stack.layoutDelimiter -> {
+                    stack = stack.push(src.start, CaseBinders)
+                    acc += src.start.asSep
+                }
+
+                stack.layoutDelimiter.isIndent -> {
+                    acc += src.start.asSep
+                }
+            }
+            when (stack.layoutDelimiter) {
+                Forall -> stack.pop()
+                else -> stack.push(src.start, Property)
+            } to acc + src
+        }
 
         ARROW -> LayoutState(this, emptyList())
             .collapse(src.start) { tokPos, lytPos, lyt ->
