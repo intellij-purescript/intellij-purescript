@@ -8,7 +8,7 @@ import org.purescript.*
 class PSModuleTest : BasePlatformTestCase() {
 
     private fun PsiFile.exportedForeignValueDeclarationNames(): List<String> =
-        getModule().exportedForeignValueDeclarations.map { it.name!! }
+        getModule().exportedForeignValueDeclarations.map { it.name }
 
 
     fun `test one word name`() {
