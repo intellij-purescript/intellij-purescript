@@ -205,21 +205,28 @@ data class LayoutStack(
             } to acc + src
         }
 
-        ARROW -> LayoutState(this, emptyList())
-            .collapse(src.start) { tokPos, lytPos, lyt ->
-                when (lyt) {
-                    Do -> true
-                    Of -> false
-                    else -> lyt.isIndent && tokPos.column <= lytPos.column
-                }
-            }.popStack {
-                when (it) {
-                    CaseBinders -> true
-                    CaseGuard -> true
-                    LambdaBinders -> true
-                    else -> false
-                }
-            }.insertToken(src).toPair()
+        ARROW -> {
+            var stack =  this 
+            val acc =  mutableListOf<SuperToken>() 
+            while (
+                stack.tail != null &&
+                (stack.layoutDelimiter == Do ||
+                    stack.layoutDelimiter != Of &&
+                    stack.layoutDelimiter.isIndent &&
+                    src.start.column <= stack.sourcePos.column
+                    )
+            ) {
+                acc += src.start.asEnd
+                stack = stack.pop()
+            }
+            if (stack.layoutDelimiter == CaseBinders ||
+                stack.layoutDelimiter == CaseGuard ||
+                stack.layoutDelimiter == LambdaBinders
+            ) {
+                stack = stack.pop()
+            }
+            stack to acc  + src
+        }
 
 
         FORALL -> LayoutState(this, emptyList()).insertKwProperty(src)
