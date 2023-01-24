@@ -122,9 +122,7 @@ data class LayoutStack(
                     else -> false
                 }
             ) {
-                if (stack.layoutDelimiter.isIndent) {
-                    acc = acc + src.start.asEnd
-                }
+                acc = acc + src.start.asEnd
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
