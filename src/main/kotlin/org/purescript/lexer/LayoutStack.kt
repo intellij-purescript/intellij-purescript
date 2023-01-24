@@ -56,9 +56,7 @@ data class LayoutStack(
                 stack.layoutDelimiter.isIndent &&
                 src.start.column < stack.sourcePos.column
             ) {
-                if (stack.layoutDelimiter.isIndent) {
-                    acc = acc + src.start.asEnd
-                }
+                acc = acc + src.start.asEnd
                 stack = stack.pop()
             }
             when {
