@@ -17,7 +17,7 @@ interface PSFile {
         override fun getType() = Type
     }
 
-    object Type : IStubFileElementType<Stub>(PSLanguage) {
+    object Type : IStubFileElementType<Stub>("PSFile", PSLanguage) {
         override fun getBuilder(): StubBuilder = object : DefaultStubBuilder() {
             override fun createStubForFile(file: PsiFile): Stub = Stub(file as Psi)
         }
