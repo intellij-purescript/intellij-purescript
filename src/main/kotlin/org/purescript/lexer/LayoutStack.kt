@@ -78,7 +78,7 @@ data class LayoutStack(
 
         OPERATOR -> {
             var stack = this
-            var acc = mutableListOf<SuperToken>()
+            val acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
                 stack.layoutDelimiter.isIndent &&
@@ -109,7 +109,7 @@ data class LayoutStack(
 
         EQ -> {
             var stack = this
-            var acc = mutableListOf<SuperToken>()
+            val acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
                 when (stack.layoutDelimiter) {
@@ -125,7 +125,7 @@ data class LayoutStack(
 
                 else -> {
                     var stack = this
-                    var acc = mutableListOf<SuperToken>()
+                    val acc = mutableListOf<SuperToken>()
                     while (
                         stack.tail != null &&
                         stack.layoutDelimiter.isIndent &&
