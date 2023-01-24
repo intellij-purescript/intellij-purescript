@@ -1,5 +1,6 @@
 package org.purescript.lexer
 
+import org.purescript.lexer.LayoutDelimiter.*
 import org.purescript.lexer.token.SourcePos
 import org.purescript.parser.*
 
@@ -36,13 +37,50 @@ data class LayoutStack(
     
     fun push(sourcePos: SourcePos, layoutDelimiter: LayoutDelimiter) =
         LayoutStack(sourcePos, layoutDelimiter, this)
+    inline fun pop(): LayoutStack = pop {true}
+    inline fun pop(p: (LayoutDelimiter) -> Boolean): LayoutStack = when {
+        tail == null || !p(layoutDelimiter) -> this
+        else -> tail
+    }
 
     fun insertLayout(src: SuperToken, nextPos: SourcePos): LayoutState {
         val state = LayoutState(this, emptyList())
         return when (src.value) {
-            LOWER, TYPE -> state
-                .insertDefault(src)
-                .popStack { it == LayoutDelimiter.Property }
+            LOWER, TYPE -> {
+                var stack = this
+                var acc = emptyList<Pair<SuperToken, LayoutStack>>()
+                while (
+                    stack.tail != null &&
+                    stack.layoutDelimiter.isIndent &&
+                    src.start.column < stack.sourcePos.column
+                ) {
+                    if (stack.layoutDelimiter.isIndent) {
+                        acc =
+                            acc + (src.start.asEnd to (stack.tail as LayoutStack))
+                    }
+                    stack = stack.tail as LayoutStack
+                }
+                val (srcPos, lyt, _) = stack
+                when {
+                    src.start.column != srcPos.column || src.start.line == srcPos.line -> {}
+                    TopDecl == lyt || TopDeclHead == lyt -> {
+                        stack = stack.pop()
+                        acc = acc + (src.start.asSep to stack)
+                    }
+
+                    Of == lyt -> {
+                        acc = acc + (src.start.asSep to stack)
+                        stack = stack.push(src.start, CaseBinders)
+                    }
+
+                    lyt.isIndent -> acc = acc + (src.start.asSep to stack)
+                }
+                LayoutState(when {
+                    stack.tail == null -> stack
+                    stack.layoutDelimiter == Property -> stack.pop()
+                    else -> stack
+                },  acc + (src to stack))
+            }
 
             OPERATOR -> state
                 .collapse(src.start, ::offsideP)
