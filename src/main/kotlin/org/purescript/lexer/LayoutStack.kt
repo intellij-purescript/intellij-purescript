@@ -149,17 +149,12 @@ data class LayoutStack(
 
         WHERE -> when (this.layoutDelimiter) {
             TopDeclHead -> {
-                val layoutState = LayoutState(this, emptyList())
-                layoutState.copy(stack = layoutState.stack.pop())
+                LayoutState(pop(), emptyList())
                     .insertToken(src)
                     .insertStart(nextPos, Where)
             }
 
-            Property -> {
-                val layoutState = LayoutState(this, emptyList())
-                layoutState.copy(stack = layoutState.stack.pop())
-                    .insertToken(src)
-            }
+            Property -> LayoutState(pop(), emptyList()).insertToken(src)
 
             else ->
                 LayoutState(this, emptyList())
