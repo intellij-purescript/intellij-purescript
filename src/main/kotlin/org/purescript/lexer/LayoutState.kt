@@ -5,7 +5,7 @@ import org.purescript.lexer.token.SourcePos
 
 data class LayoutState(
     val stack: LayoutStack,
-    val acc: List<Pair<SuperToken, LayoutStack>>
+    val acc: List<SuperToken>
 ) {
     fun isTopDecl(tokPos: SourcePos) = stack.isTopDecl(tokPos)
     inline fun collapse(tokPos: SourcePos, p: (LayoutDelimiter) -> Boolean) =
@@ -42,14 +42,14 @@ data class LayoutState(
             p(tokPos, stack.sourcePos, stack.layoutDelimiter)
         ) {
             if (stack.layoutDelimiter.isIndent) {
-                acc = acc + (tokPos.asEnd to (stack.tail as LayoutStack))
+                acc = acc + tokPos.asEnd
             }
             stack = stack.pop()
         }
         return LayoutState(stack, acc)
     }
 
-    fun insertToken(token: SuperToken) = copy(acc = acc + (token to stack))
+    fun insertToken(token: SuperToken) = copy(acc = acc + token)
     fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
         copy(stack = stack.push(lytPos, lyt))
 
@@ -62,7 +62,7 @@ data class LayoutState(
             src.start.column < stack.sourcePos.column
         ) {
             stack = stack.pop()
-            acc += src.start.asEnd to stack
+            acc += src.start.asEnd
         }
         when {
             src.start.column != stack.sourcePos.column ||
@@ -71,19 +71,19 @@ data class LayoutState(
             TopDecl == stack.layoutDelimiter ||
                 TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
-                acc += src.start.asSep to stack.pop()
+                acc += src.start.asSep
             }
 
             Of == stack.layoutDelimiter -> {
                 stack = stack.push(src.start, CaseBinders)
-                acc += src.start.asSep to stack
+                acc += src.start.asSep
             }
 
             stack.layoutDelimiter.isIndent -> {
-                acc += src.start.asSep to stack
+                acc += src.start.asSep
             }
         }
-        return LayoutState(stack, acc + (src to stack))
+        return LayoutState(stack, acc + (src))
     }
 
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
@@ -98,21 +98,21 @@ data class LayoutState(
         TopDecl == stack.layoutDelimiter ||
             TopDeclHead == stack.layoutDelimiter -> {
             val popped = stack.pop()
-            LayoutState(popped, acc + (tokPos.asSep to popped))
+            LayoutState(popped, acc + (tokPos.asSep))
         }
 
         Of == stack.layoutDelimiter -> LayoutState(
             stack.push(tokPos, CaseBinders),
-            acc + (tokPos.asSep to stack)
+            acc + (tokPos.asSep)
         )
 
         stack.layoutDelimiter.isIndent ->
-            copy(acc = acc + (tokPos.asSep to stack))
+            copy(acc = acc + (tokPos.asSep))
 
         else -> this
     }
 
     fun toPair(): Pair<LayoutStack, List<SuperToken>> {
-        return stack to acc.map { it.first }
+        return stack to acc
     }
 }
