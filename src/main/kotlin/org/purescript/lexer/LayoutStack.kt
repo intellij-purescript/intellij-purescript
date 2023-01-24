@@ -48,7 +48,7 @@ data class LayoutStack(
         }
 
         OPERATOR -> {
-            var (stack, acc) = collapse(src)
+            val (stack, acc) = collapse(src)
             stack to acc + src
         }
 
