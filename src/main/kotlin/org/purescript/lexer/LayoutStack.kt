@@ -128,10 +128,7 @@ data class LayoutStack(
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
-                DeclGuard -> LayoutState(
-                    stack.pop(),
-                    acc + (src to stack.pop())
-                ).toPair()
+                DeclGuard -> stack.pop() to (acc.map { it.first } + src)
 
                 else -> {
                     val layoutState = LayoutState(this, emptyList())
@@ -142,7 +139,8 @@ data class LayoutStack(
                         stack1.layoutDelimiter.isIndent &&
                         src.start.column < stack1.sourcePos.column
                     ) {
-                        acc1 = acc1 + (src.start.asEnd to (stack1.tail as LayoutStack))
+                        acc1 =
+                            acc1 + (src.start.asEnd to (stack1.tail as LayoutStack))
                         stack1 = stack1.pop()
                     }
                     val state = when {
