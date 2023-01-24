@@ -123,19 +123,15 @@ data class LayoutState(
             tokPos.line == stack.sourcePos.line -> this
 
         TopDecl == stack.layoutDelimiter ||
-            TopDeclHead == stack.layoutDelimiter -> {
-            val popped = stack.pop()
-            LayoutState(popped, acc + (tokPos.asSep))
-        }
+            TopDeclHead == stack.layoutDelimiter ->
+            LayoutState(stack.pop(), acc + tokPos.asSep)
 
         Of == stack.layoutDelimiter -> LayoutState(
             stack.push(tokPos, CaseBinders),
             acc + (tokPos.asSep)
         )
 
-        stack.layoutDelimiter.isIndent ->
-            copy(acc = acc + (tokPos.asSep))
-
+        stack.layoutDelimiter.isIndent -> copy(acc = acc + tokPos.asSep)
         else -> this
     }
 
