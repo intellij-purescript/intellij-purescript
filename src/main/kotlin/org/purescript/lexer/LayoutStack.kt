@@ -122,34 +122,7 @@ data class LayoutStack(
 
 
         FORALL -> {
-            var stack = this
-            val acc = mutableListOf<SuperToken>()
-            while (
-                stack.tail != null &&
-                stack.layoutDelimiter.isIndent &&
-                src.start.column < stack.sourcePos.column
-            ) {
-                stack = stack.pop()
-                acc += src.start.asEnd
-            }
-            when {
-                src.start.column != stack.sourcePos.column ||
-                    src.start.line == stack.sourcePos.line -> Unit
-
-                TopDecl == stack.layoutDelimiter ||
-                    TopDeclHead == stack.layoutDelimiter -> {
-                    stack = stack.pop()
-                    acc += src.start.asSep
-                }
-
-                Of == stack.layoutDelimiter -> {
-                    stack = stack.push(src.start, CaseBinders)
-                    acc += src.start.asSep
-                }
-
-                stack.layoutDelimiter.isIndent -> acc += src.start.asSep
-            }
-
+            val (stack, acc) = collapse(src)
             when (stack.layoutDelimiter) {
                 Property -> stack.pop()
                 else -> stack.push(src.start, Forall)
@@ -157,34 +130,7 @@ data class LayoutStack(
         }
 
         DATA -> {
-            var stack = this
-            val acc = mutableListOf<SuperToken>()
-            while (
-                stack.tail != null &&
-                stack.layoutDelimiter.isIndent &&
-                src.start.column < stack.sourcePos.column
-            ) {
-                stack = stack.pop()
-                acc += src.start.asEnd
-            }
-            when {
-                src.start.column != stack.sourcePos.column ||
-                    src.start.line == stack.sourcePos.line -> Unit
-
-                TopDecl == stack.layoutDelimiter ||
-                    TopDeclHead == stack.layoutDelimiter -> {
-                    stack = stack.pop()
-                    acc += src.start.asSep
-                }
-
-                Of == stack.layoutDelimiter -> {
-                    stack = stack.push(src.start, CaseBinders)
-                    acc += src.start.asSep
-                }
-
-                stack.layoutDelimiter.isIndent -> acc += src.start.asSep
-            }
-
+            val (stack, acc) = collapse(src)
             when {
                 stack.isTopDecl(src.start) -> stack.push(src.start, TopDecl)
                 stack.layoutDelimiter == Property -> stack.pop()
