@@ -112,10 +112,11 @@ data class LayoutStack(
             val acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
-                when (stack.layoutDelimiter) {
-                    Where, LayoutDelimiter.Let, LetStmt -> true
-                    else -> false
-                }
+                (
+                    stack.layoutDelimiter == Where ||
+                        stack.layoutDelimiter == LayoutDelimiter.Let ||
+                        stack.layoutDelimiter == LetStmt
+                    )
             ) {
                 acc += src.start.asEnd
                 stack = stack.pop()
