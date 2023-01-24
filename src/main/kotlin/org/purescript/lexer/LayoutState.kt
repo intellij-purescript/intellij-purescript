@@ -62,7 +62,10 @@ data class LayoutState(
         }
         val state = when {
             src.start.column != stack.sourcePos.column ||
-                src.start.line == stack.sourcePos.line -> LayoutState(stack, acc)
+                src.start.line == stack.sourcePos.line -> LayoutState(
+                stack,
+                acc
+            )
 
             TopDecl == stack.layoutDelimiter ||
                 TopDeclHead == stack.layoutDelimiter ->
@@ -73,8 +76,9 @@ data class LayoutState(
                 acc + (src.start.asSep to stack)
             )
 
-            stack.layoutDelimiter.isIndent -> 
+            stack.layoutDelimiter.isIndent ->
                 LayoutState(stack, acc + (src.start.asSep to stack))
+
             else -> LayoutState(stack, acc)
         }
         return state.copy(acc = state.acc + (src to state.stack))
@@ -87,22 +91,28 @@ data class LayoutState(
         else -> this
     }
 
-    fun insertSep(tokPos: SourcePos): LayoutState {
-        val (srcPos, lyt, _) = stack
-        return when {
-            tokPos.column != srcPos.column || tokPos.line == srcPos.line -> this
-            TopDecl == lyt || TopDeclHead == lyt ->
-                popStack().insertToken(tokPos.asSep)
+    fun insertSep(tokPos: SourcePos) = when {
+        tokPos.column != stack.sourcePos.column ||
+            tokPos.line == stack.sourcePos.line -> this
 
-            Of == lyt ->
-                insertToken(tokPos.asSep).pushStack(tokPos, CaseBinders)
-
-            lyt.isIndent -> insertToken(tokPos.asSep)
-            else -> this
+        TopDecl == stack.layoutDelimiter ||
+            TopDeclHead == stack.layoutDelimiter -> {
+            val popped = stack.pop()
+            LayoutState(popped, acc + (tokPos.asSep to popped))
         }
+
+        Of == stack.layoutDelimiter -> LayoutState(
+            stack.push(tokPos, CaseBinders),
+            acc + (tokPos.asSep to stack)
+        )
+
+        stack.layoutDelimiter.isIndent ->
+            copy(acc = acc + (tokPos.asSep to stack))
+
+        else -> this
     }
 
     fun toPair(): Pair<LayoutStack, List<SuperToken>> {
-        return stack to acc.map {it.first}
+        return stack to acc.map { it.first }
     }
 }
