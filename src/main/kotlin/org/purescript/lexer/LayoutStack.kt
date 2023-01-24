@@ -158,17 +158,18 @@ data class LayoutStack(
             }
         }
 
-        COMMA -> LayoutState(this, emptyList())
-            .collapse(src.start) { it -> it.isIndent }
-            .let {
-                when (it.stack.layoutDelimiter) {
-                    Brace -> it.insertToken(src)
-                        .pushStack(src.start, Property)
-
-                    else -> it.insertToken(src)
-                }
+        COMMA -> {
+            var stack = this
+            val acc = mutableListOf<SuperToken>()
+            while (stack.tail != null && stack.layoutDelimiter.isIndent) {
+                acc += src.start.asEnd
+                stack = stack.pop()
             }
-            .toPair()
+            when (stack.layoutDelimiter) {
+                Brace -> stack.push(src.start, Property)
+                else -> stack
+            } to (acc + src)
+        }
 
         DOT -> LayoutState(this, emptyList()).insertDefault(src).let {
             when (it.stack.layoutDelimiter) {
