@@ -73,4 +73,8 @@ data class LayoutState(
             else -> this
         }
     }
+
+    fun toPair(): Pair<LayoutStack, List<SuperToken>> {
+        return stack to acc.map {it.first}
+    }
 }
