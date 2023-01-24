@@ -110,7 +110,7 @@ data class LayoutState(
                 acc += src.start.asSep
             }
         }
-        return LayoutState(stack, acc + (src))
+        return LayoutState(stack, acc + src)
     }
 
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
