@@ -51,13 +51,13 @@ data class LayoutStack(
     fun insertLayout(src: SuperToken, nextPos: SourcePos) = when (src.value) {
         LOWER, TYPE -> {
             var stack = this
-            var acc = emptyList<SuperToken>()
+            val acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
                 stack.layoutDelimiter.isIndent &&
                 src.start.column < stack.sourcePos.column
             ) {
-                acc = acc + src.start.asEnd
+                acc += src.start.asEnd
                 stack = stack.pop()
             }
             when {
@@ -67,15 +67,15 @@ data class LayoutStack(
                 TopDecl == stack.layoutDelimiter ||
                     TopDeclHead == stack.layoutDelimiter -> {
                     stack = stack.pop()
-                    acc = acc + src.start.asSep
+                    acc += src.start.asSep
                 }
 
                 Of == stack.layoutDelimiter -> {
                     stack = stack.push(src.start, CaseBinders)
-                    acc = acc + src.start.asSep
+                    acc += src.start.asSep
                 }
 
-                stack.layoutDelimiter.isIndent -> acc = acc + src.start.asSep
+                stack.layoutDelimiter.isIndent -> acc += src.start.asSep
             }
             if (stack.layoutDelimiter == Property) stack = stack.pop()
             stack to acc + src
@@ -83,13 +83,13 @@ data class LayoutStack(
 
         OPERATOR -> {
             var stack = this
-            var acc = emptyList<SuperToken>()
+            var acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
                 stack.layoutDelimiter.isIndent &&
                 src.start.column < stack.sourcePos.column
             ) {
-                acc = acc + src.start.asEnd
+                acc += src.start.asEnd
                 stack = stack.pop()
             }
             when {
@@ -99,22 +99,22 @@ data class LayoutStack(
                 TopDecl == stack.layoutDelimiter ||
                     TopDeclHead == stack.layoutDelimiter -> {
                     stack = stack.pop()
-                    acc = acc + src.start.asSep
+                    acc += src.start.asSep
                 }
 
                 Of == stack.layoutDelimiter -> {
                     stack = stack.push(src.start, CaseBinders)
-                    acc = acc + src.start.asSep
+                    acc += src.start.asSep
                 }
 
-                stack.layoutDelimiter.isIndent -> acc = acc + src.start.asSep
+                stack.layoutDelimiter.isIndent -> acc += src.start.asSep
             }
             stack to acc + src
         }
 
         EQ -> {
             var stack = this
-            var acc = emptyList<SuperToken>()
+            var acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
                 when (stack.layoutDelimiter) {
@@ -122,7 +122,7 @@ data class LayoutStack(
                     else -> false
                 }
             ) {
-                acc = acc + src.start.asEnd
+                acc += src.start.asEnd
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
@@ -130,13 +130,13 @@ data class LayoutStack(
 
                 else -> {
                     var stack = this
-                    var acc = emptyList<SuperToken>()
+                    var acc = mutableListOf<SuperToken>()
                     while (
                         stack.tail != null &&
                         stack.layoutDelimiter.isIndent &&
                         src.start.column < stack.sourcePos.column
                     ) {
-                        acc = acc + src.start.asEnd
+                        acc += src.start.asEnd
                         stack = stack.pop()
                     }
                     when {
@@ -146,16 +146,16 @@ data class LayoutStack(
                         TopDecl == stack.layoutDelimiter ||
                             TopDeclHead == stack.layoutDelimiter -> {
                             stack = stack.pop()
-                            acc = acc + src.start.asSep
+                            acc += src.start.asSep
                         }
 
                         Of == stack.layoutDelimiter -> {
                             stack = stack.push(src.start, CaseBinders)
-                            acc = acc + src.start.asSep
+                            acc += src.start.asSep
                         }
 
                         stack.layoutDelimiter.isIndent -> {
-                            acc = acc + src.start.asSep
+                            acc += src.start.asSep
                         }
                     }
                     stack to (acc + src)
