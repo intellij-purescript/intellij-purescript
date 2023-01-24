@@ -21,12 +21,11 @@ data class LayoutState(
         }
 
     inline fun insertKwProperty(
-        src: SuperToken,
-        tokPos: SourcePos,
+        t: SuperToken,
         k: (LayoutState) -> LayoutState
     ) = when (stack.layoutDelimiter) {
-        Property -> insertDefault(src, tokPos).popStack()
-        else -> k(insertDefault(src, tokPos))
+        Property -> insertDefault(t).popStack()
+        else -> k(insertDefault(t))
     }
 
     inline fun collapse(
@@ -50,8 +49,8 @@ data class LayoutState(
     fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
         copy(stack = LayoutStack(lytPos, lyt, stack))
 
-    fun insertDefault(src: SuperToken, tokPos: SourcePos) =
-        collapse(tokPos, ::offsideP).insertSep(tokPos).insertToken(src)
+    fun insertDefault(src: SuperToken) =
+        collapse(src.start, ::offsideP).insertSep(src.start).insertToken(src)
 
     fun popStack() = popStack { true }
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
