@@ -206,8 +206,8 @@ data class LayoutStack(
         }
 
         ARROW -> {
-            var stack =  this 
-            val acc =  mutableListOf<SuperToken>() 
+            var stack = this
+            val acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
                 (stack.layoutDelimiter == Do ||
@@ -225,12 +225,44 @@ data class LayoutStack(
             ) {
                 stack = stack.pop()
             }
-            stack to acc  + src
+            stack to acc + src
         }
 
 
-        FORALL -> LayoutState(this, emptyList()).insertKwProperty(src)
-        { it.pushStack(src.start, Forall) }.toPair()
+        FORALL -> {
+            var stack = this
+            val acc = mutableListOf<SuperToken>()
+            while (
+                stack.tail != null &&
+                stack.layoutDelimiter.isIndent &&
+                src.start.column < stack.sourcePos.column
+            ) {
+                stack = stack.pop()
+                acc += src.start.asEnd
+            }
+            when {
+                src.start.column != stack.sourcePos.column ||
+                    src.start.line == stack.sourcePos.line -> Unit
+
+                TopDecl == stack.layoutDelimiter ||
+                    TopDeclHead == stack.layoutDelimiter -> {
+                    stack = stack.pop()
+                    acc += src.start.asSep
+                }
+
+                Of == stack.layoutDelimiter -> {
+                    stack = stack.push(src.start, CaseBinders)
+                    acc += src.start.asSep
+                }
+
+                stack.layoutDelimiter.isIndent -> acc += src.start.asSep
+            }
+            
+            when (stack.layoutDelimiter) {
+                Property -> stack.pop()
+                else -> stack.push(src.start, Forall)
+            } to acc + src
+        }
 
         DATA -> {
             val state2 = LayoutState(this, emptyList()).insertDefault(src)
