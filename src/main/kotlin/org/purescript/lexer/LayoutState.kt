@@ -84,7 +84,7 @@ data class LayoutState(
         return state.copy(acc = state.acc + (src to state.stack))
     }
 
-    fun popStack() = popStack { true }
+    fun popStack() = copy(stack = stack.pop())
     inline fun popStack(p: (LayoutDelimiter) -> Boolean): LayoutState = when {
         stack.tail == null -> this
         p(stack.layoutDelimiter) -> copy(stack = stack.tail)
