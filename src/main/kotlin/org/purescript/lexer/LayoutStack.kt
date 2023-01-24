@@ -42,6 +42,7 @@ data class LayoutStack(
         null -> this
         else -> this.tail
     }
+
     inline fun pop(p: (LayoutDelimiter) -> Boolean): LayoutStack = when {
         tail == null || !p(layoutDelimiter) -> this
         else -> tail
@@ -82,10 +83,37 @@ data class LayoutStack(
             stack to acc + src
         }
 
-        OPERATOR -> LayoutState(this, emptyList())
-            .collapse(src.start, ::offsideP)
-            .insertSep(src.start)
-            .insertToken(src).toPair()
+        OPERATOR -> {
+            var stack = this
+            var acc = emptyList<SuperToken>()
+            while (
+                stack.tail != null &&
+                stack.layoutDelimiter.isIndent &&
+                src.start.column < stack.sourcePos.column
+            ) {
+                acc = acc + src.start.asEnd
+                stack = stack.pop()
+            }
+            val (srcPos, lyt, _) = stack
+            when {
+                src.start.column != srcPos.column ||
+                    src.start.line == srcPos.line -> Unit
+
+                TopDecl == lyt || TopDeclHead == lyt -> {
+                    stack = stack.pop()
+                    acc = acc + src.start.asSep
+                }
+
+                Of == lyt -> {
+                    stack = stack.push(src.start, CaseBinders)
+                    acc = acc + src.start.asSep
+                }
+
+                lyt.isIndent -> acc = acc + src.start.asSep
+                else ->Unit
+            }
+            stack to acc + src 
+        }
 
         EQ -> LayoutState(this, emptyList()).collapse(src.start) { lyt ->
             when (lyt) {
