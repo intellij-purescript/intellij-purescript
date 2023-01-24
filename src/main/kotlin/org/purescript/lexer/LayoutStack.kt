@@ -62,8 +62,7 @@ data class LayoutStack(
             }
             when {
                 src.start.column != stack.sourcePos.column ||
-                    src.start.line == stack.sourcePos.line -> {
-                }
+                    src.start.line == stack.sourcePos.line -> Unit
 
                 TopDecl == stack.layoutDelimiter ||
                     TopDeclHead == stack.layoutDelimiter -> {
@@ -72,12 +71,11 @@ data class LayoutStack(
                 }
 
                 Of == stack.layoutDelimiter -> {
-                    acc = acc + src.start.asSep
                     stack = stack.push(src.start, CaseBinders)
+                    acc = acc + src.start.asSep
                 }
 
-                stack.layoutDelimiter.isIndent ->
-                    acc = acc + src.start.asSep
+                stack.layoutDelimiter.isIndent -> acc = acc + src.start.asSep
             }
             if (stack.layoutDelimiter == Property) stack = stack.pop()
             stack to acc + src
@@ -94,25 +92,24 @@ data class LayoutStack(
                 acc = acc + src.start.asEnd
                 stack = stack.pop()
             }
-            val (srcPos, lyt, _) = stack
             when {
-                src.start.column != srcPos.column ||
-                    src.start.line == srcPos.line -> Unit
+                src.start.column != stack.sourcePos.column ||
+                    src.start.line == stack.sourcePos.line -> Unit
 
-                TopDecl == lyt || TopDeclHead == lyt -> {
+                TopDecl == stack.layoutDelimiter ||
+                    TopDeclHead == stack.layoutDelimiter -> {
                     stack = stack.pop()
                     acc = acc + src.start.asSep
                 }
 
-                Of == lyt -> {
+                Of == stack.layoutDelimiter -> {
                     stack = stack.push(src.start, CaseBinders)
                     acc = acc + src.start.asSep
                 }
 
-                lyt.isIndent -> acc = acc + src.start.asSep
-                else ->Unit
+                stack.layoutDelimiter.isIndent -> acc = acc + src.start.asSep
             }
-            stack to acc + src 
+            stack to acc + src
         }
 
         EQ -> LayoutState(this, emptyList()).collapse(src.start) { lyt ->
