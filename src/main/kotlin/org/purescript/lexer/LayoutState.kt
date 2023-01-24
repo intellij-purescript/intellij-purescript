@@ -7,7 +7,6 @@ data class LayoutState(
     val stack: LayoutStack,
     val acc: List<SuperToken>
 ) {
-    fun isTopDecl(tokPos: SourcePos) = stack.isTopDecl(tokPos)
     inline fun collapse(tokPos: SourcePos, p: (LayoutDelimiter) -> Boolean) =
         collapse(tokPos) { _, _, lyt -> p(lyt) }
 

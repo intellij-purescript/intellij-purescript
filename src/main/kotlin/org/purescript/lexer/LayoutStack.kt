@@ -158,7 +158,7 @@ data class LayoutStack(
 
         DATA -> {
             val state2 = LayoutState(this, emptyList()).insertDefault(src)
-            if (state2.isTopDecl(src.start)) {
+            if (state2.stack.isTopDecl(src.start)) {
                 state2.pushStack(src.start, TopDecl)
             } else {
                 state2.popStack { it == Property }
@@ -167,7 +167,7 @@ data class LayoutStack(
 
         CLASS -> {
             val state2 = LayoutState(this, emptyList()).insertDefault(src)
-            if (state2.isTopDecl(src.start)) {
+            if (state2.stack.isTopDecl(src.start)) {
                 state2.pushStack(src.start, TopDeclHead)
             } else {
                 state2.popStack { it == Property }
@@ -414,7 +414,7 @@ data class LayoutStack(
                 val state3 = LayoutState(this, emptyList()).collapse(
                     src.start
                 ) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column < lytPos.column }
-                if (state3.isTopDecl(src.start)) {
+                if (state3.stack.isTopDecl(src.start)) {
                     state3.insertToken(src)
                 } else {
                     state3
