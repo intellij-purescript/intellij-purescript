@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val javaVersion: String by project
 val version: String by project
 val ideaVersion: String by project
@@ -61,8 +59,15 @@ tasks {
         purgeOldFiles.set(true)
         skeleton.set(file("src/main/grammar/idea-flex.skeleton"))
     }
-    withType<JavaCompile>().configureEach { options.encoding = "UTF-8" }
-    withType<KotlinCompile>().configureEach { dependsOn(generateLexer) }
+    compileJava.configure { 
+        options.encoding = "UTF-8"
+    }
+    compileKotlin.configure {
+        dependsOn(generateLexer)
+    }
+    compileTestKotlin.configure {
+        dependsOn(generateLexer)
+    }
 }
 sourceSets {
     main {
