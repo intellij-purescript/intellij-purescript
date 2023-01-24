@@ -70,7 +70,7 @@ data class LayoutStack(
                 DeclGuard -> stack.pop() to (acc + src)
 
                 else -> {
-                    var (stack, acc) = collapse(src)
+                    val (stack, acc) = collapse(src)
                     stack to (acc + src)
                 }
             }
