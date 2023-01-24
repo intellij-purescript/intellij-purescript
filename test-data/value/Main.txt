@@ -1,0 +1,13 @@
+Purescript File
+  PSModule(Module)
+    PsiElement(module)('module')
+    PSModuleName(ModuleName)
+      PsiElement(proper name)('Main')
+    PsiElement(where)('where')
+    ValueDecl(ValueDecl)
+      PSIdentifier(identifier)
+        PsiElement(identifier)('qualified')
+      PsiElement(=)('=')
+      PSValue(Value)
+        PSNumericLiteral(NumericLiteral)
+          PsiElement(natural)('1')

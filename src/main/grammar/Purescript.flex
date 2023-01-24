@@ -115,7 +115,6 @@ charControl = "^" [:uppercase:]
 "forall"                       { return FORALL; }
 "\\u2200"                      { return FORALL; }
 "\u2200"                       { return FORALL; }
-"qualified"                    { return QUALIFIED; }
 "hiding"                       { return HIDING; }
 "as"                           { return AS; }
 
