@@ -12,10 +12,6 @@ import org.purescript.lexer.token.SourceToken
 import org.purescript.parser.*
 
 
-fun offsideP(tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter) =
-    lyt.isIndent && tokPos.column < lytPos.column
-
-
 fun lex(tokens: List<SuperToken>): List<SuperToken> {
     val sourcePos = SourcePos(0, 0, 0)
     var stack = LayoutStack(sourcePos, Root, null)

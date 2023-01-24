@@ -452,9 +452,8 @@ data class LayoutStack(
                 state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
                 val state3 = LayoutState(this, emptyList()).collapse(
-                    src.start,
-                    ::offsideP
-                )
+                    src.start
+                ) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column < lytPos.column }
                 if (state3.isTopDecl(src.start)) {
                     state3.insertToken(src)
                 } else {
