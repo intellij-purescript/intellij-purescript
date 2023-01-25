@@ -31,7 +31,9 @@ class ExpressionIdentifierCompletionContributor : CompletionContributor() {
                 if(result.isStopped) return
                 if(!result.prefixMatcher.prefixMatches(name)) continue
                 val elements = index.get(name, project, scope)
-                val elementBuilders = elements.map {
+                val elementBuilders = elements
+                    .filter { parameters.originalFile != it.containingFile }
+                    .map {
                     LookupElementBuilder.create(it)
                         .withTypeText(it.signature?.type?.text)
                         .withTailText(it.module?.name?.let {"($it)"})
