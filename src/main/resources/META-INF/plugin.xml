@@ -34,6 +34,10 @@
         <internalFileTemplate name="Purescript Module"/>
         <lang.documentationProvider language="Purescript"
                                     implementationClass="org.purescript.features.PSDocumentationProvider"/>
+        <spellchecker.support
+            language="Purescript"
+            implementationClass="org.purescript.PSSpellcheckingStrategy"
+        />
         <lang.foldingBuilder language="Purescript"
                              implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
         <lang.refactoringSupport
@@ -109,7 +113,7 @@
         <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
 
         <!-- Rendering -->
-        <moduleRendererFactory 
+        <moduleRendererFactory
             implementation="org.purescript.ImportDeclarationModuleRendererFactory"
         />
         <moduleRendererFactory
