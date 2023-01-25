@@ -2,6 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
@@ -32,6 +33,9 @@ class ExpressionIdentifierCompletionContributor : CompletionContributor() {
                 val elements = index.get(name, project, scope)
                 val elementBuilders = elements.map {
                     LookupElementBuilder.create(it)
+                        .withTypeText(it.signature?.type?.text)
+                        .withTailText(it.module?.name?.let {"($it)"})
+                        .withIcon(AllIcons.Nodes.Function)
                 }
                 result.addAllElements(elementBuilders)
             }

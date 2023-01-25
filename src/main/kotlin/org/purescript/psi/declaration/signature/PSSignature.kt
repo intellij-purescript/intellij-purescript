@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSIdentifier
+import org.purescript.psi.type.PSType
 
 /**
  * `foo :: int` in
@@ -15,7 +16,8 @@ import org.purescript.psi.name.PSIdentifier
 class PSSignature(node: ASTNode) : PSPsiElement(node) {
     val identifier get() =
         findNotNullChildByClass(PSIdentifier::class.java)
-
+    val type get() =
+        findNotNullChildByClass(PSType::class.java)
     override fun getName(): String {
         return identifier.name
     }
