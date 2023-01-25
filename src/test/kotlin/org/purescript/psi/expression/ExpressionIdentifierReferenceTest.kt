@@ -391,7 +391,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Foo.purs", "y2", "y5", "y0", "y4")
+        myFixture.testCompletionVariants("Foo.purs", "y2", "y4", "y5")
     }
 
     // endregion
