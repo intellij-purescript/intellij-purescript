@@ -2,13 +2,13 @@ package org.purescript.psi.expression
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.ide.util.DefaultPsiElementCellRenderer
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.util.PsiEditorUtilBase
-import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedItem
 import org.purescript.psi.base.PSPsiElement
@@ -39,7 +39,9 @@ class ImportQuickFix(vararg val imports: ImportDeclaration) : LocalQuickFix {
                 imports.toSet().sortedBy { it.moduleName.length }
             val (first, then)  = sortedImports.partition { 
                 it.alias != null && it.alias in it.moduleName
-            }            
+            }
+
+            val renderer = DefaultPsiElementCellRenderer()
             JBPopupFactory
                 .getInstance()
                 .createPopupChooserBuilder(first + then)
@@ -52,6 +54,7 @@ class ImportQuickFix(vararg val imports: ImportDeclaration) : LocalQuickFix {
                         }
                     }
                 }
+                .setRenderer (renderer::getListCellRendererComponent)
                 .createPopup()
                 .showInBestPositionFor(editor)
         }

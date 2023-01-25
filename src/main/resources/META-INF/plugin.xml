@@ -108,7 +108,13 @@
             implementation="org.purescript.PurescriptLiveTemplateContext"/>
         <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
 
-
+        <!-- Rendering -->
+        <moduleRendererFactory 
+            implementation="org.purescript.ImportDeclarationModuleRendererFactory"
+        />
+        <moduleRendererFactory
+            implementation="org.purescript.PsiElementModuleRendererFactory"
+        />
         <!-- Inspections -->
 
         <localInspection
