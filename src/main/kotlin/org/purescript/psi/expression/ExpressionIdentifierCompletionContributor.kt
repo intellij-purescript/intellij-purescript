@@ -8,11 +8,9 @@ import com.intellij.openapi.command.executeCommand
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
-import com.intellij.util.io.restoreHashMapFromWal
 import org.purescript.file.PSFile
 import org.purescript.psi.Importable
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
-import org.purescript.psi.declaration.value.ValueDecl
 
 class ExpressionIdentifierCompletionContributor : CompletionContributor() {
     init {
