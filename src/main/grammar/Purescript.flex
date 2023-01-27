@@ -31,7 +31,7 @@ properName = {properStart}{properLetter}*
 // http://www.regular-expressions.info/unicode.html#prop
 uniCode = \p{S}
 
-decimal = [0-9]+
+decimal = [0-9][0-9_]*
 hexadecimal = [xX][0-9a-zA-Z]+
 octal = [oO][0-7]+
 stringChars = [^\"\\]+
