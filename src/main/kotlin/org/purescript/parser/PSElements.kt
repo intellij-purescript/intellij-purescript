@@ -2,38 +2,33 @@ package org.purescript.parser
 
 import org.purescript.psi.PSElementType.WithPsi
 import org.purescript.psi.binder.*
-import org.purescript.psi.caseof.PSCase
-import org.purescript.psi.caseof.PSCaseAlternative
-import org.purescript.psi.type.PSConstrainedType
-import org.purescript.psi.binder.PSCharBinder
-import org.purescript.psi.literals.PSCharLiteral
 import org.purescript.psi.declaration.classes.*
 import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.data.DataConstructorList
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.fixity.PSFixity
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
+import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.imports.*
+import org.purescript.psi.declaration.newtype.NewtypeCtor
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.signature.PSSignature
+import org.purescript.psi.declaration.type.TypeDecl
+import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.exports.*
+import org.purescript.psi.expression.*
+import org.purescript.psi.expression.caseof.PSCase
+import org.purescript.psi.expression.caseof.PSCaseAlternative
 import org.purescript.psi.expression.dostmt.PSDoBlock
 import org.purescript.psi.expression.dostmt.PSDoNotationBind
 import org.purescript.psi.expression.dostmt.PSDoNotationLet
 import org.purescript.psi.expression.dostmt.PSDoNotationValue
-import org.purescript.psi.exports.*
-import org.purescript.psi.expression.*
-import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.ForeignValueDecl
-import org.purescript.psi.literals.*
+import org.purescript.psi.expression.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
-import org.purescript.psi.declaration.newtype.NewtypeCtor
-import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.type.*
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
-import org.purescript.psi.declaration.type.TypeDecl
-import org.purescript.psi.declaration.value.ValueDecl
-import org.purescript.psi.type.PSTypeVarKinded
-import org.purescript.psi.type.PSTypeVarName
 
 val ModuleType = Module.Type
 val FixityDeclType = FixityDeclaration.Type
