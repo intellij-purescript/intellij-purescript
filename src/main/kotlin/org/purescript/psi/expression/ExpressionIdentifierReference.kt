@@ -10,6 +10,7 @@ import com.intellij.psi.util.parents
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex
+import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
 import org.purescript.psi.declaration.value.ValueDecl

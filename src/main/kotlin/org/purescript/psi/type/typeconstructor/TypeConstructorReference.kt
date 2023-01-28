@@ -6,8 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedTypesIndex
 import org.purescript.ide.formatting.ImportedData
-import org.purescript.ide.formatting.ImportedValue
-import org.purescript.psi.expression.ImportQuickFix
+import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.module.Module.*
 
 class TypeConstructorReference(typeConstructor: PSTypeConstructor) :

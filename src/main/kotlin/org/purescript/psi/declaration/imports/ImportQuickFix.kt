@@ -1,4 +1,4 @@
-package org.purescript.psi.expression
+package org.purescript.psi.declaration.imports
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor

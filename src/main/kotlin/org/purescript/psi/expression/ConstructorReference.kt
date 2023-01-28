@@ -9,6 +9,7 @@ import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
+import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.name.PSQualifiedProperName
 

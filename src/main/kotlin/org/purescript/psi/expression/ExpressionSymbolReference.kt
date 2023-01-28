@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.fixity.ExportedFixityNameIndex
+import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSOperatorName
 
