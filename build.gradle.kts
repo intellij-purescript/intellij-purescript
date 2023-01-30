@@ -51,6 +51,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("223")
+        untilBuild.set("")
     }
     generateLexer.configure {
         source.set("src/main/grammar/Purescript.flex")
