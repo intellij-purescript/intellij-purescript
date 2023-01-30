@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
+import org.purescript.parser.TYPE
 import org.purescript.psi.Importable
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
@@ -64,6 +65,8 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         ImportDeclaration(it, false, setOf(ImportedOperator(name)))
     }
 
+    private val isType get(): Boolean =
+        findChildByType<PsiElement>(TYPE) != null
     private val operatorName
         get() = findNotNullChildByClass(PSOperatorName::class.java)
     val qualifiedIdentifier: PSQualifiedIdentifier?
@@ -85,6 +88,8 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     override fun getReference(): PsiReferenceBase<FixityDeclaration> {
         if (qualifiedIdentifier != null)
             return FixityReference(this)
+        else if (isType)
+            return TypeFixityReference(this)
         else
             return ConstructorFixityReference(this)
     }

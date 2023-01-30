@@ -3,6 +3,7 @@ package org.purescript.psi.declaration
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getDataConstructor
 import org.purescript.getDataDeclaration
+import org.purescript.getTypeSynonymDeclaration
 import org.purescript.getValueDeclarations
 
 class PSFixityDeclarationTest : BasePlatformTestCase() {
@@ -60,7 +61,7 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
         assertEquals(first, reference.resolve())
     }
 
-    fun `test find corresponding data definition`() {
+    fun `test find corresponding data constructor`() {
         val first = myFixture.configureByText(
             "Foo.purs",
             """
@@ -75,7 +76,7 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
         assertEquals(first, reference.resolve())
     }
     
-    fun `test find imported corresponding data definition`() {
+    fun `test find imported corresponding data constructor`() {
         val first = myFixture.configureByText(
             "Bar.purs",
             """
@@ -98,7 +99,7 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
         val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
         assertEquals(first, reference.resolve())
     }
-    fun `test find qualified imported corresponding data definition`() {
+    fun `test find qualified imported corresponding data constructor`() {
         val first = myFixture.configureByText(
             "Bar.purs",
             """
@@ -118,6 +119,86 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
 
             """.trimIndent()
         )
+        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
+        assertEquals(first, reference.resolve())
+    }
+
+
+    fun `test find corresponding data declaration`() {
+        val first = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                infix 0 type <caret>Foo as +++
+
+                data Foo a b = Foo a b
+            """.trimIndent()
+        ).getDataDeclaration()
+        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
+        assertEquals(first, reference.resolve())
+    }
+
+    fun `test find corresponding imported data declaration`() {
+        val first = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                data Bar a b = Bar a b
+            """.trimIndent()
+        ).getDataDeclaration()
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                import Bar (Bar)
+                
+                infix 0 type <caret>Bar as +++
+
+            """.trimIndent()
+        )
+        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
+        assertEquals(first, reference.resolve())
+    }
+    
+    fun `test find corresponding imported type alias`() {
+        val first = myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                type Bar a b = Baz a b
+                data Baz a b = Baz a b
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                import Bar (Bar)
+                
+                infix 0 type <caret>Bar as +++
+
+            """.trimIndent()
+        )
+        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
+        assertEquals(first, reference.resolve())
+    }
+    
+    fun `test find corresponding type alias`() {
+        val first = myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                infix 0 type <caret>Bar as +++
+                type Bar a b = Baz a b
+                data Baz a b = Baz a b
+            """.trimIndent()
+        ).getTypeSynonymDeclaration()
         val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
         assertEquals(first, reference.resolve())
     }
