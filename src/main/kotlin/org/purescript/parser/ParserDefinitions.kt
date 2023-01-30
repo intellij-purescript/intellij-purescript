@@ -62,6 +62,10 @@ class ParserDefinitions {
         OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / ":"
 
     private val properName: DSL = ProperName(PROPER_NAME)
+
+    /**
+     * ProperName with optional qualification
+     */
     private val qualProperName = QualifiedProperName(qualified(properName))
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
 
@@ -211,7 +215,7 @@ class ParserDefinitions {
             // TODO Should we differentiate Types and DataConstructors?
             // that would mean that when there is a `type` prefix we parse as Type
             // otherwise if it's a capital name it's a DataConstructor
-            (!`'type'` + properName / qualProperName).heal,
+            (!`'type'` + qualProperName).heal,
             qualIdentifier
         ) + `'as'` + operatorName
     )
