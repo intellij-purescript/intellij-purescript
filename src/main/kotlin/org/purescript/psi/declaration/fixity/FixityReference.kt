@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReferenceBase
 class FixityReference(fixity: FixityDeclaration) :
     PsiReferenceBase<FixityDeclaration>(
         fixity,
-        fixity.qualifiedIdentifier.textRangeInParent,
+        fixity.qualifiedIdentifier?.textRangeInParent,
         false
     ) {
 
@@ -14,14 +14,14 @@ class FixityReference(fixity: FixityDeclaration) :
         candidates.toList().toTypedArray()
 
     override fun resolve(): PsiNamedElement? {
-        val name = element.qualifiedIdentifier.identifier.name
+        val name = element.qualifiedIdentifier?.identifier?.name
         return candidates.firstOrNull { it.name == name }
     }
 
     private val candidates: Sequence<PsiNamedElement>
         get() {
             val module = element.module ?: return emptySequence()
-            val qualifyingName = element.qualifiedIdentifier.moduleName?.name
+            val qualifyingName = element.qualifiedIdentifier?.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {
                     // TODO Support values defined in the expression

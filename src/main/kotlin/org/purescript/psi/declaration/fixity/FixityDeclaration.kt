@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
@@ -17,6 +18,7 @@ import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
 import org.purescript.psi.name.PSQualifiedIdentifier
+import org.purescript.psi.name.PSQualifiedProperName
 
 class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     PsiNameIdentifierOwner, Importable {
@@ -64,8 +66,10 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
 
     private val operatorName
         get() = findNotNullChildByClass(PSOperatorName::class.java)
-    val qualifiedIdentifier: PSQualifiedIdentifier
-        get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
+    val qualifiedIdentifier: PSQualifiedIdentifier?
+        get() = findChildByClass(PSQualifiedIdentifier::class.java)
+    val qualifiedProperName: PSQualifiedProperName?
+        get() = findChildByClass(PSQualifiedProperName::class.java)
 
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     override fun getNameIdentifier() = operatorName
@@ -78,5 +82,10 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         return this
     }
 
-    override fun getReference() = FixityReference(this)
+    override fun getReference(): PsiReferenceBase<FixityDeclaration> {
+        if (qualifiedIdentifier != null)
+            return FixityReference(this)
+        else
+            return ConstructorFixityReference(this)
+    }
 }
