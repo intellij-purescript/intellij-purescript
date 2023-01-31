@@ -1,10 +1,7 @@
 package org.purescript.psi.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.getDataConstructor
-import org.purescript.getDataDeclaration
-import org.purescript.getTypeSynonymDeclaration
-import org.purescript.getValueDeclarations
+import org.purescript.*
 
 class PSFixityDeclarationTest : BasePlatformTestCase() {
 
@@ -56,7 +53,7 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
 
                 foo _ = 1
             """.trimIndent()
-        ).getValueDeclarations().first()
+        ).getValueDeclarationGroupByName("foo")
         val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
         assertEquals(first, reference.resolve())
     }

@@ -6,11 +6,12 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {
     override fun getInfo(element: PsiElement): Info? {
         if (element.firstChild != null) return null
-        val decl = element.parentOfType<ValueDecl>() ?: return null
+        val decl = element.parentOfType<ValueDeclarationGroup>() ?: return null
         return if (decl.nameIdentifier.firstChild == element && decl.name == "main") {
             val actions = ExecutorAction.getActions(0)
             Info(

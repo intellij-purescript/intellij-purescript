@@ -4,7 +4,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.*
 import org.purescript.psi.declaration.value.MoveValueDeclRefactoring
 
-class ValueDeclTest : BasePlatformTestCase() {
+class ValueDeclarationGroupTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {
         val valueDeclaration = myFixture.addFileToProject(
             "Main.purs",
@@ -69,19 +69,6 @@ class ValueDeclTest : BasePlatformTestCase() {
             """.trimIndent(),
             false
         )
-    }
-
-    fun `test resolves sibling declarations`() {
-        val first = myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                foo 0 = 1
-                <caret>foo 1 = 2
-            """.trimIndent()
-        ).getValueDeclarations().first()
-        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
-        assertEquals(first, reference.resolve())
     }
 
     fun `test move to module that imports it by name`() {

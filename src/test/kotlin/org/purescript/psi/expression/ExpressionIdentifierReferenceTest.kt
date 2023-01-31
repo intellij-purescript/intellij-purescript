@@ -20,7 +20,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         val expressionIdentifier = file.getExpressionIdentifier()
-        val valueDeclaration = file.getValueDeclarations()[1]
+        val valueDeclaration = file.getValueDeclarationGroupByName("y")
 
         assertEquals(valueDeclaration, expressionIdentifier.getReference().resolve())
     }
@@ -32,7 +32,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 module Lib (y) where
                 y = 1
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
@@ -53,7 +53,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 module Y (y) where
                 y = 1
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         myFixture.configureByText(
             "Lib.purs",
             """
@@ -101,7 +101,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 module Lib where
                 y = 1
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
@@ -142,7 +142,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 y = 1
                 z = 2
             """.trimIndent()
-        ).getValueDeclarations()[0]
+        ).getValueDeclarationGroupByName("y")
         val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """
@@ -184,7 +184,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 y = 1
                 z = 2
             """.trimIndent()
-        ).getValueDeclarations()[0]
+        ).getValueDeclarationGroupByName("y")
         val expressionIdentifier = myFixture.configureByText(
             "Main.purs",
             """

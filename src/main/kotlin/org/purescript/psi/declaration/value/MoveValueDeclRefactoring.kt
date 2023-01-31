@@ -28,7 +28,7 @@ class MoveValueDeclRefactoring(
 
     public override fun findUsages(): Array<UsageInfo> =
         ReferencesSearch
-            .search(toMove.valueDeclarations.first(), GlobalSearchScope.projectScope(toMove.project))
+            .search(toMove, GlobalSearchScope.projectScope(toMove.project))
             .findAll()
             .map(::UsageInfo)
             .toTypedArray()
@@ -110,7 +110,7 @@ class MoveValueDeclRefactoring(
         for ((element, reference) in atomDependencies) {
             when (element) {
                 is PSExpressionIdentifier -> when (reference) {
-                    is ValueDecl -> {
+                    is ValueDeclarationGroup -> {
                         val importDeclaration = reference.asImport()
                             ?.withAlias(element.qualifierName)
                             ?: continue

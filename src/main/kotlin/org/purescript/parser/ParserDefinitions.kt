@@ -203,7 +203,7 @@ class ParserDefinitions {
     private val guardedDecl = (eq.heal + exprWhere) / +guardedDeclExpr
     private val instBinder = Choice.of(
         (ident + dcolon).heal + type,
-        ValueDeclType(ident + !+binderAtom + guardedDecl)
+        valueDeclarationGroup()
     )
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
         ForeignDataDecl(`'data'` + properName + dcolon + type),
@@ -270,6 +270,13 @@ class ParserDefinitions {
     private val role = `'nominal'` / representational / phantom
     private fun namedValueDecl(name: String) =
         ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl)
+
+    private fun valueDeclarationGroup() =
+        ValueDeclarationGroupType(Capture { name ->
+            !(typeDeclaration + `L-sep`).heal +
+                namedValueDecl(name).sepBy1(`L-sep`)
+        }).heal
+
     private val decl = Choice.of(
         (dataHead + dcolon).heal + type,
         DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
@@ -278,10 +285,7 @@ class ParserDefinitions {
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,
         TypeDeclType(`'type'` + properName + !+typeVar + eq + type),
-        ValueDeclarationGroupType(Capture { name ->
-            !(typeDeclaration + `L-sep`).heal +
-                namedValueDecl(name).sepBy1(`L-sep`)
-        }).heal,
+        valueDeclarationGroup(),
         typeDeclaration.heal,
         foreignDeclaration,
         fixityDeclaration,
@@ -322,8 +326,8 @@ class ParserDefinitions {
     private val ifThenElse =
         IfThenElse(`'if'` + expr + `'then'` + expr + `'else'` + expr)
     private val letBinding = Choice.of(
+        valueDeclarationGroup(),
         typeDeclaration.heal,
-        ValueDeclType(ident + !+binderAtom + guardedDecl).heal,
         (binder1 + eq + exprWhere).heal,
         (ident + !+binderAtom + guardedDecl).heal
     )

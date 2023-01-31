@@ -14,6 +14,7 @@ import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.module.Module
+import org.purescript.psi.name.PSIdentifier
 
 class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {
@@ -40,7 +41,11 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
             Stub(d.readNameString()!!, p)
 
-        override fun indexStub(stub: Stub, sink: IndexSink) {}
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            if (stub.isExported) {
+                sink.occurrence(ExportedValueDecl.KEY, stub.name)
+            }
+        }
     }
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
@@ -54,20 +59,25 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
         for (valueDeclaration in valueDeclarations) {
             valueDeclaration.setName(name)
         }
+        signature?.setName(name)
         return this
     }
 
     override fun getName(): String {
-        return valueDeclarations.first().name
+        return nameIdentifier.name
     }
 
-    override fun getNameIdentifier(): PsiElement? =
-        valueDeclarations.firstOrNull()?.nameIdentifier
+    override fun getNameIdentifier(): PSIdentifier =
+        valueDeclarations.first().nameIdentifier
+
+    override fun getTextOffset(): Int {
+        return nameIdentifier.textOffset
+    }
 
     override val docComments: List<PsiComment>
         get() = this.getDocComments() + valueDeclarations.flatMap { it.docComments }.toList()
 
     override fun asImport(): ImportDeclaration? {
-        return valueDeclarations.firstOrNull()?.asImport()
+        return valueDeclarations.first().asImport()
     }
 }

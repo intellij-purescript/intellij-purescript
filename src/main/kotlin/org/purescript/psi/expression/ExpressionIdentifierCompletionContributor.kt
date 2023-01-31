@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
 import org.purescript.file.PSFile
 import org.purescript.psi.Importable
-import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
+import org.purescript.psi.declaration.value.ExportedValueDecl
 
 class ExpressionIdentifierCompletionContributor : CompletionContributor() {
     init {
@@ -27,7 +27,7 @@ class ExpressionIdentifierCompletionContributor : CompletionContributor() {
             result: CompletionResultSet
         ) {
             val project = parameters.editor.project ?: return
-            val index = ExportedValueDeclNameIndex
+            val index = ExportedValueDecl
             val scope = GlobalSearchScope.allScope(project)
             val names = index.getAllKeys(project)
             for (name in names) {

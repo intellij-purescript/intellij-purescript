@@ -17,6 +17,7 @@ import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
@@ -182,11 +183,11 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedModule get(): Module.Psi? = reference.resolve()
 
     /**
-     * @return the [ValueDecl] elements imported by this declaration
+     * @return the [ValueDeclarationGroup] elements imported by this declaration
      */
-    val importedValueDeclarations: List<ValueDecl>
-        get() = getImportedDeclarations<ValueDecl, PSImportedValue>(
-            Module.Psi::exportedValueDeclarations
+    val importedValueDeclarationGroups: List<ValueDeclarationGroup>
+        get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(
+            Module.Psi::exportedValueDeclarationGroups
         )
 
     /**

@@ -14,6 +14,7 @@ import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class UnusedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
@@ -21,7 +22,7 @@ class UnusedInspection : LocalInspectionTool() {
 
     class Visitor(private val holder: ProblemsHolder) : PsiElementVisitor() {
         override fun visitElement(element: PsiElement) = when (element) {
-            is ValueDecl -> when {
+            is ValueDeclarationGroup -> when {
                 element.name == "main" -> Unit
                 search(element).anyMatch { it.element !is PSSignature } -> Unit
                 else -> holder.registerProblem(

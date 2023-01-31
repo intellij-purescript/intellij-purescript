@@ -43,7 +43,7 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
                 module Main where
-                y = 1
+                y = (1)
             """.trimIndent()
         )
     }
@@ -59,7 +59,7 @@ class PSInlineTest : BasePlatformTestCase() {
             """
                 module Main where
                 f a = a
-                y = f 1
+                y = (f 1)
             """.trimIndent()
         )
     }

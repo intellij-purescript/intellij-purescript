@@ -9,10 +9,12 @@ import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.signature.PSSignature
-import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
-class InlineValueDecl(val project: Project, val toInline: ValueDecl) : BaseRefactoringProcessor(project) {
+class InlineValueDeclarationGroup(
+    val project: Project,
+    val toInline: ValueDeclarationGroup
+) : BaseRefactoringProcessor(project) {
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor {
         return BaseUsageViewDescriptor(toInline)
     }
@@ -25,25 +27,10 @@ class InlineValueDecl(val project: Project, val toInline: ValueDecl) : BaseRefac
             .toTypedArray()
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
-        val value = toInline.value ?: return
-        usages.asIterable().forEach loop@{
-            val copy = value.copy()
-            val element = it.reference?.element ?: return@loop
-            if (element is PSSignature) {
-                element.delete()
-                return@loop
-            }
-            val parent = element.parent
-            if (parent.children.size == 1) {
-                parent.addRangeAfter(copy.firstChild, copy.lastChild, element)
-            } else {
-                val parenthesis = project.service<PSPsiFactory>()
-                    .createParenthesis(copy.text) ?: return@loop
-                element.replace(parenthesis)
-            }
-
-            element.delete()
-        }
+        val expression = toInline.valueDeclarations.single().value.text
+        val factory = project.service<PSPsiFactory>()
+        val parenthesis = factory.createParenthesis(expression) ?: return
+        for (usage in usages) usage.element?.replace(parenthesis)
         toInline.delete()
     }
 

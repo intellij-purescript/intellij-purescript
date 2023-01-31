@@ -6,7 +6,6 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.PSFile
-import org.purescript.psi.module.Module
 
 class SpagoRunConfigurationProducer :
     LazyRunConfigurationProducer<SpagoRunConfiguration>() {
@@ -20,12 +19,12 @@ class SpagoRunConfigurationProducer :
             is PSFile.Psi -> psi.module
             else -> psi.parentOfType()
         } ?: return false
-        val main = module.exportedValueDeclarations
+        val main = module.exportedValueDeclarationGroups
             .firstOrNull { it.name == "main" } ?: return false
-        if (psi != main.nameIdentifier.firstChild && psi !is PSFile.Psi) return false
+        if (psi != main.nameIdentifier?.firstChild && psi !is PSFile.Psi) return false
         configuration.name = module.name
         configuration.options.moduleName = module.name
-        return module.exportedValueDeclarations.any { it.name == "main" }
+        return module.exportedValueDeclarationGroups.any { it.name == "main" }
     }
 
     override fun isConfigurationFromContext(

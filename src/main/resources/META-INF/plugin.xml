@@ -187,7 +187,7 @@
             implementation="org.purescript.file.ImportedModuleIndex"/>
         <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.value.ExportedValueDeclNameIndex"/>
+            implementation="org.purescript.psi.declaration.value.ExportedValueDecl"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex"/>
         <stubIndex

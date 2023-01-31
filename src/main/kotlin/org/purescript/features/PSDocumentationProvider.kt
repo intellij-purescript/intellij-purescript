@@ -13,7 +13,6 @@ import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
@@ -63,7 +62,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         val version = rawVersion.trimStart('v')
 
         return when (element) {
-            is ValueDecl ->
+            is ValueDeclarationGroup ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
 
             is DataConstructor.Psi ->

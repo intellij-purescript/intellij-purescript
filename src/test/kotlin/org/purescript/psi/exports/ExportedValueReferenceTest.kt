@@ -12,7 +12,7 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
                foo = 3
             """.trimIndent()
         ).run {
-            assertEquals(getValueDeclaration(), getExportedValue().reference.resolve())
+            assertEquals(getValueDeclarationGroup(), getExportedValue().reference.resolve())
         }
     }
 
@@ -37,10 +37,10 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         val exportedValue = file.getExportedValue()
-        val valueDeclarations = file.getValueDeclarations()
+        val valueDeclarations = file.getValueDeclarationGroups()
 
         assertTrue(exportedValue.reference.isReferenceTo(valueDeclarations[0]))
-        assertFalse(exportedValue.reference.isReferenceTo(valueDeclarations[2]))
+        assertFalse(exportedValue.reference.isReferenceTo(valueDeclarations[1]))
     }
 
     fun `test resolves to foreign values`() {

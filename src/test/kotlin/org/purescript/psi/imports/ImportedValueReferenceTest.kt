@@ -1,10 +1,7 @@
 package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.getClassMember
-import org.purescript.getForeignValueDeclaration
-import org.purescript.getImportedValue
-import org.purescript.getValueDeclaration
+import org.purescript.*
 
 class ImportedValueReferenceTest : BasePlatformTestCase() {
 
@@ -15,7 +12,7 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
                 module Bar where
                 bar = ""
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         val importedValue = myFixture.configureByText(
             "Foo.purs",
             """
@@ -172,7 +169,7 @@ class ImportedValueReferenceTest : BasePlatformTestCase() {
                 module Bar where
                 bar = 3
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         val importedValue = myFixture.configureByText(
             "Foo.purs",
             """

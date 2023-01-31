@@ -12,8 +12,8 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex
 import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
-import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
-import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ExportedValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
@@ -40,34 +40,30 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 if (qualifyingName == null) {
                     for (parent in element.parents(false)) {
                         when (parent) {
-                            is ValueDecl -> {
-                                yieldAll(parent.varBindersInParameters.values)
-                                val valueDeclarations = parent
-                                    .where
-                                    ?.valueDeclarations
-                                    ?.asSequence()
-                                    ?: sequenceOf()
-                                yieldAll(valueDeclarations)
+                            is ValueDeclarationGroup -> {
+                                parent.valueDeclarations.forEach { decl ->
+                                    yieldAll(decl.varBindersInParameters.values)
+                                    yieldAll(decl.valueDeclarationGroups.asSequence())
+                                }
                             }
-
                             is PSExpressionWhere -> {
                                 val valueDeclarations = parent
                                     .where
-                                    ?.valueDeclarations
+                                    ?.valueDeclarationGroups
                                     ?.asSequence()
                                     ?: sequenceOf()
                                 yieldAll(valueDeclarations)
                             }
 
                             is PSLet ->
-                                yieldAll(parent.valueDeclarations.asSequence())
+                                yieldAll(parent.valueDeclarationGroups.asSequence())
 
                             is PSDoBlock ->
-                                yieldAll(parent.valueDeclarations)
+                                yieldAll(parent.valueDeclarationGroups)
                         }
                     }
                     // TODO Support values defined in the expression
-                    yieldAll(module.cache.valueDeclarations.toList())
+                    yieldAll(module.cache.valueDeclarationGroups.toList())
                     yieldAll(module.cache.foreignValueDeclarations.toList())
                     val localClassMembers = module
                         .cache.classes
@@ -77,7 +73,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 }
                 val importDeclarations =
                     module.cache.imports.filter { it.importAlias?.name == qualifyingName }
-                yieldAll(importDeclarations.flatMap { it.importedValueDeclarations })
+                yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
                 yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
                 yieldAll(importDeclarations.flatMap { it.importedClassMembers })
                 val importedClassMembers =
@@ -93,7 +89,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         val qualifyingName = element.qualifiedIdentifier.moduleName?.name
         val project = element.project
         val scope = GlobalSearchScope.allScope(project)
-        val valueDeclarations = ExportedValueDeclNameIndex
+        val valueDeclarations = ExportedValueDecl
             .get(element.name, project, scope)
             .toList()
         val foreignValueDeclarations = ExportedForeignValueDeclIndex

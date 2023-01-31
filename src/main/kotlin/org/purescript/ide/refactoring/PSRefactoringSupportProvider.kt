@@ -6,15 +6,16 @@ import org.purescript.psi.module.Module
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class PSRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
         element is Module.Psi ||
-            element is ValueDecl ||
+            element is ValueDeclarationGroup ||
             element is FixityDeclaration ||
             element is PSVarBinder
 
     override fun isSafeDeleteAvailable(element: PsiElement): Boolean {
-        return element is ValueDecl
+        return element is ValueDeclarationGroup
     }
 }

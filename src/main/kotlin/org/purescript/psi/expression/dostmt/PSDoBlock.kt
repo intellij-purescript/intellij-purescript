@@ -8,8 +8,8 @@ class PSDoBlock(node: ASTNode) : PSPsiElement(node) {
         get() =
         findChildrenByClass(PSDoNotationLet::class.java)
 
-    val valueDeclarations get () =
+    val valueDeclarationGroups get () =
             letDeclarations
                 .asSequence()
-                .flatMap { it.valueDeclarations.asSequence() }
+                .flatMap { it.valueDeclarationGroups.asSequence() }
 }

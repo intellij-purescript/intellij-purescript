@@ -13,7 +13,7 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.psi.declaration.value.ExportedValueDeclNameIndex
+import org.purescript.psi.declaration.value.ExportedValueDecl
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.module.Module
 import java.util.function.BooleanSupplier
@@ -39,7 +39,7 @@ class PSReferenceImporter : ReferenceImporter {
         val module =
             (file as? PSFile.Psi)?.module ?: return@BooleanSupplier false
         val scope = GlobalSearchScope.allScope(element.project)
-        val index = ExportedValueDeclNameIndex
+        val index = ExportedValueDecl
         val possibleImports = index.get(element.name, element.project, scope)
             .mapNotNull { it.asImport() }
             .map { it.withAlias(element.qualifierName) }

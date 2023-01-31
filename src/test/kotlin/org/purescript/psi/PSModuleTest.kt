@@ -130,7 +130,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 b = 2
             """.trimIndent()
         ).getModule()
-        val actualExportedValueDeclarationNames = module.exportedValueDeclarations.map { it.name }
+        val actualExportedValueDeclarationNames = module.exportedValueDeclarationGroups.map { it.name }
         assertContainsElements(actualExportedValueDeclarationNames, "a", "b")
     }
 
@@ -143,7 +143,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 b = 2
             """.trimIndent()
         ).getModule()
-        val actualExportedValueDeclarationNames = module.exportedValueDeclarations.map { it.name }
+        val actualExportedValueDeclarationNames = module.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(actualExportedValueDeclarationNames, "b")
     }
 
@@ -163,7 +163,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 import Bar
             """.trimIndent()
         ).getModule()
-        val actualExportedValueDeclarationNames = module.exportedValueDeclarations.map { it.name }
+        val actualExportedValueDeclarationNames = module.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(actualExportedValueDeclarationNames, "a", "b")
     }
 
@@ -184,7 +184,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 import Bar (a)
             """.trimIndent()
         ).getModule()
-        val actualExportedValueDeclarationNames = module.exportedValueDeclarations.map { it.name }
+        val actualExportedValueDeclarationNames = module.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(actualExportedValueDeclarationNames, "a")
     }
 
@@ -205,7 +205,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 import Bar hiding (a)
             """.trimIndent()
         ).getModule()
-        val actualExportedValueDeclarationNames = module.exportedValueDeclarations.map { it.name }
+        val actualExportedValueDeclarationNames = module.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(actualExportedValueDeclarationNames, "b")
     }
 
@@ -233,7 +233,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 import Bar
             """.trimIndent()
         ).getModule()
-        val actualExportedValueDeclarationNames = module.exportedValueDeclarations.map { it.name }
+        val actualExportedValueDeclarationNames = module.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(actualExportedValueDeclarationNames, "a", "b", "c")
     }
 
@@ -247,7 +247,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 c = 3
             """.trimIndent()
         ).getModule()
-        val quxExportedValueDeclarationNames = qux.exportedValueDeclarations.map { it.name }
+        val quxExportedValueDeclarationNames = qux.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(quxExportedValueDeclarationNames, "a", "b")
 
         val bar = myFixture.configureByText(
@@ -259,7 +259,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 e = 5
             """.trimIndent()
         ).getModule()
-        val barExportedValueDeclarationNames = bar.exportedValueDeclarations.map { it.name }
+        val barExportedValueDeclarationNames = bar.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(barExportedValueDeclarationNames, "a", "d")
 
         val foo = myFixture.configureByText(
@@ -271,7 +271,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 g = 7
             """.trimIndent()
         ).getModule()
-        val fooExportedValueDeclarationNames = foo.exportedValueDeclarations.map { it.name }
+        val fooExportedValueDeclarationNames = foo.exportedValueDeclarationGroups.map { it.name }
         assertSameElements(fooExportedValueDeclarationNames, "a", "g")
     }
 

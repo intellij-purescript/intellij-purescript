@@ -2,7 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 /**
  * A where claus un a expression, e.g.
@@ -17,11 +17,11 @@ import org.purescript.psi.declaration.value.ValueDecl
  */
 class PSExpressionWhere(node: ASTNode) : PSPsiElement(node) {
     val expressionAtoms: List<ExpressionAtom>
-        get() = valueDeclarations
+        get() = valueDeclarationGroups
             .flatMap { it.expressionAtoms } +
             (where?.expressionAtoms ?: emptyList())
     val where get() = findChildByClass(PSExpressionWhere::class.java)
-    val valueDeclarations: Array<ValueDecl>
+    val valueDeclarationGroups: Array<ValueDeclarationGroup>
         get() =
-            findChildrenByClass(ValueDecl::class.java)
+            findChildrenByClass(ValueDeclarationGroup::class.java)
 }

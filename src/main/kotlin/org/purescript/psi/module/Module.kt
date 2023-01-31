@@ -176,13 +176,13 @@ interface Module {
         }
 
         /**
-         * @return the [ValueDecl] that this module exports,
+         * @return the [ValueDeclarationGroup] that this module exports,
          * both directly and through re-exported modules
          */
-        val exportedValueDeclarations: List<ValueDecl>
-            get() = getExportedDeclarations<ValueDecl, ExportedValue.Psi>(
-                cache.valueDeclarations,
-            ) { it.importedValueDeclarations }
+        val exportedValueDeclarationGroups: List<ValueDeclarationGroup>
+            get() = getExportedDeclarations<ValueDeclarationGroup, ExportedValue.Psi>(
+                cache.valueDeclarationGroups,
+            ) { it.importedValueDeclarationGroups }
 
         /**
          * @return the [ForeignValueDecl] elements that this module exports,

@@ -1,7 +1,9 @@
 package org.purescript.psi.declaration.signature
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiReference
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.type.PSType
@@ -22,7 +24,14 @@ class PSSignature(node: ASTNode) : PSPsiElement(node) {
         return identifier.name
     }
 
-    override fun getReference(): PsiReference {
-        return SignatureReference(this)
+
+    val nameIdentifier: PSIdentifier
+        get() = findNotNullChildByClass(PSIdentifier::class.java)
+
+    fun setName(name: String) {
+        val identifier =
+            project.service<PSPsiFactory>().createIdentifier(name)
+                ?: return 
+        nameIdentifier.replace(identifier)
     }
 }

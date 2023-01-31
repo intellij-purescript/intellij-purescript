@@ -35,9 +35,5 @@ interface PSFile {
         val module: Module.Psi?
             get() = findChildByClass(Module.Psi::class.java)
 
-        val topLevelValueDeclarations: Map<String, List<ValueDecl>>
-            get() = module?.cache?.valueDeclarations?.groupBy { it.name }
-                ?: emptyMap()
-
     }
 }

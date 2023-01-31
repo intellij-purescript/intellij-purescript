@@ -21,7 +21,7 @@ class ExportedValueReference(exportedValue: ExportedValue.Psi) : PsiReferenceBas
         get() =
             myElement?.module?.run {
                 listOf(
-                    *cache.valueDeclarations,
+                    *cache.valueDeclarationGroups,
                     *cache.foreignValueDeclarations,
                     *cache.classes
                         .flatMap { it.classMembers.toList() }
