@@ -17,8 +17,12 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import org.purescript.psi.expression.PSArrayLiteral
+import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.module.ModuleNameIndex
 import org.purescript.run.Npm
 import javax.swing.JComponent
 
@@ -54,7 +58,7 @@ class SpagoRunConfiguration(
         }
 
         override fun createConsole(executor: Executor): ConsoleView? {
-            return if (options.command == "test") {
+            return if (usesTeamcityReporter()) {
                 val runConfiguration =
                     environment.runProfile as RunConfiguration
                 val properties =
@@ -75,6 +79,20 @@ class SpagoRunConfiguration(
                 super.createConsole(executor)
             }
         }
+    }
+
+    private fun usesTeamcityReporter(): Boolean {
+        val scope = GlobalSearchScope.allScope(project)
+        val module = options.moduleName?.let {
+            ModuleNameIndex().get(it, project, scope)
+        }?.firstOrNull() ?: return false
+        val main = module.exportedValueDeclarationGroups
+            .firstOrNull { it.name == "main" } ?: return false
+        val reporters = main.valueDeclarations.single().expressionAtoms
+            .filterIsInstance<PSArrayLiteral>()
+            .flatMap { it.values.mapNotNull { it.expressionAtoms.singleOrNull() }}
+            .filterIsInstance<PSExpressionIdentifier>()
+        return reporters.any { it.name == "teamcityReporter" }
     }
 
     override fun getConfigurationEditor(): SettingsEditor<SpagoRunConfiguration> {

@@ -13,10 +13,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.exports.ExportedValue
-import org.purescript.psi.expression.PSExpressionConstructor
-import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.expression.PSExpressionOperator
-import org.purescript.psi.expression.PSExpressionSymbol
+import org.purescript.psi.expression.*
 import org.purescript.psi.module.Module
 
 class MoveValueDeclRefactoring(
@@ -137,6 +134,7 @@ class MoveValueDeclRefactoring(
 
                 is PSExpressionConstructor -> TODO()
                 is PSExpressionSymbol -> TODO()
+                is PSArrayLiteral -> TODO()
             }
         }
     }
