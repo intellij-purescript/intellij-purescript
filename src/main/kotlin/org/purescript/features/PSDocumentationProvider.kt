@@ -14,6 +14,7 @@ import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(
@@ -21,7 +22,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         originalElement: PsiElement?
     ): String? {
         return when  {
-            element is ValueDecl ->
+            element is ValueDeclarationGroup ->
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
