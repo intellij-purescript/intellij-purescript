@@ -280,8 +280,7 @@ class ParserDefinitions {
         TypeDeclType(`'type'` + properName + !+typeVar + eq + type),
         ValueDeclarationGroupType(Capture { name ->
             !(typeDeclaration + `L-sep`).heal +
-                namedValueDecl(name) +
-                !+(`L-sep` + namedValueDecl(name)).heal
+                namedValueDecl(name).sepBy1(`L-sep`)
         }).heal,
         typeDeclaration.heal,
         foreignDeclaration,
