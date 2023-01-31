@@ -20,7 +20,7 @@ import org.purescript.psi.expression.PSExpressionSymbol
 import org.purescript.psi.module.Module
 
 class MoveValueDeclRefactoring(
-    private val toMove: ValueDecl,
+    private val toMove: ValueDeclarationGroup,
     private val targetModule: Module.Psi
 ) : BaseRefactoringProcessor(toMove.project) {
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) =
@@ -28,7 +28,7 @@ class MoveValueDeclRefactoring(
 
     public override fun findUsages(): Array<UsageInfo> =
         ReferencesSearch
-            .search(toMove, GlobalSearchScope.projectScope(toMove.project))
+            .search(toMove.valueDeclarations.first(), GlobalSearchScope.projectScope(toMove.project))
             .findAll()
             .map(::UsageInfo)
             .toTypedArray()
@@ -49,10 +49,9 @@ class MoveValueDeclRefactoring(
                 !(reference.containingFile == toMove.containingFile &&
                     toMove.textRange.contains(reference.textRange))
             }
-        val first = (toMove.signature ?: toMove)
         targetModule.add(factory.createNewLines(2))
-        targetModule.addRange(first, toMove)
-        sourceModule?.deleteChildRange(first, toMove)
+        targetModule.addRange(toMove, toMove)
+        sourceModule?.deleteChildRange(toMove, toMove)
         targetModule.exports?.let { exportList ->
             val oldNames = exportList.exportedItems.map {
                 it.text

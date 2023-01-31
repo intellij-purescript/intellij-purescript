@@ -1,10 +1,7 @@
 package org.purescript.psi.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.getModule
-import org.purescript.getValueDeclaration
-import org.purescript.getValueDeclarationByName
-import org.purescript.getValueDeclarations
+import org.purescript.*
 import org.purescript.psi.declaration.value.MoveValueDeclRefactoring
 
 class ValueDeclTest : BasePlatformTestCase() {
@@ -18,7 +15,7 @@ class ValueDeclTest : BasePlatformTestCase() {
                -- | main
                main = 1
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         val docComments = valueDeclaration.docComments
 
         assertEquals(2, docComments.size)
@@ -118,7 +115,7 @@ class ValueDeclTest : BasePlatformTestCase() {
                 fox :: Int
                 fox = foo 10
             """.trimIndent()
-        ).getValueDeclarationByName("foo")
+        ).getValueDeclarationGroupByName("foo")
         myFixture.configureByText(
             "Bar.purs",
             """
@@ -224,7 +221,7 @@ class ValueDeclTest : BasePlatformTestCase() {
                 foo :: Int -> Int
                 foo _ = 1
             """.trimIndent()
-        ).getValueDeclaration()
+        ).getValueDeclarationGroup()
         myFixture.configureByText(
             "Bar.purs",
             """

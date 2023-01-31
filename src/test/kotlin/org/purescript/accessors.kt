@@ -22,6 +22,7 @@ import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 
 /**
@@ -106,6 +107,15 @@ fun PsiFile.getImportDeclaration(): Import =
 
 fun PsiFile.getImportAlias(): PSImportAlias =
     getImportAliases().single()
+
+fun PsiFile.getValueDeclarationGroups(): Array<ValueDeclarationGroup> =
+    getModule().cache.valueDeclarationGroups
+
+fun PsiFile.getValueDeclarationGroup(): ValueDeclarationGroup =
+    getValueDeclarationGroups().single()
+
+fun PsiFile.getValueDeclarationGroupByName(name: String): ValueDeclarationGroup =
+    getValueDeclarationGroups().single {it.name == name}
 
 fun PsiFile.getValueDeclarations(): Array<ValueDecl> =
     getModule().cache.valueDeclarations

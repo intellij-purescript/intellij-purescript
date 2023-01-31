@@ -16,6 +16,7 @@ import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.*
 import org.purescript.psi.expression.*
 import org.purescript.psi.expression.caseof.PSCase
@@ -57,6 +58,7 @@ val DataCtor = DataConstructor.Type
 val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeDeclType = TypeDecl.Type
 val ValueDeclType = ValueDecl.Type 
+val ValueDeclarationGroupType = ValueDeclarationGroup.Type 
 val ForeignDataDecl =
     WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
 val ForeignValueDeclType = ForeignValueDecl.Type

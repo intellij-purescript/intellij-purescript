@@ -61,6 +61,17 @@ data class StringToken(val token: String) : DSL {
         }
 }
 
+data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean): DSL {
+    override fun parse(builder: PsiBuilder) = builder.filter() && next.parse(builder)
+}
+
+data class Capture(val next: (String) -> DSL): DSL {
+    override fun parse(builder: PsiBuilder): Boolean {
+        val tokenText = builder.tokenText ?: return false
+        return next(tokenText).parse(builder)
+    }
+}
+
 data class Seq(val first: DSL, val next: DSL) : DSL {
     override fun parse(builder: PsiBuilder): Boolean =
         first.parse(builder) && next.parse(builder)

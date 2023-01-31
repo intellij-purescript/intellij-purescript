@@ -27,7 +27,7 @@ import javax.swing.Icon
 class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type) {
-        val module get() = parentStub as? Module.Stub
+        val module get() = parentStub.parentStub as? Module.Stub
         val isExported get() = when {
             module == null -> false
             module?.exportList == null -> true

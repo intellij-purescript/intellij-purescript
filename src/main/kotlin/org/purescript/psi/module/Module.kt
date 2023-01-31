@@ -13,22 +13,23 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
 import org.purescript.psi.*
-import org.purescript.psi.declaration.classes.ClassDecl
-import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.exports.*
-import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.foreign.ForeignValueDecl
-import org.purescript.psi.declaration.imports.Import
-import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.declaration.newtype.NewtypeCtor
-import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.classes.ClassDecl
+import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
+import org.purescript.psi.declaration.data.DataDeclaration
+import org.purescript.psi.declaration.fixity.FixityDeclaration
+import org.purescript.psi.declaration.foreign.ForeignValueDecl
+import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
+import org.purescript.psi.declaration.imports.Import
+import org.purescript.psi.declaration.newtype.NewtypeCtor
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.exports.*
+import org.purescript.psi.name.PSModuleName
 
 interface Module {
     object Type : PSElementType.WithPsiAndStub<Stub, Psi>("Module") {
@@ -49,9 +50,10 @@ interface Module {
     }
 
     class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type) {
-        val exportList: ExportList.Stub? get() = childrenStubs
-            .filterIsInstance<ExportList.Stub>()
-            .firstOrNull()
+        val exportList: ExportList.Stub?
+            get() = childrenStubs
+                .filterIsInstance<ExportList.Stub>()
+                .firstOrNull()
     }
 
     class Psi :
@@ -67,7 +69,7 @@ interface Module {
         // TODO clean up this name
         override fun toString(): String = "PSModule($elementType)"
         var cache: Cache = Cache()
-        
+
         val exports get() = child<ExportList.Psi>()
         val fixityDeclarations get() = children(FixityDeclType)
 
@@ -75,8 +77,13 @@ interface Module {
             val imports by lazy { findChildrenByClass<Import>() }
             val importsByName by lazy { imports.groupBy { it.name } }
             val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
-            val valueDeclarations
-                by lazy { findChildrenByClass<ValueDecl>() }
+            val valueDeclarations: Array<ValueDecl> by lazy {
+                valueDeclarationGroups
+                    .flatMap { it.valueDeclarations.asSequence() }
+                    .toTypedArray()
+            }
+            val valueDeclarationGroups: Array<ValueDeclarationGroup>
+                by lazy { findChildrenByClass<ValueDeclarationGroup>() }
             val dataDeclarations
                 by lazy { findChildrenByClass<DataDeclaration.Psi>() }
             val dataConstructors
@@ -102,8 +109,9 @@ interface Module {
         override fun getName(): String = greenStub?.name ?: nameIdentifier.name
 
         override fun setName(name: String): PsiElement? {
-            val properName = project.service<PSPsiFactory>().createModuleName(name)
-                ?: return null
+            val properName =
+                project.service<PSPsiFactory>().createModuleName(name)
+                    ?: return null
             nameIdentifier.replace(properName)
             return this
         }
@@ -325,6 +333,7 @@ interface Module {
                 .createImportDeclaration(importDeclaration)
             addImportDeclaration(asPsi)
         }
+
         fun addImportDeclaration(importDeclaration: Import) {
             val lastImportDeclaration = cache.imports.lastOrNull()
             val insertPosition = lastImportDeclaration ?: whereKeyword

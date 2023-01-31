@@ -130,6 +130,7 @@ class ParserDefinitions {
             ((label + eq).heal + expr) /
             ExpressionIdentifier(QualifiedIdentifier(label))
     )
+
     /**
      * exprAtom :: { Expr () }
      *   : '_' { ExprSection () $1 }
@@ -272,11 +273,15 @@ class ParserDefinitions {
         DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
         (`'newtype'` + properName + dcolon).heal + type,
         NewtypeDeclType(newtypeHead + eq + NewtypeCtorType(properName + typeAtom)),
-        typeDeclaration.heal,
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,
         TypeDeclType(`'type'` + properName + !+typeVar + eq + type),
-        ValueDeclType(ident.heal + !+binderAtom + guardedDecl),
+        ValueDeclarationGroupType(Capture { name ->
+            !(typeDeclaration + `L-sep`).heal +
+                ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl) + 
+                !+(`L-sep`.heal + ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl)).heal
+        }).heal,
+        typeDeclaration.heal,
         foreignDeclaration,
         fixityDeclaration,
         classDeclaration,
