@@ -268,6 +268,8 @@ class ParserDefinitions {
      * phantom - the type can always be coerced to another type.
      * */
     private val role = `'nominal'` / representational / phantom
+    private fun namedValueDecl(name: String) =
+        ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl)
     private val decl = Choice.of(
         (dataHead + dcolon).heal + type,
         DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
@@ -278,8 +280,10 @@ class ParserDefinitions {
         TypeDeclType(`'type'` + properName + !+typeVar + eq + type),
         ValueDeclarationGroupType(Capture { name ->
             !(typeDeclaration + `L-sep`).heal +
-                ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl) + 
-                !+(`L-sep`.heal + ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl)).heal
+                namedValueDecl(name) +
+                !+(`L-sep` + namedValueDecl(name)).heal
+                    
+                
         }).heal,
         typeDeclaration.heal,
         foreignDeclaration,
