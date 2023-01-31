@@ -282,8 +282,6 @@ class ParserDefinitions {
             !(typeDeclaration + `L-sep`).heal +
                 namedValueDecl(name) +
                 !+(`L-sep` + namedValueDecl(name)).heal
-                    
-                
         }).heal,
         typeDeclaration.heal,
         foreignDeclaration,
