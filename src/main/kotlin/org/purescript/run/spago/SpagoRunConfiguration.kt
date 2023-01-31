@@ -50,8 +50,14 @@ class SpagoRunConfiguration(
                     options.config,
                     options.command,
                     "--main",
-                    options.moduleName ?: "Main"
+                    options.moduleName ?: "Main",
+                    "--source-maps",
+                    "--purs-args",
+                    "-g sourcemaps",
+                    "--node-args",
+                    "--enable-source-maps"
                 )
+                    .withEnvironment("NODE_OPTIONS", "--enable-source-maps")
                     .withWorkDirectory(project.guessProjectDir()?.path.toString())
                     .withCharset(charset("UTF8"))
             return ColoredProcessHandler(commandLine)
@@ -90,7 +96,7 @@ class SpagoRunConfiguration(
             .firstOrNull { it.name == "main" } ?: return false
         val reporters = main.valueDeclarations.single().expressionAtoms
             .filterIsInstance<PSArrayLiteral>()
-            .flatMap { it.values.mapNotNull { it.expressionAtoms.singleOrNull() }}
+            .flatMap { it.values.mapNotNull { it.expressionAtoms.singleOrNull() } }
             .filterIsInstance<PSExpressionIdentifier>()
         return reporters.any { it.name == "teamcityReporter" }
     }
