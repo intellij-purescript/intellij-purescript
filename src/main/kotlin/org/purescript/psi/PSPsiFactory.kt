@@ -12,7 +12,10 @@ import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
 import org.purescript.psi.declaration.imports.*
+import org.purescript.psi.declaration.value.ValueDecl
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportList
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSParens
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -131,4 +134,35 @@ class PSPsiFactory(private val project: Project) {
         |module Main (${names.joinToString(", ")}) where
     """.trimMargin()
         )!!
+
+    fun createValueDeclaration(name: String, expr: String): ValueDecl? {
+        return createFromText(
+            """
+            |module Main where
+            |${name} = ${expr}
+            """.trimMargin()
+        )
+
+    }
+
+    fun createExpressionIdentifier(name: String): PSExpressionIdentifier? {
+        return createFromText(
+            """
+            |module Main where
+            |foo = ${name}
+            """.trimMargin()
+        )
+    }
+
+    fun createValueDeclarationGroup(
+        name: String,
+        expr: String
+    ): ValueDeclarationGroup? {
+        return createFromText(
+            """
+            |module Main where
+            |${name} = ${expr}
+            """.trimMargin()
+        )
+    }
 }
