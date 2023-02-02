@@ -88,7 +88,10 @@ class ExpressionIdentifierIntroduceHandler :
         file: PsiFile,
         editor: Editor,
         project: Project
-    ) = null
+    ): String? =
+        if (target.place?.reference?.resolve()?.parent is Module.Psi) null
+        else "'${target.place?.name}' cant be reached from top level"
+            
 
     override fun collectTargetScopes(
         target: PsiIntroduceTarget<PSExpressionIdentifier>,

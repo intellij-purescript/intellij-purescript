@@ -1,43 +1,61 @@
 package org.purescript.ide.refactoring
 
+import com.intellij.refactoring.util.CommonRefactoringUtil
+import com.intellij.refactoring.util.CommonRefactoringUtil.RefactoringErrorHintException
 import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
 
 class IntroduceHandlerTest : BasePlatformTestCase() {
-    fun `test extract method in example`() {
+    fun `test extract method of imported value`() {
+        myFixture.configureByText("Console.purs", 
+            """
+                |module Lib where
+                |
+                |x = 1
+            """.trimMargin()
+            )
         doTest(
             """
-                module Main where
-
-                import Prelude
-                
-                import Data.Array ((..))
-                import Data.Foldable (for_)
-                import Effect (Effect)
-                import Effect.Console (logShow)
-                
-                
-                main :: Effect Unit
-                main = for_ (1 .. 100) {-caret-}logShow
-            """.trimIndent(),
+                |module Main where
+                |
+                |import Lib (x)
+                |
+                |y = {-caret-}x
+            """.trimMargin(),
             """
+                |module Main where
+                |
+                |import Lib (x)
+                |
+                |y = x'
+                |
+                |x' = x
+            """.trimMargin()
+        )
+    }
+    fun `test extract only reachable from top level`() {
+        assertThrows(RefactoringErrorHintException::class.java){
+            doTest(
+                """
                 module Main where
-
+                
                 import Prelude
                 
-                import Data.Array ((..))
-                import Data.Foldable (for_)
-                import Effect (Effect)
-                import Effect.Console (logShow)
+                y = {-caret-}x
+                  where x = 1
+            """.trimIndent(),
+                """
+                module Main where
                 
+                import Prelude
                 
-                main :: Effect Unit
-                main = for_ (1 .. 100) logShow'
-                
-                logShow' = logShow
+                y = {-caret-}x
+                  where x = 1
             """.trimIndent()
-        )
+            )
+
+        }
     }
     fun `it doesn't work to test extract all`() {
         doTest(
@@ -57,9 +75,9 @@ class IntroduceHandlerTest : BasePlatformTestCase() {
                 
                 x = 1
                 
-                y = foo + foo
+                y = x' + x'
                 
-                foo = x
+                x' = x
                 
             """.trimIndent()
         )
