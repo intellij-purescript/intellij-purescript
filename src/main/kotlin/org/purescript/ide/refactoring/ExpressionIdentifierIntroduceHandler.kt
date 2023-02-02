@@ -56,11 +56,9 @@ class ExpressionIdentifierIntroduceHandler :
         project: Project
     ): Pair<MutableList<PsiIntroduceTarget<PSExpressionIdentifier>>, Int> {
         val offset = editor.caretModel.offset
-        val target = getTarget(file, offset) ?: getTarget(file, offset - 1)
-        return when (target) {
-            null -> Pair.create(mutableListOf(), 0)
-            else -> Pair.create(mutableListOf(target), 1)
-        }
+        return (getTarget(file, offset) ?: getTarget(file, offset - 1))
+            ?.let { Pair.create(mutableListOf(it), 1) }
+            ?: Pair.create(mutableListOf(), 0)
     }
 
     private fun getTarget(file: PsiFile, offset: Int)
@@ -91,7 +89,7 @@ class ExpressionIdentifierIntroduceHandler :
     ): String? =
         if (target.place?.reference?.resolve()?.parent is Module.Psi) null
         else "'${target.place?.name}' cant be reached from top level"
-            
+
 
     override fun collectTargetScopes(
         target: PsiIntroduceTarget<PSExpressionIdentifier>,
@@ -144,8 +142,8 @@ class ExpressionIdentifierIntroduceHandler :
             override fun performIntroduce() = Unit
 
             /**
-             * Unsure how this is supposed to work, but we return a un attached 
-             * version of the template 
+             * Unsure how this is supposed to work, but we return a un attached
+             * version of the template
              */
             override fun getVariable() =
                 factory.createValueDeclarationGroup(
