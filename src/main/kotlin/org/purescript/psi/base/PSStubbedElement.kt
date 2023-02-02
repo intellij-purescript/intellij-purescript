@@ -41,4 +41,8 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
     @PublishedApi
     internal fun <T : Any?> `access$findChildrenByClass`(aClass: Class<T>?) =
         super.findChildrenByClass(aClass)    // Todo clean up
+
+    inline fun <reified T: PsiElement>addTyped(element: T): T {
+        return add(element) as T
+    }
 }
