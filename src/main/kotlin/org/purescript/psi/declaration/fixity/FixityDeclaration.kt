@@ -9,6 +9,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.parser.TYPE
+import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
@@ -43,6 +44,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
                 sink.occurrence(ExportedFixityNameIndex.KEY, stub.name)
+                sink.occurrence(ImportableIndex.KEY, stub.name)
             }
         }
 

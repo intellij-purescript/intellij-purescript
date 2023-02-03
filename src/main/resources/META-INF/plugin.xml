@@ -67,8 +67,8 @@
         />
         <completion.contributor
             language="Purescript"
-            implementationClass="org.purescript.psi.expression.ExpressionIdentifierCompletionContributor"
-            id="ExpressionIdentifierCompletionContributor"
+            implementationClass="org.purescript.psi.expression.ExpressionCompletionContributor"
+            id="ExpressionCompletionContributor"
         />
 
         <fileType
@@ -194,6 +194,8 @@
         <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.value.ExportedValueDecl"/>
+        <stubIndex
+            implementation="org.purescript.psi.declaration.ImportableIndex"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex"/>
         <stubIndex

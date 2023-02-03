@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
@@ -43,6 +44,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
 
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
+                sink.occurrence(ImportableIndex.KEY, stub.name)
                 sink.occurrence(ExportedValueDecl.KEY, stub.name)
             }
         }
