@@ -24,7 +24,7 @@ import org.purescript.psi.declaration.type.TypeDecl
 class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, Void?, FileContent> {
 
     override fun map(inputData: FileContent): Map<String, Void?> {
-        val file = inputData.psiFile as? PSFile.Psi ?: return emptyMap()
+        val file = inputData.psiFile as? PSFile ?: return emptyMap()
         val module = file.module ?: return emptyMap()
         val exportList = module.exports
         return if (exportList == null) {
@@ -71,15 +71,15 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
         fun filesExportingType(
             project: Project,
             typeName: String
-        ): List<PSFile.Psi> =
-            ReadAction.compute<List<PSFile.Psi>, Throwable> {
+        ): List<PSFile> =
+            ReadAction.compute<List<PSFile>, Throwable> {
                 val allScope = GlobalSearchScope.allScope(project)
                 val files = FileBasedIndex
                     .getInstance()
                     .getContainingFiles(NAME, typeName, allScope)
                 files
                     .map { PsiManager.getInstance(project).findFile(it) }
-                    .filterIsInstance(PSFile.Psi::class.java)
+                    .filterIsInstance(PSFile::class.java)
             }
     }
 

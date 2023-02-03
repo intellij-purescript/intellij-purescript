@@ -14,7 +14,7 @@ class ForeignValueDeclTest : BasePlatformTestCase() {
             -- | Returns the substrings of the second string separated
             foreign import <caret>split :: Pattern -> String -> Array String
             """.trimIndent()
-        ) as PSFile.Psi
+        ) as PSFile
 
         val elementAtCaret = myFixture.elementAtCaret as ForeignValueDecl
 

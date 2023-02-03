@@ -12,19 +12,17 @@ import org.purescript.PSLanguage
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.module.Module
 
-interface PSFile {
-    class Stub(file: Psi) : PsiFileStubImpl<Psi>(file) {
+class PSFile(viewProvider: FileViewProvider) :
+    PsiFileBase(viewProvider, PSLanguage) {
+    class Stub(file: PSFile) : PsiFileStubImpl<PSFile>(file) {
         override fun getType() = Type
     }
 
     object Type : IStubFileElementType<Stub>("PSFile", PSLanguage) {
         override fun getBuilder(): StubBuilder = object : DefaultStubBuilder() {
-            override fun createStubForFile(file: PsiFile): Stub = Stub(file as Psi)
+            override fun createStubForFile(file: PsiFile): Stub = Stub(file as PSFile)
         }
     }
-
-    class Psi(viewProvider: FileViewProvider) :
-        PsiFileBase(viewProvider, PSLanguage) {
         override fun getFileType(): FileType = PSFileType
         override fun toString(): String = "Purescript File"
 
@@ -35,5 +33,4 @@ interface PSFile {
         val module: Module?
             get() = findChildByClass(Module::class.java)
 
-    }
 }

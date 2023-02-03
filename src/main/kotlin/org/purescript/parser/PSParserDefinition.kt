@@ -45,7 +45,7 @@ class PSParserDefinition : ParserDefinition {
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
-        return PSFile.Psi(viewProvider)
+        return PSFile(viewProvider)
     }
 
     override fun spaceExistenceTypeBetweenTokens(

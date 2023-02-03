@@ -10,9 +10,9 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.imports.*
 
 class PurescriptImportOptimizer : ImportOptimizer {
-    override fun supports(file: PsiFile): Boolean = file is PSFile.Psi
+    override fun supports(file: PsiFile): Boolean = file is PSFile
     override fun processFile(file: PsiFile): Runnable {
-        val psFile = file as PSFile.Psi
+        val psFile = file as PSFile
         val module = psFile.module
             ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()

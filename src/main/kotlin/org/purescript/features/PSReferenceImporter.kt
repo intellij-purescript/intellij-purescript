@@ -20,7 +20,7 @@ import java.util.function.BooleanSupplier
 
 class PSReferenceImporter : ReferenceImporter {
     override fun isAddUnambiguousImportsOnTheFlyEnabled(file: PsiFile): Boolean {
-        return file is PSFile.Psi
+        return file is PSFile
     }
 
     @Suppress("UnstableApiUsage")
@@ -37,7 +37,7 @@ class PSReferenceImporter : ReferenceImporter {
             .firstOrNull() ?: return@BooleanSupplier false
         if (element.reference.resolve() != null) return@BooleanSupplier false
         val module =
-            (file as? PSFile.Psi)?.module ?: return@BooleanSupplier false
+            (file as? PSFile)?.module ?: return@BooleanSupplier false
         val scope = GlobalSearchScope.allScope(element.project)
         val index = ExportedValueDecl
         val possibleImports = index.get(element.name, element.project, scope)

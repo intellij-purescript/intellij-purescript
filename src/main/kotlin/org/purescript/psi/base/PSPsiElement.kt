@@ -16,5 +16,5 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
     /**
      * @return the [Module] containing this element
      */
-    val module: Module? get() = (containingFile as PSFile.Psi).module
+    val module: Module? get() = (containingFile as PSFile).module
 }

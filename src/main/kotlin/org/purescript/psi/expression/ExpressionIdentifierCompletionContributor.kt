@@ -44,7 +44,7 @@ class ExpressionIdentifierCompletionContributor : CompletionContributor() {
                         .withInsertHandler { context, item ->
                             val import = (item.psiElement as? Importable)
                                 ?.asImport() ?: return@withInsertHandler
-                            val module = (context.file as PSFile.Psi).module
+                            val module = (context.file as PSFile).module
                             executeCommand(project, "Import") {
                                 runWriteAction {
                                     module?.addImportDeclaration(import)

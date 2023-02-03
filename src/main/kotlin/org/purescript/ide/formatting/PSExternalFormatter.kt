@@ -76,6 +76,6 @@ class PSExternalFormatter : AsyncDocumentFormattingService() {
     }
 
     override fun canFormat(file: PsiFile): Boolean {
-        return file is PSFile.Psi
+        return file is PSFile
     }
 }

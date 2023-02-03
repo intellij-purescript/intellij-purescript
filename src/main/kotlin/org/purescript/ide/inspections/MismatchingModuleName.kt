@@ -8,7 +8,7 @@ import java.nio.file.Paths
 class MismatchingModuleName : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
         visitFile {
-            val module = (this as? PSFile.Psi)?.module ?: return@visitFile
+            val module = (this as? PSFile)?.module ?: return@visitFile
             val oldModuleName = module.name
             val fileName = name.removeSuffix(".purs")
             val directoryPath = Paths.get(parent?.virtualFile?.path ?: return@visitFile)
