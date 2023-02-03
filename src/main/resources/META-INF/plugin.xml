@@ -129,6 +129,12 @@
         />
         <localInspection
             language="Purescript" groupName="Purescript"
+            displayName="Module name and file path dont match"
+            enabledByDefault="true" level="WEAK WARNING"
+            implementationClass="org.purescript.ide.inspections.MismatchingModuleName"
+        />
+        <localInspection
+            language="Purescript" groupName="Purescript"
             displayName="Unused declaration"
             enabledByDefault="true"
             implementationClass="org.purescript.ide.inspections.UnusedInspection"
