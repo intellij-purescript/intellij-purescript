@@ -9,8 +9,9 @@ import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.module.Module
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class PSFile(viewProvider: FileViewProvider) :
     PsiFileBase(viewProvider, PSLanguage) {
@@ -32,5 +33,30 @@ class PSFile(viewProvider: FileViewProvider) :
          */
         val module: Module?
             get() = findChildByClass(Module::class.java)
+
+    fun suggestModuleName(): String? {
+        val fileName = name.removeSuffix(".purs")
+        val path = parent?.virtualFile?.path ?: return null
+        val directoryPath = Paths.get(path)
+        val relativePath = try {
+            project
+                .basePath
+                ?.let { Paths.get(it).toAbsolutePath() }
+                ?.relativize(directoryPath.toAbsolutePath())
+                ?: directoryPath
+        } catch (ignore: IllegalArgumentException) {
+            directoryPath
+        }
+        return relativePath
+            .reversed<Path?>()
+            .takeWhile<Path?> { "$it" != "src" && "$it" != "test" }
+            .filter<Path?> { "$it".first().isUpperCase() }
+            .reversed<Path?>()
+            .joinToString<Path?>(".")
+            .let<String, String> {
+                "$it.$fileName"
+            }
+            .removePrefix(".")
+    }
 
 }
