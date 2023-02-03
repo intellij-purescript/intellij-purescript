@@ -188,7 +188,8 @@ class ParserDefinitions {
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-    private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal))
+    private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal)) +
+        !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
     private val patternGuard =
         !(binder + larrow).heal + Reference { Value(expr1) }
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))

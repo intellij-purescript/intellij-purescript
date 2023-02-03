@@ -9,6 +9,7 @@ sealed interface DSL {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
     val heal get() = Transaction(this)
+    fun relax(message: String) = Relax(this, message)
     fun parse(builder: PsiBuilder): Boolean
 }
 
@@ -137,6 +138,16 @@ data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
                 pack.done(symbol)
                 true
             }
+        }
+    }
+} 
+data class Relax(val dsl: DSL, val message: String) : DSL {
+    override fun parse(builder: PsiBuilder): Boolean {
+        return if (dsl.heal.parse(builder)) {
+            true
+        } else {
+            builder.error(message)
+            true
         }
     }
 } 
