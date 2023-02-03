@@ -5,7 +5,7 @@ import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSQualifiedOperatorName
 
 /**
- * A Operator in an expression, e.g.
+ * An Operator in an expression, e.g.
  * ```
  * P.+
  * ```
