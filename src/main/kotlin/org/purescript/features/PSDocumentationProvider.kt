@@ -13,6 +13,7 @@ import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
+import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
@@ -31,6 +32,22 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                     ) ,
                     docCommentsToDocstring(element.docComments.map { it.text })
                 )
+            element is FixityDeclaration -> {
+                val valueDeclaration = element.reference.resolve()
+                    as? ValueDeclarationGroup
+                val signature = valueDeclaration?.signature
+                val docComments = valueDeclaration?.docComments
+                    ?: emptyList()
+                layout(
+                    HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                        element.project,
+                        PSLanguage,
+                         signature?.type?.text?.let { "${element.name} :: $it" } ?: element.name,
+                        1f
+                    ) ,
+                    docCommentsToDocstring(docComments.map { it.text })
+                )
+            }
             element is DocCommentOwner && element is PsiNamedElement ->
                 layout(
                     element.name ?: "unknown",
