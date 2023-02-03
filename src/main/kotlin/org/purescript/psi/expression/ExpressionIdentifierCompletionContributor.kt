@@ -9,7 +9,7 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
 import org.purescript.file.PSFile
-import org.purescript.psi.Importable
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.value.ExportedValueDecl
 
 class ExpressionIdentifierCompletionContributor : CompletionContributor() {

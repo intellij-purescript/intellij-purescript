@@ -12,7 +12,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
-import org.purescript.psi.Importable
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub

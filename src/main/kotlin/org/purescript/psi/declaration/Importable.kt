@@ -1,4 +1,4 @@
-package org.purescript.psi
+package org.purescript.psi.declaration
 
 import org.purescript.ide.formatting.ImportDeclaration
 

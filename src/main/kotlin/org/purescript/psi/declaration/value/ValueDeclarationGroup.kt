@@ -7,7 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.psi.Importable
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
