@@ -42,7 +42,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
                         PSLanguage,
-                         signature?.type?.text?.let { "${element.name} :: $it" } ?: element.name,
+                         signature?.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
                         1f
                     ) ,
                     docCommentsToDocstring(docComments.map { it.text })
