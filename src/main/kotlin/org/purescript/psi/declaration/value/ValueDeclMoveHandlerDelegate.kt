@@ -65,7 +65,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
 
         override fun doAction() {
             applyFields()
-            val modules: MutableCollection<Module.Psi> = moduleNameIndex.get(
+            val modules: MutableCollection<Module> = moduleNameIndex.get(
                 targetModuleName,
                 project,
                 GlobalSearchScope.projectScope(project)

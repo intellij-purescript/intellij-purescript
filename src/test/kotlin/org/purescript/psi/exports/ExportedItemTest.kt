@@ -68,7 +68,7 @@ class ExportedItemTest : BasePlatformTestCase() {
             """module Main (module Foo) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is ExportedModule.Psi)
+        assertTrue(exportedItem is ExportedModule)
         assertEquals("Foo", exportedItem.name)
     }
 

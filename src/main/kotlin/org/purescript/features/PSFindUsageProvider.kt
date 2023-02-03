@@ -54,7 +54,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
         psiElement is ValueDeclarationGroup
             || psiElement is PSVarBinder
-            || psiElement is Module.Psi
+            || psiElement is Module
             || psiElement is ForeignValueDecl
             || psiElement is NewtypeDecl
             || psiElement is NewtypeCtor
@@ -107,7 +107,7 @@ class PSFindUsageProvider : FindUsagesProvider {
         return when (element) {
             is ValueDeclarationGroup -> "value"
             is PSVarBinder -> "parameter"
-            is Module.Psi -> "module"
+            is Module -> "module"
             is NewtypeDecl -> "newtype"
             is NewtypeCtor -> "newtype constructor"
             is PSImportAlias -> "import alias"

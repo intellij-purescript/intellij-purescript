@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReferenceBase
 import org.purescript.file.ExportedTypesIndex
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.declaration.imports.ImportQuickFix
-import org.purescript.psi.module.Module.*
+import org.purescript.psi.module.Module
 
 class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     LocalQuickFixProvider,
@@ -38,7 +38,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         }
 
     private fun candidatesFor(name: String): List<PsiNamedElement> {
-        val module: Psi = element.module ?: return emptyList()
+        val module: Module = element.module ?: return emptyList()
         val importDeclaration = module
             .cache.imports
             .firstOrNull { it.importAlias?.name == name }
@@ -52,7 +52,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     }
 
     private val allCandidates: List<PsiNamedElement> get() {
-        val module: Psi = element.module ?: return emptyList()
+        val module: Module = element.module ?: return emptyList()
         val candidates = mutableListOf<PsiNamedElement>()
         candidates.addAll(module.cache.dataDeclarations)
         candidates.addAll(module.cache.newTypeDeclarations)

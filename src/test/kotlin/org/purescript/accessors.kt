@@ -79,7 +79,7 @@ inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(
 }
 
 
-fun PsiFile.getModule(): Module.Psi =
+fun PsiFile.getModule(): Module =
     (this as PSFile.Psi).module!!
 
 fun PsiFile.getDataDeclaration(): DataDeclaration.Psi =
@@ -175,8 +175,8 @@ fun PsiFile.getExportedData(): ExportedData.Psi =
 fun PsiFile.getExportedValue(): ExportedValue.Psi =
     getExportedItem() as ExportedValue.Psi
 
-fun PsiFile.getExportedModule(): ExportedModule.Psi =
-    getExportedItem() as ExportedModule.Psi
+fun PsiFile.getExportedModule(): ExportedModule =
+    getExportedItem() as ExportedModule
 
 fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()

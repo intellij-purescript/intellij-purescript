@@ -157,7 +157,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return the [Declaration] elements that this declaration imports
      */
     private inline fun <Declaration : PsiNamedElement, reified Wanted : PSImportedItem>
-        getImportedDeclarations(exportedDeclarationProperty: KProperty1<Module.Psi, List<Declaration>>): List<Declaration> {
+        getImportedDeclarations(exportedDeclarationProperty: KProperty1<Module, List<Declaration>>): List<Declaration> {
         val importedModule = importedModule ?: return emptyList()
         val exportedDeclarations =
             exportedDeclarationProperty.get(importedModule)
@@ -178,16 +178,16 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     }
 
     /**
-     * @return the [Module.Psi] that this declaration is importing from
+     * @return the [Module] that this declaration is importing from
      */
-    val importedModule get(): Module.Psi? = reference.resolve()
+    val importedModule get(): Module? = reference.resolve()
 
     /**
      * @return the [ValueDeclarationGroup] elements imported by this declaration
      */
     val importedValueDeclarationGroups: List<ValueDeclarationGroup>
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(
-            Module.Psi::exportedValueDeclarationGroups
+            Module::exportedValueDeclarationGroups
         )
 
     /**
@@ -195,7 +195,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedForeignValueDeclarations: List<ForeignValueDecl>
         get() = getImportedDeclarations<ForeignValueDecl, PSImportedValue>(
-            Module.Psi::exportedForeignValueDeclarations
+            Module::exportedForeignValueDeclarations
         )
 
     /**
@@ -203,7 +203,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedForeignDataDeclarations: List<PSForeignDataDeclaration>
         get() = getImportedDeclarations<PSForeignDataDeclaration, PSImportedData>(
-            Module.Psi::exportedForeignDataDeclarations
+            Module::exportedForeignDataDeclarations
         )
 
     /**
@@ -211,7 +211,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedNewTypeDeclarations: List<NewtypeDecl>
         get() = getImportedDeclarations<NewtypeDecl, PSImportedData>(
-            Module.Psi::exportedNewTypeDeclarations
+            Module::exportedNewTypeDeclarations
         )
 
     /**
@@ -278,7 +278,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedDataDeclarations: List<DataDeclaration.Psi>
         get() = getImportedDeclarations<DataDeclaration.Psi, PSImportedData>(
-            Module.Psi::exportedDataDeclarations
+            Module::exportedDataDeclarations
         )
 
     /**
@@ -327,7 +327,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedTypeSynonymDeclarations: List<TypeDecl>
         get() = getImportedDeclarations<TypeDecl, PSImportedData>(
-            Module.Psi::exportedTypeSynonymDeclarations
+            Module::exportedTypeSynonymDeclarations
         )
 
     /**
@@ -335,7 +335,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedClassDeclarations: List<ClassDecl>
         get() = getImportedDeclarations<ClassDecl, PSImportedClass>(
-            Module.Psi::exportedClassDeclarations
+            Module::exportedClassDeclarations
         )
 
     /**
@@ -343,7 +343,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedClassMembers: List<PSClassMember>
         get() = getImportedDeclarations<PSClassMember, PSImportedValue>(
-            Module.Psi::exportedClassMembers
+            Module::exportedClassMembers
         )
 
     /**
@@ -352,7 +352,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedFixityDeclarations
         get() =
             getImportedDeclarations<FixityDeclaration, PSImportedOperator>(
-                Module.Psi::exportedFixityDeclarations
+                Module::exportedFixityDeclarations
             )
 
 }

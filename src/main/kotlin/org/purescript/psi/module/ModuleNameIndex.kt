@@ -8,9 +8,9 @@ import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.psi.stubs.StubIndexKey.createIndexKey
 import com.intellij.util.Processors
 
-class ModuleNameIndex: StringStubIndexExtension<Module.Psi>() {
+class ModuleNameIndex: StringStubIndexExtension<Module>() {
 
-    override fun getKey(): StubIndexKey<String, Module.Psi> = KEY
+    override fun getKey(): StubIndexKey<String, Module> = KEY
     fun getAllKeys(scope: GlobalSearchScope): MutableCollection<String> {
         val allKeys: MutableSet<String> = mutableSetOf()
         StubIndex.getInstance().processAllKeys(
@@ -23,6 +23,6 @@ class ModuleNameIndex: StringStubIndexExtension<Module.Psi>() {
     }
 
     companion object {
-        val KEY = createIndexKey<String, Module.Psi>("purescript.module.name")
+        val KEY = createIndexKey<String, Module>("purescript.module.name")
     }
 }

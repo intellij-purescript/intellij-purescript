@@ -96,7 +96,7 @@ class PSReferenceImporter : ReferenceImporter {
         hintManager: HintManager,
         editor: Editor,
         element: PSExpressionIdentifier,
-        module: Module.Psi
+        module: Module
     ): Boolean {
         val message = ShowAutoImportPass.getMessage(false, "$toImport")
         hintManager.showQuestionHint(editor,
@@ -109,7 +109,7 @@ class PSReferenceImporter : ReferenceImporter {
         return true
     }
 
-    fun import(module: Module.Psi, toImport: ImportDeclaration): Boolean {
+    fun import(module: Module, toImport: ImportDeclaration): Boolean {
         WriteAction.run<RuntimeException> {
             CommandProcessor.getInstance().runUndoTransparentAction {
                 module.addImportDeclaration(toImport)

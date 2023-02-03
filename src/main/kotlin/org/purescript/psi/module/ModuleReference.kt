@@ -15,7 +15,7 @@ class ModuleReference(element: Import) : PsiReferenceBase<Import>(
         return ModuleNameIndex().getAllKeys(element.project).toTypedArray()
     }
 
-    override fun resolve(): Module.Psi? {
+    override fun resolve(): Module? {
         val moduleName = element.moduleName.name
         val project = element.project
         val index = ModuleNameIndex()

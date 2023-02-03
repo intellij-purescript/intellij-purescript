@@ -15,7 +15,7 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
 
-    val module get() = parentOfType<Module.Psi>()
+    val module get() = parentOfType<Module>()
     override fun toString() = "${javaClass.simpleName}($elementType)"
 
     inline fun <Stub : StubElement<Out>, reified Out : StubBasedPsiElement<Stub>>

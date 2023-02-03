@@ -23,10 +23,10 @@ import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.module.Module
 
 class ExpressionIdentifierIntroduceHandler :
-    IntroduceHandler<PsiIntroduceTarget<PSExpressionIdentifier>, Module.Psi>() {
+    IntroduceHandler<PsiIntroduceTarget<PSExpressionIdentifier>, Module>() {
     override fun collectUsages(
         target: PsiIntroduceTarget<PSExpressionIdentifier>,
-        scope: Module.Psi
+        scope: Module
     ): MutableList<UsageInfo> {
         val definition = target.place?.reference?.resolve()
         val exprAtoms = scope.cache.valueDeclarationGroups
@@ -79,7 +79,7 @@ class ExpressionIdentifierIntroduceHandler :
     override fun getHelpID() = null
     override fun getChooseScopeTitle() = "Choose scope <title>"
     override fun getScopeRenderer() = DefaultPsiElementCellRenderer()
-        as PsiElementListCellRenderer<Module.Psi>
+        as PsiElementListCellRenderer<Module>
 
     override fun checkSelectedTarget(
         target: PsiIntroduceTarget<PSExpressionIdentifier>,
@@ -87,7 +87,7 @@ class ExpressionIdentifierIntroduceHandler :
         editor: Editor,
         project: Project
     ): String? =
-        if (target.place?.reference?.resolve()?.parent is Module.Psi) null
+        if (target.place?.reference?.resolve()?.parent is Module) null
         else "'${target.place?.name}' cant be reached from top level"
 
 
@@ -96,14 +96,14 @@ class ExpressionIdentifierIntroduceHandler :
         editor: Editor,
         file: PsiFile,
         project: Project
-    ): MutableList<Module.Psi> = target.place
+    ): MutableList<Module> = target.place
         ?.module
         ?.let { mutableListOf(it) }
         ?: mutableListOf()
 
     override fun getIntroducer(
         target: PsiIntroduceTarget<PSExpressionIdentifier>,
-        scope: Module.Psi,
+        scope: Module,
         usages: MutableList<UsageInfo>,
         replaceChoice: OccurrencesChooser.ReplaceChoice,
         file: PsiFile,

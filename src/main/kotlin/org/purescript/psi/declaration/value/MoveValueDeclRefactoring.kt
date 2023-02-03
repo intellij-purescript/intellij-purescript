@@ -18,7 +18,7 @@ import org.purescript.psi.module.Module
 
 class MoveValueDeclRefactoring(
     private val toMove: ValueDeclarationGroup,
-    private val targetModule: Module.Psi
+    private val targetModule: Module
 ) : BaseRefactoringProcessor(toMove.project) {
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) =
         BaseUsageViewDescriptor(toMove)

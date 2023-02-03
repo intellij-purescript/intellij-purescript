@@ -29,11 +29,11 @@ interface PSFile {
         override fun toString(): String = "Purescript File"
 
         /**
-         * @return the [Module.Psi] that this file contains,
+         * @return the [Module] that this file contains,
          * or null if the module couldn't be parsed
          */
-        val module: Module.Psi?
-            get() = findChildByClass(Module.Psi::class.java)
+        val module: Module?
+            get() = findChildByClass(Module::class.java)
 
     }
 }

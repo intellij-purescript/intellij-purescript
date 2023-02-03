@@ -14,7 +14,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
         element: PsiElement,
         context: PsiElement?
     ): Boolean =
-        element is Module.Psi ||
+        element is Module ||
             element is ValueDeclarationGroup ||
             element is FixityDeclaration ||
             element is PSVarBinder
