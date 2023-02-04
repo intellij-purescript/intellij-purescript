@@ -8,12 +8,14 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.file.PSFile
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.name.PSQualifiedIdentifier
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(
@@ -21,6 +23,9 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        val qualifier = parameters.position
+            .parentOfType<PSExpressionIdentifier>()
+            ?.qualifierName
         val project = parameters.editor.project ?: return
         val index = ImportableIndex
         val scope = GlobalSearchScope.allScope(project)
@@ -50,7 +55,9 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                         else -> null
                     }?.withInsertHandler { context, item ->
                         val import = (item.psiElement as? Importable)
-                            ?.asImport() ?: return@withInsertHandler
+                            ?.asImport()
+                            ?.withAlias(qualifier)
+                            ?: return@withInsertHandler
                         val module = (context.file as PSFile).module
                         executeCommand(project, "Import") {
                             runWriteAction {
@@ -58,7 +65,6 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                             }
                         }
                     }
-
                 }
             result.addAllElements(elementBuilders)
         }
