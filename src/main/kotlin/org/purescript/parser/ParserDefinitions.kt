@@ -201,7 +201,7 @@ class ParserDefinitions {
         `'where'` + `L{` + Reference { letBinding }.sepBy1(`L-sep`) + `L}`
     )
     private val guardedDeclExpr = guard + eq + exprWhere
-    private val guardedDecl = (eq.heal + exprWhere) / +guardedDeclExpr
+    private val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
     private val instBinder = Choice.of(
         (ident + dcolon).heal + type,
         valueDeclarationGroup()
