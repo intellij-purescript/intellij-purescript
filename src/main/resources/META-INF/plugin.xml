@@ -40,6 +40,8 @@
         />
         <lang.foldingBuilder language="Purescript"
                              implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
+        <extendWordSelectionHandler
+                implementation="org.purescript.psi.expression.ExpressionExtendWordSelectionHandler"/>
         <lang.refactoringSupport
             language="Purescript"
             implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>

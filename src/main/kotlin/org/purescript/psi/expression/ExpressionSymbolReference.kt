@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.fixity.ExportedFixityNameIndex
+import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSOperatorName
@@ -24,7 +25,7 @@ class ExpressionSymbolReference(
     override fun getVariants(): Array<Any> =
         candidates.toList().toTypedArray()
 
-    override fun resolve(): PsiElement? {
+    override fun resolve(): FixityDeclaration? {
         return candidates.firstOrNull { it.name == element.name }
     }
 

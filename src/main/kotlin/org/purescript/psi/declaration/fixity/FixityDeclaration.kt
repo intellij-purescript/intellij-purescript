@@ -66,6 +66,8 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         ImportDeclaration(it, false, setOf(ImportedOperator(name)))
     }
     val fixity: PSFixity get() = child<PSFixity>()!!
+    val associativity get() = fixity.associativity
+    val precedence get() = fixity.precedence
     private val isType get(): Boolean =
         findChildByType<PsiElement>(TYPE) != null
     private val operatorName

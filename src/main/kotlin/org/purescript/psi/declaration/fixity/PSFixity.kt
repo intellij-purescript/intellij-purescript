@@ -1,7 +1,11 @@
 package org.purescript.psi.declaration.fixity
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.*
+import org.purescript.parser.INFIXL
+import org.purescript.parser.INFIXR
+import org.purescript.parser.NATURAL
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
@@ -18,4 +22,11 @@ class PSFixity: PSStubbedElement<PSFixity.Stub> {
     }
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+    enum class Associativity {Infixl, Infixr, Infix}
+    val associativity: Associativity get() = when {
+        findChildByType<PsiElement>(INFIXL) != null-> Associativity.Infixl
+        findChildByType<PsiElement>(INFIXR) != null-> Associativity.Infixr
+        else -> Associativity.Infix
+    }
+    val precedence: Int get() = findChildByType<PsiElement>(NATURAL)!!.text.toInt()
 }
