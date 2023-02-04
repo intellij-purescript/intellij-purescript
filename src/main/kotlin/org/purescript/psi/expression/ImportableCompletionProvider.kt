@@ -15,7 +15,6 @@ import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.name.PSQualifiedIdentifier
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(
@@ -29,6 +28,9 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         val qualifier = parameters.position
             .parentOfType<PSExpressionIdentifier>()
             ?.qualifierName
+            ?: parameters.position
+                .parentOfType<PSExpressionOperator>()
+                ?.qualifierName
         val project = parameters.editor.project ?: return
         val index = ImportableIndex
         val scope = GlobalSearchScope.allScope(project)
@@ -49,12 +51,13 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
 
                         is FixityDeclaration -> {
                             val reference = it.reference.resolve()
-                                as? ValueDeclarationGroup
+                                    as? ValueDeclarationGroup
                             LookupElementBuilder.create(it)
                                 .withTypeText(reference?.signature?.type?.text)
                                 .withTailText(it.module?.name?.let { "($it)" })
                                 .withIcon(AllIcons.Actions.Regex)
                         }
+
                         else -> null
                     }?.withInsertHandler { context, item ->
                         val import = (item.psiElement as? Importable)

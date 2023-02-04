@@ -108,4 +108,34 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
                 |y0 = Bar.x1
             """.trimMargin(), true)
     }
+    
+    fun `test imports with namespace if qualified for operators`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                infix 0 foo as ++
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                y0 = 1 Bar.+<caret>
+            """.trimIndent()
+        )
+
+        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Bar ((++)) as Bar
+                |
+                |y0 = 1 Bar.++
+            """.trimMargin(), true)
+    }
 }
