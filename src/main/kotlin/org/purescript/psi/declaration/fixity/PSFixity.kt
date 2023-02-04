@@ -8,7 +8,7 @@ import org.purescript.psi.base.PSStubbedElement
 
 class PSFixity: PSStubbedElement<PSFixity.Stub> {
     class Stub(p: StubElement<*>?) : AStub<PSFixity>(p, Type)
-    object Type : PSElementType.WithPsiAndStub<Stub, PSFixity>("PSFixity") {
+    object Type : PSElementType.WithPsiAndStub<Stub, PSFixity>("Fixity") {
         override fun createPsi(node: ASTNode) = PSFixity(node)
         override fun createPsi(stub: Stub) = PSFixity(stub, this)
         override fun createStub(psi: PSFixity, p: StubElement<*>?) = Stub(p)
