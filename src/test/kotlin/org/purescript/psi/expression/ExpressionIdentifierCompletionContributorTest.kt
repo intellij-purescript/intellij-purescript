@@ -50,4 +50,62 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
         val result = myFixture.lookupElementStrings!!
         assertSameElements(result, "y0", "y2", "y1")
     }
+    fun `test imports the file if there is only one`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                x1 = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                y0 = x<caret>
+            """.trimIndent()
+        )
+
+        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Bar (x1)
+                |
+                |y0 = x1
+            """.trimMargin(), true)
+    }
+    fun `test imports with namespace if qualified`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                x1 = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                
+                y0 = Bar.x<caret>
+            """.trimIndent()
+        )
+
+        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Bar (x1) as Bar
+                |
+                |y0 = Bar.x1
+            """.trimMargin(), true)
+    }
 }
