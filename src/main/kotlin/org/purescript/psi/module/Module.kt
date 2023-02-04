@@ -77,6 +77,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     inner class Cache {
         val imports by lazy { findChildrenByClass<Import>() }
         val importsByName by lazy { imports.groupBy { it.name } }
+        val importsByAlias by lazy { imports.groupBy { it.importAlias?.name } }
         val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
         val valueDeclarations: Array<ValueDecl> by lazy {
             valueDeclarationGroups

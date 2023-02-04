@@ -28,7 +28,9 @@ class ExpressionCompletionContributor : CompletionContributor() {
             "(", " ", "\n", "\t" -> { }
             "." -> {
                 val range = TextRange(start - 2, start - 1)
-                if (!document.getText(range).single().isLetter()) {
+                if (document.getText(range).single().isLetter()) {
+                    context.dummyIdentifier = "foo"
+                } else {
                     context.dummyIdentifier = "+++"
                 }
             }

@@ -7,6 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
+import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
@@ -15,6 +16,7 @@ import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.module.Module
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(
@@ -23,17 +25,35 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         result: CompletionResultSet
     ) {
         if (!parameters.isExtendedCompletion) {
+            result.addLookupAdvertisement("Only showing names in scope, complete again for more options")
             return
         }
-        val qualifier = parameters.position
+        val localElement = parameters.position
+        val qualifier = localElement
             .parentOfType<PSExpressionIdentifier>()
             ?.qualifierName
-            ?: parameters.position
+            ?: localElement
                 .parentOfType<PSExpressionOperator>()
                 ?.qualifierName
+        val alreadyImportedModules: List<Module> = (localElement.containingFile as PSFile)
+            .module
+            ?.cache
+            ?.importsByAlias
+            ?.get(qualifier)
+            ?.mapNotNull { it.importedModule }
+            ?: emptyList()
+
+        val importableDeclarations: Set<PsiElement> = if (parameters.invocationCount == 2) {
+            result.addLookupAdvertisement("Showing names in already imported modules, complete again for project wide")
+            alreadyImportedModules.flatMap {
+                it.exportedValueDeclarationGroups + it.exportedFixityDeclarations
+            }.toSet()
+        } else emptySet()
+
+        // import Module as Alias
         val project = parameters.editor.project ?: return
-        val index = ImportableIndex
         val scope = GlobalSearchScope.allScope(project)
+        val index = ImportableIndex
         val names = index.getAllKeys(project)
         for (name in names) {
             if (result.isStopped) return
@@ -41,6 +61,13 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             val elements = index.get(name, project, scope)
             val elementBuilders = elements
                 .filter { parameters.originalFile != it.containingFile }
+                .filter { target ->
+                    if (parameters.invocationCount < 3) {
+                        target in importableDeclarations
+                    } else {
+                        true
+                    }
+                }
                 .mapNotNull {
                     when (it) {
                         is ValueDeclarationGroup -> LookupElementBuilder

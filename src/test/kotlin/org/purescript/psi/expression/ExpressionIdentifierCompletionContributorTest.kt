@@ -46,7 +46,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
 
         myFixture.testCompletionVariants("Foo.purs", "y0", "y2")
         myFixture.configureByFiles("Foo.purs")
-        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.complete(CompletionType.BASIC, 3)
         val result = myFixture.lookupElementStrings!!
         assertSameElements(result, "y0", "y2", "y1")
     }
@@ -68,7 +68,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.complete(CompletionType.BASIC, 3)
         myFixture.checkResult(
             "Foo.purs",
             """
@@ -97,7 +97,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.complete(CompletionType.BASIC, 3)
         myFixture.checkResult(
             "Foo.purs",
             """
@@ -127,7 +127,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.complete(CompletionType.BASIC, 3)
         myFixture.checkResult(
             "Foo.purs",
             """

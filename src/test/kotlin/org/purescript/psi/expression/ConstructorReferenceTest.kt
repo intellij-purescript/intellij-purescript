@@ -389,9 +389,9 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             "Foo.purs",
             """
                 module Foo where
-                import Bar as Qux
+                import Bar as Quxd
                 newtype C = Baw Int
-                f = Qux.<caret>
+                f = Qux.B<caret>
             """.trimIndent()
         )
         myFixture.testCompletionVariants("Foo.purs", "Bal", "Bap", "Bak")
