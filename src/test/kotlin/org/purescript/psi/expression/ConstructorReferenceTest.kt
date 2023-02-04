@@ -389,7 +389,7 @@ class ConstructorReferenceTest : BasePlatformTestCase() {
             "Foo.purs",
             """
                 module Foo where
-                import Bar as Quxd
+                import Bar as Qux
                 newtype C = Baw Int
                 f = Qux.B<caret>
             """.trimIndent()
