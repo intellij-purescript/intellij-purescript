@@ -23,6 +23,9 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        if (!parameters.isExtendedCompletion) {
+            return
+        }
         val qualifier = parameters.position
             .parentOfType<PSExpressionIdentifier>()
             ?.qualifierName

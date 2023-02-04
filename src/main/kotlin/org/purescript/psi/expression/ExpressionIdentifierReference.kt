@@ -1,7 +1,9 @@
 package org.purescript.psi.expression
 
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
+import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
@@ -25,7 +27,18 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
     ) {
 
     override fun getVariants(): Array<Any> =
-        candidates.toList().toTypedArray()
+        candidates
+            .map {
+                when (it) {
+                    is ValueDeclarationGroup -> LookupElementBuilder
+                        .create(it)
+                        .withTypeText(it.signature?.type?.text)
+                        .withTailText(it.module?.name?.let { "($it)" })
+                        .withIcon(AllIcons.Nodes.Function)
+
+                    else -> it
+                }
+            }.toList().toTypedArray()
 
     override fun resolve(): PsiNamedElement? {
         val name = element.name
