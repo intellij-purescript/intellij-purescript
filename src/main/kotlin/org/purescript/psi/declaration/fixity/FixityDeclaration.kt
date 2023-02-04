@@ -65,7 +65,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     override fun asImport() = module?.name?.let {
         ImportDeclaration(it, false, setOf(ImportedOperator(name)))
     }
-
+    val fixity: PSFixity get() = child<PSFixity>()!!
     private val isType get(): Boolean =
         findChildByType<PsiElement>(TYPE) != null
     private val operatorName

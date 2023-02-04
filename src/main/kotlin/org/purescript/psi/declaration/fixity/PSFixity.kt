@@ -1,6 +1,21 @@
 package org.purescript.psi.declaration.fixity
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.base.PSPsiElement
+import com.intellij.psi.stubs.*
+import org.purescript.psi.PSElementType
+import org.purescript.psi.base.AStub
+import org.purescript.psi.base.PSStubbedElement
 
-class PSFixity(node: ASTNode) : PSPsiElement(node)
+class PSFixity: PSStubbedElement<PSFixity.Stub> {
+    class Stub(p: StubElement<*>?) : AStub<PSFixity>(p, Type)
+    object Type : PSElementType.WithPsiAndStub<Stub, PSFixity>("PSFixity") {
+        override fun createPsi(node: ASTNode) = PSFixity(node)
+        override fun createPsi(stub: Stub) = PSFixity(stub, this)
+        override fun createStub(psi: PSFixity, p: StubElement<*>?) = Stub(p)
+        override fun indexStub(stub: Stub, sink: IndexSink) {}
+        override fun serialize(stub: Stub, d: StubOutputStream) = Unit
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(p)
+    }
+    constructor(node: ASTNode) : super(node)
+    constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+}
