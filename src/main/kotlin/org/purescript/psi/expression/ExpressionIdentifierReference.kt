@@ -31,11 +31,9 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             .map {
                 when (it) {
                     is ValueDeclarationGroup -> LookupElementBuilder
-                        .create(it)
+                        .createWithIcon(it)
                         .withTypeText(it.signature?.type?.text)
                         .withTailText(it.module?.name?.let { "($it)" })
-                        .withIcon(AllIcons.Nodes.Function)
-
                     else -> it
                 }
             }.toList().toTypedArray()
