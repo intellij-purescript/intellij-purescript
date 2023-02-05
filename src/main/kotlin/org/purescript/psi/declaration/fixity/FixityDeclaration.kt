@@ -11,19 +11,19 @@ import com.intellij.psi.stubs.*
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.parser.TYPE
-import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
+import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportedOperator
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
 import org.purescript.psi.name.PSQualifiedIdentifier
 import org.purescript.psi.name.PSQualifiedProperName
-import javax.swing.Icon
+import org.purescript.psi.type.PSType
 
 class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     PsiNameIdentifierOwner, Importable {
@@ -38,7 +38,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
                 ?.find { it.name == name } != null
         }
     }
-    override val signature get() = (reference.resolve() as? ValueDeclarationGroup)?.signature
+    val signature get() = (reference.resolve() as? ValueDeclarationGroup)?.signature
 
     override fun getIcon(flags: Int) = AllIcons.Actions.Regex
     override fun getPresentation(): ItemPresentation {
@@ -79,6 +79,8 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     override fun asImport() = module?.name?.let {
         ImportDeclaration(it, false, setOf(ImportedOperator(name)))
     }
+
+    override val type: PSType? get() = signature?.type
     val fixity: PSFixity get() = child<PSFixity>()!!
     val associativity get() = fixity.associativity
     val precedence get() = fixity.precedence

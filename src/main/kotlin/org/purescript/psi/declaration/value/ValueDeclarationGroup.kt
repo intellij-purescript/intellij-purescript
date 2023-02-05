@@ -19,6 +19,7 @@ import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSIdentifier
+import org.purescript.psi.type.PSType
 import javax.swing.Icon
 
 class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
@@ -62,7 +63,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
         override fun getLocationString() = module?.name
         override fun getIcon(unused: Boolean) = getIcon(0)
     }
-    override val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
+    val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
     val valueDeclarations: Array<out ValueDecl> get() = 
         findChildrenByClass(ValueDecl::class.java)
     val expressionAtoms get() = valueDeclarations.flatMap { it.expressionAtoms }
@@ -92,4 +93,6 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     override fun asImport() = module?.name?.let {
         ImportDeclaration(it, false, setOf(ImportedValue(name)))
     }
+
+    override val type: PSType? get() = signature?.type
 }

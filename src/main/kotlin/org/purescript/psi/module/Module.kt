@@ -33,6 +33,7 @@ import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.*
 import org.purescript.psi.name.PSModuleName
+import org.purescript.psi.type.PSType
 
 class Module : PsiNameIdentifierOwner, DocCommentOwner,
     PSStubbedElement<Module.Stub>, Importable {
@@ -67,7 +68,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     constructor(node: ASTNode) : super(node)
 
     override fun asImport() = ImportDeclaration(name)
-    override val signature: PSSignature? get() = null
+    override val type: PSType? get() = null
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"

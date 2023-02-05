@@ -32,7 +32,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 when (it) {
                     is ValueDeclarationGroup -> LookupElementBuilder
                         .createWithIcon(it)
-                        .withTypeText(it.signature?.type?.text)
+                        .withTypeText(it.type?.text)
                         .withTailText(it.module?.name?.let { "($it)" })
                     else -> it
                 }

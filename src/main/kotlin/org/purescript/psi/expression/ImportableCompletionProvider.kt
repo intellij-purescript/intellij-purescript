@@ -66,7 +66,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                 .mapNotNull {
                     LookupElementBuilder
                         .createWithIcon(it)
-                        .withTypeText(it.signature?.type?.text)
+                        .withTypeText(it.type?.text)
                         .withTailText(it.asImport()?.moduleName?.let { "($it)" })
                         .withInsertHandler { context, item ->
                         val import = (item.psiElement as? Importable)
