@@ -1,4 +1,4 @@
-package org.purescript.ide.fromatting
+package org.purescript.ide.formatting
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.codeStyle.CodeStyleManager
