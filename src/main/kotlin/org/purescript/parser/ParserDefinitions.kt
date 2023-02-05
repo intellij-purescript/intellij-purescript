@@ -156,9 +156,9 @@ class ParserDefinitions {
         CharLiteral(char),
         StringLiteral(string),
         number,
-        ArrayLiteral(squares(expr.sepBy(`,`))),
-        ObjectLiteral(braces(recordLabel.sepBy(`,`))),
-        Parens(parens(expr)),
+        ArrayLiteral(squares(!(expr + !+(`,` + expr.relax("missing array element"))).heal)),
+        ObjectLiteral(braces(!(recordLabel + !+(`,` + recordLabel.relax("missing record label")).heal))),
+        Parens(parens(expr.relax("empty parenthesis"))),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
     private val badSingleCaseBranch: DSL =
