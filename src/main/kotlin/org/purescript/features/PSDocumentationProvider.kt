@@ -10,6 +10,7 @@ import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.PSLanguage
 import org.purescript.psi.module.Module
 import org.purescript.psi.base.PSPsiElement
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
@@ -22,27 +23,25 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         originalElement: PsiElement?
     ): String? {
         return when  {
-            element is ValueDeclarationGroup ->
+            element is Importable && element is DocCommentOwner ->
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
                         PSLanguage,
-                        element.signature?.text ?: element.name,
+                        element.type?.let { "${element.name} :: ${it.text}" } ?: element.name,
                         1f
                     ) ,
                     docCommentsToDocstring(element.docComments.map { it.text })
                 )
             element is FixityDeclaration -> {
-                val valueDeclaration = element.reference.resolve()
-                    as? ValueDeclarationGroup
+                val valueDeclaration = element.reference.resolve() as? ValueDeclarationGroup
                 val signature = valueDeclaration?.signature
-                val docComments = valueDeclaration?.docComments
-                    ?: emptyList()
+                val docComments = valueDeclaration?.docComments ?: emptyList()
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
                         PSLanguage,
-                         signature?.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
+                        signature?.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
                         1f
                     ) ,
                     docCommentsToDocstring(docComments.map { it.text })
