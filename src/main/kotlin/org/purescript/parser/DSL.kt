@@ -10,6 +10,7 @@ sealed interface DSL {
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
     val heal get() = Transaction(this)
     fun relax(message: String) = Relax(this, message)
+    fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
     fun parse(builder: PsiBuilder): Boolean
 }
 
@@ -147,6 +148,27 @@ data class Relax(val dsl: DSL, val message: String) : DSL {
             true
         } else {
             builder.error(message)
+            true
+        }
+    }
+} 
+data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
+    override fun parse(builder: PsiBuilder): Boolean {
+        return if (dsl.heal.parse(builder)) {
+            true
+        } else {
+            val error = builder.mark()
+            while (!builder.eof()) {
+                val endOfError = builder.mark()
+                if(to.parse(builder)) {
+                    endOfError.rollbackTo()
+                    break
+                } else {
+                    endOfError.drop()
+                }
+                builder.advanceLexer()
+            }
+            error.error(message)
             true
         }
     }

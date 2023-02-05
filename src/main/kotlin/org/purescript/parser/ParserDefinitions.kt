@@ -312,7 +312,11 @@ class ParserDefinitions {
     val moduleHeader =
         `'module'` + moduleName + !exportList + `'where'` + `L{` +
             !+(importDeclaration + `L-sep`)
-    val moduleBody = !+(decl.sepBy(elseDecl) + `L-sep`) + `L}`
+    val moduleBody = Choice.of(
+        `L}`,
+        !+(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + `L-sep`) + `L}`
+    )
+        
     val module = ModuleType(moduleHeader + moduleBody)
     private val binder2 = Choice.of(
         (CtorBinder(qualProperName) + !+binderAtom).heal,
