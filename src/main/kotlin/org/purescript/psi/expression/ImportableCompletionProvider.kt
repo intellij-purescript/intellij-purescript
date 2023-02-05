@@ -71,10 +71,8 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                             .withTailText(it.module?.name?.let { "($it)" })
 
                         is FixityDeclaration -> {
-                            val reference = it.reference.resolve()
-                                    as? ValueDeclarationGroup
                             LookupElementBuilder.createWithIcon(it)
-                                .withTypeText(reference?.signature?.type?.text)
+                                .withTypeText(it.signature?.type?.text)
                                 .withTailText(it.module?.name?.let { "($it)" })
                         }
 

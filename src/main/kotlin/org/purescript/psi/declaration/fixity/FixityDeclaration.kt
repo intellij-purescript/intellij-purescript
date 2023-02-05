@@ -17,6 +17,7 @@ import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportedOperator
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
@@ -37,6 +38,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
                 ?.find { it.name == name } != null
         }
     }
+    val signature get() = (reference.resolve() as? ValueDeclarationGroup)?.signature
 
     override fun getIcon(flags: Int) = AllIcons.Actions.Regex
     override fun getPresentation(): ItemPresentation {
