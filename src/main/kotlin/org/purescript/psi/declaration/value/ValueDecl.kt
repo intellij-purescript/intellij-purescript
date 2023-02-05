@@ -9,9 +9,6 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
-import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.ide.formatting.ImportedValue
-import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
@@ -25,8 +22,7 @@ import org.purescript.psi.expression.PSValue
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner,
-    Importable {
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -46,10 +42,6 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner,
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) :
         super(stub, type)
-
-    override fun asImport() = module?.name?.let {
-        ImportDeclaration(it, false, setOf(ImportedValue(name)))
-    }
 
     val value get() = findChildByClass(PSValue::class.java)!!
     val expressionAtoms: List<ExpressionAtom>

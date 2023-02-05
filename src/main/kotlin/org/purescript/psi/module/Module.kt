@@ -27,6 +27,7 @@ import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
+import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
@@ -66,6 +67,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     constructor(node: ASTNode) : super(node)
 
     override fun asImport() = ImportDeclaration(name)
+    override val signature: PSSignature? get() = null
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"

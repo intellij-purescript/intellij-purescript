@@ -9,6 +9,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
@@ -61,7 +62,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
         override fun getLocationString() = module?.name
         override fun getIcon(unused: Boolean) = getIcon(0)
     }
-    val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
+    override val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
     val valueDeclarations: Array<out ValueDecl> get() = 
         findChildrenByClass(ValueDecl::class.java)
     val expressionAtoms get() = valueDeclarations.flatMap { it.expressionAtoms }
@@ -88,7 +89,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     override val docComments: List<PsiComment>
         get() = this.getDocComments() + valueDeclarations.flatMap { it.docComments }.toList()
 
-    override fun asImport(): ImportDeclaration? {
-        return valueDeclarations.first().asImport()
+    override fun asImport() = module?.name?.let {
+        ImportDeclaration(it, false, setOf(ImportedValue(name)))
     }
 }

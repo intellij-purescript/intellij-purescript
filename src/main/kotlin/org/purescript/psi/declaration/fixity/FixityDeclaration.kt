@@ -38,7 +38,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
                 ?.find { it.name == name } != null
         }
     }
-    val signature get() = (reference.resolve() as? ValueDeclarationGroup)?.signature
+    override val signature get() = (reference.resolve() as? ValueDeclarationGroup)?.signature
 
     override fun getIcon(flags: Int) = AllIcons.Actions.Regex
     override fun getPresentation(): ItemPresentation {

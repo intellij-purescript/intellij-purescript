@@ -64,20 +64,11 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                     }
                 }
                 .mapNotNull {
-                    when (it) {
-                        is ValueDeclarationGroup -> LookupElementBuilder
-                            .createWithIcon(it)
-                            .withTypeText(it.signature?.type?.text)
-                            .withTailText(it.module?.name?.let { "($it)" })
-
-                        is FixityDeclaration -> {
-                            LookupElementBuilder.createWithIcon(it)
-                                .withTypeText(it.signature?.type?.text)
-                                .withTailText(it.module?.name?.let { "($it)" })
-                        }
-
-                        else -> null
-                    }?.withInsertHandler { context, item ->
+                    LookupElementBuilder
+                        .createWithIcon(it)
+                        .withTypeText(it.signature?.type?.text)
+                        .withTailText(it.asImport()?.moduleName?.let { "($it)" })
+                        .withInsertHandler { context, item ->
                         val import = (item.psiElement as? Importable)
                             ?.asImport()
                             ?.withAlias(qualifiedName)
