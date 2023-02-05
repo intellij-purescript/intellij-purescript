@@ -14,7 +14,7 @@ import org.purescript.psi.name.PSQualifiedIdentifier
  * f = add 1 3
  * ```
  */
-class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
+class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom, Qualified {
 
     /**
      * @return the [PSQualifiedIdentifier] identifying this constructor
@@ -22,7 +22,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     internal val qualifiedIdentifier: PSQualifiedIdentifier
         get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
     
-    val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
+    override val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
     
     override fun getName(): String = qualifiedIdentifier.name
 

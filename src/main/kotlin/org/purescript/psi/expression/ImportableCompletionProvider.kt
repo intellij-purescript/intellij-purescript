@@ -29,17 +29,12 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             return
         }
         val localElement = parameters.position
-        val qualifier = localElement
-            .parentOfType<PSExpressionIdentifier>()
-            ?.qualifierName
-            ?: localElement
-                .parentOfType<PSExpressionOperator>()
-                ?.qualifierName
+        val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
         val alreadyImportedModules: List<Module> = (localElement.containingFile as PSFile)
             .module
             ?.cache
             ?.importsByAlias
-            ?.get(qualifier)
+            ?.get(qualifiedName)
             ?.mapNotNull { it.importedModule }
             ?: emptyList()
 
@@ -89,7 +84,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                     }?.withInsertHandler { context, item ->
                         val import = (item.psiElement as? Importable)
                             ?.asImport()
-                            ?.withAlias(qualifier)
+                            ?.withAlias(qualifiedName)
                             ?: return@withInsertHandler
                         val module = (context.file as PSFile).module
                         executeCommand(project, "Import") {

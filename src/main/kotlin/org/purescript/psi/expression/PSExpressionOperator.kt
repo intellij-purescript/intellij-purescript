@@ -16,14 +16,14 @@ import org.purescript.psi.name.PSQualifiedOperatorName
  * f = 1 P.+ 3
  * ```
  */
-class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
+class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom,Qualified {
 
     /**
      * @return the [PSQualifiedOperatorName] identifying this constructor
      */
     internal val qualifiedOperator: PSQualifiedOperatorName
         get() = findNotNullChildByClass(PSQualifiedOperatorName::class.java)
-    val qualifierName: String? = qualifiedOperator.moduleName?.name
+    override val qualifierName: String? = qualifiedOperator.moduleName?.name
     override fun getName(): String = qualifiedOperator.name
 
 
