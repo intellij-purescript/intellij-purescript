@@ -1,6 +1,8 @@
 package org.purescript.psi.declaration.value
 
+import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
@@ -16,6 +18,7 @@ import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSIdentifier
+import javax.swing.Icon
 
 class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {
@@ -52,6 +55,12 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
+    override fun getIcon(flags: Int) = AllIcons.Nodes.Function
+    override fun getPresentation() = object : ItemPresentation {
+        override fun getPresentableText() = name
+        override fun getLocationString() = module?.name
+        override fun getIcon(unused: Boolean) = getIcon(0)
+    }
     val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
     val valueDeclarations: Array<out ValueDecl> get() = 
         findChildrenByClass(ValueDecl::class.java)

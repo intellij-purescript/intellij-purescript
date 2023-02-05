@@ -1,6 +1,8 @@
 package org.purescript.psi.declaration.fixity
 
+import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
@@ -20,6 +22,7 @@ import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSOperatorName
 import org.purescript.psi.name.PSQualifiedIdentifier
 import org.purescript.psi.name.PSQualifiedProperName
+import javax.swing.Icon
 
 class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     PsiNameIdentifierOwner, Importable {
@@ -32,6 +35,15 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
             else -> module?.exportList?.childrenStubs
                 ?.filterIsInstance<ExportedOperator.Stub>()
                 ?.find { it.name == name } != null
+        }
+    }
+
+    override fun getIcon(flags: Int) = AllIcons.Actions.Regex
+    override fun getPresentation(): ItemPresentation {
+        return object : ItemPresentation {
+            override fun getPresentableText() = name
+            override fun getLocationString() = module?.name
+            override fun getIcon(unused: Boolean) = getIcon(0)
         }
     }
 

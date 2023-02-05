@@ -66,18 +66,16 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                 .mapNotNull {
                     when (it) {
                         is ValueDeclarationGroup -> LookupElementBuilder
-                            .create(it)
+                            .createWithIcon(it)
                             .withTypeText(it.signature?.type?.text)
                             .withTailText(it.module?.name?.let { "($it)" })
-                            .withIcon(AllIcons.Nodes.Function)
 
                         is FixityDeclaration -> {
                             val reference = it.reference.resolve()
                                     as? ValueDeclarationGroup
-                            LookupElementBuilder.create(it)
+                            LookupElementBuilder.createWithIcon(it)
                                 .withTypeText(reference?.signature?.type?.text)
                                 .withTailText(it.module?.name?.let { "($it)" })
-                                .withIcon(AllIcons.Actions.Regex)
                         }
 
                         else -> null
