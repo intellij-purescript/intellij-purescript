@@ -138,4 +138,60 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
                 |y0 = 1 Bar.++
             """.trimMargin(), true)
     }
+    fun `test imports with namespace for newtype`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                |module Bar where
+                |
+                |newtype User = User String
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |y0 = Bar.User<caret>
+            """.trimMargin()
+        )
+
+        myFixture.complete(CompletionType.BASIC, 3)
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Bar (User(User)) as Bar
+                |
+                |y0 = Bar.User
+            """.trimMargin(), true)
+    }
+    fun `failing test imports with namespace for newtype only if constructor is exported`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                |module Bar (User) where
+                |
+                |newtype User = User String
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |y0 = Bar.User<caret>
+            """.trimMargin()
+        )
+
+        myFixture.complete(CompletionType.BASIC, 3)
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |y0 = Bar.User
+            """.trimMargin(), true)
+    }
 }

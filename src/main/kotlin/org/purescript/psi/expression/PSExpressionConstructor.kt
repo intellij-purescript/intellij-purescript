@@ -15,7 +15,7 @@ import org.purescript.psi.name.PSQualifiedProperName
  * just3 = Just 3
  * ```
  */
-class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
+class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAtom, Qualified {
 
     /**
      * @return the [PSQualifiedProperName] identifying this constructor
@@ -24,6 +24,7 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAto
         get() = findNotNullChildByClass(PSQualifiedProperName::class.java)
 
     override fun getName(): String = qualifiedProperName.name
+    override val qualifierName get() = qualifiedProperName.moduleName?.name
 
     override fun getReference(): ConstructorReference =
         ConstructorReference(this, qualifiedProperName)

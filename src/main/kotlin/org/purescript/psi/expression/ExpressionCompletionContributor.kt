@@ -18,6 +18,11 @@ class ExpressionCompletionContributor : CompletionContributor() {
             psiElement().withSuperParent(3, PSExpressionOperator::class.java),
             provider
         )
+        extend(
+            CompletionType.BASIC,
+            psiElement().withSuperParent(3, PSExpressionConstructor::class.java),
+            provider
+        )
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {
