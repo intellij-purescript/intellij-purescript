@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.StubBuilder
 import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
+import com.intellij.psi.templateLanguages.TemplateLanguage
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
 import org.purescript.psi.module.Module
@@ -20,6 +21,7 @@ class PSFile(viewProvider: FileViewProvider) :
     }
 
     object Type : IStubFileElementType<Stub>("PSFile", PSLanguage) {
+        override fun getStubVersion(): Int = 1
         override fun getBuilder(): StubBuilder = object : DefaultStubBuilder() {
             override fun createStubForFile(file: PsiFile): Stub = Stub(file as PSFile)
         }
