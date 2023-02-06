@@ -7,7 +7,6 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import org.purescript.file.PSFile
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.imports.*
 
 class PurescriptImportOptimizer : ImportOptimizer {
     override fun supports(file: PsiFile): Boolean = file is PSFile
@@ -16,7 +15,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val module = psFile.module
             ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()
-        val fromModule = module.cache.imports.map(::fromPsiElement)
+        val fromModule = module.cache.imports.map { ImportDeclaration.fromPsiElement(it) }
         val psiPair = if (fromModule.isEmpty()) null
         else {
             val importDeclarations = ImportDeclarations(fromModule.toSet())
@@ -44,13 +43,5 @@ class PurescriptImportOptimizer : ImportOptimizer {
             }
         }
     }
-
-    private fun fromPsiElement(importDeclaration: Import): ImportDeclaration =
-        ImportDeclaration(
-            importDeclaration.moduleName.name,
-            importDeclaration.isHiding,
-            importDeclaration.importedItems.map { it.asData() }.toSet(),
-            importDeclaration.importAlias?.name
-        )
 
 }

@@ -155,8 +155,7 @@ class ValueDeclarationGroupTest : BasePlatformTestCase() {
             """
                 module Main (class Box, x, foo) where
                 
-                import Numbers (one)
-                import Numbers ((+))
+                import Numbers (one, (+))
                 
                 class Box a where
                     get :: a

@@ -79,7 +79,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
                 |y0 = x1
             """.trimMargin(), true)
     }
-    fun `test imports with namespace if qualified`() {
+    fun `test imports only once`() {
         myFixture.configureByText(
             "Bar.purs",
             """
@@ -91,10 +91,12 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
         myFixture.configureByText(
             "Foo.purs",
             """
-                module Foo where
-                
-                y0 = Bar.x<caret>
-            """.trimIndent()
+                |module Foo where
+                |
+                |import Bar (x1) as Bar
+                |
+                |y0 = Bar.x<caret>
+            """.trimMargin()
         )
 
         myFixture.complete(CompletionType.BASIC, 3)
@@ -104,6 +106,38 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
                 |module Foo where
                 |
                 |import Bar (x1) as Bar
+                |
+                |y0 = Bar.x
+            """.trimMargin(), true)
+    }
+    fun `test reuse imports`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                module Bar where
+                
+                y2 = 1
+                x1 = 1
+            """.trimIndent()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Bar (y2) as Bar
+                |
+                |y0 = Bar.x<caret>
+            """.trimMargin()
+        )
+
+        myFixture.complete(CompletionType.BASIC, 3)
+        myFixture.checkResult(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Bar (x1, y2) as Bar
                 |
                 |y0 = Bar.x1
             """.trimMargin(), true)

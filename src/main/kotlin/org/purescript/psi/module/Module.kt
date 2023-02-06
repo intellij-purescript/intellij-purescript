@@ -12,11 +12,11 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
-import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
@@ -27,7 +27,6 @@ import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
-import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
@@ -88,22 +87,22 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .toTypedArray()
         }
         val valueDeclarationGroups: Array<ValueDeclarationGroup>
-            by lazy { findChildrenByClass<ValueDeclarationGroup>() }
+                by lazy { findChildrenByClass<ValueDeclarationGroup>() }
         val dataDeclarations
-            by lazy { findChildrenByClass<DataDeclaration.Psi>() }
+                by lazy { findChildrenByClass<DataDeclaration.Psi>() }
         val dataConstructors
-            by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
+                by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
         val newTypeDeclarations
-            by lazy { findChildrenByClass<NewtypeDecl>() }
+                by lazy { findChildrenByClass<NewtypeDecl>() }
         val newTypeConstructors: List<NewtypeCtor>
-            by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
+                by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
         val typeSynonymDeclarations
-            by lazy { findChildrenByClass<TypeDecl>() }
+                by lazy { findChildrenByClass<TypeDecl>() }
         val classes by lazy { findChildrenByClass<ClassDecl>() }
         val foreignValueDeclarations
-            by lazy { findChildrenByClass<ForeignValueDecl>() }
+                by lazy { findChildrenByClass<ForeignValueDecl>() }
         val foreignDataDeclarations
-            by lazy { findChildrenByClass<PSForeignDataDeclaration>() }
+                by lazy { findChildrenByClass<PSForeignDataDeclaration>() }
     }
 
     override fun subtreeChanged() {
@@ -333,10 +332,30 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = getDocComments()
 
     fun addImportDeclaration(importDeclaration: ImportDeclaration) {
-        val asPsi = project
-            .service<PSPsiFactory>()
-            .createImportDeclaration(importDeclaration)
-        addImportDeclaration(asPsi)
+        val imports = cache.imports.filter {
+            it.moduleName.name == importDeclaration.moduleName &&
+                    it.importAlias?.name == importDeclaration.alias
+        }
+        if (imports.any {
+                ImportDeclaration.fromPsiElement(it).run {
+                    !hiding && (importedItems.isEmpty() || importedItems.containsAll(importDeclaration.importedItems))
+                }
+            }) return // already imported
+        val oldImport = imports.firstOrNull { !it.isHiding }
+        if (oldImport != null) {
+            val fromPsiElement = ImportDeclaration.fromPsiElement(oldImport)
+            val importedItems = fromPsiElement.importedItems + importDeclaration.importedItems
+            val mergedImport = fromPsiElement.withItems(*importedItems.toTypedArray())
+            val asPsi = project
+                .service<PSPsiFactory>()
+                .createImportDeclaration(mergedImport)
+            oldImport.replace(asPsi)
+        } else {
+            val asPsi = project
+                .service<PSPsiFactory>()
+                .createImportDeclaration(importDeclaration)
+            addImportDeclaration(asPsi)
+        }
     }
 
     fun addImportDeclaration(importDeclaration: Import) {

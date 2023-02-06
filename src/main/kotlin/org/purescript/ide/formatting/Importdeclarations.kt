@@ -1,5 +1,7 @@
 package org.purescript.ide.formatting
 
+import org.purescript.psi.declaration.imports.Import
+
 data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
     val mergedImports
         get() = imports
@@ -29,12 +31,11 @@ data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
         }
 
     companion object {
-        private fun mergeGroup(
+        fun mergeGroup(
             moduleName: String,
             alias: String?,
             importDeclarations: List<ImportDeclaration>
-        ):
-            ImportDeclaration {
+        ): ImportDeclaration {
             if (importDeclarations.any { it.importedItems.isEmpty() }) {
                 return ImportDeclaration(moduleName, alias = alias)
             }
@@ -139,6 +140,13 @@ data class ImportDeclaration(
             is ImportedValue -> 5
             is ImportedOperator -> 6
         }
+        fun fromPsiElement(importDeclaration: Import): ImportDeclaration =
+            ImportDeclaration(
+                importDeclaration.moduleName.name,
+                importDeclaration.isHiding,
+                importDeclaration.importedItems.map { it.asData() }.toSet(),
+                importDeclaration.importAlias?.name
+            )
     }
 }
 
