@@ -69,9 +69,7 @@ class MoveValueDeclRefactoring(
                             setOf(ImportedValue(toPatch.name)),
                             toPatch.importDeclaration.importAlias?.name
                         )
-                        val newImport =
-                            factory.createImportDeclaration(importDeclaration)
-                        toPatch.module?.addImportDeclaration(newImport)
+                        toPatch.module?.addImportDeclaration(importDeclaration)
                     }
                     // remove old one
                     val importDeclaration = toPatch.importDeclaration
@@ -95,9 +93,7 @@ class MoveValueDeclRefactoring(
                             false,
                             setOf(ImportedValue(toPatch.name)),
                         )
-                        val newImport =
-                            factory.createImportDeclaration(importDeclaration)
-                        sourceModule?.addImportDeclaration(newImport)
+                        sourceModule?.addImportDeclaration(importDeclaration)
                         importedInSource = true
                     }
                 }
@@ -113,9 +109,7 @@ class MoveValueDeclRefactoring(
                             ?: continue
                         if (importDeclaration in done) continue
                         else done.add(importDeclaration)
-                        val newImport =
-                            factory.createImportDeclaration(importDeclaration)
-                        targetModule.addImportDeclaration(newImport)
+                        targetModule.addImportDeclaration(importDeclaration)
                     }
                 }
 
@@ -126,9 +120,7 @@ class MoveValueDeclRefactoring(
                             ?: continue
                         if (importDeclaration in done) continue
                         else done.add(importDeclaration)
-                        val newImport =
-                            factory.createImportDeclaration(importDeclaration)
-                        targetModule.addImportDeclaration(newImport)
+                        targetModule.addImportDeclaration(importDeclaration)
                     }
                 }
 
