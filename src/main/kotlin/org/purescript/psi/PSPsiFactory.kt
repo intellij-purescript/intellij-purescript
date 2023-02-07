@@ -128,7 +128,7 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createExportList(vararg names: String): ExportList.Psi =
+    fun createExportList(vararg names: String): ExportList =
         createFromText(
             """
         |module Main (${names.joinToString(", ")}) where

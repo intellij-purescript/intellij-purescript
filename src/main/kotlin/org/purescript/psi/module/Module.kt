@@ -73,7 +73,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     override fun toString(): String = "PSModule($elementType)"
     var cache: Cache = Cache()
 
-    val exports get() = child<ExportList.Psi>()
+    val exports get() = child<ExportList>()
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {

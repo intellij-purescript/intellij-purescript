@@ -16,7 +16,7 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
         super.visitElement(element)
         when (element) {
             is Module -> visitModule(element)
-            is ExportList.Psi -> visitExportList(element)
+            is ExportList -> visitExportList(element)
         }
     }
 
@@ -35,7 +35,7 @@ class PurescriptFoldingVisitor : PsiElementVisitor() {
         descriptors += descriptor
     }
 
-    private fun visitExportList(exportList: ExportList.Psi) {
+    private fun visitExportList(exportList: ExportList) {
         val startOffset = exportList.startOffset + 1
         val endOffset = exportList.endOffset - 1
         if (startOffset >= endOffset) {
