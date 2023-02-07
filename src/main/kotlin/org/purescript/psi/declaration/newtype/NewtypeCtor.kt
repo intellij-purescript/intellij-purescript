@@ -54,15 +54,9 @@ class NewtypeCtor :
     object Type : PSElementType.WithPsiAndStub<Stub, NewtypeCtor>("NewtypeCtor") {
         override fun createPsi(node: ASTNode) = NewtypeCtor(node)
         override fun createPsi(stub: Stub) = NewtypeCtor(stub, this)
-        override fun createStub(valueDecl: NewtypeCtor, p: StubElement<*>?) =
-            Stub(valueDecl.name, p)
-
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
-
+        override fun createStub(valueDecl: NewtypeCtor, p: StubElement<*>?) = Stub(valueDecl.name, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
                 sink.occurrence(ImportableIndex.KEY, stub.name)
