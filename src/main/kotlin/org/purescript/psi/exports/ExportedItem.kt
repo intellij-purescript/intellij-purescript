@@ -21,7 +21,15 @@ sealed class ExportedItem<Stub : AStub<*>> : PSStubbedElement<Stub> {
 }
 
 interface ExportedData {
-    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
+    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type) {
+        val dataMembers get() = childrenStubs
+            .filterIsInstance<PSExportedDataMemberList.Stub>()
+            .singleOrNull()
+            ?.childrenStubs
+            ?.filterIsInstance<PSExportedDataMember.Stub>()
+            ?: emptyList()
+    }
+
     object Type : WithPsiAndStub<Stub, Psi>("ExportedData") {
         override fun createPsi(node: ASTNode) = Psi(node)
         override fun createPsi(stub: Stub) = Psi(stub, this)

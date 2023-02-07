@@ -45,8 +45,10 @@ class NewtypeCtor :
                 ?.find { it.name == module?.name }!= null -> true
             else -> module?.exportList?.childrenStubs
                 ?.filterIsInstance<ExportedData.Stub>()
-                ?.find { it.name == name } != null
-                // TODO: check that constructor is exported and not only the type
+                ?.find { exportedData ->
+                    exportedData.name == name &&
+                            exportedData.dataMembers.run { isEmpty() || any { it.name == name } }
+                } != null
         }
     }
     object Type : PSElementType.WithPsiAndStub<Stub, NewtypeCtor>("NewtypeCtor") {
