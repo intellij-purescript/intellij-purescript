@@ -296,7 +296,7 @@ class ParserDefinitions {
                 + !(`'where'` + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
         )
     )
-    private val dataMembers = ExportedDataMemberList(
+    private val dataMembers = ExportedDataMemberListType(
         parens(ddot / ExportedDataMember(properName).sepBy(`,`))
     )
     private val exportedItem = Choice.of(
