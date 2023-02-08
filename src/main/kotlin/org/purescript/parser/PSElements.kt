@@ -59,28 +59,22 @@ val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeDeclType = TypeDecl.Type
 val ValueDeclType = ValueDecl.Type 
 val ValueDeclarationGroupType = ValueDeclarationGroup.Type 
-val ForeignDataDecl =
-    WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
+val ForeignDataDecl = WithPsi("ForeignDataDeclaration") { PSForeignDataDeclaration(it) }
 val ForeignValueDeclType = ForeignValueDecl.Type
 val ImportType = Import.Type
 val ImportAlias = WithPsi("ImportAlias") { PSImportAlias(it) }
 val ImportList = WithPsi("ImportList") { PSImportList(it) }
 val ImportedClass = WithPsi("ImportedClass") { PSImportedClass(it) }
 val ImportedData = WithPsi("ImportedData") { PSImportedData(it) }
-val ImportedDataMemberList =
-    WithPsi("ImportedDataMemberList") { PSImportedDataMemberList(it) }
-val ImportedDataMember =
-    WithPsi("ImportedDataMember") { PSImportedDataMember(it) }
+val ImportedDataMemberList = WithPsi("ImportedDataMemberList") { PSImportedDataMemberList(it) }
+val ImportedDataMember = WithPsi("ImportedDataMember") { PSImportedDataMember(it) }
 val ImportedOperator = WithPsi("ImportedOperator") { PSImportedOperator(it) }
 val ImportedType = WithPsi("ImportedType") { PSImportedType(it) }
 val ImportedValue = WithPsi("ImportedValue") { PSImportedValue(it) }
 val ClassDeclType = ClassDecl.Type
-val ClassConstraintList =
-    WithPsi("ClassConstraintList") { PSClassConstraintList(it) }
+val ClassConstraintList = WithPsi("ClassConstraintList") { PSClassConstraintList(it) }
 val ClassConstraint = WithPsi("ClassConstraint") { PSClassConstraint(it) }
-val ClassFunctionalDependencyList =
-    WithPsi("ClassFunctionalDependencyList")
-    { PSClassFunctionalDependencyList(it) }
+val ClassFunctionalDependencyList = WithPsi("ClassFunctionalDependencyList") { PSClassFunctionalDependencyList(it) }
 val ClassFunctionalDependency = WithPsi("ClassFunctionalDependency") { PSClassFunctionalDependency(it) }
 val ClassMember = PSClassMember.Type
 val ClassMemberList = PSClassMemberList.Type
@@ -105,10 +99,8 @@ val CharLiteral = WithPsi("CharLiteral") { PSCharLiteral(it) }
 val ArrayLiteral = WithPsi("ArrayLiteral") { PSArrayLiteral(it) }
 val ObjectLiteral = WithPsi("ObjectLiteral") { PSObjectLiteral(it) }
 val Lambda = WithPsi("Lambda") { PSLambda(it) }
-val ExpressionCtor =
-    WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
-val ExpressionIdentifier =
-    WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
+val ExpressionCtor = WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
+val ExpressionIdentifier = WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
 
 /** Symbol is a operator in parenthesis
 `(+)`
@@ -126,8 +118,7 @@ in
 addOne a = a + 1
 ```
  */
-val ExpressionOperator =
-    WithPsi("ExpressionOperator") { PSExpressionOperator(it) }
+val ExpressionOperator = WithPsi("ExpressionOperator") { PSExpressionOperator(it) }
 val ExpressionWhere = WithPsi("ExpressionWhere") { PSExpressionWhere(it) }
 val Case = WithPsi("Case") { PSCase(it) }
 val CaseAlternative = WithPsi("CaseAlternative") { PSCaseAlternative(it) }
@@ -148,12 +139,9 @@ val Symbol = WithPsi("symbol") { PSSymbol(it) }
 val QualifiedSymbol = WithPsi("symbol") { PSQualifiedSymbol(it) }
 val ProperName = WithPsi("ProperName") { PSProperName(it) }
 val OperatorName = WithPsi("OperatorName") { PSOperatorName(it) }
-val QualifiedIdentifier =
-    WithPsi("QualifiedIdentifier") { PSQualifiedIdentifier(it) }
-val QualifiedProperName =
-    WithPsi("QualifiedProperName") { PSQualifiedProperName(it) }
-val QualifiedOperatorName =
-    WithPsi("QualifiedOperatorName") { PSQualifiedOperatorName(it) }
+val QualifiedIdentifier = WithPsi("QualifiedIdentifier") { PSQualifiedIdentifier(it) }
+val QualifiedProperName = WithPsi("QualifiedProperName") { PSQualifiedProperName(it) }
+val QualifiedOperatorName = WithPsi("QualifiedOperatorName") { PSQualifiedOperatorName(it) }
 val ClassName = WithPsi("ClassName") { PSClassName(it) }
 val pImplies = WithPsi("Implies") { PSImplies(it) }
 val TypeHole = WithPsi("TypeHole") { PSTypeHole(it) }
