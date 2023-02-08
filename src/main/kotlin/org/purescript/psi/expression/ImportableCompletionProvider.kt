@@ -32,10 +32,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        if (parameters.isExtendedCompletion) {
-            result.addLookupAdvertisement("Only showing names in scope, complete again for more options")
-            return
-        }
+        result.addLookupAdvertisement("Showing names in already imported modules, complete again for project wide")
         val localElement = parameters.position
         val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
         val alreadyImportedModules: List<Module> = (localElement.containingFile as PSFile)
@@ -45,13 +42,9 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             ?.get(qualifiedName)
             ?.mapNotNull { it.importedModule }
             ?: emptyList()
-
-        val importableDeclarations: Set<PsiElement> = if (parameters.invocationCount == 2) {
-            result.addLookupAdvertisement("Showing names in already imported modules, complete again for project wide")
-            alreadyImportedModules.flatMap {
-                it.exportedValueDeclarationGroups + it.exportedFixityDeclarations
-            }.toSet()
-        } else emptySet()
+        val importableDeclarations: Set<PsiElement> = alreadyImportedModules
+            .flatMap { it.exportedValueDeclarationGroups + it.exportedFixityDeclarations }
+            .toSet()
 
         // import Module as Alias
         val project = parameters.editor.project ?: return
@@ -64,13 +57,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             val elements = index.get(name, project, scope)
             val elementBuilders = elements
                 .filter { parameters.originalFile != it.containingFile }
-                .filter { target ->
-                    if (parameters.invocationCount < 3) {
-                        target in importableDeclarations
-                    } else {
-                        true
-                    }
-                }
+                .filter { target -> target in importableDeclarations }
                 .mapNotNull {
                     LookupElementBuilder
                         .createWithIcon(it)
@@ -97,27 +84,8 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        if (!parameters.isExtendedCompletion) {
-            result.addLookupAdvertisement("Only showing names in scope, complete again for more options")
-            return
-        }
         val localElement = parameters.position
         val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
-        val alreadyImportedModules: List<Module> = (localElement.containingFile as PSFile)
-            .module
-            ?.cache
-            ?.importsByAlias
-            ?.get(qualifiedName)
-            ?.mapNotNull { it.importedModule }
-            ?: emptyList()
-
-        val importableDeclarations: Set<PsiElement> = if (parameters.invocationCount == 2) {
-            result.addLookupAdvertisement("Showing names in already imported modules, complete again for project wide")
-            alreadyImportedModules.flatMap {
-                it.exportedValueDeclarationGroups + it.exportedFixityDeclarations
-            }.toSet()
-        } else emptySet()
-
         // import Module as Alias
         val project = parameters.editor.project ?: return
         val scope = GlobalSearchScope.allScope(project)
@@ -129,13 +97,6 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             val elements = index.get(name, project, scope)
             val elementBuilders = elements
                 .filter { parameters.originalFile != it.containingFile }
-                .filter { target ->
-                    if (parameters.invocationCount < 3) {
-                        target in importableDeclarations
-                    } else {
-                        true
-                    }
-                }
                 .mapNotNull {
                     LookupElementBuilder
                         .createWithIcon(it)
