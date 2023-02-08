@@ -1,17 +1,30 @@
 package org.purescript.psi.expression
 
+import com.google.gson.Gson
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionSorter
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.LookupElementWeigher
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.util.ExecUtil
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
+import com.intellij.openapi.components.service
+import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
+import org.purescript.PackageSet
 import org.purescript.file.PSFile
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.module.Module
@@ -26,6 +39,41 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             addCompletions2(parameters, context, result)
         } else {
             addCompletions1(parameters, context, result)
+        }
+        if (parameters.invocationCount >= 3) {
+            val project = parameters.editor.project ?: return
+            val packageSet = project.service<PackageSet>()
+            for ((name, data) in packageSet.reverseLookup) {
+                if (result.isStopped) return
+                if (!result.prefixMatcher.prefixMatches(name)) continue
+                for ((packageName, moduleName) in data) {
+                    result.addElement(LookupElementBuilder
+                        .create(name)
+                        .withIcon(AllIcons.Actions.Install)
+                        .withTailText("($moduleName)")
+                        .appendTailText("($packageName)" ,true)
+                        .withInsertHandler { context, item ->
+                            val commandName = when {
+                                SystemInfo.isWindows -> "spago.cmd"
+                                else -> "spago"
+                            }
+                            val commandLine = GeneralCommandLine(commandName, "install", packageName)
+                                .withWorkDirectory(project.basePath)
+                                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+                            val import = ImportDeclaration(moduleName)
+                                .withItems(ImportedValue(name))
+                            val module = (context.file as PSFile).module
+                            runBackgroundableTask("Installing package: $packageName", project) {
+                                    ExecUtil.execAndGetOutput(commandLine)
+                            }
+                            executeCommand(project, "Import") {
+                                runWriteAction {
+                                    module?.addImportDeclaration(import)
+                                }
+                            }
+                        })
+                }
+            }
         }
     }
 
