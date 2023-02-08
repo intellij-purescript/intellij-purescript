@@ -21,47 +21,34 @@ import org.purescript.psi.type.PSTypeAtom
  * data CatQueue a = CatQueue (List a) (List a)
  * ```
  */
-interface DataConstructor {
-    class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
-    object Type : WithPsiAndStub<Stub, Psi>("DataConstructor") {
-        override fun createPsi(node: ASTNode) = Psi(node)
-        override fun createPsi(stub: Stub) = Psi(stub, this)
-        override fun createStub(psi: Psi, p: StubElement<*>?) =
-            Stub(psi.name, p)
-
+class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifierOwner {
+    class Stub(val name: String, p: StubElement<*>?) : AStub<DataConstructor>(p, Type)
+    object Type : WithPsiAndStub<Stub, DataConstructor>("DataConstructor") {
+        override fun createPsi(node: ASTNode) = DataConstructor(node)
+        override fun createPsi(stub: Stub) = DataConstructor(stub, this)
+        override fun createStub(psi: DataConstructor, p: StubElement<*>?) = Stub(psi.name, p)
         override fun indexStub(stub: Stub, sink: IndexSink) = Unit
-
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
     }
 
-    class Psi : PSStubbedElement<Stub>, PsiNameIdentifierOwner {
-        constructor(node: ASTNode) : super(node)
-        constructor(stub: Stub, type: IStubElementType<*, *>) :
-            super(stub, type)
+    constructor(node: ASTNode) : super(node)
+    constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-        // Todo clean this up
-        override fun toString(): String = "PSDataConstructor($elementType)"
+    // Todo clean this up
+    override fun toString(): String = "PSDataConstructor($elementType)"
 
-        /**
-         * @return the [PSProperName] identifying this constructor
-         */
-        internal val identifier: PSProperName
-            get() = findNotNullChildByClass(PSProperName::class.java)
+    /**
+     * @return the [PSProperName] identifying this constructor
+     */
+    internal val identifier: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
 
-        /**
-         * @return the [PSTypeAtom] elements in this constructor
-         */
-        internal val typeAtoms: Array<PSTypeAtom>
-            get() = findChildrenByClass(PSTypeAtom::class.java)
-
-        override fun setName(name: String): PsiElement? = null
-
-        override fun getNameIdentifier(): PSProperName = identifier
-
-        override fun getName(): String = identifier.name
-    }
+    /**
+     * @return the [PSTypeAtom] elements in this constructor
+     */
+    internal val typeAtoms: Array<PSTypeAtom> get() = findChildrenByClass(PSTypeAtom::class.java)
+    override fun setName(name: String): PsiElement? = null
+    override fun getNameIdentifier(): PSProperName = identifier
+    override fun getName(): String = identifier.name
 }
+

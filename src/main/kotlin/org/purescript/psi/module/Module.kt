@@ -254,16 +254,16 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         ) { it.importedDataDeclarations }
 
     /**
-     * @return the [DataConstructor.Psi] elements that this module exports,
+     * @return the [DataConstructor] elements that this module exports,
      * both directly and through re-exported modules
      */
-    val exportedDataConstructors: List<DataConstructor.Psi>
+    val exportedDataConstructors: List<DataConstructor>
         get() {
             val explicitlyExportedItems = exports?.exportedItems
                 ?: return cache.dataConstructors
 
             val exportedDataConstructors =
-                mutableListOf<DataConstructor.Psi>()
+                mutableListOf<DataConstructor>()
 
             for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
                 if (exportedData.exportsAll) {

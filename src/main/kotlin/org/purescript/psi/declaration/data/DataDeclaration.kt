@@ -55,10 +55,10 @@ interface DataDeclaration {
             get() = findChildByClass(DataConstructorList.Psi::class.java)
 
         /**
-         * @return the [DataConstructor.Psi] elements belonging to this
+         * @return the [DataConstructor] elements belonging to this
          * declaration, or an empty array if it's an empty declaration
          */
-        val dataConstructors: Array<DataConstructor.Psi>
+        val dataConstructors: Array<DataConstructor>
             get() = dataConstructorList?.dataConstructors
                 ?: emptyArray()
 

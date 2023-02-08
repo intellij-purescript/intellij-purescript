@@ -85,7 +85,7 @@ fun PsiFile.getModule(): Module =
 fun PsiFile.getDataDeclaration(): DataDeclaration.Psi =
     getModule().cache.dataDeclarations.single()
 
-fun PsiFile.getDataConstructor(): DataConstructor.Psi =
+fun PsiFile.getDataConstructor(): DataConstructor =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
 fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration.Psi> =

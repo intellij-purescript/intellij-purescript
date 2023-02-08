@@ -282,9 +282,9 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         )
 
     /**
-     * @return the [DataConstructor.Psi] elements imported by this declaration
+     * @return the [DataConstructor] elements imported by this declaration
      */
-    val importedDataConstructors: List<DataConstructor.Psi>
+    val importedDataConstructors: List<DataConstructor>
         get() {
             val importedModule = importedModule ?: return emptyList()
             val exportedDataConstructors =
@@ -294,7 +294,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
                 ?: return exportedDataConstructors
 
             val importedDataConstructors =
-                mutableListOf<DataConstructor.Psi>()
+                mutableListOf<DataConstructor>()
             val importedDataElements =
                 importedItems.filterIsInstance<PSImportedData>()
             if (isHiding) {

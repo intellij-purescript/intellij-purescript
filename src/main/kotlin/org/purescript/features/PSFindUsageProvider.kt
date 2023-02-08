@@ -60,7 +60,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is NewtypeCtor
             || psiElement is PSImportAlias
             || psiElement is DataDeclaration.Psi
-            || psiElement is DataConstructor.Psi
+            || psiElement is DataConstructor
             || psiElement is ClassDecl
             || psiElement is TypeDecl
             || psiElement is PSClassMember
@@ -112,7 +112,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is NewtypeCtor -> "newtype constructor"
             is PSImportAlias -> "import alias"
             is DataDeclaration.Psi -> "data"
-            is DataConstructor.Psi -> "data constructor"
+            is DataConstructor -> "data constructor"
             is ClassDecl -> "class"
             is ForeignValueDecl -> "foreign value"
             is PSForeignDataDeclaration -> "foreign data"

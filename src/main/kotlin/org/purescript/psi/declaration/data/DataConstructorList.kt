@@ -42,9 +42,9 @@ interface DataConstructorList{
         // Todo clean this up
         override fun toString(): String = "PSDataConstructorList($elementType)"
         /**
-         * @return the [DataConstructor.Psi] elements in this list
+         * @return the [DataConstructor] elements in this list
          */
-        internal val dataConstructors: Array<DataConstructor.Psi>
-            get() = findChildrenByClass(DataConstructor.Psi::class.java)
+        internal val dataConstructors: Array<DataConstructor>
+            get() = findChildrenByClass(DataConstructor::class.java)
     }
 }
