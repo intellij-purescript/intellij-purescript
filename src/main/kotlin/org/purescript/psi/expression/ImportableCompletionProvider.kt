@@ -45,7 +45,12 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             ?.mapNotNull { it.importedModule }
             ?: emptyList()
         val importableDeclarations: Set<PsiElement> = alreadyImportedModules
-            .flatMap { it.exportedValueDeclarationGroups + it.exportedFixityDeclarations }
+            .flatMap {
+                it.exportedValueDeclarationGroups +
+                        it.exportedForeignValueDeclarations +
+                        it.exportedDataConstructors +
+                        it.exportedFixityDeclarations 
+            }
             .toSet()
 
         // import Module as Alias
