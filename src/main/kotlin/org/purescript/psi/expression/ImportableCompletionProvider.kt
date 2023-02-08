@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
@@ -27,6 +28,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             addCompletions1(parameters, context, result)
         }
     }
+
     fun addCompletions1(
         parameters: CompletionParameters,
         context: ProcessingContext,
@@ -58,27 +60,11 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             val elementBuilders = elements
                 .filter { parameters.originalFile != it.containingFile }
                 .filter { target -> target in importableDeclarations }
-                .mapNotNull {
-                    LookupElementBuilder
-                        .createWithIcon(it)
-                        .withTypeText(it.type?.text)
-                        .withTailText(it.asImport()?.moduleName?.let { "($it)" })
-                        .withInsertHandler { context, item ->
-                        val import = (item.psiElement as? Importable)
-                            ?.asImport()
-                            ?.withAlias(qualifiedName)
-                            ?: return@withInsertHandler
-                        val module = (context.file as PSFile).module
-                        executeCommand(project, "Import") {
-                            runWriteAction {
-                                module?.addImportDeclaration(import)
-                            }
-                        }
-                    }
-                }
+                .mapNotNull { lookupElementBuilder(it, qualifiedName, project) }
             result.addAllElements(elementBuilders)
         }
     }
+
     fun addCompletions2(
         parameters: CompletionParameters,
         context: ProcessingContext,
@@ -97,25 +83,29 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             val elements = index.get(name, project, scope)
             val elementBuilders = elements
                 .filter { parameters.originalFile != it.containingFile }
-                .mapNotNull {
-                    LookupElementBuilder
-                        .createWithIcon(it)
-                        .withTypeText(it.type?.text)
-                        .withTailText(it.asImport()?.moduleName?.let { "($it)" })
-                        .withInsertHandler { context, item ->
-                        val import = (item.psiElement as? Importable)
-                            ?.asImport()
-                            ?.withAlias(qualifiedName)
-                            ?: return@withInsertHandler
-                        val module = (context.file as PSFile).module
-                        executeCommand(project, "Import") {
-                            runWriteAction {
-                                module?.addImportDeclaration(import)
-                            }
-                        }
-                    }
-                }
+                .mapNotNull { lookupElementBuilder(it, qualifiedName, project) }
             result.addAllElements(elementBuilders)
         }
     }
+
+    private fun lookupElementBuilder(
+        it: Importable,
+        qualifiedName: String?,
+        project: Project
+    ) = LookupElementBuilder
+        .createWithIcon(it)
+        .withTypeText(it.type?.text)
+        .withTailText(it.asImport()?.moduleName?.let { "($it)" })
+        .withInsertHandler { context, item ->
+            val import = (item.psiElement as? Importable)
+                ?.asImport()
+                ?.withAlias(qualifiedName)
+                ?: return@withInsertHandler
+            val module = (context.file as PSFile).module
+            executeCommand(project, "Import") {
+                runWriteAction {
+                    module?.addImportDeclaration(import)
+                }
+            }
+        }
 }
