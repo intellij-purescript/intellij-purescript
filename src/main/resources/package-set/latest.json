@@ -701,7 +701,9 @@
     ]
   },
   "aff": {
-    "Effect.Aff.Class": [],
+    "Effect.Aff.Class": [
+      "liftAff"
+    ],
     "Effect.Aff.Compat": [
       "fromEffectFnAff"
     ],
@@ -894,13 +896,20 @@
       "encodeRepArgs",
       "genericEncodeAeson"
     ],
-    "Data.Argonaut.Aeson.Helpers": [],
+    "Data.Argonaut.Aeson.Helpers": [
+      "isSingleConstructor",
+      "areAllConstructorsNullary"
+    ],
     "Data.Argonaut.Aeson.Options": [
       "defaultOptions"
     ]
   },
   "argonaut-codecs": {
-    "Data.Argonaut.Decode.Class": [],
+    "Data.Argonaut.Decode.Class": [
+      "decodeJson",
+      "gDecodeJson",
+      "decodeJsonField"
+    ],
     "Data.Argonaut.Decode.Combinators": [
       "getField",
       "getFieldOptional",
@@ -944,7 +953,10 @@
     "Data.Argonaut.Decode": [
       "fromJsonString"
     ],
-    "Data.Argonaut.Encode.Class": [],
+    "Data.Argonaut.Encode.Class": [
+      "encodeJson",
+      "gEncodeJson"
+    ],
     "Data.Argonaut.Encode.Combinators": [
       "assoc",
       "assocOptional",
@@ -1683,12 +1695,17 @@
   },
   "barbies": {
     "Data.Barbie": [
+      "map",
+      "traverse",
       "traverse_",
       "foldMap"
     ]
   },
   "barlow-lens": {
-    "Data.Lens.Barlow.Construction": [],
+    "Data.Lens.Barlow.Construction": [
+      "constructBarlowGeneric",
+      "constructBarlow"
+    ],
     "Data.Lens.Barlow.Generic": [
       "_SumRight",
       "_SumLeft",
@@ -1710,6 +1727,7 @@
     "Data.Lens.Barlow.Parser": [],
     "Data.Lens.Barlow.Types": [],
     "Data.Lens.Barlow": [
+      "barlow",
       "key"
     ]
   },
@@ -1719,8 +1737,11 @@
     ]
   },
   "bifunctors": {
-    "Control.Biapplicative": [],
+    "Control.Biapplicative": [
+      "bipure"
+    ],
     "Control.Biapply": [
+      "biapply",
       "biapplyFirst",
       "biapplySecond",
       "bilift2",
@@ -1728,6 +1749,7 @@
     ],
     "Data.Bifunctor.Join": [],
     "Data.Bifunctor": [
+      "bimap",
       "lmap",
       "rmap"
     ]
@@ -1917,14 +1939,21 @@
     ]
   },
   "bucketchain-simple-api": {
-    "Bucketchain.SimpleAPI.Auth.Class": [],
+    "Bucketchain.SimpleAPI.Auth.Class": [
+      "authenticate"
+    ],
     "Bucketchain.SimpleAPI.Auth": [],
     "Bucketchain.SimpleAPI.Batch": [],
     "Bucketchain.SimpleAPI.Body": [
       "decodeBody"
     ],
-    "Bucketchain.SimpleAPI.Class": [],
-    "Bucketchain.SimpleAPI.FreeT.Class": [],
+    "Bucketchain.SimpleAPI.Class": [
+      "serve",
+      "serveList"
+    ],
+    "Bucketchain.SimpleAPI.FreeT.Class": [
+      "transform"
+    ],
     "Bucketchain.SimpleAPI.JSON": [
       "success",
       "failure"
@@ -1936,7 +1965,9 @@
       "context"
     ],
     "Bucketchain.SimpleAPI.RawData": [],
-    "Bucketchain.SimpleAPI.Response.Class": [],
+    "Bucketchain.SimpleAPI.Response.Class": [
+      "toResponse"
+    ],
     "Bucketchain.SimpleAPI.Response": [
       "response",
       "responseStatus",
@@ -1965,6 +1996,7 @@
   },
   "call-by-name": {
     "CallByName.Alt": [
+      "alt",
       "cbnAlt"
     ],
     "CallByName.Applicative": [
@@ -2394,7 +2426,9 @@
     "Data.Codec.Argonaut.Common": [],
     "Data.Codec.Argonaut.Compat": [],
     "Data.Codec.Argonaut.Generic": [
-      "nullarySum"
+      "nullarySum",
+      "nullarySumEncode",
+      "nullarySumDecode"
     ],
     "Data.Codec.Argonaut.Migration": [
       "addDefaultField",
@@ -2406,7 +2440,8 @@
     "Data.Codec.Argonaut.Record": [
       "object",
       "record",
-      "optional"
+      "optional",
+      "rowListCodec"
     ],
     "Data.Codec.Argonaut.Sum": [
       "enumSum",
@@ -2415,7 +2450,8 @@
     "Data.Codec.Argonaut.Variant": [
       "variantMatch",
       "variant",
-      "variantCase"
+      "variantCase",
+      "variantCodec"
     ],
     "Data.Codec.Argonaut": [
       "printJsonDecodeError",
@@ -2541,7 +2577,10 @@
       "elLeaf",
       "el'"
     ],
-    "Concur.Core.ElementBuilder": [],
+    "Concur.Core.ElementBuilder": [
+      "buildNode",
+      "buildLeaf"
+    ],
     "Concur.Core.FRP": [
       "step",
       "display",
@@ -2581,7 +2620,9 @@
       "widgetYield"
     ],
     "Concur.Core.IsWidget": [],
-    "Concur.Core.LiftWidget": [],
+    "Concur.Core.LiftWidget": [
+      "liftWidget"
+    ],
     "Concur.Core.Patterns": [
       "loopState",
       "retryUntil",
@@ -2634,11 +2675,16 @@
       "mfix",
       "unfoldCofree"
     ],
-    "Control.MonadFix": [],
+    "Control.MonadFix": [
+      "mfix"
+    ],
     "Control.MultiAlternative": [
+      "orr",
       "defaultOrr"
     ],
-    "Control.ShiftMap": []
+    "Control.ShiftMap": [
+      "shiftMap"
+    ]
   },
   "concur-react": {
     "Concur.React.DOM": [
@@ -3396,20 +3442,26 @@
       "defaultComparison"
     ],
     "Data.Decidable": [
+      "lose",
       "lost"
     ],
     "Data.Decide": [
+      "choose",
       "chosen"
     ],
     "Data.Divide": [
+      "divide",
       "divided"
     ],
-    "Data.Divisible": [],
+    "Data.Divisible": [
+      "conquer"
+    ],
     "Data.Equivalence": [
       "defaultEquivalence",
       "comparisonEquivalence"
     ],
     "Data.Functor.Contravariant": [
+      "cmap",
       "cmapFlipped",
       "coerce",
       "imapC"
@@ -3435,6 +3487,7 @@
       "duplicate"
     ],
     "Control.Lazy": [
+      "defer",
       "fix"
     ],
     "Control.MonadPlus": [],
@@ -3444,7 +3497,13 @@
     "Data.Monoid.Alternate": []
   },
   "convertable-options": {
-    "ConvertableOptions": []
+    "ConvertableOptions": [
+      "convertOptionsWithDefaults",
+      "convertOptions",
+      "convertOption",
+      "convertRecordOptions",
+      "defaults"
+    ]
   },
   "coroutines": {
     "Control.Coroutine": [
@@ -3593,6 +3652,22 @@
     ],
     "CSS.Color": [],
     "CSS.Common": [
+      "all",
+      "auto",
+      "baseline",
+      "center",
+      "inherit",
+      "none",
+      "normal",
+      "visible",
+      "hidden",
+      "initial",
+      "unset",
+      "top",
+      "middle",
+      "bottom",
+      "url",
+      "other",
       "browsers",
       "call"
     ],
@@ -3762,6 +3837,11 @@
       "var"
     ],
     "CSS.Flexbox": [
+      "flexEnd",
+      "flexStart",
+      "spaceAround",
+      "spaceBetween",
+      "stretch",
       "alignContent",
       "alignItems",
       "alignSelf",
@@ -3904,6 +3984,7 @@
       "plain",
       "quote",
       "cast",
+      "value",
       "noCommas"
     ],
     "CSS.Pseudo": [
@@ -4005,7 +4086,9 @@
       "deg",
       "rad"
     ],
-    "CSS.String": [],
+    "CSS.String": [
+      "fromString"
+    ],
     "CSS.Stylesheet": [
       "runS",
       "rule",
@@ -4210,6 +4293,8 @@
       "genDays"
     ],
     "Data.Time.Duration": [
+      "fromDuration",
+      "toDuration",
       "convertDuration",
       "negateDuration"
     ],
@@ -5790,11 +5875,14 @@
       "injectElementT"
     ],
     "Deku.Pursx.Anonymous": [
+      "pursxStringAnonymous",
+      "pursxValAnonymous",
       "px",
       "xp"
     ],
     "Deku.Pursx": [
       "pursx",
+      "pursxToElement",
       "psx",
       "makePursx",
       "makePursx'",
@@ -5925,12 +6013,18 @@
     "Dissect.Class": [
       "yield",
       "return",
+      "init",
+      "next",
       "map",
       "traverse",
       "sequence"
     ],
     "Dissect.Generic": [],
-    "Dissect.Record": [],
+    "Dissect.Record": [
+      "fromAux",
+      "from",
+      "to"
+    ],
     "Dissect.Variant": [
       "injF",
       "injB",
@@ -5940,6 +6034,8 @@
   },
   "distributive": {
     "Data.Distributive": [
+      "distribute",
+      "collect",
       "distributeDefault",
       "collectDefault",
       "cotraverse"
@@ -6333,7 +6429,9 @@
     "ECharts": []
   },
   "effect": {
-    "Effect.Class": [],
+    "Effect.Class": [
+      "liftEffect"
+    ],
     "Effect.Uncurried": [],
     "Effect.Unsafe": [],
     "Effect": [
@@ -6344,7 +6442,10 @@
     ]
   },
   "either": {
-    "Data.Either.Inject": [],
+    "Data.Either.Inject": [
+      "inj",
+      "prj"
+    ],
     "Data.Either.Nested": [
       "in1",
       "in2",
@@ -6957,6 +7058,7 @@
       "findNth"
     ],
     "Elmish.Test.DomProps": [
+      "defaultValue",
       "value",
       "disabled",
       "checked"
@@ -7019,8 +7121,13 @@
       "genBoundedEnum"
     ],
     "Data.Enum.Generic": [
+      "genericPred'",
+      "genericSucc'",
       "genericPred",
       "genericSucc",
+      "genericCardinality'",
+      "genericToEnum'",
+      "genericFromEnum'",
       "genericCardinality",
       "genericToEnum",
       "genericFromEnum"
@@ -7046,7 +7153,10 @@
     ]
   },
   "error": {
-    "Error.Class": [],
+    "Error.Class": [
+      "name",
+      "message"
+    ],
     "Error": []
   },
   "exceptions": {
@@ -7855,7 +7965,9 @@
       "convertImpl",
       "convertHelper"
     ],
-    "Fetch.Internal.RequestBody": [],
+    "Fetch.Internal.RequestBody": [
+      "toRequestBody"
+    ],
     "Fetch.Internal.Response": [
       "arrayBuffer",
       "blob",
@@ -8389,6 +8501,7 @@
     ],
     "Flame.Html.Attribute": [],
     "Flame.Html.Element": [
+      "toNode",
       "createElement",
       "createElement_",
       "createElement'",
@@ -9068,6 +9181,9 @@
   },
   "foldable-traversable": {
     "Data.Bifoldable": [
+      "bifoldr",
+      "bifoldl",
+      "bifoldMap",
       "bifoldrDefault",
       "bifoldlDefault",
       "bifoldMapDefaultR",
@@ -9172,6 +9288,8 @@
       "minimumBy"
     ],
     "Data.Semigroup.Traversable": [
+      "traverse1",
+      "sequence1",
       "traverse1Default",
       "sequence1Default"
     ],
@@ -9303,7 +9421,15 @@
     ]
   },
   "fork": {
-    "Control.Monad.Fork.Class": []
+    "Control.Monad.Fork.Class": [
+      "suspend",
+      "fork",
+      "join",
+      "kill",
+      "bracket",
+      "uninterruptible",
+      "never"
+    ]
   },
   "form-urlencoded": {
     "Data.FormURLEncoded": [
@@ -9398,6 +9524,7 @@
       "onLayoutAnimationComplete",
       "onViewportBoxUpdate",
       "whileTap",
+      "toEffectFn",
       "callback",
       "onDragStart",
       "onDragEnd",
@@ -9501,7 +9628,10 @@
   },
   "freer-free": {
     "Control.Monad.Freer.Free": [
+      "reconstructGeneric",
+      "genericFreeConstructor",
       "constructors",
+      "genericFreeInterpreter",
       "interpreter"
     ]
   },
@@ -9535,14 +9665,19 @@
   },
   "functor1": {
     "Data.Foldable1": [
+      "foldMap1",
       "foldr1",
       "foldl1"
     ],
-    "Data.Functor1": [],
+    "Data.Functor1": [
+      "map1"
+    ],
     "Data.Identity1": [
       "mkIdentity1"
     ],
-    "Data.Traversable1": []
+    "Data.Traversable1": [
+      "traverse1"
+    ]
   },
   "functors": {
     "Data.Functor.App": [
@@ -9556,7 +9691,10 @@
     "Data.Functor.Compose": [
       "bihoistCompose"
     ],
-    "Data.Functor.Coproduct.Inject": [],
+    "Data.Functor.Coproduct.Inject": [
+      "inj",
+      "prj"
+    ],
     "Data.Functor.Coproduct.Nested": [
       "in1",
       "in2",
@@ -9638,7 +9776,13 @@
     ]
   },
   "gen": {
-    "Control.Monad.Gen.Class": [],
+    "Control.Monad.Gen.Class": [
+      "chooseInt",
+      "chooseFloat",
+      "chooseBool",
+      "resize",
+      "sized"
+    ],
     "Control.Monad.Gen.Common": [
       "genEither",
       "genEither'",
@@ -9718,15 +9862,20 @@
   "geometry-plane": {
     "Data.Geometry.Plane": [
       "point",
+      "abs",
+      "ord",
+      "coords",
       "rename",
       "segment",
       "middle",
       "vector",
       "scale",
+      "length",
       "normalized",
       "normalTo",
       "rotated",
       "projection",
+      "plus",
       "cosAngle",
       "halfline",
       "line",
@@ -9734,7 +9883,8 @@
       "aVectorOfLine",
       "circle",
       "arc",
-      "rightangle"
+      "rightangle",
+      "meets"
     ]
   },
   "github-actions-toolkit": {
@@ -9822,7 +9972,11 @@
       "initialState",
       "typeRefOf"
     ],
-    "Grain.Class": [],
+    "Grain.Class": [
+      "initialState",
+      "typeRefOf",
+      "which"
+    ],
     "Grain.Internal.Diff": [
       "diff"
     ],
@@ -10610,12 +10764,22 @@
       "toLines"
     ],
     "GraphQL.Client.Types": [
+      "clientQuery",
+      "clientMutation",
+      "defQueryOpts",
+      "defMutationOpts",
+      "clientSubscription",
+      "defSubOpts",
       "subscriptionEventOpts",
       "subscriptionEvent",
+      "clientWatchQuery",
+      "defWatchOpts",
       "watchQueryEventOpts",
       "watchQueryEvent"
     ],
     "GraphQL.Client.Union": [
+      "decodeUnion",
+      "decodeHasuraUnion",
       "decodeJsonUnionWith",
       "decodeUnionWith",
       "failedAtTypename",
@@ -10623,6 +10787,7 @@
     ],
     "GraphQL.Client.Variable": [],
     "GraphQL.Client.Variables.TypeName": [
+      "varTypeName",
       "varTypeNameRecord"
     ],
     "GraphQL.Client.Variables": [
@@ -10648,8 +10813,11 @@
       "decodeHasuraField"
     ],
     "GraphQL.Hasura.DecodeLiberal": [
+      "decodeHasuraLiberalImpl",
       "decodeLiberal",
       "decodeStrict",
+      "decodeHasuraLiberalImplFields",
+      "decodeHasuraLiberalImplField",
       "maybeFail"
     ],
     "GraphQL.Hasura.Encode": [
@@ -10678,6 +10846,7 @@
       "foldFree"
     ],
     "Data.Group": [
+      "ginverse",
       "power"
     ],
     "Data.Semigroup.Commutative": []
@@ -13144,6 +13313,9 @@
       "subscribe"
     ],
     "Halogen.Store.Monad": [
+      "getStore",
+      "updateStore",
+      "emitSelected",
       "runStoreT",
       "runAndEmitStoreT",
       "mapStoreT"
@@ -13430,8 +13602,24 @@
     ]
   },
   "heterogeneous": {
-    "Heterogeneous.Folding": [],
-    "Heterogeneous.Mapping": []
+    "Heterogeneous.Folding": [
+      "folding",
+      "foldingWithIndex",
+      "hfoldl",
+      "hfoldlWithIndex",
+      "foldlRecordRowList",
+      "foldlVariantRowList",
+      "foldlVariantFRowList"
+    ],
+    "Heterogeneous.Mapping": [
+      "mapping",
+      "mappingWithIndex",
+      "hmap",
+      "hmapWithIndex",
+      "mapRecordWithIndexBuilder",
+      "mapVariantWithIndex",
+      "mapVariantFWithIndex"
+    ]
   },
   "homogeneous": {
     "Data.Homogeneous.Record": [
@@ -13446,7 +13634,9 @@
       "homogeneous'",
       "fromHomogeneous"
     ],
-    "Data.Homogeneous": []
+    "Data.Homogeneous": [
+      "keysImpl"
+    ]
   },
   "http-methods": {
     "Data.HTTP.Method": [
@@ -14173,6 +14363,7 @@
       "discard"
     ],
     "Data.Functor.Indexed": [
+      "imap",
       "ivoid",
       "ivoidRight",
       "ivoidLeft"
@@ -14369,18 +14560,25 @@
   },
   "invariant": {
     "Data.Functor.Invariant": [
+      "imap",
       "imapF"
     ]
   },
   "jarilo": {
-    "Jarilo.FromComponent": [],
+    "Jarilo.FromComponent": [
+      "fromComponent"
+    ],
     "Jarilo.Junction": [
+      "junctionRouter",
       "router"
     ],
     "Jarilo.Method": [
-      "checkMethod"
+      "checkMethod",
+      "methodRouter"
     ],
-    "Jarilo.Path": [],
+    "Jarilo.Path": [
+      "pathRouter"
+    ],
     "Jarilo.Query.QueryPairs": [
       "delete",
       "find",
@@ -14389,12 +14587,15 @@
     "Jarilo.Query": [
       "parameterParseError",
       "fromValue",
-      "fromValue'"
+      "fromValue'",
+      "queryRouter"
     ],
     "Jarilo.Route": [
       "routeRouter"
     ],
-    "Jarilo.Segment": []
+    "Jarilo.Segment": [
+      "segmentRouter"
+    ]
   },
   "jelly": {
     "Jelly.Aff": [
@@ -14653,6 +14854,7 @@
       "mount"
     ],
     "Jelly.Prop": [
+      "toAttrValue",
       "hoistProp",
       "attr",
       "attrSig",
@@ -14667,6 +14869,8 @@
   },
   "jelly-hooks": {
     "Jelly.Hooks": [
+      "useCleaner",
+      "useHooks",
       "useHooks_",
       "useMemo",
       "useEffect",
@@ -14687,6 +14891,9 @@
   },
   "jelly-router": {
     "Jelly.Router": [
+      "usePushRoute",
+      "useReplaceRoute",
+      "useCurrentRoute",
       "runRouterT",
       "runMockRouterT",
       "initRouter",
@@ -15504,8 +15711,12 @@
   },
   "matryoshka": {
     "Matryoshka.Algebra": [],
-    "Matryoshka.Class.Corecursive": [],
-    "Matryoshka.Class.Recursive": [],
+    "Matryoshka.Class.Corecursive": [
+      "embed"
+    ],
+    "Matryoshka.Class.Recursive": [
+      "project"
+    ],
     "Matryoshka.Coalgebra": [],
     "Matryoshka.DistributiveLaw": [
       "distApplicative",
@@ -15723,7 +15934,9 @@
   },
   "mmorph": {
     "Control.Monad.Morph": [
+      "hoist",
       "generalize",
+      "embed",
       "squash",
       "composeKleisliRight",
       "composeKleisliLeft",
@@ -15731,7 +15944,9 @@
     ]
   },
   "monad-control": {
-    "Control.Monad.Base": [],
+    "Control.Monad.Base": [
+      "liftBase"
+    ],
     "Control.Monad.Trans.Control": [
       "liftWith",
       "restoreT",
@@ -15747,6 +15962,7 @@
       "eitherToFreeTStT"
     ],
     "Data.Functor.Singleton": [
+      "getSingleton",
       "liftWith_",
       "liftBaseWith_"
     ]
@@ -15914,9 +16130,16 @@
   },
   "monoidal": {
     "Control.Category.Tensor": [
+      "gbimap",
       "grmap",
       "glmap",
       "flipIso",
+      "assoc",
+      "lunit",
+      "runit",
+      "swap",
+      "diagonal",
+      "terminal",
       "dup",
       "merge"
     ],
@@ -15924,7 +16147,10 @@
       "apply",
       "pure"
     ],
-    "Data.Bifunctor.Module": [],
+    "Data.Bifunctor.Module": [
+      "lstrength",
+      "rstrength"
+    ],
     "Data.Bifunctor.Monoidal.Specialized": [
       "mux",
       "zip",
@@ -15956,19 +16182,34 @@
       "poly",
       "mono"
     ],
-    "Data.Bifunctor.Monoidal": [],
+    "Data.Bifunctor.Monoidal": [
+      "combine",
+      "introduce"
+    ],
     "Data.Functor.ApplicativeDo": [
       "apply",
       "pure"
     ],
-    "Data.Functor.Module": [],
-    "Data.Functor.Monoidal": [],
+    "Data.Functor.Module": [
+      "lstrength",
+      "rstrength"
+    ],
+    "Data.Functor.Monoidal": [
+      "combine",
+      "introduce"
+    ],
     "Data.Trifunctor.ApplicativeDo": [
       "apply",
       "pure"
     ],
-    "Data.Trifunctor.Module": [],
-    "Data.Trifunctor.Monoidal": []
+    "Data.Trifunctor.Module": [
+      "lstrength",
+      "rstrength"
+    ],
+    "Data.Trifunctor.Monoidal": [
+      "combine",
+      "introduce"
+    ]
   },
   "morello": {
     "Morello.Morello.Core": [
@@ -16902,19 +17143,45 @@
     ],
     "Ocarina.Common": [
       "defaultAllpass",
+      "toInitializeAllpass",
       "defaultBandpass",
+      "toInitializeBandpass",
+      "toInitializeConstant",
+      "toInitializeConvolver",
+      "toInitializeIIRFilter",
       "defaultDelay",
+      "toInitializeDelay",
       "defaultDynamicsCompressor",
+      "toInitializeDynamicsCompressor",
+      "toInitializeGain",
       "defaultHighpass",
+      "toInitializeHighpass",
       "defaultHighshelf",
+      "toInitializeHighshelf",
       "defaultLoopBuf",
+      "toInitializeLoopBuf",
       "defaultLowpass",
+      "toInitializeLowpass",
       "defaultLowshelf",
+      "toInitializeLowshelf",
+      "toInitializeMicrophone",
       "defaultNotch",
+      "toInitializeNotch",
+      "toInitializeStereoPanner",
       "defaultPeaking",
+      "toInitializePeaking",
       "defaultPlayBuf",
+      "toInitializePlayBuf",
+      "toPeriodicOscSpec",
       "defaultPeriodicOsc",
+      "toInitializePeriodicOsc",
+      "toInitializeSawtoothOsc",
+      "toInitializeSquareOsc",
+      "toInitializeRecorder",
+      "toInitializeSinOsc",
+      "toInitializeTriangleOsc",
       "defaultWaveShaper",
+      "toInitializeWaveShaper",
       "resolveAU"
     ],
     "Ocarina.Control": [
@@ -16923,8 +17190,10 @@
       "allpass",
       "allpass_",
       "defaultAnalyser",
+      "toInitializeAnalyser",
       "analyser",
       "analyser_",
+      "toOutputChannelCount",
       "__audioWorklet",
       "audioWorklet",
       "bandpass",
@@ -16964,6 +17233,7 @@
       "periodicOsc",
       "periodicOsc_",
       "defaultPlayBuf",
+      "toInitializePlayBuf",
       "__playBuf",
       "playBuf",
       "playBuf_",
@@ -17611,7 +17881,10 @@
     ]
   },
   "parallel": {
-    "Control.Parallel.Class": [],
+    "Control.Parallel.Class": [
+      "parallel",
+      "sequential"
+    ],
     "Control.Parallel": [
       "parApply",
       "parTraverse",
@@ -17835,7 +18108,8 @@
       "splitName",
       "joinName",
       "extension",
-      "alterExtension"
+      "alterExtension",
+      "reflectName"
     ],
     "Pathy.Parser": [
       "posixParser",
@@ -17869,7 +18143,9 @@
       "refine"
     ],
     "Pathy.Phantom": [
+      "onRelOrAbs",
       "foldRelOrAbs",
+      "onDirOrFile",
       "foldDirOrFile"
     ],
     "Pathy.Printer": [
@@ -18560,7 +18836,8 @@
       "enumerate",
       "runListT",
       "runListTRec",
-      "every"
+      "every",
+      "toListT"
     ],
     "Pipes.Prelude": [
       "repeatM",
@@ -18891,6 +19168,7 @@
       "ap"
     ],
     "Control.Semigroupoid": [
+      "compose",
       "composeFlipped"
     ],
     "Data.Boolean": [
@@ -18956,6 +19234,12 @@
       "repOf"
     ],
     "Data.HeytingAlgebra.Generic": [
+      "genericFF'",
+      "genericTT'",
+      "genericImplies'",
+      "genericConj'",
+      "genericDisj'",
+      "genericNot'",
       "genericFF",
       "genericTT",
       "genericImplies",
@@ -19022,6 +19306,7 @@
       "reifyType"
     ],
     "Data.Ring.Generic": [
+      "genericSub'",
       "genericSub"
     ],
     "Data.Ring": [
@@ -19040,6 +19325,10 @@
       "appendRecord"
     ],
     "Data.Semiring.Generic": [
+      "genericAdd'",
+      "genericZero'",
+      "genericMul'",
+      "genericOne'",
       "genericZero",
       "genericOne",
       "genericAdd",
@@ -19100,12 +19389,22 @@
   },
   "profunctor": {
     "Data.Profunctor.Choice": [
+      "left",
+      "right",
       "splitChoice",
       "fanin"
     ],
-    "Data.Profunctor.Closed": [],
-    "Data.Profunctor.Cochoice": [],
-    "Data.Profunctor.Costrong": [],
+    "Data.Profunctor.Closed": [
+      "closed"
+    ],
+    "Data.Profunctor.Cochoice": [
+      "unleft",
+      "unright"
+    ],
+    "Data.Profunctor.Costrong": [
+      "unfirst",
+      "unsecond"
+    ],
     "Data.Profunctor.Join": [],
     "Data.Profunctor.Split": [
       "split",
@@ -19118,10 +19417,13 @@
       "hoistStar"
     ],
     "Data.Profunctor.Strong": [
+      "first",
+      "second",
       "splitStrong",
       "fanout"
     ],
     "Data.Profunctor": [
+      "dimap",
       "lcmap",
       "rmap",
       "arr",
@@ -19233,7 +19535,9 @@
     "Data.Lens.Internal.Shop": [],
     "Data.Lens.Internal.Stall": [],
     "Data.Lens.Internal.Tagged": [],
-    "Data.Lens.Internal.Wander": [],
+    "Data.Lens.Internal.Wander": [
+      "wander"
+    ],
     "Data.Lens.Internal.Zipping": [],
     "Data.Lens.Iso.Newtype": [
       "_Newtype",
@@ -19846,7 +20150,9 @@
     ]
   },
   "psci-support": {
-    "PSCI.Support": []
+    "PSCI.Support": [
+      "eval"
+    ]
   },
   "qualified-do": {
     "QualifiedDo.Alt": [
@@ -23107,11 +23413,16 @@
   "record-extra": {
     "Record.Extra": [
       "mapRecord",
+      "mapRecordBuilder",
+      "zipRecordImpl",
       "zipRecord",
+      "keysImpl",
       "keys",
       "pick",
       "slistKeys",
+      "compareRecordImpl",
       "compareRecord",
+      "sequenceRecordImpl",
       "sequenceRecord"
     ]
   },
@@ -23128,7 +23439,8 @@
       "mapRecordKind"
     ],
     "Record.Studio.MapUniform": [
-      "mapUniformRecord"
+      "mapUniformRecord",
+      "mapUniformRecordBuilder"
     ],
     "Record.Studio.Merge": [
       "mergeFlipped"
@@ -23220,7 +23532,9 @@
     "Control.Monad.Resource.Aff.Pool": [
       "create"
     ],
-    "Control.Monad.Resource.Class": [],
+    "Control.Monad.Resource.Class": [
+      "liftResourceT"
+    ],
     "Control.Monad.Resource.Internal.Registry": [
       "register",
       "release",
@@ -23312,10 +23626,14 @@
       "perspectiveCamera_",
       "toInitializePerspectiveCamera"
     ],
-    "Rito.Color": [],
+    "Rito.Color": [
+      "color"
+    ],
     "Rito.CombineOperation": [],
     "Rito.Core": [
       "plain",
+      "toScene",
+      "toGroup",
       "cameraToGroup",
       "webGLRendererToRenderer",
       "effectComposerToRenderer",
@@ -23537,6 +23855,7 @@
     ],
     "Rito.Renderers.WebGL.BloomPass": [
       "defaultBloomPass",
+      "toInitializeBloomPass",
       "bloomPass"
     ],
     "Rito.Renderers.WebGL.EffectComposer": [
@@ -23547,6 +23866,7 @@
     ],
     "Rito.Renderers.WebGL.GlitchPass": [
       "defaultGlitchPass",
+      "toInitializeGlitchPass",
       "glitchPass"
     ],
     "Rito.Renderers.WebGL.RenderPass": [
@@ -23554,10 +23874,12 @@
     ],
     "Rito.Renderers.WebGL.UnrealBloomPass": [
       "defaultUnrealBloomPass",
+      "toInitializeUnrealBloomPass",
       "unrealBloomPass"
     ],
     "Rito.Renderers.WebGL": [
       "defaultWebGLRenderer",
+      "toInitializeWebGLRenderer",
       "webGLRenderer"
     ],
     "Rito.Renderers.WebGLRenderingPowerPreference": [],
@@ -23707,10 +24029,15 @@
     ]
   },
   "routing-duplex": {
-    "Routing.Duplex.Generic.Syntax": [],
+    "Routing.Duplex.Generic.Syntax": [
+      "gsep",
+      "gparams"
+    ],
     "Routing.Duplex.Generic": [
       "sum",
       "sumPrefix",
+      "gRouteDuplex",
+      "gRouteDuplexCtr",
       "product",
       "noArgs"
     ],
@@ -23928,6 +24255,7 @@
     ],
     "Data.Euterpea.Music": [],
     "Data.Euterpea.Music1": [
+      "toMusic1",
       "pMap",
       "pMap",
       "mMap",
@@ -24412,7 +24740,9 @@
       "midiPitch",
       "debugNoteName"
     ],
-    "Audio.SoundFont.Melody.Class": [],
+    "Audio.SoundFont.Melody.Class": [
+      "toMelody"
+    ],
     "Audio.SoundFont.Melody.Maker": [
       "toMelody",
       "toMelody_"
@@ -24627,7 +24957,9 @@
     "SSRS": []
   },
   "st": {
-    "Control.Monad.ST.Class": [],
+    "Control.Monad.ST.Class": [
+      "liftST"
+    ],
     "Control.Monad.ST.Global": [
       "toEffect"
     ],
@@ -24861,6 +25193,7 @@
       "splitAt"
     ],
     "Data.String.NonEmpty.Internal": [
+      "nes",
       "fromString",
       "unsafeFromString",
       "toString",
@@ -25863,7 +26196,10 @@
   },
   "these": {
     "Data.Align": [
-      "aligned"
+      "align",
+      "aligned",
+      "nil",
+      "crosswalk"
     ],
     "Data.These.Gen": [
       "genThese"
@@ -25948,7 +26284,9 @@
   },
   "transformers": {
     "Control.Comonad.Env.Class": [
-      "asks"
+      "ask",
+      "asks",
+      "local"
     ],
     "Control.Comonad.Env.Trans": [
       "runEnvT",
@@ -25962,6 +26300,8 @@
       "env"
     ],
     "Control.Comonad.Store.Class": [
+      "pos",
+      "peek",
       "experiment",
       "peeks",
       "seek",
@@ -25975,6 +26315,7 @@
       "store"
     ],
     "Control.Comonad.Traced.Class": [
+      "track",
       "tracks",
       "listen",
       "listens",
@@ -25987,7 +26328,9 @@
       "runTraced",
       "traced"
     ],
-    "Control.Comonad.Trans.Class": [],
+    "Control.Comonad.Trans.Class": [
+      "lower"
+    ],
     "Control.Monad.Cont.Class": [
       "callCC"
     ],
@@ -26003,6 +26346,8 @@
       "withCont"
     ],
     "Control.Monad.Error.Class": [
+      "throwError",
+      "catchError",
       "catchJust",
       "try",
       "withResource",
@@ -26061,7 +26406,9 @@
       "mapMaybeT"
     ],
     "Control.Monad.Reader.Class": [
-      "asks"
+      "ask",
+      "asks",
+      "local"
     ],
     "Control.Monad.Reader.Trans": [
       "runReaderT",
@@ -26089,6 +26436,7 @@
       "withRWS"
     ],
     "Control.Monad.State.Class": [
+      "state",
       "get",
       "gets",
       "put",
@@ -26109,8 +26457,13 @@
       "mapState",
       "withState"
     ],
-    "Control.Monad.Trans.Class": [],
+    "Control.Monad.Trans.Class": [
+      "lift"
+    ],
     "Control.Monad.Writer.Class": [
+      "tell",
+      "listen",
+      "pass",
       "listens",
       "censor"
     ],
@@ -26410,6 +26763,7 @@
       "d9"
     ],
     "Data.Typelevel.Num.Sets": [
+      "toInt",
       "toInt'",
       "subLastDec",
       "div10Dec",
@@ -26426,6 +26780,7 @@
   },
   "typelevel-peano": {
     "Type.Data.Peano.Int.Definition": [
+      "reflectInt",
       "showInt",
       "plus",
       "prod"
@@ -26639,6 +26994,7 @@
     ],
     "Type.Data.Peano.Int": [],
     "Type.Data.Peano.Nat.Definition": [
+      "reflectNat",
       "showNat",
       "plusNat",
       "mulNat",
@@ -27254,6 +27610,7 @@
   },
   "unlift": {
     "Control.Monad.Unlift": [
+      "withRunInBase",
       "unlift",
       "askUnlift",
       "askRunInBase",
@@ -27261,6 +27618,7 @@
       "toBase"
     ],
     "Effect.Aff.Unlift": [
+      "withRunInAff",
       "unliftAff",
       "askUnliftAff",
       "askRunInAff",
@@ -27268,6 +27626,7 @@
       "toAff"
     ],
     "Effect.Unlift": [
+      "withRunInEffect",
       "unliftEffect",
       "askUnliftEffect",
       "askRunInEffect",
@@ -27349,8 +27708,14 @@
     ]
   },
   "untagged-to-tagged": {
-    "Data.UntaggedToTagged.Tagged": [],
-    "Data.UntaggedToTagged.Untagged": []
+    "Data.UntaggedToTagged.Tagged": [
+      "fromTaggedHelper",
+      "fromTagged"
+    ],
+    "Data.UntaggedToTagged.Untagged": [
+      "toTaggedHelper",
+      "toTagged"
+    ]
   },
   "untagged-union": {
     "Untagged.Castable": [
@@ -27780,6 +28145,7 @@
   },
   "vectorfield": {
     "Data.VectorField": [
+      "scalarMul",
       "flipScalarMul"
     ]
   },
@@ -30618,23 +30984,36 @@
     "Yoga.JSON.Generics.EnumSumRep": [
       "defaultOptions",
       "genericReadForeignEnum",
-      "genericWriteForeignEnum"
+      "genericWriteForeignEnum",
+      "genericEnumReadForeign",
+      "genericEnumWriteForeign"
     ],
     "Yoga.JSON.Generics.TaggedSumRep": [
       "defaultOptions",
       "genericReadForeignTaggedSum",
-      "genericWriteForeignTaggedSum"
+      "genericReadForeignTaggedSumRep",
+      "genericWriteForeignTaggedSum",
+      "genericWriteForeignTaggedSumRep"
     ],
     "Yoga.JSON.Generics.UntaggedProductRep": [
       "genericReadForeignUntaggedProduct",
-      "genericWriteForeignUntaggedProduct"
+      "genericReadForeignUntaggedProductRep",
+      "genericWriteForeignUntaggedProduct",
+      "genericWriteForeignUntaggedProductRep"
     ],
     "Yoga.JSON.Generics.UntaggedSumRep": [
       "genericReadForeignUntaggedSum",
-      "genericWriteForeignUntaggedSum"
+      "genericReadForeignUntaggedSumRep",
+      "genericWriteForeignUntaggedSum",
+      "genericWriteForeignUntaggedSumRep"
     ],
     "Yoga.JSON.Generics": [],
-    "Yoga.JSON.Variant": [],
+    "Yoga.JSON.Variant": [
+      "writeVariantImpl",
+      "readVariantImpl",
+      "writeUntaggedVariantImpl",
+      "readUntaggedVariantImpl"
+    ],
     "Yoga.JSON": [
       "readJSON",
       "readJSON'",
@@ -30664,7 +31043,8 @@
       "mkError",
       "logUnhandledError",
       "toParallelError",
-      "parallelErrorToError"
+      "parallelErrorToError",
+      "singletonRecordToVariant"
     ],
     "Yoga.Om": [
       "delay",
