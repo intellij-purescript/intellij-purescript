@@ -11,12 +11,11 @@ import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.foreign.ForeignValueDecl
+import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.type.TypeDecl
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.module.Module

@@ -5,7 +5,6 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {

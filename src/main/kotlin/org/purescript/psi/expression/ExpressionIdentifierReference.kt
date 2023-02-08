@@ -3,7 +3,6 @@ package org.purescript.psi.expression
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
-import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase

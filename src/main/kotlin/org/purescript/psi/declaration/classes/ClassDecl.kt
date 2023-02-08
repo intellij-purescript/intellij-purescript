@@ -6,9 +6,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
-import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.declaration.newtype.NewtypeCtor
 import org.purescript.psi.name.PSClassName
 import org.purescript.psi.type.PSTypeVarBinding
 

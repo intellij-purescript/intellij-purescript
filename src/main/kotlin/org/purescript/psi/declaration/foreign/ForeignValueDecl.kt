@@ -14,12 +14,10 @@ import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.type.PSType
-import javax.swing.Icon
 
 /**
  * A foreign value import declaration, e.g.

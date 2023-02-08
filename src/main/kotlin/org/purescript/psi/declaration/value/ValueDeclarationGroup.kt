@@ -10,17 +10,16 @@ import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
-import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.declaration.Importable
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
+import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.type.PSType
-import javax.swing.Icon
 
 class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {

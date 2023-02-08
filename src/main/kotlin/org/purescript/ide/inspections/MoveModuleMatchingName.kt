@@ -2,7 +2,6 @@ package org.purescript.ide.inspections
 
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.application.writeAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile

@@ -1,6 +1,5 @@
 package org.purescript.highlighting
 
-import com.intellij.openapi.editor.colors.CodeInsightColors
 import com.intellij.openapi.editor.colors.CodeInsightColors.ERRORS_ATTRIBUTES
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
@@ -10,8 +9,8 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet.create
 import org.purescript.lexer.PSHighlightLexer
 import org.purescript.parser.*
-import org.purescript.parser.OPERATOR as PARSER_OPERATOR
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors as Default
+import org.purescript.parser.OPERATOR as PARSER_OPERATOR
 
 object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     private val keys: MutableMap<IElementType, TextAttributesKey> = HashMap()

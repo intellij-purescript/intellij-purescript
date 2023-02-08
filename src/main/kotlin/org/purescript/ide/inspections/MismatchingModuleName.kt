@@ -3,7 +3,6 @@ package org.purescript.ide.inspections
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import org.purescript.file.PSFile
-import java.nio.file.Paths
 
 class MismatchingModuleName : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =

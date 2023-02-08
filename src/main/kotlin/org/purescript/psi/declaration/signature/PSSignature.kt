@@ -2,7 +2,6 @@ package org.purescript.psi.declaration.signature
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
-import com.intellij.psi.PsiReference
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSIdentifier

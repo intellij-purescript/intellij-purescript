@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.psi.PsiElement
@@ -14,8 +13,6 @@ import com.intellij.util.ProcessingContext
 import org.purescript.file.PSFile
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.module.Module
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {

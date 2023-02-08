@@ -13,7 +13,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.psi.declaration.signature.PSSignature
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
 class UnusedInspection : LocalInspectionTool() {
