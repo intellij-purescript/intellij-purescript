@@ -21,6 +21,82 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        if (parameters.isExtendedCompletion) {
+            addCompletions2(parameters, context, result)
+        } else {
+            addCompletions1(parameters, context, result)
+        }
+    }
+    fun addCompletions1(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
+        if (parameters.isExtendedCompletion) {
+            result.addLookupAdvertisement("Only showing names in scope, complete again for more options")
+            return
+        }
+        val localElement = parameters.position
+        val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
+        val alreadyImportedModules: List<Module> = (localElement.containingFile as PSFile)
+            .module
+            ?.cache
+            ?.importsByAlias
+            ?.get(qualifiedName)
+            ?.mapNotNull { it.importedModule }
+            ?: emptyList()
+
+        val importableDeclarations: Set<PsiElement> = if (parameters.invocationCount == 2) {
+            result.addLookupAdvertisement("Showing names in already imported modules, complete again for project wide")
+            alreadyImportedModules.flatMap {
+                it.exportedValueDeclarationGroups + it.exportedFixityDeclarations
+            }.toSet()
+        } else emptySet()
+
+        // import Module as Alias
+        val project = parameters.editor.project ?: return
+        val scope = GlobalSearchScope.allScope(project)
+        val index = ImportableIndex
+        val names = index.getAllKeys(project)
+        for (name in names) {
+            if (result.isStopped) return
+            if (!result.prefixMatcher.prefixMatches(name)) continue
+            val elements = index.get(name, project, scope)
+            val elementBuilders = elements
+                .filter { parameters.originalFile != it.containingFile }
+                .filter { target ->
+                    if (parameters.invocationCount < 3) {
+                        target in importableDeclarations
+                    } else {
+                        true
+                    }
+                }
+                .mapNotNull {
+                    LookupElementBuilder
+                        .createWithIcon(it)
+                        .withTypeText(it.type?.text)
+                        .withTailText(it.asImport()?.moduleName?.let { "($it)" })
+                        .withInsertHandler { context, item ->
+                        val import = (item.psiElement as? Importable)
+                            ?.asImport()
+                            ?.withAlias(qualifiedName)
+                            ?: return@withInsertHandler
+                        val module = (context.file as PSFile).module
+                        executeCommand(project, "Import") {
+                            runWriteAction {
+                                module?.addImportDeclaration(import)
+                            }
+                        }
+                    }
+                }
+            result.addAllElements(elementBuilders)
+        }
+    }
+    fun addCompletions2(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
         if (!parameters.isExtendedCompletion) {
             result.addLookupAdvertisement("Only showing names in scope, complete again for more options")
             return
