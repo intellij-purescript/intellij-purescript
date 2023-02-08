@@ -81,12 +81,10 @@ val ClassConstraint = WithPsi("ClassConstraint") { PSClassConstraint(it) }
 val ClassFunctionalDependencyList =
     WithPsi("ClassFunctionalDependencyList")
     { PSClassFunctionalDependencyList(it) }
-val ClassFunctionalDependency =
-    WithPsi("ClassFunctionalDependency") { PSClassFunctionalDependency(it) }
-val ClassMember = WithPsi("ClassMember") { PSClassMember(it) }
-val ClassMemberList = WithPsi("ClassMemberList") { PSClassMemberList(it) }
-val InstanceDecl =
-    WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
+val ClassFunctionalDependency = WithPsi("ClassFunctionalDependency") { PSClassFunctionalDependency(it) }
+val ClassMember = PSClassMember.Type
+val ClassMemberList = PSClassMemberList.Type
+val InstanceDecl = WithPsi("TypeInstanceDeclaration") { PSInstanceDeclaration(it) }
 val NewtypeDeclType = NewtypeDecl.Type
 val NewtypeCtorType = NewtypeCtor.Type
 val Guard = WithPsi("Guard") { PSGuard(it) }
