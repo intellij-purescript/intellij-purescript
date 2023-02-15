@@ -32,6 +32,12 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <internalFileTemplate name="Purescript Module"/>
+        <additionalLibraryRootsProvider
+            implementation="org.purescript.run.spago.SpagoLibraryRootsProvider"
+        />
+        <directoryIndexExcludePolicy
+            implementation="org.purescript.run.spago.SpagoDirectoryIndexExcludePolicy"
+        />
         <lang.documentationProvider language="Purescript"
                                     implementationClass="org.purescript.features.PSDocumentationProvider"/>
         <spellchecker.support

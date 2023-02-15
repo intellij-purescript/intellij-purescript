@@ -7,6 +7,7 @@ val publishChannels: String by project
 plugins {
     java
     kotlin("jvm") version "1.7.20"
+    kotlin("plugin.serialization") version "1.8.0"
     id("org.jetbrains.intellij") version "1.12.0"
     id("org.jetbrains.grammarkit") version "2021.2.2"
 }
@@ -16,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
     testImplementation("junit:junit:4.13.2")
