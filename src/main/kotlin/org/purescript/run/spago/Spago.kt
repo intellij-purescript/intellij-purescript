@@ -1,5 +1,6 @@
 package org.purescript.run.spago
 
+import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
 import com.intellij.navigation.ItemPresentation
@@ -57,7 +58,7 @@ class Spago(val project: Project) {
                 .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
             val lines = try {
                 ExecUtil.execAndGetOutput(commandLine, "").split("\n")
-            } catch (e: IOException) {
+            } catch (e: ExecutionException) {
                 return@runBackgroundableTask
             }
             val libraries = mutableListOf<SpagoLibrary>()
