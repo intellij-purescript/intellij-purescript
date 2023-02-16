@@ -45,7 +45,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                 if (!result.prefixMatcher.prefixMatches(name)) continue
                 for ((packageName, moduleName) in data) {
                     result.addElement(LookupElementBuilder
-                        .create(name)
+                        .create(packageName to moduleName, name)
                         .withIcon(AllIcons.Actions.Install)
                         .withTailText("($moduleName)")
                         .appendTailText("($packageName)", true)
