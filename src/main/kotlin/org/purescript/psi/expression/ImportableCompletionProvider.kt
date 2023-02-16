@@ -38,6 +38,8 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
             addCompletions1(parameters, context, result)
         }
         if (parameters.invocationCount >= 3) {
+            val localElement = parameters.position
+            val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
             val project = parameters.editor.project ?: return
             val packageSet = project.service<PackageSet>()
             for ((name, data) in packageSet.reverseLookup) {
@@ -59,6 +61,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                                 .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
                             val import = ImportDeclaration(moduleName)
                                 .withItems(ImportedValue(name))
+                                .withAlias(qualifiedName)
                             val module = (context.file as PSFile).module
                             runBackgroundableTask("Installing package: $packageName", project) {
                                 ExecUtil.execAndGetOutput(commandLine)
