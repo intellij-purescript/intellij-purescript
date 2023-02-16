@@ -4,7 +4,6 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.runBackgroundableTask
@@ -23,6 +22,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.purescript.icons.PSIcons
+import java.io.IOException
 
 @Service
 class Spago(val project: Project) {
@@ -47,7 +47,7 @@ class Spago(val project: Project) {
     }
 
     private fun updateLibraries() =
-        runBackgroundableTask("Spago", project, true){
+        runBackgroundableTask("Spago", project, true) {
             val commandName = when {
                 SystemInfo.isWindows -> "spago.cmd"
                 else -> "spago"
@@ -55,7 +55,11 @@ class Spago(val project: Project) {
             val commandLine = GeneralCommandLine(commandName, "ls", "deps", "--json")
                 .withWorkDirectory(project.basePath)
                 .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            val lines = ExecUtil.execAndGetOutput(commandLine, "").split("\n")
+            val lines = try {
+                ExecUtil.execAndGetOutput(commandLine, "").split("\n")
+            } catch (e: IOException) {
+                return@runBackgroundableTask
+            }
             val libraries = mutableListOf<SpagoLibrary>()
             for (line in lines) {
                 if (line.isEmpty()) continue
