@@ -12,18 +12,10 @@ import org.purescript.psi.name.PSProperName
  * foreign import data Effect :: Type -> Type
  * ```
  */
-class PSForeignDataDeclaration(node: ASTNode) :
-    PSPsiElement(node),
-    PsiNameIdentifierOwner {
-
-    internal val properName: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
-
+class PSForeignDataDeclaration(node: ASTNode) : PSPsiElement(node), PsiNameIdentifierOwner {
+    internal val properName: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
     override fun setName(name: String): PsiElement? = null
-
     override fun getNameIdentifier(): PsiElement = properName
-
     override fun getName(): String = properName.name
-
     override fun getTextOffset(): Int = properName.textOffset
 }
