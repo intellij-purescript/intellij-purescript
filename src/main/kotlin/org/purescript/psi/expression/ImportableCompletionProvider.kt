@@ -12,7 +12,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
@@ -22,7 +21,6 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.module.Module
 import org.purescript.run.spago.Spago
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -32,16 +30,12 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         result: CompletionResultSet
     ) {
         if (parameters.isExtendedCompletion) {
-            addCompletions2(parameters, result)
-        } else {
-            addCompletions1(parameters, result)
+            addInstallCompletions(parameters, result)
         }
-        if (parameters.invocationCount >= 3) {
-            addCompletions3(parameters, result)
-        }
+        completionsFromIndex(parameters, result)
     }
 
-    private fun addCompletions3(parameters: CompletionParameters, result: CompletionResultSet) {
+    private fun addInstallCompletions(parameters: CompletionParameters, result: CompletionResultSet) {
         val localElement = parameters.position
         val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
         val project = parameters.editor.project ?: return
@@ -76,44 +70,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         }
     }
 
-    private fun addCompletions1(parameters: CompletionParameters, result: CompletionResultSet) {
-        result.addLookupAdvertisement("Showing names in already imported modules, complete again for project wide")
-        val localElement = parameters.position
-        val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
-        val alreadyImportedModules: List<Module> = (localElement.containingFile as PSFile)
-            .module
-            ?.cache
-            ?.importsByAlias
-            ?.get(qualifiedName)
-            ?.mapNotNull { it.importedModule }
-            ?: emptyList()
-        val importableDeclarations: Set<PsiElement> = alreadyImportedModules
-            .flatMap {
-                it.exportedValueDeclarationGroups +
-                        it.exportedForeignValueDeclarations +
-                        it.exportedDataConstructors +
-                        it.exportedFixityDeclarations
-            }
-            .toSet()
-
-        // import Module as Alias
-        val project = parameters.editor.project ?: return
-        val scope = GlobalSearchScope.allScope(project)
-        val index = ImportableIndex
-        val names = index.getAllKeys(project)
-        for (name in names) {
-            if (result.isStopped) return
-            if (!result.prefixMatcher.prefixMatches(name)) continue
-            val elements = index.get(name, project, scope)
-            val elementBuilders = elements
-                .filter { parameters.originalFile != it.containingFile }
-                .filter { target -> target in importableDeclarations }
-                .mapNotNull { lookupElementBuilder(it, qualifiedName, project) }
-            result.addAllElements(elementBuilders)
-        }
-    }
-
-    private fun addCompletions2(parameters: CompletionParameters, result: CompletionResultSet) {
+    private fun completionsFromIndex(parameters: CompletionParameters, result: CompletionResultSet) {
         val localElement = parameters.position
         val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName
         // import Module as Alias
