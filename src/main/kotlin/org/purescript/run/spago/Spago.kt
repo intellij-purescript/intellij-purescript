@@ -79,13 +79,15 @@ class Spago(val project: Project) {
                 libraries.add(SpagoLibrary(dep.packageName, dep.version, roots))
             }
             this.libraries = libraries
-            invokeLater {
-                runWriteAction {
-                    val rootManagerImpl = ProjectRootManagerImpl.getInstanceImpl(project)
-                    rootManagerImpl.makeRootsChange({}, RootsChangeRescanningInfo.TOTAL_RESCAN)
-                }
-            }
+            triggerRootsChanged()
         }
+
+    private fun triggerRootsChanged() = invokeLater {
+    runWriteAction {
+        val rootManagerImpl = ProjectRootManagerImpl.getInstanceImpl(project)
+        rootManagerImpl.makeRootsChange({}, RootsChangeRescanningInfo.TOTAL_RESCAN)
+    }
+}
 
     @Serializable
     data class Dep(val packageName: String, val version: String, val repo: Repo)
