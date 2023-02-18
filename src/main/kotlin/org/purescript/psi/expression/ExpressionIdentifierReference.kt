@@ -26,7 +26,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
     ) {
 
     override fun getVariants(): Array<Any> =
-        candidates
+        moduleLocalCandidates
             .map {
                 when (it) {
                     is ValueDeclarationGroup -> LookupElementBuilder
@@ -42,7 +42,26 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         return candidates.firstOrNull { it.name == name }
     }
 
-    private val candidates: Sequence<PsiNamedElement>
+    private val candidates: Sequence<PsiNamedElement> get() = moduleLocalCandidates + importedCandidates
+    private val importedCandidates: Sequence<PsiNamedElement>
+        get() {
+            val module = element.module ?: return emptySequence()
+            val qualifyingName = element.qualifiedIdentifier.moduleName?.name
+            return sequence{ 
+                val importDeclarations =
+                    module.cache.imports.filter { it.importAlias?.name == qualifyingName }
+                yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
+                yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
+                yieldAll(importDeclarations.flatMap { it.importedClassMembers })
+                val importedClassMembers =
+                    importDeclarations
+                        .asSequence()
+                        .flatMap { it.importedClassDeclarations.asSequence() }
+                        .flatMap { it.classMembers.asSequence() }
+                yieldAll(importedClassMembers)
+            }
+        }
+    private val moduleLocalCandidates: Sequence<PsiNamedElement>
         get() {
             val module = element.module ?: return emptySequence()
             val qualifyingName = element.qualifiedIdentifier.moduleName?.name
@@ -80,19 +99,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                         .asSequence()
                         .flatMap { it.classMembers.asSequence() }
                     yieldAll(localClassMembers)
-                }
-                val importDeclarations =
-                    module.cache.imports.filter { it.importAlias?.name == qualifyingName }
-                yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
-                yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-                yieldAll(importDeclarations.flatMap { it.importedClassMembers })
-                val importedClassMembers =
-                    importDeclarations
-                        .asSequence()
-                        .flatMap { it.importedClassDeclarations.asSequence() }
-                        .flatMap { it.classMembers.asSequence() }
-                yieldAll(importedClassMembers)
-            }
+                }}
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
