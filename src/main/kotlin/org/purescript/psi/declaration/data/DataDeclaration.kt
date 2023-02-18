@@ -4,10 +4,14 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
+import org.purescript.psi.type.PSType
 
 /**
  * A data declaration, e.g.
@@ -33,14 +37,13 @@ interface DataDeclaration {
             Stub(d.readNameString()!!, p)
     }
 
-    class Psi : PSStubbedElement<Stub>, PsiNameIdentifierOwner {
+    class Psi : PSStubbedElement<Stub>, PsiNameIdentifierOwner, Importable {
         constructor(node: ASTNode) : super(node)
-        constructor(stub: Stub, type: IStubElementType<*, *>) :
-            super(stub, type)
-
+        constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+        override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
+        override val type: PSType? get() = null
         // Todo clean this up
         override fun toString(): String = "PSDataDeclaration($elementType)"
-
         /**
          * @return the [PSProperName] that identifies this declaration
          */
@@ -62,14 +65,9 @@ interface DataDeclaration {
             get() = dataConstructorList?.dataConstructors
                 ?: emptyArray()
 
-        override fun setName(name: String): PsiElement? {
-            return null
-        }
-
+        override fun setName(name: String): PsiElement? = null
         override fun getNameIdentifier(): PSProperName = identifier
-
         override fun getName(): String = nameIdentifier.name
-
         override fun getTextOffset(): Int = nameIdentifier.textOffset
     }
 }
