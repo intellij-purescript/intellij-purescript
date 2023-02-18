@@ -4,14 +4,15 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.name.PSProperName
+import org.purescript.psi.type.PSType
 
-class NewtypeDecl :
-    PSStubbedElement<NewtypeDecl.Stub>, 
-    PsiNameIdentifierOwner {
+class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner, Importable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<NewtypeDecl>(p, Type)
     object Type : WithPsiAndStub<Stub, NewtypeDecl>("NewtypeDecl") {
         override fun createPsi(node: ASTNode) = NewtypeDecl(node)
@@ -27,8 +28,10 @@ class NewtypeDecl :
 
         override fun indexStub(stub: Stub, sink: IndexSink) = Unit
     }
+
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+
     /**
      * @return the [PSProperName] that identifies this declaration
      */
@@ -43,10 +46,9 @@ class NewtypeDecl :
         get() = findNotNullChildByClass(NewtypeCtor::class.java)
 
     override fun setName(name: String): PsiElement? = null
-
     override fun getNameIdentifier(): PsiElement = identifier
-
     override fun getName(): String = identifier.name
-
+    override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
+    override val type: PSType? get() = null
     override fun getTextOffset(): Int = identifier.textOffset
 }
