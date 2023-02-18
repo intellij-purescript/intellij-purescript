@@ -78,6 +78,11 @@
             implementationClass="org.purescript.psi.expression.ExpressionCompletionContributor"
             id="ExpressionCompletionContributor"
         />
+        <completion.contributor
+            language="Purescript"
+            implementationClass="org.purescript.psi.type.TypeCompletionContributor"
+            id="TypeCompletionContributor"
+        />
 
         <fileType
             name="Purescript file"

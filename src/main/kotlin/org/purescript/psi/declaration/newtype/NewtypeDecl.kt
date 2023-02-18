@@ -18,7 +18,7 @@ import org.purescript.psi.type.PSType
 
 class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner, Importable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<NewtypeDecl>(p, Type) {
-        val module get() = parentStub.parentStub as? Module.Stub
+        val module get() = parentStub as? Module.Stub
         val isExported get() = when {
             module == null -> false
             module?.exportList == null -> true
