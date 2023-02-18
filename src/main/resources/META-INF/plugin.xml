@@ -205,6 +205,8 @@
         <stubIndex
             implementation="org.purescript.psi.declaration.ImportableIndex"/>
         <stubIndex
+            implementation="org.purescript.psi.declaration.ImportableTypeIndex"/>
+        <stubIndex
             implementation="org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.fixity.ExportedFixityNameIndex"/>
