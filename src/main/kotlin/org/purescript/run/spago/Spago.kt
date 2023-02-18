@@ -23,7 +23,6 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.purescript.icons.PSIcons
-import java.io.IOException
 
 @Service
 class Spago(val project: Project) {
@@ -69,38 +68,17 @@ class Spago(val project: Project) {
                 } catch (e: SerializationException) {
                     continue
                 }
-                when (dep.repo.tag) {
-                    "Remote" -> {
-                        val src = project
-                            .guessProjectDir()
-                            ?.findFileByRelativePath(".spago/${dep.packageName}/${dep.version}/src")
-                        val roots = src?.let { mutableListOf(it) } ?: mutableListOf()
-                        libraries.add(
-                            SpagoLibrary(
-                                dep.packageName,
-                                dep.version,
-                                roots
-                            )
-                        )
-                    }
-
-                    "Local" -> {
-                        val src: VirtualFile? = project
-                            .guessProjectDir()
-                            ?.findFileByRelativePath("${dep.repo.contents}/src")
-                        val roots: MutableList<VirtualFile> = src?.let { mutableListOf(it) } ?: mutableListOf()
-                        libraries.add(
-                            SpagoLibrary(
-                                dep.packageName,
-                                dep.version,
-                                roots
-                            )
-                        )
-                    }
+                val projectDir = project.guessProjectDir()
+                val relativePath = when (dep.repo.tag) {
+                    "Remote" -> ".spago/${dep.packageName}/${dep.version}/src"
+                    "Local" -> "${dep.repo.contents}/src"
+                    else -> null
                 }
+                val root = relativePath?.let { projectDir?.findFileByRelativePath(it) }
+                val roots = listOfNotNull(root).toMutableList()
+                libraries.add(SpagoLibrary(dep.packageName, dep.version, roots))
             }
             this.libraries = libraries
-
             invokeLater {
                 runWriteAction {
                     val rootManagerImpl = ProjectRootManagerImpl.getInstanceImpl(project)
