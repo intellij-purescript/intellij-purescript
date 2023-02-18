@@ -45,16 +45,19 @@ class Spago(val project: Project) {
                 }
             })
     }
+    val commandLine: GeneralCommandLine get() {
+        val commandName = when {
+            SystemInfo.isWindows -> "spago.cmd"
+            else -> "spago"
+        }
+        return GeneralCommandLine(commandName)
+            .withWorkDirectory(project.basePath)
+            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+    }
 
     private fun updateLibraries() =
         runBackgroundableTask("Spago", project, true) {
-            val commandName = when {
-                SystemInfo.isWindows -> "spago.cmd"
-                else -> "spago"
-            }
-            val commandLine = GeneralCommandLine(commandName, "ls", "deps", "--json")
-                .withWorkDirectory(project.basePath)
-                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+            val commandLine = this.commandLine.withParameters("ls", "deps", "--json")
             val lines = try {
                 ExecUtil.execAndGetOutput(commandLine, "").split("\n")
             } catch (e: ExecutionException) {

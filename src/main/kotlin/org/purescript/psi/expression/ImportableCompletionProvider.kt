@@ -25,6 +25,7 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.module.Module
+import org.purescript.run.spago.Spago
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(
@@ -52,13 +53,8 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                         .withTailText("($moduleName)")
                         .appendTailText("($packageName)", true)
                         .withInsertHandler { context, item ->
-                            val commandName = when {
-                                SystemInfo.isWindows -> "spago.cmd"
-                                else -> "spago"
-                            }
-                            val commandLine = GeneralCommandLine(commandName, "install", packageName)
-                                .withWorkDirectory(project.basePath)
-                                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+                            val commandLine = project.service<Spago>().commandLine
+                                .withParameters("install", packageName)
                             val import = ImportDeclaration(moduleName)
                                 .withItems(ImportedValue(name))
                                 .withAlias(qualifiedName)
