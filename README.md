@@ -4,7 +4,9 @@
 [![Publish Status](https://github.com/intellij-purescript/intellij-purescript/workflows/Publish/badge.svg)](https://github.com/intellij-purescript/intellij-purescript/actions)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-![example](.README/ex1.png)
+## Introduction video
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vgpoF0XV2UM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## Community
 
