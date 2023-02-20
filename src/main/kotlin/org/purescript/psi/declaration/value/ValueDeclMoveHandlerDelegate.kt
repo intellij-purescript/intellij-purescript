@@ -53,6 +53,9 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
             row("To:") {
                 val modules = moduleNameIndex
                     .getAllKeys(GlobalSearchScope.projectScope(project))
+                    .flatMap { moduleNameIndex.get(it, project, GlobalSearchScope.projectScope(project)) }
+                    .filter { it.isValid }
+                    .map { it.name }
                     .sorted()
                 comboBox(modules)
                     .focused()
