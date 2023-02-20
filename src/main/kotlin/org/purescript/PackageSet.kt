@@ -19,7 +19,7 @@ class PackageSet(project: Project) {
                     if (export in reverseLookup) {
                         reverseLookup[export]?.add(packageName to moduleName)
                     } else {
-                        reverseLookup.set(export, mutableListOf(packageName to moduleName))
+                        reverseLookup[export] = mutableListOf(packageName to moduleName)
                     }
                 }
             }

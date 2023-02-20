@@ -23,6 +23,7 @@ import com.intellij.util.ProcessingContext
 import org.purescript.PackageSet
 import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
@@ -58,7 +59,13 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                         val commandLine = project.service<Spago>().commandLine
                             .withParameters("install", packageName)
                         val import = ImportDeclaration(moduleName)
-                            .withItems(ImportedValue(name))
+                            .let {
+                                when {
+                                    name.firstOrNull()?.isLetter() == true ->
+                                        it.withItems(ImportedValue(name))
+                                    else -> it.withItems(ImportedOperator(name))
+                                }
+                            }
                             .withAlias(qualifiedName)
                         val module = (context.file as PSFile).module
                         runBackgroundableTask("Installing package: $packageName", project) {
