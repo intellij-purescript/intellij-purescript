@@ -13,10 +13,12 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.binder.PSBinderAtom
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.exports.ExportedValue
+import org.purescript.psi.expression.ExpressionAtom
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.type.PSType
@@ -66,6 +68,13 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     val valueDeclarations: Array<out ValueDecl> get() = 
         findChildrenByClass(ValueDecl::class.java)
     val expressionAtoms get() = valueDeclarations.flatMap { it.expressionAtoms }
+    val binderAtoms get() = sequence {
+        var steps = children.asList()
+        while (steps.isNotEmpty()) {
+            this.yieldAll(steps)
+            steps = steps.flatMap { it.children.asList() }
+        }
+    }.filterIsInstance<PSBinderAtom>().toList()
     
     override fun setName(name: String): PsiElement {
         for (valueDeclaration in valueDeclarations) {

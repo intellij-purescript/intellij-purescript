@@ -11,7 +11,6 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.Importable
-import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.expression.*
@@ -36,9 +35,19 @@ class MoveValueDeclRefactoring(
         val sourceModule = toMove.module
 
         // dependencies needs to be imported or moved to targetModule
-        val atomDependencies = toMove.expressionAtoms
+        val atoms = (toMove.expressionAtoms + toMove.binderAtoms)
             .mapNotNull { element ->
-                element.getReference()?.resolve()?.let { element to it }
+                element.getReference()
+                    ?.resolve()
+                    ?.let {
+                        if (it.containingFile == targetModule.containingFile) {
+                            null
+                        } else {
+                            it
+                        }
+                    }
+                    ?.let { it as? Importable }
+                    ?.let { element to it }
             }.filter { (_, reference) ->
                 // dependency to self is fine
                 reference != toMove
@@ -101,21 +110,17 @@ class MoveValueDeclRefactoring(
             }
         }
         val done = mutableSetOf<ImportDeclaration>()
-        for ((element, reference) in atomDependencies) {
-            when (reference) {
-                is Importable -> {
-                    val importDeclaration = reference.asImport()
-                        ?.let { 
-                            (element as? Qualified)?.let { e ->
-                                it.withAlias(e.qualifierName)
-                            } ?: it
-                        }
-                        ?: continue
-                    if (importDeclaration in done) continue
-                    else done.add(importDeclaration)
-                    targetModule.addImportDeclaration(importDeclaration)
+        for ((element, reference) in atoms) {
+            val importDeclaration = reference.asImport()
+                ?.let {
+                    (element as? Qualified)?.let { e ->
+                        it.withAlias(e.qualifierName)
+                    } ?: it
                 }
-            }
+                ?: continue
+            if (importDeclaration in done) continue
+            else done.add(importDeclaration)
+            targetModule.addImportDeclaration(importDeclaration)
         }
     }
 
