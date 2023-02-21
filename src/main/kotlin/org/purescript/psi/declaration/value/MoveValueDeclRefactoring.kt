@@ -10,6 +10,7 @@ import com.intellij.usageView.UsageInfo
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.exports.ExportedValue
@@ -101,32 +102,19 @@ class MoveValueDeclRefactoring(
         }
         val done = mutableSetOf<ImportDeclaration>()
         for ((element, reference) in atomDependencies) {
-            when (element) {
-                is PSExpressionIdentifier -> when (reference) {
-                    is ValueDeclarationGroup -> {
-                        val importDeclaration = reference.asImport()
-                            ?.withAlias(element.qualifierName)
-                            ?: continue
-                        if (importDeclaration in done) continue
-                        else done.add(importDeclaration)
-                        targetModule.addImportDeclaration(importDeclaration)
-                    }
+            when (reference) {
+                is Importable -> {
+                    val importDeclaration = reference.asImport()
+                        ?.let { 
+                            (element as? Qualified)?.let { e ->
+                                it.withAlias(e.qualifierName)
+                            } ?: it
+                        }
+                        ?: continue
+                    if (importDeclaration in done) continue
+                    else done.add(importDeclaration)
+                    targetModule.addImportDeclaration(importDeclaration)
                 }
-
-                is PSExpressionOperator -> when (reference) {
-                    is FixityDeclaration -> {
-                        val importDeclaration = reference.asImport()
-                            ?.withAlias(element.qualifierName)
-                            ?: continue
-                        if (importDeclaration in done) continue
-                        else done.add(importDeclaration)
-                        targetModule.addImportDeclaration(importDeclaration)
-                    }
-                }
-
-                is PSExpressionConstructor -> TODO()
-                is PSExpressionSymbol -> TODO()
-                is PSArrayLiteral -> TODO()
             }
         }
     }
