@@ -136,7 +136,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.complete(CompletionType.BASIC, 1)
         myFixture.checkResult(
             "Foo.purs",
             """
