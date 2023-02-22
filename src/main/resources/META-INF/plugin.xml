@@ -78,6 +78,9 @@
             implementationClass="org.purescript.features.PSFindUsageProvider"
         />
         <importFilteringRule implementation="org.purescript.psi.declaration.imports.PSImportFilteringRule"/>
+        <usageGroupingRuleProvider 
+                implementation="org.purescript.psi.declaration.value.ValueUsageGroupingRuleProvider"
+        />
         <completion.contributor
             language="Purescript"
             implementationClass="org.purescript.keyword.KeywordCompletionContributor"
