@@ -94,11 +94,7 @@ class SpagoRunConfiguration(
         }?.firstOrNull() ?: return false
         val main = module.exportedValueDeclarationGroups
             .firstOrNull { it.name == "main" } ?: return false
-        val reporters = main.valueDeclarations.single().expressionAtoms
-            .filterIsInstance<PSArrayLiteral>()
-            .flatMap { it.values.mapNotNull { it.expressionAtoms.singleOrNull() } }
-            .filterIsInstance<PSExpressionIdentifier>()
-        return reporters.any { it.name == "teamcityReporter" }
+        return main.expressionAtoms.any { it.text == "teamcityReporter" }
     }
 
     override fun getConfigurationEditor(): SettingsEditor<SpagoRunConfiguration> {
