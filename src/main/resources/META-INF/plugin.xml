@@ -52,6 +52,10 @@
         />
         <lang.foldingBuilder language="Purescript"
                              implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
+        <lang.psiStructureViewFactory
+            language="Purescript"
+            implementationClass="org.purescript.PSStructureViewBuilder"
+        />
         <extendWordSelectionHandler
                 implementation="org.purescript.psi.expression.ExpressionExtendWordSelectionHandler"/>
         <lang.refactoringSupport
