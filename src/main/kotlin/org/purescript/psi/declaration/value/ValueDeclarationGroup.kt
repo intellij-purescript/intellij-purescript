@@ -27,6 +27,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
+        val isTopLevel get() = module != null
         val isExported get() = when {
             module == null -> false
             module?.exportList == null -> true
@@ -52,6 +53,9 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
             if (stub.isExported) {
                 sink.occurrence(ImportableIndex.KEY, stub.name)
                 sink.occurrence(ExportedValueDecl.KEY, stub.name)
+            }
+            if (stub.isTopLevel) {
+                sink.occurrence(TopLevelValueDecl.KEY, stub.name)
             }
         }
     }

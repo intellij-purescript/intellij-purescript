@@ -43,6 +43,9 @@
         <gotoSymbolContributor 
                 implementation="org.purescript.psi.module.ModuleChooseByNameContributor"
         />
+        <gotoSymbolContributor
+                implementation="org.purescript.psi.declaration.value.ValueChooseByNameContributor"
+        />
         <spellchecker.support
             language="Purescript"
             implementationClass="org.purescript.PSSpellcheckingStrategy"
@@ -210,6 +213,8 @@
         <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.value.ExportedValueDecl"/>
+        <stubIndex
+            implementation="org.purescript.psi.declaration.value.TopLevelValueDecl"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.ImportableIndex"/>
         <stubIndex
