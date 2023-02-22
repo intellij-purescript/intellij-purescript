@@ -73,6 +73,7 @@
             language="Purescript"
             implementationClass="org.purescript.features.PSFindUsageProvider"
         />
+        <importFilteringRule implementation="org.purescript.psi.declaration.imports.PSImportFilteringRule"/>
         <completion.contributor
             language="Purescript"
             implementationClass="org.purescript.keyword.KeywordCompletionContributor"
