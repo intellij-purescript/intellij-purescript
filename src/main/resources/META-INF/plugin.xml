@@ -40,6 +40,9 @@
         />
         <lang.documentationProvider language="Purescript"
                                     implementationClass="org.purescript.features.PSDocumentationProvider"/>
+        <gotoSymbolContributor 
+                implementation="org.purescript.psi.module.ModuleChooseByNameContributor"
+        />
         <spellchecker.support
             language="Purescript"
             implementationClass="org.purescript.PSSpellcheckingStrategy"

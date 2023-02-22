@@ -1,7 +1,9 @@
 package org.purescript.psi.module
 
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
@@ -9,6 +11,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
+import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.parser.FixityDeclType
 import org.purescript.parser.WHERE
@@ -376,4 +379,14 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 ?.any { it.name == name }
                 ?: true
 
+    override fun getPresentation() = object : ItemPresentation {
+        override fun getPresentableText() = name
+        override fun getIcon(unused: Boolean) = PSIcons.FILE
+        override fun getLocationString() = when (val projectPath = project.guessProjectDir()) {
+            null -> containingFile.virtualFile.path
+            else -> projectPath.toNioPath().relativize(containingFile.virtualFile.toNioPath()).toString()
+        }
+    }
+
+    override fun getIcon(flags: Int) = PSIcons.FILE
 }
