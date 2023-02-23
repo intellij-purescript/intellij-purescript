@@ -291,7 +291,7 @@ class ParserDefinitions {
         foreignDeclaration,
         fixityDeclaration,
         classDeclaration,
-        InstanceDecl(
+        InstanceDeclType(
             !(`'derive'` + !`'newtype'`) + instHead
                 + !(`'where'` + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
         )

@@ -26,15 +26,9 @@ class ClassDecl :
     object Type : PSElementType.WithPsiAndStub<Stub, ClassDecl>("ClassDecl") {
         override fun createPsi(node: ASTNode) = ClassDecl(node)
         override fun createPsi(stub: Stub) = ClassDecl(stub, this)
-        override fun createStub(valueDecl: ClassDecl, p: StubElement<*>?) =
-            Stub(valueDecl.name, p)
-
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
-
+        override fun createStub(classDecl: ClassDecl, p: StubElement<*>?) = Stub(classDecl.name, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) = Unit
     }
     constructor(node: ASTNode) : super(node)
