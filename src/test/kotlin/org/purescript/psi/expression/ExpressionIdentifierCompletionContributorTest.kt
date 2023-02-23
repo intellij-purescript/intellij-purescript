@@ -165,7 +165,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """.trimMargin()
         )
 
-        myFixture.complete(CompletionType.BASIC, 2)
+        myFixture.complete(CompletionType.BASIC, 1)
         myFixture.checkResult(
             "Foo.purs",
             """
