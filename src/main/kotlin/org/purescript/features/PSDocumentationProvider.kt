@@ -34,14 +34,12 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                     docCommentsToDocstring(element.docComments.map { it.text })
                 )
             element is FixityDeclaration -> {
-                val valueDeclaration = element.reference.resolve() as? ValueDeclarationGroup
-                val signature = valueDeclaration?.signature
-                val docComments = valueDeclaration?.docComments ?: emptyList()
+                val docComments = element.docComments
                 layout(
                     HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         element.project,
                         PSLanguage,
-                        signature?.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
+                        element.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
                         1f
                     ) ,
                     docCommentsToDocstring(docComments.map { it.text })

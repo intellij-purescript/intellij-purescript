@@ -4,10 +4,12 @@ import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
+import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.parser.TYPE
@@ -17,6 +19,7 @@ import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
+import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportedOperator
 import org.purescript.psi.module.Module
@@ -25,20 +28,20 @@ import org.purescript.psi.name.PSQualifiedIdentifier
 import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.type.PSType
 
-class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
-    PsiNameIdentifierOwner, Importable {
+class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdentifierOwner, Importable,
+    DocCommentOwner {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<FixityDeclaration>(p, Type) {
         val module get() = parentStub as? Module.Stub
-        val isExported get() = when {
-            module == null -> false
-            module?.exportList == null -> true
-            else -> module?.exportList?.childrenStubs
-                ?.filterIsInstance<ExportedOperator.Stub>()
-                ?.find { it.name == name } != null
-        }
+        val isExported
+            get() = when {
+                module == null -> false
+                module?.exportList == null -> true
+                else -> module?.exportList?.childrenStubs
+                    ?.filterIsInstance<ExportedOperator.Stub>()
+                    ?.find { it.name == name } != null
+            }
     }
-    val signature get() = (reference.resolve() as? ValueDeclarationGroup)?.signature
 
     override fun getIcon(flags: Int) = AllIcons.Actions.Regex
     override fun getPresentation(): ItemPresentation {
@@ -71,7 +74,12 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
 
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) :
-        super(stub, type)
+            super(stub, type)
+
+    override val docComments: List<PsiComment>
+        get() = getDocComments().ifEmpty {
+            (reference.resolve() as? DocCommentOwner)?.docComments ?: emptyList()
+        }
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
@@ -80,12 +88,17 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         ImportDeclaration(it, false, setOf(ImportedOperator(name)))
     }
 
-    override val type: PSType? get() = signature?.type
+    override val type: PSType? get() = when(val ref = reference.resolve()) {
+        is ValueDeclarationGroup -> ref.signature?.type
+        is PSClassMember -> ref.type
+        else -> null
+    }
     val fixity: PSFixity get() = child<PSFixity>()!!
     val associativity get() = fixity.associativity
     val precedence get() = fixity.precedence
-    private val isType get(): Boolean =
-        findChildByType<PsiElement>(TYPE) != null
+    private val isType
+        get(): Boolean =
+            findChildByType<PsiElement>(TYPE) != null
     private val operatorName
         get() = findNotNullChildByClass(PSOperatorName::class.java)
     val qualifiedIdentifier: PSQualifiedIdentifier?

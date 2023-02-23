@@ -1,9 +1,11 @@
 package org.purescript.psi.declaration.classes
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import org.purescript.features.DocCommentOwner
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
@@ -21,7 +23,8 @@ import org.purescript.psi.type.PSTypeVarBinding
  */
 class ClassDecl :
     PSStubbedElement<ClassDecl.Stub>,
-    PsiNameIdentifierOwner {
+    PsiNameIdentifierOwner, 
+    DocCommentOwner {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ClassDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ClassDecl>("ClassDecl") {
         override fun createPsi(node: ASTNode) = ClassDecl(node)
@@ -69,4 +72,5 @@ class ClassDecl :
     override fun getNameIdentifier(): PsiElement = className
 
     override fun getTextOffset(): Int = className.textOffset
+    override val docComments: List<PsiComment> get() = getDocComments()
 }

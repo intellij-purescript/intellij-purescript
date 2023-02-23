@@ -6,6 +6,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
@@ -90,6 +91,8 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>, PsiNameIdentifierOwne
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
     override fun getName(): String = identifier.name
-    override val docComments: List<PsiComment> get() = getDocComments()
+    override val docComments: List<PsiComment> get() = getDocComments().ifEmpty {
+        parentOfType<ClassDecl>()?.docComments ?: emptyList()
+    }
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Function
 }
