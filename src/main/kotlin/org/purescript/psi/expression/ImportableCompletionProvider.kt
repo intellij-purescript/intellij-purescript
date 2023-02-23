@@ -4,11 +4,9 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionSorter
-import com.intellij.codeInsight.completion.PrefixMatchingWeigher
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElementWeigher
-import com.intellij.codeInsight.lookup.WeighingContext
 import com.intellij.execution.util.ExecUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.runWriteAction
@@ -22,9 +20,6 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.PackageSet
 import org.purescript.file.PSFile
-import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.ide.formatting.ImportedOperator
-import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.run.spago.Spago
@@ -49,7 +44,8 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         for ((name, data) in packageSet.reverseLookup) {
             if (result.isStopped) return
             if (!result.prefixMatcher.prefixMatches(name)) continue
-            for ((packageName, moduleName) in data) {
+            for ((packageName, import) in data) {
+                val moduleName = import.moduleName
                 result.addElement(LookupElementBuilder
                     .create(packageName to moduleName, name)
                     .withIcon(AllIcons.Actions.Install)
@@ -58,15 +54,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                     .withInsertHandler { context, _ ->
                         val commandLine = project.service<Spago>().commandLine
                             .withParameters("install", packageName)
-                        val import = ImportDeclaration(moduleName)
-                            .let {
-                                when {
-                                    name.firstOrNull()?.isLetter() == true ->
-                                        it.withItems(ImportedValue(name))
-                                    else -> it.withItems(ImportedOperator(name))
-                                }
-                            }
-                            .withAlias(qualifiedName)
+                        val qualifiedImport = import.withAlias(qualifiedName)
                         val module = (context.file as PSFile).module
                         runBackgroundableTask("Installing package: $packageName", project) {
                             ExecUtil.execAndGetOutput(commandLine)
@@ -74,7 +62,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                         }
                         executeCommand(project, "Import") {
                             runWriteAction {
-                                module?.addImportDeclaration(import)
+                                module?.addImportDeclaration(qualifiedImport)
                             }
                         }
                     })
