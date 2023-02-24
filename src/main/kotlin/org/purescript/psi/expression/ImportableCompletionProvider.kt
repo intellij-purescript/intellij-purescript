@@ -73,11 +73,14 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
     }
 
     private fun completionsOfNamespace(parameters: CompletionParameters, result: CompletionResultSet) {
-        val localElement = parameters.position.parentOfType<PSPsiElement>(true) ?: return
-        val module = localElement.module ?: return
-        val nameSpaces = module.cache.importsByAlias.keys
+        val localElement = parameters.position.parentOfType<Qualified>(true) ?: return
+        if ((localElement as? Qualified)?.qualifierName != null) return
+        val module = (localElement  as? PSPsiElement)?.module ?: return
+        val nameSpaces = module.cache.importsByAlias.keys.filterNotNull()
         result.addAllElements(
-            nameSpaces.map {
+            nameSpaces
+                .filter { result.prefixMatcher.prefixMatches(it) }
+                .map {
                 LookupElementBuilder.create("$it.")
             }
         )
