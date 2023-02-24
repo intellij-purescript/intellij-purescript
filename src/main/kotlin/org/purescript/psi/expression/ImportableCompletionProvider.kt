@@ -20,6 +20,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.PackageSet
 import org.purescript.file.PSFile
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.run.spago.Spago
@@ -33,6 +34,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         if (parameters.isExtendedCompletion) {
             addInstallCompletions(parameters, result)
         }
+        completionsOfNamespace(parameters, result)
         completionsFromIndex(parameters, result)
     }
 
@@ -70,6 +72,16 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         }
     }
 
+    private fun completionsOfNamespace(parameters: CompletionParameters, result: CompletionResultSet) {
+        val localElement = parameters.position.parentOfType<PSPsiElement>(true) ?: return
+        val module = localElement.module ?: return
+        val nameSpaces = module.cache.importsByAlias.keys
+        result.addAllElements(
+            nameSpaces.map {
+                LookupElementBuilder.create("$it.")
+            }
+        )
+    }
     private fun completionsFromIndex(parameters: CompletionParameters, result: CompletionResultSet) {
         val localElement = parameters.position
         val qualifiedName = localElement.parentOfType<Qualified>()?.qualifierName

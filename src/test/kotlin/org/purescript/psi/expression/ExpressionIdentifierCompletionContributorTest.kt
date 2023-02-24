@@ -25,7 +25,8 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
         )
         myFixture.testCompletionVariants("Foo.purs", "y0", "y1", "y2")
     }
-    fun `test imports the file if there is only one`() {
+    
+    fun `test completes namespaces`() {
         myFixture.configureByText(
             "Bar.purs",
             """
@@ -39,7 +40,9 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """
                 module Foo where
                 
-                y0 = x<caret>
+                import Bar as Bar
+                
+                y0 = B<caret>
             """.trimIndent()
         )
 
@@ -49,9 +52,9 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """
                 |module Foo where
                 |
-                |import Bar (x1)
+                |import Bar as Bar
                 |
-                |y0 = x1
+                |y0 = Bar.<caret>
             """.trimMargin(), true)
     }
     fun `test imports only once`() {
