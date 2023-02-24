@@ -15,18 +15,10 @@ import org.purescript.psi.type.PSType
  * ```
  */
 class PSSignature(node: ASTNode) : PSPsiElement(node) {
-    val identifier get() =
-        findNotNullChildByClass(PSIdentifier::class.java)
-    val type get() =
-        findNotNullChildByClass(PSType::class.java)
-    override fun getName(): String {
-        return identifier.name
-    }
-
-
-    val nameIdentifier: PSIdentifier
-        get() = findNotNullChildByClass(PSIdentifier::class.java)
-
+    val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
+    val type get() = findNotNullChildByClass(PSType::class.java)
+    override fun getName() = identifier.name
+    val nameIdentifier: PSIdentifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     fun setName(name: String) {
         val identifier =
             project.service<PSPsiFactory>().createIdentifier(name)
