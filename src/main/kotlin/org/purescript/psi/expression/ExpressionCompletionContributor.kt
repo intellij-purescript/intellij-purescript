@@ -3,6 +3,8 @@ package org.purescript.psi.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
+import org.purescript.parser.CtorBinder
+import org.purescript.psi.binder.PSConstructorBinder
 
 class ExpressionCompletionContributor : CompletionContributor() {
     init {
@@ -21,6 +23,11 @@ class ExpressionCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             psiElement().withSuperParent(3, PSExpressionConstructor::class.java),
+            provider
+        )
+        extend(
+            CompletionType.BASIC,
+            psiElement().withSuperParent(3, PSConstructorBinder::class.java),
             provider
         )
     }
