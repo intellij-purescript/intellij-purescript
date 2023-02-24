@@ -1,9 +1,6 @@
 package org.purescript.psi.expression
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionSorter
+import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElementWeigher
@@ -97,6 +94,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                         .withIcon(it.getIcon(0))
                         .withTypeText((it as? Importable)?.type?.text)
                         .withTailText("(${import.moduleName.name})")
+                        .let { PrioritizedLookupElement.withPriority(it, 1.0) }
                     }
                 )
             }
