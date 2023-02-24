@@ -15,6 +15,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
@@ -84,6 +85,22 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                 LookupElementBuilder.create("$it.")
             }
         )
+        for (nameSpace in nameSpaces) {
+            val imports = module.cache.importsByAlias[nameSpace] ?: continue
+            for (import in imports) {
+                val items = import.importedItems
+                    .mapNotNull { it.reference?.resolve() }
+                    .filterIsInstance<PsiNamedElement>()
+                result.addAllElements(
+                    items.map { LookupElementBuilder
+                        .create(it, "$nameSpace.${it.name}")
+                        .withIcon(it.getIcon(0))
+                        .withTypeText((it as? Importable)?.type?.text)
+                        .withTailText("(${import.moduleName.name})")
+                    }
+                )
+            }
+        }
     }
     private fun completionsFromIndex(parameters: CompletionParameters, result: CompletionResultSet) {
         val localElement = parameters.position
