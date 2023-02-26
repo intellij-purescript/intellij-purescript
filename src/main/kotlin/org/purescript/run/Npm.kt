@@ -14,11 +14,10 @@ import java.nio.file.Path
 @Service
 class Npm(val project: Project) {
 
-    private val localBinPath: String by lazy { run("npm bin") }
+    val localBinPath: String? by lazy { run("npm bin") }
+    val globalBinPath: String? by lazy { run("npm -g bin") }
 
-    private val globalBinPath: String by lazy { run("npm -g bin") }
-
-    private fun run(command: String): String {
+    private fun run(command: String): String? {
         val npmCmd = when {
             SystemInfo.isWindows -> listOf("cmd", "/c", command)
             else -> listOf("/usr/bin/env", "bash", "-c", command)
@@ -32,7 +31,7 @@ class Npm(val project: Project) {
         val commandLine = GeneralCommandLine(npmCmd)
             .withParentEnvironmentType(CONSOLE)
             .withWorkDirectory(cwd)
-        return ExecUtil.execAndReadLine(commandLine) ?: ""
+        return ExecUtil.execAndReadLine(commandLine)
     }
 
     private val log = logger<Npm>()
@@ -42,11 +41,16 @@ class Npm(val project: Project) {
             SystemInfo.isWindows -> "$command.cmd"
             else -> command
         }
-        val localCommand = Path.of(localBinPath, binary)
-        if (localCommand.exists()) return localCommand
+        
+        val localCommand = localBinPath?.let { Path.of(it, binary) }
+        if (localCommand != null) {
+            if (localCommand.exists()) return localCommand
+        }
 
-        val globalCommand = Path.of(globalBinPath, binary)
-        if (globalCommand.exists()) return globalCommand
+        val globalCommand = globalBinPath?.let { Path.of(it, binary) }
+        if (globalCommand != null) {
+            if (globalCommand.exists()) return globalCommand
+        }
 
         if (log.isDebugEnabled) log.debug("$command is not found")
         return null

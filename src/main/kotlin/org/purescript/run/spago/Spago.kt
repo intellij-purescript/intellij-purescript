@@ -7,6 +7,7 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.RootsChangeRescanningInfo
@@ -18,11 +19,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.util.EnvironmentUtil
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.purescript.icons.PSIcons
+import org.purescript.run.Npm
 
 @Service
 class Spago(val project: Project) {
@@ -45,15 +48,29 @@ class Spago(val project: Project) {
                 }
             })
     }
-    val commandLine: GeneralCommandLine get() {
-        val commandName = when {
-            SystemInfo.isWindows -> "spago.cmd"
-            else -> "spago"
+
+    val commandLine: GeneralCommandLine
+        get() {
+            val commandName = when {
+                SystemInfo.isWindows -> "spago.cmd"
+                else -> "spago"
+            }
+            val pathEnvSeparator = when {
+                SystemInfo.isWindows -> ";"
+                else -> ":"
+            }
+            val npm = project.service<Npm>()
+            val pathEnv = listOfNotNull(
+                EnvironmentUtil.getValue("PATH"),
+                npm.globalBinPath,
+                npm.localBinPath
+            ).joinToString(pathEnvSeparator)
+            return GeneralCommandLine(commandName)
+                .withCharset(charset("UTF8"))
+                .withWorkDirectory(project.basePath)
+                .withEnvironment("PATH", pathEnv)
+                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
         }
-        return GeneralCommandLine(commandName)
-            .withWorkDirectory(project.basePath)
-            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-    }
 
     private fun updateLibraries() =
         runBackgroundableTask("Spago", project, true) {
@@ -86,11 +103,11 @@ class Spago(val project: Project) {
         }
 
     private fun triggerRootsChanged() = invokeLater {
-    runWriteAction {
-        val rootManagerImpl = ProjectRootManagerImpl.getInstanceImpl(project)
-        rootManagerImpl.makeRootsChange({}, RootsChangeRescanningInfo.TOTAL_RESCAN)
+        runWriteAction {
+            val rootManagerImpl = ProjectRootManagerImpl.getInstanceImpl(project)
+            rootManagerImpl.makeRootsChange({}, RootsChangeRescanningInfo.TOTAL_RESCAN)
+        }
     }
-}
 
     @Serializable
     data class Dep(val packageName: String, val version: String, val repo: Repo)

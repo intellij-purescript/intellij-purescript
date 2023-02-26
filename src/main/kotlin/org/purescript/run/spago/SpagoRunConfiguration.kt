@@ -2,7 +2,6 @@ package org.purescript.run.spago
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.CommandLineState
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.LocatableConfigurationBase
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.process.ColoredProcessHandler
@@ -15,15 +14,11 @@ import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
-import org.purescript.psi.expression.PSArrayLiteral
-import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.module.ModuleNameIndex
-import org.purescript.run.Npm
 import javax.swing.JComponent
 
 class SpagoRunConfiguration(
@@ -40,26 +35,24 @@ class SpagoRunConfiguration(
         environment: ExecutionEnvironment
     ) = object : CommandLineState(environment) {
         override fun startProcess(): ProcessHandler {
-            val spago =
-                project.service<Npm>().pathFor("spago")?.toString()
-
-            val commandLine =
-                GeneralCommandLine(
-                    spago,
-                    "-x",
-                    options.config,
-                    options.command,
-                    "--main",
-                    options.moduleName ?: "Main",
-                    "--source-maps",
-                    "--purs-args",
-                    "-g sourcemaps",
-                    "--node-args",
-                    "--enable-source-maps"
-                )
-                    .withEnvironment("NODE_OPTIONS", "--enable-source-maps")
-                    .withWorkDirectory(project.guessProjectDir()?.path.toString())
-                    .withCharset(charset("UTF8"))
+            val parameters = mutableListOf<String>()
+            if (options.config != null) {
+                parameters.add("-x")
+                parameters.add(options.config!!)
+            }
+            options.command?.also { parameters += it }
+            if (options.command in listOf("run", "test")) {
+                parameters += "--main"
+                parameters += options.moduleName ?: "Main"
+                parameters += "--source-maps"
+                parameters += "--purs-args"
+                parameters += "-g sourcemaps"
+                parameters += "--node-args"
+                parameters += "--enable-source-maps"
+            }
+            val commandLine = project.service<Spago>().commandLine
+                .withParameters(parameters)
+                .withEnvironment("NODE_OPTIONS", "--enable-source-maps")
             return ColoredProcessHandler(commandLine)
         }
 
