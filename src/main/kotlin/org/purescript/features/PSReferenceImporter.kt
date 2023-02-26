@@ -15,7 +15,7 @@ import com.intellij.refactoring.suggested.startOffset
 import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.declaration.ImportableTypeIndex
 import org.purescript.psi.expression.Qualified
 import org.purescript.psi.module.Module
 import java.util.function.BooleanSupplier
@@ -40,9 +40,10 @@ class PSReferenceImporter : ReferenceImporter {
         if ((element as? PsiElement)?.reference?.resolve() != null) return@BooleanSupplier false
         val module = (file as? PSFile)?.module ?: return@BooleanSupplier false
         val scope = GlobalSearchScope.allScope(element.project)
-        val possibleImports = ImportableIndex
-            .get(element.getName(), element.project, scope)
-            .mapNotNull { it.asImport() }
+        val possibleImports = (
+                ImportableIndex.get(element.getName(), element.project, scope) +
+                        ImportableTypeIndex.get(element.getName(), element.project, scope)
+                ).mapNotNull { it.asImport() }
             .map { it.withAlias(element.qualifierName) }
             .toList()
         val qualifiedImports: List<String> = module.cache.importsByName
@@ -52,12 +53,12 @@ class PSReferenceImporter : ReferenceImporter {
         val possibleAlreadyImported = possibleImports
             .filter {
                 it.alias == null &&
-                    it.moduleName in module.cache.importsByModule &&
-                    module.cache.importsByModule
-                        .get(it.moduleName)!!
-                        .any { import ->
-                            import.importAlias == null
-                        }
+                        it.moduleName in module.cache.importsByModule &&
+                        module.cache.importsByModule
+                            .get(it.moduleName)!!
+                            .any { import ->
+                                import.importAlias == null
+                            }
             }
 
         val hintManager = HintManager.getInstance()
@@ -99,7 +100,8 @@ class PSReferenceImporter : ReferenceImporter {
         module: Module
     ): Boolean {
         val message = ShowAutoImportPass.getMessage(false, "$toImport")
-        hintManager.showQuestionHint(editor,
+        hintManager.showQuestionHint(
+            editor,
             message,
             element.startOffset,
             element.endOffset

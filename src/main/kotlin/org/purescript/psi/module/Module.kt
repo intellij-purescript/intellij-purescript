@@ -80,6 +80,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
+        val classDeclarations: Array<ClassDecl> by lazy { findChildrenByClass() }
         val imports by lazy { findChildrenByClass<Import>() }
         val importsByName by lazy { imports.groupBy { it.name } }
         val importsByAlias by lazy { imports.groupBy { it.importAlias?.name } }

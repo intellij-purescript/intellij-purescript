@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.siblings
 import org.purescript.PSLanguage
 import org.purescript.psi.binder.PSConstructorBinder
+import org.purescript.psi.declaration.classes.PSClassConstraint
 import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.exports.ExportedOperator
 import org.purescript.psi.exports.ExportedValue
@@ -50,23 +51,7 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitTypeReference(reference: PsiReference) {
-                if (reference.canonicalText in PSLanguage.BUILTIN_TYPES) {
-                    return
-                }
-
-                // TODO Workaround to prevent false positives on class constraints
-                val isClassConstraint = reference.element.parent
-                    .siblings(forward = true, withSelf = false)
-                    .any { it.text == "=>" || it.text == "⇒" }
-                if (isClassConstraint) {
-                    return
-                }
-
-                // TODO Workaround to prevent false positives on qualified types
-                if (reference.element.textContains('.')) {
-                    return
-                }
-
+                if (reference.canonicalText in PSLanguage.BUILTIN_TYPES) return
                 visitReference(reference)
             }
 

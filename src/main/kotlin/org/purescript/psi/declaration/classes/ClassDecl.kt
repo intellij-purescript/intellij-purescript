@@ -6,10 +6,15 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportedClass
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
+import org.purescript.psi.declaration.ImportableTypeIndex
 import org.purescript.psi.name.PSClassName
+import org.purescript.psi.type.PSType
 import org.purescript.psi.type.PSTypeVarBinding
 
 /**
@@ -23,8 +28,9 @@ import org.purescript.psi.type.PSTypeVarBinding
  */
 class ClassDecl :
     PSStubbedElement<ClassDecl.Stub>,
-    PsiNameIdentifierOwner, 
-    DocCommentOwner {
+    PsiNameIdentifierOwner,
+    DocCommentOwner,
+    Importable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ClassDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ClassDecl>("ClassDecl") {
         override fun createPsi(node: ASTNode) = ClassDecl(node)
@@ -32,45 +38,37 @@ class ClassDecl :
         override fun createStub(classDecl: ClassDecl, p: StubElement<*>?) = Stub(classDecl.name, p)
         override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
-        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            sink.occurrence(ImportableTypeIndex.key, stub.name)
+        }
     }
+
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
-    internal val classConstraintList: PSClassConstraintList?
-        get() = findChildByClass(PSClassConstraintList::class.java)
 
-    internal val className: PSClassName
-        get() = findNotNullChildByClass(PSClassName::class.java)
-
-    internal val typeVarBindings: Array<PSTypeVarBinding>
-        get() = findChildrenByClass(PSTypeVarBinding::class.java)
-
+    internal val classConstraintList: PSClassConstraintList? get() = findChildByClass(PSClassConstraintList::class.java)
+    internal val className: PSClassName get() = findNotNullChildByClass(PSClassName::class.java)
+    internal val typeVarBindings: Array<PSTypeVarBinding> get() = findChildrenByClass(PSTypeVarBinding::class.java)
     internal val functionalDependencyList: PSClassFunctionalDependencyList?
         get() = findChildByClass(PSClassFunctionalDependencyList::class.java)
-
-    internal val classMemberList: PSClassMemberList?
-        get() = findChildByClass(PSClassMemberList::class.java)
+    internal val classMemberList: PSClassMemberList? get() = findChildByClass(PSClassMemberList::class.java)
 
     /**
      * @return the [PSClassMember] elements in this declaration,
      * or an empty array if [classConstraintList] is null.
      */
-    val classConstraints: Array<PSClassConstraint>
-        get() = classConstraintList?.classConstraints ?: emptyArray()
+    val classConstraints: Array<PSClassConstraint> get() = classConstraintList?.classConstraints ?: emptyArray()
 
     /**
      * @return the [PSClassMember] elements in this declaration,
      * or an empty array if [classMemberList] is null.
      */
-    val classMembers: Array<PSClassMember>
-        get() = classMemberList?.classMembers ?: emptyArray()
-
+    val classMembers: Array<PSClassMember> get() = classMemberList?.classMembers ?: emptyArray()
     override fun getName(): String = className.name
-
     override fun setName(name: String): PsiElement? = null
-
     override fun getNameIdentifier(): PsiElement = className
-
+    override fun asImport(): ImportDeclaration? = module?.asImport()?.withItems(ImportedClass(name))
+    override val type: PSType? get() = null
     override fun getTextOffset(): Int = className.textOffset
     override val docComments: List<PsiComment> get() = getDocComments()
 }
