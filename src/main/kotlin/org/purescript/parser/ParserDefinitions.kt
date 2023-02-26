@@ -207,7 +207,7 @@ class ParserDefinitions {
         valueDeclarationGroup()
     )
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
-        ForeignDataDecl(`'data'` + properName + dcolon + type),
+        ForeignDataDeclType(`'data'` + properName + dcolon + type),
         ForeignValueDeclType(ident.heal + dcolon + type)
     )
     private val fixity = Fixity(`'infixl'` / `'infixr'` / `'infix'` + NATURAL)

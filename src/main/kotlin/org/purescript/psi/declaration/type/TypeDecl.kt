@@ -12,6 +12,11 @@ import org.purescript.psi.base.AStub
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.Importable
+import org.purescript.psi.declaration.ImportableTypeIndex
+import org.purescript.psi.declaration.data.DataDeclaration
+import org.purescript.psi.exports.ExportedData
+import org.purescript.psi.exports.ExportedModule
+import org.purescript.psi.module.Module
 import org.purescript.psi.type.PSType
 
 /**
@@ -21,7 +26,21 @@ import org.purescript.psi.type.PSType
  * ```
  */
 class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable {
-    class Stub(val name: String, p: StubElement<*>?) : AStub<TypeDecl>(p, Type)
+    class Stub(val name: String, p: StubElement<*>?) : AStub<TypeDecl>(p, Type) {
+        val module get() = parentStub as? Module.Stub
+        val isExported
+            get() = when {
+                module == null -> false
+                module?.exportList == null -> true
+                module?.exportList?.childrenStubs
+                    ?.filterIsInstance<ExportedModule.Stub>()
+                    ?.find { it.name == module?.name } != null -> true
+
+                else -> module?.exportList?.childrenStubs
+                    ?.filterIsInstance<ExportedData.Stub>()
+                    ?.find { exportedData -> exportedData.name == name } != null
+            }
+    }
     object Type : WithPsiAndStub<Stub, TypeDecl>("TypeDecl") {
         override fun createPsi(node: ASTNode) = TypeDecl(node)
         override fun createPsi(stub: Stub) = TypeDecl(stub, this)
@@ -34,7 +53,11 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
             Stub(d.readNameString()!!, p)
 
-        override fun indexStub(stub: Stub, sink: IndexSink) = Unit
+        override fun indexStub(stub: Stub, sink: IndexSink) {
+            if (stub.isExported) {
+                sink.occurrence(ImportableTypeIndex.KEY, stub.name)
+            }
+        }
     }
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)

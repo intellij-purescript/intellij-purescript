@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentOfType
 import org.purescript.file.ExportedConstructorsIndex
+import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
@@ -48,15 +49,21 @@ class ConstructorReference(
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = qualifiedProperName.moduleName?.name
-        val quickFixes = mutableListOf<LocalQuickFix>()
+        val imports = mutableListOf<ImportDeclaration>()
         for ((moduleName, typeName) in importCandidates) {
-            quickFixes += ImportQuickFix.allCombinations(
+            imports += ImportDeclaration(
                 moduleName,
-                alias = qualifyingName,
-                item = ImportedData(typeName, doubleDot = true)
+                false,
+                setOf(ImportedData(typeName, doubleDot = true)),
+                qualifyingName
             )
         }
-        return quickFixes.toTypedArray()
+        
+        return if(imports.isNotEmpty()) {
+            arrayOf(ImportQuickFix(*imports.toTypedArray()))
+        } else {
+            arrayOf()
+        }
     }
 
     private val importCandidates: Set<Pair<String, String>>

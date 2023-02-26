@@ -4,8 +4,8 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.file.ExportedTypesIndex
-import org.purescript.ide.formatting.ImportedData
+import com.intellij.psi.search.GlobalSearchScope
+import org.purescript.psi.declaration.ImportableTypeIndex
 import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.module.Module
 
@@ -51,30 +51,33 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         return candidates
     }
 
-    private val allCandidates: List<PsiNamedElement> get() {
-        val module: Module = element.module ?: return emptyList()
-        val candidates = mutableListOf<PsiNamedElement>()
-        candidates.addAll(module.cache.dataDeclarations)
-        candidates.addAll(module.cache.newTypeDeclarations)
-        candidates.addAll(module.cache.typeSynonymDeclarations)
-        candidates.addAll(module.cache.foreignDataDeclarations)
-        for (importDeclaration in module.cache.imports) {
-            candidates.addAll(importDeclaration.importedDataDeclarations)
-            candidates.addAll(importDeclaration.importedNewTypeDeclarations)
-            candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
-            candidates.addAll(importDeclaration.importedForeignDataDeclarations)
+    private val allCandidates: List<PsiNamedElement>
+        get() {
+            val module: Module = element.module ?: return emptyList()
+            val candidates = mutableListOf<PsiNamedElement>()
+            candidates.addAll(module.cache.dataDeclarations)
+            candidates.addAll(module.cache.newTypeDeclarations)
+            candidates.addAll(module.cache.typeSynonymDeclarations)
+            candidates.addAll(module.cache.foreignDataDeclarations)
+            for (importDeclaration in module.cache.imports) {
+                candidates.addAll(importDeclaration.importedDataDeclarations)
+                candidates.addAll(importDeclaration.importedNewTypeDeclarations)
+                candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
+                candidates.addAll(importDeclaration.importedForeignDataDeclarations)
+            }
+            return candidates
         }
-        return candidates
-    }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        return importCandidates
-            .flatMap { ImportQuickFix.allCombinations(it, item = ImportedData(element.name)) }
-            .toTypedArray()
+        val scope = GlobalSearchScope.allScope(element.project)
+        val imports = ImportableTypeIndex
+            .get(element.name, element.project, scope)
+            .mapNotNull { it.asImport()?.withAlias(element.qualifierName) }.toTypedArray()
+        return if(imports.isNotEmpty()) {
+            arrayOf(ImportQuickFix(*imports))
+        } else {
+            arrayOf()
+        }
     }
 
-    private val importCandidates: List<String>
-        get() = ExportedTypesIndex
-            .filesExportingType(element.project, element.name)
-            .mapNotNull { it.module?.name }
 }

@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.fixity.ExportedFixityNameIndex
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.ImportQuickFix
@@ -38,14 +39,17 @@ class ExpressionSymbolReference(
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = moduleName?.name
-        val scope = GlobalSearchScope.projectScope(element.project)
-        return ExportedFixityNameIndex()
+        val scope = GlobalSearchScope.allScope(element.project)
+        val imports = ImportableIndex
             .get(element.name!!, element.project, scope)
-            .flatMap { sequenceOf(it.asImport(), it.module?.asImport()) }
-            .filterNotNull()
-            .map { it.withAlias(qualifyingName) }
-            .map { ImportQuickFix(it) }
-            .toTypedArray()
+            .filter { it.isValid }
+            .map { it.asImport()?.withAlias(qualifyingName) }
+            .filterNotNull().toTypedArray()
+        return if(imports.isNotEmpty()) {
+            arrayOf(ImportQuickFix(*imports))
+        } else {
+            arrayOf()
+        }
     }
 
     override fun handleElementRename(name: String): PsiElement? {

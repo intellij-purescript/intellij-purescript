@@ -33,10 +33,8 @@ class ImportQuickFix(vararg val imports: ImportDeclaration) : LocalQuickFix {
         if (import != null) {
             hostModule.addImportDeclaration(import)
         } else {
-            val editor: Editor = PsiEditorUtilBase
-                .findEditorByPsiElement(descriptor.psiElement) ?: return
-            val sortedImports = 
-                imports.toSet().sortedBy { it.moduleName.length }
+            val editor: Editor = PsiEditorUtilBase.findEditorByPsiElement(descriptor.psiElement) ?: return
+            val sortedImports = imports.toSet().sortedBy { it.moduleName.length }
             val (first, then)  = sortedImports.partition { 
                 it.alias != null && it.alias in it.moduleName
             }
@@ -57,22 +55,6 @@ class ImportQuickFix(vararg val imports: ImportDeclaration) : LocalQuickFix {
                 .setRenderer (renderer::getListCellRendererComponent)
                 .createPopup()
                 .showInBestPositionFor(editor)
-        }
-    }
-
-    companion object {
-        fun allCombinations(
-            moduleName: String,
-            alias: String? = null,
-            item: ImportedItem
-        ): Sequence<ImportQuickFix> = sequence {
-            val importWithItem = ImportDeclaration(
-                moduleName,
-                alias = alias,
-                importedItems = setOf(item)
-            )
-            yield(ImportQuickFix(importWithItem))
-            yield(ImportQuickFix(ImportDeclaration(moduleName, alias = alias)))
         }
     }
 }

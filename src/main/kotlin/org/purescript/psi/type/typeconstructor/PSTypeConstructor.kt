@@ -7,6 +7,7 @@ import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.name.PSQualifiedProperName
 import org.purescript.psi.declaration.newtype.NewtypeDecl
+import org.purescript.psi.expression.Qualified
 
 /**
  * A type constructor is a PSI element that references one of the following PSI elements:
@@ -19,7 +20,7 @@ import org.purescript.psi.declaration.newtype.NewtypeDecl
  *  - [DataConstructor.PSDataConstructor]
  *  - [PSTypeAtom]
  */
-class PSTypeConstructor(node: ASTNode) : PSPsiElement(node) {
+class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified {
     /**
      * @return the [PSQualifiedProperName] identifying this type constructor
      */
@@ -28,5 +29,6 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node) {
 
     val moduleName get() = identifier.moduleName
     override fun getName(): String = identifier.name
+    override val qualifierName: String? get() = moduleName?.name
     override fun getReference() = TypeConstructorReference(this)
 }
