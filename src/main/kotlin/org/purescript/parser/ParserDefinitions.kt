@@ -81,16 +81,16 @@ class ParserDefinitions {
     private val hole = TypeHole("?".dsl + ident)
     private val typeAtom: DSL = TypeAtom(
         hole /
-            squares(!type) /
-            ObjectType(braces(row)) /
-            `_` /
-            string /
-            number /
-            typeCtor /
-            forAll.heal /
-            ident /
-            parens(arrow / row).heal /
-            parens(type)
+                squares(!type) /
+                ObjectType(braces(row)) /
+                `_` /
+                string /
+                number /
+                typeCtor /
+                forAll.heal /
+                ident /
+                parens(arrow / row).heal /
+                parens(type)
     )
 
     private val constrainedType = ConstrainedType(
@@ -98,7 +98,7 @@ class ParserDefinitions {
     )
 
     private val typeVar = TypeVarName(ident) /
-        TypeVarKinded(parens(ident + dcolon + type))
+            TypeVarKinded(parens(ident + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
             NullBinder(`_`),
@@ -127,8 +127,8 @@ class ParserDefinitions {
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
         ((label + ":").heal + expr) /
-            ((label + eq).heal + expr) /
-            ExpressionIdentifier(QualifiedIdentifier(label))
+                ((label + eq).heal + expr) /
+                ExpressionIdentifier(QualifiedIdentifier(label))
     )
 
     /**
@@ -176,20 +176,20 @@ class ParserDefinitions {
     )
     private val expr5 = Reference {
         braces(propertyUpdate.sepBy1(`,`)).heal /
-            expr7 /
-            Lambda(backslash + +binderAtom + arrow + expr) /
-            exprCase /
-            ifThenElse /
-            doBlock /
-            (adoBlock + `'in'` + expr) /
-            letIn
+                expr7 /
+                Lambda(backslash + +binderAtom + arrow + expr) /
+                exprCase /
+                ifThenElse /
+                doBlock /
+                (adoBlock + `'in'` + expr) /
+                letIn
     }
     private val expr4: DSL = +expr5
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal)) +
-        !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
+            !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
     private val patternGuard =
         !(binder + larrow).heal + Reference { Value(expr1) }
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
@@ -231,7 +231,7 @@ class ParserDefinitions {
         ClassConstraintList(constraints + pImplies(ldarrow))
     private val classNameAndFundeps =
         ClassName(properName) + !+typeVar +
-            !ClassFunctionalDependencyList(fundeps)
+                !ClassFunctionalDependencyList(fundeps)
     private val classSignature = ClassName(properName) + dcolon + type
 
     // this first is described in haskell code and not in normal happy expression
@@ -275,7 +275,7 @@ class ParserDefinitions {
     private fun valueDeclarationGroup() =
         ValueDeclarationGroupType(Capture { name ->
             !(typeDeclaration + `L-sep`).heal +
-                namedValueDecl(name).sepBy1(`L-sep`)
+                    namedValueDecl(name).sepBy1(`L-sep`)
         }).heal
 
     private val decl = Choice.of(
@@ -293,7 +293,7 @@ class ParserDefinitions {
         classDeclaration,
         InstanceDeclType(
             !(`'derive'` + !`'newtype'`) + instHead
-                + !(`'where'` + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
+                    + !(`'where'` + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
         )
     )
     private val dataMembers = ExportedDataMemberListType(
@@ -311,12 +311,12 @@ class ParserDefinitions {
     private val elseDecl = `'else'` + !`L-sep`
     val moduleHeader =
         `'module'` + moduleName + !exportList + `'where'` + `L{` +
-            !+(importDeclaration + `L-sep`)
+                !+(importDeclaration + `L-sep`)
     val moduleBody = Choice.of(
         `L}`,
         !+(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + `L-sep`) + `L}`
     )
-        
+
     val module = ModuleType(moduleHeader + moduleBody)
     private val binder2 = Choice.of(
         (CtorBinder(qualProperName) + !+binderAtom).heal,
@@ -327,27 +327,24 @@ class ParserDefinitions {
     private val guardedCaseExpr = guard + arrow + exprWhere
     private val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
     private val caseBranch = CaseAlternative(binder1.sepBy1(`,`) + guardedCase)
-
-    private val ifThenElse =
-        IfThenElse(`'if'` + expr + `'then'` + expr + `'else'` + expr)
+    private val ifThenElse = IfThenElse(`'if'` + expr + `'then'` + expr + `'else'` + expr)
+    private fun layout(statement: DSL, name: String): DSL {
+        val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
+        return `L{` + (statement + !+(`L-sep` + relaxedStatement).heal) + `L}`
+    }
     private val letBinding = Choice.of(
         valueDeclarationGroup(),
         typeDeclaration.heal,
         (binder1 + eq + exprWhere).heal,
         (ident + !+binderAtom + guardedDecl).heal
     )
-    private val letIn =
-        Let(`'let'` + `L{` + (letBinding).sepBy1(`L-sep`) + `L}` + `'in'` + expr)
+    private val letIn = Let(`'let'` + layout(letBinding, "let binding") + `'in'` + expr)
     private val doStatement = Choice.of(
-        DoNotationLet(`'let'` + `L{` + letBinding.sepBy1(`L-sep`) + `L}`),
-        DoNotationBind(binder + larrow + expr).heal,
+        DoNotationLet(`'let'` + layout(letBinding, "let binding")),
+        DoNotationBind(binder + larrow + expr.relax("malformed expression")).heal,
         DoNotationValue(expr).heal
     )
-    private val doBlock = DoBlock(
-        qualified(`'do'`).heal + `L{` + (doStatement).sepBy1(`L-sep`) + `L}`
-    )
-
+    private val doBlock = DoBlock(qualified(`'do'`).heal + layout(doStatement, "do statement")).heal
     private val adoBlock = `'ado'` + `L{` + doStatement.sepBy(`L-sep`) + `L}`
-    private val recordBinder =
-        ((label + eq / ":").heal + binder) / VarBinder(label)
+    private val recordBinder = ((label + eq / ":").heal + binder) / VarBinder(label)
 }
