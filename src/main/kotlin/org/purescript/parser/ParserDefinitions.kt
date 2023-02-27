@@ -153,7 +153,7 @@ class ParserDefinitions {
     private val exprCase: DSL = Case(
         `'case'` + expr.sepBy1(`,`) + `'of'` + Choice.of(
             badSingleCaseBranch.heal,
-            `L{` + Reference { caseBranch }.sepBy1(`L-sep`) + `L}`
+            layout1(Reference { caseBranch }, "case branch")
         )
     )
     private val expr5 = Reference {
@@ -178,9 +178,8 @@ class ParserDefinitions {
     private val dataCtor = DataCtor(properName + !+typeAtom)
     private val typeDeclaration = Signature(ident + dcolon + type)
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
-    private val exprWhere: DSL = expr + !ExpressionWhere(
-        `'where'` + `L{` + Reference { letBinding }.sepBy1(`L-sep`) + `L}`
-    )
+    private val exprWhere: DSL =
+        expr + !ExpressionWhere(`'where'` + layout1(Reference { letBinding }, "where statement"))
     private val guardedDeclExpr = guard + eq + exprWhere
     private val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
     private val instBinder = Choice.of((ident + dcolon).heal + type, valueDeclarationGroup())
@@ -212,15 +211,12 @@ class ParserDefinitions {
     // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
     private val classHead = `'class'` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
     private val classMember = ClassMember(ident + dcolon + type)
-    private val classDeclaration = ClassDeclType(
-        classHead + !ClassMemberList(`'where'` + `L{` + classMember.sepBy1(`L-sep`) + `L}`).heal
-    )
+    private val classDeclaration =
+        ClassDeclType(classHead + !ClassMemberList(`'where'` + layout1(classMember, "class member")).heal)
     private val instHead =
         `'instance'` + !(ident + dcolon) + !(constraints + darrow)
             .heal + constraint // this constraint is the instance type
-    private val importedDataMembers = ImportedDataMemberList(
-        parens(ddot / ImportedDataMember(properName).sepBy(`,`))
-    )
+    private val importedDataMembers = ImportedDataMemberList(parens(ddot / ImportedDataMember(properName).sepBy(`,`)))
     private val importedItem = Choice.of(
         ImportedType(`'type'` + parens(Identifier(operator))),
         ImportedClass(`'class'` + properName),
@@ -228,11 +224,9 @@ class ParserDefinitions {
         ImportedValue(ident),
         ImportedData(properName + !importedDataMembers),
     )
-    private val importList =
-        ImportList(!HIDING + parens(importedItem.sepBy(`,`)))
-    private val importDeclaration = ImportType(
-        `'import'` + moduleName + !importList + !ImportAlias(`'as'` + moduleName)
-    )
+    private val importList = ImportList(!HIDING + parens(importedItem.sepBy(`,`)))
+    private val importDeclaration =
+        ImportType(`'import'` + moduleName + !importList + !ImportAlias(`'as'` + moduleName))
 
     /**
      * nominal = the type can never be coerced to another type.
@@ -245,8 +239,7 @@ class ParserDefinitions {
 
     private fun valueDeclarationGroup() =
         ValueDeclarationGroupType(Capture { name ->
-            !(typeDeclaration + `L-sep`).heal +
-                    namedValueDecl(name).sepBy1(`L-sep`)
+            !(typeDeclaration + `L-sep`).heal + namedValueDecl(name).sepBy1(`L-sep`)
         }).heal
 
     private val decl = Choice.of(
@@ -264,12 +257,10 @@ class ParserDefinitions {
         classDeclaration,
         InstanceDeclType(
             !(`'derive'` + !`'newtype'`) + instHead
-                    + !(`'where'` + `L{` + instBinder.sepBy1(`L-sep`) + `L}`)
+                    + !(`'where'` + layout1(instBinder, "instance member"))
         )
     )
-    private val dataMembers = ExportedDataMemberListType(
-        parens(ddot / ExportedDataMember(properName).sepBy(`,`))
-    )
+    private val dataMembers = ExportedDataMemberListType(parens(ddot / ExportedDataMember(properName).sepBy(`,`)))
     private val exportedItem = Choice.of(
         ExportedClassType(`'class'` + properName),
         ExportedDataType(properName + !dataMembers),
@@ -299,9 +290,14 @@ class ParserDefinitions {
     private val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
     private val caseBranch = CaseAlternative(binder1.sepBy1(`,`) + guardedCase)
     private val ifThenElse = IfThenElse(`'if'` + expr + `'then'` + expr + `'else'` + expr)
-    private fun layout(statement: DSL, name: String): DSL {
+    private fun layout1(statement: DSL, name: String): DSL {
         val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
         return `L{` + (statement + !+(`L-sep` + relaxedStatement).heal) + `L}`
+    }
+
+    private fun layout(statement: DSL, name: String): DSL {
+        val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
+        return `L{` + `L}` / (relaxedStatement.sepBy(`L-sep`) + `L}`)
     }
 
     private val letBinding = Choice.of(
@@ -310,13 +306,13 @@ class ParserDefinitions {
         (binder1 + eq + exprWhere).heal,
         (ident + !+binderAtom + guardedDecl).heal
     )
-    private val letIn = Let(`'let'` + layout(letBinding, "let binding") + `'in'` + expr)
+    private val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
     private val doStatement = Choice.of(
-        DoNotationLet(`'let'` + layout(letBinding, "let binding")),
+        DoNotationLet(`'let'` + layout1(letBinding, "let binding")),
         DoNotationBind(binder + larrow + expr.relax("malformed expression")).heal,
         DoNotationValue(expr).heal
     )
-    private val doBlock = DoBlock(qualified(`'do'`).heal + layout(doStatement, "do statement")).heal
-    private val adoBlock = `'ado'` + `L{` + doStatement.sepBy(`L-sep`) + `L}`
+    private val doBlock = DoBlock(qualified(`'do'`).heal + layout1(doStatement, "do statement")).heal
+    private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
     private val recordBinder = ((label + eq / ":").heal + binder) / VarBinder(label)
 }
