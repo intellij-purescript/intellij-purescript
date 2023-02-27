@@ -19,9 +19,7 @@ class ModuleReference(element: Import) : PsiReferenceBase<Import>(
         val moduleName = element.moduleName.name
         val project = element.project
         val index = ModuleNameIndex()
-        return index
-                .get(moduleName, project, GlobalSearchScope.allScope(project))
-                .firstOrNull()
+        return index.get(moduleName, project, GlobalSearchScope.allScope(project)).firstOrNull { it.isValid }
     }
 
     override fun handleElementRename(name: String): PsiElement? {
