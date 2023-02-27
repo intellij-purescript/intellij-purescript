@@ -1,7 +1,6 @@
 package org.purescript.parser
 
 class ParserDefinitions {
-
     // Literals
     private val boolean = `'true'` / `'false'`
     private val number = NumericLiteral(NATURAL / FLOAT)
@@ -15,9 +14,7 @@ class ParserDefinitions {
     private fun squares(p: DSL) = LBRACK + p + RBRACK
 
     // TODO: add 'representational' and 'phantom'
-    private val ident =
-        Identifier(LOWER / `'as'` / `'hiding'` / `'role'` / `'nominal'`)
-
+    private val ident = Identifier(LOWER / `'as'` / `'hiding'` / `'role'` / `'nominal'`)
     private val label = Identifier(
         Choice.of(
             LOWER.dsl,
@@ -58,9 +55,7 @@ class ParserDefinitions {
 
     // this doesn't match parser.y but i dont feel like changing it right now
     // it might be due to differences in the lexer
-    private val operator =
-        OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / ":"
-
+    private val operator = OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / ":"
     private val properName: DSL = ProperName(PROPER_NAME)
 
     /**
@@ -68,15 +63,9 @@ class ParserDefinitions {
      */
     private val qualProperName = QualifiedProperName(qualified(properName))
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
-
-    private val forAll = ForAll(
-        `'forall'` + +ident + dot + Reference { constrainedType }
-    )
-
+    private val forAll = ForAll(`'forall'` + +ident + dot + Reference { constrainedType })
     private val rowLabel = label + dcolon + type
-    private val row =
-        Row((`|` + type) / (rowLabel.sepBy(`,`) + !(`|` + type)))
-
+    private val row = Row((`|` + type) / (rowLabel.sepBy(`,`) + !(`|` + type)))
     private val typeCtor = TypeCtor(qualProperName)
     private val hole = TypeHole("?".dsl + ident)
     private val typeAtom: DSL = TypeAtom(
@@ -93,12 +82,8 @@ class ParserDefinitions {
                 parens(type)
     )
 
-    private val constrainedType = ConstrainedType(
-        !(parens((typeCtor + !+typeAtom).sepBy1(`,`)) + darrow).heal + type
-    )
-
-    private val typeVar = TypeVarName(ident) /
-            TypeVarKinded(parens(ident + dcolon + type))
+    private val constrainedType = ConstrainedType(!(parens((typeCtor + !+typeAtom).sepBy1(`,`)) + darrow).heal + type)
+    private val typeVar = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
             NullBinder(`_`),
@@ -126,9 +111,7 @@ class ParserDefinitions {
     private val propertyUpdate: DSL = label + !eq + expr
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
-        ((label + ":").heal + expr) /
-                ((label + eq).heal + expr) /
-                ExpressionIdentifier(QualifiedIdentifier(label))
+        ((label + ":").heal + expr) / ((label + eq).heal + expr) / ExpressionIdentifier(QualifiedIdentifier(label))
     )
 
     /**
@@ -161,8 +144,7 @@ class ParserDefinitions {
         Parens(parens(expr.relax("empty parenthesis"))),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
-    private val badSingleCaseBranch: DSL =
-        Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
+    private val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 
     /*
     * if there is only one case branch it can ignore layout so we need
@@ -190,8 +172,7 @@ class ParserDefinitions {
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal)) +
             !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
-    private val patternGuard =
-        !(binder + larrow).heal + Reference { Value(expr1) }
+    private val patternGuard = !(binder + larrow).heal + Reference { Value(expr1) }
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
     private val dataHead = `'data'` + properName + TypeArgs(!+typeVar)
     private val dataCtor = DataCtor(properName + !+typeAtom)
@@ -202,10 +183,7 @@ class ParserDefinitions {
     )
     private val guardedDeclExpr = guard + eq + exprWhere
     private val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
-    private val instBinder = Choice.of(
-        (ident + dcolon).heal + type,
-        valueDeclarationGroup()
-    )
+    private val instBinder = Choice.of((ident + dcolon).heal + type, valueDeclarationGroup())
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
         ForeignDataDeclType(`'data'` + properName + dcolon + type),
         ForeignValueDeclType(ident.heal + dcolon + type)
@@ -224,25 +202,18 @@ class ParserDefinitions {
 
     private val fundep = ClassFunctionalDependency(type)
     private val fundeps = `|` + fundep.sepBy1(`,`)
-    private val constraint =
-        ClassConstraint(ClassName(qualProperName) + !+typeAtom)
+    private val constraint = ClassConstraint(ClassName(qualProperName) + !+typeAtom)
     private val constraints = parens(constraint.sepBy1(`,`)) / constraint
-    private val classSuper =
-        ClassConstraintList(constraints + pImplies(ldarrow))
-    private val classNameAndFundeps =
-        ClassName(properName) + !+typeVar +
-                !ClassFunctionalDependencyList(fundeps)
+    private val classSuper = ClassConstraintList(constraints + pImplies(ldarrow))
+    private val classNameAndFundeps = ClassName(properName) + !+typeVar + !ClassFunctionalDependencyList(fundeps)
     private val classSignature = ClassName(properName) + dcolon + type
 
     // this first is described in haskell code and not in normal happy expression
     // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
-    private val classHead =
-        `'class'` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
+    private val classHead = `'class'` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
     private val classMember = ClassMember(ident + dcolon + type)
     private val classDeclaration = ClassDeclType(
-        classHead + !ClassMemberList(
-            `'where'` + `L{` + classMember.sepBy1(`L-sep`) + `L}`
-        ).heal
+        classHead + !ClassMemberList(`'where'` + `L{` + classMember.sepBy1(`L-sep`) + `L}`).heal
     )
     private val instHead =
         `'instance'` + !(ident + dcolon) + !(constraints + darrow)
@@ -332,6 +303,7 @@ class ParserDefinitions {
         val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
         return `L{` + (statement + !+(`L-sep` + relaxedStatement).heal) + `L}`
     }
+
     private val letBinding = Choice.of(
         valueDeclarationGroup(),
         typeDeclaration.heal,
