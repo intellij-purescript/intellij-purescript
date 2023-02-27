@@ -16,6 +16,7 @@ import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.ImportableTypeIndex
+import org.purescript.psi.expression.ExpressionAtom
 import org.purescript.psi.expression.Qualified
 import org.purescript.psi.module.Module
 import java.util.function.BooleanSupplier
@@ -39,13 +40,13 @@ class PSReferenceImporter : ReferenceImporter {
             .firstOrNull() ?: return@BooleanSupplier false
         if ((element as? PsiElement)?.reference?.resolve() != null) return@BooleanSupplier false
         val module = (file as? PSFile)?.module ?: return@BooleanSupplier false
-        val scope = GlobalSearchScope.allScope(element.project)
-        val possibleImports = (
-                ImportableIndex.get(element.getName(), element.project, scope) +
-                        ImportableTypeIndex.get(element.getName(), element.project, scope)
-                ).mapNotNull { it.asImport() }
-            .map { it.withAlias(element.qualifierName) }
-            .toList()
+        val project = element.project
+        val scope = GlobalSearchScope.allScope(project)
+        val name = element.getName()
+        val possibleImports = when(element) {
+            is ExpressionAtom -> ImportableIndex.get(name, project, scope)
+            else -> ImportableTypeIndex.get(name, project, scope)
+        } .mapNotNull { it.asImport() }.map { it.withAlias(element.qualifierName) }.toList()
         val qualifiedImports: List<String> = module.cache.importsByName
             .getOrDefault(element.qualifierName, listOf())
             .map { it.moduleName.name }
