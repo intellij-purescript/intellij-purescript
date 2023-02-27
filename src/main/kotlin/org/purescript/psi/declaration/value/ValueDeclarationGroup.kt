@@ -69,8 +69,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
         override fun getIcon(unused: Boolean) = getIcon(0)
     }
     val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
-    val valueDeclarations: Array<out ValueDecl> get() = 
-        findChildrenByClass(ValueDecl::class.java)
+    val valueDeclarations: Array<out ValueDecl> get() = children()
     val expressionAtoms get() = valueDeclarations.flatMap { it.expressionAtoms }
     val binderAtoms get() = sequence {
         var steps = children.asList()

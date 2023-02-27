@@ -23,12 +23,14 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
         getStubOrPsiChildren(childType, arrayOf<Out>())
 
     inline fun <reified Psi : PSStubbedElement<*>> children(): Array<Psi> {
-        return greenStub
-            ?.childrenStubs
-            ?.map { it.psi }
-            ?.filterIsInstance<Psi>()
-            ?.toTypedArray()
-            ?: findChildrenByClass()
+        return when(val exists = greenStub) {
+            null -> findChildrenByClass()
+            else -> exists
+                .childrenStubs
+                .map { it.psi }
+                .filterIsInstance<Psi>()
+                .toTypedArray()
+        } 
     }
 
     inline fun <reified P : PSStubbedElement<*>> child() =

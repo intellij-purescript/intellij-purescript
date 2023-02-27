@@ -80,8 +80,8 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
-        val classDeclarations: Array<ClassDecl> by lazy { findChildrenByClass() }
-        val imports by lazy { findChildrenByClass<Import>() }
+        val classDeclarations by lazy { children<ClassDecl>() }
+        val imports by lazy { children<Import>() }
         val importsByName by lazy { imports.groupBy { it.name } }
         val importsByAlias by lazy { imports.groupBy { it.importAlias?.name } }
         val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
@@ -90,23 +90,15 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .flatMap { it.valueDeclarations.asSequence() }
                 .toTypedArray()
         }
-        val valueDeclarationGroups: Array<ValueDeclarationGroup>
-                by lazy { findChildrenByClass<ValueDeclarationGroup>() }
-        val dataDeclarations
-                by lazy { findChildrenByClass<DataDeclaration.Psi>() }
-        val dataConstructors
-                by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
-        val newTypeDeclarations
-                by lazy { findChildrenByClass<NewtypeDecl>() }
-        val newTypeConstructors: List<NewtypeCtor>
-                by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
-        val typeSynonymDeclarations
-                by lazy { findChildrenByClass<TypeDecl>() }
-        val classes by lazy { findChildrenByClass<ClassDecl>() }
-        val foreignValueDeclarations
-                by lazy { findChildrenByClass<ForeignValueDecl>() }
-        val foreignDataDeclarations
-                by lazy { findChildrenByClass<PSForeignDataDeclaration>() }
+        val valueDeclarationGroups by lazy { children<ValueDeclarationGroup>() }
+        val dataDeclarations by lazy { children<DataDeclaration.Psi>() }
+        val dataConstructors by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
+        val newTypeDeclarations by lazy { children<NewtypeDecl>() }
+        val newTypeConstructors by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
+        val typeSynonymDeclarations by lazy { children<TypeDecl>() }
+        val classes by lazy { children<ClassDecl>() }
+        val foreignValueDeclarations by lazy { children<ForeignValueDecl>() }
+        val foreignDataDeclarations by lazy { children<PSForeignDataDeclaration>() }
     }
 
     override fun subtreeChanged() {
