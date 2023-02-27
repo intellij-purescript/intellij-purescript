@@ -144,11 +144,15 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         val importedModule = importedModule ?: return emptyList()
         val exportedDeclarations: List<Declaration> = exportedDeclarationProperty.get(importedModule)
         val importedItems = importList?.importedItems ?: return exportedDeclarations
-        val importedNames = importedItems.filterIsInstance(Wanted::class.java).map { it.name }.toSet()
+        val importedNames = importedItems.filterIsInstance(Wanted::class.java).toList()
         return if (isHiding) {
-            exportedDeclarations.filter { it.name !in importedNames }
+            exportedDeclarations.filter { 
+                importedNames.none { import -> import.nameMatches(it.name ?: "")} 
+            }
         } else {
-            exportedDeclarations.filter { it.name in importedNames }
+            exportedDeclarations.filter {
+                importedNames.any { import -> import.nameMatches(it.name ?: "")}
+            }
         }
     }
 
