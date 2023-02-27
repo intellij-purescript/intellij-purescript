@@ -90,7 +90,7 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>, PsiNameIdentifierOwne
     override val type get() = findNotNullChildByClass(PSType::class.java)
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
-    override fun getName(): String = identifier.name
+    override fun getName(): String = greenStub?.name ?: identifier.name
     override val docComments: List<PsiComment> get() = getDocComments().ifEmpty {
         parentOfType<ClassDecl>()?.docComments ?: emptyList()
     }

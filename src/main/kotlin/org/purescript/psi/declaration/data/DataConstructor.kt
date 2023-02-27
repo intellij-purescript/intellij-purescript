@@ -72,10 +72,7 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     override fun asImport(): ImportDeclaration? {
-        val items = ImportedData(
-            dataDeclaration.name,
-            dataMembers = setOf(name)
-        )
+        val items = ImportedData(dataDeclaration.name, dataMembers = setOf(name))
         return module?.asImport()?.withItems(items)
     }
 
@@ -98,7 +95,7 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
     internal val typeAtoms: Array<PSTypeAtom> get() = findChildrenByClass(PSTypeAtom::class.java)
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PSProperName = identifier
-    override fun getName(): String = identifier.name
+    override fun getName(): String = greenStub?.name ?: identifier.name
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Class
 }
 

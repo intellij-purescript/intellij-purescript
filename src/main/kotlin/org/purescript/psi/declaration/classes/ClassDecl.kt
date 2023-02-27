@@ -64,7 +64,7 @@ class ClassDecl :
      * or an empty array if [classMemberList] is null.
      */
     val classMembers: Array<PSClassMember> get() = classMemberList?.classMembers ?: emptyArray()
-    override fun getName(): String = className.name
+    override fun getName(): String = greenStub?.name ?: className.name
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = className
     override fun asImport(): ImportDeclaration? = module?.asImport()?.withItems(ImportedClass(name))

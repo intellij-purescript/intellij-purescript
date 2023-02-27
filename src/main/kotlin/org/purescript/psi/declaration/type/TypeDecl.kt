@@ -64,12 +64,10 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
     /**
      * @return the [PSProperName] identifying this declaration
      */
-    private val identifier: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
-
+    private val identifier get() = findNotNullChildByClass(PSProperName::class.java)
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
-    override fun getName(): String = identifier.name
+    override fun getName(): String = greenStub?.name ?: identifier.name
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
     override val type get() = null
     override fun getTextOffset(): Int = identifier.textOffset

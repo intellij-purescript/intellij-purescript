@@ -12,4 +12,5 @@ import org.purescript.psi.base.PSPsiElement
  */
 class PSProperName(node: ASTNode) : PSPsiElement(node) {
     override fun getName(): String = text.trim()
+    fun nameMatches(name: String): Boolean = textMatches(name)
 }

@@ -40,15 +40,9 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDeclarationGroup>("ValueDeclarationGroup") {
         override fun createPsi(node: ASTNode) = ValueDeclarationGroup(node)
         override fun createPsi(stub: Stub) = ValueDeclarationGroup(stub, this)
-        override fun createStub(me: ValueDeclarationGroup, p: StubElement<*>?) =
-            Stub(me.name, p)
-
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
-
+        override fun createStub(me: ValueDeclarationGroup, p: StubElement<*>?) = Stub(me.name, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
                 sink.occurrence(ImportableIndex.KEY, stub.name)
@@ -81,29 +75,18 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
     
     override fun setName(name: String): PsiElement {
         for (valueDeclaration in valueDeclarations) {
-            valueDeclaration.setName(name)
+            valueDeclaration.name = name
         }
-        signature?.setName(name)
+        signature?.name = name
         return this
     }
 
-    override fun getName(): String {
-        return nameIdentifier.name
-    }
-
-    override fun getNameIdentifier(): PSIdentifier =
-        valueDeclarations.first().nameIdentifier
-
-    override fun getTextOffset(): Int {
-        return nameIdentifier.textOffset
-    }
-
+    override fun getName(): String = greenStub?.name ?: nameIdentifier.name
+    override fun getNameIdentifier(): PSIdentifier = valueDeclarations.first().nameIdentifier
+    override fun getTextOffset(): Int = nameIdentifier.textOffset
     override val docComments: List<PsiComment>
         get() = this.getDocComments() + valueDeclarations.flatMap { it.docComments }.toList()
 
-    override fun asImport() = module?.name?.let {
-        ImportDeclaration(it, false, setOf(ImportedValue(name)))
-    }
-
+    override fun asImport() = module?.name?.let { ImportDeclaration(it, false, setOf(ImportedValue(name))) }
     override val type: PSType? get() = signature?.type
 }

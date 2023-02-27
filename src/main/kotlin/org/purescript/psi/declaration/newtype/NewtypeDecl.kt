@@ -50,19 +50,15 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner, 
     /**
      * @return the [PSProperName] that identifies this declaration
      */
-    private val identifier: PSProperName
-        get() =
-            findNotNullChildByClass(PSProperName::class.java)
+    private val identifier get() = findNotNullChildByClass(PSProperName::class.java)
 
     /**
      * @return the [NewtypeCtor] defined by this declaration
      */
-    val newTypeConstructor: NewtypeCtor
-        get() = findNotNullChildByClass(NewtypeCtor::class.java)
-
+    val newTypeConstructor get() = findNotNullChildByClass(NewtypeCtor::class.java)
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
-    override fun getName(): String = identifier.name
+    override fun getName(): String = greenStub?.name ?: identifier.name
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
     override val type: PSType? get() = null
     override fun getTextOffset(): Int = identifier.textOffset

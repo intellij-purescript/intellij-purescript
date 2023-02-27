@@ -63,7 +63,7 @@ class PSForeignDataDeclaration :
     internal val properName: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = properName
-    override fun getName(): String = properName.name
+    override fun getName(): String = greenStub?.name ?: properName.name
     override fun getTextOffset(): Int = properName.textOffset
     override val docComments: List<PsiComment> get() = getDocComments()
 }

@@ -80,6 +80,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
+        val exportedItems by lazy { exports?.exportedItems }
         val classDeclarations by lazy { children<ClassDecl>() }
         val imports by lazy { children<Import>() }
         val importsByName by lazy { imports.groupBy { it.name } }
@@ -147,7 +148,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         declarations: Array<Declaration>,
         getDeclarations: (Import) -> List<Declaration>
     ): List<Declaration> {
-        val explicitlyExportedItems = exports?.exportedItems
+        val explicitlyExportedItems = cache.exportedItems
         return if (explicitlyExportedItems == null) {
             declarations.toList()
         } else {
@@ -180,9 +181,26 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedValueDeclarationGroups: List<ValueDeclarationGroup>
-        get() = getExportedDeclarations<ValueDeclarationGroup, ExportedValue.Psi>(
-            cache.valueDeclarationGroups,
-        ) { it.importedValueDeclarationGroups }
+        get() {
+            val explicitlyExportedItems = cache.exportedItems
+            return if (explicitlyExportedItems == null) {
+                cache.valueDeclarationGroups.toList()
+            } else {
+                val explicitlyNames = explicitlyExportedItems
+                    .filterIsInstance(ExportedValue.Psi::class.java)
+                    .map { it.name }
+                    .toSet()
+                val exportedModules = explicitlyExportedItems.filterIsInstance<ExportedModule>().toList()
+                val exportsSelf = exportedModules.any { it.name == name }
+                val local = if (exportsSelf) {
+                    cache.valueDeclarationGroups.toList()
+                } else {
+                    cache.valueDeclarationGroups.filter { it.name in explicitlyNames }
+                }
+                val fromImports = exportedModules.flatMap { it.importDeclarations }.flatMap { it.importedValueDeclarationGroups }
+                (local + fromImports).toList()
+            }
+        }
 
     /**
      * @return the [ForeignValueDecl] elements that this module exports,

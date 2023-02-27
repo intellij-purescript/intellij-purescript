@@ -55,26 +55,19 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
     object Type : WithPsiAndStub<Stub, FixityDeclaration>("FixityDeclaration") {
         override fun createPsi(node: ASTNode) = FixityDeclaration(node)
         override fun createPsi(stub: Stub) = FixityDeclaration(stub, this)
-        override fun createStub(psi: FixityDeclaration, p: StubElement<*>?) =
-            Stub(psi.name, p)
-
+        override fun createStub(psi: FixityDeclaration, p: StubElement<*>?) = Stub(psi.name, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
                 sink.occurrence(ExportedFixityNameIndex.KEY, stub.name)
                 sink.occurrence(ImportableIndex.KEY, stub.name)
             }
         }
-
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
     }
 
     constructor(node: ASTNode) : super(node)
-    constructor(stub: Stub, type: IStubElementType<*, *>) :
-            super(stub, type)
+    constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     override val docComments: List<PsiComment>
         get() = getDocComments().ifEmpty {
@@ -83,11 +76,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
-
-    override fun asImport() = module?.name?.let {
-        ImportDeclaration(it, false, setOf(ImportedOperator(name)))
-    }
-
+    override fun asImport() = module?.name?.let { ImportDeclaration(it, false, setOf(ImportedOperator(name))) }
     override val type: PSType? get() = when(val ref = reference.resolve()) {
         is ValueDeclarationGroup -> ref.signature?.type
         is PSClassMember -> ref.type
@@ -96,19 +85,13 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
     val fixity: PSFixity get() = child<PSFixity>()!!
     val associativity get() = fixity.associativity
     val precedence get() = fixity.precedence
-    private val isType
-        get(): Boolean =
-            findChildByType<PsiElement>(TYPE) != null
-    private val operatorName
-        get() = findNotNullChildByClass(PSOperatorName::class.java)
-    val qualifiedIdentifier: PSQualifiedIdentifier?
-        get() = findChildByClass(PSQualifiedIdentifier::class.java)
-    val qualifiedProperName: PSQualifiedProperName?
-        get() = findChildByClass(PSQualifiedProperName::class.java)
-
+    private val isType get(): Boolean = findChildByType<PsiElement>(TYPE) != null
+    private val operatorName get() = findNotNullChildByClass(PSOperatorName::class.java)
+    val qualifiedIdentifier get() = findChildByClass(PSQualifiedIdentifier::class.java)
+    val qualifiedProperName get() = findChildByClass(PSQualifiedProperName::class.java)
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     override fun getNameIdentifier() = operatorName
-    override fun getName() = stub?.name ?: operatorName.name
+    override fun getName() = greenStub?.name ?: operatorName.name
     override fun setName(name: String): PsiElement? {
         val identifier =
             project.service<PSPsiFactory>().createOperatorName(name)

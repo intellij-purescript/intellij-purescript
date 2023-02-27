@@ -66,27 +66,22 @@ interface DataDeclaration {
         /**
          * @return the [PSProperName] that identifies this declaration
          */
-        internal val identifier: PSProperName
-            get() = findNotNullChildByClass(PSProperName::class.java)
+        internal val identifier: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
 
         /**
          * @return the [DataConstructorList.Psi] in this declaration,
          * or null if it's an empty declaration
          */
-        internal val dataConstructorList: DataConstructorList.Psi?
-            get() = findChildByClass(DataConstructorList.Psi::class.java)
+        internal val dataConstructorList get() = findChildByClass(DataConstructorList.Psi::class.java)
 
         /**
          * @return the [DataConstructor] elements belonging to this
          * declaration, or an empty array if it's an empty declaration
          */
-        val dataConstructors: Array<DataConstructor>
-            get() = dataConstructorList?.dataConstructors
-                ?: emptyArray()
-
+        val dataConstructors get() = dataConstructorList?.dataConstructors ?: emptyArray()
         override fun setName(name: String): PsiElement? = null
         override fun getNameIdentifier(): PSProperName = identifier
-        override fun getName(): String = nameIdentifier.name
+        override fun getName(): String = greenStub?.name ?: nameIdentifier.name
         override fun getTextOffset(): Int = nameIdentifier.textOffset
     }
 }

@@ -45,15 +45,9 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
         PSElementType.WithPsiAndStub<Stub, ForeignValueDecl>("ForeignValueDecl") {
         override fun createPsi(node: ASTNode) = ForeignValueDecl(node)
         override fun createPsi(stub: Stub) = ForeignValueDecl(stub, this)
-        override fun createStub(my: ForeignValueDecl, p: StubElement<*>?) =
-            Stub(my.name, p)
-
-        override fun serialize(my: Stub, d: StubOutputStream) =
-            d.writeName(my.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?) =
-            Stub(d.readNameString()!!, p)
-
+        override fun createStub(my: ForeignValueDecl, p: StubElement<*>?) = Stub(my.name, p)
+        override fun serialize(my: Stub, d: StubOutputStream) = d.writeName(my.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?) = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
                 sink.occurrence(ExportedForeignValueDeclIndex.KEY, stub.name)
@@ -70,7 +64,6 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
     override fun asImport() = module?.name?.let{ ImportDeclaration(it).withItems(ImportedValue(name)) }
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
-
-    override fun getName() = nameIdentifier.name
+    override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
 }

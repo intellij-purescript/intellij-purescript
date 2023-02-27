@@ -66,7 +66,7 @@ class NewtypeCtor :
      */
     internal val identifier: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
     override fun setName(name: String): PsiElement? = null
-    override fun getName(): String = nameIdentifier.name
+    override fun getName(): String = greenStub?.name ?: nameIdentifier.name
     override fun getNameIdentifier(): PSProperName = identifier
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name, dataMembers = setOf(name)))
     override val type: PSType? get() = null

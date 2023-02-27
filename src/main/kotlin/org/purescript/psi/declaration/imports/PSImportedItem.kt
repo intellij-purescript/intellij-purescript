@@ -1,26 +1,26 @@
 package org.purescript.psi.declaration.imports
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.ide.formatting.*
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.data.DataDeclaration
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSProperName
 import org.purescript.psi.name.PSSymbol
-import org.purescript.psi.declaration.newtype.NewtypeDecl
 
 /**
  * Any element that can occur in a [PSImportList]
  */
 sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSImportedItem> {
     abstract override fun getName(): String
+    abstract fun nameMatches(name: String): Boolean
 
     internal val importDeclaration: Import
         get() =
             PsiTreeUtil.getParentOfType(this, Import::class.java)!!
-    
+
     abstract fun asData(): ImportedItem
 
     /**
@@ -66,15 +66,11 @@ sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSIm
  * ```
  */
 class PSImportedClass(node: ASTNode) : PSImportedItem(node) {
-    internal val properName: PSProperName
-        get() =
-            findNotNullChildByClass(PSProperName::class.java)
-
+    internal val properName: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
     override fun getName(): String = properName.name
+    override fun nameMatches(name: String): Boolean = properName.nameMatches(name)
     override fun asData() = ImportedClass(name)
-
-    override fun getReference(): ImportedClassReference =
-        ImportedClassReference(this)
+    override fun getReference(): ImportedClassReference = ImportedClassReference(this)
 }
 
 /**
@@ -91,55 +87,41 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
     /**
      * @return the [PSProperName] identifying this element
      */
-    internal val properName: PSProperName
-        get() = findNotNullChildByClass(PSProperName::class.java)
+    internal val properName get() = findNotNullChildByClass(PSProperName::class.java)
 
     /**
      * @return the [PSImportedDataMemberList] containing the imported members,
      * if present
      */
-    internal val importedDataMemberList: PSImportedDataMemberList?
-        get() = findChildByClass(PSImportedDataMemberList::class.java)
+    internal val importedDataMemberList get() = findChildByClass(PSImportedDataMemberList::class.java)
 
     /**
      * @return true if this element implicitly imports all members using
      * the (..) syntax, otherwise false
      */
-    val importsAll: Boolean
-        get() = importedDataMemberList?.doubleDot != null
+    val importsAll get() = importedDataMemberList?.doubleDot != null
 
     /**
      * @return the data members imported explicitly using the
      * Type(A, B, C) syntax
      */
-    val importedDataMembers: Array<PSImportedDataMember>
-        get() = importedDataMemberList?.dataMembers ?: emptyArray()
+    val importedDataMembers get() = importedDataMemberList?.dataMembers ?: emptyArray()
 
     /**
      * @return the [NewtypeDecl] that this element references to,
      * if it exists
      */
-    val newTypeDeclaration: NewtypeDecl?
-        get() = reference.resolve() as? NewtypeDecl
+    val newTypeDeclaration get() = reference.resolve() as? NewtypeDecl
 
     /**
      * @return the [DataDeclaration.Psi] that this element references to,
      * if it exists
      */
-    val dataDeclaration: DataDeclaration.Psi?
-        get() = reference.resolve() as? DataDeclaration.Psi
-
+    val dataDeclaration get() = reference.resolve() as? DataDeclaration.Psi
     override fun getName(): String = properName.name
-    override fun asData(): ImportedItem {
-        return ImportedData(
-            name,
-            importsAll,
-            importedDataMembers.map { it.name }.toSet()
-        )
-    }
-
-    override fun getReference(): ImportedDataReference =
-        ImportedDataReference(this)
+    override fun nameMatches(name: String): Boolean = properName.nameMatches(name)
+    override fun asData() = ImportedData(name, importsAll, importedDataMembers.map { it.name }.toSet())
+    override fun getReference() = ImportedDataReference(this)
 }
 
 /**
@@ -153,16 +135,11 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
  * ```
  */
 class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
-    val symbol: PSSymbol
-        get() =
-            findNotNullChildByClass(PSSymbol::class.java)
-
+    val symbol: PSSymbol get() = findNotNullChildByClass(PSSymbol::class.java)
     override fun getName(): String = symbol.name
+    override fun nameMatches(name: String) = symbol.nameMatches(name)
     override fun asData() = ImportedOperator(name)
-
-    override fun getReference(): PsiReference {
-        return ImportedOperatorReference(this)
-    }
+    override fun getReference() = ImportedOperatorReference(this)
 }
 
 /**
@@ -176,11 +153,9 @@ class PSImportedOperator(node: ASTNode) : PSImportedItem(node) {
  * ```
  */
 class PSImportedType(node: ASTNode) : PSImportedItem(node) {
-    private val identifier: PSIdentifier
-        get() =
-            findNotNullChildByClass(PSIdentifier::class.java)
-
+    private val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName(): String = identifier.name
+    override fun nameMatches(name: String) = identifier.nameMatches(name)
     override fun asData() = ImportedType(name)
 }
 
@@ -195,13 +170,9 @@ class PSImportedType(node: ASTNode) : PSImportedItem(node) {
  * ```
  */
 class PSImportedValue(node: ASTNode) : PSImportedItem(node) {
-    val identifier: PSIdentifier
-        get() =
-            findNotNullChildByClass(PSIdentifier::class.java)
-
+    val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName(): String = identifier.name
+    override fun nameMatches(name: String): Boolean = identifier.nameMatches(name)
     override fun asData() = ImportedValue(name)
-
-    override fun getReference(): ImportedValueReference =
-        ImportedValueReference(this)
+    override fun getReference(): ImportedValueReference = ImportedValueReference(this)
 }
