@@ -130,7 +130,7 @@ data class ImportDeclaration(
         }
     }
 
-    fun withItems(vararg items: ImportedItem) = copy(importedItems=items.toSet())
+    fun withItems(vararg items: ImportedItem) = copy(importedItems = items.toSet())
 
     companion object {
         private fun sortKey(it: ImportedItem) = when (it) {
@@ -140,6 +140,7 @@ data class ImportDeclaration(
             is ImportedValue -> 5
             is ImportedOperator -> 6
         }
+
         fun fromPsiElement(importDeclaration: Import): ImportDeclaration =
             ImportDeclaration(
                 importDeclaration.moduleName.name,
@@ -152,22 +153,27 @@ data class ImportDeclaration(
 
 sealed class ImportedItem(open val name: String) {
     abstract val text: String
+    abstract fun includes(item: ImportedItem): Boolean
 }
 
 data class ImportedClass(override val name: String) : ImportedItem(name) {
     override val text get() = "class $name"
+    override fun includes(item: ImportedItem): Boolean = this == item
 }
 
 data class ImportedType(override val name: String) : ImportedItem(name) {
     override val text get() = "type ($name)"
+    override fun includes(item: ImportedItem): Boolean = this == item
 }
 
 data class ImportedValue(override val name: String) : ImportedItem(name) {
     override val text get() = name
+    override fun includes(item: ImportedItem): Boolean = this == item
 }
 
 data class ImportedOperator(override val name: String) : ImportedItem(name) {
     override val text get() = "($name)"
+    override fun includes(item: ImportedItem): Boolean = this == item
 }
 
 data class ImportedData(
@@ -181,5 +187,11 @@ data class ImportedData(
             dataMembers.isEmpty() -> name
             else -> "${name}(${dataMembers.sorted().joinToString()})"
         }
+
+    override fun includes(item: ImportedItem): Boolean = when (item) {
+        is ImportedData -> 
+            this.name == item.name && (this.doubleDot || dataMembers.containsAll(item.dataMembers))
+        else -> false
+    }
 }
 
