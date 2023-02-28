@@ -89,5 +89,49 @@ class UnusedInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnusedInspection())
         myFixture.checkHighlighting()
     }
+    
+    fun `test it report unused data and data constructors imports`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar (Bar(Bar)) where
+            |
+            |data Bar = Bar
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |
+            |import Bar (<warning descr="Unused imported data">Bar(<warning descr="Unused imported data constructor">Bar</warning>)</warning>) as Bar
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
+    
+    fun `test it don't report unused data and data constructors imports that are used`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar (Bar(Bar)) where
+            |
+            |data Bar = Bar
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo (x) where
+            |
+            |import Bar (Bar(Bar))
+            |x :: Bar
+            |x = Bar
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
 
 }

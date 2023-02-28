@@ -18,7 +18,7 @@ import org.purescript.parser.PSParserDefinition
 
 class ImportSafeDeleteProcessorDelegate : SafeDeleteProcessorDelegateBase() {
     override fun handlesElement(it: PsiElement?): Boolean {
-        return it is PSImportedItem
+        return it is PSImportedItem || it is PSImportedDataMember
     }
     override fun findUsages(it: PsiElement, toDelete: Array<out PsiElement>, result: MutableList<UsageInfo>)
             : NonCodeUsageSearchInfo {
@@ -51,6 +51,21 @@ class ImportSafeDeleteProcessorDelegate : SafeDeleteProcessorDelegateBase() {
                                 definition.commentTokens.contains(it.elementType)}
                         .toList()
             }
+        }
+        is PSImportedDataMember -> {
+            val definition = PSParserDefinition()
+            val comma = it.siblings(true, false)
+                .takeWhile { it.elementType == COMMA ||
+                        definition.whitespaceTokens.contains(it.elementType) ||
+                        definition.commentTokens.contains(it.elementType)}
+                .toList()
+            if (comma.any {it.elementType == COMMA}) comma
+            else
+                comma + it.siblings(false, false)
+                    .takeWhile { it.elementType == COMMA ||
+                            definition.whitespaceTokens.contains(it.elementType) ||
+                            definition.commentTokens.contains(it.elementType)}
+                    .toList()
         }
 
         else -> null

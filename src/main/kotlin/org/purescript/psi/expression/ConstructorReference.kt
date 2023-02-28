@@ -29,7 +29,7 @@ class ConstructorReference(
         candidates.toList().toTypedArray()
 
     override fun resolve(): PsiNamedElement? =
-        candidates.firstOrNull { it.name == element.name }
+        (candidates).firstOrNull { it.name == element.name }
 
     private val candidates: Sequence<PsiNamedElement>
         get() {

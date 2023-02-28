@@ -8,15 +8,17 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.psi.util.parentOfType
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.psi.declaration.classes.PSInstanceDeclaration
 import org.purescript.psi.declaration.imports.Import
+import org.purescript.psi.declaration.imports.PSImportedData
+import org.purescript.psi.declaration.imports.PSImportedDataMember
 import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.exports.ExportedModule
 
 class UnusedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
@@ -35,32 +37,52 @@ class UnusedInspection : LocalInspectionTool() {
                     SafeDelete(element)
                 )
             }
+
             is PSImportedValue -> {
-                val importAlias = element.parentOfType<Import>()?.importAlias?.name
-                val exportedModules = element.module
-                    ?.cache
-                    ?.exportedItems
-                    ?.filterIsInstance<ExportedModule>()
-                    ?.map { it.name }
-                    ?.toList()
-                    ?: emptyList()
-                if(importAlias != null && importAlias in exportedModules) Unit
+                if (element.parentOfType<Import>()?.isExported == true) Unit
                 else {
-                    val reference = element.reference.resolve()
-                    if (reference == null) Unit
-                    else when {
-                        search(reference).anyMatch { it.element !is PSImportedValue && it.element.containingFile == element.containingFile } -> Unit
-                        else -> holder.registerProblem(
-                            element.identifier,
-                            "Unused imported value",
-                            ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                            SafeDelete(element)
-                        )
-                    }
+                    if (referenceIsUsedInFile(element)) Unit
+                    else holder.registerProblem(
+                        element.identifier,
+                        "Unused imported value",
+                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                        SafeDelete(element)
+                    )
                 }
             }
 
+            is PSImportedDataMember -> {
+                if (element.parentOfType<Import>()?.isExported == true) Unit
+                else {
+                    if (referenceIsUsedInFile(element)) Unit
+                    else holder.registerProblem(
+                        element,
+                        "Unused imported data constructor",
+                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                        SafeDelete(element)
+                    )
+                }
+            }
+            is PSImportedData -> {
+                if (element.parentOfType<Import>()?.isExported == true) Unit
+                else when {
+                    referenceIsUsedInFile(element) -> Unit
+                    element.importedDataMembers.any { referenceIsUsedInFile(it)} -> Unit
+                    else -> holder.registerProblem(
+                        element,
+                        "Unused imported data",
+                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                        SafeDelete(element)
+                    )
+                }
+            }
             else -> Unit
+        }
+
+        private inline fun <reified E : PsiElement> referenceIsUsedInFile(element: E): Boolean {
+            val reference = element.reference?.resolve()
+            val scope = GlobalSearchScope.fileScope(element.containingFile)
+            return reference == null || search(reference, scope, true).anyMatch { it.element !is E }
         }
 
     }

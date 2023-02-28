@@ -293,4 +293,10 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedFixityDeclarations
         get() = getImportedDeclarations<FixityDeclaration, PSImportedOperator>(Module::exportedFixityDeclarations)
+    
+    val isExported get() = greenStub?.isExported 
+        ?: module?.cache
+        ?.exportedItems
+        ?.filterIsInstance<org.purescript.psi.exports.ExportedModule>()
+        ?.any { it.name == name }
 }

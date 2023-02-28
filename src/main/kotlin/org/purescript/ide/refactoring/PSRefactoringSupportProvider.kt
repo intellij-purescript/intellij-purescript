@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.RefactoringActionHandler
 import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.fixity.FixityDeclaration
+import org.purescript.psi.declaration.imports.PSImportedDataMember
+import org.purescript.psi.declaration.imports.PSImportedItem
 import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.PSExpressionIdentifier
@@ -18,7 +20,9 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
                 element is PSVarBinder
 
     override fun isSafeDeleteAvailable(element: PsiElement): Boolean =
-        element is ValueDeclarationGroup || element is PSImportedValue
+        element is ValueDeclarationGroup ||
+                element is PSImportedItem ||
+                element is PSImportedDataMember 
 
     override fun isInplaceIntroduceAvailable(element: PsiElement, context: PsiElement?) =
         element is PSExpressionIdentifier
