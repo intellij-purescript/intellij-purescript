@@ -66,8 +66,8 @@ class ParserDefinitions {
     private val forAll = ForAll(`'forall'` + +ident + dot + Reference { constrainedType })
     private val rowLabel = label + dcolon + type.relax("malformed type")
     private val row = Row(
-        (`|` + type) / 
-                (rowLabel.sepBy(`,`) + !(`|` + type)))
+        (`|` + type) /
+                (!(rowLabel + !+(`,` + rowLabel.relaxTo( RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type)))
     private val typeCtor = TypeCtor(qualProperName)
     private val hole = TypeHole("?".dsl + ident)
     private val typeAtom: DSL = TypeAtom(
