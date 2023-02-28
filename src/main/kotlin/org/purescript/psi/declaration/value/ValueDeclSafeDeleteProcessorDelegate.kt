@@ -11,30 +11,17 @@ import com.intellij.refactoring.safeDelete.SafeDeleteProcessorDelegateBase
 import com.intellij.usageView.UsageInfo
 
 
-class ValueDeclSafeDeleteProcessorDelegate :
-    SafeDeleteProcessorDelegateBase() {
-
-    override fun handlesElement(it: PsiElement?): Boolean {
-        return it is ValueDeclarationGroup
-    }
-    
-    override fun findUsages(
-        it: PsiElement,
-        toDelete: Array<out PsiElement>,
-        result: MutableList<UsageInfo>
-    ): NonCodeUsageSearchInfo {
+class ValueDeclSafeDeleteProcessorDelegate : SafeDeleteProcessorDelegateBase() {
+    override fun handlesElement(it: PsiElement?): Boolean = it is ValueDeclarationGroup
+    override fun findUsages(it: PsiElement, toDelete: Array<out PsiElement>, result: MutableList<UsageInfo>)
+            : NonCodeUsageSearchInfo {
         findGenericElementUsages(it, result, toDelete)
         val condition = getDefaultInsideDeletedCondition(toDelete)
         return NonCodeUsageSearchInfo(condition, it)
     }
 
-    override fun getElementsToSearch(
-        it: PsiElement,
-        module: Module?,
-        toDelete: MutableCollection<out PsiElement>
-    ): MutableCollection<out PsiElement> {
-        return mutableSetOf(it)
-    }
+    override fun getElementsToSearch(it: PsiElement, module: Module?, toDelete: MutableCollection<out PsiElement>)
+            : MutableCollection<out PsiElement> = mutableSetOf(it)
 
     override fun getAdditionalElementsToDelete(
         it: PsiElement,
@@ -45,29 +32,20 @@ class ValueDeclSafeDeleteProcessorDelegate :
         else -> null
     }
 
-    override fun findConflicts(it: PsiElement, toDelete: Array<PsiElement?>) =
-        null
-
-    override fun preprocessUsages(project: Project, usages: Array<UsageInfo>) =
-        usages
-
+    override fun findConflicts(it: PsiElement, toDelete: Array<PsiElement?>) = null
+    override fun preprocessUsages(project: Project, usages: Array<UsageInfo>) = usages
     override fun prepareForDeletion(it: PsiElement) = Unit
     override fun isToSearchInComments(it: PsiElement?): Boolean =
         RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_COMMENTS
 
     override fun setToSearchInComments(it: PsiElement?, enabled: Boolean) {
-        RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_COMMENTS =
-            enabled
+        RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_COMMENTS = enabled
     }
 
     override fun isToSearchForTextOccurrences(it: PsiElement?) =
         RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_NON_JAVA
 
-    override fun setToSearchForTextOccurrences(
-        it: PsiElement?,
-        enabled: Boolean
-    ) {
-        RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_NON_JAVA =
-            enabled
+    override fun setToSearchForTextOccurrences(it: PsiElement?, enabled: Boolean) {
+        RefactoringSettings.getInstance().SAFE_DELETE_SEARCH_IN_NON_JAVA = enabled
     }
 }
