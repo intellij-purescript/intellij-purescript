@@ -176,7 +176,7 @@ class ParserDefinitions {
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
     private val dataHead = `'data'` + properName + TypeArgs(!+typeVar)
     private val dataCtor = DataCtor(properName + !+typeAtom)
-    private val typeDeclaration = Signature(ident + dcolon + type)
+    private val typeDeclaration = Signature(ident + dcolon + type.relax("malformed type"))
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
     private val exprWhere: DSL =
         expr + !ExpressionWhere(`'where'` + layout1(Reference { letBinding }, "where statement"))
