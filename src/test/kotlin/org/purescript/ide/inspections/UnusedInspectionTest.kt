@@ -44,6 +44,50 @@ class UnusedInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(UnusedInspection())
         myFixture.checkHighlighting()
+    } 
+    
+    fun `test it report unused value imports`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar (bar) where
+            |
+            |bar :: Int
+            |bar = 1
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |
+            |import Bar (<warning>bar</warning>)
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
+    
+    fun `test it don't report unused value imports if the alias is exported`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar (bar) where
+            |
+            |bar :: Int
+            |bar = 1
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo (module Bar) where
+            |
+            |import Bar (bar) as Bar
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
     }
 
 }
