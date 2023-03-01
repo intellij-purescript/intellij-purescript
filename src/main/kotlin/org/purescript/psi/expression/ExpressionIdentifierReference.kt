@@ -12,7 +12,6 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.imports.ImportQuickFix
-import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.dostmt.PSDoBlock
@@ -50,12 +49,6 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
         return sequence {
             val importDeclarations = module.cache.imports
                 .filter { it.importAlias?.name == qualifyingName }
-                .filter {
-                    it.isHiding || it.importedItems.isEmpty() ||
-                            it.importedItems
-                                .filterIsInstance<PSImportedValue>()
-                                .any { it.name == name }
-                }
             yieldAll(importDeclarations.flatMap { it.importedValue(name) })
         }
     }
