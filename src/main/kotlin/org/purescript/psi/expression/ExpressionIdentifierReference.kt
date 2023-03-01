@@ -56,15 +56,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                 .filterIsInstance<PSImportedValue>()
                                 .any { it.name == name }
                 }
-            yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
-            yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-            yieldAll(importDeclarations.flatMap { it.importedClassMembers })
-            val importedClassMembers =
-                importDeclarations
-                    .asSequence()
-                    .flatMap { it.importedClassDeclarations.asSequence() }
-                    .flatMap { it.classMembers.asSequence() }
-            yieldAll(importedClassMembers)
+            yieldAll(importDeclarations.flatMap { it.importedValue(name) })
         }
     }
 

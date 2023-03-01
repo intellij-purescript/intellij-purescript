@@ -16,8 +16,7 @@ class ImportedValueReference(element: PSImportedValue) : PsiReferenceBase<PSImpo
     
     private val candidates: Sequence<PsiNamedElement>
         get() {
-            val module = element.importDeclaration?.importedModule
-                ?: return emptySequence()
+            val module = element.importDeclaration.importedModule ?: return emptySequence()
             return sequence {
                 yieldAll(module.exportedValueDeclarationGroups)
                 yieldAll(module.exportedForeignValueDeclarations)
@@ -26,16 +25,9 @@ class ImportedValueReference(element: PSImportedValue) : PsiReferenceBase<PSImpo
                 }
             }
         }
-    private fun candidates(name:String): Sequence<PsiNamedElement> {
-            val module = element.importDeclaration?.importedModule ?: return emptySequence()
-            return sequence {
-                yieldAll(module.exportedValueDeclarationGroups(name))
-                yieldAll(module.exportedForeignValueDeclarations.filter { it.name == name })
-                for (exportedClassDeclaration in module.exportedClassDeclarations) {
-                    yieldAll(exportedClassDeclaration.classMembers.asSequence().filter { it.name == name })
-                }
-            }
-        }
+    private fun candidates(name:String) = 
+        element.importDeclaration.importedModule?.exportedValue(name) ?: emptySequence()
+    
 
     override fun resolve(): PsiElement? = candidates(element.name).firstOrNull { it.name == element.name }
 

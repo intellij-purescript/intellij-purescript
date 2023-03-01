@@ -6,6 +6,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.psi.PSElementType.*
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
+import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
@@ -172,14 +173,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedValueDeclarationGroups: List<ValueDeclarationGroup>
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(Module::exportedValueDeclarationGroups)
-
-    fun importedValueDeclarationGroups(name: String): Sequence<ValueDeclarationGroup> = when {
-        importedItems.isEmpty() -> this.importedModule?.exportedValueDeclarationGroups(name) ?: emptySequence()
-        isHiding && importedItems.any { it.name == name } -> emptySequence()
-        !isHiding && importedItems.none { it.name == name } -> emptySequence()
-        else -> this.importedModule?.exportedValueDeclarationGroups(name) ?: emptySequence()
-    }
-
+    
     /**
      * @return the [ForeignValueDecl] elements imported by this declaration
      */
@@ -314,6 +308,14 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         isHiding && importedItems.any { it.name == name } -> emptySequence()
         !isHiding && importedItems.none { it.name == name } -> emptySequence()
         else -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
+    }    
+
+
+    fun importedValue(name: String): Sequence<Importable> = when {
+        importedItems.isEmpty() -> importedModule?.exportedValue(name) ?: emptySequence()
+        isHiding && importedItems.any { it.name == name } -> emptySequence()
+        !isHiding && importedItems.none { it.name == name } -> emptySequence()
+        else -> importedModule?.exportedValue(name) ?: emptySequence()
     }
 
     val isExported

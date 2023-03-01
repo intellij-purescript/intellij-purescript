@@ -80,6 +80,11 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
+        val values: List<Importable> by lazy { 
+            valueDeclarationGroups.asList() + foreignValueDeclarations.asList() + classDeclarations.flatMap { 
+                it.classMembers.asList()
+            }
+        }
         val exportedItems by lazy { exports?.exportedItems }
         val classDeclarations by lazy { children<ClassDecl>() }
         val imports by lazy { children<Import>() }
@@ -458,28 +463,20 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     }
 
     override fun getIcon(flags: Int) = PSIcons.FILE
-    fun exportedValueDeclarationGroups(name: String): Sequence<ValueDeclarationGroup> {
-        val explicitlyExportedItems = cache.exportedItems
-        return if (explicitlyExportedItems == null) {
-            cache.valueDeclarationGroups.asSequence().filter { it.name == name }
-        } else sequence {
-            val explicitlyNames = explicitlyExportedItems
-                .filterIsInstance(ExportedValue.Psi::class.java)
-                .map { it.name }
-                .toSet()
-            val exportedModules = explicitlyExportedItems.filterIsInstance<ExportedModule>().toList()
-
-            val exportsSelf = exportedModules.any { it.name == this@Module.name }
-            if (exportsSelf || name in explicitlyNames) {
-                cache.valueDeclarationGroups.asSequence().firstOrNull { it.name == name }?.let { 
-                    yield(it)
-                }
+    fun exportedValue(name: String): Sequence<Importable> {
+        val exportedItems = cache.exportedItems ?: return cache.values.asSequence().filter { it.name == name }
+        return when {
+            exportedItems.any {it.name == name} -> cache.values.asSequence().filter { it.name == name }
+            else -> sequence {
+                exportedItems.filterIsInstance<ExportedModule>()
+                    .flatMap {
+                        if (it.name == this@Module.name ) {
+                            this@Module.cache.values.asSequence().filter { it.name == name }
+                        } else {
+                            it.importDeclarations.flatMap { it.importedValue(name) }
+                        }
+                    }.let { yieldAll(it) }
             }
-            exportedModules
-                .filter { it.name != this@Module.name }
-                .flatMap { it.importDeclarations }
-                .flatMap { it.importedValueDeclarationGroups(name) }
-                .let { yieldAll(it) }
         }
     }
 }
