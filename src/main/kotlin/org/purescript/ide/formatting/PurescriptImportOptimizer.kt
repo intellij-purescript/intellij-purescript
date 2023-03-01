@@ -1,12 +1,18 @@
 package org.purescript.ide.formatting
 
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.ImportOptimizer
 import com.intellij.openapi.components.service
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
+import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.file.PSFile
+import org.purescript.ide.inspections.UnusedInspection
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.imports.PSImportedData
 
 class PurescriptImportOptimizer : ImportOptimizer {
     override fun supports(file: PsiFile): Boolean = file is PSFile
@@ -15,13 +21,40 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val module = psFile.module
             ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()
-        val fromModule = module.cache.imports.map { ImportDeclaration.fromPsiElement(it) }
-        val psiPair = if (fromModule.isEmpty()) null
-        else {
-            val importDeclarations = ImportDeclarations(fromModule.toSet())
-            factory.createImportDeclarations(importDeclarations)
-        }
+        val project = file.project
         return Runnable {
+            val holder = ProblemsHolder(InspectionManager.getInstance(project), file, false)
+            val visitor = UnusedInspection().buildVisitor(holder, false)
+            for (import in module.cache.imports) {
+                import.importedItems.forEach {
+                    when (it) {
+                        is PSImportedData -> {
+                            visitor.visitElement(it)
+                            it.importedDataMembers.forEach { member ->
+                                visitor.visitElement(member)
+                            }
+                        }
+
+                        else -> visitor.visitElement(it)
+                    }
+                }
+            }
+            val elementsToDelete = mutableListOf<PsiElement>()
+            for (problemDescriptor in holder.results) {
+                problemDescriptor.fixes?.filterIsInstance<UnusedInspection.SafeDelete>()?.forEach {
+                    elementsToDelete += it.startElement
+                }
+            }
+            if (elementsToDelete.isNotEmpty()) {
+                SafeDeleteHandler.invoke(project, elementsToDelete.toTypedArray(), false)
+            }
+            
+            val fromModule = module.cache.imports.map { ImportDeclaration.fromPsiElement(it) }
+            val psiPair = if (fromModule.isEmpty()) null
+            else {
+                val importDeclarations = ImportDeclarations(fromModule.toSet())
+                factory.createImportDeclarations(importDeclarations)
+            }
             for (importDeclaration in module.cache.imports) {
                 importDeclaration.delete()
             }
@@ -35,7 +68,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
                 module.addAfter(factory.createNewLines(1), where)
             }
             when (psiPair) {
-                null , null to null -> {}
+                null, null to null -> {}
                 else -> {
                     module.addRangeAfter(psiPair.first, psiPair.second, where)
                     module.addAfter(factory.createNewLines(2), where)

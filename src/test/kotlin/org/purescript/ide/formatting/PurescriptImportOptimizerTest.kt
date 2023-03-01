@@ -122,4 +122,25 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimIndent()
         )
     }
+
+    fun `test removes unused imports`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                |module Bar where
+                |data Bar = Bar
+            """.trimMargin()
+        )
+        test(
+            """
+                module Foo where
+                
+                import Bar (Bar(Bar))
+            """.trimIndent(),
+            """
+                module Foo where
+                
+            """.trimIndent()
+        )
+    }
 }
