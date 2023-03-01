@@ -42,7 +42,7 @@ class UnusedInspection : LocalInspectionTool() {
                 )
             }
 
-            is PSImportedValue , is PSImportedOperator, is PSImportedDataMember -> when {
+            is PSImportedValue, is PSImportedOperator, is PSImportedDataMember -> when {
                 element.parentOfType<Import>()?.isExported == true -> Unit
                 referenceIsUsedInFile(element) -> Unit
                 else -> registerImportItem(element)
@@ -73,8 +73,8 @@ class UnusedInspection : LocalInspectionTool() {
         private inline fun <reified E : PsiElement> referenceIsUsedInFile(element: E): Boolean {
             val reference = element.reference?.resolve()
             val scope = GlobalSearchScope.fileScope(element.containingFile)
-            return reference == null || search(reference, scope, true).anyMatch { 
-                it.element !is PSImportedItem && it.element !is PSImportedDataMember 
+            return reference == null || search(reference, scope, true).anyMatch {
+                it.element !is PSImportedItem && it.element !is PSImportedDataMember
             }
         }
 
@@ -95,116 +95,47 @@ class UnusedInspection : LocalInspectionTool() {
             )
         }
     }
-    
+
     class UnusedImport(element: PsiElement) : LocalQuickFixOnPsiElement(element) {
         override fun getFamilyName() = "Unused Import"
         override fun getText(): String = "Unused Import"
         override fun getFileModifierForPreview(target: PsiFile): FileModifier? = null
-
         override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
             val other = when (startElement) {
-                        is PSImportedItem -> {
-                            val import = startElement.parentOfType<Import>()
-                            if ((import?.importedItems?.size == 1)) {
-                                listOf(import)
-                            } else {
-                                val definition = PSParserDefinition()
-                                val comma = startElement.siblings(true, false)
-                                    .takeWhile {
-                                        it.elementType == COMMA ||
-                                                definition.whitespaceTokens.contains(it.elementType) ||
-                                                definition.commentTokens.contains(it.elementType)
-                                    }
-                                    .toList()
-                                if (comma.any { it.elementType == COMMA }) comma
-                                else
-                                    comma + startElement.siblings(false, false)
-                                        .takeWhile {
-                                            it.elementType == COMMA ||
-                                                    definition.whitespaceTokens.contains(it.elementType) ||
-                                                    definition.commentTokens.contains(it.elementType)
-                                        }
-                                        .toList()
-                            }
-                        }
-
-                is PSImportedDataMember -> {
-                    val definition = PSParserDefinition()
-                    val comma = startElement.siblings(true, false)
-                        .takeWhile {
-                            it.elementType == COMMA ||
-                                    definition.whitespaceTokens.contains(it.elementType) ||
-                                    definition.commentTokens.contains(it.elementType)
-                        }
-                        .toList()
-                    if (comma.any { it.elementType == COMMA }) comma
-                    else
-                        comma + startElement.siblings(false, false)
-                            .takeWhile {
-                                it.elementType == COMMA ||
-                                        definition.whitespaceTokens.contains(it.elementType) ||
-                                        definition.commentTokens.contains(it.elementType)
-                            }
-                            .toList()
-                }
-        
-                        else -> emptyList()
+                is PSImportedItem -> {
+                    val import = startElement.parentOfType<Import>()
+                    if ((import?.importedItems?.size == 1)) {
+                        listOf(import)
+                    } else {
+                        surrounding(startElement)
                     }
+                }
+
+                is PSImportedDataMember -> surrounding(startElement)
+                else -> emptyList()
+            }
             startElement.delete()
             other.forEach { it.delete() }
         }
 
-        private fun safeDelete(it: PsiElement) {
-            val other = when (it) {
-                is PSImportedItem -> {
-                    val import = it.parentOfType<Import>()
-                    if ((import?.importedItems?.size == 1)) {
-                        listOf(import)
-                    } else {
-                        val definition = PSParserDefinition()
-                        val comma = it.siblings(true, false)
-                            .takeWhile {
-                                it.elementType == COMMA ||
-                                        definition.whitespaceTokens.contains(it.elementType) ||
-                                        definition.commentTokens.contains(it.elementType)
-                            }
-                            .toList()
-                        if (comma.any { it.elementType == COMMA }) comma
-                        else
-                            comma + it.siblings(false, false)
-                                .takeWhile {
-                                    it.elementType == COMMA ||
-                                            definition.whitespaceTokens.contains(it.elementType) ||
-                                            definition.commentTokens.contains(it.elementType)
-                                }
-                                .toList()
+        private fun surrounding(startElement: PsiElement): List<PsiElement> {
+            val definition = PSParserDefinition()
+            val comma = startElement.siblings(true, false)
+                .takeWhile {
+                    it.elementType == COMMA ||
+                            definition.whitespaceTokens.contains(it.elementType) ||
+                            definition.commentTokens.contains(it.elementType)
+                }
+                .toList()
+            return if (comma.any { it.elementType == COMMA }) comma
+            else
+                comma + startElement.siblings(false, false)
+                    .takeWhile {
+                        it.elementType == COMMA ||
+                                definition.whitespaceTokens.contains(it.elementType) ||
+                                definition.commentTokens.contains(it.elementType)
                     }
-                }
-
-                is PSImportedDataMember -> {
-                    val definition = PSParserDefinition()
-                    val comma = it.siblings(true, false)
-                        .takeWhile {
-                            it.elementType == COMMA ||
-                                    definition.whitespaceTokens.contains(it.elementType) ||
-                                    definition.commentTokens.contains(it.elementType)
-                        }
-                        .toList()
-                    if (comma.any { it.elementType == COMMA }) comma
-                    else
-                        comma + it.siblings(false, false)
-                            .takeWhile {
-                                it.elementType == COMMA ||
-                                        definition.whitespaceTokens.contains(it.elementType) ||
-                                        definition.commentTokens.contains(it.elementType)
-                            }
-                            .toList()
-                }
-
-                else -> emptyList()
-            }
-            it.delete()
-            other.forEach { it.delete() }
+                    .toList()
         }
     }
 }
