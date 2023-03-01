@@ -168,6 +168,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             }
 
             explicitlyExportedItems.filterIsInstance<ExportedModule>()
+                .filter { it.name != name }
                 .flatMap { it.importDeclarations }
                 .flatMapTo(exportedDeclarations) {
                     getDeclarations(it)
@@ -191,13 +192,17 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                     .map { it.name }
                     .toSet()
                 val exportedModules = explicitlyExportedItems.filterIsInstance<ExportedModule>().toList()
+
                 val exportsSelf = exportedModules.any { it.name == name }
                 val local = if (exportsSelf) {
                     cache.valueDeclarationGroups.toList()
                 } else {
                     cache.valueDeclarationGroups.filter { it.name in explicitlyNames }
                 }
-                val fromImports = exportedModules.flatMap { it.importDeclarations }.flatMap { it.importedValueDeclarationGroups }
+                val fromImports = exportedModules
+                    .filter { it.name != name }
+                    .flatMap { it.importDeclarations }
+                    .flatMap { it.importedValueDeclarationGroups }
                 (local + fromImports).toList()
             }
         }
