@@ -4,11 +4,9 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.ImportOptimizer
 import com.intellij.openapi.components.service
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
-import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.file.PSFile
 import org.purescript.ide.inspections.UnusedInspection
 import org.purescript.psi.PSPsiFactory
@@ -39,14 +37,10 @@ class PurescriptImportOptimizer : ImportOptimizer {
                     }
                 }
             }
-            val elementsToDelete = mutableListOf<PsiElement>()
             for (problemDescriptor in holder.results) {
-                problemDescriptor.fixes?.filterIsInstance<UnusedInspection.SafeDelete>()?.forEach {
-                    elementsToDelete += it.startElement
+                problemDescriptor.fixes?.filterIsInstance<UnusedInspection.UnusedImport>()?.forEach {
+                    it.applyFix(project, problemDescriptor)
                 }
-            }
-            if (elementsToDelete.isNotEmpty()) {
-                SafeDeleteHandler.invoke(project, elementsToDelete.toTypedArray(), false)
             }
             
             val fromModule = module.cache.imports.map { ImportDeclaration.fromPsiElement(it) }

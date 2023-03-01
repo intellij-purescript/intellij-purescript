@@ -13,8 +13,12 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch.search
+import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.siblings
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
+import org.purescript.parser.COMMA
+import org.purescript.parser.PSParserDefinition
 import org.purescript.psi.declaration.classes.PSInstanceDeclaration
 import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.declaration.signature.PSSignature
@@ -55,7 +59,7 @@ class UnusedInspection : LocalInspectionTool() {
         }
 
         private fun registerImportItem(element: PsiElement) =
-            holder.registerProblem(element, getDescription(element), LIKE_UNUSED_SYMBOL, SafeDelete(element))
+            holder.registerProblem(element, getDescription(element), LIKE_UNUSED_SYMBOL, UnusedImport(element))
 
         private fun getDescription(element: PsiElement): String = when (element) {
             is ValueDeclarationGroup -> "Unused value declaration"
@@ -89,6 +93,59 @@ class UnusedInspection : LocalInspectionTool() {
                 { SafeDeleteHandler.invoke(project, arrayOf(element), false) },
                 ModalityState.NON_MODAL
             )
+        }
+    }
+    
+    class UnusedImport(element: PsiElement) : LocalQuickFixOnPsiElement(element) {
+        override fun getFamilyName() = "Unused Import"
+        override fun getText(): String = "Unused Import"
+        override fun getFileModifierForPreview(target: PsiFile): FileModifier? = null
+
+        override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) =
+            safeDelete(project, startElement)
+
+        private fun safeDelete(project: Project, it: PsiElement) {
+            val other = when (it) {
+                is PSImportedItem -> {
+                val import = it.parentOfType<Import>()
+                if ((import?.importedItems?.size == 1)) {
+                    listOf(import)
+                } else {
+                    val definition = PSParserDefinition()
+                    val comma = it.siblings(true, false)
+                        .takeWhile { it.elementType == COMMA ||
+                                definition.whitespaceTokens.contains(it.elementType) ||
+                                definition.commentTokens.contains(it.elementType)}
+                        .toList()
+                    if (comma.any {it.elementType == COMMA }) comma
+                    else
+                        comma + it.siblings(false, false)
+                            .takeWhile { it.elementType == COMMA ||
+                                    definition.whitespaceTokens.contains(it.elementType) ||
+                                    definition.commentTokens.contains(it.elementType)}
+                            .toList()
+                }
+            }
+                is PSImportedDataMember -> {
+                val definition = PSParserDefinition()
+                val comma = it.siblings(true, false)
+                    .takeWhile { it.elementType == COMMA ||
+                            definition.whitespaceTokens.contains(it.elementType) ||
+                            definition.commentTokens.contains(it.elementType)}
+                    .toList()
+                if (comma.any {it.elementType == COMMA }) comma
+                else
+                    comma + it.siblings(false, false)
+                        .takeWhile { it.elementType == COMMA ||
+                                definition.whitespaceTokens.contains(it.elementType) ||
+                                definition.commentTokens.contains(it.elementType)}
+                        .toList()
+            }
+
+                else -> emptyList()
+            }
+            it.delete()
+            other.forEach { it.delete() }
         }
     }
 }
