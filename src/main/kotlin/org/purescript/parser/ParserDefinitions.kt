@@ -312,7 +312,7 @@ class ParserDefinitions {
         val stop = sep / right
         val relaxedDsl = dsl.relaxTo(stop, "malformed $name")
         val relaxedSep = sep / (sep.relaxTo(stop, "malformed $name separator") + sep)
-        val relaxedRight = right / (right.relaxTo(right, "malformed end of $name") + !right)
+        val relaxedRight = right / (right.relaxTo(right, "malformed end of $name") + right)
         return left + right / (relaxedDsl.sepBy(relaxedSep) + relaxedRight)
     }
 
