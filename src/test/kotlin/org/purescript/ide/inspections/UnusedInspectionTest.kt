@@ -134,4 +134,52 @@ class UnusedInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
+    fun `test it report unused operator imports`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar where
+            |
+            |import Prelude
+            |
+            |infix 0 add as + 
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |
+            |import Bar (<warning descr="Unused imported operator">(+)</warning>)
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test it dont report used operator imports`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar where
+            |
+            |import Prelude
+            |
+            |infix 0 add as + 
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo (f) where
+            |
+            |import Bar ((+))
+            |
+            |f = 1 + 2
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
+
 }

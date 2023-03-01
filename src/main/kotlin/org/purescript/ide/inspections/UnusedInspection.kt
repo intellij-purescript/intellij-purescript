@@ -1,7 +1,10 @@
 package org.purescript.ide.inspections
 
 import com.intellij.codeInsight.intention.FileModifier
-import com.intellij.codeInspection.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFixOnPsiElement
+import com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
@@ -13,10 +16,7 @@ import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.psi.util.parentOfType
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.psi.declaration.classes.PSInstanceDeclaration
-import org.purescript.psi.declaration.imports.Import
-import org.purescript.psi.declaration.imports.PSImportedData
-import org.purescript.psi.declaration.imports.PSImportedDataMember
-import org.purescript.psi.declaration.imports.PSImportedValue
+import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
@@ -32,51 +32,38 @@ class UnusedInspection : LocalInspectionTool() {
                 search(element).anyMatch { it.element !is PSSignature } -> Unit
                 else -> holder.registerProblem(
                     element.nameIdentifier,
-                    "Unused value declaration",
-                    ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                    getDescription(element),
+                    LIKE_UNUSED_SYMBOL,
                     SafeDelete(element)
                 )
             }
 
-            is PSImportedValue -> {
-                if (element.parentOfType<Import>()?.isExported == true) Unit
-                else {
-                    if (referenceIsUsedInFile(element)) Unit
-                    else holder.registerProblem(
-                        element.identifier,
-                        "Unused imported value",
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                        SafeDelete(element)
-                    )
-                }
+            is PSImportedValue , is PSImportedOperator, is PSImportedDataMember -> when {
+                element.parentOfType<Import>()?.isExported == true -> Unit
+                referenceIsUsedInFile(element) -> Unit
+                else -> registerImportItem(element)
             }
 
-            is PSImportedDataMember -> {
-                if (element.parentOfType<Import>()?.isExported == true) Unit
-                else {
-                    if (referenceIsUsedInFile(element)) Unit
-                    else holder.registerProblem(
-                        element,
-                        "Unused imported data constructor",
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                        SafeDelete(element)
-                    )
-                }
+            is PSImportedData -> when {
+                element.parentOfType<Import>()?.isExported == true -> Unit
+                referenceIsUsedInFile(element) -> Unit
+                element.importedDataMembers.any { referenceIsUsedInFile(it) } -> Unit
+                else -> registerImportItem(element)
             }
-            is PSImportedData -> {
-                if (element.parentOfType<Import>()?.isExported == true) Unit
-                else when {
-                    referenceIsUsedInFile(element) -> Unit
-                    element.importedDataMembers.any { referenceIsUsedInFile(it)} -> Unit
-                    else -> holder.registerProblem(
-                        element,
-                        "Unused imported data",
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                        SafeDelete(element)
-                    )
-                }
-            }
+
             else -> Unit
+        }
+
+        private fun registerImportItem(element: PsiElement) =
+            holder.registerProblem(element, getDescription(element), LIKE_UNUSED_SYMBOL, SafeDelete(element))
+
+        private fun getDescription(element: PsiElement): String = when (element) {
+            is ValueDeclarationGroup -> "Unused value declaration"
+            is PSImportedValue -> "Unused imported value"
+            is PSImportedOperator -> "Unused imported operator"
+            is PSImportedDataMember -> "Unused imported data constructor"
+            is PSImportedData -> "Unused imported data"
+            else -> ""
         }
 
         private inline fun <reified E : PsiElement> referenceIsUsedInFile(element: E): Boolean {
