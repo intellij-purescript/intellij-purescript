@@ -26,8 +26,18 @@ class ImportedValueReference(element: PSImportedValue) : PsiReferenceBase<PSImpo
                 }
             }
         }
+    private fun candidates(name:String): Sequence<PsiNamedElement> {
+            val module = element.importDeclaration?.importedModule ?: return emptySequence()
+            return sequence {
+                yieldAll(module.exportedValueDeclarationGroups(name))
+                yieldAll(module.exportedForeignValueDeclarations.filter { it.name == name })
+                for (exportedClassDeclaration in module.exportedClassDeclarations) {
+                    yieldAll(exportedClassDeclaration.classMembers.asSequence().filter { it.name == name })
+                }
+            }
+        }
 
-    override fun resolve(): PsiElement? = candidates.firstOrNull { it.name == element.name }
+    override fun resolve(): PsiElement? = candidates(element.name).firstOrNull { it.name == element.name }
 
     override fun handleElementRename(name: String): PsiElement? {
         val newName = PSPsiFactory(element.project).createIdentifier(name)

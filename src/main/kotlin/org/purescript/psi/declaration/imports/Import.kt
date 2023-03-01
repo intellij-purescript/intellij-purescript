@@ -173,6 +173,13 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedValueDeclarationGroups: List<ValueDeclarationGroup>
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(Module::exportedValueDeclarationGroups)
 
+    fun importedValueDeclarationGroups(name: String): Sequence<ValueDeclarationGroup> = when {
+        importedItems.isEmpty() -> this.importedModule?.exportedValueDeclarationGroups(name) ?: emptySequence()
+        isHiding && importedItems.any { it.name == name } -> emptySequence()
+        !isHiding && importedItems.none { it.name == name } -> emptySequence()
+        else -> this.importedModule?.exportedValueDeclarationGroups(name) ?: emptySequence()
+    }
+
     /**
      * @return the [ForeignValueDecl] elements imported by this declaration
      */
@@ -303,10 +310,10 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         }
 
     fun importedFixityDeclarations(name: String): Sequence<FixityDeclaration> = when {
-        importedItems.isEmpty() -> importedModule?.exportedFixityDeclarations ?: emptySequence()
+        importedItems.isEmpty() -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
         isHiding && importedItems.any { it.name == name } -> emptySequence()
         !isHiding && importedItems.none { it.name == name } -> emptySequence()
-        else -> importedModule?.exportedFixityDeclarations(name)?: emptySequence()
+        else -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
     }
 
     val isExported

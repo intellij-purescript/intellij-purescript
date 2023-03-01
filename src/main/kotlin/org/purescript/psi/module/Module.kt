@@ -171,7 +171,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             val exportsSelf = explicitlyExportedItems.filterIsInstance<ExportedModule>().any { it.name == name }
 
             if (exportsSelf || name in explicitlyNames) {
-                yieldAll(fixityDeclarations.filter { it.name == name })
+                fixityDeclarations.first { it.name == name }.let { yield(it) }
             }
             
             yieldAll(
@@ -430,7 +430,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         }
     }
 
-    fun addImportDeclaration(importDeclaration: Import) {
+    private fun addImportDeclaration(importDeclaration: Import) {
         val lastImportDeclaration = cache.imports.lastOrNull()
         val insertPosition = lastImportDeclaration ?: whereKeyword
         val newLine = project.service<PSPsiFactory>().createNewLine()
@@ -458,4 +458,28 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     }
 
     override fun getIcon(flags: Int) = PSIcons.FILE
+    fun exportedValueDeclarationGroups(name: String): Sequence<ValueDeclarationGroup> {
+        val explicitlyExportedItems = cache.exportedItems
+        return if (explicitlyExportedItems == null) {
+            cache.valueDeclarationGroups.asSequence().filter { it.name == name }
+        } else sequence {
+            val explicitlyNames = explicitlyExportedItems
+                .filterIsInstance(ExportedValue.Psi::class.java)
+                .map { it.name }
+                .toSet()
+            val exportedModules = explicitlyExportedItems.filterIsInstance<ExportedModule>().toList()
+
+            val exportsSelf = exportedModules.any { it.name == this@Module.name }
+            if (exportsSelf || name in explicitlyNames) {
+                cache.valueDeclarationGroups.asSequence().firstOrNull { it.name == name }?.let { 
+                    yield(it)
+                }
+            }
+            exportedModules
+                .filter { it.name != this@Module.name }
+                .flatMap { it.importDeclarations }
+                .flatMap { it.importedValueDeclarationGroups(name) }
+                .let { yieldAll(it) }
+        }
+    }
 }

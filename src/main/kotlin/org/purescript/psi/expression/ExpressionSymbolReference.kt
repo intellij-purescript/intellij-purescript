@@ -13,29 +13,29 @@ import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.name.PSModuleName
 import org.purescript.psi.name.PSOperatorName
 
-class ExpressionSymbolReference(
-    symbol: PSPsiElement, val moduleName: PSModuleName?, val operator: PSOperatorName
-) : LocalQuickFixProvider,
-    PsiReferenceBase<PSPsiElement>(
-        symbol,
-        operator.textRangeInParent,
-        false
-    ) {
+class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleName?, val operator: PSOperatorName) :
+    LocalQuickFixProvider, PsiReferenceBase<PSPsiElement>(symbol, operator.textRangeInParent, false) {
 
     override fun getVariants(): Array<Any> =
         candidates.toList().toTypedArray()
 
     override fun resolve(): FixityDeclaration? {
-        return candidates.firstOrNull { it.name == element.name }
+        val name = element.name ?: return null
+        return candidates(name).firstOrNull { it.name == name }
     }
 
     val candidates
         get() = sequence {
             val module = element.module ?: return@sequence
-            val name = element.name ?: return@sequence
             yieldAll(module.fixityDeclarations.asSequence())
-            yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations(name) })
+            yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations })
         }
+
+    fun candidates(name: String) = sequence {
+        val module = element.module ?: return@sequence
+        yieldAll(module.fixityDeclarations.asSequence())
+        yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations(name) })
+    }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = moduleName?.name
@@ -45,7 +45,7 @@ class ExpressionSymbolReference(
             .filter { it.isValid }
             .map { it.asImport()?.withAlias(qualifyingName) }
             .filterNotNull().toTypedArray()
-        return if(imports.isNotEmpty()) {
+        return if (imports.isNotEmpty()) {
             arrayOf(ImportQuickFix(*imports))
         } else {
             arrayOf()
