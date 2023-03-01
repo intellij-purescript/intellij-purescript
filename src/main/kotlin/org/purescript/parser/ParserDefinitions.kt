@@ -115,8 +115,8 @@ class ParserDefinitions {
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
         ((label + ":").heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
-                ((label + eq).heal + expr) / 
-                ExpressionIdentifier(QualifiedIdentifier(label))
+            ((label + eq).heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
+                ExpressionIdentifier(QualifiedIdentifier(label)).relaxTo(RCURLY.dsl / `,`, "malformed label")
     )
 
     /**
@@ -307,8 +307,11 @@ class ParserDefinitions {
 
 
     private fun recordLayout(statement: DSL, name: String): DSL {
-        val relaxedStatement = statement.relaxTo(`,` / RCURLY, "malformed $name")
-        return LCURLY + RCURLY / (relaxedStatement.sepBy(`,`) + RCURLY)
+        val message = "malformed $name"
+        val stop = `,` / RCURLY
+        val relaxedStatement = statement.relaxTo(stop, message)
+        val delimiter = `,` / (`,`.relaxTo(stop, message) + `,` )
+        return LCURLY + RCURLY / (relaxedStatement.sepBy(delimiter) + RCURLY)
     }
 
     private fun recordLayout1(statement: DSL, name: String): DSL {
