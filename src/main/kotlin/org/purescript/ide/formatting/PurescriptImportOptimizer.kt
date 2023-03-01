@@ -4,6 +4,7 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.ImportOptimizer
 import com.intellij.openapi.components.service
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
@@ -20,7 +21,9 @@ class PurescriptImportOptimizer : ImportOptimizer {
             ?: error("File contains no Purescript module: ${file.name} ")
         val factory: PSPsiFactory = file.project.service()
         val project = file.project
+        val documentManager = PsiDocumentManager.getInstance(project)
         return Runnable {
+            val document = documentManager.getDocument(file) ?: return@Runnable
             val holder = ProblemsHolder(InspectionManager.getInstance(project), file, false)
             val visitor = UnusedInspection().buildVisitor(holder, false)
             for (import in module.cache.imports) {
@@ -42,7 +45,7 @@ class PurescriptImportOptimizer : ImportOptimizer {
                     it.applyFix(project, problemDescriptor)
                 }
             }
-            
+            documentManager.commitDocument(document)
             val fromModule = module.cache.imports.map { ImportDeclaration.fromPsiElement(it) }
             val psiPair = if (fromModule.isEmpty()) null
             else {
