@@ -162,10 +162,7 @@ class ParserDefinitions {
         )
     )
     private val expr5 = Reference {
-        braces(
-            propertyUpdate +
-                    !+(`,` + propertyUpdate.relaxTo(RCURLY.dsl / `,`, "malformed property update")).heal
-        ).heal /
+        recordLayout1(propertyUpdate, "property update").heal /
                 expr7 /
                 Lambda(backslash + +binderAtom + arrow + expr) /
                 exprCase /
@@ -316,7 +313,7 @@ class ParserDefinitions {
 
     private fun recordLayout1(statement: DSL, name: String): DSL {
         val relaxedStatement = statement.relaxTo(`,` / RCURLY , "malformed $name")
-        return RCURLY + (statement + !+(`,` + relaxedStatement).heal) + RCURLY
+        return LCURLY + (statement + !+(`,` + relaxedStatement).heal).heal + RCURLY
     }
     
     private val letBinding = Choice.of(
