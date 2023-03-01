@@ -22,24 +22,24 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val factory: PSPsiFactory = file.project.service()
         val project = file.project
         val documentManager = PsiDocumentManager.getInstance(project)
-        return Runnable {
-            val document = documentManager.getDocument(file) ?: return@Runnable
-            val holder = ProblemsHolder(InspectionManager.getInstance(project), file, false)
-            val visitor = UnusedInspection().buildVisitor(holder, false)
-            for (import in module.cache.imports) {
-                import.importedItems.forEach {
-                    when (it) {
-                        is PSImportedData -> {
-                            visitor.visitElement(it)
-                            it.importedDataMembers.forEach { member ->
-                                visitor.visitElement(member)
-                            }
+        val document = documentManager.getDocument(file) ?: return Runnable {  }
+        val holder = ProblemsHolder(InspectionManager.getInstance(project), file, false)
+        val visitor = UnusedInspection().buildVisitor(holder, false)
+        for (import in module.cache.imports) {
+            import.importedItems.forEach {
+                when (it) {
+                    is PSImportedData -> {
+                        visitor.visitElement(it)
+                        it.importedDataMembers.forEach { member ->
+                            visitor.visitElement(member)
                         }
-
-                        else -> visitor.visitElement(it)
                     }
+
+                    else -> visitor.visitElement(it)
                 }
             }
+        }
+        return Runnable {
             for (problemDescriptor in holder.results) {
                 problemDescriptor.fixes?.filterIsInstance<UnusedInspection.UnusedImport>()?.forEach {
                     it.applyFix(project, problemDescriptor)
