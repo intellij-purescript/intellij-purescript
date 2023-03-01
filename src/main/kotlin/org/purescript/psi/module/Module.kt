@@ -127,10 +127,37 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * @return the [FixityDeclaration] that this module exports,
      * both directly and through re-exported modules
      */
-    val exportedFixityDeclarations: List<FixityDeclaration>
-        get() = getExportedDeclarations<FixityDeclaration, ExportedOperator.Psi>(
-            fixityDeclarations
-        ) { it.importedFixityDeclarations }
+    val exportedFixityDeclarations: Sequence<FixityDeclaration>
+        get() {
+            val explicitlyExportedItems = cache.exportedItems
+            return if (explicitlyExportedItems == null) {
+                fixityDeclarations.asSequence()
+            } else sequence {
+                val explicitlyNames = explicitlyExportedItems
+                    .filterIsInstance(ExportedOperator.Psi::class.java)
+                    .map { it.name }
+                    .toSet()
+
+                val exportsSelf = explicitlyExportedItems
+                    .filterIsInstance<ExportedModule>()
+                    .any { it.name == name }
+
+                if (exportsSelf) {
+                    yieldAll(fixityDeclarations.asSequence())
+                } else {
+                    yieldAll(fixityDeclarations.filter { it.name in explicitlyNames })
+                }
+
+                yieldAll(
+                    explicitlyExportedItems
+                        .asSequence()
+                        .filterIsInstance<ExportedModule>()
+                        .filter { it.name != name }
+                        .flatMap { it.importDeclarations }
+                        .flatMap { it.importedFixityDeclarations }
+                )
+            }
+        }
 
     /**
      * @return the where keyword in the module header

@@ -21,7 +21,6 @@ import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.module.Module
 import org.purescript.psi.module.ModuleReference
 import org.purescript.psi.name.PSModuleName
-import kotlin.reflect.KProperty1
 
 /**
  * An import declaration, as found near the top a module.
@@ -140,9 +139,9 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return the [Declaration] elements that this declaration imports
      */
     private inline fun <Declaration : PsiNamedElement, reified Wanted : PSImportedItem>
-            getImportedDeclarations(exportedDeclarationProperty: KProperty1<Module, List<Declaration>>): List<Declaration> {
+            getImportedDeclarations(exportedDeclarationProperty: (Module)-> List<Declaration>): List<Declaration> {
         val importedModule = importedModule ?: return emptyList()
-        val exportedDeclarations: List<Declaration> = exportedDeclarationProperty.get(importedModule)
+        val exportedDeclarations: List<Declaration> = exportedDeclarationProperty(importedModule)
         val importedItems = importList?.importedItems ?: return exportedDeclarations
         val importedNames = importedItems.filterIsInstance(Wanted::class.java).toList()
         return if (isHiding) {
@@ -292,11 +291,13 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return the [org.purescript.psi.declaration.FixityDeclaration] elements imported by this declaration
      */
     val importedFixityDeclarations
-        get() = getImportedDeclarations<FixityDeclaration, PSImportedOperator>(Module::exportedFixityDeclarations)
+        get() = getImportedDeclarations<FixityDeclaration, PSImportedOperator> { module ->
+            module.exportedFixityDeclarations.toList()
+        }
     
     val isExported get() = greenStub?.isExported 
         ?: module?.cache
         ?.exportedItems
-        ?.filterIsInstance<org.purescript.psi.exports.ExportedModule>()
+        ?.filterIsInstance<ExportedModule>()
         ?.any { it.name == name }
 }

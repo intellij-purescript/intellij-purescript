@@ -6,9 +6,9 @@ import org.purescript.psi.PSPsiFactory
 
 class ImportedOperatorReference(element: PSImportedOperator) :
     PsiReferenceBase<PSImportedOperator>(element, element.symbol.operator.textRangeInParent, false) {
-    override fun getVariants(): Array<Any> = candidates.toTypedArray()
+    override fun getVariants(): Array<Any> = candidates.toList().toTypedArray()
     override fun resolve(): PsiElement? = candidates.firstOrNull { it.name == element.name }
-    val candidates get() = element.importDeclaration.importedModule?.exportedFixityDeclarations ?: listOf()
+    val candidates get() = element.importDeclaration.importedModule?.exportedFixityDeclarations ?: emptySequence()
     override fun handleElementRename(name: String): PsiElement? {
         val newName = PSPsiFactory(element.project).createOperatorName(name)
             ?: return null
