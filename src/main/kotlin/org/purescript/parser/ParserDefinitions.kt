@@ -307,13 +307,13 @@ class ParserDefinitions {
         generalLayout(statement, LCURLY.dsl, `,`, RCURLY.dsl, name)
 
 
-    private fun generalLayout(dsl: DSL, left: ElementToken, sep: ElementToken, right: ElementToken, name: String)
+    private fun generalLayout(dsl: DSL, left: DSL, sep: DSL, right: DSL, name: String)
     : DSL {
         val stop = sep / right
-        val message = "malformed $name"
-        val relaxedStatement = dsl.relaxTo(stop, message)
-        val delimiter = sep / (sep.relaxTo(stop, message) + sep)
-        return left + right / (relaxedStatement.sepBy(delimiter) + right)
+        val relaxedDsl = dsl.relaxTo(stop, "malformed $name")
+        val relaxedSep = sep / (sep.relaxTo(stop, "malformed $name separator") + sep)
+        val relaxedRight = right / (right.relaxTo(right, "malformed end of $name") + !right)
+        return left + right / (relaxedDsl.sepBy(relaxedSep) + relaxedRight)
     }
 
     private fun recordLayout1(statement: DSL, name: String): DSL {
