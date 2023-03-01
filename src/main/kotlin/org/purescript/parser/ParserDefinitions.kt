@@ -94,10 +94,7 @@ class ParserDefinitions {
             StringBinder(string),
             NumberBinder(number),
             ObjectBinder(squares(binder.sepBy(`,`))),
-            braces(
-                !(recordBinder +
-                        !+(`,` + recordBinder.relaxTo(RCURLY.dsl / `,`, "malformed record binder")).heal)
-            ),
+            recordLayout(recordBinder, "record binder"),
             parens(binder),
             BooleanBinder(boolean),
             CtorBinder(qualProperName),
@@ -148,7 +145,7 @@ class ParserDefinitions {
         StringLiteral(string),
         number,
         ArrayLiteral(squares(!(expr + !+(`,` + expr.relax("missing array element"))).heal)),
-        ObjectLiteral(braces(!(recordLabel + !+(`,` + recordLabel.relax("missing record label")).heal))),
+        ObjectLiteral(recordLayout(recordLabel,"record label")),
         Parens(parens(expr.relax("empty parenthesis"))),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
@@ -311,6 +308,17 @@ class ParserDefinitions {
         return `L{` + `L}` / (relaxedStatement.sepBy(`L-sep`) + `L}`)
     }
 
+
+    private fun recordLayout(statement: DSL, name: String): DSL {
+        val relaxedStatement = statement.relaxTo(`,` / RCURLY, "malformed $name")
+        return LCURLY + RCURLY / (relaxedStatement.sepBy(`,`) + RCURLY)
+    }
+
+    private fun recordLayout1(statement: DSL, name: String): DSL {
+        val relaxedStatement = statement.relaxTo(`,` / RCURLY , "malformed $name")
+        return RCURLY + (statement + !+(`,` + relaxedStatement).heal) + RCURLY
+    }
+    
     private val letBinding = Choice.of(
         valueDeclarationGroup(),
         typeDeclaration.heal,
