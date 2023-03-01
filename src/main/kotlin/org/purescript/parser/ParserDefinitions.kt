@@ -300,18 +300,20 @@ class ParserDefinitions {
         return `L{` + (statement + !+(`L-sep` + relaxedStatement).heal) + `L}`
     }
 
-    private fun layout(statement: DSL, name: String): DSL {
-        val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
-        return `L{` + `L}` / (relaxedStatement.sepBy(`L-sep`) + `L}`)
-    }
+    private fun layout(statement: DSL, name: String): DSL = 
+        generalLayout(statement, `L{`, `L-sep`, `L}`, name)
+
+    private fun recordLayout(statement: DSL, name: String): DSL =
+        generalLayout(statement, LCURLY.dsl, `,`, RCURLY.dsl, name)
 
 
-    private fun recordLayout(statement: DSL, name: String): DSL {
+    private fun generalLayout(dsl: DSL, left: ElementToken, sep: ElementToken, right: ElementToken, name: String)
+    : DSL {
+        val stop = sep / right
         val message = "malformed $name"
-        val stop = `,` / RCURLY
-        val relaxedStatement = statement.relaxTo(stop, message)
-        val delimiter = `,` / (`,`.relaxTo(stop, message) + `,` )
-        return LCURLY + RCURLY / (relaxedStatement.sepBy(delimiter) + RCURLY)
+        val relaxedStatement = dsl.relaxTo(stop, message)
+        val delimiter = sep / (sep.relaxTo(stop, message) + sep)
+        return left + right / (relaxedStatement.sepBy(delimiter) + right)
     }
 
     private fun recordLayout1(statement: DSL, name: String): DSL {
