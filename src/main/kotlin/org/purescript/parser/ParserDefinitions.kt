@@ -67,7 +67,8 @@ class ParserDefinitions {
     private val rowLabel = label + dcolon + type.relax("malformed type")
     private val row = Row(
         (`|` + type) /
-                (!(rowLabel + !+(`,` + rowLabel.relaxTo( RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type)))
+                (!(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type))
+    )
     private val typeCtor = TypeCtor(qualProperName)
     private val hole = TypeHole("?".dsl + ident)
     private val typeAtom: DSL = TypeAtom(
@@ -93,7 +94,10 @@ class ParserDefinitions {
             StringBinder(string),
             NumberBinder(number),
             ObjectBinder(squares(binder.sepBy(`,`))),
-            braces(recordBinder.sepBy(`,`)),
+            braces(
+                !(recordBinder +
+                        !+(`,` + recordBinder.relaxTo(RCURLY.dsl / `,`, "malformed record binder")).heal)
+            ),
             parens(binder),
             BooleanBinder(boolean),
             CtorBinder(qualProperName),
@@ -113,7 +117,9 @@ class ParserDefinitions {
     private val propertyUpdate: DSL = label + !eq + expr
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
-        ((label + ":").heal + expr) / ((label + eq).heal + expr) / ExpressionIdentifier(QualifiedIdentifier(label))
+        ((label + ":").heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
+                ((label + eq).heal + expr) / 
+                ExpressionIdentifier(QualifiedIdentifier(label))
     )
 
     /**
@@ -159,7 +165,10 @@ class ParserDefinitions {
         )
     )
     private val expr5 = Reference {
-        braces(propertyUpdate.sepBy1(`,`)).heal /
+        braces(
+            propertyUpdate +
+                    !+(`,` + propertyUpdate.relaxTo(RCURLY.dsl / `,`, "malformed property update")).heal
+        ).heal /
                 expr7 /
                 Lambda(backslash + +binderAtom + arrow + expr) /
                 exprCase /
