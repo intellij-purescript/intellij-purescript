@@ -53,6 +53,7 @@ class UnusedInspection : LocalInspectionTool() {
                 element.parentOfType<Import>()?.isExported == true -> Unit
                 referenceIsUsedInFile(element) -> Unit
                 element.importedDataMembers.any { referenceIsUsedInFile(it) } -> Unit
+                element.importsAll -> Unit
                 else -> registerImportItem(element)
             }
 
