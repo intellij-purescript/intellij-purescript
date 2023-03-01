@@ -158,7 +158,32 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 )
             }
         }
+    fun exportedFixityDeclarations(name: String): Sequence<FixityDeclaration> {
+        val explicitlyExportedItems = cache.exportedItems
+        return if (explicitlyExportedItems == null) {
+            fixityDeclarations.asSequence().filter { it.name == name }
+        } else sequence {
+            val explicitlyNames = explicitlyExportedItems
+                .filterIsInstance(ExportedOperator.Psi::class.java)
+                .map { it.name }
+                .toSet()
 
+            val exportsSelf = explicitlyExportedItems.filterIsInstance<ExportedModule>().any { it.name == name }
+
+            if (exportsSelf || name in explicitlyNames) {
+                yieldAll(fixityDeclarations.filter { it.name == name })
+            }
+            
+            yieldAll(
+                explicitlyExportedItems
+                    .asSequence()
+                    .filterIsInstance<ExportedModule>()
+                    .filter { it.name != name }
+                    .flatMap { it.importDeclarations }
+                    .flatMap { it.importedFixityDeclarations(name) }
+            )
+        }
+    }
     /**
      * @return the where keyword in the module header
      */

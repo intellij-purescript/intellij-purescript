@@ -139,18 +139,25 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return the [Declaration] elements that this declaration imports
      */
     private inline fun <Declaration : PsiNamedElement, reified Wanted : PSImportedItem>
-            getImportedDeclarations(exportedDeclarationProperty: (Module)-> List<Declaration>): List<Declaration> {
-        val importedModule = importedModule ?: return emptyList()
-        val exportedDeclarations: List<Declaration> = exportedDeclarationProperty(importedModule)
-        val importedItems = importList?.importedItems ?: return exportedDeclarations
-        val importedNames = importedItems.filterIsInstance(Wanted::class.java).toList()
-        return if (isHiding) {
-            exportedDeclarations.filter { 
-                importedNames.none { import -> import.nameMatches(it.name ?: "")} 
-            }
+            getImportedDeclarations(exportedDeclarationProperty: (Module) -> List<Declaration>): List<Declaration> {
+        val importedModule = importedModule
+        return if (importedModule == null) {
+            emptyList()
         } else {
-            exportedDeclarations.filter {
-                importedNames.any { import -> import.nameMatches(it.name ?: "")}
+            val exportedDeclarations: List<Declaration> = exportedDeclarationProperty(importedModule)
+            val importedItems = importList?.importedItems
+            if (importedItems == null) exportedDeclarations
+            else {
+                val importedNames = importedItems.filterIsInstance(Wanted::class.java).toList()
+                if (isHiding) {
+                    exportedDeclarations.filter {
+                        importedNames.none { import -> import.nameMatches(it.name ?: "") }
+                    }
+                } else {
+                    exportedDeclarations.filter {
+                        importedNames.any { import -> import.nameMatches(it.name ?: "") }
+                    }
+                }
             }
         }
     }
@@ -294,10 +301,18 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         get() = getImportedDeclarations<FixityDeclaration, PSImportedOperator> { module ->
             module.exportedFixityDeclarations.toList()
         }
-    
-    val isExported get() = greenStub?.isExported 
-        ?: module?.cache
-        ?.exportedItems
-        ?.filterIsInstance<ExportedModule>()
-        ?.any { it.name == name }
+
+    fun importedFixityDeclarations(name: String): Sequence<FixityDeclaration> = when {
+        importedItems.isEmpty() -> importedModule?.exportedFixityDeclarations ?: emptySequence()
+        isHiding && importedItems.any { it.name == name } -> emptySequence()
+        !isHiding && importedItems.none { it.name == name } -> emptySequence()
+        else -> importedModule?.exportedFixityDeclarations(name)?: emptySequence()
+    }
+
+    val isExported
+        get() = greenStub?.isExported
+            ?: module?.cache
+                ?.exportedItems
+                ?.filterIsInstance<ExportedModule>()
+                ?.any { it.name == name }
 }

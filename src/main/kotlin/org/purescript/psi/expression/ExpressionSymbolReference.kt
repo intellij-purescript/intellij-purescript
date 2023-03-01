@@ -5,10 +5,9 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.declaration.fixity.ExportedFixityNameIndex
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.name.PSModuleName
@@ -33,8 +32,9 @@ class ExpressionSymbolReference(
     val candidates
         get() = sequence {
             val module = element.module ?: return@sequence
+            val name = element.name ?: return@sequence
             yieldAll(module.fixityDeclarations.asSequence())
-            yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations })
+            yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations(name) })
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {

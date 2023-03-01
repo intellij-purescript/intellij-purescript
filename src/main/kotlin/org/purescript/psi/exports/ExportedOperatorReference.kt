@@ -5,19 +5,20 @@ import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
 
 class ExportedOperatorReference(operator: ExportedOperator.Psi) :
-    PsiReferenceBase<ExportedOperator.Psi>(
-        operator,
-        operator.symbol.operator.textRangeInParent,
-        false
-    ) {
+    PsiReferenceBase<ExportedOperator.Psi>(operator, operator.symbol.operator.textRangeInParent, false) {
     override fun getVariants() = candidates.toList().toTypedArray()
-    override fun resolve() = candidates.firstOrNull { it.name == element.name }
+    override fun resolve() = (localCandidates + importedCandidates(element.name)).firstOrNull { it.name == element.name }
 
     private val importedCandidates
         get() =
             element.module?.cache?.imports
                 ?.flatMap { it.importedFixityDeclarations }
                 ?.asSequence()
+                ?: sequenceOf()
+    
+    private fun importedCandidates(name : String) =
+            element.module?.cache?.imports?.asSequence()
+                ?.flatMap { it.importedFixityDeclarations(name) }
                 ?: sequenceOf()
 
     private val localCandidates
