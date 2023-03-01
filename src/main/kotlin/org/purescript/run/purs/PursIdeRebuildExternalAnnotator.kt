@@ -83,6 +83,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         for (result in annotationResult.result) {
             if (result.errorCode == "UnusedDeclaration") continue
             if (result.errorCode == "UnusedImport") continue
+            if (result.errorCode == "UnusedExplicitImport") continue
             val textRange = result.position.textRange(document)
             val annotationBuilder = holder
                 .newAnnotation(severity, "Purs ide rebuild: ${result.errorCode}")
