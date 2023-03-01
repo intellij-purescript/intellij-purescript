@@ -133,14 +133,14 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         )
         test(
             """
-                module Foo where
-                
-                import Bar (Bar(Bar))
-            """.trimIndent(),
+                |module Foo where
+                |
+                |import Bar (Bar(Bar))
+            """.trimMargin(),
             """
-                module Foo where
-                
-            """.trimIndent()
+                |module Foo where
+                |
+            """.trimMargin()
         )
     }
 }

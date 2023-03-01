@@ -8,6 +8,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -101,6 +102,10 @@ class UnusedInspection : LocalInspectionTool() {
         override fun getText(): String = "Unused Import"
         override fun getFileModifierForPreview(target: PsiFile): FileModifier? = null
         override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+            val documentManager = PsiDocumentManager.getInstance(project)
+            val document = documentManager.getDocument(file) ?: return
+            documentManager.commitDocument(document)
+            if (!startElement.isValid) return
             val other = when (startElement) {
                 is PSImportedItem -> {
                     val import = startElement.parentOfType<Import>()
@@ -114,8 +119,10 @@ class UnusedInspection : LocalInspectionTool() {
                 is PSImportedDataMember -> surrounding(startElement)
                 else -> emptyList()
             }
-            startElement.delete()
-            other.forEach { it.delete() }
+            val range = other.fold(startElement.textRange) { acc, psiElement ->
+                acc.union(psiElement.textRange)
+            }
+            document.deleteString(range.startOffset, range.endOffset)
         }
 
         private fun surrounding(startElement: PsiElement): List<PsiElement> {
