@@ -162,9 +162,10 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .any { it.name == name }
 
             val exportedDeclarations = mutableListOf<Declaration>()
-
-            declarations.filterTo(exportedDeclarations) {
-                exportsSelf || it.name in explicitlyNames
+            if (exportsSelf) {
+                exportedDeclarations.addAll(declarations)
+            } else {
+                declarations.filterTo(exportedDeclarations) { it.name in explicitlyNames }
             }
 
             explicitlyExportedItems.filterIsInstance<ExportedModule>()
