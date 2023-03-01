@@ -181,7 +181,7 @@ class UnusedInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnusedInspection())
         myFixture.checkHighlighting()
     }
-    fun `test it dont report used elipsis data imports that are used`() {
+    fun `test it don't report used ellipsis data imports that are used`() {
         myFixture.configureByText(
             "Bar.purs",
             """
@@ -198,6 +198,26 @@ class UnusedInspectionTest : BasePlatformTestCase() {
             |import Bar (Bar(..))
             |
             |f = Bar
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
+    fun `test it report used elipsis data imports that are not used`() {
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar where
+            |
+            |data Bar = Bar
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo (f) where
+            |
+            |import Bar (<warning descr="Unused imported data">Bar(..)</warning>)
             """.trimMargin()
         )
         myFixture.enableInspections(UnusedInspection())

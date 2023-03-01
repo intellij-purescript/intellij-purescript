@@ -21,7 +21,9 @@ import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.parser.COMMA
 import org.purescript.parser.PSParserDefinition
 import org.purescript.psi.declaration.classes.PSInstanceDeclaration
+import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.declaration.imports.*
+import org.purescript.psi.declaration.newtype.NewtypeDecl
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 
@@ -53,7 +55,25 @@ class UnusedInspection : LocalInspectionTool() {
                 element.parentOfType<Import>()?.isExported == true -> Unit
                 referenceIsUsedInFile(element) -> Unit
                 element.importedDataMembers.any { referenceIsUsedInFile(it) } -> Unit
-                element.importsAll -> Unit
+                element.importsAll -> {
+                    val constructors = when (val reference = element.reference.resolve()) {
+                        is DataDeclaration.Psi -> reference.dataConstructors.toList()
+                        is NewtypeDecl -> listOf(reference.newTypeConstructor)
+                        else -> listOf()
+                    }
+                    val used = constructors.any { constructor ->
+                        val scope = GlobalSearchScope.fileScope(element.containingFile)
+                        search(constructor, scope, true).anyMatch {
+                            it.element !is PSImportedItem && it.element !is PSImportedDataMember
+                        }
+                    }
+                    if(!used) {
+                        registerImportItem(element)
+                    } else {
+                        Unit
+                    }
+                }
+
                 else -> registerImportItem(element)
             }
 
