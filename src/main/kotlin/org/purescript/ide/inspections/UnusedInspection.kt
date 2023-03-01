@@ -69,7 +69,9 @@ class UnusedInspection : LocalInspectionTool() {
         private inline fun <reified E : PsiElement> referenceIsUsedInFile(element: E): Boolean {
             val reference = element.reference?.resolve()
             val scope = GlobalSearchScope.fileScope(element.containingFile)
-            return reference == null || search(reference, scope, true).anyMatch { it.element !is E }
+            return reference == null || search(reference, scope, true).anyMatch { 
+                it.element !is PSImportedItem && it.element !is PSImportedDataMember 
+            }
         }
 
     }
