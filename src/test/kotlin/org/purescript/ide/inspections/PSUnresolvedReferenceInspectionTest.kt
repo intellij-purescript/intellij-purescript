@@ -273,30 +273,6 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     }
 
-    fun `test it finds imported class members by class name`() {
-        myFixture.configureByText(
-            "Box.purs",
-            """
-            module Box where
-            
-            class Box a where
-                map :: forall a b. (a -> b) -> Box a -> Box b 
-            """.trimIndent()
-        )
-        myFixture.configureByText(
-            "Foo.purs",
-            """
-            module Foo where
-            
-            import Box (class Box)
-            
-            f = map
-            """.trimIndent()
-        )
-        myFixture.enableInspections(PSUnresolvedReferenceInspection())
-        myFixture.checkHighlighting()
-    }
-
     fun `test it finds imported class members by name`() {
         myFixture.configureByText(
             "Box.purs",

@@ -12,6 +12,7 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.imports.ImportQuickFix
+import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.dostmt.PSDoBlock
@@ -39,28 +40,34 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
 
     override fun resolve(): PsiNamedElement? {
         val name = element.name
-        return candidates.firstOrNull { it.name == name }
+        val importedCandidates = getImportedCandidates(name)
+        return (moduleLocalCandidates + importedCandidates).firstOrNull { it.name == name }
     }
 
-    private val candidates: Sequence<PsiNamedElement> get() = moduleLocalCandidates + importedCandidates
-    private val importedCandidates: Sequence<PsiNamedElement>
-        get() {
-            val module = element.module ?: return emptySequence()
-            val qualifyingName = element.qualifiedIdentifier.moduleName?.name
-            return sequence {
-                val importDeclarations =
-                    module.cache.imports.filter { it.importAlias?.name == qualifyingName }
-                yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
-                yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-                yieldAll(importDeclarations.flatMap { it.importedClassMembers })
-                val importedClassMembers =
-                    importDeclarations
-                        .asSequence()
-                        .flatMap { it.importedClassDeclarations.asSequence() }
-                        .flatMap { it.classMembers.asSequence() }
-                yieldAll(importedClassMembers)
-            }
+    private fun getImportedCandidates(name: String): Sequence<PsiNamedElement> {
+        val module = element.module ?: return emptySequence()
+        val qualifyingName = element.qualifiedIdentifier.moduleName?.name
+        return sequence {
+            val importDeclarations = module.cache.imports
+                .filter { it.importAlias?.name == qualifyingName }
+                .filter {
+                    it.isHiding || it.importedItems.isEmpty() ||
+                            it.importedItems
+                                .filterIsInstance<PSImportedValue>()
+                                .any { it.name == name }
+                }
+            yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
+            yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
+            yieldAll(importDeclarations.flatMap { it.importedClassMembers })
+            val importedClassMembers =
+                importDeclarations
+                    .asSequence()
+                    .flatMap { it.importedClassDeclarations.asSequence() }
+                    .flatMap { it.classMembers.asSequence() }
+            yieldAll(importedClassMembers)
         }
+    }
+
     private val moduleLocalCandidates: Sequence<PsiNamedElement>
         get() {
             val module = element.module ?: return emptySequence()
