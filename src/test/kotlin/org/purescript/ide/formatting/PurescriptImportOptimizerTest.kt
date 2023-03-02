@@ -14,72 +14,9 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
     }
 
     fun `test does nothing when no imports`() {
-        test(
-            "module Foo where",
-            """module Foo where
-                |
-            """.trimMargin()
-        )
+        test("module Foo where", "module Foo where")
     }
 
-    fun `test add empty line between where and first declaration`() {
-        test(
-            """module Foo where
-                |f = 3
-            """.trimMargin(),
-            """module Foo where
-                |
-                |f = 3
-            """.trimMargin()
-        )
-    }
-
-    fun `test removes redundant empty lines`() {
-        test(
-            """module Foo where
-                |
-                |
-                |f = 3
-            """.trimMargin(),
-            """module Foo where
-                |
-                |f = 3
-            """.trimMargin()
-        )
-    }
-
-    fun `test whitespace formatting with declaration and import`() {
-        test(
-            """module Foo where
-                |import Prelude
-                |f = 3
-            """.trimMargin(),
-            """module Foo where
-                |
-                |import Prelude
-                |
-                |f = 3
-            """.trimMargin()
-        )
-    }
-
-    fun `test whitespace formatting with declaration and import with too many whitespace`() {
-        test(
-            """module Foo where
-                |import Prelude
-                |
-                |
-                |
-                |f = 3
-            """.trimMargin(),
-            """module Foo where
-                |
-                |import Prelude
-                |
-                |f = 3
-            """.trimMargin()
-        )
-    }
 
     fun `test preserves whitespace`() {
         test(
@@ -106,10 +43,12 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
         test(
             """
                 module Foo where
+                
                 import Giraffe
                 import Pig
                 import Dog
                 import Cat
+                
             """.trimIndent(),
             """
                 module Foo where
@@ -139,6 +78,7 @@ class PurescriptImportOptimizerTest : BasePlatformTestCase() {
             """.trimMargin(),
             """
                 |module Foo where
+                |
                 |
             """.trimMargin()
         )

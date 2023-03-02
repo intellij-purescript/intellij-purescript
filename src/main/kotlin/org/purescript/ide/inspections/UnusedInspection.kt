@@ -127,7 +127,6 @@ class UnusedInspection : LocalInspectionTool() {
         override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
             val documentManager = PsiDocumentManager.getInstance(project)
             val document = documentManager.getDocument(file) ?: return
-            documentManager.commitDocument(document)
             if (!startElement.isValid) return
             val other = when (startElement) {
                 is PSImportedItem -> {
@@ -146,6 +145,7 @@ class UnusedInspection : LocalInspectionTool() {
                 acc.union(psiElement.textRange)
             }
             document.deleteString(range.startOffset, range.endOffset)
+            documentManager.commitDocument(document)
         }
 
         private fun surrounding(startElement: PsiElement): List<PsiElement> {
