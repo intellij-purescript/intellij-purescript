@@ -115,7 +115,7 @@ class ParserDefinitions {
     val symbol = Symbol(parens(operatorName))
     private val recordLabel = ObjectBinderField(
         ((label + ":").heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
-            ((label + eq).heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
+                ((label + eq).heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
                 ExpressionIdentifier(QualifiedIdentifier(label)).relaxTo(RCURLY.dsl / `,`, "malformed label")
     )
 
@@ -145,7 +145,7 @@ class ParserDefinitions {
         StringLiteral(string),
         number,
         ArrayLiteral(squares(!(expr + !+(`,` + expr.relax("missing array element"))).heal)),
-        ObjectLiteral(recordLayout(recordLabel,"record label")),
+        ObjectLiteral(recordLayout(recordLabel, "record label")),
         Parens(parens(expr.relax("empty parenthesis"))),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
@@ -184,7 +184,12 @@ class ParserDefinitions {
     private val typeDeclaration = Signature(ident + dcolon + type.relax("malformed type"))
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
     private val exprWhere: DSL =
-        expr.relax("missing expression") + !ExpressionWhere(`'where'` + layout1(Reference { letBinding }, "where statement"))
+        expr.relax("missing expression") + !ExpressionWhere(
+            `'where'` + layout1(
+                Reference { letBinding },
+                "where statement"
+            )
+        )
     private val guardedDeclExpr = guard + eq + exprWhere
     private val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
     private val instBinder = Choice.of((ident + dcolon).heal + type, valueDeclarationGroup())
@@ -300,7 +305,7 @@ class ParserDefinitions {
         return `L{` + (statement + !+(`L-sep` + relaxedStatement).heal) + `L}`
     }
 
-    private fun layout(statement: DSL, name: String): DSL = 
+    private fun layout(statement: DSL, name: String): DSL =
         generalLayout(statement, `L{`, `L-sep`, `L}`, name)
 
     private fun recordLayout(statement: DSL, name: String): DSL =
@@ -308,7 +313,7 @@ class ParserDefinitions {
 
 
     private fun generalLayout(dsl: DSL, left: DSL, sep: DSL, right: DSL, name: String)
-    : DSL {
+            : DSL {
         val stop = sep / right
         val relaxedDsl = dsl.relaxTo(stop, "malformed $name")
         val relaxedSep = sep / (sep.relaxTo(stop, "malformed $name separator") + sep)
@@ -317,10 +322,10 @@ class ParserDefinitions {
     }
 
     private fun recordLayout1(statement: DSL, name: String): DSL {
-        val relaxedStatement = statement.relaxTo(`,` / RCURLY , "malformed $name")
+        val relaxedStatement = statement.relaxTo(`,` / RCURLY, "malformed $name")
         return LCURLY + (statement + !+(`,` + relaxedStatement).heal).heal + RCURLY
     }
-    
+
     private val letBinding = Choice.of(
         valueDeclarationGroup(),
         typeDeclaration.heal,
@@ -333,7 +338,10 @@ class ParserDefinitions {
         DoNotationBind(binder + larrow + expr.relax("malformed expression")).heal,
         DoNotationValue(expr).heal
     )
-    private val doBlock = DoBlock(qualified(`'do'`).heal + layout1(doStatement, "do statement")).heal
+    private val doBlock = DoBlock(
+        qualified(`'do'`).heal +
+                layout1(doStatement, "do statement").relax("missing do statement")
+    )
     private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
     private val recordBinder = ((label + eq / ":").heal + binder) / VarBinder(label)
 }
