@@ -164,7 +164,7 @@ class ParserDefinitions {
     private val expr5 = Reference {
         recordLayout1(propertyUpdate, "property update").heal /
                 expr7 /
-                Lambda(backslash + +binderAtom + arrow + expr) /
+                Lambda(backslash + +binderAtom + arrow.relax("missing lambda arrow") + expr) /
                 exprCase /
                 ifThenElse /
                 doBlock /
