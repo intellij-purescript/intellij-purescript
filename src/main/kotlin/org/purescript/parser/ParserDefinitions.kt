@@ -157,10 +157,10 @@ class ParserDefinitions {
     * to allow layout end at any time.
     */
     private val exprCase: DSL = Case(
-        `'case'` + `expr?`.sepBy1(`,`) + `'of'` + Choice.of(
+        `'case'` + (`expr?`.sepBy1(`,`) + `'of'` + Choice.of(
             badSingleCaseBranch.heal,
             layout1(Reference { caseBranch }, "case branch")
-        ).relax("missing case branches")
+        ).relax("missing case branches")).relax("incomplete case of")
     )
     private val expr5 = Reference {
         recordLayout1(propertyUpdate, "property update").heal /
@@ -341,13 +341,13 @@ class ParserDefinitions {
     )
     private val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
     private val doStatement = Choice.of(
-        DoNotationLet(`'let'` + layout1(letBinding, "let binding")),
+        DoNotationLet(`'let'` + layout1(letBinding, "let binding").relax("missing binding")),
         DoNotationBind(binder + larrow + expr.relax("malformed expression")).heal,
         DoNotationValue(expr).heal
     )
     private val doBlock = DoBlock(
-        qualified(`'do'`).heal +
-                layout1(doStatement, "do statement").relax("missing do statement")
+        qualified(`'do'`).heal + 
+                layout1(doStatement, "do statement").relax("missing do statements")
     )
     private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
     private val recordBinder = ((label + eq / ":").heal + binder) / VarBinder(label)
