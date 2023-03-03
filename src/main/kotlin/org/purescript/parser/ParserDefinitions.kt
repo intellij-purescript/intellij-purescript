@@ -184,7 +184,7 @@ class ParserDefinitions {
     private val typeDeclaration = Signature(ident + dcolon + type.relax("malformed type"))
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
     private val exprWhere: DSL =
-        expr + !ExpressionWhere(`'where'` + layout1(Reference { letBinding }, "where statement"))
+        expr.relax("missing expression") + !ExpressionWhere(`'where'` + layout1(Reference { letBinding }, "where statement"))
     private val guardedDeclExpr = guard + eq + exprWhere
     private val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
     private val instBinder = Choice.of((ident + dcolon).heal + type, valueDeclarationGroup())
