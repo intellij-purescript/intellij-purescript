@@ -104,6 +104,7 @@ class ParserDefinitions {
     }
     private val binder: DSL = Reference { binder1 } + !(dcolon + type)
     private val expr = Value(Reference { expr1 } + !(dcolon + type))
+    private val `expr?` = expr.relax("missing expression")
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
     private val type5 = +typeAtom
@@ -113,12 +114,12 @@ class ParserDefinitions {
     private val type1 = !+(`'forall'` + +typeVar + dot) + type2
     private val propertyUpdate: DSL = label + !eq + expr
     val symbol = Symbol(parens(operatorName))
+
     private val recordLabel = ObjectBinderField(
         ((label + ":").heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
                 ((label + eq).heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
                 ExpressionIdentifier(QualifiedIdentifier(label)).relaxTo(RCURLY.dsl / `,`, "malformed label")
     )
-
     /**
      * exprAtom :: { Expr () }
      *   : '_' { ExprSection () $1 }
@@ -149,14 +150,14 @@ class ParserDefinitions {
         Parens(parens(expr.relax("empty parenthesis"))),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
-    private val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 
+    private val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
     /*
     * if there is only one case branch it can ignore layout so we need
     * to allow layout end at any time.
     */
     private val exprCase: DSL = Case(
-        `'case'` + expr.sepBy1(`,`) + `'of'` + Choice.of(
+        `'case'` + `expr?`.sepBy1(`,`) + `'of'` + Choice.of(
             badSingleCaseBranch.heal,
             layout1(Reference { caseBranch }, "case branch")
         ).relax("missing case branches")
@@ -183,7 +184,6 @@ class ParserDefinitions {
     private val dataCtor = DataCtor(properName + !+typeAtom)
     private val typeDeclaration = Signature(ident + dcolon + type.relax("malformed type"))
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
-    private val `expr?` = expr.relax("missing expression")
 
     private val exprWhere: DSL =
         `expr?` + !ExpressionWhere(
