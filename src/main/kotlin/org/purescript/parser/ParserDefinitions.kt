@@ -183,8 +183,10 @@ class ParserDefinitions {
     private val dataCtor = DataCtor(properName + !+typeAtom)
     private val typeDeclaration = Signature(ident + dcolon + type.relax("malformed type"))
     private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
+    private val `expr?` = expr.relax("missing expression")
+
     private val exprWhere: DSL =
-        expr.relax("missing expression") + !ExpressionWhere(
+        `expr?` + !ExpressionWhere(
             `'where'` + layout1(
                 Reference { letBinding },
                 "where statement"
@@ -299,7 +301,12 @@ class ParserDefinitions {
     private val guardedCaseExpr = guard + arrow + exprWhere
     private val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
     private val caseBranch = CaseAlternative(binder1.sepBy1(`,`) + guardedCase)
-    private val ifThenElse = IfThenElse(`'if'` + expr + `'then'` + expr + `'else'` + expr)
+    private val ifThenElse = IfThenElse(
+        `'if'` + `expr?` +
+                (`'then'` + `expr?` +
+                (`'else'` + `expr?`).relax("missing else")).relax("missing then")
+    )
+
     private fun layout1(statement: DSL, name: String): DSL {
         val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
         return `L{` + (statement + !+(`L-sep` + relaxedStatement).heal) + `L}`

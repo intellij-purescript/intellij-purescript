@@ -58,10 +58,10 @@ data class LayoutStack(
             while (
                 stack.tail != null &&
                 (
-                    stack.layoutDelimiter == Where ||
-                        stack.layoutDelimiter == LayoutDelimiter.Let ||
-                        stack.layoutDelimiter == LetStmt
-                    )
+                        stack.layoutDelimiter == Where ||
+                                stack.layoutDelimiter == LayoutDelimiter.Let ||
+                                stack.layoutDelimiter == LetStmt
+                        )
             ) {
                 acc += src.start.asEnd
                 stack = stack.pop()
@@ -102,11 +102,13 @@ data class LayoutStack(
             val acc = mutableListOf<SuperToken>()
             while (
                 stack.tail != null &&
-                (stack.layoutDelimiter == Do ||
-                    stack.layoutDelimiter != Of &&
-                    stack.layoutDelimiter.isIndent &&
-                    src.start.column <= stack.sourcePos.column
-                    )
+                (stack.layoutDelimiter == Do || 
+                        stack.layoutDelimiter == If /* relax "If" if is started but missing then*/ ||
+                        stack.layoutDelimiter == Then /* relax "If" if is started but missing else*/ ||
+                        stack.layoutDelimiter != Of &&
+                        stack.layoutDelimiter.isIndent &&
+                        src.start.column <= stack.sourcePos.column
+                        )
             ) {
                 acc += src.start.asEnd
                 stack = stack.pop()
@@ -345,18 +347,13 @@ data class LayoutStack(
             .popStack { it: LayoutDelimiter -> it == Property }
             .toPair()
 
-        IF -> LayoutState(this, emptyList()).insertKwProperty(src) {
-            it.pushStack(
-                src.start,
-                If
-            )
-        }.toPair()
+        IF -> LayoutState(this, emptyList())
+            .insertKwProperty(src) { it.pushStack(src.start, If) }
+            .toPair()
 
         THEN -> {
-            val state2 = LayoutState(
-                this,
-                emptyList()
-            ).collapse(src.start) { lyt -> lyt.isIndent }
+            val state2 = LayoutState(this, emptyList())
+                .collapse(src.start) { lyt -> lyt.isIndent }
             if (state2.stack.layoutDelimiter == If) {
                 state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
@@ -406,10 +403,10 @@ data class LayoutStack(
         }
         when {
             src.start.column != stack.sourcePos.column ||
-                src.start.line == stack.sourcePos.line -> Unit
+                    src.start.line == stack.sourcePos.line -> Unit
 
             TopDecl == stack.layoutDelimiter ||
-                TopDeclHead == stack.layoutDelimiter -> {
+                    TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
                 acc += src.start.asSep
             }
