@@ -24,9 +24,13 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
         startPos = nextStart
         stack = nextStack
     }
-    val layoutEnd = startPos.asEnd
-    tokensOut += List(stack.count { it.isIndent }) { layoutEnd }
-    return tokensOut
+    if (tokens.lastOrNull()?.value == DO) {
+        return tokensOut.dropLastWhile { it.value == LAYOUT_START }
+    } else {
+        val layoutEnd = startPos.asEnd
+        tokensOut += List(stack.count { it.isIndent }) { layoutEnd }
+        return tokensOut
+    }
 }
 
 fun correctLineAndColumn(source: CharSequence) =
