@@ -159,7 +159,7 @@ class ParserDefinitions {
         `'case'` + expr.sepBy1(`,`) + `'of'` + Choice.of(
             badSingleCaseBranch.heal,
             layout1(Reference { caseBranch }, "case branch")
-        )
+        ).relax("missing case branches")
     )
     private val expr5 = Reference {
         recordLayout1(propertyUpdate, "property update").heal /
