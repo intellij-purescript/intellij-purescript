@@ -6,8 +6,10 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
-import org.purescript.psi.module.ModuleNameIndex
 
+/**
+ * Allows to search anywhere for toplevel names
+ */
 class ValueChooseByNameContributor: ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         val project = scope.project ?: return
