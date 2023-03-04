@@ -233,6 +233,10 @@
             implementation="org.purescript.psi.declaration.fixity.ExportedFixityNameIndex"/>
         <stubIndex
             implementation="org.purescript.psi.declaration.imports.ReExportedImportIndex"/>
+        <codeInsight.template.postfixTemplateProvider
+                language="Purescript"
+                implementationClass="org.purescript.psi.expression.ExpressionPostfixTemplateProvider"
+        />
     </extensions>
 
     <actions>

@@ -25,7 +25,6 @@ import org.purescript.psi.expression.dostmt.PSDoBlock
 import org.purescript.psi.expression.dostmt.PSDoNotationBind
 import org.purescript.psi.expression.dostmt.PSDoNotationLet
 import org.purescript.psi.expression.dostmt.PSDoNotationValue
-import org.purescript.psi.expression.literals.*
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
 import org.purescript.psi.type.*

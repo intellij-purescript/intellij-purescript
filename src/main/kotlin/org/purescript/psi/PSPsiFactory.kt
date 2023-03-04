@@ -16,6 +16,7 @@ import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportList
 import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.PSIfThenElse
 import org.purescript.psi.expression.PSParens
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -162,6 +163,15 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |${name} = ${expr}
+            """.trimMargin()
+        )
+    }
+
+    fun createIfThenElse(test: String, then:String, otherwise: String): PSIfThenElse? {
+        return createFromText(
+            """
+            |module Main where
+            |foo = if $test then $then else $otherwise
             """.trimMargin()
         )
     }

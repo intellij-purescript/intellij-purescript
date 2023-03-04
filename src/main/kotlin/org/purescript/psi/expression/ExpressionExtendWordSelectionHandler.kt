@@ -18,6 +18,10 @@ class ExpressionExtendWordSelectionHandler : ExtendWordSelectionHandler {
         cursorOffset: Int,
         editor: Editor
     ): MutableList<TextRange> {
+        return fromElement(e)
+    }
+
+    fun fromElement(e: PsiElement): MutableList<TextRange> {
         var tree: Tree? = null
         for (child in e.children) {
             if (tree == null) tree = Tree.Atom(child)

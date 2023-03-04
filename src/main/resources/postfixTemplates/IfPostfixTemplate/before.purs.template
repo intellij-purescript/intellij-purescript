@@ -1,0 +1,3 @@
+module Main where
+
+f n = <spot>show n$key</spot>
