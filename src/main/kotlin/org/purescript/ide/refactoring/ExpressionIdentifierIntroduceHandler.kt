@@ -18,6 +18,7 @@ import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
 import org.purescript.file.PSFileType
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.declaration.classes.PSClassMemberList
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.module.Module
@@ -86,9 +87,11 @@ class ExpressionIdentifierIntroduceHandler :
         file: PsiFile,
         editor: Editor,
         project: Project
-    ): String? =
-        if (target.place?.reference?.resolve()?.parent is Module) null
-        else "'${target.place?.name}' cant be reached from top level"
+    ) = when (target.place?.reference?.resolve()?.parent) {
+            is Module -> null
+            is PSClassMemberList -> null
+            else -> "'${target.place?.name}' cant be reached from top level"
+        }
 
 
     override fun collectTargetScopes(
