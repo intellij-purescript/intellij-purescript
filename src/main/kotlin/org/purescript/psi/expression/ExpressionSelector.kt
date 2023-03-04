@@ -6,14 +6,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
 import org.purescript.psi.declaration.value.ValueDecl
 
-class ExpressionSelector : PostfixTemplateExpressionSelectorBase({
-    when (it) {
-        is ExpressionAtom, is PSValue -> true
-        else -> false
-    }
-}) {
-    override fun getNonFilteredExpressions(psi: PsiElement, doc: Document, offset: Int): MutableList<PsiElement> {
+class ExpressionSelector : PostfixTemplateExpressionSelectorBase(null) {
+    public override fun getNonFilteredExpressions(psi: PsiElement, doc: Document, offset: Int): MutableList<Expression> {
         val originalPsi = psi.parents(true).takeWhile { it !is ValueDecl }
-        return originalPsi.toMutableList()
+        return originalPsi.filterIsInstance<Expression>().distinctBy { it.textRange }.toMutableList()
+    }
+
+    override fun getExpressions(context: PsiElement, document: Document, offset: Int): MutableList<Expression> {
+        return super.getExpressions(context, document, offset).filterIsInstance<Expression>().toMutableList()
     }
 }

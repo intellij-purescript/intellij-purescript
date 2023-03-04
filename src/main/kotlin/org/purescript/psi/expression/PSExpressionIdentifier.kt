@@ -28,4 +28,5 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
 
     override fun getReference(): ExpressionIdentifierReference =
         ExpressionIdentifierReference(this)
+
 }

@@ -1,10 +1,9 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import org.purescript.psi.base.PSPsiElement
 
-class PSValue(node: ASTNode) : PSPsiElement(node) {
+class PSValue(node: ASTNode) : PSPsiElement(node), Expression {
     val expressionAtoms
         get() = sequence {
             var steps = children.asList()
@@ -13,4 +12,6 @@ class PSValue(node: ASTNode) : PSPsiElement(node) {
                 steps = steps.flatMap { it.children.asList() }
             }
         }.filterIsInstance<ExpressionAtom>().toList()
+
+    override fun getAtoms(): Sequence<ExpressionAtom> = expressionAtoms.asSequence()
 }

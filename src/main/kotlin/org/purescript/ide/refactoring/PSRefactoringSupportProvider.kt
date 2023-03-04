@@ -7,9 +7,8 @@ import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.declaration.fixity.FixityDeclaration
 import org.purescript.psi.declaration.imports.PSImportedDataMember
 import org.purescript.psi.declaration.imports.PSImportedItem
-import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.Expression
 import org.purescript.psi.module.Module
 
 class PSRefactoringSupportProvider : RefactoringSupportProvider() {
@@ -25,7 +24,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
                 element is PSImportedDataMember 
 
     override fun isInplaceIntroduceAvailable(element: PsiElement, context: PsiElement?) =
-        element is PSExpressionIdentifier
+        element is Expression
 
     /**
      * The closest to a variable is let .. in

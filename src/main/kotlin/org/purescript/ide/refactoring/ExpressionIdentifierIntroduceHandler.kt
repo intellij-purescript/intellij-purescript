@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Pair
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parents
 import com.intellij.psi.util.parentsOfType
 import com.intellij.refactoring.RefactoringBundle.message
 import com.intellij.refactoring.introduce.IntroduceHandler
@@ -20,26 +21,23 @@ import org.purescript.file.PSFileType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.classes.PSClassMemberList
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.expression.Expression
+import org.purescript.psi.expression.ExpressionSelector
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.module.Module
 
 class ExpressionIdentifierIntroduceHandler :
-    IntroduceHandler<PsiIntroduceTarget<PSExpressionIdentifier>, Module>() {
-    override fun collectUsages(
-        target: PsiIntroduceTarget<PSExpressionIdentifier>,
-        scope: Module
-    ): MutableList<UsageInfo> {
-        val definition = target.place?.reference?.resolve()
-        val exprAtoms = scope.cache.valueDeclarationGroups
-            .flatMap { it.expressionAtoms }
-            .toList()
-        val usages = exprAtoms
-            .filterIsInstance<PSExpressionIdentifier>()
-            .filter {
-                it.name == target.place?.name &&
-                    it.reference.resolve() == definition
-            }
-        return usages.map { UsageInfo(it) }.toMutableList()
+    IntroduceHandler<PsiIntroduceTarget<Expression>, Module>() {
+    /**
+     * example:
+     * ```purescript
+     * f n = if true then show n else show n
+     * ```
+     * `show n` can be extracted, and then the other `show n` is a usage
+     *
+     */
+    override fun collectUsages(target: PsiIntroduceTarget<Expression>, scope: Module): MutableList<UsageInfo> {
+        return mutableListOf()
     }
 
     override fun checkUsages(usages: MutableList<UsageInfo>) = null
@@ -51,83 +49,78 @@ class ExpressionIdentifierIntroduceHandler :
      *  * a + b
      *  * a + b + c
      */
-    override fun collectTargets(
-        file: PsiFile,
-        editor: Editor,
-        project: Project
-    ): Pair<MutableList<PsiIntroduceTarget<PSExpressionIdentifier>>, Int> {
+    override fun collectTargets(file: PsiFile, editor: Editor, project: Project)
+            : Pair<MutableList<PsiIntroduceTarget<Expression>>, Int> {
         val offset = editor.caretModel.offset
-        return (getTarget(file, offset) ?: getTarget(file, offset - 1))
-            ?.let { Pair.create(mutableListOf(it), 1) }
-            ?: Pair.create(mutableListOf(), 0)
+        val psiUnderCursor = psiNextToOffset(file, offset)
+            ?: return Pair.create(mutableListOf(), 0)
+        val selector = ExpressionSelector()
+        val expressions = selector.getNonFilteredExpressions(psiUnderCursor, editor.document, editor.caretModel.offset)
+        val targets = expressions.map { PsiIntroduceTarget(it) }.toMutableList()
+        return Pair.create(targets, 0) // 0 selected target
     }
 
-    private fun getTarget(file: PsiFile, offset: Int)
-        : PsiIntroduceTarget<PSExpressionIdentifier>? = file
-        .findElementAt(offset)
-        ?.parentsOfType<PSExpressionIdentifier>()
-        ?.firstOrNull()
-        ?.let { PsiIntroduceTarget(it) }
+    private fun psiNextToOffset(file: PsiFile, offset: Int) =
+        psiAtOffset(file, offset) ?: psiAtOffset(file, offset - 1)
 
-    override fun findSelectionTarget(
-        start: Int, end: Int, file: PsiFile, editor: Editor, project: Project
-    ) = file.findElementAt(start)
-        ?.parentsOfType<PSExpressionIdentifier>()
-        ?.firstOrNull()
-        ?.let { PsiIntroduceTarget(it) }
+    override fun findSelectionTarget(start: Int, end: Int, file: PsiFile, editor: Editor, project: Project)
+            : PsiIntroduceTarget<Expression>? {
+        val startElement = file.findElementAt(start) ?: return null
+        val endElement = file.findElementAt(end - 1) ?: return null
+        val commonElement = startElement.parents(true).firstOrNull() { it.textRange.contains(endElement.textRange) }
+        return commonElement
+            ?.parentsOfType<Expression>()
+            ?.firstOrNull()
+            ?.let { PsiIntroduceTarget(it) }
+            ?.takeIf { checkSelectedTarget(it, file, editor, project) == null }
+    }
+
+    private fun psiAtOffset(file: PsiFile, offset: Int) =
+        file.findElementAt(offset)?.parentsOfType<Expression>()?.firstOrNull()
 
     override fun getRefactoringName() = message("extract.method.title")
     override fun getHelpID() = null
     override fun getChooseScopeTitle() = "Choose scope <title>"
-    override fun getScopeRenderer() = DefaultPsiElementCellRenderer()
-        as PsiElementListCellRenderer<Module>
-
-    override fun checkSelectedTarget(
-        target: PsiIntroduceTarget<PSExpressionIdentifier>,
-        file: PsiFile,
-        editor: Editor,
-        project: Project
-    ) = when (target.place?.reference?.resolve()?.parent) {
-            is Module -> null
-            is PSClassMemberList -> null
-            else -> "'${target.place?.name}' cant be reached from top level"
+    override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<Module>
+    override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? {
+        val atoms = t.place?.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()
+            ?: return "Empty target"
+        return atoms.firstNotNullOfOrNull {
+            when (it.reference.resolve()?.parent) {
+                is Module -> null
+                is PSClassMemberList -> null
+                else -> "'${it.name}' cant be reached from top level"
+            }
         }
+    }
 
 
-    override fun collectTargetScopes(
-        target: PsiIntroduceTarget<PSExpressionIdentifier>,
-        editor: Editor,
-        file: PsiFile,
-        project: Project
-    ): MutableList<Module> = target.place
-        ?.module
-        ?.let { mutableListOf(it) }
-        ?: mutableListOf()
+    override fun collectTargetScopes(t: PsiIntroduceTarget<Expression>, e: Editor, f: PsiFile, p: Project)
+            : MutableList<Module> = t.place?.module?.let { mutableListOf(it) } ?: mutableListOf()
 
     override fun getIntroducer(
-        target: PsiIntroduceTarget<PSExpressionIdentifier>,
+        target: PsiIntroduceTarget<Expression>,
         scope: Module,
         usages: MutableList<UsageInfo>,
         replaceChoice: OccurrencesChooser.ReplaceChoice,
         file: PsiFile,
         editor: Editor,
         project: Project
-    ): AbstractInplaceIntroducer<ValueDeclarationGroup, PSExpressionIdentifier> {
+    ): AbstractInplaceIntroducer<ValueDeclarationGroup, Expression> {
         val factory = project.service<PSPsiFactory>()
-        val occurrences = usages
-            .map { it.element as PSExpressionIdentifier }
-            .toTypedArray()
-
-        return object :
-            AbstractInplaceIntroducer<ValueDeclarationGroup, PSExpressionIdentifier>(
-                project,
-                editor,
-                target.place,
-                null,
-                occurrences,
-                message("extract.method.title"),
-                PSFileType
-            ) {
+        val occurrences = usages.map { it.element as Expression }.toTypedArray()
+        val expr = target.place?.text ?: error("Could not extract text form expression")
+        val name = (target.place?.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()?.firstOrNull()?.name
+            ?: "expr") + "'"
+        return object : AbstractInplaceIntroducer<ValueDeclarationGroup, Expression>(
+            project,
+            editor,
+            target.place,
+            null,
+            occurrences,
+            message("extract.method.title"),
+            PSFileType
+        ) {
             /* this should be the ID of the shortcut action,
             * not sure if and to what it is used */
             override fun getActionName() = "ExtractMethod"
@@ -148,11 +141,8 @@ class ExpressionIdentifierIntroduceHandler :
              * Unsure how this is supposed to work, but we return a un attached
              * version of the template
              */
-            override fun getVariable() =
-                factory.createValueDeclarationGroup(
-                    "$myExprText'",
-                    myExprText
-                )!!
+            override fun getVariable() = factory.createValueDeclarationGroup(name, expr)
+                ?: error("Could not create value declaration")
 
             /**
              * This inserts the extracted method into the document
