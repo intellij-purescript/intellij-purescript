@@ -79,6 +79,7 @@ class PSPsiFactory(private val project: Project) {
         )!!
 
     fun createNewLine(): PsiElement = createNewLines()
+    fun createSpace(): PsiElement = project.service<PsiParserFacade>().createWhiteSpaceFromText(" ")
 
     fun createNewLines(n: Int = 1): PsiElement =
         project.service<PsiParserFacade>()

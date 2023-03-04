@@ -83,6 +83,7 @@ class ExpressionIdentifierIntroduceHandler :
     override fun getChooseScopeTitle() = "Choose scope <title>"
     override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<Module>
     override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? {
+        return null
         val atoms = t.place?.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()
             ?: return "Empty target"
         return atoms.firstNotNullOfOrNull {
@@ -90,6 +91,15 @@ class ExpressionIdentifierIntroduceHandler :
                 is Module -> null
                 is PSClassMemberList -> null
                 else -> "'${it.name}' cant be reached from top level"
+            }
+        }
+    }
+    
+    fun getParameters(expt: Expression): Sequence<PSExpressionIdentifier> {
+        return expt.getAtoms().filterIsInstance<PSExpressionIdentifier>().filter {
+            when (it.reference.resolve()?.parent) {
+                is Module , is PSClassMemberList -> false
+                else -> true
             }
         }
     }
@@ -109,9 +119,12 @@ class ExpressionIdentifierIntroduceHandler :
     ): AbstractInplaceIntroducer<ValueDeclarationGroup, Expression> {
         val factory = project.service<PSPsiFactory>()
         val occurrences = usages.map { it.element as Expression }.toTypedArray()
-        val expr = target.place?.text ?: error("Could not extract text form expression")
-        val name = (target.place?.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()?.firstOrNull()?.name
+        val psi = target.place ?: error("Empty target")
+        val expr = psi.text ?: error("Could not extract text form expression")
+        val name = (psi.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()?.firstOrNull()?.name
             ?: "expr") + "'"
+        val parameters = getParameters(psi).toList()
+        val nameWithParameters = "$name ${parameters.joinToString(" ") { it.name }}"
         return object : AbstractInplaceIntroducer<ValueDeclarationGroup, Expression>(
             project,
             editor,
@@ -141,24 +154,22 @@ class ExpressionIdentifierIntroduceHandler :
              * Unsure how this is supposed to work, but we return a un attached
              * version of the template
              */
-            override fun getVariable() = factory.createValueDeclarationGroup(name, expr)
+            override fun getVariable() = factory.createValueDeclarationGroup(nameWithParameters, expr)
                 ?: error("Could not create value declaration")
 
             /**
              * This inserts the extracted method into the document
              */
-            override fun createFieldToStartTemplateOn(
-                replaceAll: Boolean,
-                names: Array<out String>
-            ) = runWriteAction {
+            override fun createFieldToStartTemplateOn(replaceAll: Boolean, names: Array<out String>) = runWriteAction {
+                for (parameter in parameters) {
+                    this.expr?.parent?.addAfter(parameter, this.expr)
+                    this.expr?.parent?.addAfter(factory.createSpace(), this.expr)
+                }
                 scope.add(factory.createNewLines(2))
                 scope.addTyped(variable)
             }
 
-            override fun suggestNames(
-                replaceAll: Boolean,
-                variable: ValueDeclarationGroup?
-            ): Array<String> = emptyArray()
+            override fun suggestNames(replaceAll: Boolean, variable: ValueDeclarationGroup?): Array<String> = emptyArray()
 
             override fun isReplaceAllOccurrences() =
                 when (replaceChoice) {
@@ -172,7 +183,7 @@ class ExpressionIdentifierIntroduceHandler :
                 variable: ValueDeclarationGroup,
                 marker: RangeMarker,
                 exprText: String?
-            ) = target.place
+            ) = psi
         }
     }
 }
