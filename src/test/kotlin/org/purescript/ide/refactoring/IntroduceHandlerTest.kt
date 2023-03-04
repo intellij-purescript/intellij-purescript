@@ -34,28 +34,27 @@ class IntroduceHandlerTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
-    fun `test extract only reachable from top level`() {
-        assertThrows(RefactoringErrorHintException::class.java){
-            doTest(
-                """
-                module Main where
-                
-                import Prelude
-                
-                y = {-caret-}x
-                  where x = 1
-            """.trimIndent(),
-                """
-                module Main where
-                
-                import Prelude
-                
-                y = {-caret-}x
-                  where x = 1
-            """.trimIndent()
-            )
-
-        }
+    fun `test creates parameters of identifiers not reachable from top level`() {
+        doTest(
+            """
+            module Main where
+            
+            import Prelude
+            
+            y = {-caret-}x
+              where x = 1
+        """.trimIndent(),
+            """
+            module Main where
+            
+            import Prelude
+            
+            y = x' x
+              where x = 1
+            
+            x' x = x
+        """.trimIndent()
+        )
     }
     fun `it doesn't work to test extract all`() {
         doTest(

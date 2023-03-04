@@ -124,11 +124,12 @@ class ExpressionIdentifierIntroduceHandler :
         val name = (psi.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()?.firstOrNull()?.name
             ?: "expr") + "'"
         val parameters = getParameters(psi).toList()
-        val nameWithParameters = "$name ${parameters.joinToString(" ") { it.name }}"
+        val nameWithParameters = (sequenceOf(name) + parameters.map { it.name })
+            .joinToString(" ")
         return object : AbstractInplaceIntroducer<ValueDeclarationGroup, Expression>(
             project,
             editor,
-            target.place,
+            psi,
             null,
             occurrences,
             message("extract.method.title"),
@@ -183,7 +184,7 @@ class ExpressionIdentifierIntroduceHandler :
                 variable: ValueDeclarationGroup,
                 marker: RangeMarker,
                 exprText: String?
-            ) = psi
+            ) = this.expr
         }
     }
 }
