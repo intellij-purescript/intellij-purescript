@@ -753,5 +753,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
+    }   
+    
+    fun `test does not report do binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = do
+                  x <- [1]
+                  [x]
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
     }
 }

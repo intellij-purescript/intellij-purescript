@@ -2,4 +2,4 @@ package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
 
-class PSNumberBinder(node: ASTNode) : PSBinderAtom(node)
+class PSNumberBinder(node: ASTNode) : BinderAtom(node)

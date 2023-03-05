@@ -7,7 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 
-class PunBinder(node: ASTNode) : PSBinderAtom(node), PsiNameIdentifierOwner {
+class PunBinder(node: ASTNode) : BinderAtom(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name
 

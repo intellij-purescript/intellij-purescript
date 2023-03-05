@@ -67,6 +67,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     yieldAll(decl.valueDeclarationGroups.asSequence())
                                 }
                             }
+
                             is PSLambda -> yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
 
                             is PSExpressionWhere -> {
@@ -81,8 +82,13 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                             is PSLet ->
                                 yieldAll(parent.valueDeclarationGroups.asSequence())
 
-                            is PSDoBlock ->
-                                yieldAll(parent.valueDeclarationGroups)
+                            is PSDoBlock -> {
+                                val binders = parent
+                                    .statements
+                                    .takeWhile { it.textOffset < element.textOffset }
+                                    .flatMap { it.namedElements}
+                                yieldAll(binders)
+                            }
                         }
                     }
                     // TODO Support values defined in the expression

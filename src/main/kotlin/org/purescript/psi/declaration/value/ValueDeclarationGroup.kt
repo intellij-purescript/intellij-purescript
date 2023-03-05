@@ -13,7 +13,7 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.psi.PSElementType
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.binder.PSBinderAtom
+import org.purescript.psi.binder.BinderAtom
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.signature.PSSignature
@@ -70,7 +70,7 @@ class ValueDeclarationGroup: PSStubbedElement<ValueDeclarationGroup.Stub>,
             this.yieldAll(steps)
             steps = steps.flatMap { it.children.asList() }
         }
-    }.filterIsInstance<PSBinderAtom>().toList()
+    }.filterIsInstance<BinderAtom>().toList()
     
     override fun setName(name: String): PsiElement {
         for (valueDeclaration in valueDeclarations) {
