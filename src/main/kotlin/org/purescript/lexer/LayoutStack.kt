@@ -63,7 +63,7 @@ data class LayoutStack(
                                 stack.layoutDelimiter == LetStmt
                         )
             ) {
-                acc += src.start.asEnd
+                acc += src.asEnd
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
@@ -80,7 +80,7 @@ data class LayoutStack(
             var stack = this
             val acc = mutableListOf<SuperToken>()
             while (stack.tail != null && stack.layoutDelimiter.isIndent) {
-                acc += src.start.asEnd
+                acc += src.asEnd
                 stack = stack.pop()
             }
             when (stack.layoutDelimiter) {
@@ -110,7 +110,7 @@ data class LayoutStack(
                         src.column <= stack.sourcePos.column
                         )
             ) {
-                acc += src.start.asEnd
+                acc += src.asEnd
                 stack = stack.pop()
             }
             if (stack.layoutDelimiter == CaseBinders ||
@@ -227,14 +227,14 @@ data class LayoutStack(
             when {
                 lyt == LetStmt && stack3?.layoutDelimiter == Ado -> {
                     state2.copy(stack = state2.stack.pop())
-                        .insertToken(src.start.asEnd)
-                        .insertToken(src.start.asEnd)
+                        .insertToken(src.asEnd)
+                        .insertToken(src.asEnd)
                         .insertToken(src).toPair()
                 }
 
                 lyt.isIndent -> {
                     state2.copy(stack = state2.stack.pop())
-                        .insertToken(src.start.asEnd)
+                        .insertToken(src.asEnd)
                         .insertToken(src).toPair()
                 }
 
@@ -389,7 +389,7 @@ data class LayoutStack(
             src.column < stack.sourcePos.column
         ) {
             stack = stack.pop()
-            acc += src.start.asEnd
+            acc += src.asEnd
         }
         when {
             src.column != stack.sourcePos.column ||

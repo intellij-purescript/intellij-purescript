@@ -7,6 +7,7 @@ data class SuperToken(
     val tokens get() = qualified.flatMap { it.tokens } + token.tokens
     val start get() = qualified.firstOrNull()?.start ?: token.start
     val column get() = start.column
+    val asEnd get() = start.asEnd
     val end get() = token.end
     val value = token.value
 }
