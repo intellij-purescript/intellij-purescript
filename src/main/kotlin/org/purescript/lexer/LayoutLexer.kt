@@ -25,7 +25,7 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
         stack = nextStack
     }
     val layoutEnd = startPos.asEnd
-    if (tokens.lastOrNull()?.value in listOf(DO, OF)) {
+    if (tokens.last().value in listOf(DO, OF)) {
         val cleanTokens = tokensOut.dropLastWhile { it.value == LAYOUT_START || it.value == LAYOUT_SEP }
         val starts = cleanTokens.count { it.value == LAYOUT_START }
         val ends = cleanTokens.count { it.value == LAYOUT_END }
