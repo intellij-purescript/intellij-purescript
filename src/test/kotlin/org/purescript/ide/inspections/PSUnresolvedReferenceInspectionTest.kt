@@ -767,5 +767,18 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
+    } 
+    
+    fun `test does not case do binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = case 1 of
+                  x -> x
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
     }
 }

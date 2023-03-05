@@ -1,6 +1,10 @@
 package org.purescript.psi.expression.caseof
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.base.PSPsiElement
+import org.purescript.psi.binder.BinderAtom
 
-class PSCaseAlternative(node: ASTNode) : PSPsiElement(node)
+class PSCaseAlternative(node: ASTNode) : PSPsiElement(node) {
+    val binders get() = childrenOfType<BinderAtom>().flatMap { it.binders }
+}

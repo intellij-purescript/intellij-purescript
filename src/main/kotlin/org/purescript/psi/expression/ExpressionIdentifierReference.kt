@@ -14,6 +14,7 @@ import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.expression.caseof.PSCaseAlternative
 import org.purescript.psi.expression.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
@@ -88,6 +89,9 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     .takeWhile { it.textOffset < element.textOffset }
                                     .flatMap { it.namedElements}
                                 yieldAll(binders)
+                            }
+                            is PSCaseAlternative -> {
+                                yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
                             }
                         }
                     }
