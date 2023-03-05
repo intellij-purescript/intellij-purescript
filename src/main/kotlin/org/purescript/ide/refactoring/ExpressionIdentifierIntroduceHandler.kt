@@ -97,7 +97,9 @@ class ExpressionIdentifierIntroduceHandler :
     
     fun getParameters(expt: Expression): Sequence<PSExpressionIdentifier> {
         return expt.getAtoms().filterIsInstance<PSExpressionIdentifier>().filter {
-            when (it.reference.resolve()?.parent) {
+            val reference = it.reference.resolve() ?: return@filter true
+            if (expt.textRange.contains(reference.textRange)) false
+            else when (reference.parent) {
                 is Module , is PSClassMemberList -> false
                 else -> true
             }

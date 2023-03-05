@@ -56,6 +56,28 @@ class IntroduceHandlerTest : BasePlatformTestCase() {
         """.trimIndent()
         )
     }
+    fun `test it don't create parameter of identifiers declared inside expression`() {
+        doTest(
+            """
+            |module Main where
+            |
+            |y = 
+            |  {-caret-}let
+            |    x = 1
+            |  in x
+        """.trimMargin(),
+            """
+            |module Main where
+            |
+            |y = 
+            |  x'
+            |
+            |x' = let
+            |    x = 1
+            |  in x
+        """.trimMargin()
+        )
+    }
     fun `it doesn't work to test extract all`() {
         doTest(
             """
