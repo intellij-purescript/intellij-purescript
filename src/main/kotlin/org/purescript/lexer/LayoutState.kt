@@ -31,11 +31,9 @@ data class LayoutState(
             acc1 += t.asEnd
         }
         when {
-            t.column != stack1.column ||
-                t.line == stack1.line -> Unit
-
+            t.column != stack1.column || t.line == stack1.line -> Unit
             TopDecl == stack1.layoutDelimiter ||
-                TopDeclHead == stack1.layoutDelimiter -> {
+                    TopDeclHead == stack1.layoutDelimiter -> {
                 stack1 = stack1.pop()
                 acc1 += t.asSep
             }
@@ -87,10 +85,10 @@ data class LayoutState(
         }
         when {
             src.column != stack.column ||
-                src.line == stack.line -> Unit
+                    src.line == stack.line -> Unit
 
             TopDecl == stack.layoutDelimiter ||
-                TopDeclHead == stack.layoutDelimiter -> {
+                    TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
                 acc += src.asSep
             }
@@ -114,10 +112,10 @@ data class LayoutState(
 
     fun insertSep(tokPos: SourcePos) = when {
         tokPos.column != stack.column ||
-            tokPos.line == stack.line -> this
+                tokPos.line == stack.line -> this
 
         TopDecl == stack.layoutDelimiter ||
-            TopDeclHead == stack.layoutDelimiter ->
+                TopDeclHead == stack.layoutDelimiter ->
             LayoutState(stack.pop(), acc + tokPos.asSep)
 
         Of == stack.layoutDelimiter -> LayoutState(
