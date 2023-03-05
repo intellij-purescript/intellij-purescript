@@ -79,9 +79,7 @@ data class LayoutState(
             acc += src.asEnd
         }
         when {
-            src.column != stack.column ||
-                    src.line == stack.line -> Unit
-
+            src.column != stack.column || src.line == stack.line -> Unit
             TopDecl == stack.layoutDelimiter ||
                     TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
@@ -93,9 +91,7 @@ data class LayoutState(
                 acc += src.asSep
             }
 
-            stack.endsByDedent -> {
-                acc += src.asSep
-            }
+            stack.endsByDedent -> acc += src.asSep
         }
         return LayoutState(stack, acc + src)
     }
