@@ -7,8 +7,8 @@ data class LayoutState(
     val stack: LayoutStack,
     val acc: List<SuperToken>
 ) {
-    inline fun collapse(tokPos: SourcePos, p: (LayoutDelimiter) -> Boolean) =
-        collapse(tokPos) { _, _, lyt -> p(lyt) }
+    inline fun collapse(token: SuperToken, p: (LayoutDelimiter) -> Boolean) =
+        collapse(token.start) { _, _, lyt -> p(lyt) }
 
     fun insertStart(token: SuperToken, lyt: LayoutDelimiter): LayoutState =
         when (val indent = stack.find { it.endsByDedent }) {
