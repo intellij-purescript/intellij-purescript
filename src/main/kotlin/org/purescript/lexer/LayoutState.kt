@@ -95,6 +95,8 @@ data class LayoutState(
         p(stack.layoutDelimiter) -> copy(stack = stack.pop())
         else -> this
     }
+    fun popStack(): LayoutState = copy(stack = stack.pop())
+    
 
     fun insertSep(tokPos: SourcePos) = when {
         tokPos.column != stack.column || tokPos.line == stack.line -> this
