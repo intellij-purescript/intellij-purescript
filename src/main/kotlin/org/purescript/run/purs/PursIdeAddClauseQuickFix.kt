@@ -2,7 +2,6 @@ package org.purescript.run.purs
 
 import com.google.gson.Gson
 import com.intellij.codeInsight.intention.IntentionAction
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.runUndoTransparentWriteAction
@@ -24,25 +23,18 @@ class PursIdeAddClauseQuickFix(private val textRange: TextRange) : IntentionActi
     override fun getText(): String = "Add clause"
     override fun getFamilyName(): String = "Purs ide suggestion"
 
-    override fun isAvailable(
-        project: Project,
-        editor: Editor?,
-        file: PsiFile?
-    ): Boolean = true
+    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = true
     override fun invoke(project: Project, editor: Editor?, file: PsiFile) {
-        val document =
-            PsiDocumentManager.getInstance(file.project).getDocument(file)
-                ?: return
+        val document = PsiDocumentManager.getInstance(file.project).getDocument(file) ?: return
 
         // without a purs bin path we can't annotate with it
         val purs = project.service<Purs>()
         runBackgroundableTask("Add Clause", project, false) {
             purs.withServer {
-                val tempFile: File =
-                    File.createTempFile("purescript-intellij", file.name)
+                val tempFile: File = File.createTempFile("purescript-intellij", file.name)
                 tempFile.writeText(file.text, file.virtualFile.charset)
                 val output = ExecUtil.execAndGetOutput(
-                    GeneralCommandLine(purs.path, "ide", "client"),
+                    purs.commandLine.withParameters("ide", "client"),
                     Gson().toJson(
                         mapOf(
                             "command" to "addClause",

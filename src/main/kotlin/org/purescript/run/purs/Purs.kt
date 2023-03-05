@@ -11,6 +11,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.EnvironmentUtil
 import org.purescript.run.Npm
 
 @Service
@@ -28,10 +30,8 @@ class Purs(val project: Project) {
 
         // without a purs bin path we can't annotate with it
         runBackgroundableTask("purs ide server ($path)", project, true) {
-            CapturingProcessHandler(
-                GeneralCommandLine(path, "ide", "server")
-                    .withWorkDirectory(rootDir.toFile())
-            ).runProcessWithProgressIndicator(it)
+            CapturingProcessHandler(commandLine.withParameters("ide", "server"))
+                .runProcessWithProgressIndicator(it)
             started = false
         }
     }
@@ -43,7 +43,9 @@ class Purs(val project: Project) {
             false
         ) {
             ExecUtil.execAndGetOutput(
-                GeneralCommandLine(path, "ide", "client"),
+                commandLine
+                    .withExePath(path)
+                    .withParameters("ide", "client"),
                 Gson().toJson(mapOf("command" to "quit"))
             )
         }
@@ -53,16 +55,37 @@ class Purs(val project: Project) {
         return function()
     }
 
-    var path: String = project.service<Npm>().pathFor("purs")?.toString() ?: ""
+    var path: String = commandName
         get() =
-            project.service<PropertiesComponent>().getValue("purs path")
-                ?: project.service<Npm>().pathFor("purs")?.toString() ?: ""
+            project.service<PropertiesComponent>().getValue("purs path") ?: commandName
         set(value) {
             stopServer(field)
-            PropertiesComponent
-                .getInstance(project)
-                .setValue("purs path", value)
+            PropertiesComponent.getInstance(project).setValue("purs path", value)
         }
 
+    private val commandName: String
+        get() = when {
+            SystemInfo.isWindows -> "purs.cmd"
+            else -> "purs"
+        }
+
+    val commandLine: GeneralCommandLine
+        get() {
+            val pathEnvSeparator = when {
+                SystemInfo.isWindows -> ";"
+                else -> ":"
+            }
+            val npm = project.service<Npm>()
+            val pathEnv = listOfNotNull(
+                EnvironmentUtil.getValue("PATH"),
+                npm.globalBinPath,
+                npm.localBinPath
+            ).joinToString(pathEnvSeparator)
+            return GeneralCommandLine(path)
+                .withCharset(charset("UTF8"))
+                .withWorkDirectory(project.basePath)
+                .withEnvironment("PATH", pathEnv)
+                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+        }
 
 }
