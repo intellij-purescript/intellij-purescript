@@ -388,14 +388,14 @@ data class LayoutStack(
         while (
             stack.tail != null &&
             stack.layoutDelimiter.isIndent &&
-            src.column < stack.sourcePos.column
+            src.column < stack.column
         ) {
             stack = stack.pop()
             acc += src.asEnd
         }
         when {
-            src.column != stack.sourcePos.column ||
-                    src.start.line == stack.sourcePos.line -> Unit
+            src.column != stack.column ||
+                    src.start.line == stack.line -> Unit
 
             TopDecl == stack.layoutDelimiter ||
                     TopDeclHead == stack.layoutDelimiter -> {
