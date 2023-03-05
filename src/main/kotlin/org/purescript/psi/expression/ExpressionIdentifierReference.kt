@@ -13,6 +13,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.caseof.PSCaseAlternative
 import org.purescript.psi.expression.dostmt.PSDoBlock
@@ -56,15 +57,14 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
 
     private val moduleLocalCandidates: Sequence<PsiNamedElement>
         get() {
-            val module = element.module ?: return emptySequence()
             val qualifyingName = element.qualifiedIdentifier.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {
                     for (parent in element.parents(false)) {
                         when (parent) {
+                            is ValueDecl -> yieldAll(parent.namedBinders.values)
                             is ValueDeclarationGroup -> {
                                 parent.valueDeclarations.forEach { decl ->
-                                    yieldAll(decl.namedBinders.values)
                                     yieldAll(decl.valueDeclarationGroups.asSequence())
                                 }
                             }
@@ -95,6 +95,8 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                             }
                         }
                     }
+
+                    val module = element.module ?: return@sequence
                     // TODO Support values defined in the expression
                     yieldAll(module.cache.valueDeclarationGroups.toList())
                     yieldAll(module.cache.foreignValueDeclarations.toList())

@@ -147,6 +147,20 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    
+    fun `test inline with parameter`() {
+        doTest(
+            """
+                |module Main where
+                |x{-caret-} n = 1 + n
+                |y = x 2
+            """.trimMargin(),
+            """
+                |module Main where
+                |y = (1 + 2)
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,

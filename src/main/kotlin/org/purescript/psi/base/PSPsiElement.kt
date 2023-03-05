@@ -2,7 +2,7 @@ package org.purescript.psi.base
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
-import org.purescript.file.PSFile
+import com.intellij.psi.util.parentOfType
 import org.purescript.psi.module.Module
 
 abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
@@ -16,5 +16,5 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
     /**
      * @return the [Module] containing this element
      */
-    val module: Module? get() = (containingFile as PSFile).module
+    val module: Module? get() = this.parentOfType(true)
 }

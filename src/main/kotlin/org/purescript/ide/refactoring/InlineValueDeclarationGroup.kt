@@ -3,6 +3,7 @@ package org.purescript.ide.refactoring
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.childrenOfType
 import com.intellij.refactoring.BaseRefactoringProcessor
@@ -11,6 +12,8 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.alsoIfNull
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.RecordLabel
 import org.purescript.psi.expression.PSExpressionIdentifier
@@ -31,15 +34,41 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
             .toTypedArray()
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
-        val expression = toInline.valueDeclarations.single().value.text
+        val valueDeclaration = toInline.valueDeclarations.singleOrNull()
+            ?: error("can only inline value declarations with one body")
+        val binders = valueDeclaration.parameters?.binderAtoms ?: emptyList()
+        if (binders.any { it !is PSVarBinder }) error("can only inline simple parameters")
         val factory = project.service<PSPsiFactory>()
-        val parenthesis = factory.createParenthesis(expression) ?: return
-        for (usage in usages) when(usage.element?.parent) {
-            is RecordLabel -> factory
-                .createRecordLabel("${(usage.element as PSExpressionIdentifier).name}: $expression")
-                ?.let { usage.element?.parent?.replace(it) }
-                ?: usage.element?.replace(parenthesis)
-            else -> usage.element?.replace(parenthesis)
+        for (usage in usages) {
+            val call = usage.element as? PSExpressionIdentifier ?: continue
+            val copy = valueDeclaration.copy() as ValueDecl
+            val copyBinders = copy.parameters?.binderAtoms?.filterIsInstance<PSVarBinder>()
+                ?: emptyList()
+            val replace = copyBinders.map {
+                ReferencesSearch
+                    .search(it, LocalSearchScope(copy))
+                    .findAll()
+                    .map { it.element }
+            }.toList()
+            val arguments = call.arguments.toList()
+            if (replace.size > arguments.size) error("There mus be more arguments then parameters")
+            val argumentsToInline = arguments.take(replace.size)
+            replace.zip(argumentsToInline) { refs, b ->
+                refs.forEach { it.replace(b) }
+            }
+            val expression = copy.value.text
+            val parenthesis = factory.createParenthesis(expression) ?: return
+            if (argumentsToInline.isNotEmpty()) {
+                call.parent.deleteChildRange(call.nextSibling, argumentsToInline.last())
+            }
+            when (usage.element?.parent) {
+                is RecordLabel -> factory
+                    .createRecordLabel("${(usage.element as PSExpressionIdentifier).name}: $expression")
+                    ?.let { usage.element?.parent?.replace(it) }
+                    ?: usage.element?.replace(parenthesis)
+
+                else -> usage.element?.replace(parenthesis)
+            }
         }
         when (val parent = toInline.parent) {
             is PSLet ->

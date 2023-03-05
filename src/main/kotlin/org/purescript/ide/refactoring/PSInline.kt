@@ -14,9 +14,7 @@ class PSInline : InlineActionHandler() {
 
     override fun canInlineElement(element: PsiElement?): Boolean {
         return if (element is ValueDeclarationGroup) {
-            element.valueDeclarations.singleOrNull()
-                ?.namedBinders?.isEmpty()
-                ?: false
+            element.valueDeclarations.singleOrNull()?.let { true } ?: false
         } else {
             false
         }

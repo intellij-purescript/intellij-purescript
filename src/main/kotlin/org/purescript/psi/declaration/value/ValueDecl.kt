@@ -108,12 +108,14 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
         get() = this.getDocComments()
 
     val namedBinders: Map<String, PsiNamedElement>
-        get() = parameters
-            ?.binders
+        get() = binders
             ?.filterIsInstance<PsiNamedElement>()
             ?.filter { it.name != null }
             ?.associateBy { it.name!! }
             ?: emptyMap()
+
+    val binders get() = parameters?.binders
+
     val parameters get() = findChildByClass(Parameters::class.java)
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarationGroups

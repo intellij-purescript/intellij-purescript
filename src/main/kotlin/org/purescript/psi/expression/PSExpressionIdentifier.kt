@@ -1,6 +1,9 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.siblings
+import org.purescript.parser.PSParserDefinition
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.name.PSQualifiedIdentifier
@@ -17,14 +20,27 @@ import org.purescript.psi.name.PSQualifiedIdentifier
  */
 class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom, Qualified {
 
+    private val psParserDefinition = PSParserDefinition()
+
+    val arguments: Sequence<ExpressionAtom> = this
+        .siblings(true, false)
+        .filter {
+            !(psParserDefinition.commentTokens.contains(it.elementType) ||
+                    psParserDefinition.whitespaceTokens.contains(it.elementType))
+        }
+        .takeWhile {
+            it is ExpressionAtom && it !is PSExpressionOperator
+        }
+        .filterIsInstance<ExpressionAtom>()
+
     /**
      * @return the [PSQualifiedIdentifier] identifying this constructor
      */
     internal val qualifiedIdentifier: PSQualifiedIdentifier
         get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
-    
+
     override val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
-    
+
     override fun getName(): String = qualifiedIdentifier.name
 
     override fun getReference(): ExpressionIdentifierReference =
@@ -37,7 +53,8 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             ref == otherRef -> true
             ref is ValueDeclarationGroup && otherRef is ValueDeclarationGroup -> ref.valueDeclarations
                 .zip(otherRef.valueDeclarations) { a, b -> a.value.areSimilarTo(b.value) }
-                    .all { it }
+                .all { it }
+
             else -> false
         }
     }
