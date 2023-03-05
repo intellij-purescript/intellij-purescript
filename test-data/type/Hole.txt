@@ -66,6 +66,8 @@ Purescript File
         ValueDecl(ValueDecl)
           PSIdentifier(identifier)
             PsiElement(identifier)('show')
+          Parameters(Parameters)
+            <empty list>
           PsiElement(=)('=')
           PSValue(Value)
             PSStringLiteral(StringLiteral)

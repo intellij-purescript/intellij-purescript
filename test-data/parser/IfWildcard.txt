@@ -80,6 +80,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('cond')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSIfThenElse(IfThenElse)
@@ -112,6 +114,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('what')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSIfThenElse(IfThenElse)
@@ -172,6 +176,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSDoBlock(DoBlock)
@@ -182,6 +188,8 @@ Purescript File
                 ValueDecl(ValueDecl)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('tmp1')
+                  Parameters(Parameters)
+                    <empty list>
                   PsiElement(=)('=')
                   PSValue(Value)
                     PSExpressionIdentifier(ExpressionIdentifier)
@@ -194,6 +202,8 @@ Purescript File
                 ValueDecl(ValueDecl)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('tmp2')
+                  Parameters(Parameters)
+                    <empty list>
                   PsiElement(=)('=')
                   PSValue(Value)
                     PSExpressionIdentifier(ExpressionIdentifier)

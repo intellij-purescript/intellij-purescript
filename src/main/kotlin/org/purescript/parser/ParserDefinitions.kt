@@ -93,8 +93,8 @@ class ParserDefinitions {
             CharBinder(char),
             StringBinder(string),
             NumberBinder(number),
-            ObjectBinder(squares(binder.sepBy(`,`))),
-            recordLayout(recordBinder, "record binder"),
+            ArrayBinderType(squares(binder.sepBy(`,`))),
+            RecordBinderType(recordLayout(recordBinder, "record binder")),
             parens(binder),
             BooleanBinder(boolean),
             CtorBinder(qualProperName),
@@ -115,7 +115,7 @@ class ParserDefinitions {
     private val propertyUpdate: DSL = label + !eq + expr
     val symbol = Symbol(parens(operatorName))
 
-    private val recordLabel = ObjectBinderField(
+    private val recordLabel = RecordLabelType(
         ((label + ":").heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
                 ((label + eq).heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
                 ExpressionIdentifier(QualifiedIdentifier(label)).relaxTo(RCURLY.dsl / `,`, "malformed label")
@@ -146,7 +146,7 @@ class ParserDefinitions {
         StringLiteral(string),
         number,
         ArrayLiteral(squares(!(expr + !+(`,` + expr.relax("missing array element"))).heal)),
-        ObjectLiteral(recordLayout(recordLabel, "record label")),
+        RecordLiteralType(recordLayout(recordLabel, "record label")),
         Parens(parens(expr.relax("empty parenthesis"))),
     )
     private val expr7 = exprAtom + !+Accessor(dot + label)
@@ -247,7 +247,7 @@ class ParserDefinitions {
      * */
     private val role = `'nominal'` / representational / phantom
     private fun namedValueDecl(name: String) =
-        ValueDeclType(Lookahead(ident.heal) { tokenText == name } + !+binderAtom + guardedDecl)
+        ValueDeclType(Lookahead(ident.heal) { tokenText == name } + ParametersType(!+binderAtom) + guardedDecl)
 
     private fun valueDeclarationGroup() =
         ValueDeclarationGroupType(Capture { name ->
@@ -350,5 +350,5 @@ class ParserDefinitions {
                 layout1(doStatement, "do statement").relax("missing do statements")
     )
     private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
-    private val recordBinder = ((label + eq / ":").heal + binder) / VarBinder(label)
+    private val recordBinder = ((label + eq / ":").heal + binder) / PunBinderType(label)
 }

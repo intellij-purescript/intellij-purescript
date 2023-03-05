@@ -15,18 +15,14 @@ class PSInline : InlineActionHandler() {
     override fun canInlineElement(element: PsiElement?): Boolean {
         return if (element is ValueDeclarationGroup) {
             element.valueDeclarations.singleOrNull()
-                ?.varBindersInParameters?.isEmpty()
+                ?.namedBinders?.isEmpty()
                 ?: false
         } else {
             false
         }
     }
 
-    override fun inlineElement(
-        project: Project,
-        editor: Editor,
-        element: PsiElement?
-    ) {
+    override fun inlineElement(project: Project, editor: Editor, element: PsiElement?) {
         when (element) {
             is ValueDeclarationGroup -> {
                 InlineValueDeclarationGroup(project, element).run()

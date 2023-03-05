@@ -36,6 +36,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('test')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSLambda(Lambda)
@@ -60,6 +62,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)

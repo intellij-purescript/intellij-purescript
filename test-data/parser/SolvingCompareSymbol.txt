@@ -90,6 +90,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('symA')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionConstructor(ExpressionConstructor)
@@ -112,6 +114,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('symB')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionConstructor(ExpressionConstructor)
@@ -137,6 +141,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('egLT')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -170,6 +176,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('egEQ')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -203,6 +211,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('egGT')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -221,6 +231,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSDoBlock(DoBlock)
@@ -231,6 +243,8 @@ Purescript File
                 ValueDecl(ValueDecl)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('gotLT')
+                  Parameters(Parameters)
+                    <empty list>
                   PsiElement(=)('=')
                   PSValue(Value)
                     PSExpressionIdentifier(ExpressionIdentifier)
@@ -253,6 +267,8 @@ Purescript File
                 ValueDecl(ValueDecl)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('gotEQ')
+                  Parameters(Parameters)
+                    <empty list>
                   PsiElement(=)('=')
                   PSValue(Value)
                     PSExpressionIdentifier(ExpressionIdentifier)
@@ -275,6 +291,8 @@ Purescript File
                 ValueDecl(ValueDecl)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('gotGT')
+                  Parameters(Parameters)
+                    <empty list>
                   PsiElement(=)('=')
                   PSValue(Value)
                     PSExpressionIdentifier(ExpressionIdentifier)

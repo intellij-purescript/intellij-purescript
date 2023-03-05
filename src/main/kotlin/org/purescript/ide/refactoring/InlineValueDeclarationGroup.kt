@@ -12,17 +12,16 @@ import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.alsoIfNull
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.exports.RecordLabel
+import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.expression.PSLet
 import org.purescript.psi.expression.dostmt.PSDoNotationLet
 
-class InlineValueDeclarationGroup(
-    val project: Project,
-    val toInline: ValueDeclarationGroup
-) : BaseRefactoringProcessor(project) {
-    override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor {
-        return BaseUsageViewDescriptor(toInline)
-    }
+class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDeclarationGroup) :
+    BaseRefactoringProcessor(project) {
+    override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor =
+        BaseUsageViewDescriptor(toInline)
 
     override fun findUsages(): Array<UsageInfo> =
         ReferencesSearch
@@ -35,7 +34,13 @@ class InlineValueDeclarationGroup(
         val expression = toInline.valueDeclarations.single().value.text
         val factory = project.service<PSPsiFactory>()
         val parenthesis = factory.createParenthesis(expression) ?: return
-        for (usage in usages) usage.element?.replace(parenthesis)
+        for (usage in usages) when(usage.element?.parent) {
+            is RecordLabel -> factory
+                .createRecordLabel("${(usage.element as PSExpressionIdentifier).name}: $expression")
+                ?.let { usage.element?.parent?.replace(it) }
+                ?: usage.element?.replace(parenthesis)
+            else -> usage.element?.replace(parenthesis)
+        }
         when (val parent = toInline.parent) {
             is PSLet ->
                 if (parent.childrenOfType<ValueDeclarationGroup>()?.size == 1) {
@@ -44,6 +49,7 @@ class InlineValueDeclarationGroup(
                 } else {
                     toInline.delete()
                 }
+
             is PSDoNotationLet, is PSExpressionWhere ->
                 if (parent.childrenOfType<ValueDeclarationGroup>()?.size == 1) {
                     parent.delete()

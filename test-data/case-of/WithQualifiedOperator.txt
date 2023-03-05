@@ -21,6 +21,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('x')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSCase(Case)

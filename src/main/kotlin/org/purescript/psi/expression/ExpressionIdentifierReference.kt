@@ -63,7 +63,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                         when (parent) {
                             is ValueDeclarationGroup -> {
                                 parent.valueDeclarations.forEach { decl ->
-                                    yieldAll(decl.varBindersInParameters.values)
+                                    yieldAll(decl.namedBinders.values)
                                     yieldAll(decl.valueDeclarationGroups.asSequence())
                                 }
                             }

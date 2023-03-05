@@ -85,6 +85,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('test1')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSArrayLiteral(ArrayLiteral)
@@ -122,9 +124,10 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
-        PSVarBinder(VarBinder)
-          PSIdentifier(identifier)
-            PsiElement(identifier)('s')
+        Parameters(Parameters)
+          PSVarBinder(VarBinder)
+            PSIdentifier(identifier)
+              PsiElement(identifier)('s')
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -135,6 +138,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('test2')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -190,6 +195,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('test3')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionConstructor(ExpressionConstructor)
@@ -247,6 +254,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('test4')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSArrayLiteral(ArrayLiteral)
@@ -302,6 +311,8 @@ Purescript File
         ValueDecl(ValueDecl)
           PSIdentifier(identifier)
             PsiElement(identifier)('def')
+          Parameters(Parameters)
+            <empty list>
           PsiElement(=)('=')
           PSValue(Value)
             PSStringLiteral(StringLiteral)
@@ -310,6 +321,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)

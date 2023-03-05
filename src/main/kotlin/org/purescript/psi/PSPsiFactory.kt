@@ -15,6 +15,7 @@ import org.purescript.psi.declaration.imports.*
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.ExportList
+import org.purescript.psi.exports.RecordLabel
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSIfThenElse
 import org.purescript.psi.expression.PSParens
@@ -173,6 +174,15 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |foo = if $test then $then else $otherwise
+            """.trimMargin()
+        )
+    }
+
+    fun createRecordLabel(text: String): RecordLabel? {
+        return createFromText(
+            """
+            |module Main where
+            |foo = {$text}
             """.trimMargin()
         )
     }

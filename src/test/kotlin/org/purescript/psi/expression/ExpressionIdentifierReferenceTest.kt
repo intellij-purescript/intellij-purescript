@@ -1,10 +1,6 @@
 package org.purescript.psi.expression
 
-import com.intellij.psi.stubs.StubIndex
-import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.indexing.DumbModeAccessType
-import com.intellij.util.indexing.DumbModeAccessType.RELIABLE_DATA_ONLY
 import org.purescript.*
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
@@ -275,7 +271,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 x {y} = y
             """.trimIndent()
         )
-        val varBinder = file.getVarBinder()
+        val varBinder = file.getPunBinder()
         val expressionIdentifier = file.getExpressionIdentifier()
 
         assertEquals(varBinder, expressionIdentifier.getReference().resolve())

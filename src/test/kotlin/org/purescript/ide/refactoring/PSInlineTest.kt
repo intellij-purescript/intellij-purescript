@@ -134,6 +134,19 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    fun `test inline value to record pun`() {
+        doTest(
+            """
+                |module Main where
+                |x{-caret-} = 1
+                |y = {x}
+            """.trimMargin(),
+            """
+                |module Main where
+                |y = {x: 1}
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,

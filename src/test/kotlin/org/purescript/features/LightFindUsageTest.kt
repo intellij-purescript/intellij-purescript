@@ -1,7 +1,6 @@
 package org.purescript.features
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.file.PSFile
 import org.purescript.getValueDeclarationGroupByName
 
 class LightFindUsageTest : BasePlatformTestCase() {
@@ -31,7 +30,7 @@ class LightFindUsageTest : BasePlatformTestCase() {
         ).getValueDeclarationGroupByName("fn")
         val x = fn.valueDeclarations
             .first()
-            .varBindersInParameters["x"]!!
+            .namedBinders["x"]!!
         val usages = myFixture.findUsages(x)
         assertNotEmpty(usages)
     }

@@ -5,8 +5,8 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.psi.PSElementType
@@ -14,7 +14,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.binder.PSBinderAtom
-import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.ExpressionAtom
 import org.purescript.psi.expression.PSExpressionWhere
@@ -105,13 +105,14 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     override val docComments: List<PsiComment>
         get() = this.getDocComments()
 
-    val varBindersInParameters: Map<String, PSVarBinder>
-        get() = SyntaxTraverser.psiTraverser(this)
-            .filterIsInstance(PSVarBinder::class.java)
-            .asSequence()
-            .map { Pair(it.name, it) }
-            .toMap()
-
+    val namedBinders: Map<String, PsiNamedElement>
+        get() = parameters
+            ?.binders
+            ?.filterIsInstance<PsiNamedElement>()
+            ?.filter { it.name != null}
+            ?.associateBy { it.name!! } 
+            ?: emptyMap()
+    val parameters get() = findChildByClass(Parameters::class.java)
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarationGroups
         get() = where?.valueDeclarationGroups ?: emptyArray()

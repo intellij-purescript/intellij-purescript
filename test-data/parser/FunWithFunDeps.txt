@@ -664,9 +664,10 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('fsingleton')
-        PSVarBinder(VarBinder)
-          PSIdentifier(identifier)
-            PsiElement(identifier)('x')
+        Parameters(Parameters)
+          PSVarBinder(VarBinder)
+            PSIdentifier(identifier)
+              PsiElement(identifier)('x')
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -685,6 +686,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('fexample')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -741,6 +744,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('fexample2')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -771,6 +776,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('fexample3')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -813,6 +820,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('fexample4')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
@@ -827,6 +836,8 @@ Purescript File
       ValueDecl(ValueDecl)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
+        Parameters(Parameters)
+          <empty list>
         PsiElement(=)('=')
         PSValue(Value)
           PSExpressionIdentifier(ExpressionIdentifier)
