@@ -24,14 +24,14 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
     }
     val lastToken = tokens.last()
     val layoutEnd = lastToken.end.asEnd
-    if (lastToken.value in listOf(DO, OF)) {
+    return if (lastToken.value in listOf(DO, OF)) {
         val cleanTokens = tokensOut.dropLastWhile { it.value == LAYOUT_START || it.value == LAYOUT_SEP }
         val starts = cleanTokens.count { it.value == LAYOUT_START }
         val ends = cleanTokens.count { it.value == LAYOUT_END }
-        return cleanTokens + List(starts - ends) { layoutEnd }
+        cleanTokens + List(starts - ends) { layoutEnd }
     } else {
         tokensOut += List(stack.count { it.endsByDedent }) { layoutEnd }
-        return tokensOut
+        tokensOut
     }
 }
 
