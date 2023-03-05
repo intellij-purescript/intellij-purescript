@@ -19,10 +19,7 @@ data class LayoutState(
             }
         }
 
-    inline fun insertKwProperty(
-        t: SuperToken,
-        k: (LayoutState) -> LayoutState
-    ): LayoutState {
+    inline fun insertKwProperty(t: SuperToken, k: (LayoutState) -> LayoutState): LayoutState {
         var stack1 = stack
         val acc1 = acc.toMutableList()
         while (
