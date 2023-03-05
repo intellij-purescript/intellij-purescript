@@ -51,10 +51,7 @@ data class LayoutState(
         }
     }
 
-    inline fun collapse(
-        tokPos: SourcePos,
-        p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean
-    ): LayoutState {
+    inline fun collapse(tokPos: SourcePos, p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean): LayoutState {
         var (stack, acc) = this
         while (
             stack.tail != null &&
