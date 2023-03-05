@@ -84,15 +84,6 @@ class ExpressionIdentifierIntroduceHandler :
     override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<Module>
     override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? {
         return null
-        val atoms = t.place?.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()
-            ?: return "Empty target"
-        return atoms.firstNotNullOfOrNull {
-            when (it.reference.resolve()?.parent) {
-                is Module -> null
-                is PSClassMemberList -> null
-                else -> "'${it.name}' cant be reached from top level"
-            }
-        }
     }
     
     fun getParameters(expt: Expression): Sequence<PSExpressionIdentifier> {
