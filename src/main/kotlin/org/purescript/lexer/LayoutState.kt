@@ -14,7 +14,7 @@ data class LayoutState(
         when (val indent = stack.find { it.isIndent }) {
             null -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
             else -> when {
-                nextPos.column <= indent.sourcePos.column -> this
+                nextPos.column <= indent.column -> this
                 else -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
             }
         }
@@ -28,29 +28,27 @@ data class LayoutState(
         while (
             stack1.tail != null &&
             stack1.layoutDelimiter.isIndent &&
-            t.start.column < stack1.sourcePos.column
+            t.column < stack1.column
         ) {
             stack1 = stack1.pop()
-            acc1 += t.start.asEnd
+            acc1 += t.asEnd
         }
         when {
-            t.start.column != stack1.sourcePos.column ||
-                t.start.line == stack1.sourcePos.line -> Unit
+            t.column != stack1.column ||
+                t.line == stack1.line -> Unit
 
             TopDecl == stack1.layoutDelimiter ||
                 TopDeclHead == stack1.layoutDelimiter -> {
                 stack1 = stack1.pop()
-                acc1 += t.start.asSep
+                acc1 += t.asSep
             }
 
             Of == stack1.layoutDelimiter -> {
                 stack1 = stack1.push(t.start, CaseBinders)
-                acc1 += t.start.asSep
+                acc1 += t.asSep
             }
 
-            stack1.layoutDelimiter.isIndent -> {
-                acc1 += t.start.asSep
-            }
+            stack1.layoutDelimiter.isIndent -> acc1 += t.asSep
         }
         return when (stack.layoutDelimiter) {
             Property -> LayoutState(stack1.pop(), acc1 + (t))
@@ -85,28 +83,28 @@ data class LayoutState(
         while (
             stack.tail != null &&
             stack.layoutDelimiter.isIndent &&
-            src.start.column < stack.sourcePos.column
+            src.column < stack.column
         ) {
             stack = stack.pop()
-            acc += src.start.asEnd
+            acc += src.asEnd
         }
         when {
-            src.start.column != stack.sourcePos.column ||
-                src.start.line == stack.sourcePos.line -> Unit
+            src.column != stack.column ||
+                src.line == stack.line -> Unit
 
             TopDecl == stack.layoutDelimiter ||
                 TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
-                acc += src.start.asSep
+                acc += src.asSep
             }
 
             Of == stack.layoutDelimiter -> {
                 stack = stack.push(src.start, CaseBinders)
-                acc += src.start.asSep
+                acc += src.asSep
             }
 
             stack.layoutDelimiter.isIndent -> {
-                acc += src.start.asSep
+                acc += src.asSep
             }
         }
         return LayoutState(stack, acc + src)
@@ -118,8 +116,8 @@ data class LayoutState(
     }
 
     fun insertSep(tokPos: SourcePos) = when {
-        tokPos.column != stack.sourcePos.column ||
-            tokPos.line == stack.sourcePos.line -> this
+        tokPos.column != stack.column ||
+            tokPos.line == stack.line -> this
 
         TopDecl == stack.layoutDelimiter ||
             TopDeclHead == stack.layoutDelimiter ->

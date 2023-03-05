@@ -9,6 +9,8 @@ data class LayoutStack(
     val layoutDelimiter: LayoutDelimiter,
     val tail: LayoutStack?
 ) {
+    val column get() = sourcePos.column
+    val line get() = sourcePos.line
     fun isTopDecl(tokPos: SourcePos): Boolean = when {
         tail == null || tail.tail != null -> false
         tail.layoutDelimiter != Root -> false
