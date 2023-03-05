@@ -2,6 +2,8 @@ package org.purescript.psi.declaration.signature
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceBase
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.name.PSIdentifier
@@ -25,4 +27,7 @@ class PSSignature(node: ASTNode) : PSPsiElement(node) {
                 ?: return 
         nameIdentifier.replace(identifier)
     }
+
+    override fun getReference(): PsiReference? = 
+        parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
 }
