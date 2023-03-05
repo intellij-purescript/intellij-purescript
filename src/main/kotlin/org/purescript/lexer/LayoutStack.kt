@@ -43,7 +43,7 @@ data class LayoutStack(
 
     fun pop() = tail ?: this
 
-    fun insertLayout(src: SuperToken, nextPos: SourcePos) = when (src.value) {
+    fun insertLayout(src: SuperToken) = when (src.value) {
         LOWER, TYPE, FALSE, TRUE -> {
             var (stack, acc) = collapse(src)
             if (stack.layoutDelimiter == Property) stack = stack.pop()
@@ -155,7 +155,7 @@ data class LayoutStack(
         WHERE -> when (this.layoutDelimiter) {
             TopDeclHead -> LayoutState(pop(), emptyList())
                 .insertToken(src)
-                .insertStart(nextPos, Where)
+                .insertStart(src.end, Where)
 
             Property -> LayoutState(pop(), emptyList()).insertToken(src)
             else -> LayoutState(this, emptyList())
@@ -165,7 +165,7 @@ data class LayoutStack(
                         else lyt.endsByDedent && tokPos.column <= lytPos.column
                     }
                 }.insertToken(src)
-                .insertStart(nextPos, Where)
+                .insertStart(src.end, Where)
         }.toPair()
 
         LPAREN -> LayoutState(this, emptyList())
@@ -236,9 +236,9 @@ data class LayoutStack(
             fun next(state: LayoutState): LayoutState {
                 val (p, lyt, _) = state.stack
                 return when {
-                    lyt == Do && p.column == src.column -> state.insertStart(nextPos, LetStmt)
-                    lyt == Ado && p.column == src.column -> state.insertStart(nextPos, LetStmt)
-                    else -> state.insertStart(nextPos, LayoutDelimiter.Let)
+                    lyt == Do && p.column == src.column -> state.insertStart(src.end, LetStmt)
+                    lyt == Ado && p.column == src.column -> state.insertStart(src.end, LetStmt)
+                    else -> state.insertStart(src.end, LayoutDelimiter.Let)
                 }
             }
 
@@ -249,12 +249,12 @@ data class LayoutStack(
 
         DO ->
             LayoutState(this, emptyList())
-                .insertKwProperty(src) { it.insertStart(nextPos, Do) }
+                .insertKwProperty(src) { it.insertStart(src.end, Do) }
                 .toPair()
 
         ADO ->
             LayoutState(this, emptyList())
-                .insertKwProperty(src) { it.insertStart(nextPos, Ado) }
+                .insertKwProperty(src) { it.insertStart(src.end, Ado) }
                 .toPair()
 
         CASE -> LayoutState(this, emptyList()).insertKwProperty(src)
@@ -266,8 +266,8 @@ data class LayoutStack(
             if (state2.stack.layoutDelimiter == LayoutDelimiter.Case) {
                 state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
-                    .insertStart(nextPos, Of)
-                    .pushStack(nextPos, CaseBinders)
+                    .insertStart(src.end, Of)
+                    .pushStack(src.end, CaseBinders)
             } else {
                 state2
                     .insertDefault(src)

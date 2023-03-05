@@ -19,7 +19,7 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
     var startPos = sourcePos
     for (posToken in tokens) {
         val nextStart = posToken.end
-        val (nextStack, toks) = stack.insertLayout(posToken, nextStart)
+        val (nextStack, toks) = stack.insertLayout(posToken)
         tokensOut += toks
         startPos = nextStart
         stack = nextStack
