@@ -7,4 +7,5 @@ import org.purescript.psi.declaration.value.ValueDeclarationGroup
 class PSLet(node: ASTNode) : PSPsiElement(node) {
     val valueDeclarationGroups: Array<ValueDeclarationGroup> get() =
         findChildrenByClass(ValueDeclarationGroup::class.java)
+    val value:PSValue? = findChildByClass(PSValue::class.java)
 }

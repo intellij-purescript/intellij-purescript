@@ -79,6 +79,61 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimIndent()
         )
     }
+    
+    fun `test inline value from where`() {
+        doTest(
+            """
+                |module Main where
+                |f a = a
+                |y = f {-caret-}x
+                |  where
+                |    x = f 1
+            """.trimMargin(),
+            """
+                |module Main where
+                |f a = a
+                |y = f (f 1)
+                |  
+                |
+            """.trimMargin()
+        )
+    }    
+    fun `test inline value from do let`() {
+        doTest(
+            """
+                |module Main where
+                |f a = a
+                |y = do
+                |  let
+                |    x = f 1
+                |  pure $ f {-caret-}x
+            """.trimMargin(),
+            """
+                |module Main where
+                |f a = a
+                |y = do
+                |  pure $ f (f 1)
+            """.trimMargin()
+        )
+    }
+    fun `test inline value from let in`() {
+        doTest(
+            """
+                |module Main where
+                |f a = a
+                |y =
+                |  let
+                |    x = f 1
+                |  in f {-caret-}x
+            """.trimMargin(),
+            """
+                |module Main where
+                |f a = a
+                |y =
+                |  f (f 1)
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,
