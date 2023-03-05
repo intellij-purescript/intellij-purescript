@@ -8,7 +8,7 @@ data class LayoutState(
     val acc: List<SuperToken>
 ) {
     inline fun collapse(token: SuperToken, p: (LayoutDelimiter) -> Boolean) =
-        collapse(token.start) { _, _, lyt -> p(lyt) }
+        collapse(token) { _, _, lyt -> p(lyt) }
 
     fun insertStart(token: SuperToken, lyt: LayoutDelimiter): LayoutState =
         when (val indent = stack.find { it.endsByDedent }) {
@@ -50,11 +50,11 @@ data class LayoutState(
         }
     }
 
-    inline fun collapse(tokPos: SourcePos, p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean): LayoutState {
+    inline fun collapse(token: SuperToken, p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean): LayoutState {
         var (stack, acc) = this
-        while (stack.tail != null && p(tokPos, stack.sourcePos, stack.layoutDelimiter)) {
+        while (stack.tail != null && p(token.start, stack.sourcePos, stack.layoutDelimiter)) {
             if (stack.endsByDedent) {
-                acc = acc + tokPos.asEnd
+                acc = acc + token.asEnd
             }
             stack = stack.pop()
         }

@@ -160,7 +160,7 @@ data class LayoutStack(
             Property -> LayoutState(pop(), emptyList()).insertToken(src)
             else -> LayoutState(this, emptyList())
                 .let {
-                    it.collapse(src.start) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+                    it.collapse(src) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
                         if (lyt == Do) true
                         else lyt.endsByDedent && tokPos.column <= lytPos.column
                     }
@@ -282,7 +282,7 @@ data class LayoutStack(
 
         PIPE -> {
             val state2 = LayoutState(this, emptyList())
-                .collapse(src.start)
+                .collapse(src)
                 { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column <= lytPos.column }
             when (state2.stack.layoutDelimiter) {
                 Of -> state2.pushStack(src.start, CaseGuard).insertToken(src)
@@ -333,7 +333,7 @@ data class LayoutStack(
                 state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
                 val state3 = LayoutState(this, emptyList())
-                    .collapse(src.start) { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column < lytPos.column }
+                    .collapse(src) { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column < lytPos.column }
                 if (state3.stack.isTopDecl(src.start)) {
                     state3.insertToken(src)
                 } else {
