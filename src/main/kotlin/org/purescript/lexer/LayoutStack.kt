@@ -11,6 +11,7 @@ data class LayoutStack(
 ) {
     val column get() = sourcePos.column
     val line get() = sourcePos.line
+    val isIndent get() = layoutDelimiter.isIndent
     fun isTopDecl(tokPos: SourcePos): Boolean = when {
         tail == null || tail.tail != null -> false
         tail.layoutDelimiter != Root -> false
@@ -81,7 +82,7 @@ data class LayoutStack(
         COMMA -> {
             var stack = this
             val acc = mutableListOf<SuperToken>()
-            while (stack.tail != null && stack.layoutDelimiter.isIndent) {
+            while (stack.tail != null && stack.isIndent) {
                 acc += src.asEnd
                 stack = stack.pop()
             }
@@ -108,7 +109,7 @@ data class LayoutStack(
                         stack.layoutDelimiter == If /* relax "If" if is started but missing then*/ ||
                         stack.layoutDelimiter == Then /* relax "If" if is started but missing else*/ ||
                         stack.layoutDelimiter != Of &&
-                        stack.layoutDelimiter.isIndent &&
+                        stack.isIndent &&
                         src.column <= stack.sourcePos.column
                         )
             ) {
@@ -387,7 +388,7 @@ data class LayoutStack(
         val acc = mutableListOf<SuperToken>()
         while (
             stack.tail != null &&
-            stack.layoutDelimiter.isIndent &&
+            stack.isIndent &&
             src.column < stack.column
         ) {
             stack = stack.pop()
@@ -405,7 +406,7 @@ data class LayoutStack(
                 acc += src.asSep
             }
 
-            stack.layoutDelimiter.isIndent -> acc += src.asSep
+            stack.isIndent -> acc += src.asSep
         }
         return stack to acc
     }

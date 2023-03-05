@@ -27,7 +27,7 @@ data class LayoutState(
         val acc1 = acc.toMutableList()
         while (
             stack1.tail != null &&
-            stack1.layoutDelimiter.isIndent &&
+            stack1.isIndent &&
             t.column < stack1.column
         ) {
             stack1 = stack1.pop()
@@ -48,7 +48,7 @@ data class LayoutState(
                 acc1 += t.asSep
             }
 
-            stack1.layoutDelimiter.isIndent -> acc1 += t.asSep
+            stack1.isIndent -> acc1 += t.asSep
         }
         return when (stack.layoutDelimiter) {
             Property -> LayoutState(stack1.pop(), acc1 + (t))
@@ -65,7 +65,7 @@ data class LayoutState(
             stack.tail != null &&
             p(tokPos, stack.sourcePos, stack.layoutDelimiter)
         ) {
-            if (stack.layoutDelimiter.isIndent) {
+            if (stack.isIndent) {
                 acc = acc + tokPos.asEnd
             }
             stack = stack.pop()
@@ -82,7 +82,7 @@ data class LayoutState(
         val acc = acc.toMutableList()
         while (
             stack.tail != null &&
-            stack.layoutDelimiter.isIndent &&
+            stack.isIndent &&
             src.column < stack.column
         ) {
             stack = stack.pop()
@@ -103,7 +103,7 @@ data class LayoutState(
                 acc += src.asSep
             }
 
-            stack.layoutDelimiter.isIndent -> {
+            stack.isIndent -> {
                 acc += src.asSep
             }
         }
@@ -128,7 +128,7 @@ data class LayoutState(
             acc + (tokPos.asSep)
         )
 
-        stack.layoutDelimiter.isIndent -> copy(acc = acc + tokPos.asSep)
+        stack.isIndent -> copy(acc = acc + tokPos.asSep)
         else -> this
     }
 
