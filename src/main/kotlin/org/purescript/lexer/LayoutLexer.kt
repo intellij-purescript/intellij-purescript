@@ -17,15 +17,14 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
     val sourcePos = SourcePos(0, 0, 0)
     var stack = LayoutStack(sourcePos, Root, null)
     val tokensOut = mutableListOf<SuperToken>()
-    var startPos = sourcePos
     for (posToken in tokens) {
         val (nextStack, toks) = stack.insertLayout(posToken)
         tokensOut += toks
-        startPos = posToken.end
         stack = nextStack
     }
-    val layoutEnd = startPos.asEnd
-    if (tokens.last().value in listOf(DO, OF)) {
+    val lastToken = tokens.last()
+    val layoutEnd = lastToken.end.asEnd
+    if (lastToken.value in listOf(DO, OF)) {
         val cleanTokens = tokensOut.dropLastWhile { it.value == LAYOUT_START || it.value == LAYOUT_SEP }
         val starts = cleanTokens.count { it.value == LAYOUT_START }
         val ends = cleanTokens.count { it.value == LAYOUT_END }
