@@ -52,10 +52,7 @@ data class LayoutState(
 
     inline fun collapse(tokPos: SourcePos, p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean): LayoutState {
         var (stack, acc) = this
-        while (
-            stack.tail != null &&
-            p(tokPos, stack.sourcePos, stack.layoutDelimiter)
-        ) {
+        while (stack.tail != null && p(tokPos, stack.sourcePos, stack.layoutDelimiter)) {
             if (stack.endsByDedent) {
                 acc = acc + tokPos.asEnd
             }
