@@ -100,7 +100,7 @@ class ExpressionIdentifierIntroduceHandler :
         val occurrences = usages.map { it.element as Expression }.toTypedArray()
         val psi = target.place ?: error("Empty target")
         val expr = psi.text ?: error("Could not extract text form expression")
-        val name = (psi.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()?.firstOrNull()?.name
+        val name = (psi.getAtoms().filterIsInstance<PSExpressionIdentifier>().firstOrNull()?.name
             ?: "expr") + "'"
         val parameters = psi.dependencies.toList()
         val nameWithParameters = (sequenceOf(name) + parameters.map { it.name })
