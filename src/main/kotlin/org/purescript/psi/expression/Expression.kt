@@ -20,14 +20,7 @@ interface Expression : PsiElement {
                 else -> true
             }
         }
-    
-    val globals: Set<PSExpressionIdentifier>
-        get() {
-            val allIdentifiers = getAtoms().filterIsInstance<PSExpressionIdentifier>().toSet()
-            val dependencisSet = dependencies.toSet()
-            return allIdentifiers.subtract(dependencisSet)
-        }
-    
+
     fun areSimilarTo(other: Expression): Boolean {
         if (this.javaClass != other.javaClass) return false
         if (children.size != other.children.size) return false
