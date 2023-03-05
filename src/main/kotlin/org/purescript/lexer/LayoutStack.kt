@@ -215,11 +215,9 @@ data class LayoutStack(
                         .insertToken(src).toPair()
                 }
 
-                lyt.endsByDedent -> {
-                    state2.copy(stack = state2.stack.pop())
-                        .insertToken(src.asEnd)
-                        .insertToken(src).toPair()
-                }
+                lyt.endsByDedent -> state2.copy(stack = state2.stack.pop())
+                    .insertToken(src.asEnd)
+                    .insertToken(src).toPair()
 
                 else -> {
                     LayoutState(this, emptyList())
