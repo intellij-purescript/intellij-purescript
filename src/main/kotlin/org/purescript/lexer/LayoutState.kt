@@ -10,12 +10,12 @@ data class LayoutState(
     inline fun collapse(tokPos: SourcePos, p: (LayoutDelimiter) -> Boolean) =
         collapse(tokPos) { _, _, lyt -> p(lyt) }
 
-    fun insertStart(nextPos: SourcePos, lyt: LayoutDelimiter): LayoutState =
+    fun insertStart(token: SuperToken, lyt: LayoutDelimiter): LayoutState =
         when (val indent = stack.find { it.endsByDedent }) {
-            null -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
+            null -> pushStack(token.end, lyt).insertToken(token.asStart)
             else -> when {
-                nextPos.column <= indent.column -> this
-                else -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
+                token.end.column <= indent.column -> this
+                else -> pushStack(token.end, lyt).insertToken(token.asStart)
             }
         }
 

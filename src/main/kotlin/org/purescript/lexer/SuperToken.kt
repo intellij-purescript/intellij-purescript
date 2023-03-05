@@ -10,6 +10,7 @@ data class SuperToken(
     val column get() = start.column
     val asSep get() = start.asSep
     val asEnd get() = start.asEnd
+    val asStart get() = end.asStart
     val end get() = token.end
     val value = token.value
 }

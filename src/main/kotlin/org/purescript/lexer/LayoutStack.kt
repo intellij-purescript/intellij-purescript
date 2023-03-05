@@ -155,7 +155,7 @@ data class LayoutStack(
         WHERE -> when (this.layoutDelimiter) {
             TopDeclHead -> LayoutState(pop(), emptyList())
                 .insertToken(src)
-                .insertStart(src.end, Where)
+                .insertStart(src, Where)
 
             Property -> LayoutState(pop(), emptyList()).insertToken(src)
             else -> LayoutState(this, emptyList())
@@ -165,7 +165,7 @@ data class LayoutStack(
                         else lyt.endsByDedent && tokPos.column <= lytPos.column
                     }
                 }.insertToken(src)
-                .insertStart(src.end, Where)
+                .insertStart(src, Where)
         }.toPair()
 
         LPAREN -> LayoutState(this, emptyList())
@@ -236,9 +236,9 @@ data class LayoutStack(
             fun next(state: LayoutState): LayoutState {
                 val (p, lyt, _) = state.stack
                 return when {
-                    lyt == Do && p.column == src.column -> state.insertStart(src.end, LetStmt)
-                    lyt == Ado && p.column == src.column -> state.insertStart(src.end, LetStmt)
-                    else -> state.insertStart(src.end, LayoutDelimiter.Let)
+                    lyt == Do && p.column == src.column -> state.insertStart(src, LetStmt)
+                    lyt == Ado && p.column == src.column -> state.insertStart(src, LetStmt)
+                    else -> state.insertStart(src, LayoutDelimiter.Let)
                 }
             }
 
@@ -249,12 +249,12 @@ data class LayoutStack(
 
         DO ->
             LayoutState(this, emptyList())
-                .insertKwProperty(src) { it.insertStart(src.end, Do) }
+                .insertKwProperty(src) { it.insertStart(src, Do) }
                 .toPair()
 
         ADO ->
             LayoutState(this, emptyList())
-                .insertKwProperty(src) { it.insertStart(src.end, Ado) }
+                .insertKwProperty(src) { it.insertStart(src, Ado) }
                 .toPair()
 
         CASE -> LayoutState(this, emptyList()).insertKwProperty(src)
@@ -266,7 +266,7 @@ data class LayoutStack(
             if (state2.stack.layoutDelimiter == LayoutDelimiter.Case) {
                 state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
-                    .insertStart(src.end, Of)
+                    .insertStart(src, Of)
                     .pushStack(src.end, CaseBinders)
             } else {
                 state2
