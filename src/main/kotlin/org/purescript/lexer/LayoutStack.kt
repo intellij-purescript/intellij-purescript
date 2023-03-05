@@ -394,21 +394,18 @@ data class LayoutStack(
             acc += src.asEnd
         }
         when {
-            src.column != stack.column ||
-                    src.start.line == stack.line -> Unit
-
-            TopDecl == stack.layoutDelimiter ||
-                    TopDeclHead == stack.layoutDelimiter -> {
+            src.column != stack.column || src.line == stack.line -> Unit
+            TopDecl == stack.layoutDelimiter || TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
-                acc += src.start.asSep
+                acc += src.asSep
             }
 
             Of == stack.layoutDelimiter -> {
                 stack = stack.push(src.start, CaseBinders)
-                acc += src.start.asSep
+                acc += src.asSep
             }
 
-            stack.layoutDelimiter.isIndent -> acc += src.start.asSep
+            stack.layoutDelimiter.isIndent -> acc += src.asSep
         }
         return stack to acc
     }
