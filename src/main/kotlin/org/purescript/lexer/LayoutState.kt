@@ -11,7 +11,7 @@ data class LayoutState(
         collapse(tokPos) { _, _, lyt -> p(lyt) }
 
     fun insertStart(nextPos: SourcePos, lyt: LayoutDelimiter): LayoutState =
-        when (val indent = stack.find { it.isIndent }) {
+        when (val indent = stack.find { it.endsByDedent }) {
             null -> pushStack(nextPos, lyt).insertToken(nextPos.asStart)
             else -> when {
                 nextPos.column <= indent.column -> this
@@ -27,7 +27,7 @@ data class LayoutState(
         val acc1 = acc.toMutableList()
         while (
             stack1.tail != null &&
-            stack1.isIndent &&
+            stack1.endsByDedent &&
             t.column < stack1.column
         ) {
             stack1 = stack1.pop()
@@ -48,7 +48,7 @@ data class LayoutState(
                 acc1 += t.asSep
             }
 
-            stack1.isIndent -> acc1 += t.asSep
+            stack1.endsByDedent -> acc1 += t.asSep
         }
         return when (stack.layoutDelimiter) {
             Property -> LayoutState(stack1.pop(), acc1 + (t))
@@ -65,7 +65,7 @@ data class LayoutState(
             stack.tail != null &&
             p(tokPos, stack.sourcePos, stack.layoutDelimiter)
         ) {
-            if (stack.isIndent) {
+            if (stack.endsByDedent) {
                 acc = acc + tokPos.asEnd
             }
             stack = stack.pop()
@@ -82,7 +82,7 @@ data class LayoutState(
         val acc = acc.toMutableList()
         while (
             stack.tail != null &&
-            stack.isIndent &&
+            stack.endsByDedent &&
             src.column < stack.column
         ) {
             stack = stack.pop()
@@ -103,7 +103,7 @@ data class LayoutState(
                 acc += src.asSep
             }
 
-            stack.isIndent -> {
+            stack.endsByDedent -> {
                 acc += src.asSep
             }
         }
@@ -128,7 +128,7 @@ data class LayoutState(
             acc + (tokPos.asSep)
         )
 
-        stack.isIndent -> copy(acc = acc + tokPos.asSep)
+        stack.endsByDedent -> copy(acc = acc + tokPos.asSep)
         else -> this
     }
 

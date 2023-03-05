@@ -11,7 +11,7 @@ data class LayoutStack(
 ) {
     val column get() = sourcePos.column
     val line get() = sourcePos.line
-    val isIndent get() = layoutDelimiter.isIndent
+    val endsByDedent get() = layoutDelimiter.endsByDedent
     fun isTopDecl(tokPos: SourcePos): Boolean = when {
         tail == null || tail.tail != null -> false
         tail.layoutDelimiter != Root -> false
@@ -82,7 +82,7 @@ data class LayoutStack(
         COMMA -> {
             var stack = this
             val acc = mutableListOf<SuperToken>()
-            while (stack.tail != null && stack.isIndent) {
+            while (stack.tail != null && stack.endsByDedent) {
                 acc += src.asEnd
                 stack = stack.pop()
             }
@@ -109,7 +109,7 @@ data class LayoutStack(
                         stack.layoutDelimiter == If /* relax "If" if is started but missing then*/ ||
                         stack.layoutDelimiter == Then /* relax "If" if is started but missing else*/ ||
                         stack.layoutDelimiter != Of &&
-                        stack.isIndent &&
+                        stack.endsByDedent &&
                         src.column <= stack.sourcePos.column
                         )
             ) {
@@ -166,7 +166,7 @@ data class LayoutStack(
                     .let {
                         it.collapse(src.start) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
                             if (lyt == Do) true
-                            else lyt.isIndent && tokPos.column <= lytPos.column
+                            else lyt.endsByDedent && tokPos.column <= lytPos.column
                         }
                     }.insertToken(src)
                     .insertStart(
@@ -192,12 +192,12 @@ data class LayoutStack(
             .pushStack(src.start, Property).toPair()
 
         RPAREN -> LayoutState(this, emptyList())
-            .collapse(src.start) { lyt: LayoutDelimiter -> lyt.isIndent }
+            .collapse(src.start) { lyt: LayoutDelimiter -> lyt.endsByDedent }
             .popStack { it: LayoutDelimiter -> it == Paren }
             .insertToken(src).toPair()
 
         RCURLY -> LayoutState(this, emptyList())
-            .collapse(src.start) { lyt: LayoutDelimiter -> lyt.isIndent }
+            .collapse(src.start) { lyt: LayoutDelimiter -> lyt.endsByDedent }
             .popStack { it: LayoutDelimiter -> it == Property }
             .popStack { it: LayoutDelimiter -> it == Brace }
             .insertToken(src).toPair()
@@ -211,7 +211,7 @@ data class LayoutStack(
             .toPair()
 
         RBRACK -> LayoutState(this, emptyList())
-            .collapse(src.start) { lyt: LayoutDelimiter -> lyt.isIndent }
+            .collapse(src.start) { lyt: LayoutDelimiter -> lyt.endsByDedent }
             .popStack { it: LayoutDelimiter -> it == Square }
             .insertToken(src).toPair()
 
@@ -223,7 +223,7 @@ data class LayoutStack(
                 when (lyt) {
                     LayoutDelimiter.Let -> false
                     Ado -> false
-                    else -> lyt.isIndent
+                    else -> lyt.endsByDedent
                 }
             }
             val (_, lyt, stack3) = state2.stack
@@ -235,7 +235,7 @@ data class LayoutStack(
                         .insertToken(src).toPair()
                 }
 
-                lyt.isIndent -> {
+                lyt.endsByDedent -> {
                     state2.copy(stack = state2.stack.pop())
                         .insertToken(src.asEnd)
                         .insertToken(src).toPair()
@@ -283,7 +283,7 @@ data class LayoutStack(
             val state2 = LayoutState(
                 this,
                 emptyList()
-            ).collapse(src.start) { lyt -> lyt.isIndent }
+            ).collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == LayoutDelimiter.Case) {
                 state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
@@ -304,7 +304,7 @@ data class LayoutStack(
         PIPE -> {
             val state2 = LayoutState(this, emptyList())
                 .collapse(src.start)
-                { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column <= lytPos.column }
+                { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column <= lytPos.column }
             when (state2.stack.layoutDelimiter) {
                 Of -> state2.pushStack(src.start, CaseGuard)
                     .insertToken(src)
@@ -326,7 +326,7 @@ data class LayoutStack(
             val state2 = LayoutState(
                 this,
                 emptyList()
-            ).collapse(src.start) { lyt -> lyt.isIndent }
+            ).collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == Tick) {
                 state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
@@ -346,7 +346,7 @@ data class LayoutStack(
 
         THEN -> {
             val state2 = LayoutState(this, emptyList())
-                .collapse(src.start) { lyt -> lyt.isIndent }
+                .collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == If) {
                 state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
@@ -362,13 +362,13 @@ data class LayoutStack(
             val state2 = LayoutState(
                 this,
                 emptyList()
-            ).collapse(src.start) { lyt -> lyt.isIndent }
+            ).collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == Then) {
                 state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
                 val state3 = LayoutState(this, emptyList()).collapse(
                     src.start
-                ) { tokPos, lytPos, lyt -> lyt.isIndent && tokPos.column < lytPos.column }
+                ) { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column < lytPos.column }
                 if (state3.stack.isTopDecl(src.start)) {
                     state3.insertToken(src)
                 } else {
@@ -388,7 +388,7 @@ data class LayoutStack(
         val acc = mutableListOf<SuperToken>()
         while (
             stack.tail != null &&
-            stack.isIndent &&
+            stack.endsByDedent &&
             src.column < stack.column
         ) {
             stack = stack.pop()
@@ -406,7 +406,7 @@ data class LayoutStack(
                 acc += src.asSep
             }
 
-            stack.isIndent -> acc += src.asSep
+            stack.endsByDedent -> acc += src.asSep
         }
         return stack to acc
     }

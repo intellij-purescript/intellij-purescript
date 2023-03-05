@@ -31,7 +31,7 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
         val ends = cleanTokens.count { it.value == LAYOUT_END }
         return cleanTokens + List(starts - ends) { layoutEnd }
     } else {
-        tokensOut += List(stack.count { it.isIndent }) { layoutEnd }
+        tokensOut += List(stack.count { it.endsByDedent }) { layoutEnd }
         return tokensOut
     }
 }

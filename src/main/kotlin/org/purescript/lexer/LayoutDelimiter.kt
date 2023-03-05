@@ -1,6 +1,6 @@
 package org.purescript.lexer
 
-enum class LayoutDelimiter(val isIndent: Boolean) {
+enum class LayoutDelimiter(val endsByDedent: Boolean) {
     Root(false),
     TopDecl(false),
     TopDeclHead(false),
