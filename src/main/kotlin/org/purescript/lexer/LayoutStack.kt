@@ -153,42 +153,29 @@ data class LayoutStack(
         }
 
         WHERE -> when (this.layoutDelimiter) {
-            TopDeclHead -> {
-                LayoutState(pop(), emptyList())
-                    .insertToken(src)
-                    .insertStart(nextPos, Where)
-            }
+            TopDeclHead -> LayoutState(pop(), emptyList())
+                .insertToken(src)
+                .insertStart(nextPos, Where)
 
             Property -> LayoutState(pop(), emptyList()).insertToken(src)
-
-            else ->
-                LayoutState(this, emptyList())
-                    .let {
-                        it.collapse(src.start) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
-                            if (lyt == Do) true
-                            else lyt.endsByDedent && tokPos.column <= lytPos.column
-                        }
-                    }.insertToken(src)
-                    .insertStart(
-                        nextPos,
-                        Where
-                    )
+            else -> LayoutState(this, emptyList())
+                .let {
+                    it.collapse(src.start) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+                        if (lyt == Do) true
+                        else lyt.endsByDedent && tokPos.column <= lytPos.column
+                    }
+                }.insertToken(src)
+                .insertStart(nextPos, Where)
         }.toPair()
 
         LPAREN -> LayoutState(this, emptyList())
             .insertDefault(src)
-            .pushStack(
-                src.start,
-                Paren
-            )
+            .pushStack(src.start, Paren)
             .toPair()
 
         LCURLY -> LayoutState(this, emptyList())
             .insertDefault(src)
-            .pushStack(
-                src.start,
-                Brace
-            )
+            .pushStack(src.start, Brace)
             .pushStack(src.start, Property).toPair()
 
         RPAREN -> LayoutState(this, emptyList())
@@ -204,10 +191,7 @@ data class LayoutStack(
 
         LBRACK -> LayoutState(this, emptyList())
             .insertDefault(src)
-            .pushStack(
-                src.start,
-                Square
-            )
+            .pushStack(src.start, Square)
             .toPair()
 
         RBRACK -> LayoutState(this, emptyList())
@@ -216,16 +200,14 @@ data class LayoutStack(
             .insertToken(src).toPair()
 
         IN -> {
-            val state2 = LayoutState(
-                this,
-                emptyList()
-            ).collapse(src.start) { lyt: LayoutDelimiter ->
-                when (lyt) {
-                    LayoutDelimiter.Let -> false
-                    Ado -> false
-                    else -> lyt.endsByDedent
+            val state2 = LayoutState(this, emptyList())
+                .collapse(src.start) { lyt: LayoutDelimiter ->
+                    when (lyt) {
+                        LayoutDelimiter.Let -> false
+                        Ado -> false
+                        else -> lyt.endsByDedent
+                    }
                 }
-            }
             val (_, lyt, stack3) = state2.stack
             when {
                 lyt == LetStmt && stack3?.layoutDelimiter == Ado -> {
@@ -265,7 +247,6 @@ data class LayoutStack(
                 .toPair()
         }
 
-
         DO ->
             LayoutState(this, emptyList())
                 .insertKwProperty(src) { it.insertStart(nextPos, Do) }
@@ -280,10 +261,8 @@ data class LayoutStack(
         { it.pushStack(src.start, LayoutDelimiter.Case) }.toPair()
 
         OF -> {
-            val state2 = LayoutState(
-                this,
-                emptyList()
-            ).collapse(src.start) { lyt -> lyt.endsByDedent }
+            val state2 = LayoutState(this, emptyList())
+                .collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == LayoutDelimiter.Case) {
                 state2.copy(stack = state2.stack.pop())
                     .insertToken(src)
@@ -306,32 +285,21 @@ data class LayoutStack(
                 .collapse(src.start)
                 { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column <= lytPos.column }
             when (state2.stack.layoutDelimiter) {
-                Of -> state2.pushStack(src.start, CaseGuard)
-                    .insertToken(src)
-
-                LayoutDelimiter.Let -> state2.pushStack(src.start, DeclGuard)
-                    .insertToken(src)
-
-                LetStmt -> state2.pushStack(src.start, DeclGuard)
-                    .insertToken(src)
-
-                Where -> state2.pushStack(src.start, DeclGuard)
-                    .insertToken(src)
-
+                Of -> state2.pushStack(src.start, CaseGuard).insertToken(src)
+                LayoutDelimiter.Let -> state2.pushStack(src.start, DeclGuard).insertToken(src)
+                LetStmt -> state2.pushStack(src.start, DeclGuard).insertToken(src)
+                Where -> state2.pushStack(src.start, DeclGuard).insertToken(src)
                 else -> LayoutState(this, emptyList()).insertDefault(src)
             }.toPair()
         }
 
         TICK -> {
-            val state2 = LayoutState(
-                this,
-                emptyList()
-            ).collapse(src.start) { lyt -> lyt.endsByDedent }
+            val state2 = LayoutState(this, emptyList())
+                .collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == Tick) {
                 state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
-                LayoutState(this, emptyList()).insertDefault(src)
-                    .pushStack(src.start, Tick)
+                LayoutState(this, emptyList()).insertDefault(src).pushStack(src.start, Tick)
             }.toPair()
         }
 
@@ -359,16 +327,13 @@ data class LayoutStack(
         }
 
         ELSE -> {
-            val state2 = LayoutState(
-                this,
-                emptyList()
-            ).collapse(src.start) { lyt -> lyt.endsByDedent }
+            val state2 = LayoutState(this, emptyList())
+                .collapse(src.start) { lyt -> lyt.endsByDedent }
             if (state2.stack.layoutDelimiter == Then) {
                 state2.copy(stack = state2.stack.pop()).insertToken(src)
             } else {
-                val state3 = LayoutState(this, emptyList()).collapse(
-                    src.start
-                ) { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column < lytPos.column }
+                val state3 = LayoutState(this, emptyList())
+                    .collapse(src.start) { tokPos, lytPos, lyt -> lyt.endsByDedent && tokPos.column < lytPos.column }
                 if (state3.stack.isTopDecl(src.start)) {
                     state3.insertToken(src)
                 } else {
