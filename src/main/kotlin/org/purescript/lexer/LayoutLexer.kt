@@ -18,10 +18,9 @@ fun lex(tokens: List<SuperToken>): List<SuperToken> {
     val tokensOut = mutableListOf<SuperToken>()
     var startPos = sourcePos
     for (posToken in tokens) {
-        val nextStart = posToken.end
         val (nextStack, toks) = stack.insertLayout(posToken)
         tokensOut += toks
-        startPos = nextStart
+        startPos = posToken.end
         stack = nextStack
     }
     val layoutEnd = startPos.asEnd
