@@ -67,6 +67,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     yieldAll(decl.valueDeclarationGroups.asSequence())
                                 }
                             }
+                            is PSLambda -> yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
 
                             is PSExpressionWhere -> {
                                 val valueDeclarations = parent

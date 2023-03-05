@@ -730,4 +730,28 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    
+    fun `test does not report pun binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f {a} = a
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+    
+    fun `test does not report pun binders in lambda`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                module Foo where
+                f = \{a} -> a
+            """.trimIndent()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
