@@ -13,6 +13,7 @@ import org.purescript.parser.*
 
 
 fun lex(tokens: List<SuperToken>): List<SuperToken> {
+    if (tokens.isEmpty()) return tokens
     val sourcePos = SourcePos(0, 0, 0)
     var stack = LayoutStack(sourcePos, Root, null)
     val tokensOut = mutableListOf<SuperToken>()
