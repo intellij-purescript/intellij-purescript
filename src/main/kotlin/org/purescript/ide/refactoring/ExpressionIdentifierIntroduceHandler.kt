@@ -36,7 +36,13 @@ class ExpressionIdentifierIntroduceHandler :
      *
      */
     override fun collectUsages(target: PsiIntroduceTarget<Expression>, scope: Module): MutableList<UsageInfo> {
-        return mutableListOf()
+        val psi = target.place ?: return mutableListOf()
+        val globalRefs = psi.globals.mapNotNull { it.reference.resolve() }.toSet()
+        return scope.cache.valueDeclarations
+            .flatMap { it.expressions }
+            .filter { psi.areSimilarTo(it) }
+            .map { UsageInfo(it) }
+            .toMutableList()
     }
 
     override fun checkUsages(usages: MutableList<UsageInfo>) = null

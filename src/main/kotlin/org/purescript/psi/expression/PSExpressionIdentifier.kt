@@ -2,6 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
+import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.name.PSQualifiedIdentifier
 
 /**
@@ -29,4 +30,15 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     override fun getReference(): ExpressionIdentifierReference =
         ExpressionIdentifierReference(this)
 
+    override fun areSimilarTo(other: Expression): Boolean {
+        val ref = reference.resolve()
+        val otherRef = other.reference?.resolve()
+        return when {
+            ref == otherRef -> true
+            ref is ValueDeclarationGroup && otherRef is ValueDeclarationGroup -> ref.valueDeclarations
+                .zip(otherRef.valueDeclarations) { a, b -> a.value.areSimilarTo(b.value) }
+                    .all { it }
+            else -> false
+        }
+    }
 }

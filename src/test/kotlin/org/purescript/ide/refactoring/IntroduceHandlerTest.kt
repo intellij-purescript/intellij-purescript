@@ -81,26 +81,14 @@ class IntroduceHandlerTest : BasePlatformTestCase() {
     fun `it doesn't work to test extract all`() {
         doTest(
             """
-                module Main where
-                
-                import Prelude
-                
-                x = 1
-                
-                y = {-caret-}x + x
-            """.trimIndent(),
+                |module Main where
+                |y = [{-caret-}1, 1]
+            """.trimMargin(),
             """
-                module Main where
-                
-                import Prelude
-                
-                x = 1
-                
-                y = x' + x'
-                
-                x' = x
-                
-            """.trimIndent()
+                |module Main where
+                |y = [expr', expr']
+                |expr' = 1
+            """.trimMargin()
         )
     }
 

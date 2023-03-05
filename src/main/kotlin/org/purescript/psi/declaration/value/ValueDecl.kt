@@ -16,6 +16,7 @@ import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.binder.BinderAtom
 import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
+import org.purescript.psi.expression.Expression
 import org.purescript.psi.expression.ExpressionAtom
 import org.purescript.psi.expression.PSExpressionWhere
 import org.purescript.psi.expression.PSValue
@@ -41,13 +42,14 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
 
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) :
-        super(stub, type)
+            super(stub, type)
 
+    val expressions: Sequence<Expression> get() = value.expressions
     val value get() = findChildByClass(PSValue::class.java)!!
     val expressionAtoms: List<ExpressionAtom>
         get() =
             value.expressionAtoms.toList() +
-                (where?.expressionAtoms ?: emptyList())
+                    (where?.expressionAtoms ?: emptyList())
 
     override fun getName() = nameIdentifier.name
 
@@ -109,8 +111,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
         get() = parameters
             ?.binders
             ?.filterIsInstance<PsiNamedElement>()
-            ?.filter { it.name != null}
-            ?.associateBy { it.name!! } 
+            ?.filter { it.name != null }
+            ?.associateBy { it.name!! }
             ?: emptyMap()
     val parameters get() = findChildByClass(Parameters::class.java)
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
