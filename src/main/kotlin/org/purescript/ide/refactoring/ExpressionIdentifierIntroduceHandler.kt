@@ -19,7 +19,6 @@ import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
 import org.purescript.file.PSFileType
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.classes.PSClassMemberList
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.Expression
 import org.purescript.psi.expression.ExpressionSelector
@@ -82,21 +81,8 @@ class ExpressionIdentifierIntroduceHandler :
     override fun getHelpID() = null
     override fun getChooseScopeTitle() = "Choose scope <title>"
     override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<Module>
-    override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? {
-        return null
-    }
-    
-    fun getParameters(expt: Expression): Sequence<PSExpressionIdentifier> {
-        return expt.getAtoms().filterIsInstance<PSExpressionIdentifier>().filter {
-            val reference = it.reference.resolve() ?: return@filter true
-            if (expt.textRange.contains(reference.textRange)) false
-            else when (reference.parent) {
-                is Module , is PSClassMemberList -> false
-                else -> true
-            }
-        }
-    }
-
+    override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? =
+        null
 
     override fun collectTargetScopes(t: PsiIntroduceTarget<Expression>, e: Editor, f: PsiFile, p: Project)
             : MutableList<Module> = t.place?.module?.let { mutableListOf(it) } ?: mutableListOf()
@@ -116,7 +102,7 @@ class ExpressionIdentifierIntroduceHandler :
         val expr = psi.text ?: error("Could not extract text form expression")
         val name = (psi.getAtoms()?.filterIsInstance<PSExpressionIdentifier>()?.firstOrNull()?.name
             ?: "expr") + "'"
-        val parameters = getParameters(psi).toList()
+        val parameters = psi.dependencies.toList()
         val nameWithParameters = (sequenceOf(name) + parameters.map { it.name })
             .joinToString(" ")
         return object : AbstractInplaceIntroducer<ValueDeclarationGroup, Expression>(
@@ -163,7 +149,8 @@ class ExpressionIdentifierIntroduceHandler :
                 scope.addTyped(variable)
             }
 
-            override fun suggestNames(replaceAll: Boolean, variable: ValueDeclarationGroup?): Array<String> = emptyArray()
+            override fun suggestNames(replaceAll: Boolean, variable: ValueDeclarationGroup?): Array<String> =
+                emptyArray()
 
             override fun isReplaceAllOccurrences() =
                 when (replaceChoice) {
