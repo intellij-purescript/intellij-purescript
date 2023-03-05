@@ -103,8 +103,7 @@ data class LayoutState(
 
     fun insertSep(tokPos: SourcePos) = when {
         tokPos.column != stack.column || tokPos.line == stack.line -> this
-        TopDecl == stack.layoutDelimiter ||
-                TopDeclHead == stack.layoutDelimiter ->
+        TopDecl == stack.layoutDelimiter || TopDeclHead == stack.layoutDelimiter ->
             LayoutState(stack.pop(), acc + tokPos.asSep)
 
         Of == stack.layoutDelimiter -> LayoutState(
