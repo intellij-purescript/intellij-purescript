@@ -66,9 +66,7 @@ data class LayoutState(
     }
 
     fun insertToken(token: SuperToken) = copy(acc = acc + token)
-    fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) =
-        copy(stack = stack.push(lytPos, lyt))
-
+    fun pushStack(lytPos: SourcePos, lyt: LayoutDelimiter) = copy(stack = stack.push(lytPos, lyt))
     fun insertDefault(src: SuperToken): LayoutState {
         var stack = stack
         val acc = acc.toMutableList()
