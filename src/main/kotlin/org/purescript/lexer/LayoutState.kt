@@ -115,7 +115,5 @@ data class LayoutState(
         else -> this
     }
 
-    fun toPair(): Pair<LayoutStack, List<SuperToken>> {
-        return stack to acc
-    }
+    fun toPair(): Pair<LayoutStack, List<SuperToken>> = stack to acc
 }
