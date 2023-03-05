@@ -79,8 +79,7 @@ data class LayoutState(
         }
         when {
             src.column != stack.column || src.line == stack.line -> Unit
-            TopDecl == stack.layoutDelimiter ||
-                    TopDeclHead == stack.layoutDelimiter -> {
+            TopDecl == stack.layoutDelimiter || TopDeclHead == stack.layoutDelimiter -> {
                 stack = stack.pop()
                 acc += src.asSep
             }
