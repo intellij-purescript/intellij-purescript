@@ -50,9 +50,9 @@ data class LayoutState(
         }
     }
 
-    inline fun collapse(token: SuperToken, p: (SourcePos, SourcePos, LayoutDelimiter) -> Boolean): LayoutState {
+    inline fun collapse(token: SuperToken, p: (SuperToken, SourcePos, LayoutDelimiter) -> Boolean): LayoutState {
         var (stack, acc) = this
-        while (stack.tail != null && p(token.start, stack.sourcePos, stack.layoutDelimiter)) {
+        while (stack.tail != null && p(token, stack.sourcePos, stack.layoutDelimiter)) {
             if (stack.endsByDedent) {
                 acc = acc + token.asEnd
             }

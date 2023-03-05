@@ -160,9 +160,9 @@ data class LayoutStack(
             Property -> LayoutState(pop(), emptyList()).insertToken(src)
             else -> LayoutState(this, emptyList())
                 .let {
-                    it.collapse(src) { tokPos: SourcePos, lytPos: SourcePos, lyt: LayoutDelimiter ->
+                    it.collapse(src) { token: SuperToken, lytPos: SourcePos, lyt: LayoutDelimiter ->
                         if (lyt == Do) true
-                        else lyt.endsByDedent && tokPos.column <= lytPos.column
+                        else lyt.endsByDedent && token.column <= lytPos.column
                     }
                 }.insertToken(src)
                 .insertStart(src, Where)
