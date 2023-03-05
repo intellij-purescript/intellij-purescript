@@ -81,13 +81,35 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         require(state == 0) { "does not support incremental lexing: initialState must be 0" }
 
         super.start(buffer, start, end, state)
-        this.tokens = getTokens(delegate)
+        val unsorted = getTokens(delegate)
             .runningFold(root, correctLineAndColumn(buffer))
             .drop(1)
             .toList()
             .let { toSupers(it) }
             .let(::lex)
             .flatMap { it.tokens }
+        val sorted = unsorted.reversed()
+            .let { sequence {
+                var toBubble = mutableListOf<SourceToken>()
+                for(token in it) {
+                    when (token.value) {
+                        LAYOUT_END -> toBubble.add(token)
+                        WHITE_SPACE -> {
+                            toBubble.replaceAll { it.copy(start= token.start, end = token.start) }
+                            yield(token)
+                        }
+                        else -> {
+                            yieldAll(toBubble.reversed())
+                            yield(token)
+                            toBubble = mutableListOf()
+                        }
+                    }
+                }
+                yieldAll(toBubble.reversed())
+            } 
+            }.toList()
+            .reversed()
+        this.tokens = sorted
         index = 0
     }
 
