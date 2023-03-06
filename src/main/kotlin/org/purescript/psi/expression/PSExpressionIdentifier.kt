@@ -1,9 +1,6 @@
 package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.siblings
-import org.purescript.parser.PSParserDefinition
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.name.PSQualifiedIdentifier
@@ -20,18 +17,10 @@ import org.purescript.psi.name.PSQualifiedIdentifier
  */
 class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom, Qualified {
 
-    private val psParserDefinition = PSParserDefinition()
-
-    val arguments: Sequence<ExpressionAtom> = this
-        .siblings(true, false)
-        .filter {
-            !(psParserDefinition.commentTokens.contains(it.elementType) ||
-                    psParserDefinition.whitespaceTokens.contains(it.elementType))
-        }
-        .takeWhile {
-            it is ExpressionAtom && it !is PSExpressionOperator
-        }
-        .filterIsInstance<ExpressionAtom>()
+    val arguments: Sequence<Argument> get() = when(val parent = parent) {
+        is Call -> parent.arguments
+        else -> emptySequence()
+    }
 
     /**
      * @return the [PSQualifiedIdentifier] identifying this constructor

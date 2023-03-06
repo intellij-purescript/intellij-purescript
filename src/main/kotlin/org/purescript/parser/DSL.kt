@@ -5,7 +5,7 @@ package org.purescript.parser
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 
-sealed interface DSL {
+interface DSL {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
     val heal get() = Transaction(this)

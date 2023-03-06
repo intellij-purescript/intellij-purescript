@@ -1,5 +1,7 @@
 package org.purescript.parser
 
+import com.intellij.lang.PsiBuilder
+
 class ParserDefinitions {
     // Literals
     private val boolean = `'true'` / `'false'`
@@ -176,7 +178,25 @@ class ParserDefinitions {
     /** 
      * Function application
      */
-    private val expr4: DSL = CallType(+expr5)
+    private val expr4: DSL = object : DSL {
+        override fun parse(builder: PsiBuilder): Boolean {
+            var start = builder.mark()
+            if (expr5.parse(builder)) {
+                start.done(CallType)
+                start = start.precede()
+            } else {
+                start.drop()
+                return false
+            }
+            val argument = ArgumentType(expr5).heal
+            while(argument.parse(builder)) {
+                start.done(CallType)
+                start = start.precede()
+            }
+            start.drop()
+            return true
+        }
+    } 
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)

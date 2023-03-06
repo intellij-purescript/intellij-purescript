@@ -3,9 +3,9 @@ package org.purescript.ide.refactoring
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentsOfType
 import com.intellij.refactoring.BaseRefactoringProcessor
 import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
@@ -13,12 +13,9 @@ import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.alsoIfNull
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.binder.PSVarBinder
-import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.RecordLabel
-import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.expression.PSExpressionWhere
-import org.purescript.psi.expression.PSLet
+import org.purescript.psi.expression.*
 import org.purescript.psi.expression.dostmt.PSDoNotationLet
 
 class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDeclarationGroup) :
@@ -40,36 +37,37 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
         if (binders.any { it !is PSVarBinder }) error("can only inline simple parameters")
         val factory = project.service<PSPsiFactory>()
         for (usage in usages) {
-            val call = usage.element as? PSExpressionIdentifier ?: continue
-            val copy = valueDeclaration.copy() as ValueDecl
-            val copyBinders = copy.parameters?.binderAtoms?.filterIsInstance<PSVarBinder>()
-                ?: emptyList()
-            val replace = copyBinders.map {
-                ReferencesSearch
-                    .search(it, LocalSearchScope(copy))
-                    .findAll()
-                    .map { it.element }
-            }.toList()
-            val arguments = call.arguments.toList()
-            if (replace.size > arguments.size) error("There mus be more arguments then parameters")
-            val argumentsToInline = arguments.take(replace.size)
-            replace.zip(argumentsToInline) { refs, b ->
-                refs.forEach { it.replace(b) }
-            }
-            val expression = copy.value.text
-            val parenthesis = factory.createParenthesis(expression) ?: return
-            if (argumentsToInline.isNotEmpty()) {
-                call.parent.deleteChildRange(call.nextSibling, argumentsToInline.last())
-            }
-            when (usage.element?.parent) {
-                is RecordLabel -> factory
-                    .createRecordLabel("${(usage.element as PSExpressionIdentifier).name}: $expression")
-                    ?.let { usage.element?.parent?.replace(it) }
-                    ?: usage.element?.replace(parenthesis)
+            val element = usage.element as? PSExpressionIdentifier ?: continue
+            val arguments = element.arguments.toList()
+            when (val parent = element.parent) {
+                is Call -> element
+                    .parentsOfType<Call>()
+                    .drop(arguments.size)
+                    .first()
+                    .replace(valueDeclaration
+                        .inline(arguments)
+                        .let { it.withParenthesis()?.parent ?: it }
+                    )
 
-                else -> usage.element?.replace(parenthesis)
+                is RecordLabel -> factory
+                    .createRecordLabel("${element.name}: ${valueDeclaration.inline(arguments).text}")
+                    ?.let { parent.replace(it) }
+                    ?: element.replace(valueDeclaration.inline(arguments))
+
+                is Argument -> element.replace(
+                    element.replace(valueDeclaration
+                        .inline(arguments)
+                        .let { it.withParenthesis() ?: it })
+                )
+
+                else -> element.replace(
+                    element.replace(valueDeclaration
+                        .inline(arguments)
+                        .let { it.withParenthesis() ?: it })
+                )
             }
         }
+        // delete declaration
         when (val parent = toInline.parent) {
             is PSLet ->
                 if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {

@@ -7,6 +7,8 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.search.LocalSearchScope
+import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.psi.PSElementType
@@ -14,12 +16,10 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.binder.BinderAtom
+import org.purescript.psi.binder.PSVarBinder
 import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
-import org.purescript.psi.expression.Expression
-import org.purescript.psi.expression.ExpressionAtom
-import org.purescript.psi.expression.PSExpressionWhere
-import org.purescript.psi.expression.PSValue
+import org.purescript.psi.expression.*
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
 
@@ -120,5 +120,23 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarationGroups
         get() = where?.valueDeclarationGroups ?: emptyArray()
-
+    fun inline(arguments: List<Argument>): Expression {
+        val copy = this.copy() as ValueDecl
+        val binders = copy.parameters
+            ?.binderAtoms
+            ?.filterIsInstance<PSVarBinder>()
+            ?: emptyList()
+        val parametersToInline = binders.map {
+            ReferencesSearch
+                .search(it, LocalSearchScope(copy))
+                .findAll()
+                .map { it.element }
+        }.toList()
+        arguments.zip(parametersToInline) { argument, toInline ->
+            for (place in toInline) {
+                place.replace(argument.firstChild)
+            }
+        }
+        return copy.value
+    }
 }

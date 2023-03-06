@@ -1,7 +1,9 @@
 package org.purescript.psi.expression
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
+import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.classes.PSClassMemberList
 import org.purescript.psi.module.Module
 
@@ -35,5 +37,10 @@ interface Expression : PsiElement {
         return childrenOfType<Expression>()
             .zip(other.childrenOfType<Expression>()) { a, b -> a.areSimilarTo(b) }
                 .all { it }
+    }
+
+    fun withParenthesis(): PSParens? {
+        val factory = project.service<PSPsiFactory>()
+        return factory.createParenthesis(text)
     }
 }

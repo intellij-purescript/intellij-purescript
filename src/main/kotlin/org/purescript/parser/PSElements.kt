@@ -129,6 +129,7 @@ val Let = WithPsi("Let") { PSLet(it) }
 val Parens = WithPsi("Parens") { PSParens(it) }
 val UnaryMinus = WithPsi("UnaryMinus") { PSUnaryMinus(it) }
 val CallType = WithPsi("Call") { Call(it) }
+val ArgumentType = WithPsi("Argument") { Argument(it) }
 val Accessor = WithPsi("Accessor") { PSAccessor(it) }
 val DoBlock = WithPsi("DoBlock") { PSDoBlock(it) }
 val DoNotationLet = WithPsi("DoNotationLet") { PSDoNotationLet(it) }
