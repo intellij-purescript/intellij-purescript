@@ -78,6 +78,22 @@ class IntroduceHandlerTest : BasePlatformTestCase() {
         """.trimMargin()
         )
     }
+    fun `test it reuses lambda parameters and body when extracting lambda`() {
+        doTest(
+            """
+            |module Main where
+            |
+            |y = {-caret-}\ a -> a + 1
+        """.trimMargin(),
+            """
+            |module Main where
+            |
+            |y = a'
+            |
+            |a' a = a + 1
+        """.trimMargin()
+        )
+    }
     fun `it doesn't work to test extract all`() {
         doTest(
             """

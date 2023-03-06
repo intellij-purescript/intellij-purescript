@@ -23,6 +23,7 @@ import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.Expression
 import org.purescript.psi.expression.ExpressionSelector
 import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.PSLambda
 import org.purescript.psi.module.Module
 
 class ExpressionIntroduceHandler :
@@ -104,11 +105,17 @@ class ExpressionIntroduceHandler :
         val factory = project.service<PSPsiFactory>()
         val occurrences = usages.map { it.element as Expression }.toTypedArray()
         val psi = target.place ?: error("Empty target")
-        val expr = psi.text ?: error("Could not extract text form expression")
+        val expr = when (psi) {
+            is PSLambda -> psi.value?.text
+            else -> psi.text
+        } ?: error("Could not extract text form expression")
         val name = (psi.getAtoms().filterIsInstance<PSExpressionIdentifier>().firstOrNull()?.name
             ?: "expr") + "'"
         val parameters = psi.dependencies.toList()
-        val nameWithParameters = (sequenceOf(name) + parameters.map { it.name })
+        val nameWithParameters = (sequenceOf(name) + parameters.map { it.name } + when (psi) {
+            is PSLambda -> psi.parameters?.binderAtoms?.map { it.name }?.asSequence() ?: emptySequence()
+            else -> emptySequence()
+        })
             .joinToString(" ")
         return object : AbstractInplaceIntroducer<ValueDeclarationGroup, Expression>(
             project,
