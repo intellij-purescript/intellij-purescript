@@ -137,6 +137,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
                 place.replace(argument.firstChild)
             }
         }
-        return copy.value
+        return if (arguments.size < parametersToInline.size) {
+            val parametersLeft = binders.drop(arguments.size)
+            val factory = project.service<PSPsiFactory>()
+            factory.createLambda("\\${parametersLeft.joinToString(" ") { it.name }} -> ${copy.value.text}") ?:
+                error("could not create a lambda from declaration body")
+        } else copy.value
     }
 }

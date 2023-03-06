@@ -18,6 +18,7 @@ import org.purescript.psi.exports.ExportList
 import org.purescript.psi.exports.RecordLabel
 import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSIfThenElse
+import org.purescript.psi.expression.PSLambda
 import org.purescript.psi.expression.PSParens
 import org.purescript.psi.name.PSIdentifier
 import org.purescript.psi.name.PSModuleName
@@ -183,6 +184,15 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |foo = {$text}
+            """.trimMargin()
+        )
+    }
+
+    fun createLambda(wholeExpression: String): PSLambda? {
+        return createFromText(
+            """
+            |module Main where
+            |foo = $wholeExpression
             """.trimMargin()
         )
     }

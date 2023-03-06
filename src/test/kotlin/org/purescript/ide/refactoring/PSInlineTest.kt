@@ -180,6 +180,34 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    
+    fun `test function with parameter in call site with no arguments`() {
+        doTest(
+            """
+                |module Main where
+                |x{-caret-} n = 1 + n
+                |y = x
+            """.trimMargin(),
+            """
+                |module Main where
+                |y = (\n -> 1 + n)
+            """.trimMargin()
+        )
+    }
+    
+    fun `test function with parameter in call site with fewer arguments`() {
+        doTest(
+            """
+                |module Main where
+                |x{-caret-} n c = 1 + n + c
+                |y = x 1
+            """.trimMargin(),
+            """
+                |module Main where
+                |y = (\c -> 1 + 1 + c)
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,
