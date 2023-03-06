@@ -12,5 +12,6 @@ Purescript File
           <empty list>
         PsiElement(=)('=')
         PSValue(Value)
-          PSStringLiteral(StringLiteral)
-            PsiElement(string)('"\n"')
+          Call(Call)
+            PSStringLiteral(StringLiteral)
+              PsiElement(string)('"\n"')

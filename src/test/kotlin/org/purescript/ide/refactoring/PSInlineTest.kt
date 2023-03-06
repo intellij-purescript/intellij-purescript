@@ -134,6 +134,25 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    
+    fun `test inline simple value from let in`() {
+        doTest(
+            """
+                |module Main where
+                |f a = a
+                |y =
+                |  let
+                |    x = 1
+                |  in {-caret-}x
+            """.trimMargin(),
+            """
+                |module Main where
+                |f a = a
+                |y =
+                |  (1)
+            """.trimMargin()
+        )
+    }
     fun `test inline value to record pun`() {
         doTest(
             """

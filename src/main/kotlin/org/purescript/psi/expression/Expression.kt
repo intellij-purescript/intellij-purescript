@@ -6,7 +6,15 @@ import org.purescript.psi.declaration.classes.PSClassMemberList
 import org.purescript.psi.module.Module
 
 interface Expression : PsiElement {
-    fun getAtoms(): Sequence<ExpressionAtom>
+    /**
+     * All expressions atoms recursively including this one if it is one
+     */
+    fun getAtoms(): Sequence<ExpressionAtom> =
+        expressions.filterIsInstance<ExpressionAtom>()
+
+    /**
+     * All expressions recursively including this one
+     */
     val expressions: Sequence<Expression> get() = sequenceOf(this) + childrenOfType<Expression>()
         .flatMap { it.expressions }
     val module: Module?

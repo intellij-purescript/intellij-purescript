@@ -72,8 +72,8 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
         }
         when (val parent = toInline.parent) {
             is PSLet ->
-                if (parent.childrenOfType<ValueDeclarationGroup>()?.size == 1) {
-                    parent.value?.let { parent.parent.replace(it) }
+                if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
+                    parent.value?.let { parent.parent.parent.replace(it) }
                         .alsoIfNull { toInline.delete() }
                 } else {
                     toInline.delete()

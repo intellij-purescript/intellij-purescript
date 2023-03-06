@@ -12,5 +12,6 @@ Purescript File
           <empty list>
         PsiElement(=)('=')
         PSValue(Value)
-          PSNumericLiteral(NumericLiteral)
-            PsiElement(natural)('1')
+          Call(Call)
+            PSNumericLiteral(NumericLiteral)
+              PsiElement(natural)('1')
