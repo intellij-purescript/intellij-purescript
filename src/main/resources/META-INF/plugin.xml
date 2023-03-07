@@ -162,6 +162,12 @@
         />
         <localInspection
             language="Purescript" groupName="Purescript"
+            displayName="Unnecessary Parentheses"
+            enabledByDefault="true" level="WEAK WARNING"
+            implementationClass="org.purescript.ide.inspections.UnnecessaryParenthesis"
+        />
+        <localInspection
+            language="Purescript" groupName="Purescript"
             displayName="Unused declaration"
             enabledByDefault="true"
             implementationClass="org.purescript.ide.inspections.UnusedInspection"
