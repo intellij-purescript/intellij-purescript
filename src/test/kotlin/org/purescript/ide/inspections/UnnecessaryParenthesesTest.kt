@@ -16,6 +16,18 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         myFixture.checkHighlighting()
     } 
     
+    fun `test it reports single parenthesis with expression`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |foo = <weak_warning descr="Unnecessary parentheses">(1 + 1)</weak_warning>
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    } 
+    
     fun `test it reports single parenthesis around caller`() {
         myFixture.configureByText(
             "Foo.purs",
