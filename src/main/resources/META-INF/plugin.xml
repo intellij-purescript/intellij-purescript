@@ -243,6 +243,10 @@
                 language="Purescript"
                 implementationClass="org.purescript.psi.expression.ExpressionPostfixTemplateProvider"
         />
+        <codeInsight.parameterInfo
+            language="Purescript"
+            implementationClass="org.purescript.psi.expression.PurescriptParameterInfoHandler"
+        />
     </extensions>
 
     <actions>
