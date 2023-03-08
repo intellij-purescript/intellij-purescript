@@ -26,7 +26,7 @@ import org.purescript.psi.expression.PSExpressionIdentifier
 import org.purescript.psi.expression.PSLambda
 import org.purescript.psi.module.Module
 
-class ExpressionIntroduceHandler :
+class TopLevelValueIntroducer :
     IntroduceHandler<PsiIntroduceTarget<Expression>, Module>() {
     /**
      * example:
