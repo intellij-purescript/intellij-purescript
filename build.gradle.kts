@@ -6,9 +6,9 @@ val publishChannels: String by project
 
 plugins {
     java
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.0"
     kotlin("plugin.serialization") version "1.8.0"
-    id("org.jetbrains.intellij") version "1.12.0"
+    id("org.jetbrains.intellij") version "1.13.1"
     id("org.jetbrains.grammarkit") version "2021.2.2"
 }
 
