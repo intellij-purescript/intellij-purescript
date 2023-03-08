@@ -167,7 +167,7 @@ class ParserDefinitions {
     private val expr5 = Reference {
         recordLayout1(propertyUpdate, "property update").heal /
                 expr7 /
-                Lambda(backslash + ParametersType(+binderAtom) + arrow.relax("missing lambda arrow") + expr) /
+                Lambda(backslash + parameters + arrow.relax("missing lambda arrow") + expr) /
                 exprCase /
                 ifThenElse /
                 doBlock /
@@ -270,8 +270,10 @@ class ParserDefinitions {
      * phantom - the type can always be coerced to another type.
      * */
     private val role = `'nominal'` / representational / phantom
+    private val parameters = ParametersType(!+ParameterType(binderAtom))
+
     private fun namedValueDecl(name: String) =
-        ValueDeclType(Lookahead(ident.heal) { tokenText == name } + ParametersType(!+binderAtom) + guardedDecl)
+        ValueDeclType(Lookahead(ident.heal) { tokenText == name } + parameters + guardedDecl)
 
     private fun valueDeclarationGroup() =
         ValueDeclarationGroupType(Capture { name ->

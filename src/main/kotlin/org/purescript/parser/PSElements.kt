@@ -58,6 +58,7 @@ val Signature = WithPsi("Signature") { PSSignature(it) }
 val TypeDeclType = TypeDecl.Type
 val ValueDeclType = ValueDecl.Type 
 val ParametersType = WithPsi("Parameters") { Parameters(it) } 
+val ParameterType = WithPsi("Parameter") { Parameter(it) } 
 val ValueDeclarationGroupType = ValueDeclarationGroup.Type 
 val ForeignDataDeclType = PSForeignDataDeclaration.Type
 val ForeignValueDeclType = ForeignValueDecl.Type
