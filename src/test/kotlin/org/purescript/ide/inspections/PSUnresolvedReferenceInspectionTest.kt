@@ -822,4 +822,18 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    fun `test it finds let binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |f =
+                |  let
+                |    {x} = { x : 1} 
+                |  in x
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }

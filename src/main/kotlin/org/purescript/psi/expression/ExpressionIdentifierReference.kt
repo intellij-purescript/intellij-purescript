@@ -79,8 +79,10 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
 
                             is PSLambda -> yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
 
-                            is PSLet ->
+                            is PSLet -> {
                                 yieldAll(parent.valueDeclarationGroups.asSequence())
+                                yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
+                            }
 
                             is PSDoBlock -> {
                                 val binders = parent
