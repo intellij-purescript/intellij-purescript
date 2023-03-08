@@ -117,7 +117,7 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
             |data Pair a b = Pair a b 
             |
             |foo = case _ of
-            |   Pair (Pair a b) c
+            |   Pair (Pair a b) c -> a
             """.trimMargin()
         )
         myFixture.enableInspections(UnnecessaryParenthesis())

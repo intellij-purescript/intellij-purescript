@@ -14,7 +14,12 @@ class RemoveParenthesisBinder(element: ParensBinder): LocalQuickFixOnPsiElement(
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
         if (startElement != endElement) return
         when (startElement) {
-            is ParensBinder -> startElement.binderAtomChildren.singleOrNull()?.let { startElement.replace(it) }
+            is ParensBinder -> startElement
+                .binderAtomChildren
+                .let {
+                    startElement.parent.addRangeBefore(it.first(), it.last(), startElement)
+                    startElement.delete()
+                }
         }
     }
 
