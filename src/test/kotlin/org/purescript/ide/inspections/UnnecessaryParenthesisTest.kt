@@ -91,6 +91,21 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
+    }    
+    
+    fun `test it don't report parenthesis around binder in parameter`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |
+            |newtype Box = Box Int
+            |
+            |foo (Box a) = a
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
     }
     
     fun `test it dont reports parenthesis around multiple binder in case`() {

@@ -6,6 +6,7 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
+import org.purescript.psi.binder.Parameter
 import org.purescript.psi.binder.ParensBinder
 import org.purescript.psi.expression.Argument
 import org.purescript.psi.expression.PSParens
@@ -32,9 +33,12 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
     private val caseAlternative = psiElement(PSCaseAlternative::class.java)
 
     private val binder = psiElement().andOr(
-            psiElement().withParent(hasOnlyOneChild),
-            psiElement().withParent(caseAlternative),
-        )
+        psiElement().withParent(
+            hasOnlyOneChild
+                .andNot(psiElement(Parameter::class.java))
+        ),
+        psiElement().withParent(caseAlternative),
+    )
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
         visitElement {
@@ -47,7 +51,8 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
                             RemoveParenthesis(this),
                         )
                     }
-                is ParensBinder -> if(binder.accepts(this)) {
+
+                is ParensBinder -> if (binder.accepts(this)) {
                     holder.registerProblem(
                         this,
                         "Unnecessary parentheses",
