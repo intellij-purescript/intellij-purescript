@@ -62,7 +62,15 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 if (qualifyingName == null) {
                     for (parent in element.parents(false)) {
                         when (parent) {
-                            is ValueDecl -> yieldAll(parent.namedBinders.values)
+                            is ValueDecl -> {
+                                yieldAll(parent.namedBinders.values)
+                                yieldAll(parent.where?.binders?.filterIsInstance<PsiNamedElement>()?: emptyList())
+                                yieldAll(parent
+                                    .where
+                                    ?.valueDeclarationGroups
+                                    ?.asSequence()
+                                    ?: sequenceOf())
+                            }
                             is ValueDeclarationGroup -> {
                                 parent.valueDeclarations.forEach { decl ->
                                     yieldAll(decl.valueDeclarationGroups.asSequence())
@@ -70,15 +78,6 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                             }
 
                             is PSLambda -> yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
-
-                            is PSExpressionWhere -> {
-                                val valueDeclarations = parent
-                                    .where
-                                    ?.valueDeclarationGroups
-                                    ?.asSequence()
-                                    ?: sequenceOf()
-                                yieldAll(valueDeclarations)
-                            }
 
                             is PSLet ->
                                 yieldAll(parent.valueDeclarationGroups.asSequence())

@@ -780,5 +780,46 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
+    }    
+    fun `test it finds where binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |f = x
+                |  where
+                |   {x} = { x : 1} 
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }       
+    fun `test it finds where binders siblings`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |f = x
+                |  where
+                |   {x} = { x : y} 
+                |   {y} = { y : 1} 
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }   
+    fun `test it finds where siblings`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |f = x
+                |  where
+                |   x = y
+                |   y = 1
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
     }
 }
