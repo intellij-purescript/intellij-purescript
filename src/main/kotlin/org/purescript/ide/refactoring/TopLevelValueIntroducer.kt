@@ -113,10 +113,9 @@ class TopLevelValueIntroducer :
             ?: "expr") + "'"
         val parameters = psi.dependencies.toList()
         val nameWithParameters = (sequenceOf(name) + parameters.map { it.name } + when (psi) {
-            is PSLambda -> psi.parameters?.binderAtoms?.map { it.name }?.asSequence() ?: emptySequence()
+            is PSLambda -> psi.parameters?.map { it.text }?.asSequence() ?: emptySequence()
             else -> emptySequence()
-        })
-            .joinToString(" ")
+        }).joinToString(" ")
         return object : AbstractInplaceIntroducer<ValueDeclarationGroup, Expression>(
             project,
             editor,

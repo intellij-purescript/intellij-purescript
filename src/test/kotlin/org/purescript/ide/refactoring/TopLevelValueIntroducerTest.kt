@@ -92,6 +92,26 @@ class TopLevelValueIntroducerTest : BasePlatformTestCase() {
         """.trimMargin()
         )
     }
+    fun `test it reuses lambda parameters when they are Constructor bindings`() {
+        doTest(
+            """
+            |module Main where
+            |
+            |newtype Box = Box Int
+            |
+            |y = {-caret-}\ (Box a) -> a + 1
+        """.trimMargin(),
+            """
+            |module Main where
+            |
+            |newtype Box = Box Int
+            |
+            |y = a'
+            |
+            |a' (Box a) = a + 1
+        """.trimMargin()
+        )
+    }
     fun `it doesn't work to test extract all`() {
         doTest(
             """
