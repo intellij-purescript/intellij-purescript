@@ -5,10 +5,10 @@ import com.intellij.lang.parameterInfo.ParameterInfoHandler
 import com.intellij.lang.parameterInfo.ParameterInfoUIContext
 import com.intellij.lang.parameterInfo.UpdateParameterInfoContext
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.descendantsOfType
 import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.prevLeaf
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.type.PSType
 
@@ -23,8 +23,11 @@ class PurescriptParameterInfoHandler : ParameterInfoHandler<PSExpressionIdentifi
     }
 
     private fun findParameterOwner(file: PsiFile, offset: Int): PSExpressionIdentifier? {
-        val element = when (val elem = file.findElementAt(offset)) {
-            is PsiWhiteSpace -> file.findElementAt(offset - 1)
+        val elem = file.findElementAt(offset) ?: return null
+        val element = when {
+            elem.parentOfType<Call>() != null -> elem.prevLeaf {
+                it.parentOfType<Call>() != null
+            }
             else -> elem
         }
         val aCall = element?.parentOfType<Call>(true)
