@@ -1,12 +1,10 @@
 package org.purescript.ide.refactoring
 
-import com.intellij.refactoring.util.CommonRefactoringUtil
-import com.intellij.refactoring.util.CommonRefactoringUtil.RefactoringErrorHintException
 import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
 
-class IntroduceHandlerTest : BasePlatformTestCase() {
+class TopLevelValueIntroducerTest : BasePlatformTestCase() {
     fun `test extract method of imported value`() {
         myFixture.configureByText("Console.purs", 
             """
