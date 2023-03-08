@@ -79,5 +79,17 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
     }
+    
+    fun `test it dont report parenthesis in the middle of a operator expression`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |l = x : (xs <#> f) <#> f'
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }
 
 }
