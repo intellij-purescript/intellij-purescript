@@ -13,10 +13,11 @@ import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import java.io.File
+import java.util.regex.Pattern
 
 class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
+    override fun getPairedBatchInspectionShortName(): String = PursIdeRebuildInspection.SHORT_NAME
     override fun collectInformation(file: PsiFile) = file
-
     override fun doAnnotate(file: PsiFile): Response? {
 
         // without a purs bin path we can't annotate with it
@@ -69,11 +70,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         }
     }
 
-    override fun apply(
-        file: PsiFile,
-        annotationResult: Response,
-        holder: AnnotationHolder
-    ) {
+    override fun apply(file: PsiFile, annotationResult: Response, holder: AnnotationHolder) {
         val documentManager = PsiDocumentManager.getInstance(file.project)
         val document = documentManager.getDocument(file) ?: return
         val severity = when (annotationResult.resultType) {
@@ -92,7 +89,10 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
                 .range(textRange)
                 .needsUpdateOnTyping()
             if (result.suggestion != null) {
-                val fix = PursIdeQuickFix(result.suggestion, result.message)
+                val name = result.errorCode
+                    ?.split(Pattern.compile("(?=[A-Z])"))
+                    ?.joinToString(" ")
+                val fix = PursIdeQuickFix(result.suggestion, name ?: result.message)
                 annotationBuilder.withFix(fix)
             }
             when (result.errorCode) {
@@ -103,9 +103,5 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             }
             annotationBuilder.create()
         }
-    }
-
-    override fun getPairedBatchInspectionShortName(): String {
-        return PursIdeRebuildInspection.SHORT_NAME
     }
 }
