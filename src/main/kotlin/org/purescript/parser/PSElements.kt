@@ -94,6 +94,7 @@ val PunBinderType = WithPsi("PunBinder") { PunBinder(it) }
 val CtorBinder = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
 val RecordBinderType = WithPsi("RecordBinder") { RecordBinder(it) }
 val ArrayBinderType = WithPsi("ArrayBinder") { ArrayBinder(it) }
+val ParensBinderType = WithPsi("ParensBinder") { ParensBinder(it) }
 val RecordLabelType = WithPsi("RecordLabel") { RecordLabel(it) }
 val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
 val NumericLiteral = WithPsi("NumericLiteral") { PSNumericLiteral(it) }
@@ -103,6 +104,7 @@ val ArrayLiteral = WithPsi("ArrayLiteral") { PSArrayLiteral(it) }
 val RecordLiteralType = WithPsi("RecordLiteral") { RecordLiteral(it) }
 val Lambda = WithPsi("Lambda") { PSLambda(it) }
 val ExpressionCtor = WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
+
 val ExpressionIdentifier = WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
 
 /** Symbol is a operator in parenthesis
@@ -113,7 +115,6 @@ addOne = (+) 1
 ```
  */
 val ExpressionSymbol = WithPsi("ExpressionSymbol") { PSExpressionSymbol(it) }
-
 /**  Operator in expression
 `+`
 in

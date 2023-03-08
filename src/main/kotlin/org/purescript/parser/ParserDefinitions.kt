@@ -97,7 +97,7 @@ class ParserDefinitions {
             NumberBinder(number),
             ArrayBinderType(squares(binder.sepBy(`,`))),
             RecordBinderType(recordLayout(recordBinder, "record binder")),
-            parens(binder),
+            ParensBinderType(parens(binder)),
             BooleanBinder(boolean),
             CtorBinder(qualProperName),
             NamedBinder(VarBinder(ident) + `@` + this).heal,
