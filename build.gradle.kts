@@ -65,12 +65,6 @@ tasks {
     compileJava.configure { 
         options.encoding = "UTF-8"
     }
-    compileKotlin.configure {
-        dependsOn(generateLexer)
-    }
-    compileTestKotlin.configure {
-        dependsOn(generateLexer)
-    }
 }
 sourceSets {
     main {
