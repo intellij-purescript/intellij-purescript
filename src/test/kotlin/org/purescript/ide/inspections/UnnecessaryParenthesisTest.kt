@@ -122,6 +122,22 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
+    }   
+    
+    fun `test it reports parenthesis around multiple binder in record label binder`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |
+            |data Pair a b = Pair a b 
+            |
+            |foo = case _ of
+            |  { x: <weak_warning descr="Unnecessary parentheses">(Pair a b)</weak_warning> } -> a
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
     }
     
     fun `test it dont report parenthesis in the middle of a operator expression`() {
