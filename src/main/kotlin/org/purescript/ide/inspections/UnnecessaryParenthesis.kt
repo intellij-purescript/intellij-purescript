@@ -20,7 +20,6 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
-    private val parenthesisBinder: Capture<ParensBinder> = psiElement(ParensBinder::class.java)
     private val hasOnlyOneChild = psiElement()
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val pattern = parenthesis
