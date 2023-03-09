@@ -16,6 +16,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
+import com.intellij.util.io.isAncestor
 import org.purescript.PackageSet
 import org.purescript.file.PSFile
 import org.purescript.psi.base.PSPsiElement
@@ -130,15 +131,12 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         }
     }
 
-    private fun lookupElementBuilder(
-        it: Importable,
-        qualifiedName: String?,
-        project: Project
-    ): LookupElementBuilder {
+    private fun lookupElementBuilder(it: Importable, qualifiedName: String?, project: Project): LookupElementBuilder {
         val import = it.asImport()?.withAlias(qualifiedName) 
             ?: error("Importable was not importable")
         val modulePath = import.moduleName.split('.')
-        return LookupElementBuilder
+
+        val lookupElement = LookupElementBuilder
             .createWithIcon(it)
             .withPresentableText(it.name!!)
             .withLookupString("${modulePath.joinToString("")}.${it.name}")
@@ -153,5 +151,11 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                     }
                 }
             }
+        val file = it.containingFile.virtualFile
+        val libraries = project.service<Spago>().libraries
+        return libraries.find {
+            it.sourceRoots.any { it.toNioPath().isAncestor(file.toNioPath()) }
+        }?.packageName?.let { lookupElement.appendTailText("($it)", true) }
+            ?: lookupElement
     }
 }
