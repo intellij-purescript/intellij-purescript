@@ -3,6 +3,7 @@ package org.purescript.ide.inspections
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.PlatformPatterns.or
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
@@ -37,7 +38,7 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
     private val hasOnlyTwoChildren = psiElement()
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(2))
 
-    private val binder = psiElement().andOr(
+    private val binder = or(
         psiElement().withParent(hasOnlyOneChild.andNot(psiElement(Parameter::class.java))),
         psiElement().withParent(caseAlternative.and(hasOnlyTwoChildren)),
         psiElement().withParent(recordLabelExprBinder.and(hasOnlyOneChild)),
