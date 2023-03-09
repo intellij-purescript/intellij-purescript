@@ -409,6 +409,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = getDocComments()
 
     fun addImportDeclaration(importDeclaration: ImportDeclaration) {
+        if (importDeclaration.moduleName == name) return
         val imports = cache.imports.filter {
             it.moduleName.name == importDeclaration.moduleName &&
                     it.importAlias?.name == importDeclaration.alias
