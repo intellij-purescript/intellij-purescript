@@ -36,11 +36,13 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
 
     private val hasOnlyTwoChildren = psiElement()
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(2))
+    private val hasOnlyFourChildren = psiElement()
+        .withChildren(PlatformPatterns.collection<PsiElement?>().size(4))
 
     private val binder = psiElement().andOr(
         psiElement().withParent(hasOnlyOneChild.andNot(psiElement(Parameter::class.java))),
         psiElement().withParent(caseAlternative.and(hasOnlyTwoChildren)),
-        psiElement().withParent(recordLabelBinder),
+        psiElement().withParent(recordLabelBinder.andNot(hasOnlyFourChildren)),
     )
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
