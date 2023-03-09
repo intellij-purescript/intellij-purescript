@@ -93,6 +93,7 @@ val VarBinder = WithPsi("VarBinder") { PSVarBinder(it) }
 val RecordBinderType = WithPsi("RecordBinder") { RecordBinder(it) }
 val PunBinderType = WithPsi("PunBinder") { PunBinder(it) }
 val RecordLabelBinderType = WithPsi("RecordLabelBinder") { RecordLabelBinder(it) }
+val RecordLabelExprBinderType = WithPsi("RecordLabelExprBinder") { RecordLabelExprBinder(it) }
 val CtorBinder = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
 val ArrayBinderType = WithPsi("ArrayBinder") { ArrayBinder(it) }
 val ParensBinderType = WithPsi("ParensBinder") { ParensBinder(it) }

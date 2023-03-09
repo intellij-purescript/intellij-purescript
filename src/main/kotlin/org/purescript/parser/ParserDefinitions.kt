@@ -376,5 +376,5 @@ class ParserDefinitions {
                 layout1(doStatement, "do statement").relax("missing do statements")
     )
     private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
-    private val recordBinder = RecordLabelBinderType((label + eq / ":").heal + binder) / PunBinderType(label)
+    private val recordBinder = RecordLabelBinderType((label + eq / ":").heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
 }
