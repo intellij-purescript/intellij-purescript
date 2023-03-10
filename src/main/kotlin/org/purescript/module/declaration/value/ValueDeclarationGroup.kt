@@ -6,7 +6,10 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.search.LocalSearchScope
+import com.intellij.psi.search.SearchScope
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.parentsOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
@@ -96,9 +99,15 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     val isExported
         get() = greenStub?.isExported ?: when {
             module == null -> false
-            parent !is Module -> false
+            isTopLevel -> false
             module?.exports == null -> true
             module?.exportsSelf == null -> true
             else -> name in (module?.exports?.values?.map { it.name } ?: emptyList())
         }
+    val isTopLevel get() = parent !is Module
+    override fun getUseScope(): SearchScope = (
+            if (isExported) super.getUseScope()
+            else if (isExported) module?.let { LocalSearchScope(it) }
+            else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
+        ?: super.getUseScope()
 }
