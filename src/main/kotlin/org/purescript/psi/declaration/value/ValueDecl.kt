@@ -86,17 +86,9 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
             "$name$parameterList$type".replace(Regex("\\s+"), " ")
         val fileName = this.containingFile.name
         return object : ItemPresentation {
-            override fun getPresentableText(): String {
-                return presentableText
-            }
-
-            override fun getLocationString(): String {
-                return fileName
-            }
-
-            override fun getIcon(unused: Boolean): Icon? {
-                return null
-            }
+            override fun getPresentableText(): String = presentableText
+            override fun getLocationString(): String = fileName
+            override fun getIcon(unused: Boolean): Icon? = null
         }
     }
 
