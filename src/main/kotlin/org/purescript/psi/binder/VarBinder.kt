@@ -20,7 +20,8 @@ class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
     override fun getUseScope(): SearchScope = LocalSearchScope(containingFile)
     override fun setName(name: String): PsiElement? {
-        val newName = project.service<PSPsiFactory>().createIdentifier(name) ?: return null
+        val factory = project.service<PSPsiFactory>()
+        val newName = factory.createIdentifier(name) ?: return null
         this.nameIdentifier.replace(newName)
         return this
     }
