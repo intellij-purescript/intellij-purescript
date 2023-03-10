@@ -9,16 +9,12 @@ import org.purescript.psi.binder.Binder
 import org.purescript.psi.name.PSIdentifier
 
 class PunBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
-
+    override fun getNameIdentifier(): PSIdentifier = findChildByClass(PSIdentifier::class.java)!!
     override fun getName(): String = nameIdentifier.name
-
     override fun setName(name: String): PsiElement? {
-        val newName =
-            project.service<PSPsiFactory>().createIdentifier(name) ?: return null
+        val factory = project.service<PSPsiFactory>()
+        val newName = factory.createIdentifier(name) ?: return null
         this.nameIdentifier.replace(newName)
         return this
-    }
-    override fun getNameIdentifier(): PSIdentifier {
-        return findChildByClass(PSIdentifier::class.java)!!
     }
 }
