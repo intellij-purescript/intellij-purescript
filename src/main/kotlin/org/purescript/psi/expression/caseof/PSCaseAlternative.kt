@@ -6,5 +6,5 @@ import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.BinderAtom
 
 class PSCaseAlternative(node: ASTNode) : PSPsiElement(node) {
-    val binders get() = childrenOfType<BinderAtom>().flatMap { it.binders }
+    val binders get() = childrenOfType<BinderAtom>().flatMap { it.descendantBinders }
 }

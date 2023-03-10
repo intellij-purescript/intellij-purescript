@@ -16,7 +16,6 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.binder.BinderAtom
-import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.*
@@ -108,13 +107,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
         get() = this.getDocComments()
 
     val namedBinders: Map<String, PsiNamedElement>
-        get() = binders
-            ?.filterIsInstance<PsiNamedElement>()
+        get() = parameters
+            ?.namedDescendant
             ?.filter { it.name != null }
             ?.associateBy { it.name!! }
             ?: emptyMap()
-
-    val binders get() = parameters?.binders
 
     val parameters get() = findChildByClass(Parameters::class.java)
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
@@ -122,10 +119,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
         get() = where?.valueDeclarationGroups ?: emptyArray()
     fun inline(arguments: List<Argument>): Expression {
         val copy = this.copy() as ValueDecl
-        val binders = copy.parameters
-            ?.binderAtoms
-            ?.filterIsInstance<VarBinder>()
-            ?: emptyList()
+        val binders = copy.parameters?.varBinderParameters ?: emptyList()
         val parametersToInline = binders.map {
             ReferencesSearch
                 .search(it, LocalSearchScope(copy))

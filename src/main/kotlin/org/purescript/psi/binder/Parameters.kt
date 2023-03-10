@@ -5,7 +5,8 @@ import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.base.PSPsiElement
 
 class Parameters(node: ASTNode) : PSPsiElement(node) {
-    val binders get() = binderAtoms.flatMap { it.binders }
+    val namedDescendant = binderAtoms.flatMap { it.namedDescendant }
     val binderAtoms get() = parameters.flatMap { it.binderAtoms }
+    val varBinderParameters get() = parameters.flatMap { it.binderAtoms.filterIsInstance<VarBinder>() }
     val parameters get() = childrenOfType<Parameter>()
 }

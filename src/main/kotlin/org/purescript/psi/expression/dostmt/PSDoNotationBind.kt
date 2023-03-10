@@ -6,5 +6,5 @@ import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.BinderAtom
 
 class PSDoNotationBind(node: ASTNode) : PSPsiElement(node), DoStatement {
-    override val binders get() = childrenOfType<BinderAtom>().flatMap { it.binders }
+    override val binders get() = childrenOfType<BinderAtom>().flatMap { it.descendantBinders }
 }

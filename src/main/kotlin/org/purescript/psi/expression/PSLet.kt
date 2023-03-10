@@ -12,5 +12,5 @@ class PSLet(node: ASTNode) : PSPsiElement(node), Expression {
     val value:PSValue? = findChildByClass(PSValue::class.java)
     override fun getAtoms(): Sequence<ExpressionAtom> =
         (value?.getAtoms() ?: emptySequence()) + valueDeclarationGroups.flatMap { it.expressionAtoms }
-    val binders: List<BinderAtom> get() = childrenOfType<BinderAtom>().flatMap { it.binders }
+    val binders: List<BinderAtom> get() = childrenOfType<BinderAtom>().flatMap { it.descendantBinders }
 }

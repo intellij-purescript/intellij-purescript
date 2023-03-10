@@ -77,7 +77,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                 }
                             }
 
-                            is PSLambda -> yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
+                            is PSLambda -> yieldAll(parent.namedDescendant)
 
                             is PSLet -> {
                                 yieldAll(parent.valueDeclarationGroups.asSequence())

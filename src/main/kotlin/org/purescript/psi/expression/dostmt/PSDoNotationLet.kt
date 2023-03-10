@@ -10,7 +10,7 @@ import org.purescript.psi.declaration.value.ValueDeclarationGroup
 class PSDoNotationLet(node: ASTNode) : PSPsiElement(node), DoStatement {
     val valueDeclarationGroups: Array<ValueDeclarationGroup>
         get() = findChildrenByClass(ValueDeclarationGroup::class.java)
-    override val binders get() = childrenOfType<BinderAtom>().flatMap { it.binders }
+    override val binders get() = childrenOfType<BinderAtom>().flatMap { it.descendantBinders }
     override val namedElements: List<PsiNamedElement>
         get() = super.namedElements + valueDeclarationGroups
 }

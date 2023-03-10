@@ -26,5 +26,5 @@ class PSExpressionWhere(node: ASTNode) : PSPsiElement(node) {
     val valueDeclarationGroups: Array<ValueDeclarationGroup>
         get() =
             findChildrenByClass(ValueDeclarationGroup::class.java)
-    val binders get() = childrenOfType<BinderAtom>().flatMap { it.binders }
+    val binders get() = childrenOfType<BinderAtom>().flatMap { it.descendantBinders }
 }
