@@ -5,6 +5,14 @@ import org.purescript.psi.expression.ConstructorReference
 import org.purescript.psi.expression.Qualified
 import org.purescript.psi.name.PSQualifiedProperName
 
+
+/**
+ * The node `M.Box` in the code
+ * 
+ * ```purescript
+ * f (M.Box a) = a
+ * ```
+ */
 class ConstructorBinder(node: ASTNode) : Binder(node), Qualified {
     /**
      * @return the [PSQualifiedProperName] identifying this constructor
