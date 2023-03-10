@@ -18,7 +18,6 @@ import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.signature.PSSignature
 import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
-import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -69,7 +68,6 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
 
     val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
     val valueDeclarations: Array<out ValueDecl> get() = children()
-    val expressions: Sequence<Expression> get() = valueDeclarations.flatMap { expressions }.asSequence()
     val expressionAtoms get() = valueDeclarations.flatMap { it.expressionAtoms }
     val binderAtoms
         get() = sequence {
