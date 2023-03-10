@@ -3,7 +3,6 @@ package org.purescript.run.spago
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsProvider
-import com.intellij.openapi.roots.SyntheticLibrary
 import com.intellij.openapi.vfs.VirtualFile
 
 class SpagoLibraryRootsProvider : AdditionalLibraryRootsProvider() {

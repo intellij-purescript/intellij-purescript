@@ -1,7 +1,7 @@
 package org.purescript.psi.type
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.util.TextRange
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns.psiElement
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 

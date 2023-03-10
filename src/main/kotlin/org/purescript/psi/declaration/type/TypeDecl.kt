@@ -4,20 +4,16 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
-import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedData
-import org.purescript.parser.ImportedData
-import org.purescript.psi.PSElementType.*
+import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.base.AStub
-import org.purescript.psi.name.PSProperName
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableTypeIndex
-import org.purescript.psi.declaration.data.DataDeclaration
 import org.purescript.psi.exports.ExportedData
 import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.module.Module
-import org.purescript.psi.type.PSType
+import org.purescript.psi.name.PSProperName
 
 /**
  * A type synonym declaration, e.g.

@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.util.PsiEditorUtilBase
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.ide.formatting.ImportedItem
 import org.purescript.psi.base.PSPsiElement
 import java.util.*
 

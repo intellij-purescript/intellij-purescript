@@ -12,7 +12,6 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.file.PSFile
 import org.purescript.psi.declaration.Importable
-import org.purescript.psi.declaration.ImportableIndex
 import org.purescript.psi.declaration.ImportableTypeIndex
 import org.purescript.psi.expression.Qualified
 
