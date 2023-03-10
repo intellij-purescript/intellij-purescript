@@ -15,7 +15,7 @@ import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.binder.BinderAtom
+import org.purescript.psi.binder.Binder
 import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.*
@@ -76,7 +76,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
-        val parameters = findChildrenByClass(BinderAtom::class.java)
+        val parameters = findChildrenByClass(Binder::class.java)
         val parameterList = parameters
             .asSequence()
             .map { " " + it.text.trim() }

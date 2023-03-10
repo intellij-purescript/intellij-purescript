@@ -7,7 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 
-class RecordLabelBinder(node: ASTNode) : BinderAtom(node), PsiNameIdentifierOwner {
+class RecordLabelBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name
 

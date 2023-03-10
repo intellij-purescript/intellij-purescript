@@ -3,8 +3,8 @@ package org.purescript.psi.expression.caseof
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.binder.BinderAtom
+import org.purescript.psi.binder.Binder
 
 class PSCaseAlternative(node: ASTNode) : PSPsiElement(node) {
-    val binders get() = childrenOfType<BinderAtom>().flatMap { it.descendantBinders }
+    val binders get() = childrenOfType<Binder>().flatMap { it.descendantBinders }
 }
