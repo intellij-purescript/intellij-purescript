@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
-import org.purescript.psi.exports.ExportList
-import org.purescript.psi.module.Module
+import org.purescript.module.Module
+import org.purescript.module.exports.ExportList
 
 class PurescriptFoldingVisitor : PsiElementVisitor() {
     val descriptors: ArrayList<FoldingDescriptor> = ArrayList()

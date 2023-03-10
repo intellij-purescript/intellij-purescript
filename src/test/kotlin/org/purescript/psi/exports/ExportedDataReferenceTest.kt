@@ -3,6 +3,7 @@ package org.purescript.psi.exports
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.getModule
+import org.purescript.module.exports.ExportedData
 
 class ExportedDataReferenceTest : BasePlatformTestCase() {
 

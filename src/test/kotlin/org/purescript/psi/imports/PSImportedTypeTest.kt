@@ -2,7 +2,7 @@ package org.purescript.psi.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getImportedItem
-import org.purescript.psi.declaration.imports.PSImportedType
+import org.purescript.module.declaration.imports.PSImportedType
 
 
 class PSImportedTypeTest : BasePlatformTestCase() {

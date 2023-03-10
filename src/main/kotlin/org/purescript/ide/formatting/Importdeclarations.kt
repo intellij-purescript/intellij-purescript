@@ -1,6 +1,6 @@
 package org.purescript.ide.formatting
 
-import org.purescript.psi.declaration.imports.Import
+import org.purescript.module.declaration.imports.Import
 
 data class ImportDeclarations(val imports: Set<ImportDeclaration>) {
     val mergedImports

@@ -4,26 +4,27 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
-import org.purescript.psi.binder.VarBinder
-import org.purescript.psi.binder.record.PunBinder
-import org.purescript.psi.declaration.classes.ClassDecl
-import org.purescript.psi.declaration.classes.PSClassConstraint
-import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.foreign.ForeignValueDecl
-import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.imports.*
-import org.purescript.psi.declaration.newtype.NewtypeCtor
-import org.purescript.psi.declaration.newtype.NewtypeDecl
-import org.purescript.psi.declaration.type.TypeDecl
-import org.purescript.psi.declaration.value.ValueDecl
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.binder.VarBinder
+import org.purescript.module.declaration.value.binder.record.PunBinder
+import org.purescript.module.declaration.classes.ClassDecl
+import org.purescript.module.declaration.classes.PSClassConstraint
+import org.purescript.module.declaration.classes.PSClassMember
+import org.purescript.module.declaration.data.DataConstructor
+import org.purescript.module.declaration.data.DataDeclaration
+import org.purescript.module.declaration.foreign.ForeignValueDecl
+import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
+import org.purescript.module.declaration.imports.*
+import org.purescript.module.declaration.newtype.NewtypeCtor
+import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.TypeDecl
+import org.purescript.module.declaration.value.ValueDecl
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.*
-import org.purescript.psi.expression.identifier.PSExpressionConstructor
-import org.purescript.psi.expression.identifier.PSExpressionIdentifier
-import org.purescript.psi.module.Module
-import org.purescript.psi.type.typeconstructor.PSTypeConstructor
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionConstructor
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.Module
+import org.purescript.module.exports.*
+import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 
 
 /**

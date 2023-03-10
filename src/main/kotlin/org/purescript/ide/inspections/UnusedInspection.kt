@@ -20,12 +20,12 @@ import com.intellij.psi.util.siblings
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import org.purescript.parser.COMMA
 import org.purescript.parser.PSParserDefinition
-import org.purescript.psi.declaration.classes.PSInstanceDeclaration
-import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.imports.*
-import org.purescript.psi.declaration.newtype.NewtypeDecl
-import org.purescript.psi.declaration.signature.PSSignature
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.classes.PSInstanceDeclaration
+import org.purescript.module.declaration.data.DataDeclaration
+import org.purescript.module.declaration.imports.*
+import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.signature.PSSignature
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class UnusedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =

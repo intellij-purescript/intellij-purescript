@@ -11,18 +11,18 @@ import com.intellij.psi.util.descendantsOfType
 import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
 import org.purescript.ide.formatting.*
-import org.purescript.psi.declaration.imports.*
-import org.purescript.psi.declaration.value.ValueDecl
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.exports.ExportList
-import org.purescript.psi.exports.RecordLabel
-import org.purescript.psi.expression.identifier.PSExpressionIdentifier
-import org.purescript.psi.expression.controll.ifthenelse.PSIfThenElse
-import org.purescript.psi.expression.namespace.PSLambda
-import org.purescript.psi.expression.PSParens
-import org.purescript.psi.name.PSIdentifier
-import org.purescript.psi.name.PSModuleName
-import org.purescript.psi.name.PSOperatorName
+import org.purescript.module.declaration.imports.*
+import org.purescript.module.declaration.value.ValueDecl
+import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.expression.PSParens
+import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.namespace.PSLambda
+import org.purescript.module.exports.ExportList
+import org.purescript.module.exports.RecordLabel
+import org.purescript.name.PSIdentifier
+import org.purescript.name.PSModuleName
+import org.purescript.name.PSOperatorName
 
 
 /**

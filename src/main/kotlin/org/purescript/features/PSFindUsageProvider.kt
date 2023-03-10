@@ -7,21 +7,21 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSLexer
+import org.purescript.module.Module
+import org.purescript.module.declaration.classes.ClassDecl
+import org.purescript.module.declaration.classes.PSClassMember
+import org.purescript.module.declaration.data.DataConstructor
+import org.purescript.module.declaration.data.DataDeclaration
+import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.foreign.ForeignValueDecl
+import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
+import org.purescript.module.declaration.imports.PSImportAlias
+import org.purescript.module.declaration.newtype.NewtypeCtor
+import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.TypeDecl
+import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.parser.*
-import org.purescript.psi.binder.VarBinder
-import org.purescript.psi.declaration.classes.ClassDecl
-import org.purescript.psi.declaration.classes.PSClassMember
-import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.foreign.ForeignValueDecl
-import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.declaration.imports.PSImportAlias
-import org.purescript.psi.declaration.newtype.NewtypeCtor
-import org.purescript.psi.declaration.newtype.NewtypeDecl
-import org.purescript.psi.declaration.type.TypeDecl
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.module.Module
 
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =

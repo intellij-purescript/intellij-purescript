@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedItem
-import org.purescript.psi.declaration.imports.ReExportedImportIndex
+import org.purescript.module.declaration.imports.ReExportedImportIndex
 
 @Service
 class ImportGraph(val project: Project) {

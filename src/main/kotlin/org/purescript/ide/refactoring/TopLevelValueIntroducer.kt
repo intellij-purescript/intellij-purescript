@@ -19,12 +19,12 @@ import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
 import org.purescript.file.PSFileType
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.expression.Expression
-import org.purescript.psi.expression.ExpressionSelector
-import org.purescript.psi.expression.identifier.PSExpressionIdentifier
-import org.purescript.psi.expression.namespace.PSLambda
-import org.purescript.psi.module.Module
+import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.declaration.value.expression.ExpressionSelector
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.namespace.PSLambda
+import org.purescript.module.Module
 
 class TopLevelValueIntroducer :
     IntroduceHandler<PsiIntroduceTarget<Expression>, Module>() {

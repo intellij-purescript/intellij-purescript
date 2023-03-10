@@ -5,7 +5,7 @@ import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.purescript.psi.module.Module
+import org.purescript.module.Module
 
 class MoveModuleMatchingName(private val module: Module) : LocalQuickFixOnPsiElement(module) {
     override fun getFamilyName() = "Move module"

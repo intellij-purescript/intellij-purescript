@@ -2,6 +2,7 @@ package org.purescript.psi.exports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getExportedItem
+import org.purescript.module.exports.*
 
 class ExportedItemTest : BasePlatformTestCase() {
 

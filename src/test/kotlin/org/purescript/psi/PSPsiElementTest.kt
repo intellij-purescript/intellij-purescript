@@ -3,7 +3,6 @@ package org.purescript.psi
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getModule
-import org.purescript.psi.base.PSPsiElement
 
 class PSPsiElementTest : BasePlatformTestCase() {
     fun `test finds module for various elements`() {

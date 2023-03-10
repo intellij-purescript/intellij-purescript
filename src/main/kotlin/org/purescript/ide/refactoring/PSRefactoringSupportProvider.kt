@@ -3,13 +3,13 @@ package org.purescript.ide.refactoring
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.RefactoringActionHandler
-import org.purescript.psi.binder.VarBinder
-import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.imports.PSImportedDataMember
-import org.purescript.psi.declaration.imports.PSImportedItem
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.expression.Expression
-import org.purescript.psi.module.Module
+import org.purescript.module.declaration.value.binder.VarBinder
+import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.imports.PSImportedDataMember
+import org.purescript.module.declaration.imports.PSImportedItem
+import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.Module
 
 class PSRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =

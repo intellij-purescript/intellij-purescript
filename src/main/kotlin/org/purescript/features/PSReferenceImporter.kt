@@ -14,11 +14,10 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.psi.declaration.ImportableIndex
-import org.purescript.psi.declaration.ImportableTypeIndex
-import org.purescript.psi.expression.ExpressionAtom
-import org.purescript.psi.expression.Qualified
-import org.purescript.psi.module.Module
+import org.purescript.module.declaration.ImportableIndex
+import org.purescript.module.declaration.ImportableTypeIndex
+import org.purescript.module.declaration.value.expression.ExpressionAtom
+import org.purescript.module.declaration.value.expression.Qualified
 import java.util.function.BooleanSupplier
 
 class PSReferenceImporter : ReferenceImporter {
@@ -98,7 +97,7 @@ class PSReferenceImporter : ReferenceImporter {
         hintManager: HintManager,
         editor: Editor,
         element: PsiElement,
-        module: Module
+        module: org.purescript.module.Module
     ): Boolean {
         val message = ShowAutoImportPass.getMessage(false, "$toImport")
         hintManager.showQuestionHint(
@@ -112,7 +111,7 @@ class PSReferenceImporter : ReferenceImporter {
         return true
     }
 
-    fun import(module: Module, toImport: ImportDeclaration): Boolean {
+    fun import(module: org.purescript.module.Module, toImport: ImportDeclaration): Boolean {
         WriteAction.run<RuntimeException> {
             CommandProcessor.getInstance().runUndoTransparentAction {
                 module.addImportDeclaration(toImport)

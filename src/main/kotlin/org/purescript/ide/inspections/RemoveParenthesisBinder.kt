@@ -4,7 +4,7 @@ import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.purescript.psi.binder.ParensBinder
+import org.purescript.module.declaration.value.binder.ParensBinder
 
 class RemoveParenthesisBinder(element: ParensBinder) : LocalQuickFixOnPsiElement(element) {
     override fun getFamilyName(): String = "Remove Parentheses"

@@ -11,7 +11,6 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
-import org.purescript.psi.module.Module
 
 
 class PSStructureViewBuilder: PsiStructureViewFactory {
@@ -30,7 +29,7 @@ class PSStructureViewBuilder: PsiStructureViewFactory {
 
         override fun getChildren(): Array<TreeElement> = when (element) {
             is PSFile -> element.module?.let { arrayOf(TreeElement(it)) } ?: arrayOf()
-            is Module -> element.cache.valueDeclarationGroups.map { TreeElement(it) }.toTypedArray()
+            is org.purescript.module.Module -> element.cache.valueDeclarationGroups.map { TreeElement(it) }.toTypedArray()
             else -> arrayOf()
         }
 

@@ -1,4 +1,4 @@
-package org.purescript.psi.expression
+package org.purescript.module.declaration.value.expression
 
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase

@@ -1,8 +1,8 @@
-package org.purescript.psi.expression
+package org.purescript.module.declaration.value.expression
 
 import com.intellij.openapi.util.TextRange
 import junit.framework.TestCase
-import org.purescript.psi.declaration.fixity.PSFixity.Associativity
+import org.purescript.module.declaration.fixity.PSFixity.Associativity
 
 sealed interface Tree {
     val ranges: Sequence<TextRange>

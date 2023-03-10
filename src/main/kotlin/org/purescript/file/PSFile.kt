@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
-import org.purescript.psi.module.Module
+import org.purescript.module.Module
 import java.nio.file.Path
 import java.nio.file.Paths
 

@@ -18,7 +18,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
-import org.purescript.psi.module.ModuleNameIndex
+import org.purescript.module.ModuleNameIndex
 import javax.swing.JComponent
 
 class SpagoRunConfiguration(

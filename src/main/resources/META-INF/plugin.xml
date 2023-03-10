@@ -41,10 +41,10 @@
         <lang.documentationProvider language="Purescript"
                                     implementationClass="org.purescript.features.PSDocumentationProvider"/>
         <gotoSymbolContributor 
-                implementation="org.purescript.psi.module.ModuleChooseByNameContributor"
+                implementation="org.purescript.module.ModuleChooseByNameContributor"
         />
         <gotoSymbolContributor
-                implementation="org.purescript.psi.declaration.value.ValueChooseByNameContributor"
+                implementation="org.purescript.module.declaration.value.ValueChooseByNameContributor"
         />
         <spellchecker.support
             language="Purescript"
@@ -57,14 +57,14 @@
             implementationClass="org.purescript.PSStructureViewBuilder"
         />
         <extendWordSelectionHandler
-                implementation="org.purescript.psi.expression.ExpressionExtendWordSelectionHandler"/>
+                implementation="org.purescript.module.declaration.value.expression.ExpressionExtendWordSelectionHandler"/>
         <lang.refactoringSupport
             language="Purescript"
             implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
         <refactoring.safeDeleteProcessor
-            implementation="org.purescript.psi.declaration.value.ValueDeclSafeDeleteProcessorDelegate"/>
+            implementation="org.purescript.module.declaration.value.ValueDeclSafeDeleteProcessorDelegate"/>
         <refactoring.moveHandler
-            implementation="org.purescript.psi.declaration.value.ValueDeclMoveHandlerDelegate"/>
+            implementation="org.purescript.module.declaration.value.ValueDeclMoveHandlerDelegate"/>
         <inlineActionHandler
             implementation="org.purescript.ide.refactoring.PSInline"/>
         <lang.namesValidator language="Purescript"
@@ -77,9 +77,9 @@
             language="Purescript"
             implementationClass="org.purescript.features.PSFindUsageProvider"
         />
-        <importFilteringRule implementation="org.purescript.psi.declaration.imports.PSImportFilteringRule"/>
+        <importFilteringRule implementation="org.purescript.module.declaration.imports.PSImportFilteringRule"/>
         <usageGroupingRuleProvider 
-                implementation="org.purescript.psi.declaration.value.ValueUsageGroupingRuleProvider"
+                implementation="org.purescript.module.declaration.value.ValueUsageGroupingRuleProvider"
         />
         <completion.contributor
             language="Purescript"
@@ -89,12 +89,12 @@
         />
         <completion.contributor
             language="Purescript"
-            implementationClass="org.purescript.psi.expression.identifier.ExpressionCompletionContributor"
+            implementationClass="org.purescript.module.declaration.value.expression.identifier.ExpressionCompletionContributor"
             id="ExpressionCompletionContributor"
         />
         <completion.contributor
             language="Purescript"
-            implementationClass="org.purescript.psi.type.TypeCompletionContributor"
+            implementationClass="org.purescript.module.declaration.type.TypeCompletionContributor"
             id="TypeCompletionContributor"
         />
 
@@ -224,28 +224,28 @@
             implementation="org.purescript.file.ExportedTypesIndex"/>
         <fileBasedIndex
             implementation="org.purescript.file.ImportedModuleIndex"/>
-        <stubIndex implementation="org.purescript.psi.module.ModuleNameIndex"/>
+        <stubIndex implementation="org.purescript.module.ModuleNameIndex"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.value.ExportedValueDecl"/>
+            implementation="org.purescript.module.declaration.value.ExportedValueDecl"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.value.TopLevelValueDecl"/>
+            implementation="org.purescript.module.declaration.value.TopLevelValueDecl"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.ImportableIndex"/>
+            implementation="org.purescript.module.declaration.ImportableIndex"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.ImportableTypeIndex"/>
+            implementation="org.purescript.module.declaration.ImportableTypeIndex"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.foreign.ExportedForeignValueDeclIndex"/>
+            implementation="org.purescript.module.declaration.foreign.ExportedForeignValueDeclIndex"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.fixity.ExportedFixityNameIndex"/>
+            implementation="org.purescript.module.declaration.fixity.ExportedFixityNameIndex"/>
         <stubIndex
-            implementation="org.purescript.psi.declaration.imports.ReExportedImportIndex"/>
+            implementation="org.purescript.module.declaration.imports.ReExportedImportIndex"/>
         <codeInsight.template.postfixTemplateProvider
                 language="Purescript"
-                implementationClass="org.purescript.psi.expression.ExpressionPostfixTemplateProvider"
+                implementationClass="org.purescript.module.declaration.value.expression.ExpressionPostfixTemplateProvider"
         />
         <codeInsight.parameterInfo
             language="Purescript"
-            implementationClass="org.purescript.psi.expression.identifier.PurescriptParameterInfoHandler"
+            implementationClass="org.purescript.module.declaration.value.expression.identifier.PurescriptParameterInfoHandler"
         />
     </extensions>
 

@@ -8,53 +8,49 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.PSLanguage
-import org.purescript.psi.module.Module
-import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.declaration.Importable
-import org.purescript.psi.declaration.classes.ClassDecl
-import org.purescript.psi.declaration.data.DataConstructor
-import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.declaration.fixity.FixityDeclaration
-import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.Importable
+import org.purescript.module.declaration.classes.ClassDecl
+import org.purescript.module.declaration.data.DataConstructor
+import org.purescript.module.declaration.data.DataDeclaration
+import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.PSPsiElement
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
-    override fun generateDoc(
-        element: PsiElement?,
-        originalElement: PsiElement?
-    ): String? {
-        return when  {
-            element is Importable && element is DocCommentOwner ->
-                layout(
-                    HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
-                        element.project,
-                        PSLanguage,
-                        element.type?.let { "${element.name} :: ${it.text}" } ?: element.name,
-                        1f
-                    ) ,
-                    docCommentsToDocstring(element.docComments.map { it.text })
-                )
-            element is FixityDeclaration -> {
-                val docComments = element.docComments
-                layout(
-                    HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
-                        element.project,
-                        PSLanguage,
-                        element.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
-                        1f
-                    ) ,
-                    docCommentsToDocstring(docComments.map { it.text })
-                )
-            }
-            element is DocCommentOwner && element is PsiNamedElement ->
-                layout(
-                    element.name ?: "unknown",
-                    docCommentsToDocstring(
-                        element.docComments.map { it.text }
-                    )
-                )
+    override fun generateDoc(element: PsiElement?, originalElement: PsiElement?) = when {
+        element is Importable && element is DocCommentOwner ->
+            layout(
+                HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                    element.project,
+                    PSLanguage,
+                    element.type?.let { "${element.name} :: ${it.text}" } ?: element.name,
+                    1f
+                ),
+                docCommentsToDocstring(element.docComments.map { it.text })
+            )
 
-            else -> null
+        element is FixityDeclaration -> {
+            val docComments = element.docComments
+            layout(
+                HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                    element.project,
+                    PSLanguage,
+                    element.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
+                    1f
+                ),
+                docCommentsToDocstring(docComments.map { it.text })
+            )
         }
+
+        element is DocCommentOwner && element is PsiNamedElement ->
+            layout(
+                element.name ?: "unknown",
+                docCommentsToDocstring(
+                    element.docComments.map { it.text }
+                )
+            )
+
+        else -> null
     }
 
     override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?) =
@@ -88,7 +84,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             is ClassDecl ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
 
-            is Module ->
+            is org.purescript.module.Module ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
 
             is PSPsiElement ->
@@ -113,8 +109,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         return processor.markdown(markdown).trim()
     }
 
-    fun layout(definition: String, mainDescription: String): String {
-        return DEFINITION_START + definition + DEFINITION_END +
-            CONTENT_START + mainDescription + CONTENT_END
-    }
+    fun layout(definition: String, mainDescription: String) =
+        DEFINITION_START + definition + DEFINITION_END +
+                CONTENT_START + mainDescription + CONTENT_END
 }

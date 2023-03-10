@@ -6,12 +6,12 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
-import org.purescript.psi.declaration.foreign.PSForeignDataDeclaration
-import org.purescript.psi.module.Module
-import org.purescript.psi.declaration.data.DataDeclaration
-import org.purescript.psi.exports.ExportedData
-import org.purescript.psi.declaration.newtype.NewtypeDecl
-import org.purescript.psi.declaration.type.TypeDecl
+import org.purescript.module.Module
+import org.purescript.module.declaration.data.DataDeclaration
+import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
+import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.TypeDecl
+import org.purescript.module.exports.ExportedData
 
 /**
  * An index on what type declarations every module exports.
@@ -65,18 +65,12 @@ class ExportedTypesIndex : ScalarIndexExtension<String>(), DataIndexer<String, V
     override fun dependsOnFileContent() = true
 
     companion object {
-        val NAME =
-            ID.create<String, Void?>("org.purescript.file.ExportedTypesIndex")
-
-        fun filesExportingType(
-            project: Project,
-            typeName: String
-        ): List<PSFile> =
+        val NAME = ID.create<String, Void?>("org.purescript.file.ExportedTypesIndex")
+        fun filesExportingType(project: Project, typeName: String): List<PSFile> =
             ReadAction.compute<List<PSFile>, Throwable> {
                 val allScope = GlobalSearchScope.allScope(project)
-                val files = FileBasedIndex
-                    .getInstance()
-                    .getContainingFiles(NAME, typeName, allScope)
+                val index = FileBasedIndex.getInstance()
+                val files = index.getContainingFiles(NAME, typeName, allScope)
                 files
                     .map { PsiManager.getInstance(project).findFile(it) }
                     .filterIsInstance(PSFile::class.java)

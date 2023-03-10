@@ -7,17 +7,17 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import org.purescript.PSLanguage
-import org.purescript.psi.binder.ConstructorBinder
-import org.purescript.psi.exports.ExportedModule
-import org.purescript.psi.exports.ExportedOperator
-import org.purescript.psi.exports.ExportedValue
-import org.purescript.psi.expression.identifier.PSExpressionConstructor
-import org.purescript.psi.expression.identifier.PSExpressionIdentifier
-import org.purescript.psi.expression.identifier.PSExpressionOperator
-import org.purescript.psi.expression.identifier.PSExpressionSymbol
-import org.purescript.psi.declaration.imports.Import
-import org.purescript.psi.declaration.imports.PSImportedOperator
-import org.purescript.psi.type.typeconstructor.PSTypeConstructor
+import org.purescript.module.declaration.value.binder.ConstructorBinder
+import org.purescript.module.exports.ExportedModule
+import org.purescript.module.exports.ExportedOperator
+import org.purescript.module.exports.ExportedValue
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionConstructor
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionSymbol
+import org.purescript.module.declaration.imports.Import
+import org.purescript.module.declaration.imports.PSImportedOperator
+import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(

@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
 import org.purescript.ide.inspections.UnusedInspection
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.declaration.imports.PSImportedData
+import org.purescript.module.declaration.imports.PSImportedData
 
 class PurescriptImportOptimizer : ImportOptimizer {
     override fun supports(file: PsiFile): Boolean = file is PSFile

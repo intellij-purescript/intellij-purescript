@@ -6,8 +6,8 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
-import org.purescript.psi.exports.ExportedData
-import org.purescript.psi.exports.ExportedType
+import org.purescript.module.exports.ExportedData
+import org.purescript.module.exports.ExportedType
 
 class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
 

@@ -1,8 +1,8 @@
-package org.purescript.psi.declaration
+package org.purescript.module.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.*
-import org.purescript.psi.declaration.value.MoveValueDeclRefactoring
+import org.purescript.module.declaration.value.MoveValueDeclRefactoring
 
 class ValueDeclarationGroupTest : BasePlatformTestCase() {
     fun `test finds doc comment`() {

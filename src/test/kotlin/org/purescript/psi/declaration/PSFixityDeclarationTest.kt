@@ -1,4 +1,4 @@
-package org.purescript.psi.declaration
+package org.purescript.module.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.*
