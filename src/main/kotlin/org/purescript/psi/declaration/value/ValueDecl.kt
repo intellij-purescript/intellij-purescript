@@ -32,8 +32,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     }
 
     constructor(node: ASTNode) : super(node)
-    constructor(stub: Stub, type: IStubElementType<*, *>) :
-            super(stub, type)
+    constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     val expressions: Sequence<Expression> get() = value.expressions
     val value get() = findChildByClass(PSValue::class.java)!!
