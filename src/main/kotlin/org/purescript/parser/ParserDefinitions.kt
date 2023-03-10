@@ -91,17 +91,17 @@ class ParserDefinitions {
     private val typeVar = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
-            NullBinder(`_`),
-            CharBinder(char),
-            StringBinder(string),
-            NumberBinder(number),
+            NullBinderType(`_`),
+            CharBinderType(char),
+            StringBinderType(string),
+            NumberBinderType(number),
             ArrayBinderType(squares(binder.sepBy(`,`))),
             RecordBinderType(recordLayout(recordBinder, "record binder")),
             ParensBinderType(parens(binder)),
-            BooleanBinder(boolean),
-            CtorBinder(qualProperName),
-            NamedBinder(VarBinder(ident) + `@` + this).heal,
-            VarBinder(ident),
+            BooleanBinderType(boolean),
+            CtorBinderType(qualProperName),
+            NamedBinderType(VarBinderType(ident) + `@` + this).heal,
+            VarBinderType(ident),
         )
     }
     private val binder: DSL = Reference { binder1 } + !(dcolon + type)
@@ -319,8 +319,8 @@ class ParserDefinitions {
 
     val module = ModuleType(moduleHeader + moduleBody)
     private val binder2 = Choice.of(
-        (CtorBinder(qualProperName) + !+binderAtom).heal,
-        NumberBinder(("-".dsl + number).heal),
+        (CtorBinderType(qualProperName) + !+binderAtom).heal,
+        NumberBinderType(("-".dsl + number).heal),
         binderAtom,
     )
     private val binder1 = binder2.sepBy1(qualOp)

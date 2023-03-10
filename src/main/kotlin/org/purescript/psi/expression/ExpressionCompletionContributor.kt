@@ -3,7 +3,7 @@ package org.purescript.psi.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
-import org.purescript.parser.CtorBinder
+import org.purescript.parser.CtorBinderType
 import org.purescript.psi.binder.PSConstructorBinder
 
 class ExpressionCompletionContributor : CompletionContributor() {
