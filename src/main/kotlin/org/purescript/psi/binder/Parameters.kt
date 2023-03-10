@@ -6,7 +6,7 @@ import org.purescript.psi.base.PSPsiElement
 
 class Parameters(node: ASTNode) : PSPsiElement(node) {
     val namedDescendant = parameterBinders.flatMap { it.namedDescendant }
-    val parameterBinders get() = parameters.flatMap { it.childrenBinders }
+    val parameterBinders get() = parameters.flatMap { it.parameterBinders }
     val varBinderParameters get() = parameterBinders.filterIsInstance<VarBinder>()
     val parameters get() = childrenOfType<Parameter>()
 }
