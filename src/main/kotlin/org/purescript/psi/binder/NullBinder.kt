@@ -1,4 +1,4 @@
-package org.purescript.psi.binder.leaf
+package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.binder.Binder

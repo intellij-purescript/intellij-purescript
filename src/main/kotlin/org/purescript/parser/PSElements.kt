@@ -2,7 +2,11 @@ package org.purescript.parser
 
 import org.purescript.psi.PSElementType.WithPsi
 import org.purescript.psi.binder.*
-import org.purescript.psi.binder.leaf.*
+import org.purescript.psi.binder.literals.BooleanBinder
+import org.purescript.psi.binder.literals.CharBinder
+import org.purescript.psi.binder.literals.NumberBinder
+import org.purescript.psi.binder.literals.StringBinder
+import org.purescript.psi.binder.record.PunBinder
 import org.purescript.psi.binder.record.RecordBinder
 import org.purescript.psi.binder.record.RecordLabelBinder
 import org.purescript.psi.binder.record.RecordLabelExprBinder

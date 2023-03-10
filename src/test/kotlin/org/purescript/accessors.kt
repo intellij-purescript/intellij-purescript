@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
-import org.purescript.psi.binder.leaf.VarBinder
-import org.purescript.psi.binder.leaf.PunBinder
+import org.purescript.psi.binder.VarBinder
+import org.purescript.psi.binder.record.PunBinder
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassConstraint
 import org.purescript.psi.declaration.classes.PSClassMember

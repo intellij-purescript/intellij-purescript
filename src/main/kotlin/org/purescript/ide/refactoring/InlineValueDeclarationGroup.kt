@@ -12,7 +12,7 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.alsoIfNull
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.binder.leaf.VarBinder
+import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.RecordLabel
 import org.purescript.psi.expression.*

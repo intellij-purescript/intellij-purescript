@@ -8,7 +8,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSLexer
 import org.purescript.parser.*
-import org.purescript.psi.binder.leaf.VarBinder
+import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
