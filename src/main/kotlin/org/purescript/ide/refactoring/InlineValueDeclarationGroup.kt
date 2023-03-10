@@ -12,7 +12,7 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.alsoIfNull
 import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.RecordLabel
 import org.purescript.psi.expression.*
@@ -34,7 +34,7 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
         val valueDeclaration = toInline.valueDeclarations.singleOrNull()
             ?: error("can only inline value declarations with one body")
         val binders = valueDeclaration.parameters?.binderAtoms ?: emptyList()
-        if (binders.any { it !is PSVarBinder }) error("can only inline simple parameters")
+        if (binders.any { it !is VarBinder }) error("can only inline simple parameters")
         val factory = project.service<PSPsiFactory>()
         for (usage in usages) {
             val element = usage.element as? PSExpressionIdentifier ?: continue

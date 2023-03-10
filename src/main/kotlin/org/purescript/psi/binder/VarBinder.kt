@@ -9,7 +9,7 @@ import com.intellij.psi.search.SearchScope
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 
-class PSVarBinder(node: ASTNode) :
+class VarBinder(node: ASTNode) :
     BinderAtom(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name

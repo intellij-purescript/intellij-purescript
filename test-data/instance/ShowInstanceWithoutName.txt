@@ -34,7 +34,7 @@ Purescript File
             PsiElement(identifier)('show')
           Parameters(Parameters)
             Parameter(Parameter)
-              PSNullBinder(NullBinder)
+              NullBinder(NullBinder)
                 PsiElement(identifier)('_')
           PsiElement(=)('=')
           PSValue(Value)

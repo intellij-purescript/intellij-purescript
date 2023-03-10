@@ -666,7 +666,7 @@ Purescript File
           PsiElement(identifier)('fsingleton')
         Parameters(Parameters)
           Parameter(Parameter)
-            PSVarBinder(VarBinder)
+            VarBinder(VarBinder)
               PSIdentifier(identifier)
                 PsiElement(identifier)('x')
         PsiElement(=)('=')

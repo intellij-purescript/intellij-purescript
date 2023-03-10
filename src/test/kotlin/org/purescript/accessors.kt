@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import org.purescript.file.PSFile
-import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.binder.PunBinder
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassConstraint
@@ -127,10 +127,10 @@ fun PsiFile.getValueDeclaration(): ValueDecl =
 fun PsiFile.getValueDeclarationByName(name: String): ValueDecl =
     getValueDeclarations().single { it.name == name}
 
-fun PsiFile.getVarBinders(): List<PSVarBinder> =
+fun PsiFile.getVarBinders(): List<VarBinder> =
     collectDescendantsOfType()
 
-fun PsiFile.getVarBinder(): PSVarBinder =
+fun PsiFile.getVarBinder(): VarBinder =
     getVarBinders().single()
 
 fun PsiFile.getPunBinders(): List<PunBinder> =

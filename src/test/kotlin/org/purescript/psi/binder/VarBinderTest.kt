@@ -2,7 +2,7 @@ package org.purescript.psi.binder
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-class PSVarBinderTest : BasePlatformTestCase() {
+class VarBinderTest : BasePlatformTestCase() {
     fun `test rename of parameter` () {
             myFixture.configureByText(
                 "Foo.purs",

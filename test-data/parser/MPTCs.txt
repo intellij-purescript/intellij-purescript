@@ -106,7 +106,7 @@ Purescript File
             PsiElement(identifier)('coerce')
           Parameters(Parameters)
             Parameter(Parameter)
-              PSVarBinder(VarBinder)
+              VarBinder(VarBinder)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('a')
           PsiElement(=)('=')

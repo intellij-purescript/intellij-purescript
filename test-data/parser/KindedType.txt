@@ -128,7 +128,7 @@ Purescript File
           PsiElement(identifier)('f')
         Parameters(Parameters)
           Parameter(Parameter)
-            PSVarBinder(VarBinder)
+            VarBinder(VarBinder)
               PSIdentifier(identifier)
                 PsiElement(identifier)('s')
         PsiElement(=)('=')

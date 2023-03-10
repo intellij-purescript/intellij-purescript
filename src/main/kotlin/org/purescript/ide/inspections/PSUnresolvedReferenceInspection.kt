@@ -6,10 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.util.siblings
 import org.purescript.PSLanguage
-import org.purescript.psi.binder.PSConstructorBinder
-import org.purescript.psi.declaration.classes.PSClassConstraint
+import org.purescript.psi.binder.ConstructorBinder
 import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.exports.ExportedOperator
 import org.purescript.psi.exports.ExportedValue
@@ -36,7 +34,7 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                     is Import -> visitModuleReference(element.reference)
                     is PSImportedOperator -> visitReference(element.reference)
                     is PSExpressionConstructor -> visitReference(element.getReference())
-                    is PSConstructorBinder -> visitReference(element.reference)
+                    is ConstructorBinder -> visitReference(element.reference)
                     is PSExpressionIdentifier -> visitReference(element.getReference())
                     is PSExpressionSymbol -> visitReference(element.getReference())
                     is PSExpressionOperator -> visitReference(element.getReference())

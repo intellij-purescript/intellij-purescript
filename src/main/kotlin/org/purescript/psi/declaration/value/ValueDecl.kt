@@ -16,7 +16,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.binder.BinderAtom
-import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.*
@@ -124,7 +124,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
         val copy = this.copy() as ValueDecl
         val binders = copy.parameters
             ?.binderAtoms
-            ?.filterIsInstance<PSVarBinder>()
+            ?.filterIsInstance<VarBinder>()
             ?: emptyList()
         val parametersToInline = binders.map {
             ReferencesSearch

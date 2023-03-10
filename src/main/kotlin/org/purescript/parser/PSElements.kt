@@ -83,20 +83,23 @@ val InstanceDeclType = PSInstanceDeclaration.Type
 val NewtypeDeclType = NewtypeDecl.Type
 val NewtypeCtorType = NewtypeCtor.Type
 val Guard = WithPsi("Guard") { PSGuard(it) }
-val NullBinderType = WithPsi("NullBinder") { PSNullBinder(it) }
-val StringBinderType = WithPsi("StringBinder") { PSStringBinder(it) }
-val CharBinderType = WithPsi("CharBinder") { PSCharBinder(it) }
-val BooleanBinderType = WithPsi("BooleanBinder") { PSBooleanBinder(it) }
-val NumberBinderType = WithPsi("NumberBinder") { PSNumberBinder(it) }
-val NamedBinderType = WithPsi("NamedBinder") { PSNamedBinder(it) }
-val VarBinderType = WithPsi("VarBinder") { PSVarBinder(it) }
+
+/*Binders*/
+val NullBinderType = WithPsi("NullBinder") { NullBinder(it) }
+val StringBinderType = WithPsi("StringBinder") { StringBinder(it) }
+val CharBinderType = WithPsi("CharBinder") { CharBinder(it) }
+val BooleanBinderType = WithPsi("BooleanBinder") { BooleanBinder(it) }
+val NumberBinderType = WithPsi("NumberBinder") { NumberBinder(it) }
+val NamedBinderType = WithPsi("NamedBinder") { NamedBinder(it) }
+val VarBinderType = WithPsi("VarBinder") { VarBinder(it) }
 val RecordBinderType = WithPsi("RecordBinder") { RecordBinder(it) }
 val PunBinderType = WithPsi("PunBinder") { PunBinder(it) }
 val RecordLabelBinderType = WithPsi("RecordLabelBinder") { RecordLabelBinder(it) }
 val RecordLabelExprBinderType = WithPsi("RecordLabelExprBinder") { RecordLabelExprBinder(it) }
-val CtorBinderType = WithPsi("ConstructorBinder") { PSConstructorBinder(it) }
+val CtorBinderType = WithPsi("ConstructorBinder") { ConstructorBinder(it) }
 val ArrayBinderType = WithPsi("ArrayBinder") { ArrayBinder(it) }
 val ParensBinderType = WithPsi("ParensBinder") { ParensBinder(it) }
+
 val RecordLabelType = WithPsi("RecordLabel") { RecordLabel(it) }
 val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
 val NumericLiteral = WithPsi("NumericLiteral") { PSNumericLiteral(it) }

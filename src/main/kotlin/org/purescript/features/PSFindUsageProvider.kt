@@ -8,7 +8,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSLexer
 import org.purescript.parser.*
-import org.purescript.psi.binder.PSVarBinder
+import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.declaration.classes.ClassDecl
 import org.purescript.psi.declaration.classes.PSClassMember
 import org.purescript.psi.declaration.data.DataConstructor
@@ -26,7 +26,7 @@ import org.purescript.psi.module.Module
 class PSFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean =
         psiElement is ValueDeclarationGroup
-            || psiElement is PSVarBinder
+            || psiElement is VarBinder
             || psiElement is Module
             || psiElement is ForeignValueDecl
             || psiElement is NewtypeDecl
@@ -79,7 +79,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     override fun getType(element: PsiElement): String {
         return when (element) {
             is ValueDeclarationGroup -> "value"
-            is PSVarBinder -> "parameter"
+            is VarBinder -> "parameter"
             is Module -> "module"
             is NewtypeDecl -> "newtype"
             is NewtypeCtor -> "newtype constructor"

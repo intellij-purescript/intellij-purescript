@@ -5,7 +5,7 @@ import org.purescript.psi.expression.ConstructorReference
 import org.purescript.psi.expression.Qualified
 import org.purescript.psi.name.PSQualifiedProperName
 
-class PSConstructorBinder(node: ASTNode) : BinderAtom(node), Qualified {
+class ConstructorBinder(node: ASTNode) : BinderAtom(node), Qualified {
     /**
      * @return the [PSQualifiedProperName] identifying this constructor
      */
