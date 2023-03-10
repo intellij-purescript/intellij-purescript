@@ -2,6 +2,7 @@ package org.purescript.module.exports
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
@@ -31,5 +32,6 @@ class ExportList : PSStubbedElement<ExportList.Stub> {
     constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
     // Todo clean this up
     override fun toString(): String = "PSExportList($elementType)"
+    val values: List<ExportedValue.Psi> get() = childrenOfType<ExportedValue.Psi>()
     val exportedItems = children<ExportedItem<*>>()
 }
