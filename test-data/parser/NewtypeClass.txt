@@ -430,7 +430,7 @@ Purescript File
           PsiElement(identifier)('ala')
         Parameters(Parameters)
           Parameter(Parameter)
-            NullBinder(NullBinder)
+            WildcardBinder(WildcardBinder)
               PsiElement(identifier)('_')
           Parameter(Parameter)
             VarBinder(VarBinder)

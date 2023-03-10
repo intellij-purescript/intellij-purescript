@@ -95,7 +95,7 @@ val NewtypeCtorType = NewtypeCtor.Type
 val Guard = WithPsi("Guard") { PSGuard(it) }
 
 /*Binders*/
-val NullBinderType = WithPsi("NullBinder") { NullBinder(it) }
+val WildcardBinderType = WithPsi("WildcardBinder") { WildcardBinder(it) }
 val StringBinderType = WithPsi("StringBinder") { StringBinder(it) }
 val CharBinderType = WithPsi("CharBinder") { CharBinder(it) }
 val BooleanBinderType = WithPsi("BooleanBinder") { BooleanBinder(it) }

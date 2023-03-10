@@ -294,7 +294,7 @@ Purescript File
             PsiElement(identifier)('map')
           Parameters(Parameters)
             Parameter(Parameter)
-              NullBinder(NullBinder)
+              WildcardBinder(WildcardBinder)
                 PsiElement(identifier)('_')
             Parameter(Parameter)
               ParensBinder(ParensBinder)

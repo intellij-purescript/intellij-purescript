@@ -128,7 +128,7 @@ Purescript File
           PsiElement(identifier)('null')
         Parameters(Parameters)
           Parameter(Parameter)
-            NullBinder(NullBinder)
+            WildcardBinder(WildcardBinder)
               PsiElement(identifier)('_')
         PsiElement(=)('=')
         PSValue(Value)

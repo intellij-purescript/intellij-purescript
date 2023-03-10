@@ -91,7 +91,7 @@ class ParserDefinitions {
     private val typeVar = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val binderAtom: DSL = Reference {
         Choice.of(
-            NullBinderType(`_`),
+            WildcardBinderType(`_`),
             CharBinderType(char),
             StringBinderType(string),
             NumberBinderType(number),

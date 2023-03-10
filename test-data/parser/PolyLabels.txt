@@ -871,7 +871,7 @@ Purescript File
             PSDoBlock(DoBlock)
               PsiElement(do)('do')
               PSDoNotationBind(DoNotationBind)
-                NullBinder(NullBinder)
+                WildcardBinder(WildcardBinder)
                   PsiElement(identifier)('_')
                 PsiElement(<-)('<-')
                 PSValue(Value)
