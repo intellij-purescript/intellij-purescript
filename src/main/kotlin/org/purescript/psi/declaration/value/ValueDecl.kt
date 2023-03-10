@@ -25,15 +25,9 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
         override fun createPsi(stub: Stub) = ValueDecl(stub, this)
-        override fun createStub(valueDecl: ValueDecl, p: StubElement<*>?) =
-            Stub(valueDecl.name, p)
-
-        override fun serialize(stub: Stub, d: StubOutputStream) =
-            d.writeName(stub.name)
-
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub =
-            Stub(d.readNameString()!!, p)
-
+        override fun createStub(valueDecl: ValueDecl, p: StubElement<*>?) = Stub(valueDecl.name, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {}
     }
 
