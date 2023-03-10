@@ -9,23 +9,19 @@ import com.intellij.psi.search.SearchScope
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.name.PSIdentifier
 
-class VarBinder(node: ASTNode) :
-    Binder(node), PsiNameIdentifierOwner {
-
+/**
+ * The node `a` in the code
+ * ```purescript
+ * f a = 1
+ * ```
+ */
+class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
     override fun getName(): String = nameIdentifier.name
-
+    override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
+    override fun getUseScope(): SearchScope = LocalSearchScope(containingFile)
     override fun setName(name: String): PsiElement? {
-        val newName =
-            project.service<PSPsiFactory>().createIdentifier(name) ?: return null
+        val newName = project.service<PSPsiFactory>().createIdentifier(name) ?: return null
         this.nameIdentifier.replace(newName)
         return this
-    }
-
-    override fun getNameIdentifier(): PSIdentifier {
-        return findChildByClass(PSIdentifier::class.java)!!
-    }
-
-    override fun getUseScope(): SearchScope {
-        return LocalSearchScope(containingFile)
     }
 }
