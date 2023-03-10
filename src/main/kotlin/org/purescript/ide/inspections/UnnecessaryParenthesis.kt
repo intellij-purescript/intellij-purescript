@@ -9,7 +9,7 @@ import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
 import org.purescript.psi.binder.Parameter
 import org.purescript.psi.binder.ParensBinder
-import org.purescript.psi.binder.RecordLabelExprBinder
+import org.purescript.psi.binder.record.RecordLabelExprBinder
 import org.purescript.psi.expression.Argument
 import org.purescript.psi.expression.PSParens
 import org.purescript.psi.expression.PSValue

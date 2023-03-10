@@ -2,6 +2,10 @@ package org.purescript.parser
 
 import org.purescript.psi.PSElementType.WithPsi
 import org.purescript.psi.binder.*
+import org.purescript.psi.binder.leaf.*
+import org.purescript.psi.binder.record.RecordBinder
+import org.purescript.psi.binder.record.RecordLabelBinder
+import org.purescript.psi.binder.record.RecordLabelExprBinder
 import org.purescript.psi.declaration.classes.*
 import org.purescript.psi.declaration.data.DataConstructor
 import org.purescript.psi.declaration.data.DataConstructorList

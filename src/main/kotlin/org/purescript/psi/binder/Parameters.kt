@@ -3,6 +3,7 @@ package org.purescript.psi.binder
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.base.PSPsiElement
+import org.purescript.psi.binder.leaf.VarBinder
 
 class Parameters(node: ASTNode) : PSPsiElement(node) {
     val namedDescendant = parameterBinders.flatMap { it.namedDescendant }

@@ -1,13 +1,17 @@
-package org.purescript.psi.binder
+package org.purescript.psi.binder.leaf
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.search.LocalSearchScope
+import com.intellij.psi.search.SearchScope
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.binder.Binder
 import org.purescript.psi.name.PSIdentifier
 
-class RecordLabelBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
+class VarBinder(node: ASTNode) :
+    Binder(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name
 
@@ -17,7 +21,12 @@ class RecordLabelBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
         this.nameIdentifier.replace(newName)
         return this
     }
+
     override fun getNameIdentifier(): PSIdentifier {
         return findChildByClass(PSIdentifier::class.java)!!
+    }
+
+    override fun getUseScope(): SearchScope {
+        return LocalSearchScope(containingFile)
     }
 }

@@ -1,13 +1,14 @@
-package org.purescript.psi.binder
+package org.purescript.psi.binder.record
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.binder.Binder
 import org.purescript.psi.name.PSIdentifier
 
-class PunBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
+class RecordLabelBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name
 
