@@ -5,7 +5,6 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
@@ -15,7 +14,6 @@ import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.binder.Binder
 import org.purescript.psi.binder.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.*
@@ -76,14 +74,9 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
-        val parameters = findChildrenByClass(Binder::class.java)
-        val parameterList = parameters
-            .asSequence()
-            .map { " " + it.text.trim() }
-            .joinToString("")
+        val parameterList = parameters.map { " " + it.text.trim() }?.joinToString("")
         val type = signature?.text?.substringAfter(name) ?: ""
-        val presentableText =
-            "$name$parameterList$type".replace(Regex("\\s+"), " ")
+        val presentableText = "$name$parameterList$type".replace(Regex("\\s+"), " ")
         val fileName = this.containingFile.name
         return object : ItemPresentation {
             override fun getPresentableText(): String = presentableText
@@ -93,10 +86,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     }
 
     val nameIdentifier: PSIdentifier get() = findNotNullChildByClass(PSIdentifier::class.java)
-    override val docComments: List<PsiComment> get() = this.getDocComments()
-    val namesInParameters: List<PsiNamedElement> get() = parameters?.namedDescendant ?: emptyList()
-    val namedParameters get() = parameters?.varBinderParameters ?: emptyList()
-    val parameters get() = findChildByClass(Parameters::class.java)
+    override val docComments get() = this.getDocComments()
+    val namesInParameters get() = parameterList?.namedDescendant ?: emptyList()
+    val namedParameters get() = parameterList?.varBinderParameters ?: emptyList()
+    val parameterList get() = findChildByClass(Parameters::class.java)
+    val parameters get() = parameterList?.parameters ?: emptyList()
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarationGroups get() = where?.valueDeclarationGroups ?: emptyArray()
     fun inline(arguments: List<Argument>): Expression {
