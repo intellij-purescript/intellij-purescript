@@ -1,8 +1,12 @@
 package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.util.childrenOfType
 
-class ParensBinder(node: ASTNode) : Binder(node) {
-    val binderAtomChildren get() = childrenOfType<Binder>() 
-}
+/**
+ * The node `(Box a)` in the code
+ * 
+ * ```purescript
+ * f (Box a) = a
+ * ```
+ */
+class ParensBinder(node: ASTNode) : Binder(node)

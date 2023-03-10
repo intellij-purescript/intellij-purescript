@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import org.purescript.psi.binder.ParensBinder
 
-class RemoveParenthesisBinder(element: ParensBinder): LocalQuickFixOnPsiElement(element) {
+class RemoveParenthesisBinder(element: ParensBinder) : LocalQuickFixOnPsiElement(element) {
     override fun getFamilyName(): String = "Remove Parentheses"
 
     override fun getText(): String = "Remove Parentheses"
@@ -14,12 +14,10 @@ class RemoveParenthesisBinder(element: ParensBinder): LocalQuickFixOnPsiElement(
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
         if (startElement != endElement) return
         when (startElement) {
-            is ParensBinder -> startElement
-                .binderAtomChildren
-                .let {
-                    startElement.parent.addRangeBefore(it.first(), it.last(), startElement)
-                    startElement.delete()
-                }
+            is ParensBinder -> startElement.binderChildren.let {
+                startElement.parent.addRangeBefore(it.first(), it.last(), startElement)
+                startElement.delete()
+            }
         }
     }
 
