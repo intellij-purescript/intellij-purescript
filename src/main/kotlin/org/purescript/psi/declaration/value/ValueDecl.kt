@@ -44,9 +44,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     override fun getName() = nameIdentifier.name
 
     fun setName(name: String): PsiElement? {
-        val identifier =
-            project.service<PSPsiFactory>().createIdentifier(name)
-                ?: return null
+        val factory = project.service<PSPsiFactory>()
+        val identifier = factory.createIdentifier(name) ?: return null
         nameIdentifier.replace(identifier)
         return this
     }
