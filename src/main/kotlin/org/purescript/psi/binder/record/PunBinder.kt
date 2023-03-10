@@ -8,10 +8,10 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.binder.Binder
 import org.purescript.psi.name.PSIdentifier
 /**
- * The node `{a}` in the code
+ * The node `a` in the code
  *
  * ```purescript
- * f {a} = a
+ * f {a} = 1
  * ```
  */
 class PunBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
