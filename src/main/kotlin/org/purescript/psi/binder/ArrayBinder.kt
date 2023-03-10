@@ -1,6 +1,7 @@
 package org.purescript.psi.binder
 
 import com.intellij.lang.ASTNode
+
 /**
  * The node `[1, 2]` in the code
  *
