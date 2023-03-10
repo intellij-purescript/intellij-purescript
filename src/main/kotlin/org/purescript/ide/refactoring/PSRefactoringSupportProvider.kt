@@ -47,7 +47,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
      *
      *
      */
-    override fun getExtractMethodHandler(): RefactoringActionHandler? {
+    override fun getExtractMethodHandler(): RefactoringActionHandler {
         return TopLevelValueIntroducer()
     }
 }

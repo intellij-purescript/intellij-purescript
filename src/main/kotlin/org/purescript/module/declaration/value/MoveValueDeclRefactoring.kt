@@ -38,7 +38,7 @@ class MoveValueDeclRefactoring(
         // dependencies needs to be imported or moved to targetModule
         val atoms = (toMove.expressionAtoms + toMove.binderAtoms)
             .mapNotNull { element ->
-                element.getReference()
+                element.reference
                     ?.resolve()
                     ?.let {
                         if (it.containingFile == targetModule.containingFile) {

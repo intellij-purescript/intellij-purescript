@@ -72,7 +72,7 @@ class TopLevelValueIntroducer :
             : PsiIntroduceTarget<Expression>? {
         val startElement = file.findElementAt(start) ?: return null
         val endElement = file.findElementAt(end - 1) ?: return null
-        val commonElement = startElement.parents(true).firstOrNull() { it.textRange.contains(endElement.textRange) }
+        val commonElement = startElement.parents(true).firstOrNull { it.textRange.contains(endElement.textRange) }
         return commonElement
             ?.parentsOfType<Expression>()
             ?.firstOrNull()

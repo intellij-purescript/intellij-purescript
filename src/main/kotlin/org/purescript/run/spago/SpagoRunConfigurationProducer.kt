@@ -21,7 +21,7 @@ class SpagoRunConfigurationProducer :
         } ?: return false
         val main = module.exportedValueDeclarationGroups
             .firstOrNull { it.name == "main" } ?: return false
-        if (psi != main.nameIdentifier?.firstChild && psi !is PSFile) return false
+        if (psi != main.nameIdentifier.firstChild && psi !is PSFile) return false
         configuration.name = module.name
         configuration.options.moduleName = module.name
         return module.exportedValueDeclarationGroups.any { it.name == "main" }

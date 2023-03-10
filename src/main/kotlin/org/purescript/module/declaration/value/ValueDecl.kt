@@ -68,7 +68,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
 
     override fun getPresentation(): ItemPresentation {
         val name = this.name
-        val parameterList = parameters.map { " " + it.text.trim() }?.joinToString("")
+        val parameterList = parameters.map { " " + it.text.trim() }.joinToString("")
         val type = signature?.text?.substringAfter(name) ?: ""
         val presentableText = "$name$parameterList$type".replace(Regex("\\s+"), " ")
         val fileName = this.containingFile.name

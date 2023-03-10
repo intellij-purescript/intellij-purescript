@@ -82,7 +82,7 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
                 }
 
             is PSDoNotationLet, is PSExpressionWhere ->
-                if (parent.childrenOfType<ValueDeclarationGroup>()?.size == 1) {
+                if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
                     parent.delete()
                 } else {
                     toInline.delete()

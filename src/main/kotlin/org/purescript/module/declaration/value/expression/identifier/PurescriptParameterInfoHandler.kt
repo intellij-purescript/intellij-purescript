@@ -59,6 +59,6 @@ class PurescriptParameterInfoHandler : ParameterInfoHandler<PSExpressionIdentifi
     }
 
     override fun showParameterInfo(element: PSExpressionIdentifier, context: CreateParameterInfoContext) {
-        context.showHint(element, element.getTextRange().getStartOffset() + 1, this)
+        context.showHint(element, element.textRange.startOffset + 1, this)
     }
 }

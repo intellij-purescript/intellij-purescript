@@ -14,7 +14,7 @@ import org.purescript.file.PSFile
 
 
 class PSStructureViewBuilder: PsiStructureViewFactory {
-    override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
+    override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder {
         val root = TreeElement(psiFile)
         return object : TreeBasedStructureViewBuilder() {
             override fun createStructureViewModel(editor: Editor?) = StructureViewModelBase(psiFile, editor, root)

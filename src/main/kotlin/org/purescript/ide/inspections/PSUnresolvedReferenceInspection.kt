@@ -33,11 +33,11 @@ class PSUnresolvedReferenceInspection : LocalInspectionTool() {
                     is ExportedModule -> visitModuleReference(element.reference)
                     is Import -> visitModuleReference(element.reference)
                     is PSImportedOperator -> visitReference(element.reference)
-                    is PSExpressionConstructor -> visitReference(element.getReference())
+                    is PSExpressionConstructor -> visitReference(element.reference)
                     is ConstructorBinder -> visitReference(element.reference)
-                    is PSExpressionIdentifier -> visitReference(element.getReference())
-                    is PSExpressionSymbol -> visitReference(element.getReference())
-                    is PSExpressionOperator -> visitReference(element.getReference())
+                    is PSExpressionIdentifier -> visitReference(element.reference)
+                    is PSExpressionSymbol -> visitReference(element.reference)
+                    is PSExpressionOperator -> visitReference(element.reference)
                     is PSTypeConstructor -> visitTypeReference(element.reference)
                 }
             }
