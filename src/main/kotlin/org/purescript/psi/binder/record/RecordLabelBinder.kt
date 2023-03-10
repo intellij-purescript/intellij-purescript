@@ -8,6 +8,13 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.binder.Binder
 import org.purescript.psi.name.PSIdentifier
 
+/**
+ * The node `a: 1` in the code
+ *
+ * ```purescript
+ * f {a: 1} = 1
+ * ```
+ */
 class RecordLabelBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
 
     override fun getName(): String = nameIdentifier.name
