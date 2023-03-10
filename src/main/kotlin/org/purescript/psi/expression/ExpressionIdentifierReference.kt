@@ -63,7 +63,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                     for (parent in element.parents(false)) {
                         when (parent) {
                             is ValueDecl -> {
-                                yieldAll(parent.namedBinders.values)
+                                yieldAll(parent.namesInParameters)
                                 yieldAll(parent.where?.binders?.filterIsInstance<PsiNamedElement>()?: emptyList())
                                 yieldAll(parent
                                     .where

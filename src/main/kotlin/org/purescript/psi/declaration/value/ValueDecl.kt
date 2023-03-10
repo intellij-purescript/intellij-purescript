@@ -106,20 +106,15 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
     override val docComments: List<PsiComment>
         get() = this.getDocComments()
 
-    val namedBinders: Map<String, PsiNamedElement>
-        get() = parameters
-            ?.namedDescendant
-            ?.filter { it.name != null }
-            ?.associateBy { it.name!! }
-            ?: emptyMap()
-
+    val namesInParameters: List<PsiNamedElement> get() = parameters?.namedDescendant ?: emptyList()
+    val namedParameters get() = parameters?.varBinderParameters ?: emptyList()
     val parameters get() = findChildByClass(Parameters::class.java)
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarationGroups
         get() = where?.valueDeclarationGroups ?: emptyArray()
     fun inline(arguments: List<Argument>): Expression {
         val copy = this.copy() as ValueDecl
-        val binders = copy.parameters?.varBinderParameters ?: emptyList()
+        val binders = copy.namedParameters
         val parametersToInline = binders.map {
             ReferencesSearch
                 .search(it, LocalSearchScope(copy))

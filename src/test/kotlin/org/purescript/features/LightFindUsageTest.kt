@@ -30,7 +30,8 @@ class LightFindUsageTest : BasePlatformTestCase() {
         ).getValueDeclarationGroupByName("fn")
         val x = fn.valueDeclarations
             .first()
-            .namedBinders["x"]!!
+            .namedParameters
+            .find { it.name == "x" }!!
         val usages = myFixture.findUsages(x)
         assertNotEmpty(usages)
     }

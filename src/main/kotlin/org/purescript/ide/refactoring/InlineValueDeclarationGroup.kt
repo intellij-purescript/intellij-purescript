@@ -33,7 +33,7 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
     override fun performRefactoring(usages: Array<out UsageInfo>) {
         val valueDeclaration = toInline.valueDeclarations.singleOrNull()
             ?: error("can only inline value declarations with one body")
-        val binders = valueDeclaration.parameters?.binderAtoms ?: emptyList()
+        val binders = valueDeclaration.parameters?.parameterBinders ?: emptyList()
         if (binders.any { it !is VarBinder }) error("can only inline simple parameters")
         val factory = project.service<PSPsiFactory>()
         for (usage in usages) {
