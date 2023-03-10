@@ -96,6 +96,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     val isExported
         get() = greenStub?.isExported ?: when {
             module == null -> false
+            parent !is Module -> false
             module?.exports == null -> true
             module?.exportsSelf == null -> true
             else -> name in (module?.exports?.values?.map { it.name } ?: emptyList())
