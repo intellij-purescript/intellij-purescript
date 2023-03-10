@@ -1,10 +1,11 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.namespace
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.binder.Binder
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
+import org.purescript.psi.expression.ExpressionAtom
 
 /**
  * A where claus un a expression, e.g.

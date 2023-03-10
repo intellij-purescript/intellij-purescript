@@ -1,6 +1,8 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.identifier
 
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionInitializationContext
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import org.purescript.psi.binder.ConstructorBinder

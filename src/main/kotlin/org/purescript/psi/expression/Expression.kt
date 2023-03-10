@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.classes.PSClassMemberList
+import org.purescript.psi.expression.identifier.PSExpressionIdentifier
 import org.purescript.psi.module.Module
 
 interface Expression : PsiElement {

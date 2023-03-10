@@ -1,4 +1,4 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.identifier
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
@@ -22,6 +22,7 @@ import org.purescript.file.PSFile
 import org.purescript.psi.base.PSPsiElement
 import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.ImportableIndex
+import org.purescript.psi.expression.Qualified
 import org.purescript.run.spago.Spago
 
 class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() {

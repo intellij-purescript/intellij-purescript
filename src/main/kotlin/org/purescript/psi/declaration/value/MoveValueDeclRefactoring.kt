@@ -14,6 +14,7 @@ import org.purescript.psi.declaration.Importable
 import org.purescript.psi.declaration.imports.PSImportedValue
 import org.purescript.psi.exports.ExportedValue
 import org.purescript.psi.expression.*
+import org.purescript.psi.expression.identifier.PSExpressionIdentifier
 import org.purescript.psi.module.Module
 
 class MoveValueDeclRefactoring(

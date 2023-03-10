@@ -17,6 +17,8 @@ import org.purescript.psi.base.PSStubbedElement
 import org.purescript.psi.parameters.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.*
+import org.purescript.psi.expression.identifier.Argument
+import org.purescript.psi.expression.namespace.PSExpressionWhere
 import org.purescript.psi.name.PSIdentifier
 import javax.swing.Icon
 

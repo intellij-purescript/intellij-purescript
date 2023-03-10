@@ -11,10 +11,10 @@ import org.purescript.psi.binder.ConstructorBinder
 import org.purescript.psi.exports.ExportedModule
 import org.purescript.psi.exports.ExportedOperator
 import org.purescript.psi.exports.ExportedValue
-import org.purescript.psi.expression.PSExpressionConstructor
-import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.expression.PSExpressionOperator
-import org.purescript.psi.expression.PSExpressionSymbol
+import org.purescript.psi.expression.identifier.PSExpressionConstructor
+import org.purescript.psi.expression.identifier.PSExpressionIdentifier
+import org.purescript.psi.expression.identifier.PSExpressionOperator
+import org.purescript.psi.expression.identifier.PSExpressionSymbol
 import org.purescript.psi.declaration.imports.Import
 import org.purescript.psi.declaration.imports.PSImportedOperator
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor

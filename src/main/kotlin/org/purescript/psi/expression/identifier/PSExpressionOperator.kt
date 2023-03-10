@@ -1,7 +1,9 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.identifier
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
+import org.purescript.psi.expression.ExpressionAtom
+import org.purescript.psi.expression.Qualified
 import org.purescript.psi.name.PSQualifiedOperatorName
 
 /**
@@ -15,7 +17,7 @@ import org.purescript.psi.name.PSQualifiedOperatorName
  * f = 1 P.+ 3
  * ```
  */
-class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom,Qualified {
+class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, Qualified {
 
     /**
      * @return the [PSQualifiedOperatorName] identifying this constructor

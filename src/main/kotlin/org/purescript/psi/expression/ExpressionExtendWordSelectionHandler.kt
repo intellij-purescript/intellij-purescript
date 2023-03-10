@@ -8,18 +8,13 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.psi.declaration.fixity.PSFixity.Associativity.Infixl
 import org.purescript.psi.declaration.fixity.PSFixity.Associativity.Infixr
+import org.purescript.psi.expression.identifier.PSExpressionOperator
 
 class ExpressionExtendWordSelectionHandler : ExtendWordSelectionHandler {
     override fun canSelect(e: PsiElement) = e is PSValue
 
-    override fun select(
-        e: PsiElement,
-        editorText: CharSequence,
-        cursorOffset: Int,
-        editor: Editor
-    ): MutableList<TextRange> {
-        return fromElement(e)
-    }
+    override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor)
+            : MutableList<TextRange> = fromElement(e)
 
     fun fromElement(e: PsiElement): MutableList<TextRange> {
         var tree: Tree? = null
@@ -69,16 +64,18 @@ class ExpressionExtendWordSelectionHandler : ExtendWordSelectionHandler {
         data class Operator(val l: Tree, val o: PSExpressionOperator, val r: Tree) : Tree {
             override fun insertRight(other: PsiElement) = when (other) {
                 is PSExpressionOperator -> when {
-                    o.precedence ?: 0 > other.precedence ?: 0 -> Tmp(this, other)
-                    o.precedence ?: 0 < other.precedence ?: 0 -> copy(r = r.insertRight(other))
+                    (o.precedence ?: 0) > (other.precedence ?: 0) -> Tmp(this, other)
+                    (o.precedence ?: 0) < (other.precedence ?: 0) -> copy(r = r.insertRight(other))
                     else -> when (o.associativity) {
                         Infixl -> Tmp(this, other)
                         Infixr -> copy(r = r.insertRight(other))
                         else -> Tmp(this, other)
                     }
                 }
+
                 else -> copy(r = r.insertRight(other))
             }
+
             override fun ranges() = l.ranges() + r.ranges() + sequenceOf(TextRange(start, end))
             override val start: Int get() = l.start
             override val end: Int get() = r.end

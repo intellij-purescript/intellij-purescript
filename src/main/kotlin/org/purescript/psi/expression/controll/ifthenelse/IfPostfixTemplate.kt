@@ -1,9 +1,11 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.controll.ifthenelse
 
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.codeInsight.template.postfix.templates.StringBasedPostfixTemplate
 import com.intellij.psi.PsiElement
+import org.purescript.psi.expression.ExpressionPostfixTemplateProvider
+import org.purescript.psi.expression.ExpressionSelector
 
 
 class IfPostfixTemplate(templateProvider: ExpressionPostfixTemplateProvider) :

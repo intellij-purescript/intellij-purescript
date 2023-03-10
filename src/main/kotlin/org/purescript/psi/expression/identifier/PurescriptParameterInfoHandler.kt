@@ -1,4 +1,4 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.identifier
 
 import com.intellij.lang.parameterInfo.CreateParameterInfoContext
 import com.intellij.lang.parameterInfo.ParameterInfoHandler

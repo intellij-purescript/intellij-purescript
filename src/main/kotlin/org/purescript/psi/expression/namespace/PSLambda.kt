@@ -1,7 +1,9 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.namespace
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
+import org.purescript.psi.expression.Expression
+import org.purescript.psi.expression.PSValue
 import org.purescript.psi.parameters.Parameters
 
 class PSLambda(node: ASTNode) : PSPsiElement(node), Expression {

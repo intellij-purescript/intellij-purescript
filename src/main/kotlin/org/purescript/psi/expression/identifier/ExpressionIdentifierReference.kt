@@ -1,4 +1,4 @@
-package org.purescript.psi.expression
+package org.purescript.psi.expression.identifier
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInspection.LocalQuickFix
@@ -15,7 +15,9 @@ import org.purescript.psi.declaration.imports.ImportQuickFix
 import org.purescript.psi.declaration.imports.ReExportedImportIndex
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.expression.caseof.PSCaseAlternative
+import org.purescript.psi.expression.namespace.PSLambda
+import org.purescript.psi.expression.namespace.PSLet
+import org.purescript.psi.expression.controll.caseof.PSCaseAlternative
 import org.purescript.psi.expression.dostmt.PSDoBlock
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :

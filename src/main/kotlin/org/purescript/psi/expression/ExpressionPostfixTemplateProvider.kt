@@ -4,6 +4,7 @@ import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
+import org.purescript.psi.expression.controll.ifthenelse.IfPostfixTemplate
 
 class ExpressionPostfixTemplateProvider : PostfixTemplateProvider {
     override fun getTemplates(): MutableSet<PostfixTemplate> = mutableSetOf(IfPostfixTemplate(this))

@@ -22,8 +22,8 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.expression.Expression
 import org.purescript.psi.expression.ExpressionSelector
-import org.purescript.psi.expression.PSExpressionIdentifier
-import org.purescript.psi.expression.PSLambda
+import org.purescript.psi.expression.identifier.PSExpressionIdentifier
+import org.purescript.psi.expression.namespace.PSLambda
 import org.purescript.psi.module.Module
 
 class TopLevelValueIntroducer :

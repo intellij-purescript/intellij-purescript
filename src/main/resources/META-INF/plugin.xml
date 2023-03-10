@@ -89,7 +89,7 @@
         />
         <completion.contributor
             language="Purescript"
-            implementationClass="org.purescript.psi.expression.ExpressionCompletionContributor"
+            implementationClass="org.purescript.psi.expression.identifier.ExpressionCompletionContributor"
             id="ExpressionCompletionContributor"
         />
         <completion.contributor
@@ -245,7 +245,7 @@
         />
         <codeInsight.parameterInfo
             language="Purescript"
-            implementationClass="org.purescript.psi.expression.PurescriptParameterInfoHandler"
+            implementationClass="org.purescript.psi.expression.identifier.PurescriptParameterInfoHandler"
         />
     </extensions>
 

@@ -20,8 +20,8 @@ import org.purescript.psi.declaration.type.TypeDecl
 import org.purescript.psi.declaration.value.ValueDecl
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.*
-import org.purescript.psi.expression.PSExpressionConstructor
-import org.purescript.psi.expression.PSExpressionIdentifier
+import org.purescript.psi.expression.identifier.PSExpressionConstructor
+import org.purescript.psi.expression.identifier.PSExpressionIdentifier
 import org.purescript.psi.module.Module
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 

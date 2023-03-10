@@ -1,4 +1,4 @@
-package org.purescript.psi.expression.caseof
+package org.purescript.psi.expression.controll.caseof
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType

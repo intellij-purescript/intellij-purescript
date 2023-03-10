@@ -10,10 +10,10 @@ import com.intellij.psi.PsiElement
 import org.purescript.psi.parameters.Parameter
 import org.purescript.psi.binder.ParensBinder
 import org.purescript.psi.binder.record.RecordLabelExprBinder
-import org.purescript.psi.expression.Argument
+import org.purescript.psi.expression.identifier.Argument
 import org.purescript.psi.expression.PSParens
 import org.purescript.psi.expression.PSValue
-import org.purescript.psi.expression.caseof.PSCaseAlternative
+import org.purescript.psi.expression.controll.caseof.PSCaseAlternative
 
 class UnnecessaryParenthesis : LocalInspectionTool() {
     private val valueWithOneChild = psiElement(PSValue::class.java)

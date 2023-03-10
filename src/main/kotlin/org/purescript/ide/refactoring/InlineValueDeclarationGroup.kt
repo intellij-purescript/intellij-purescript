@@ -15,8 +15,12 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.binder.VarBinder
 import org.purescript.psi.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.exports.RecordLabel
-import org.purescript.psi.expression.*
 import org.purescript.psi.expression.dostmt.PSDoNotationLet
+import org.purescript.psi.expression.identifier.Argument
+import org.purescript.psi.expression.identifier.Call
+import org.purescript.psi.expression.identifier.PSExpressionIdentifier
+import org.purescript.psi.expression.namespace.PSExpressionWhere
+import org.purescript.psi.expression.namespace.PSLet
 
 class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDeclarationGroup) :
     BaseRefactoringProcessor(project) {
