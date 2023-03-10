@@ -14,7 +14,7 @@ import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.base.AStub
 import org.purescript.psi.base.PSStubbedElement
-import org.purescript.psi.binder.Parameters
+import org.purescript.psi.parameters.Parameters
 import org.purescript.psi.declaration.signature.PSSignature
 import org.purescript.psi.expression.*
 import org.purescript.psi.name.PSIdentifier

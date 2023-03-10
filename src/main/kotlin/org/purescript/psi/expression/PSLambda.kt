@@ -2,7 +2,7 @@ package org.purescript.psi.expression
 
 import com.intellij.lang.ASTNode
 import org.purescript.psi.base.PSPsiElement
-import org.purescript.psi.binder.Parameters
+import org.purescript.psi.parameters.Parameters
 
 class PSLambda(node: ASTNode) : PSPsiElement(node), Expression {
     val namedDescendant get() = parameterList?.namedDescendant ?: emptyList()

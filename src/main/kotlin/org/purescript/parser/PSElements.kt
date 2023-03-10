@@ -31,6 +31,8 @@ import org.purescript.psi.expression.dostmt.PSDoNotationLet
 import org.purescript.psi.expression.dostmt.PSDoNotationValue
 import org.purescript.psi.module.Module
 import org.purescript.psi.name.*
+import org.purescript.psi.parameters.Parameter
+import org.purescript.psi.parameters.Parameters
 import org.purescript.psi.type.*
 import org.purescript.psi.type.typeconstructor.PSTypeConstructor
 

@@ -1,4 +1,4 @@
-package org.purescript.psi.binder
+package org.purescript.psi.parameters
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType

@@ -7,7 +7,7 @@ import com.intellij.patterns.PlatformPatterns.or
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
-import org.purescript.psi.binder.Parameter
+import org.purescript.psi.parameters.Parameter
 import org.purescript.psi.binder.ParensBinder
 import org.purescript.psi.binder.record.RecordLabelExprBinder
 import org.purescript.psi.expression.Argument
