@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.parents
+import com.intellij.psi.util.parentsOfType
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.imports.ImportQuickFix
@@ -58,11 +58,11 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
             val qualifyingName = element.qualifiedIdentifier.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {
-                    for (parent in element.parents(false)) {
-                        when (parent) {
-                            is ValueNamespace -> yieldAll(parent.valueNames)
-                        }
-                    }
+                    yieldAll(
+                        element
+                            .parentsOfType<ValueNamespace>(withSelf = false)
+                            .flatMap { it.valueNames }
+                    )
 
                     val module = element.module ?: return@sequence
                     // TODO Support values defined in the expression
