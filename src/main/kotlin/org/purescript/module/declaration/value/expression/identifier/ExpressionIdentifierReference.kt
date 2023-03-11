@@ -14,10 +14,9 @@ import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.module.declaration.imports.ReExportedImportIndex
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.expression.controll.caseof.PSCaseAlternative
 import org.purescript.module.declaration.value.expression.dostmt.PSDoBlock
-import org.purescript.module.declaration.value.expression.namespace.PSLambda
-import org.purescript.module.declaration.value.expression.namespace.PSLet
 import org.purescript.psi.PSPsiFactory
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
@@ -79,11 +78,7 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                 }
                             }
 
-                            is PSLambda -> yieldAll(parent.valueNames)
-
-                            is PSLet -> {
-                                yieldAll(parent.valueNames)
-                            }
+                            is ValueNamespace -> yieldAll(parent.valueNames)
 
                             is PSDoBlock -> {
                                 val binders = parent
