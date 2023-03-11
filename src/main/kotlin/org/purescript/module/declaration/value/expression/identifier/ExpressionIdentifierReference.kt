@@ -72,11 +72,6 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                     ?.asSequence()
                                     ?: sequenceOf())
                             }
-                            is ValueDeclarationGroup -> {
-                                parent.valueDeclarations.forEach { decl ->
-                                    yieldAll(decl.valueDeclarationGroups.asSequence())
-                                }
-                            }
 
                             is ValueNamespace -> yieldAll(parent.valueNames)
 
