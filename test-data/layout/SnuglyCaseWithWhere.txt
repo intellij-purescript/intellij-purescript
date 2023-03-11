@@ -41,7 +41,7 @@ Purescript File
                       PSIdentifier(identifier)
                         PsiElement(identifier)('x')
               PsiElement(of)('of')
-              PSCaseAlternative(CaseAlternative)
+              CaseAlternative(CaseAlternative)
                 VarBinder(VarBinder)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('y')

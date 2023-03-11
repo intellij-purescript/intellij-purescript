@@ -316,7 +316,7 @@ Purescript File
                         PSIdentifier(identifier)
                           PsiElement(identifier)('s')
               PsiElement(of)('of')
-              PSCaseAlternative(CaseAlternative)
+              CaseAlternative(CaseAlternative)
                 RecordBinder(RecordBinder)
                   PsiElement({)('{')
                   PunBinder(PunBinder)

@@ -6,6 +6,6 @@ import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.psi.PSPsiElement
 
-class PSCaseAlternative(node: ASTNode) : PSPsiElement(node), ValueNamespace {
+class CaseAlternative(node: ASTNode) : PSPsiElement(node), ValueNamespace {
     override val valueNames get() = childrenOfType<Binder>().asSequence().flatMap { it.namedDescendant }
 }

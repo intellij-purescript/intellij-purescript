@@ -13,7 +13,7 @@ import org.purescript.module.declaration.value.binder.record.RecordLabelExprBind
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.PSValue
-import org.purescript.module.declaration.value.expression.controll.caseof.PSCaseAlternative
+import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 
 class UnnecessaryParenthesis : LocalInspectionTool() {
     private val valueWithOneChild = psiElement(PSValue::class.java)
@@ -31,7 +31,7 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
         )
 
 
-    private val caseAlternative = psiElement(PSCaseAlternative::class.java)
+    private val caseAlternative = psiElement(CaseAlternative::class.java)
     private val recordLabelExprBinder = psiElement(RecordLabelExprBinder::class.java)
 
     private val hasOnlyTwoChildren = psiElement()

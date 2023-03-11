@@ -76,7 +76,7 @@ Purescript File
                             PSProperName(ProperName)
                               PsiElement(proper name)('Unit')
                     PsiElement(of)('of')
-                    PSCaseAlternative(CaseAlternative)
+                    CaseAlternative(CaseAlternative)
                       ConstructorBinder(ConstructorBinder)
                         PSQualifiedProperName(QualifiedProperName)
                           PSProperName(ProperName)

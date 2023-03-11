@@ -31,8 +31,8 @@ import org.purescript.module.declaration.value.expression.PSTypeHole
 import org.purescript.module.declaration.value.expression.PSUnaryMinus
 import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.controll.PSGuard
+import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.caseof.PSCase
-import org.purescript.module.declaration.value.expression.controll.caseof.PSCaseAlternative
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.dostmt.PSDoBlock
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
@@ -149,7 +149,7 @@ addOne a = a + 1
 val ExpressionOperator = WithPsi("ExpressionOperator") { PSExpressionOperator(it) }
 val ExpressionWhere = WithPsi("ExpressionWhere") { PSExpressionWhere(it) }
 val Case = WithPsi("Case") { PSCase(it) }
-val CaseAlternative = WithPsi("CaseAlternative") { PSCaseAlternative(it) }
+val CaseAlternativeType = WithPsi("CaseAlternative") { CaseAlternative(it) }
 val IfThenElse = WithPsi("IfThenElse") { PSIfThenElse(it) }
 val Let = WithPsi("Let") { PSLet(it) }
 val Parens = WithPsi("Parens") { PSParens(it) }

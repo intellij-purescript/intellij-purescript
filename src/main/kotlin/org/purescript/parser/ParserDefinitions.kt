@@ -326,7 +326,7 @@ class ParserDefinitions {
     private val binder1 = binder2.sepBy1(qualOp)
     private val guardedCaseExpr = guard + arrow + exprWhere
     private val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
-    private val caseBranch = CaseAlternative(binder1.sepBy1(`,`) + guardedCase)
+    private val caseBranch = CaseAlternativeType(binder1.sepBy1(`,`) + guardedCase)
     private val ifThenElse = IfThenElse(
         `'if'` + `expr?` +
                 (`'then'` + `expr?` +

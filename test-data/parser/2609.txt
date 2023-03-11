@@ -141,7 +141,7 @@ Purescript File
                       PSIdentifier(identifier)
                         PsiElement(identifier)('bar'')
               PsiElement(of)('of')
-              PSCaseAlternative(CaseAlternative)
+              CaseAlternative(CaseAlternative)
                 ConstructorBinder(ConstructorBinder)
                   PSQualifiedProperName(QualifiedProperName)
                     PSProperName(ProperName)
