@@ -75,7 +75,7 @@ class ParserDefinitions {
     private val typeCtor = TypeCtor(qualProperName)
     private val hole = TypeHole("?".dsl + ident)
 
-    private val typeAtom: DSL = TypeAtom(
+    private val typeAtom: DSL = (
         hole /
                 squares(!type) /
                 ObjectType(braces(row)) /

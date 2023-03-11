@@ -70,7 +70,6 @@ val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
 val TypeIdentifierType = WithPsi("TypeIdentifier") { TypeIdentifier(it) }
 val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
 val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
-val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }
 val DataDecl = DataDeclaration.Type
 val DataCtorList = DataConstructorList.Type
 val DataCtor = DataConstructor.Type

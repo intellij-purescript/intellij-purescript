@@ -13,7 +13,6 @@ import org.purescript.ide.formatting.ImportedData
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.type.PSType
-import org.purescript.module.declaration.type.PSTypeAtom
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSProperName
@@ -88,11 +87,6 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
      * @return the [PSProperName] identifying this constructor
      */
     internal val identifier: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
-
-    /**
-     * @return the [PSTypeAtom] elements in this constructor
-     */
-    internal val typeAtoms: Array<PSTypeAtom> get() = findChildrenByClass(PSTypeAtom::class.java)
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PSProperName = identifier
     override fun getName(): String = greenStub?.name ?: identifier.name

@@ -5,23 +5,16 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.imports.ImportQuickFix
-import org.purescript.module.Module
 
 class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     LocalQuickFixProvider,
-    PsiReferenceBase<PSTypeConstructor>(
-        typeConstructor,
-        typeConstructor.textRangeInParent,
-        false
-    ) {
+    PsiReferenceBase<PSTypeConstructor>(typeConstructor, typeConstructor.identifier.textRangeInParent, false) {
 
-    override fun getVariants(): Array<PsiNamedElement> =
-        candidates.toTypedArray()
-
-    override fun resolve(): PsiNamedElement? =
-        candidates.firstOrNull { it.name == myElement.name }
+    override fun getVariants(): Array<PsiNamedElement> = candidates.toTypedArray()
+    override fun resolve(): PsiNamedElement? = candidates.firstOrNull { it.name == element.name }
 
     /**
      * Type constructors can reference any data, new type, or synonym declaration
@@ -39,8 +32,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
 
     private fun candidatesFor(name: String): List<PsiNamedElement> {
         val module: Module = element.module ?: return emptyList()
-        val importDeclaration = module
-            .cache.imports
+        val importDeclaration = module.cache.imports
             .firstOrNull { it.importAlias?.name == name }
             ?: return emptyList()
         val candidates = mutableListOf<PsiNamedElement>()
@@ -76,7 +68,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         val imports = ImportableTypeIndex
             .get(element.name, element.project, scope)
             .mapNotNull { it.asImport()?.withAlias(element.qualifierName) }.toTypedArray()
-        return if(imports.isNotEmpty()) {
+        return if (imports.isNotEmpty()) {
             arrayOf(ImportQuickFix(*imports))
         } else {
             arrayOf()

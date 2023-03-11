@@ -283,12 +283,12 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
         myFixture.configureByText(
             "Main.purs",
             """
-                module Data where
-                type B = Int
-                type <caret>A = Int
-                func :: A -> A
-                func a = a
-            """.trimIndent()
+                |module Data where
+                |type B = Int
+                |type <caret>A = Int
+                |func :: A -> A
+                |func a = a
+            """.trimMargin()
         )
         val usageInfo = myFixture.testFindUsages("Main.purs")
 

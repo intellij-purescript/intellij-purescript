@@ -15,7 +15,6 @@ class PSClassConstraintTest : BasePlatformTestCase() {
         ).getClassConstraint()
 
         assertEquals("Bar", classConstraint.name)
-        assertEmpty(classConstraint.typeAtoms)
     }
 
     fun `test parses constraint with type atoms`() {
@@ -28,6 +27,5 @@ class PSClassConstraintTest : BasePlatformTestCase() {
         ).getClassConstraint()
 
         assertEquals("Bar", classConstraint.name)
-        assertSize(2, classConstraint.typeAtoms)
     }
 }
