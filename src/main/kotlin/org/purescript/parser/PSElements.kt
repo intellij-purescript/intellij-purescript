@@ -67,6 +67,7 @@ val ConstrainedType = WithPsi("ConstrainedType") { PSConstrainedType(it) }
 val Row = WithPsi("Row") { PSRow(it) }
 val ObjectType = WithPsi("ObjectType") { PSObjectType(it) }
 val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
+val TypeIdentifierType = WithPsi("TypeIdentifier") { TypeIdentifier(it) }
 val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
 val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val TypeAtom = WithPsi("TypeAtom") { PSTypeAtom(it) }

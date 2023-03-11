@@ -84,7 +84,7 @@ class ParserDefinitions {
                 number /
                 typeCtor /
                 forAll.heal /
-                ident /
+                TypeIdentifierType(ident) /
                 parens(arrow / row).heal /
                 parens(type)
     )
