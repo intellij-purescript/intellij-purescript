@@ -17,6 +17,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('T')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PSObjectType(ObjectType)

@@ -76,18 +76,18 @@ class ParserDefinitions {
     private val hole = TypeHole("?".dsl + ident)
 
     private val typeAtom: DSL = (
-        hole /
-                squares(!type) /
-                ObjectType(braces(row)) /
-                `_` /
-                string /
-                number /
-                typeCtor /
-                forAll.heal /
-                TypeIdentifierType(ident) /
-                parens(arrow / row).heal /
-                parens(type)
-    )
+            hole /
+                    squares(!type) /
+                    ObjectType(braces(row)) /
+                    `_` /
+                    string /
+                    number /
+                    typeCtor /
+                    forAll.heal /
+                    TypeIdentifierType(ident) /
+                    parens(arrow / row).heal /
+                    parens(type)
+            )
     private val constrainedType = ConstrainedType(!(parens((typeCtor + !+typeAtom).sepBy1(`,`)) + darrow).heal + type)
     private val binderAtom: DSL = Reference {
         Choice.of(
@@ -122,6 +122,7 @@ class ParserDefinitions {
                 ((label + eq).heal + expr.relaxTo(RCURLY.dsl / `,`, "malformed expression")) /
                 ExpressionIdentifier(QualifiedIdentifier(label)).relaxTo(RCURLY.dsl / `,`, "malformed label")
     )
+
     /**
      * exprAtom :: { Expr () }
      *   : '_' { ExprSection () $1 }
@@ -154,6 +155,7 @@ class ParserDefinitions {
     private val expr7 = exprAtom + !+Accessor(dot + label)
 
     private val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
+
     /*
     * if there is only one case branch it can ignore layout so we need
     * to allow layout end at any time.
@@ -175,7 +177,7 @@ class ParserDefinitions {
                 letIn
     }
 
-    /** 
+    /**
      * Function application
      */
     private val expr4: DSL = object : DSL {
@@ -189,14 +191,14 @@ class ParserDefinitions {
                 return false
             }
             val argument = ArgumentType(expr5).heal
-            while(argument.parse(builder)) {
+            while (argument.parse(builder)) {
                 start.done(CallType)
                 start = start.precede()
             }
             start.drop()
             return true
         }
-    } 
+    }
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
@@ -204,10 +206,7 @@ class ParserDefinitions {
             !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
     private val patternGuard = !(binder + larrow).heal + Reference { Value(expr1) }
     private val guard = Guard(`|` + patternGuard.sepBy(`,`))
-    private val dataHead = `'data'` + properName + TypeArgs(!+typeVar)
     private val dataCtor = DataCtor(properName + !+typeAtom)
-    private val typeDeclaration = Signature(ident + dcolon + type.relax("malformed type"))
-    private val newtypeHead = `'newtype'` + properName + TypeArgs(!+typeVar)
 
     private val exprWhere: DSL =
         `expr?` + !ExpressionWhere(
@@ -277,19 +276,27 @@ class ParserDefinitions {
 
     private fun valueDeclarationGroup() =
         ValueDeclarationGroupType(Capture { name ->
-            !(typeDeclaration + `L-sep`).heal + namedValueDecl(name).sepBy1(`L-sep`)
+            !(Signature(ident + dcolon + type.relax("malformed type")) + `L-sep`).heal + namedValueDecl(name).sepBy1(
+                `L-sep`
+            )
         }).heal
 
     private val decl = Choice.of(
-        (dataHead + dcolon).heal + type,
-        DataDecl(dataHead + !DataCtorList(eq + dataCtor.sepBy1(`|`))),
+        (`'data'` + properName + TypeParametersType(!+typeVar) + dcolon).heal + type,
+        DataDecl(
+            `'data'` + properName + TypeParametersType(!+typeVar) +
+                    !(eq + DataCtorList(dataCtor.sepBy1(`|`)))
+        ),
         (`'newtype'` + properName + dcolon).heal + type,
-        NewtypeDeclType(newtypeHead + eq + NewtypeCtorType(properName + typeAtom)),
+        NewtypeDeclType(
+            `'newtype'` + properName + TypeParametersType(!+typeVar) + eq +
+                    NewtypeCtorType(properName + typeAtom)
+        ),
         (`'type'` + `'role'`).heal + properName + !+role,
         (`'type'` + properName + dcolon).heal + type,
-        TypeDeclType(`'type'` + properName + !+typeVar + eq + type),
+        TypeDeclType(`'type'` + properName + TypeParametersType(!+typeVar) + eq + type),
         valueDeclarationGroup(),
-        typeDeclaration.heal,
+        Signature(ident + dcolon + type.relax("malformed type")).heal,
         foreignDeclaration,
         fixityDeclaration,
         classDeclaration,
@@ -330,7 +337,7 @@ class ParserDefinitions {
     private val ifThenElse = IfThenElse(
         `'if'` + `expr?` +
                 (`'then'` + `expr?` +
-                (`'else'` + `expr?`).relax("missing else")).relax("missing then")
+                        (`'else'` + `expr?`).relax("missing else")).relax("missing then")
     )
 
     private fun layout1(statement: DSL, name: String): DSL {
@@ -361,7 +368,7 @@ class ParserDefinitions {
 
     private val letBinding = Choice.of(
         valueDeclarationGroup(),
-        typeDeclaration.heal,
+        Signature(ident + dcolon + type.relax("malformed type")).heal,
         (binder1 + eq + exprWhere).heal,
         (ident + !+binderAtom + guardedDecl).heal
     )
@@ -372,9 +379,10 @@ class ParserDefinitions {
         DoNotationValue(expr).heal
     )
     private val doBlock = DoBlock(
-        qualified(`'do'`).heal + 
+        qualified(`'do'`).heal +
                 layout1(doStatement, "do statement").relax("missing do statements")
     )
     private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
-    private val recordBinder = RecordLabelBinderType((label + eq / ":").heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
+    private val recordBinder =
+        RecordLabelBinderType((label + eq / ":").heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
 }

@@ -8,7 +8,7 @@ Purescript File
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Foo')
-      PSTypeArgs(TypeArgs)
+      TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
       NewtypeCtor(NewtypeCtor)
@@ -23,7 +23,7 @@ Purescript File
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Foo')
-      PSTypeArgs(TypeArgs)
+      TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
       NewtypeCtor(NewtypeCtor)

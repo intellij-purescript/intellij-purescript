@@ -84,6 +84,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Host')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PSTypeConstructor(TypeConstructor)
@@ -247,7 +249,7 @@ Purescript File
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Credentials')
-      PSTypeArgs(TypeArgs)
+      TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
       NewtypeCtor(NewtypeCtor)

@@ -8,6 +8,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Neg1')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PsiElement(operator)('-')

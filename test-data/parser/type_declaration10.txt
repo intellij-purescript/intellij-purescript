@@ -8,6 +8,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PsiElement(()('(')
@@ -38,6 +40,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PsiElement(()('(')
@@ -63,6 +67,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PsiElement(()('(')
@@ -93,6 +99,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PsiElement(()('(')

@@ -70,10 +70,10 @@ Purescript File
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('Unit')
-      PSTypeArgs(TypeArgs)
+      TypeParameters(TypeParameters)
         <empty list>
+      PsiElement(=)('=')
       PSDataConstructorList(DataConstructorList)
-        PsiElement(=)('=')
         PSDataConstructor(DataConstructor)
           PSProperName(ProperName)
             PsiElement(proper name)('X')

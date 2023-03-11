@@ -577,7 +577,7 @@ Purescript File
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('IProp')
-      PSTypeArgs(TypeArgs)
+      TypeParameters(TypeParameters)
         PSTypeVarKinded(TypeVarKinded)
           PsiElement(()('(')
           PSIdentifier(identifier)

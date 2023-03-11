@@ -8,10 +8,10 @@ Purescript File
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('Unit')
-      PSTypeArgs(TypeArgs)
+      TypeParameters(TypeParameters)
         <empty list>
+      PsiElement(=)('=')
       PSDataConstructorList(DataConstructorList)
-        PsiElement(=)('=')
         PSDataConstructor(DataConstructor)
           PSProperName(ProperName)
             PsiElement(proper name)('Unit')
@@ -19,6 +19,8 @@ Purescript File
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('TypeRecord')
+      TypeParameters(TypeParameters)
+        <empty list>
       PsiElement(=)('=')
       PSType(Type)
         PSObjectType(ObjectType)
