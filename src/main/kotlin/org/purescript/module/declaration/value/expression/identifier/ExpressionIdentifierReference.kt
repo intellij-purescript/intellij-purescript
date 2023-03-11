@@ -79,11 +79,10 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                                 }
                             }
 
-                            is PSLambda -> yieldAll(parent.namedDescendant)
+                            is PSLambda -> yieldAll(parent.expressionDeclarations)
 
                             is PSLet -> {
-                                yieldAll(parent.valueDeclarationGroups.asSequence())
-                                yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
+                                yieldAll(parent.expressionDeclarations)
                             }
 
                             is PSDoBlock -> {
