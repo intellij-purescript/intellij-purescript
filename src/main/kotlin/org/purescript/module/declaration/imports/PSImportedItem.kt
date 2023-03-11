@@ -114,10 +114,10 @@ class PSImportedData(node: ASTNode) : PSImportedItem(node) {
     val newTypeDeclaration get() = reference.resolve() as? NewtypeDecl
 
     /**
-     * @return the [DataDeclaration.Psi] that this element references to,
+     * @return the [DataDeclaration] that this element references to,
      * if it exists
      */
-    val dataDeclaration get() = reference.resolve() as? DataDeclaration.Psi
+    val dataDeclaration get() = reference.resolve() as? DataDeclaration
     override fun getName(): String = properName.name
     override fun nameMatches(name: String): Boolean = properName.nameMatches(name)
     override fun asData() = ImportedData(name, importsAll, importedDataMembers.map { it.name }.toSet())

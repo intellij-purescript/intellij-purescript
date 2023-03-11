@@ -76,7 +76,7 @@ class ConstructorReference(
             for (module in modules) {
                 for (exportedDataConstructor in module.exportedDataConstructors) {
                     if (exportedDataConstructor.name == qualifiedProperName.name) {
-                        val dataDeclaration = exportedDataConstructor.parentOfType<DataDeclaration.Psi>()
+                        val dataDeclaration = exportedDataConstructor.parentOfType<DataDeclaration>()
                             ?: continue
                         importCandidates += module.name to dataDeclaration.name
                     }

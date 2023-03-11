@@ -13,7 +13,7 @@ class ImportedDataMemberReference(element: PSImportedDataMember) :
     private val candidates: List<PsiNamedElement>
         get() = when (val declaration = element.dataDeclarationImport?.reference?.resolve()) {
             is NewtypeDecl -> listOf(declaration.newTypeConstructor)
-            is DataDeclaration.Psi -> declaration.dataConstructors.asList()
+            is DataDeclaration -> declaration.dataConstructors.asList()
             else -> listOf<PsiNamedElement>()
         }
 }

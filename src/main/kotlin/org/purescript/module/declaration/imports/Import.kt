@@ -239,10 +239,10 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         }
 
     /**
-     * @return the [DataDeclaration.Psi] elements imported by this declaration
+     * @return the [DataDeclaration] elements imported by this declaration
      */
-    val importedDataDeclarations: List<DataDeclaration.Psi>
-        get() = getImportedDeclarations<DataDeclaration.Psi, PSImportedData>(Module::exportedDataDeclarations)
+    val importedDataDeclarations: List<DataDeclaration>
+        get() = getImportedDeclarations<DataDeclaration, PSImportedData>(Module::exportedDataDeclarations)
 
     /**
      * @return the [DataConstructor] elements imported by this declaration

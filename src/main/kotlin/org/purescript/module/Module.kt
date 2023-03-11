@@ -87,7 +87,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .toTypedArray()
         }
         val valueDeclarationGroups by lazy { children<ValueDeclarationGroup>() }
-        val dataDeclarations by lazy { children<DataDeclaration.Psi>() }
+        val dataDeclarations by lazy { children<DataDeclaration>() }
         val dataConstructors by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
         val newTypeDeclarations by lazy { children<NewtypeDecl>() }
         val newTypeConstructors by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
@@ -312,11 +312,11 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         }
 
     /**
-     * @return the [DataDeclaration.Psi] elements that this module exports,
+     * @return the [DataDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
-    val exportedDataDeclarations: List<DataDeclaration.Psi>
-        get() = getExportedDeclarations<DataDeclaration.Psi, ExportedData.Psi>(
+    val exportedDataDeclarations: List<DataDeclaration>
+        get() = getExportedDeclarations<DataDeclaration, ExportedData.Psi>(
             cache.dataDeclarations,
         ) { it.importedDataDeclarations }
 

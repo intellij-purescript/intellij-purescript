@@ -20,7 +20,7 @@ class ExportedDataMemberReference(exportedDataMember: PSExportedDataMember) : Ps
 
     private val candidates: Array<out PsiNamedElement>
         get() = when (val declaration = myElement.exportedData?.reference?.resolve()) {
-            is DataDeclaration.Psi -> declaration.dataConstructorList?.dataConstructors ?: emptyArray()
+            is DataDeclaration -> declaration.dataConstructorList?.dataConstructors ?: emptyArray()
             is NewtypeDecl -> arrayOf(declaration.newTypeConstructor)
             else -> emptyArray()
         }

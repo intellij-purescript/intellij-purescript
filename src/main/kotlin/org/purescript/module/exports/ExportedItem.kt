@@ -50,7 +50,7 @@ interface ExportedData {
         val exportsAll get() = dataMemberList?.doubleDot != null
         val dataMembers get() = dataMemberList?.dataMembers ?: emptyArray()
         val newTypeDeclaration get() = reference.resolve() as? NewtypeDecl
-        val dataDeclaration get() = reference.resolve() as? DataDeclaration.Psi
+        val dataDeclaration get() = reference.resolve() as? DataDeclaration
         override fun getName() = greenStub?.name ?: properName.name
         override fun getReference() = ExportedDataReference(this)
     }

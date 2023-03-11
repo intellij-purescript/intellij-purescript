@@ -10,7 +10,7 @@ import org.purescript.psi.*
 
 /**
  * A type constructor is a PSI element that references one of the following PSI elements:
- *  - [DataDeclaration.Psi]
+ *  - [DataDeclaration]
  *  - [NewtypeDecl]
  *  - [PSSignature]
  *

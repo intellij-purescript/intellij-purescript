@@ -84,13 +84,13 @@ inline fun <reified T : PsiElement> PsiElement.collectDescendantsOfType(
 fun PsiFile.getModule(): Module =
     (this as PSFile).module!!
 
-fun PsiFile.getDataDeclaration(): DataDeclaration.Psi =
+fun PsiFile.getDataDeclaration(): DataDeclaration =
     getModule().cache.dataDeclarations.single()
 
 fun PsiFile.getDataConstructor(): DataConstructor =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
-fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration.Psi> =
+fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration> =
     getModule().exportedDataDeclarations
 
 fun PsiFile.getExportedClassDeclarations(): List<ClassDecl> =

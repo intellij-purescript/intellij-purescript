@@ -17,7 +17,7 @@ import org.purescript.module.exports.ExportedData
  * An index on what type declarations every module exports.
  * The index contains the following declarations:
  *  - [TypeDecl]
- *  - [DataDeclaration.Psi]
+ *  - [DataDeclaration]
  *  - [NewtypeDecl]
  *  - [PSForeignDataDeclaration]
  */

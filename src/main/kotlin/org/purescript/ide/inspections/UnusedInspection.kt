@@ -59,7 +59,7 @@ class UnusedInspection : LocalInspectionTool() {
                 element.importedDataMembers.any { referenceIsUsedInFile(it) } -> Unit
                 element.importsAll -> {
                     val constructors = when (val reference = element.reference.resolve()) {
-                        is DataDeclaration.Psi -> reference.dataConstructors.toList()
+                        is DataDeclaration -> reference.dataConstructors.toList()
                         is NewtypeDecl -> listOf(reference.newTypeConstructor)
                         else -> listOf()
                     }

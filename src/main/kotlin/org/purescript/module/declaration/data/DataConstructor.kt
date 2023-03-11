@@ -75,7 +75,7 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
         return module?.asImport()?.withItems(items)
     }
 
-    internal val dataDeclaration: DataDeclaration.Psi get() = parentOfType()!!
+    internal val dataDeclaration: DataDeclaration get() = parentOfType()!!
 
     override val type: PSType? get() = null
     override val docComments: List<PsiComment> get() = getDocComments()
