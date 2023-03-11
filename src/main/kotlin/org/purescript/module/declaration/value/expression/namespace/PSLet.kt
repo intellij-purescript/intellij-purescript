@@ -6,11 +6,11 @@ import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
-import org.purescript.module.declaration.value.expression.ExpressionContext
+import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.psi.PSPsiElement
 
-class PSLet(node: ASTNode) : PSPsiElement(node), Expression, ExpressionContext {
+class PSLet(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
     val valueDeclarationGroups get() =
         findChildrenByClass(ValueDeclarationGroup::class.java).asSequence()
     val value: PSValue? = findChildByClass(PSValue::class.java)
@@ -19,5 +19,5 @@ class PSLet(node: ASTNode) : PSPsiElement(node), Expression, ExpressionContext {
 
     private val binderChildren = childrenOfType<Binder>().asSequence()
     private val namedBinders = binderChildren.flatMap { it.namedDescendant }
-    override val expressionDeclarations get() = valueDeclarationGroups + namedBinders
+    override val valueNames get() = valueDeclarationGroups + namedBinders
 }
