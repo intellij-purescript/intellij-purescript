@@ -4,19 +4,22 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.childrenOfType
 import org.purescript.ide.formatting.ImportedData
-import org.purescript.psi.PSElementType.WithPsiAndStub
-import org.purescript.psi.AStub
-import org.purescript.psi.PSStubbedElement
+import org.purescript.module.Module
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
+import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.TypeNamespace
+import org.purescript.module.declaration.type.TypeParameters
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
-import org.purescript.module.Module
 import org.purescript.name.PSProperName
-import org.purescript.module.declaration.type.PSType
+import org.purescript.psi.AStub
+import org.purescript.psi.PSElementType.WithPsiAndStub
+import org.purescript.psi.PSStubbedElement
 
-class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner,
-    org.purescript.module.declaration.Importable {
+class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace {
     class Stub(val name: String, p: StubElement<*>?) : AStub<NewtypeDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isExported get() = when {
@@ -61,5 +64,7 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner,
     override fun getName(): String = greenStub?.name ?: identifier.name
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
     override val type: PSType? get() = null
+    override val typeNames get() = parameters?.typeNames ?: emptySequence()
+    val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
     override fun getTextOffset(): Int = identifier.textOffset
 }

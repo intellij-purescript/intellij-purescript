@@ -18,6 +18,7 @@ import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.PSImportAlias
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.PSTypeVarName
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -39,6 +40,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSClassMember
             || psiElement is FixityDeclaration
             || psiElement is PSForeignDataDeclaration
+            || psiElement is PSTypeVarName
 
     override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(
         PSLexer(),
@@ -72,10 +74,7 @@ class PSFindUsageProvider : FindUsagesProvider {
         )
     )
 
-    override fun getHelpId(psiElement: PsiElement): String? {
-        return null
-    }
-
+    override fun getHelpId(psiElement: PsiElement): String? = null
     override fun getType(element: PsiElement): String {
         return when (element) {
             is ValueDeclarationGroup -> "value"
@@ -96,32 +95,17 @@ class PSFindUsageProvider : FindUsagesProvider {
         }
     }
 
-    override fun getDescriptiveName(element: PsiElement): String {
-        when (element) {
-            is ValueDeclarationGroup -> {
-                return "${element.module?.name}.${element.name}"
-            }
-            is PsiNamedElement -> {
-                val name = element.name
-                if (name != null) {
-                    return name
-                }
-            }
-        }
-        return ""
+    override fun getDescriptiveName(element: PsiElement): String = when (element) {
+        is ValueDeclarationGroup -> "${element.module?.name}.${element.name}"
+        is PsiNamedElement -> element.name ?: ""
+        else -> ""
     }
 
-    override fun getNodeText(
-        element: PsiElement,
-        useFullName: Boolean
-    ): String {
+    override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
         if (useFullName) {
             return getDescriptiveName(element)
         } else if (element is PsiNamedElement) {
-            val name = element.name
-            if (name != null) {
-                return name
-            }
+            return element.name ?: ""
         }
         return ""
     }
