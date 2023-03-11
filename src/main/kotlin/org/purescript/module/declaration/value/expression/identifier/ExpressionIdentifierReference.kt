@@ -14,7 +14,6 @@ import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.module.declaration.imports.ReExportedImportIndex
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.ValueNamespace
-import org.purescript.module.declaration.value.expression.dostmt.PSDoBlock
 import org.purescript.psi.PSPsiFactory
 
 class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
@@ -62,13 +61,6 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                     for (parent in element.parents(false)) {
                         when (parent) {
                             is ValueNamespace -> yieldAll(parent.valueNames)
-                            is PSDoBlock -> {
-                                val binders = parent
-                                    .statements
-                                    .takeWhile { it.textOffset < element.textOffset }
-                                    .flatMap { it.namedElements }
-                                yieldAll(binders)
-                            }
                         }
                     }
 
