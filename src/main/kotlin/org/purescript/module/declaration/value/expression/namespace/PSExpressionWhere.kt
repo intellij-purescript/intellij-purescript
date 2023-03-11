@@ -1,11 +1,12 @@
 package org.purescript.module.declaration.value.expression.namespace
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.childrenOfType
-import org.purescript.psi.PSPsiElement
-import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
+import org.purescript.psi.PSPsiElement
 
 /**
  * A where claus un a expression, e.g.
@@ -27,5 +28,9 @@ class PSExpressionWhere(node: ASTNode) : PSPsiElement(node) {
     val valueDeclarationGroups: Array<ValueDeclarationGroup>
         get() =
             findChildrenByClass(ValueDeclarationGroup::class.java)
-    val binders get() = childrenOfType<Binder>().flatMap { it.descendantBinders }
+    private val binderChildren = childrenOfType<Binder>()
+
+    val binders get() = binderChildren.flatMap { it.descendantBinders }
+    private val namedBinders = binderChildren.asSequence().flatMap { it.namedDescendant }
+    val valueNames: Sequence<PsiNamedElement> get() = namedBinders + valueDeclarationGroups.asSequence()
 }

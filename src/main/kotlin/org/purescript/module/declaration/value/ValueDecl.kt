@@ -10,19 +10,21 @@ import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
-import org.purescript.psi.PSElementType
-import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.AStub
-import org.purescript.psi.PSStubbedElement
-import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.module.declaration.signature.PSSignature
-import org.purescript.module.declaration.value.expression.*
+import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.declaration.value.expression.ExpressionAtom
+import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
+import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.name.PSIdentifier
+import org.purescript.psi.AStub
+import org.purescript.psi.PSElementType
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSStubbedElement
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueNamespace {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -43,17 +45,15 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
             value.expressionAtoms.toList() +
                     (where?.expressionAtoms ?: emptyList())
 
-    override fun getName() = nameIdentifier.name
-
     fun setName(name: String): PsiElement? {
         val factory = project.service<PSPsiFactory>()
         val identifier = factory.createIdentifier(name) ?: return null
         nameIdentifier.replace(identifier)
         return this
     }
-
+    override fun getName() = nameIdentifier.name
+    override val valueNames get() = parameterValueNames + (where?.valueNames ?: emptySequence())
     override fun getTextOffset(): Int = nameIdentifier.textOffset
-
     val signature: PSSignature? get() = doSignature(this.prevSibling)
     private fun doSignature(sibling: PsiElement?): PSSignature? =
         when (sibling) {
@@ -81,7 +81,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner {
 
     val nameIdentifier: PSIdentifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override val docComments get() = this.getDocComments()
-    val namesInParameters get() = parameterList?.namedDescendant ?: emptyList()
+    val parameterValueNames get() = parameterList?.valueNames ?: emptySequence()
     val namedParameters get() = parameterList?.varBinderParameters ?: emptyList()
     val parameterList get() = findChildByClass(Parameters::class.java)
     val parameters get() = parameterList?.parameters ?: emptyList()

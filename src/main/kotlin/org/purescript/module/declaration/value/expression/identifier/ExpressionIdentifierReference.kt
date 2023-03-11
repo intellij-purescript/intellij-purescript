@@ -12,7 +12,6 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.module.declaration.imports.ReExportedImportIndex
-import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.expression.controll.caseof.PSCaseAlternative
@@ -63,27 +62,14 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 if (qualifyingName == null) {
                     for (parent in element.parents(false)) {
                         when (parent) {
-                            is ValueDecl -> {
-                                yieldAll(parent.namesInParameters)
-                                yieldAll(parent.where?.binders?.filterIsInstance<PsiNamedElement>()?: emptyList())
-                                yieldAll(parent
-                                    .where
-                                    ?.valueDeclarationGroups
-                                    ?.asSequence()
-                                    ?: sequenceOf())
-                            }
-
                             is ValueNamespace -> yieldAll(parent.valueNames)
-
+                            is PSCaseAlternative -> yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
                             is PSDoBlock -> {
                                 val binders = parent
                                     .statements
                                     .takeWhile { it.textOffset < element.textOffset }
-                                    .flatMap { it.namedElements}
+                                    .flatMap { it.namedElements }
                                 yieldAll(binders)
-                            }
-                            is PSCaseAlternative -> {
-                                yieldAll(parent.binders.filterIsInstance<PsiNamedElement>())
                             }
                         }
                     }
