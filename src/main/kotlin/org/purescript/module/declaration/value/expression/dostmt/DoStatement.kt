@@ -11,11 +11,14 @@ interface DoStatement : PsiElement, ValueNamespace {
     val previousDoStatement: DoStatement?
         get() = siblings(forward = false, withSelf = false)
             .filterIsInstance<DoStatement>().firstOrNull()
+    val nextDoStatement: DoStatement?
+        get() = siblings(forward = true, withSelf = false)
+            .filterIsInstance<DoStatement>().firstOrNull()
     override val valueNames: Sequence<PsiNamedElement>
         get() = binders.filterIsInstance<PsiNamedElement>() +
                 (previousDoStatement?.valueNames ?: emptySequence())
     override val scopes: Array<PsiElement>
-        get() = (sequenceOf(this) + (previousDoStatement?.scopes?.asSequence() ?: emptySequence<PsiElement>()))
+        get() = (sequenceOf(this) + (nextDoStatement?.scopes?.asSequence() ?: emptySequence<PsiElement>()))
             .toList()
             .toTypedArray()
 }
