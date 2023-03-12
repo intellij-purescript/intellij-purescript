@@ -11,4 +11,5 @@ class RowAndRecordParserTest : PSLanguageParserTestBase("row-and-record") {
     fun testRecordWithStringAsLabel() = doTest(true, true)
     fun testNestedRecordUpdate() = doTest(true, true)
     fun testNestedRecordUpdateWildcards() = doTest(true, true)
+    fun testRecordWithKeywordsAsLabel() = doTest(true, true)
 }

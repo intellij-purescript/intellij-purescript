@@ -22,11 +22,11 @@ return;
 
 whitespace = [ \t\f\r\n]
 opChars = [\:\!#\$%&*+./<=>?@\\\^|\-~]
-identStart = [:lowercase:]|"_"
-identLetter = [:letter:]|[:digit:]|[_\']
-properStart = [:uppercase:]
-properLetter = [:letter:]|[:digit:]|[\']|[_]
-properName = {properStart}{properLetter}*
+// https://github.com/purescript/documentation/blob/master/language/Syntax.md#function-and-value-names
+identStart = \p{Ll}|"_"
+identLetter = \p{L}|\p{M}|\p{N}|[_\']
+properStart = \p{Lu}
+properName = {properStart}{identLetter}*
 
 // http://www.regular-expressions.info/unicode.html#prop
 uniCode = \p{S}
