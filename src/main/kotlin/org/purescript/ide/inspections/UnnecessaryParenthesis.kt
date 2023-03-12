@@ -15,6 +15,7 @@ import org.purescript.module.declaration.value.expression.controll.caseof.CaseAl
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
+import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
 import org.purescript.module.declaration.value.parameters.Parameter
 
 class UnnecessaryParenthesis : LocalInspectionTool() {
@@ -30,6 +31,8 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val parenthesisAroundIfThanElse =
         parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
+    val wildcard = psiElement(ExpressionWildcard::class.java)
+    val operatorSection = parenthesis.withChild(value.withChild(call.withChild(wildcard)))
     private val pattern = or(
         parenthesis
             .withParent(hasOnlyOneChild)
@@ -38,10 +41,14 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
             .andNot(
                 parenthesisAroundIfThanElse
                     .andNot(psiElement().withSuperParent(2, valueWithOneChild))
-            ),
-        parenthesis.withParent(hasOnlyOneChild).withSuperParent(2, valueWithOneChild)
+            )
+            .andNot(operatorSection)
+        ,
+        parenthesis
+            .withParent(hasOnlyOneChild)
+            .withSuperParent(2, valueWithOneChild)
+            .andNot(operatorSection)
     )
-    
     private val caseAlternative = psiElement(CaseAlternative::class.java)
     private val recordLabelExprBinder = psiElement(RecordLabelExprBinder::class.java)
 

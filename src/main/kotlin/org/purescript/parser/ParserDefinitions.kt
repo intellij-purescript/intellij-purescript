@@ -139,7 +139,7 @@ class ParserDefinitions {
      *   | '(' expr ')' { ExprParens () (Wrapped $1 $2 $3) }
      *   */
     private val exprAtom = Choice.of(
-        `_`,
+        ExpressionWildcardType(`_`),
         hole.heal,
         ExpressionIdentifier(QualifiedIdentifier(qualified(ident))).heal,
         ExpressionSymbol(QualifiedSymbol(qualified(symbol))).heal,

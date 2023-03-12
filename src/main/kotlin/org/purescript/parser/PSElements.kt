@@ -132,6 +132,7 @@ val Lambda = WithPsi("Lambda") { PSLambda(it) }
 val ExpressionCtor = WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
 
 val ExpressionIdentifier = WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
+val ExpressionWildcardType = WithPsi("ExpressionWildcard") { ExpressionWildcard(it) }
 
 /** Symbol is a operator in parenthesis
 `(+)`
