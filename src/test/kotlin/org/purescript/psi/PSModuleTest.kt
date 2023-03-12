@@ -118,7 +118,7 @@ class PSModuleTest : BasePlatformTestCase() {
                 foreign import split :: Pattern -> String -> Array String
             """.trimIndent()
         ).getModule()
-        TestCase.assertEquals(1, module.cache.foreignValueDeclarations.size)
+        TestCase.assertEquals(1, module.foreignValues.size)
     }
 
     fun `test exported value declarations (exports all)`() {

@@ -18,16 +18,8 @@ class ExportedValueReference(exportedValue: ExportedValue.Psi) : PsiReferenceBas
         candidates.firstOrNull { it.name == myElement.name }
 
     private val candidates: List<PsiNamedElement>
-        get() =
-            myElement?.module?.run {
-                listOf(
-                    *cache.valueDeclarationGroups,
-                    *cache.foreignValueDeclarations,
-                    *cache.classes
-                        .flatMap { it.classMembers.toList() }
-                        .toTypedArray()
-                )
-            } ?: emptyList()
+        get() = myElement?.module?.run { listOf(*valueGroups, *foreignValues, *classMembers.toTypedArray()) }
+            ?: emptyList()
 
     override fun handleElementRename(name: String): PsiElement? {
         val newName = PSPsiFactory(element.project).createIdentifier(name)

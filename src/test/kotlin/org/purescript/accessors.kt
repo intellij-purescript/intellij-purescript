@@ -3,9 +3,9 @@ package org.purescript
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
+import com.intellij.psi.util.childrenOfType
 import org.purescript.file.PSFile
-import org.purescript.module.declaration.value.binder.VarBinder
-import org.purescript.module.declaration.value.binder.record.PunBinder
+import org.purescript.module.Module
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassConstraint
 import org.purescript.module.declaration.classes.PSClassMember
@@ -17,14 +17,14 @@ import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.TypeDecl
+import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
-import org.purescript.psi.exports.*
+import org.purescript.module.declaration.value.binder.VarBinder
+import org.purescript.module.declaration.value.binder.record.PunBinder
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionConstructor
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
-import org.purescript.module.Module
 import org.purescript.module.exports.*
-import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 
 
 /**
@@ -110,8 +110,8 @@ fun PsiFile.getImportDeclaration(): Import =
 fun PsiFile.getImportAlias(): PSImportAlias =
     getImportAliases().single()
 
-fun PsiFile.getValueDeclarationGroups(): Array<ValueDeclarationGroup> =
-    getModule().cache.valueDeclarationGroups
+fun PsiFile.getValueDeclarationGroups(): List<ValueDeclarationGroup> =
+    getModule().childrenOfType<ValueDeclarationGroup>()
 
 fun PsiFile.getValueDeclarationGroup(): ValueDeclarationGroup =
     getValueDeclarationGroups().single()
@@ -141,7 +141,7 @@ fun PsiFile.getPunBinder(): PunBinder =
     getPunBinders().single()
 
 fun PsiFile.getForeignValueDeclarations(): Array<ForeignValueDecl> =
-    getModule().cache.foreignValueDeclarations
+    getModule().foreignValues
 
 fun PsiFile.getForeignValueDeclaration(): ForeignValueDecl =
     getForeignValueDeclarations().single()
@@ -190,7 +190,7 @@ fun PsiFile.getExportedDataMember(): PSExportedDataMember =
     getExportedData().dataMemberList!!.dataMembers.single()
 
 fun PsiFile.getClassDeclarations(): Array<ClassDecl> =
-    getModule().cache.classes
+    getModule().classes
 
 fun PsiFile.getClassDeclaration(): ClassDecl =
     getClassDeclarations().single()

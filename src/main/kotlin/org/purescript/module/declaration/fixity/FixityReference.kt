@@ -25,13 +25,9 @@ class FixityReference(fixity: FixityDeclaration) :
             return sequence {
                 if (qualifyingName == null) {
                     // TODO Support values defined in the expression
-                    yieldAll(module.cache.valueDeclarationGroups.toList())
-                    yieldAll(module.cache.foreignValueDeclarations.toList())
-                    val localClassMembers = module
-                        .cache.classes
-                        .asSequence()
-                        .flatMap { it.classMembers.asSequence() }
-                    yieldAll(localClassMembers)
+                    yieldAll(module.valueGroups.asSequence())
+                    yieldAll(module.foreignValues.asSequence())
+                    yieldAll(module.classMembers.asSequence())
                 }
                 val importDeclarations =
                     module.cache.imports.filter { it.importAlias?.name == qualifyingName }

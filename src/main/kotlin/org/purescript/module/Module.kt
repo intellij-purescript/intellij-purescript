@@ -9,6 +9,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.CachedValueProvider.Result.create
+import com.intellij.psi.util.CachedValuesManager.getCachedValue
 import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
@@ -63,10 +65,11 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     override fun asImport() = ImportDeclaration(name)
     override val type: PSType? get() = null
     override val valueNames: Sequence<PsiNamedElement>
-        get() = cache.valueDeclarationGroups.asSequence() +
-                cache.foreignValueDeclarations.asSequence() +
-                cache.classes.asSequence().flatMap { it.classMembers.asSequence() }
-
+        get() = valueGroups.asSequence() + foreignValues.asSequence() + classMembers.asSequence()
+    val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }
+    val foreignValues get() = getCachedValue(this) { create(children<ForeignValueDecl>(), this) }
+    val classes get() = getCachedValue(this) { create(children<ClassDecl>(), this) }
+    val classMembers get() = getCachedValue(this) { create(classes.flatMap { it.classMembers.toList() }, this) }
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"
@@ -76,30 +79,22 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
-        val values: List<Importable> by lazy {
-            valueDeclarationGroups.asList() + foreignValueDeclarations.asList() + classDeclarations.flatMap {
-                it.classMembers.asList()
-            }
-        }
         val exportedItems by lazy { exports?.exportedItems }
-        val classDeclarations by lazy { children<ClassDecl>() }
+        val classDeclarations by lazy { classes }
         val imports by lazy { children<Import>() }
         val importsByName by lazy { imports.groupBy { it.name } }
         val importsByAlias by lazy { imports.groupBy { it.importAlias?.name } }
         val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
         val valueDeclarations: Array<ValueDecl> by lazy {
-            valueDeclarationGroups
+            valueGroups
                 .flatMap { it.valueDeclarations.asSequence() }
                 .toTypedArray()
         }
-        val valueDeclarationGroups by lazy { children<ValueDeclarationGroup>() }
         val dataDeclarations by lazy { children<DataDeclaration>() }
         val dataConstructors by lazy { dataDeclarations.flatMap { it.dataConstructors.toList() } }
         val newTypeDeclarations by lazy { children<NewtypeDecl>() }
         val newTypeConstructors by lazy { newTypeDeclarations.map { it.newTypeConstructor } }
         val typeSynonymDeclarations by lazy { children<TypeDecl>() }
-        val classes by lazy { children<ClassDecl>() }
-        val foreignValueDeclarations by lazy { children<ForeignValueDecl>() }
         val foreignDataDeclarations by lazy { children<PSForeignDataDeclaration>() }
     }
 
@@ -190,8 +185,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     /**
      * @return the where keyword in the module header
      */
-    val whereKeyword: PsiElement
-        get() = findNotNullChildByType(WHERE)
+    val whereKeyword: PsiElement get() = findNotNullChildByType(WHERE)
 
     /**
      * Helper method for retrieving various types of exported declarations.
@@ -241,7 +235,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() {
             val explicitlyExportedItems = cache.exportedItems
             return if (explicitlyExportedItems == null) {
-                cache.valueDeclarationGroups.toList()
+                valueGroups.toList()
             } else {
                 val explicitlyNames = explicitlyExportedItems
                     .filterIsInstance(ExportedValue.Psi::class.java)
@@ -251,9 +245,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
                 val exportsSelf = exportedModules.any { it.name == name }
                 val local = if (exportsSelf) {
-                    cache.valueDeclarationGroups.toList()
+                    valueGroups.toList()
                 } else {
-                    cache.valueDeclarationGroups.filter { it.name in explicitlyNames }
+                    valueGroups.filter { it.name in explicitlyNames }
                 }
                 val fromImports = exportedModules
                     .filter { it.name != name }
@@ -268,9 +262,8 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedForeignValueDeclarations: List<ForeignValueDecl>
-        get() = getExportedDeclarations<ForeignValueDecl, ExportedValue.Psi>(
-            cache.foreignValueDeclarations,
-        ) { it.importedForeignValueDeclarations }
+        get() = getExportedDeclarations<ForeignValueDecl, ExportedValue.Psi>(foreignValues)
+        { it.importedForeignValueDeclarations }
 
     /**
      * @return the [PSForeignDataDeclaration] elements that this module exports,
@@ -373,7 +366,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      */
     val exportedClassDeclarations: List<ClassDecl>
         get() = getExportedDeclarations<ClassDecl, ExportedClass.Psi>(
-            cache.classes,
+            classes,
         ) { it.importedClassDeclarations }
 
     /**
@@ -381,11 +374,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedClassMembers: List<PSClassMember>
-        get() = getExportedDeclarations<PSClassMember, ExportedValue.Psi>(
-            cache.classes
-                .flatMap { it.classMembers.asSequence() }
-                .toTypedArray(),
-        ) { it.importedClassMembers }
+        get() = getExportedDeclarations<PSClassMember, ExportedValue.Psi>(classMembers.toTypedArray()) { it.importedClassMembers }
 
     val reexportedModuleNames: List<String>
         get() =
@@ -463,14 +452,17 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     override fun getIcon(flags: Int) = PSIcons.FILE
     fun exportedValue(name: String): Sequence<Importable> {
-        val exportedItems = cache.exportedItems ?: return cache.values.asSequence().filter { it.name == name }
+        val exportedItems =
+            cache.exportedItems ?: return valueNames.filterIsInstance<Importable>().filter { it.name == name }
         return when {
-            exportedItems.any { it.name == name } -> cache.values.asSequence().filter { it.name == name }
+            exportedItems.any { it.name == name } -> valueNames.filterIsInstance<Importable>()
+                .filter { it.name == name }
+
             else -> sequence {
                 exportedItems.filterIsInstance<ExportedModule>()
                     .flatMap {
                         if (it.name == this@Module.name) {
-                            this@Module.cache.values.asSequence().filter { it.name == name }
+                            this@Module.valueNames.filterIsInstance<Importable>().filter { it.name == name }
                         } else {
                             it.importDeclarations.flatMap { it.importedValue(name) }
                         }

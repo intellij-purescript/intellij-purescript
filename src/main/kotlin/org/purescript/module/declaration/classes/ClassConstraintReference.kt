@@ -18,9 +18,8 @@ class ClassConstraintReference(classConstraint: PSClassConstraint) :
         candidates.firstOrNull { it.name == myElement.name }
 
     private val candidates: List<ClassDecl>
-        get() = myElement.module?.run {
-            cache.classes.toList() + cache.imports.flatMap { it.importedClassDeclarations }
-        } ?: emptyList()
+        get() = myElement.module?.run { classes.toList() + cache.imports.flatMap { it.importedClassDeclarations } }
+            ?: emptyList()
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val scope = GlobalSearchScope.allScope(element.project)

@@ -29,7 +29,7 @@ class PSStructureViewBuilder: PsiStructureViewFactory {
 
         override fun getChildren(): Array<TreeElement> = when (element) {
             is PSFile -> element.module?.let { arrayOf(TreeElement(it)) } ?: arrayOf()
-            is org.purescript.module.Module -> element.cache.valueDeclarationGroups.map { TreeElement(it) }.toTypedArray()
+            is org.purescript.module.Module -> element.valueGroups.map { TreeElement(it) }.toTypedArray()
             else -> arrayOf()
         }
 
