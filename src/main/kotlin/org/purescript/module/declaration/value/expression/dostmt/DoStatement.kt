@@ -14,5 +14,8 @@ interface DoStatement : PsiElement, ValueNamespace {
     override val valueNames: Sequence<PsiNamedElement>
         get() = binders.filterIsInstance<PsiNamedElement>() +
                 (previousDoStatement?.valueNames ?: emptySequence())
-
+    override val scopes: Array<PsiElement>
+        get() = (sequenceOf(this) + (previousDoStatement?.scopes?.asSequence() ?: emptySequence<PsiElement>()))
+            .toList()
+            .toTypedArray()
 }

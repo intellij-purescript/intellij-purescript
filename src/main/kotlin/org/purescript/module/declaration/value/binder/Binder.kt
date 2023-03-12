@@ -15,5 +15,5 @@ open class Binder(node: ASTNode) : PSPsiElement(node) {
     val binderChildren get() = childrenOfType<Binder>()
     val namedDescendant get() = descendantBinders.filterIsInstance<PsiNamedElement>()
     override fun getUseScope(): SearchScope =
-        LocalSearchScope(parentOfType<ValueNamespace>()?.parent /*TODO: fix for do statements*/ ?: containingFile)
+        LocalSearchScope(parentOfType<ValueNamespace>()?.scopes ?: arrayOf(containingFile))
 }
