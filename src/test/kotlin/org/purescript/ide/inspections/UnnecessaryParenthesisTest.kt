@@ -181,5 +181,17 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
     }
+    
+    fun `test it dont report parenthesis with accessor`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |x = ({x: 1}).x
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }
 
 }

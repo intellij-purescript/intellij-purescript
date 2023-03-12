@@ -7,13 +7,13 @@ import com.intellij.patterns.PlatformPatterns.or
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
-import org.purescript.module.declaration.value.parameters.Parameter
 import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
-import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
+import org.purescript.module.declaration.value.expression.identifier.Argument
+import org.purescript.module.declaration.value.parameters.Parameter
 
 class UnnecessaryParenthesis : LocalInspectionTool() {
     private val valueWithOneChild = psiElement(PSValue::class.java)
@@ -23,11 +23,13 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
     private val hasOnlyOneChild = psiElement()
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val pattern = parenthesis
+        .withParent(hasOnlyOneChild)
         .andOr(
             psiElement()
                 .withChild(valueWithOneChild)
                 .andNot(parentIsArgument),
-            psiElement().withSuperParent(2, valueWithOneChild)
+            psiElement()
+                .withSuperParent(2, valueWithOneChild)
         )
 
 
