@@ -21,32 +21,27 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
     private val value = psiElement(PSValue::class.java)
     private val call = psiElement(Call::class.java)
     private val ifThanElse = psiElement(PSIfThenElse::class.java)
-    
+
     private val valueWithOneChild = value
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
     private val hasOnlyOneChild = psiElement()
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
-    private val parenthesisAroundIfThanElse = 
+    private val parenthesisAroundIfThanElse =
         parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
-    private val pattern = parenthesis
-        .withParent(hasOnlyOneChild)
-        .andOr(
-            psiElement()
-                .withChild(valueWithOneChild)
-                .andNot(parentIsArgument),
-            psiElement()
-                .withSuperParent(2, valueWithOneChild)
-        )
-        .andNot(
-            parenthesisAroundIfThanElse.andNot(
-                psiElement()
-                    .withSuperParent(2, valueWithOneChild)
-            )
-        )
-
-
+    private val pattern = or(
+        parenthesis
+            .withParent(hasOnlyOneChild)
+            .withChild(valueWithOneChild)
+            .andNot(parentIsArgument)
+            .andNot(
+                parenthesisAroundIfThanElse
+                    .andNot(psiElement().withSuperParent(2, valueWithOneChild))
+            ),
+        parenthesis.withParent(hasOnlyOneChild).withSuperParent(2, valueWithOneChild)
+    )
+    
     private val caseAlternative = psiElement(CaseAlternative::class.java)
     private val recordLabelExprBinder = psiElement(RecordLabelExprBinder::class.java)
 
