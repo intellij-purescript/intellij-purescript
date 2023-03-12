@@ -17,13 +17,8 @@ class ImportedValueReference(element: PSImportedValue) : PsiReferenceBase<PSImpo
     private val candidates: Sequence<PsiNamedElement>
         get() {
             val module = element.importDeclaration.importedModule ?: return emptySequence()
-            return sequence {
-                yieldAll(module.exportedValueDeclarationGroups)
-                yieldAll(module.exportedForeignValueDeclarations)
-                for (exportedClassDeclaration in module.exportedClassDeclarations) {
-                    yieldAll(exportedClassDeclaration.classMembers.asSequence())
-                }
-            }
+            return module.exportedValueNames.asSequence()
+            
         }
     private fun candidates(name:String) = 
         element.importDeclaration.importedModule?.exportedValue(name) ?: emptySequence()

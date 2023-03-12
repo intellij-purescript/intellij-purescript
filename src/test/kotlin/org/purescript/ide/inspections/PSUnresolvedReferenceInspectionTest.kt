@@ -859,4 +859,19 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    fun `test it finds builtin modules and their memeber`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |import Prim.Row as Row
+                |
+                |type Union = Row.Union
+                |
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }

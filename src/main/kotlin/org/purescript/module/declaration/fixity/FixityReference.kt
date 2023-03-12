@@ -31,9 +31,7 @@ class FixityReference(fixity: FixityDeclaration) :
                 }
                 val importDeclarations =
                     module.cache.imports.filter { it.importAlias?.name == qualifyingName }
-                yieldAll(importDeclarations.flatMap { it.importedValueDeclarationGroups })
-                yieldAll(importDeclarations.flatMap { it.importedForeignValueDeclarations })
-                yieldAll(importDeclarations.flatMap { it.importedClassMembers })
+                yieldAll(importDeclarations.flatMap { it.importedValueNames }.asSequence())
                 val importedClassMembers =
                     importDeclarations
                         .asSequence()

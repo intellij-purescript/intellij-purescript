@@ -36,11 +36,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
             .firstOrNull { it.importAlias?.name == name }
             ?: return emptyList()
         val candidates = mutableListOf<PsiNamedElement>()
-        candidates.addAll(importDeclaration.importedDataDeclarations)
-        candidates.addAll(importDeclaration.importedNewTypeDeclarations)
-        candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
-        candidates.addAll(importDeclaration.importedForeignDataDeclarations)
-        candidates.addAll(importDeclaration.importedClassDeclarations)
+        candidates.addAll(importDeclaration.importedTypeNames)
         return candidates
     }
 
@@ -54,11 +50,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
             candidates.addAll(module.cache.foreignDataDeclarations)
             candidates.addAll(module.cache.classDeclarations)
             for (importDeclaration in module.cache.imports) {
-                candidates.addAll(importDeclaration.importedDataDeclarations)
-                candidates.addAll(importDeclaration.importedNewTypeDeclarations)
-                candidates.addAll(importDeclaration.importedTypeSynonymDeclarations)
-                candidates.addAll(importDeclaration.importedForeignDataDeclarations)
-                candidates.addAll(importDeclaration.importedClassDeclarations)
+                candidates.addAll(importDeclaration.importedTypeNames)
             }
             return candidates
         }

@@ -257,6 +257,10 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             }
         }
 
+    val exportedValueNames: List<PsiNamedElement>
+        get() = exportedForeignValueDeclarations +
+                exportedValueDeclarationGroups +
+                exportedClassDeclarations.flatMap { it.classMembers.asSequence() }
     /**
      * @return the [ForeignValueDecl] elements that this module exports,
      * both directly and through re-exported modules

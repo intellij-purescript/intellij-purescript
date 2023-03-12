@@ -3,9 +3,9 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import org.purescript.psi.PSElementType.*
-import org.purescript.psi.AStub
-import org.purescript.psi.PSStubbedElement
+import org.purescript.PSLanguage
+import org.purescript.module.Module
+import org.purescript.module.ModuleReference
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataConstructor
@@ -18,9 +18,10 @@ import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.exports.ExportedModule
-import org.purescript.module.Module
-import org.purescript.module.ModuleReference
 import org.purescript.name.PSModuleName
+import org.purescript.psi.AStub
+import org.purescript.psi.PSElementType.*
+import org.purescript.psi.PSStubbedElement
 
 /**
  * An import declaration, as found near the top a module.
@@ -172,7 +173,20 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedValueDeclarationGroups: List<ValueDeclarationGroup>
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(Module::exportedValueDeclarationGroups)
-    
+
+    val importedValueNames: List<PsiNamedElement>
+        get() =
+            importedValueDeclarationGroups + importedForeignValueDeclarations + importedClassMembers
+
+    val importedTypeNames: List<PsiNamedElement>
+        get() = if (importedModule == null) {
+            PSLanguage.getBuiltins(moduleName.name)
+        } else importedDataDeclarations +
+                importedNewTypeDeclarations +
+                importedTypeSynonymDeclarations +
+                importedForeignDataDeclarations +
+                importedClassDeclarations // TODO: should importedClassDeclarations be included, it's not a type
+
     /**
      * @return the [ForeignValueDecl] elements imported by this declaration
      */
@@ -307,7 +321,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         isHiding && importedItems.any { it.name == name } -> emptySequence()
         !isHiding && importedItems.none { it.name == name } -> emptySequence()
         else -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
-    }    
+    }
 
 
     fun importedValue(name: String): Sequence<org.purescript.module.declaration.Importable> = when {
