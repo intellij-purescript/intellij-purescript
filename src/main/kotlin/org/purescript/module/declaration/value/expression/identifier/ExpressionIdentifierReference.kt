@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import com.intellij.psi.util.parentsOfType
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.declaration.ImportableIndex
@@ -37,10 +38,10 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
                 }
             }.toList().toTypedArray()
 
-    override fun resolve(): PsiNamedElement? {
+    override fun resolve(): PsiNamedElement? = getProjectPsiDependentCache(element) {
         val name = element.name
         val importedCandidates = getImportedCandidates(name)
-        return (moduleLocalCandidates + importedCandidates).firstOrNull { it.name == name }
+        (moduleLocalCandidates + importedCandidates).firstOrNull { it.name == name }
     }
 
     private fun getImportedCandidates(name: String): Sequence<PsiNamedElement> {
