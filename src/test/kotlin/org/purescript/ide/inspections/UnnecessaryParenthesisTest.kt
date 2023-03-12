@@ -187,7 +187,32 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
             "Foo.purs",
             """
             |module Foo where
-            |x = ({x: 1}).x
+            |f r = r
+            |x = (f {x: 1}).x
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }
+    
+    
+    fun `test it dont report parenthesis with if followed by operator`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |x = (if _ then 1 else 2) + 1
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }    
+    fun `test it report parenthesis with if not followed by operator`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |x = <weak_warning descr="Unnecessary parentheses">(if _ then 1 else 2)</weak_warning>
             """.trimMargin()
         )
         myFixture.enableInspections(UnnecessaryParenthesis())
