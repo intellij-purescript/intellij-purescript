@@ -52,7 +52,9 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueNamesp
         return this
     }
     override fun getName() = nameIdentifier.name
-    override val valueNames get() = parameterValueNames + (where?.valueNames ?: emptySequence())
+    override val valueNames get() = 
+        parameterValueNames + 
+                (where?.valueNames ?: emptySequence())
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     val signature: PSSignature? get() = doSignature(this.prevSibling)
     private fun doSignature(sibling: PsiElement?): PSSignature? =

@@ -559,6 +559,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
     fun `test it warns when exporting missing operator`() {
         myFixture.configureByText(
             "Main.purs",
@@ -623,6 +624,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
     fun `test where in where`() {
         myFixture.configureByText(
             "Main.purs",
@@ -730,7 +732,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
-    
+
     fun `test does not report pun binders`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -742,7 +744,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
-    
+
     fun `test does not report pun binders in lambda`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -753,8 +755,8 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
-    }   
-    
+    }
+
     fun `test does not report do binders`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -767,8 +769,8 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
-    } 
-    
+    }
+
     fun `test does not case do binders`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -780,7 +782,8 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
-    }    
+    }
+
     fun `test it finds where binders`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -793,7 +796,8 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
-    }       
+    }
+
     fun `test it finds where binders siblings`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -807,7 +811,8 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
-    }   
+    }
+
     fun `test it finds where siblings`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -822,6 +827,7 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+
     fun `test it finds let binders`() {
         myFixture.configureByText(
             "Foo.purs",
@@ -831,6 +837,23 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
                 |  let
                 |    {x} = { x : 1} 
                 |  in x
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+
+    fun `test it binders in guard`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |
+                |data Box a = Box a
+                |
+                |f x
+                |  | Box a <- x = a
+                |  | true = 0
             """.trimMargin()
         )
         myFixture.enableInspections(PSUnresolvedReferenceInspection())

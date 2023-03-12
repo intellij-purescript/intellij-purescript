@@ -205,7 +205,7 @@ class ParserDefinitions {
     private val expr1 = expr2.sepBy1(ExpressionOperator(qualOp.heal)) +
             !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
     private val patternGuard = !(binder + larrow).heal + Reference { Value(expr1) }
-    private val guard = Guard(`|` + patternGuard.sepBy(`,`))
+    private val guard = GuardType(`|` + patternGuard.sepBy(`,`))
     private val dataCtor = DataCtor(properName + !+typeAtom)
 
     private val exprWhere: DSL =
@@ -215,7 +215,7 @@ class ParserDefinitions {
                 "where statement"
             )
         )
-    private val guardedDeclExpr = guard + eq + exprWhere
+    private val guardedDeclExpr = GuardBranchType(guard + eq + exprWhere)
     private val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
     private val instBinder = Choice.of((ident + dcolon).heal + type, valueDeclarationGroup())
     private val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
@@ -331,7 +331,7 @@ class ParserDefinitions {
         binderAtom,
     )
     private val binder1 = binder2.sepBy1(qualOp)
-    private val guardedCaseExpr = guard + arrow + exprWhere
+    private val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
     private val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
     private val caseBranch = CaseAlternativeType(binder1.sepBy1(`,`) + guardedCase)
     private val ifThenElse = IfThenElse(

@@ -30,7 +30,8 @@ import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.PSTypeHole
 import org.purescript.module.declaration.value.expression.PSUnaryMinus
 import org.purescript.module.declaration.value.expression.PSValue
-import org.purescript.module.declaration.value.expression.controll.PSGuard
+import org.purescript.module.declaration.value.expression.controll.Guard
+import org.purescript.module.declaration.value.expression.controll.GuardBranch
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.caseof.PSCase
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
@@ -101,7 +102,8 @@ val ClassMemberList = PSClassMemberList.Type
 val InstanceDeclType = PSInstanceDeclaration.Type
 val NewtypeDeclType = NewtypeDecl.Type
 val NewtypeCtorType = NewtypeCtor.Type
-val Guard = WithPsi("Guard") { PSGuard(it) }
+val GuardType = WithPsi("Guard") { Guard(it) }
+val GuardBranchType = WithPsi("GuardBranch") { GuardBranch(it) }
 
 /*Binders*/
 val WildcardBinderType = WithPsi("WildcardBinder") { WildcardBinder(it) }
