@@ -28,6 +28,7 @@ import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.exports.*
 import org.purescript.name.PSModuleName
 import org.purescript.parser.FixityDeclType
@@ -38,7 +39,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 
 class Module : PsiNameIdentifierOwner, DocCommentOwner,
-    PSStubbedElement<Module.Stub>, Importable {
+    PSStubbedElement<Module.Stub>, Importable, ValueNamespace {
     object Type : PSElementType.WithPsiAndStub<Stub, Module>("Module") {
         override fun createPsi(node: ASTNode) = Module(node)
         override fun createPsi(stub: Stub) = Module(stub, this)
@@ -61,6 +62,11 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     override fun asImport() = ImportDeclaration(name)
     override val type: PSType? get() = null
+    override val valueNames: Sequence<PsiNamedElement>
+        get() = cache.valueDeclarationGroups.asSequence() +
+                cache.foreignValueDeclarations.asSequence() +
+                cache.classes.asSequence().flatMap { it.classMembers.asSequence() }
+
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"
@@ -70,8 +76,8 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
-        val values: List<Importable> by lazy { 
-            valueDeclarationGroups.asList() + foreignValueDeclarations.asList() + classDeclarations.flatMap { 
+        val values: List<Importable> by lazy {
+            valueDeclarationGroups.asList() + foreignValueDeclarations.asList() + classDeclarations.flatMap {
                 it.classMembers.asList()
             }
         }
@@ -153,6 +159,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 )
             }
         }
+
     fun exportedFixityDeclarations(name: String): Sequence<FixityDeclaration> {
         val explicitlyExportedItems = cache.exportedItems
         return if (explicitlyExportedItems == null) {
@@ -168,7 +175,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             if (exportsSelf || name in explicitlyNames) {
                 fixityDeclarations.first { it.name == name }.let { yield(it) }
             }
-            
+
             yieldAll(
                 explicitlyExportedItems
                     .asSequence()
@@ -179,6 +186,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             )
         }
     }
+
     /**
      * @return the where keyword in the module header
      */
@@ -457,11 +465,11 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     fun exportedValue(name: String): Sequence<Importable> {
         val exportedItems = cache.exportedItems ?: return cache.values.asSequence().filter { it.name == name }
         return when {
-            exportedItems.any {it.name == name} -> cache.values.asSequence().filter { it.name == name }
+            exportedItems.any { it.name == name } -> cache.values.asSequence().filter { it.name == name }
             else -> sequence {
                 exportedItems.filterIsInstance<ExportedModule>()
                     .flatMap {
-                        if (it.name == this@Module.name ) {
+                        if (it.name == this@Module.name) {
                             this@Module.cache.values.asSequence().filter { it.name == name }
                         } else {
                             it.importDeclarations.flatMap { it.importedValue(name) }

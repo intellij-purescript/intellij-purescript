@@ -54,27 +54,11 @@ class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifie
     }
 
     private val moduleLocalCandidates: Sequence<PsiNamedElement>
-        get() {
-            val qualifyingName = element.qualifiedIdentifier.moduleName?.name
-            return sequence {
-                if (qualifyingName == null) {
-                    yieldAll(
-                        element
-                            .parentsOfType<ValueNamespace>(withSelf = false)
-                            .flatMap { it.valueNames }
-                    )
-
-                    val module = element.module ?: return@sequence
-                    // TODO Support values defined in the expression
-                    yieldAll(module.cache.valueDeclarationGroups.toList())
-                    yieldAll(module.cache.foreignValueDeclarations.toList())
-                    val localClassMembers = module
-                        .cache.classes
-                        .asSequence()
-                        .flatMap { it.classMembers.asSequence() }
-                    yieldAll(localClassMembers)
-                }
-            }
+        get() = when (element.qualifiedIdentifier.moduleName?.name) {
+            null -> element
+                .parentsOfType<ValueNamespace>(withSelf = false)
+                .flatMap { it.valueNames }
+            else -> emptySequence()
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
