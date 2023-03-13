@@ -66,6 +66,8 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     override val type: PSType? get() = null
     override val valueNames: Sequence<PsiNamedElement>
         get() = valueGroups.asSequence() + foreignValues.asSequence() + classMembers.asSequence()
+    override val valueProperNames: Sequence<PsiNamedElement>
+        get() = cache.newTypeConstructors.asSequence() + cache.dataConstructors.asSequence()
     val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }
     val foreignValues get() = getCachedValue(this) { create(children<ForeignValueDecl>(), this) }
     val classes get() = getCachedValue(this) { create(children<ClassDecl>(), this) }

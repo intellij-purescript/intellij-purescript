@@ -8,11 +8,11 @@ import com.intellij.psi.util.parentOfType
 import org.purescript.file.ExportedConstructorsIndex
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedData
-import org.purescript.psi.PSPsiElement
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.name.PSQualifiedProperName
+import org.purescript.psi.PSPsiElement
 
 class ConstructorReference(
     element: PSPsiElement,
@@ -36,10 +36,8 @@ class ConstructorReference(
             val module = element.module ?: return emptySequence()
             val qualifyingName = qualifiedProperName.moduleName?.name
             return sequence {
-                if (qualifyingName == null) {
-                    yieldAll(module.cache.newTypeConstructors)
-                    yieldAll(module.cache.dataConstructors)
-                }
+                if (qualifyingName == null) yieldAll(module.valueProperNames)
+                
                 val importDeclarations = module.cache.imports
                     .filter { it.importAlias?.name == qualifyingName }
                 yieldAll(importDeclarations.flatMap { it.importedNewTypeConstructors })
