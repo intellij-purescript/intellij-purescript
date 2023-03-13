@@ -331,16 +331,16 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     fun importedFixityDeclarations(name: String): Sequence<FixityDeclaration> = when {
         importedItems.isEmpty() -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
-        isHiding && importedItems.any { it.name == name } -> emptySequence()
-        !isHiding && importedItems.none { it.name == name } -> emptySequence()
+        isHiding && importedItems.any { it.getName() == name } -> emptySequence()
+        !isHiding && importedItems.none { it.getName() == name } -> emptySequence()
         else -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
     }
 
 
     fun importedValue(name: String): Sequence<org.purescript.module.declaration.Importable> = when {
         importedItems.isEmpty() -> importedModule?.exportedValue(name) ?: emptySequence()
-        isHiding && importedItems.any { it.name == name } -> emptySequence()
-        !isHiding && importedItems.none { it.name == name } -> emptySequence()
+        isHiding && importedItems.any { it.getName() == name } -> emptySequence()
+        !isHiding && importedItems.none { it.getName() == name } -> emptySequence()
         else -> importedModule?.exportedValue(name) ?: emptySequence()
     }
 

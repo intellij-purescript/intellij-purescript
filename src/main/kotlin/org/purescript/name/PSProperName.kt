@@ -1,6 +1,8 @@
 package org.purescript.name
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import org.purescript.psi.PSPsiElement
 
 /**
@@ -11,6 +13,8 @@ import org.purescript.psi.PSPsiElement
  * - Eq
  */
 class PSProperName(node: ASTNode) : PSPsiElement(node) {
-    override fun getName(): String = text.trim()
+    override fun getName(): String = CachedValuesManager.getCachedValue(this) { 
+        CachedValueProvider.Result.create(text.trim(), this) 
+    }
     fun nameMatches(name: String): Boolean = textMatches(name)
 }

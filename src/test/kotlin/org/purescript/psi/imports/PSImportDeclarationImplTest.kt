@@ -112,19 +112,19 @@ class PSImportDeclarationImplTest : BasePlatformTestCase() {
 
         val foo = module.cache.importsByName["Foo"]?.firstOrNull()!!
         assertTrue(foo.isHiding)
-        assertContainsElements(foo.importList?.importedItems?.map { it.name } ?: emptyList(), "x")
+        assertContainsElements(foo.importList?.importedItems?.map { it.getName() } ?: emptyList(), "x")
 
         val bar = module.cache.importsByName["Bar"]?.firstOrNull()!!
         assertFalse(bar.isHiding)
-        assertDoesntContain(bar.importList?.importedItems?.map { it.name } ?: emptyList(), "x")
+        assertDoesntContain(bar.importList?.importedItems?.map { it.getName() } ?: emptyList(), "x")
 
         val buz = module.cache.importsByName["Buz"]?.firstOrNull()!!
         assertFalse(buz.isHiding)
-        assertContainsElements(buz.importList?.importedItems?.map { it.name } ?: emptyList(), "x")
+        assertContainsElements(buz.importList?.importedItems?.map { it.getName() } ?: emptyList(), "x")
 
         val fuz = module.cache.importsByName["Fuz"]?.firstOrNull()!!
         assertFalse(fuz.isHiding)
-        assertContainsElements(fuz.importList?.importedItems?.map { it.name } ?: emptyList(), "hiding")
+        assertContainsElements(fuz.importList?.importedItems?.map { it.getName() } ?: emptyList(), "hiding")
     }
 
     fun `test parses import declaration children`() {
