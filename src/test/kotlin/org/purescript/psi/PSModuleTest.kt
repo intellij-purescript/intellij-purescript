@@ -483,7 +483,7 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        assertSize(2, module.exportedNewTypeConstructors)
+        assertSize(2, module.exportedValueProperNames.toList())
     }
 
     fun `test finds exported data constructors`() {
@@ -498,7 +498,7 @@ class PSModuleTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getModule()
 
-        assertSize(2, module.exportedDataConstructors)
+        assertSize(2, module.exportedValueProperNames.toList())
     }
     fun `test exports self`() {
         val module = myFixture.configureByText(

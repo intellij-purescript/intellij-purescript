@@ -17,13 +17,11 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
-import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.fixity.FixityDeclaration
 import org.purescript.module.declaration.foreign.ForeignValueDecl
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.Import
-import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.type.TypeDecl
@@ -293,13 +291,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         ) { it.importedNewTypeDeclarations }
 
     /**
-     * @return the [NewtypeCtor] elements that this module exports,
-     * both directly and through re-exported modules
-     */
-    val exportedNewTypeConstructors: List<NewtypeCtor>
-        get() = exportedValueProperNames.filterIsInstance<NewtypeCtor>().toList()
-
-    /**
      * @return the [DataDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
@@ -307,13 +298,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = getExportedDeclarations<DataDeclaration, ExportedData.Psi>(
             cache.dataDeclarations,
         ) { it.importedDataDeclarations }
-
-    /**
-     * @return the [DataConstructor] elements that this module exports,
-     * both directly and through re-exported modules
-     */
-    val exportedDataConstructors: List<DataConstructor>
-        get() = exportedValueProperNames.filterIsInstance<DataConstructor>().toList()
 
     /**
      * @return the [TypeDecl] elements that this module exports,

@@ -211,7 +211,8 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedNewTypeConstructors: List<NewtypeCtor>
         get() {
             val importedModule = importedModule ?: return emptyList()
-            val exportedNewTypeConstructors = importedModule.exportedNewTypeConstructors
+            val exportedNewTypeConstructors =
+                importedModule.exportedValueProperNames.filterIsInstance<NewtypeCtor>().toList()
             val importedItems = importList?.importedItems ?: return exportedNewTypeConstructors
             val importedNewTypeConstructors = mutableListOf<NewtypeCtor>()
             val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
@@ -264,7 +265,8 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedDataConstructors: List<DataConstructor>
         get() {
             val importedModule = importedModule ?: return emptyList()
-            val exportedDataConstructors = importedModule.exportedDataConstructors
+            val exportedDataConstructors =
+                importedModule.exportedValueProperNames.filterIsInstance<DataConstructor>().toList()
             val importedItems = importList?.importedItems ?: return exportedDataConstructors
             val importedDataConstructors = mutableListOf<DataConstructor>()
             val importedDataElements = importedItems.filterIsInstance<PSImportedData>()

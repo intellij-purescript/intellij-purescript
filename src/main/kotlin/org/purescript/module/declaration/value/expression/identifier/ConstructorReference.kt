@@ -72,18 +72,17 @@ class ConstructorReference(
 
             val importCandidates = mutableSetOf<Pair<String, String>>()
             for (module in modules) {
-                for (exportedDataConstructor in module.exportedDataConstructors) {
-                    if (exportedDataConstructor.name == qualifiedProperName.name) {
-                        val dataDeclaration = exportedDataConstructor.parentOfType<DataDeclaration>()
-                            ?: continue
-                        importCandidates += module.name to dataDeclaration.name
-                    }
-                }
-                for (exportedNewTypeConstructor in module.exportedNewTypeConstructors) {
-                    if (exportedNewTypeConstructor.name == qualifiedProperName.name) {
-                        val newTypeDeclaration = exportedNewTypeConstructor.parentOfType<NewtypeDecl>()
-                            ?: continue
-                        importCandidates += module.name to newTypeDeclaration.name
+                for (exportedConstructor in module.exportedValueProperNames) {
+                    if (exportedConstructor.name == qualifiedProperName.name) {
+                        val dataDeclaration = exportedConstructor.parentOfType<DataDeclaration>()
+                        if (dataDeclaration != null) {
+                            importCandidates += module.name to dataDeclaration.name
+                        } else {
+                            val newTypeDeclaration = exportedConstructor.parentOfType<NewtypeDecl>()
+                            if (newTypeDeclaration != null) {
+                                importCandidates += module.name to newTypeDeclaration.name
+                            }
+                        }
                     }
                 }
             }
