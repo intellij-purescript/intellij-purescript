@@ -876,6 +876,21 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    
+    fun `test it finds ado binders`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |f =
+                |  ado
+                |    x <- [1]
+                |  in x
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 
     fun `test it binders in guard`() {
         myFixture.configureByText(

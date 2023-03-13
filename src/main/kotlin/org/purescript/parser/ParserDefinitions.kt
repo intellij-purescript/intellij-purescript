@@ -173,7 +173,7 @@ class ParserDefinitions {
                 exprCase /
                 ifThenElse /
                 doBlock /
-                (adoBlock + `'in'` + expr) /
+                AdoBlockType(`'ado'` + layout(doStatement, "ado statement") + `'in'` + expr) /
                 letIn
     }
 
@@ -382,7 +382,6 @@ class ParserDefinitions {
         qualified(`'do'`).heal +
                 layout1(doStatement, "do statement").relax("missing do statements")
     )
-    private val adoBlock = `'ado'` + layout(doStatement, "ado statement")
     private val recordBinder =
         RecordLabelBinderType((label + eq / ":").heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
 }

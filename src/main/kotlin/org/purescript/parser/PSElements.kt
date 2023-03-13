@@ -35,10 +35,7 @@ import org.purescript.module.declaration.value.expression.controll.GuardBranch
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.caseof.PSCase
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
-import org.purescript.module.declaration.value.expression.dostmt.PSDoBlock
-import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
-import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
-import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationValue
+import org.purescript.module.declaration.value.expression.dostmt.*
 import org.purescript.module.declaration.value.expression.identifier.*
 import org.purescript.module.declaration.value.expression.literals.*
 import org.purescript.module.declaration.value.expression.namespace.LetBinder
@@ -163,6 +160,7 @@ val CallType = WithPsi("Call") { Call(it) }
 val ArgumentType = WithPsi("Argument") { Argument(it) }
 val Accessor = WithPsi("Accessor") { PSAccessor(it) }
 val DoBlock = WithPsi("DoBlock") { PSDoBlock(it) }
+val AdoBlockType = WithPsi("AdoBlock") { AdoBlock(it) }
 val DoNotationLet = WithPsi("DoNotationLet") { PSDoNotationLet(it) }
 val DoNotationBind = WithPsi("DoNotationBind") { PSDoNotationBind(it) }
 val DoNotationValue = WithPsi("DoNotationValue") { PSDoNotationValue(it) }
