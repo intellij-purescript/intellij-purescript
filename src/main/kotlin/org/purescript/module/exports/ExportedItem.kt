@@ -56,7 +56,7 @@ interface ExportedData {
         val dataDeclaration get() = reference.resolve() as? DataDeclaration
         override fun getName() = greenStub?.name ?: properName.name
         override fun getReference() = ExportedDataReference(this)
-        val valueProperNames: Sequence<PsiNamedElement> get() = when(val ref = reference.resolve()) {
+        val constructors: Sequence<PsiNamedElement> get() = when(val ref = reference.resolve()) {
             is NewtypeDecl -> sequenceOf(ref.newTypeConstructor)
             is DataDeclaration -> ref.dataConstructors.toList().asSequence()
             else -> emptySequence()

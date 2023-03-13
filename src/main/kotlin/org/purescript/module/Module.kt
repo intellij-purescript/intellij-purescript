@@ -70,7 +70,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         else sequence {
             if (exportsSelf) yieldAll(constructors)
             else {
-                yieldAll(exportedItems.filterIsInstance<ExportedData.Psi>().flatMap { it.valueProperNames })
+                yieldAll(exportedItems.filterIsInstance<ExportedData.Psi>().flatMap { it.constructors })
                 yieldAll(exportedItems.filterIsInstance<ExportedModule>().flatMap { it.constructors })
             }
         }
