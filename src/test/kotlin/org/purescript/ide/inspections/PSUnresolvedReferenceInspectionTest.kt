@@ -923,4 +923,17 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    fun `test finds references to bindings in let in do`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo where
+                |f = do
+                |  let {x} = {x: 1}
+                |  x
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 }
