@@ -36,7 +36,7 @@ class ConstructorReference(
             val module = element.module ?: return emptySequence()
             val qualifyingName = qualifiedProperName.moduleName?.name
             return sequence {
-                if (qualifyingName == null) yieldAll(module.valueProperNames)
+                if (qualifyingName == null) yieldAll(module.constructors)
                 
                 val importDeclarations = module.cache.imports
                     .filter { it.importAlias?.name == qualifyingName }
