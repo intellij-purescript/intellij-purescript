@@ -20,6 +20,7 @@ sealed class ExportedItem<Stub : AStub<*>> : PSStubbedElement<Stub> {
     constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
     abstract override fun getName(): String
+    open val constructors: Sequence<PsiNamedElement> = emptySequence()
 }
 
 interface ExportedData {
@@ -56,7 +57,7 @@ interface ExportedData {
         val dataDeclaration get() = reference.resolve() as? DataDeclaration
         override fun getName() = greenStub?.name ?: properName.name
         override fun getReference() = ExportedDataReference(this)
-        val constructors: Sequence<PsiNamedElement> get() = when(val ref = reference.resolve()) {
+        override val constructors: Sequence<PsiNamedElement> get() = when(val ref = reference.resolve()) {
             is NewtypeDecl -> sequenceOf(ref.newTypeConstructor)
             is DataDeclaration -> ref.dataConstructors.toList().asSequence()
             else -> emptySequence()
@@ -164,7 +165,9 @@ class ExportedModule : ExportedItem<ExportedModule.Stub> {
             ?.get(name)
             ?.asSequence()
             ?: sequenceOf()
-    val constructors get() = importDeclarations.flatMap { it.importedConstructors }
+    override val constructors get() = 
+        if (name != module?.name) importDeclarations.flatMap { it.importedConstructors } 
+        else module?.constructors ?: emptySequence()
     override fun getName(): String = greenStub?.name ?: moduleName.name
     override fun getReference() = ExportedModuleReference(this)
 }

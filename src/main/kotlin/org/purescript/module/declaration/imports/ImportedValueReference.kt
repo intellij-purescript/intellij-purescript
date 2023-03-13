@@ -18,7 +18,6 @@ class ImportedValueReference(element: PSImportedValue) : PsiReferenceBase<PSImpo
         get() {
             val module = element.importDeclaration.importedModule ?: return emptySequence()
             return module.exportedValueNames.asSequence()
-            
         }
     private fun candidates(name:String) = 
         element.importDeclaration.importedModule?.exportedValue(name) ?: emptySequence()

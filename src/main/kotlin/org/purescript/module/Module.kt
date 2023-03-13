@@ -67,13 +67,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = cache.newTypeConstructors.asSequence() + cache.dataConstructors.asSequence()
     val exportedConstructors: Sequence<PsiNamedElement>
         get() = if (exports == null) constructors
-        else sequence {
-            if (exportsSelf) yieldAll(constructors)
-            else {
-                yieldAll(exportedItems.filterIsInstance<ExportedData.Psi>().flatMap { it.constructors })
-                yieldAll(exportedItems.filterIsInstance<ExportedModule>().flatMap { it.constructors })
-            }
-        }
+        else exportedItems.flatMap { it.constructors }
     val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }
     val foreignValues get() = getCachedValue(this) { create(children<ForeignValueDecl>(), this) }
     val classes get() = getCachedValue(this) { create(children<ClassDecl>(), this) }
