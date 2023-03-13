@@ -158,11 +158,11 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
                 val importedNames = importedItems.filterIsInstance(Wanted::class.java).toList()
                 if (isHiding) {
                     exportedDeclarations.filter {
-                        importedNames.none { import -> import.nameMatches(it.name ?: "") }
+                        importedNames.none { import -> import.getName() == it.name }
                     }
                 } else {
                     exportedDeclarations.filter {
-                        importedNames.any { import -> import.nameMatches(it.name ?: "") }
+                        importedNames.any { import -> import.getName() == it.name }
                     }
                 }
             }

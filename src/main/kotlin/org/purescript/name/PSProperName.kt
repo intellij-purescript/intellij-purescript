@@ -16,5 +16,4 @@ class PSProperName(node: ASTNode) : PSPsiElement(node) {
     override fun getName(): String = CachedValuesManager.getCachedValue(this) { 
         CachedValueProvider.Result.create(text.trim(), this) 
     }
-    fun nameMatches(name: String): Boolean = textMatches(name)
 }

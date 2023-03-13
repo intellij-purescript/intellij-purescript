@@ -19,7 +19,6 @@ import org.purescript.psi.PSStubbedElement
  */
 sealed interface PSImportedItem : PsiElement, Comparable<PSImportedItem> {
     fun getName(): String
-    fun nameMatches(name: String): Boolean
     val importDeclaration: Import get() = PsiTreeUtil.getParentOfType(this, Import::class.java)!!
     fun asData(): ImportedItem
 
@@ -81,7 +80,6 @@ class PSImportedClass : PSStubbedElement<PSImportedClass.Stub>, PSImportedItem {
 
     internal val properName: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
     override fun getName(): String = greenStub?.name ?: properName.name
-    override fun nameMatches(name: String): Boolean = properName.nameMatches(name)
     override fun asData() = ImportedClass(name)
     override fun getReference(): ImportedClassReference = ImportedClassReference(this)
 }
@@ -145,7 +143,6 @@ class PSImportedData : PSStubbedElement<PSImportedData.Stub>, PSImportedItem {
      */
     val dataDeclaration get() = reference.resolve() as? DataDeclaration
     override fun getName(): String = greenStub?.name ?: properName.name
-    override fun nameMatches(name: String): Boolean = properName.nameMatches(name)
     override fun asData() = ImportedData(name, importsAll, importedDataMembers.map { it.name }.toSet())
     override fun getReference() = ImportedDataReference(this)
 }
@@ -176,7 +173,6 @@ class PSImportedOperator : PSStubbedElement<PSImportedOperator.Stub>, PSImported
 
     val symbol: PSSymbol get() = findNotNullChildByClass(PSSymbol::class.java)
     override fun getName(): String = greenStub?.name ?: symbol.name
-    override fun nameMatches(name: String) = symbol.nameMatches(name)
     override fun asData() = ImportedOperator(name)
     override fun getReference() = ImportedOperatorReference(this)
 }
@@ -207,7 +203,6 @@ class PSImportedType : PSStubbedElement<PSImportedType.Stub>, PSImportedItem {
 
     private val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName(): String = greenStub?.name ?: identifier.name
-    override fun nameMatches(name: String) = identifier.nameMatches(name)
     override fun asData() = ImportedType(name)
 }
 
@@ -234,10 +229,9 @@ class PSImportedValue : PSStubbedElement<PSImportedValue.Stub>, PSImportedItem {
 
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
-    
+
     val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName(): String = greenStub?.name ?: identifier.name
-    override fun nameMatches(name: String): Boolean = identifier.nameMatches(name)
     override fun asData() = ImportedValue(name)
     override fun getReference(): ImportedValueReference = ImportedValueReference(this)
 }
