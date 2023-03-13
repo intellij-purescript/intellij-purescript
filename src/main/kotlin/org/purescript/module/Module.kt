@@ -74,7 +74,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"
     var cache: Module.Cache = Cache()
-
     val exports get() = child<ExportList>()
     val fixityDeclarations get() = children(FixityDeclType)
 
@@ -103,8 +102,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         super.subtreeChanged()
     }
 
+    override fun getNameIdentifier() = findNotNullChildByClass(PSModuleName::class.java)
+    override fun getTextOffset() = nameIdentifier.textOffset
     override fun getName(): String = greenStub?.name ?: nameIdentifier.name
-
     override fun setName(name: String): PsiElement? {
         val properName =
             project.service<PSPsiFactory>().createModuleName(name)
@@ -112,12 +112,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         nameIdentifier.replace(properName)
         return this
     }
-
-    override fun getNameIdentifier(): PSModuleName {
-        return findNotNullChildByClass(PSModuleName::class.java)
-    }
-
-    override fun getTextOffset(): Int = nameIdentifier.textOffset
 
     /**
      * @return the [FixityDeclaration] that this module exports,
