@@ -112,7 +112,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     override fun getNameIdentifier() = findNotNullChildByClass(PSModuleName::class.java)
     override fun getTextOffset() = nameIdentifier.textOffset
+    override val docComments: List<PsiComment> get() = getDocComments()
     override fun getName(): String = greenStub?.name ?: nameIdentifier.name
+
     override fun setName(name: String): PsiElement? {
         val properName =
             project.service<PSPsiFactory>().createModuleName(name)
@@ -337,10 +339,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             .filter { it !is ExportedModule }
             .map { it.text.trim() }
             .toList()
-
-    override val docComments: List<PsiComment>
-        get() = getDocComments()
-
     fun addImportDeclaration(importDeclaration: ImportDeclaration) {
         if (importDeclaration.moduleName == name) return
         val imports = cache.imports.filter {
