@@ -923,6 +923,32 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    fun `test it finds reexported builtin modules and their memeber`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+                |module Foo (module Row) where
+                |
+                |import Prim.Row as Row
+                |
+                |type Union = Row.Union
+                |
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+                |module Bar where
+                |
+                |import Foo as Row
+                |
+                |type Union = Row.Union
+                |
+            """.trimMargin()
+        )
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
     fun `test finds references to bindings in let in do`() {
         myFixture.configureByText(
             "Foo.purs",

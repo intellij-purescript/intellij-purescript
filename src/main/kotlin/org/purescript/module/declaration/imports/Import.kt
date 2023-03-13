@@ -69,12 +69,16 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     override fun toString() = "PSImportDeclaration($elementType)"
 
-    val importedConstructors: Sequence<PsiNamedElement> get() = when {
-        importedItems.isEmpty() -> importedModule?.exportedConstructors
-        isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
-        !isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
-        else -> importedModule?.exportedConstructors
-    } ?: emptySequence()
+    val importedConstructors: Sequence<PsiNamedElement>
+        get() =
+            if (importedModule == null) PSLanguage.getBuiltins(moduleName.name).asSequence()
+            else when {
+                importedItems.isEmpty() -> importedModule?.exportedConstructors
+                isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
+                !isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
+                else -> importedModule?.exportedConstructors
+            } ?: emptySequence()
+
     /**
      * The identifier specifying module being imported, e.g.
      *
@@ -108,12 +112,6 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * or the name of the module this declaration is importing from.
      */
     override fun getName() = importAlias?.name ?: moduleName.name
-
-    /** the names that are exposed or hidden
-     *
-     * `import Lib (namedImports)`
-     * */
-    val namedImports: List<String> get() = importList?.importedItems?.map { it.name } ?: emptyList()
 
     /** is the import statement a hiding
      *
@@ -210,7 +208,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedNewTypeDeclarations: List<NewtypeDecl>
         get() = getImportedDeclarations<NewtypeDecl, PSImportedData>(Module::exportedNewTypeDeclarations)
-    
+
     /**
      * @return the [NewtypeCtor] elements imported by this declaration
      */
@@ -262,8 +260,9 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     /**
      * @return the [DataDeclaration] elements imported by this declaration
      */
-    val importedDataDeclarations: List<DataDeclaration>
-        get() = getImportedDeclarations<DataDeclaration, PSImportedData>(Module::exportedDataDeclarations)
+    val importedDataDeclarations: List<PsiNamedElement>
+        get() = if (importedModule == null) PSLanguage.getBuiltins(moduleName.name)
+        else getImportedDeclarations<PsiNamedElement, PSImportedData>(Module::exportedDataDeclarations)
 
     /**
      * @return the [DataConstructor] elements imported by this declaration

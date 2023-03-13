@@ -91,7 +91,7 @@ fun PsiFile.getDataConstructor(): DataConstructor =
     getDataDeclaration().dataConstructorList!!.dataConstructors.single()
 
 fun PsiFile.getExportedDataDeclarations(): List<DataDeclaration> =
-    getModule().exportedDataDeclarations
+    getModule().exportedDataDeclarations.filterIsInstance<DataDeclaration>()
 
 fun PsiFile.getExportedClassDeclarations(): List<ClassDecl> =
     getModule().exportedClassDeclarations

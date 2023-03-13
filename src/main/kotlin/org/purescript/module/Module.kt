@@ -291,9 +291,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * @return the [DataDeclaration] elements that this module exports,
      * both directly and through re-exported modules
      */
-    val exportedDataDeclarations: List<DataDeclaration>
-        get() = getExportedDeclarations<DataDeclaration, ExportedData.Psi>(
-            cache.dataDeclarations,
+    val exportedDataDeclarations: List<PsiNamedElement>
+        get() = getExportedDeclarations<PsiNamedElement, ExportedData.Psi>(
+            cache.dataDeclarations.toList().toTypedArray()
         ) { it.importedDataDeclarations }
 
     /**
