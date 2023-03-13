@@ -1,6 +1,7 @@
 package org.purescript.module.exports
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.imports.Import
@@ -14,6 +15,7 @@ import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
 
 sealed class ExportedItem<Stub : AStub<*>> : PSStubbedElement<Stub> {
+
     constructor(node: ASTNode) : super(node)
     constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
@@ -49,10 +51,22 @@ interface ExportedData {
         val dataMemberList get() = findChildByClass(PSExportedDataMemberList::class.java)
         val exportsAll get() = dataMemberList?.doubleDot != null
         val dataMembers get() = dataMemberList?.dataMembers ?: emptyArray()
+        val dataMembersNames get() = dataMembers.map { it.name }
         val newTypeDeclaration get() = reference.resolve() as? NewtypeDecl
         val dataDeclaration get() = reference.resolve() as? DataDeclaration
         override fun getName() = greenStub?.name ?: properName.name
         override fun getReference() = ExportedDataReference(this)
+        val valueProperNames: Sequence<PsiNamedElement> get() = when(val ref = reference.resolve()) {
+            is NewtypeDecl -> sequenceOf(ref.newTypeConstructor)
+            is DataDeclaration -> ref.dataConstructors.toList().asSequence()
+            else -> emptySequence()
+        }.let { constructors -> 
+            if (exportsAll) constructors
+            else {
+                val nameSet = dataMembersNames.toSet()
+                constructors.filter { (it as PsiNamedElement).name in nameSet }
+            }
+        }
     }
 
 }

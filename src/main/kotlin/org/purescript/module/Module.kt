@@ -11,7 +11,6 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.CachedValueProvider.Result.create
 import com.intellij.psi.util.CachedValuesManager.getCachedValue
-import com.intellij.util.containers.addIfNotNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
@@ -68,6 +67,14 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = valueGroups.asSequence() + foreignValues.asSequence() + classMembers.asSequence()
     override val valueProperNames: Sequence<PsiNamedElement>
         get() = cache.newTypeConstructors.asSequence() + cache.dataConstructors.asSequence()
+    val exportedValueProperNames: Sequence<PsiNamedElement>
+        get() = if (exports == null) valueProperNames
+        else sequence {
+            if (exportsSelf) yieldAll(valueProperNames)
+            else {
+                yieldAll(exportedItems.filterIsInstance<ExportedData.Psi>().flatMap { it.valueProperNames })
+            }
+        }
     val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }
     val foreignValues get() = getCachedValue(this) { create(children<ForeignValueDecl>(), this) }
     val classes get() = getCachedValue(this) { create(children<ClassDecl>(), this) }
@@ -77,6 +84,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     override fun toString(): String = "PSModule($elementType)"
     var cache: Module.Cache = Cache()
     val exports get() = child<ExportList>()
+    val exportedItems get() = exports?.exportedItems?.asSequence() ?: emptySequence()
     val fixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
@@ -257,6 +265,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = exportedForeignValueDeclarations +
                 exportedValueDeclarationGroups +
                 exportedClassDeclarations.flatMap { it.classMembers.asSequence() }
+
     /**
      * @return the [ForeignValueDecl] elements that this module exports,
      * both directly and through re-exported modules
@@ -288,29 +297,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedNewTypeConstructors: List<NewtypeCtor>
-        get() {
-            val explicitlyExportedItems = exports?.exportedItems
-                ?: return cache.newTypeConstructors
-
-            val exportedNewTypeConstructors =
-                mutableListOf<NewtypeCtor>()
-
-            for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
-                if (exportedData.exportsAll) {
-                    exportedNewTypeConstructors.addIfNotNull(exportedData.newTypeDeclaration?.newTypeConstructor)
-                } else {
-                    exportedData.dataMembers
-                        .mapNotNull { it.reference.resolve() }
-                        .filterIsInstanceTo(exportedNewTypeConstructors)
-                }
-            }
-
-            explicitlyExportedItems.filterIsInstance<ExportedModule>()
-                .flatMap { it.importDeclarations }
-                .flatMapTo(exportedNewTypeConstructors) { it.importedNewTypeConstructors }
-
-            return exportedNewTypeConstructors
-        }
+        get() = exportedValueProperNames.filterIsInstance<NewtypeCtor>().toList()
 
     /**
      * @return the [DataDeclaration] elements that this module exports,
@@ -326,30 +313,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedDataConstructors: List<DataConstructor>
-        get() {
-            val explicitlyExportedItems = exports?.exportedItems
-                ?: return cache.dataConstructors
-
-            val exportedDataConstructors =
-                mutableListOf<DataConstructor>()
-
-            for (exportedData in explicitlyExportedItems.filterIsInstance<ExportedData.Psi>()) {
-                if (exportedData.exportsAll) {
-                    exportedData.dataDeclaration?.dataConstructors
-                        ?.mapTo(exportedDataConstructors) { it }
-                } else {
-                    exportedData.dataMembers
-                        .mapNotNull { it.reference.resolve() }
-                        .filterIsInstanceTo(exportedDataConstructors)
-                }
-            }
-
-            explicitlyExportedItems.filterIsInstance<ExportedModule>()
-                .flatMap { it.importDeclarations }
-                .flatMapTo(exportedDataConstructors) { it.importedDataConstructors }
-
-            return exportedDataConstructors
-        }
+        get() = exportedValueProperNames.filterIsInstance<DataConstructor>().toList()
 
     /**
      * @return the [TypeDecl] elements that this module exports,
@@ -385,12 +349,10 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 ?: emptyList()
 
     val exportedNames: List<String>
-        get() =
-            exports?.exportedItems
-                ?.filter { it !is ExportedModule }
-                ?.map { it.text.trim() }
-                ?.toList()
-                ?: emptyList()
+        get() = exportedItems
+            .filter { it !is ExportedModule }
+            .map { it.text.trim() }
+            .toList()
 
     override val docComments: List<PsiComment>
         get() = getDocComments()

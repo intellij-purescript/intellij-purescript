@@ -204,7 +204,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedNewTypeDeclarations: List<NewtypeDecl>
         get() = getImportedDeclarations<NewtypeDecl, PSImportedData>(Module::exportedNewTypeDeclarations)
-
+    
     /**
      * @return the [NewtypeCtor] elements imported by this declaration
      */
