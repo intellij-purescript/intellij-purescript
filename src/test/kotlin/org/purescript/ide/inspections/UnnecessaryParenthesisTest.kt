@@ -230,4 +230,16 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
     }
+    fun `test it dont report parenthesis around typed calls with arguments`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |f n = n
+            |x = (f 1) :: Int
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }
 }

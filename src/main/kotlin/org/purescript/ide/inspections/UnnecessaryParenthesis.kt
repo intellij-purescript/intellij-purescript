@@ -7,6 +7,7 @@ import com.intellij.patterns.PlatformPatterns.or
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
+import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
 import org.purescript.module.declaration.value.expression.PSParens
@@ -27,16 +28,19 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
+    private val type: Capture<PSType> = psiElement(PSType::class.java)
     private val hasOnlyOneChild = psiElement()
         .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
     private val parenthesisAroundIfThanElse =
         parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
     val wildcard = psiElement(ExpressionWildcard::class.java)
     val operatorSection = parenthesis.withChild(value.withChild(call.withChild(wildcard)))
+    val isTyped = parenthesis.withSuperParent(2, value.withChild(type))
     private val pattern = or(
         parenthesis
             .withParent(hasOnlyOneChild)
             .withChild(valueWithOneChild)
+            .andNot(isTyped)
             .andNot(parentIsArgument)
             .andNot(
                 parenthesisAroundIfThanElse
