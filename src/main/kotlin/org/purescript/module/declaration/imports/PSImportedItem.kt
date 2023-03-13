@@ -3,12 +3,12 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.PsiTreeUtil
 import org.purescript.ide.formatting.*
-import org.purescript.psi.PSPsiElement
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.name.PSIdentifier
 import org.purescript.name.PSProperName
 import org.purescript.name.PSSymbol
+import org.purescript.psi.PSPsiElement
 
 /**
  * Any element that can occur in a [PSImportList]
@@ -16,7 +16,6 @@ import org.purescript.name.PSSymbol
 sealed class PSImportedItem(node: ASTNode) : PSPsiElement(node), Comparable<PSImportedItem> {
     abstract override fun getName(): String
     abstract fun nameMatches(name: String): Boolean
-
     internal val importDeclaration: Import
         get() =
             PsiTreeUtil.getParentOfType(this, Import::class.java)!!

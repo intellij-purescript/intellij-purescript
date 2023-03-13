@@ -164,7 +164,7 @@ class ExportedModule : ExportedItem<ExportedModule.Stub> {
             ?.get(name)
             ?.asSequence()
             ?: sequenceOf()
-    val valueProperNames get() = importDeclarations.flatMap { it.importedValueProperNames }
+    val constructors get() = importDeclarations.flatMap { it.importedConstructors }
     override fun getName(): String = greenStub?.name ?: moduleName.name
     override fun getReference() = ExportedModuleReference(this)
 }

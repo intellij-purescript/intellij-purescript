@@ -65,13 +65,13 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         get() = valueGroups.asSequence() + foreignValues.asSequence() + classMembers.asSequence()
     override val valueProperNames: Sequence<PsiNamedElement>
         get() = cache.newTypeConstructors.asSequence() + cache.dataConstructors.asSequence()
-    val exportedValueProperNames: Sequence<PsiNamedElement>
+    val exportedConstructors: Sequence<PsiNamedElement>
         get() = if (exports == null) valueProperNames
         else sequence {
             if (exportsSelf) yieldAll(valueProperNames)
             else {
                 yieldAll(exportedItems.filterIsInstance<ExportedData.Psi>().flatMap { it.valueProperNames })
-                yieldAll(exportedItems.filterIsInstance<ExportedModule>().flatMap { it.valueProperNames })
+                yieldAll(exportedItems.filterIsInstance<ExportedModule>().flatMap { it.constructors })
             }
         }
     val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }

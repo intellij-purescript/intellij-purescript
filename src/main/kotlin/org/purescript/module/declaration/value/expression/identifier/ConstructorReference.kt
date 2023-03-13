@@ -72,7 +72,7 @@ class ConstructorReference(
 
             val importCandidates = mutableSetOf<Pair<String, String>>()
             for (module in modules) {
-                for (exportedConstructor in module.exportedValueProperNames) {
+                for (exportedConstructor in module.exportedConstructors) {
                     if (exportedConstructor.name == qualifiedProperName.name) {
                         val dataDeclaration = exportedConstructor.parentOfType<DataDeclaration>()
                         if (dataDeclaration != null) {

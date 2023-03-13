@@ -69,8 +69,12 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     override fun toString() = "PSImportDeclaration($elementType)"
 
-    val importedValueProperNames: List<PsiNamedElement> get() = importedDataConstructors + importedNewTypeConstructors
-
+    val importedConstructors: Sequence<PsiNamedElement> get() = when {
+        importedItems.isEmpty() -> importedModule?.exportedConstructors
+        isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
+        !isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
+        else -> importedModule?.exportedConstructors
+    } ?: emptySequence()
     /**
      * The identifier specifying module being imported, e.g.
      *
@@ -214,7 +218,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         get() {
             val importedModule = importedModule ?: return emptyList()
             val exportedNewTypeConstructors =
-                importedModule.exportedValueProperNames.filterIsInstance<NewtypeCtor>().toList()
+                importedModule.exportedConstructors.filterIsInstance<NewtypeCtor>().toList()
             val importedItems = importList?.importedItems ?: return exportedNewTypeConstructors
             val importedNewTypeConstructors = mutableListOf<NewtypeCtor>()
             val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
@@ -268,7 +272,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         get() {
             val importedModule = importedModule ?: return emptyList()
             val exportedDataConstructors =
-                importedModule.exportedValueProperNames.filterIsInstance<DataConstructor>().toList()
+                importedModule.exportedConstructors.filterIsInstance<DataConstructor>().toList()
             val importedItems = importList?.importedItems ?: return exportedDataConstructors
             val importedDataConstructors = mutableListOf<DataConstructor>()
             val importedDataElements = importedItems.filterIsInstance<PSImportedData>()
