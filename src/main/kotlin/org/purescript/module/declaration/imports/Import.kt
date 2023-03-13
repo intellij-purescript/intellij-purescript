@@ -3,6 +3,8 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import org.purescript.PSLanguage
 import org.purescript.module.Module
 import org.purescript.module.ModuleReference
@@ -48,7 +50,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     object Type : WithPsiAndStub<Stub, Import>("ImportDeclaration") {
         override fun createPsi(node: ASTNode) = Import(node)
         override fun createPsi(stub: Stub) = Import(stub, this)
-        override fun createStub(my: Import, p: StubElement<*>?) = Stub(my.moduleName.name, my.importAlias?.name, p)
+        override fun createStub(my: Import, p: StubElement<*>?) = Stub(my.moduleNameName, my.importAlias?.name, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
             if (stub.isExported) {
                 sink.occurrence(ReExportedImportIndex.KEY, stub.moduleName)
@@ -71,7 +73,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     val importedConstructors: Sequence<PsiNamedElement>
         get() =
-            if (importedModule == null) PSLanguage.getBuiltins(moduleName.name).asSequence()
+            if (importedModule == null) PSLanguage.getBuiltins(moduleNameName).asSequence()
             else when {
                 importedItems.isEmpty() -> importedModule?.exportedConstructors
                 isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
@@ -88,7 +90,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * ```
      */
     val moduleName get() = findChildByClass(PSModuleName::class.java)!!
-
+    val moduleNameName get() = greenStub?.moduleName ?: moduleName.name
     /**
      * The import list of this import declaration.
      * It being null implies that all items are imported.
@@ -111,7 +113,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * Either the name of the [PSImportAlias], if it exists,
      * or the name of the module this declaration is importing from.
      */
-    override fun getName() = importAlias?.name ?: moduleName.name
+    override fun getName() = importAlias?.name ?: moduleNameName
 
     /** is the import statement a hiding
      *
@@ -130,7 +132,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         else -> compareValuesBy(
             this,
             other,
-            { it.moduleName.name },
+            { it.moduleNameName },
             { it.isHiding },
             { it.importAlias?.name },
             { it.text } // TODO We probably want to compare by import list instead
@@ -170,7 +172,11 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     /**
      * @return the [Module] that this declaration is importing from
      */
-    val importedModule get(): Module? = reference.resolve()
+    val importedModule get(): Module? = CachedValuesManager.getCachedValue(this) {
+        val resolve = reference.resolve()
+        if (resolve == null) CachedValueProvider.Result.create(resolve, this)
+        else CachedValueProvider.Result.create(resolve, this, resolve)
+    }  
 
     /**
      * @return the [ValueDeclarationGroup] elements imported by this declaration
@@ -184,7 +190,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     val importedTypeNames: List<PsiNamedElement>
         get() = if (importedModule == null) {
-            PSLanguage.getBuiltins(moduleName.name)
+            PSLanguage.getBuiltins(moduleNameName)
         } else importedDataDeclarations +
                 importedNewTypeDeclarations +
                 importedTypeSynonymDeclarations +
@@ -261,7 +267,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return the [DataDeclaration] elements imported by this declaration
      */
     val importedDataDeclarations: List<PsiNamedElement>
-        get() = if (importedModule == null) PSLanguage.getBuiltins(moduleName.name)
+        get() = if (importedModule == null) PSLanguage.getBuiltins(moduleNameName)
         else getImportedDeclarations<PsiNamedElement, PSImportedData>(Module::exportedDataDeclarations)
 
     /**

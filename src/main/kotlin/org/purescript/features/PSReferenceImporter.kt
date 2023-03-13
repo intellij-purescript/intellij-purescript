@@ -48,7 +48,7 @@ class PSReferenceImporter : ReferenceImporter {
         } .mapNotNull { it.asImport() }.map { it.withAlias(element.qualifierName) }.toList()
         val qualifiedImports: List<String> = module.cache.importsByName
             .getOrDefault(element.qualifierName, listOf())
-            .map { it.moduleName.name }
+            .map { it.moduleNameName }
         val possibleQualifiedImports = possibleImports.filter { it.moduleName in qualifiedImports }
         val possibleAlreadyImported = possibleImports
             .filter {

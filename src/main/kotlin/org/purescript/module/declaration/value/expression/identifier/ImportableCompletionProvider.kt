@@ -94,7 +94,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                         .create(it, "$nameSpace.${it.name}")
                         .withIcon(it.getIcon(0))
                         .withTypeText((it as? org.purescript.module.declaration.Importable)?.type?.text)
-                        .withTailText("(${import.moduleName.name})")
+                        .withTailText("(${import.moduleNameName})")
                         .let { PrioritizedLookupElement.withPriority(it, 1.0) }
                     }
                 )

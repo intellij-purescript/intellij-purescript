@@ -143,7 +143,7 @@ data class ImportDeclaration(
 
         fun fromPsiElement(importDeclaration: Import): ImportDeclaration =
             ImportDeclaration(
-                importDeclaration.moduleName.name,
+                importDeclaration.moduleNameName,
                 importDeclaration.isHiding,
                 importDeclaration.importedItems.map { it.asData() }.toSet(),
                 importDeclaration.importAlias?.name

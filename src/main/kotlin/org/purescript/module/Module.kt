@@ -86,7 +86,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         val imports by lazy { children<Import>() }
         val importsByName by lazy { imports.groupBy { it.name } }
         val importsByAlias by lazy { imports.groupBy { it.importAlias?.name } }
-        val importsByModule by lazy { imports.groupBy { it.moduleName.name } }
+        val importsByModule by lazy { imports.groupBy { it.moduleNameName } }
         val valueDeclarations: Array<ValueDecl> by lazy {
             valueGroups
                 .flatMap { it.valueDeclarations.asSequence() }
@@ -337,7 +337,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     fun addImportDeclaration(importDeclaration: ImportDeclaration) {
         if (importDeclaration.moduleName == name) return
         val imports = cache.imports.filter {
-            it.moduleName.name == importDeclaration.moduleName &&
+            it.moduleNameName == importDeclaration.moduleName &&
                     it.importAlias?.name == importDeclaration.alias
         }
         if (imports.any {
