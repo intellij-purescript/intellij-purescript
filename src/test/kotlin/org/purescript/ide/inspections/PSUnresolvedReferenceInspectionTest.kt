@@ -313,6 +313,40 @@ class PSUnresolvedReferenceInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(PSUnresolvedReferenceInspection())
         myFixture.checkHighlighting()
     }
+    
+    fun `test it finds value declaration in where in case branch`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            
+            f = case _ of
+              _ -> x
+                where x = 1
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
+    
+    fun `test it finds value declaration in where in let in binder`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            module Foo where
+            
+            f = 
+              let
+                [y] = x
+                  where x = [1]
+              in y
+            """.trimIndent()
+        )
+
+        myFixture.enableInspections(PSUnresolvedReferenceInspection())
+        myFixture.checkHighlighting()
+    }
 
     fun `test it finds value declaration in let`() {
 

@@ -41,6 +41,7 @@ import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationValue
 import org.purescript.module.declaration.value.expression.identifier.*
 import org.purescript.module.declaration.value.expression.literals.*
+import org.purescript.module.declaration.value.expression.namespace.LetBinder
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.declaration.value.expression.namespace.PSLet
@@ -75,6 +76,7 @@ val DataDecl = DataDeclaration.Type
 val DataCtorList = DataConstructorList.Type
 val DataCtor = DataConstructor.Type
 val Signature = WithPsi("Signature") { PSSignature(it) }
+val LetBinderType = WithPsi("LetBinder") { LetBinder(it) }
 val TypeDeclType = TypeDecl.Type
 val ValueDeclType = ValueDecl.Type 
 val ParametersType = WithPsi("Parameters") { Parameters(it) } 

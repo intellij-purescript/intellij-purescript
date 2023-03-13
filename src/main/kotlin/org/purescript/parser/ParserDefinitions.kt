@@ -369,7 +369,7 @@ class ParserDefinitions {
     private val letBinding = Choice.of(
         valueDeclarationGroup(),
         Signature(ident + dcolon + type.relax("malformed type")).heal,
-        (binder1 + eq + exprWhere).heal,
+        LetBinderType(binder1 + eq + exprWhere).heal,
         (ident + !+binderAtom + guardedDecl).heal
     )
     private val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)

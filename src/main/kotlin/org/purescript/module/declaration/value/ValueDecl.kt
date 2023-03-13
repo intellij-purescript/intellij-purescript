@@ -88,7 +88,6 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueNamesp
     val parameterList get() = findChildByClass(Parameters::class.java)
     val parameters get() = parameterList?.parameters ?: emptyList()
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
-    val valueDeclarationGroups get() = where?.valueDeclarationGroups ?: emptyArray()
     fun inline(arguments: List<Argument>): Expression {
         val copy = this.copy() as ValueDecl
         val binders = copy.namedParameters
