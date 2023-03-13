@@ -69,6 +69,8 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     override fun toString() = "PSImportDeclaration($elementType)"
 
+    val importedValueProperNames: List<PsiNamedElement> get() = importedDataConstructors + importedNewTypeConstructors
+
     /**
      * The identifier specifying module being imported, e.g.
      *

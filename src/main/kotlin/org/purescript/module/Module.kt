@@ -71,6 +71,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             if (exportsSelf) yieldAll(valueProperNames)
             else {
                 yieldAll(exportedItems.filterIsInstance<ExportedData.Psi>().flatMap { it.valueProperNames })
+                yieldAll(exportedItems.filterIsInstance<ExportedModule>().flatMap { 
+                    it.importDeclarations.flatMap { it.importedValueProperNames }
+                })
             }
         }
     val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }
