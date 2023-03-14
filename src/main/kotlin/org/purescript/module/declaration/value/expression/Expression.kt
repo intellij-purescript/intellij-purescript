@@ -35,9 +35,10 @@ interface Expression : PsiElement {
     fun areSimilarTo(other: Expression): Boolean {
         if (this.javaClass != other.javaClass) return false
         if (children.size != other.children.size) return false
-        return childrenOfType<Expression>()
-            .zip(other.childrenOfType<Expression>()) { a, b -> a.areSimilarTo(b) }
-                .all { it }
+        val children = childrenOfType<Expression>()
+        val otherChildren = other.childrenOfType<Expression>()
+        if (children.size != otherChildren.size) return false
+        return children.zip(otherChildren) { a, b -> a.areSimilarTo(b) }.all { it }
     }
 
     fun withParenthesis(): PSParens? {
