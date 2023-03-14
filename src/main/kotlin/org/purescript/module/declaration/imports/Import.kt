@@ -185,8 +185,9 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(Module::exportedValueDeclarationGroups)
 
     val importedValueNames: List<PsiNamedElement>
-        get() =
+        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
             importedValueDeclarationGroups + importedForeignValueDeclarations + importedClassMembers
+        }
 
     val importedTypeNames: List<PsiNamedElement>
         get() = CachedValuesManager.getProjectPsiDependentCache(this) {

@@ -12,6 +12,4 @@ class PSValue(node: ASTNode) : PSPsiElement(node), Expression {
                 steps = steps.flatMap { it.children.asList() }
             }
         }.filterIsInstance<ExpressionAtom>().toList()
-
-    override fun getAtoms(): Sequence<ExpressionAtom> = expressionAtoms.asSequence()
 }

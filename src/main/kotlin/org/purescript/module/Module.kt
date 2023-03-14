@@ -69,7 +69,12 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     }
 
     override val valueNames: Sequence<PsiNamedElement>
-        get() = valueGroups.asSequence() + foreignValues.asSequence() + classMembers.asSequence()
+        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+            (valueGroups.asSequence() +
+                    foreignValues.asSequence() +
+                    classMembers.asSequence() +
+                    cache.imports.flatMap { it.importedValueNames }).toList()
+        }.asSequence()
     override val constructors: List<PsiNamedElement>
         get() = CachedValuesManager.getProjectPsiDependentCache(this) {
             cache.newTypeConstructors + cache.dataConstructors

@@ -204,7 +204,7 @@ class PSPsiFactory(private val project: Project) {
             |module Main where
             |foo = x
             |${indentText}where 
-            |${indentText}  ${valueGroup.text}
+            |${valueGroup.text.replaceIndent(indentText + "  ")}
             """.trimMargin()
         )
     }

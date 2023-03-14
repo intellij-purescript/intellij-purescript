@@ -20,6 +20,7 @@ import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
 import org.purescript.file.PSFileType
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.ValueOwner
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionSelector
@@ -121,9 +122,22 @@ class ValueGroupIntroducer :
             is PSLambda -> psi.value?.text
             else -> psi.text
         } ?: error("Could not extract text form expression")
-        val name = (psi.getAtoms().filterIsInstance<PSExpressionIdentifier>().firstOrNull()?.name
+        val identifiersInPsi = psi.expressions.filterIsInstance<PSExpressionIdentifier>().toList()
+        val name = (identifiersInPsi.firstOrNull()?.name
             ?: "expr") + "'"
-        val parameters = psi.dependencies.toList()
+        
+        val moduleNamespace = psi.module?.valueNames?.toSet() ?: emptySet()
+        val scopeNamespace = scope.parentsOfType<ValueNamespace>().flatMap { it.valueNames }.toSet()
+        val totalNamespace = moduleNamespace + scopeNamespace
+        
+        val parameters = identifiersInPsi.filter { identifier ->
+            val reference = identifier.reference.resolve() ?: return@filter true
+            val exprNamespace = identifier.parentsOfType<ValueNamespace>().takeWhile { 
+                psi.textRange.contains(it.textRange)
+            }.flatMap { it.valueNames }.toSet()
+            reference !in (totalNamespace + exprNamespace) 
+        }.distinctBy { it.name }.toList()
+        
         val nameWithParameters = (sequenceOf(name) + parameters.map { it.name } + when (psi) {
             is PSLambda -> psi.parameters?.map { it.text }?.asSequence() ?: emptySequence()
             else -> emptySequence()

@@ -125,6 +125,25 @@ class ValueGroupIntroducerTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    
+    fun `test only adding the same parameter once`() {
+        doTest(
+            """
+                |module Main where
+                |y = {-caret-}(x + x)
+                |  where
+                |    x = 1
+            """.trimMargin(),
+            """
+                |module Main where
+                |y = x' x
+                |  where
+                |    x = 1
+                |
+                |x' x = (x + x)
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,
