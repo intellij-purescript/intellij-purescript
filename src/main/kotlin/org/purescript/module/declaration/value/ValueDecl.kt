@@ -42,11 +42,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner 
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    val expressions: Sequence<Expression> get() = value.expressions
-    val value get() = findChildByClass(PSValue::class.java)!!
+    val expressions: Sequence<Expression> get() = value?.expressions ?: emptySequence()
+    val value get() = findChildByClass(PSValue::class.java)
     val expressionAtoms: List<ExpressionAtom>
         get() =
-            value.expressionAtoms.toList() +
+            (value?.expressionAtoms?.toList() ?: emptyList()) +
                     (where?.expressionAtoms ?: emptyList())
 
     fun setName(name: String): PsiElement? {
@@ -131,8 +131,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner 
         return if (arguments.size < parametersToInline.size) {
             val parametersLeft = binders.drop(arguments.size)
             val factory = project.service<PSPsiFactory>()
-            factory.createLambda("\\${parametersLeft.joinToString(" ") { it.name }} -> ${copy.value.text}") ?:
+            factory.createLambda("\\${parametersLeft.joinToString(" ") { it.name }} -> ${copy.value!!.text}") ?:
                 error("could not create a lambda from declaration body")
-        } else copy.value
+        } else (copy.value ?: error("Copy of value declaration have no value node"))
     }
 }

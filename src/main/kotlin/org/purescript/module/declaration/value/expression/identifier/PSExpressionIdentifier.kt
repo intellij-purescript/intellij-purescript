@@ -48,7 +48,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             ref == otherRef -> true
             name != other.name -> false
             ref is ValueDeclarationGroup && otherRef is ValueDeclarationGroup -> ref.valueDeclarations
-                .zip(otherRef.valueDeclarations) { a, b -> a.value.areSimilarTo(b.value) }
+                .zip(otherRef.valueDeclarations) { a, b -> b.value?.let { a.value?.areSimilarTo(it) } ?: false }
                 .all { it }
             ref is VarBinder && otherRef is VarBinder -> {
                 val expression = (ref.parent as? PSDoNotationBind)?.expression
