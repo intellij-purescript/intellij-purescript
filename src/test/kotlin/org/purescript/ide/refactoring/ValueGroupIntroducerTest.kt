@@ -4,7 +4,7 @@ import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
 
-class TopLevelValueIntroducerTest : BasePlatformTestCase() {
+class ValueGroupIntroducerTest : BasePlatformTestCase() {
     fun `test extract method of imported value`() {
         myFixture.configureByText("Console.purs", 
             """

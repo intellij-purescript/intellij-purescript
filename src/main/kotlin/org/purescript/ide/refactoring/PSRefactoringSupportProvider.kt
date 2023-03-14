@@ -50,7 +50,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
      *
      */
     override fun getExtractMethodHandler(): RefactoringActionHandler {
-        return TopLevelValueIntroducer()
+        return ValueGroupIntroducer()
     }
 }
 

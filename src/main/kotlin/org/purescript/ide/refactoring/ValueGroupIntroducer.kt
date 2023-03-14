@@ -27,7 +27,7 @@ import org.purescript.module.declaration.value.expression.identifier.PSExpressio
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.psi.PSPsiFactory
 
-class TopLevelValueIntroducer :
+class ValueGroupIntroducer :
     IntroduceHandler<PsiIntroduceTarget<Expression>, ValueOwner>() {
     /**
      * example:
