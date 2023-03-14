@@ -100,7 +100,7 @@ class ValueGroupIntroducer :
             ?: mutableListOf())
         return if (PluginManagerCore.isUnitTestMode) {
             mutableListOf(all.last())
-        } else { 
+        } else {
             all
         }
     }
@@ -164,13 +164,20 @@ class ValueGroupIntroducer :
              * This inserts the extracted method into the document
              */
             override fun createFieldToStartTemplateOn(replaceAll: Boolean, names: Array<out String>) = runWriteAction {
-                for (occurrence in occurrences) {
+                if (replaceAll) {
+                    for (occurrence in occurrences) {
+                        for (parameter in parameters) {
+                            occurrence.parent?.addAfter(parameter, occurrence)
+                            occurrence.parent?.addAfter(factory.createSpace(), occurrence)
+                        }
+                    }
+                } else {
                     for (parameter in parameters) {
-                        occurrence.parent?.addAfter(parameter, occurrence)
-                        occurrence.parent?.addAfter(factory.createSpace(), occurrence)
-                    }   
+                        this.expr?.parent?.addAfter(parameter, this.expr)
+                        this.expr?.parent?.addAfter(factory.createSpace(), this.expr)
+                    }
                 }
-                scope.addTypeDeclaration(variable) as ValueDeclarationGroup 
+                scope.addTypeDeclaration(variable) as ValueDeclarationGroup
             }
 
             override fun suggestNames(replaceAll: Boolean, variable: ValueDeclarationGroup?): Array<String> =
