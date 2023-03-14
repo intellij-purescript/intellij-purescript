@@ -58,7 +58,7 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>, PsiNameIdentifierOwner, 
     /**
      * @return the [NewtypeCtor] defined by this declaration
      */
-    val newTypeConstructor get() = findNotNullChildByClass(NewtypeCtor::class.java)
+    val newTypeConstructor get() = child<NewtypeCtor>()!!
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
     override fun getName(): String = greenStub?.name ?: identifier.name

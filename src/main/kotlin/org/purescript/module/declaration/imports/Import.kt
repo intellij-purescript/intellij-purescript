@@ -95,7 +95,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * The import list of this import declaration.
      * It being null implies that all items are imported.
      */
-    val importList get() = findChildByClass(PSImportList::class.java)
+    val importList get() = child<PSImportList>()
 
     /**
      * @return all the items in [importList], or an empty array if
@@ -189,13 +189,15 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
             importedValueDeclarationGroups + importedForeignValueDeclarations + importedClassMembers
 
     val importedTypeNames: List<PsiNamedElement>
-        get() = if (importedModule == null) {
-            PSLanguage.getBuiltins(moduleNameName)
-        } else importedDataDeclarations +
-                importedNewTypeDeclarations +
-                importedTypeSynonymDeclarations +
-                importedForeignDataDeclarations +
-                importedClassDeclarations // TODO: should importedClassDeclarations be included, it's not a type
+        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+            if (importedModule == null) {
+                PSLanguage.getBuiltins(moduleNameName)
+            } else importedDataDeclarations +
+                    importedNewTypeDeclarations +
+                    importedTypeSynonymDeclarations +
+                    importedForeignDataDeclarations +
+                    importedClassDeclarations // TODO: should importedClassDeclarations be included, it's not a type
+        }
 
     /**
      * @return the [ForeignValueDecl] elements imported by this declaration

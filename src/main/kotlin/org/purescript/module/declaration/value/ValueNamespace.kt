@@ -6,5 +6,5 @@ import com.intellij.psi.PsiNamedElement
 interface ValueNamespace: PsiElement {
     val scopes: Array<PsiElement> get() = arrayOf(this)
     val valueNames: Sequence<PsiNamedElement>
-    val constructors: Sequence<PsiNamedElement> get() = emptySequence()
+    val constructors: List<PsiNamedElement> get() = emptyList()
 }

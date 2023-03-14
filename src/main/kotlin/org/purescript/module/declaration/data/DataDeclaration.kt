@@ -76,7 +76,7 @@ class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>, PsiNameIdentifie
      * @return the [DataConstructorList.Psi] in this declaration,
      * or null if it's an empty declaration
      */
-    internal val dataConstructorList get() = findChildByClass(DataConstructorList.Psi::class.java)
+    internal val dataConstructorList get() = child<DataConstructorList.Psi>()
 
     /**
      * @return the [DataConstructor] elements belonging to this
