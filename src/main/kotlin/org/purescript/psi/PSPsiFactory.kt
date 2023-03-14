@@ -17,6 +17,7 @@ import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.exports.ExportList
 import org.purescript.module.exports.RecordLabel
@@ -193,6 +194,17 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |foo = $wholeExpression
+            """.trimMargin()
+        )
+    }
+
+    fun createWhere(indentText: String, valueGroup: ValueDeclarationGroup): PSExpressionWhere? {
+        return createFromText(
+            """
+            |module Main where
+            |foo = x
+            |${indentText}where 
+            |${indentText}  ${valueGroup.text}
             """.trimMargin()
         )
     }

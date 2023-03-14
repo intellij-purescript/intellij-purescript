@@ -5,10 +5,14 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiParserFacade
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.prevLeaf
+import com.intellij.refactoring.suggested.startOffset
 import org.purescript.features.DocCommentOwner
 import org.purescript.module.declaration.signature.PSSignature
 import org.purescript.module.declaration.value.expression.Expression
@@ -24,7 +28,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueNamespace {
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -52,6 +56,28 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueNamesp
         return this
     }
     override fun getName() = nameIdentifier.name
+    override fun addTypeDeclaration(variable: ValueDeclarationGroup): ValueDeclarationGroup {
+        val factory = project.service<PSPsiFactory>()
+        return when (val w = where) {
+            null -> {
+                val thisIndent = prevLeaf { it is PsiWhiteSpace } ?: factory.createNewLine()
+                val indentText = (thisIndent.text + "  ")
+                val indent = project.service<PsiParserFacade>().createWhiteSpaceFromText(indentText)
+                add(indent)
+                val newWhere = factory.createWhere(indentText.replace("\n",""), variable) ?: error("could not create where")
+                add(newWhere).childrenOfType<ValueDeclarationGroup>().single()
+            }
+            else -> {
+                val thisIndent = w
+                    .valueNames.maxBy { it.startOffset }
+                    .prevLeaf { it is PsiWhiteSpace } ?: factory.createNewLine()
+                val indent = project.service<PsiParserFacade>().createWhiteSpaceFromText(thisIndent.text)
+                w.add(indent)
+                w.add(variable) as ValueDeclarationGroup
+            }
+        }
+    }
+
     override val valueNames get() = 
         parameterValueNames + 
                 (where?.valueNames ?: emptySequence())

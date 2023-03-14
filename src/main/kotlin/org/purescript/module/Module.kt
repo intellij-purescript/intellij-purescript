@@ -28,7 +28,7 @@ import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
-import org.purescript.module.declaration.value.ValueNamespace
+import org.purescript.module.declaration.value.ValueOwner
 import org.purescript.module.exports.*
 import org.purescript.name.PSModuleName
 import org.purescript.parser.FixityDeclType
@@ -39,7 +39,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 
 class Module : PsiNameIdentifierOwner, DocCommentOwner,
-    PSStubbedElement<Module.Stub>, Importable, ValueNamespace {
+    PSStubbedElement<Module.Stub>, Importable, ValueOwner {
     object Type : PSElementType.WithPsiAndStub<Stub, Module>("Module") {
         override fun createPsi(node: ASTNode) = Module(node)
         override fun createPsi(stub: Stub) = Module(stub, this)
@@ -62,6 +62,12 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     override fun asImport() = ImportDeclaration(name)
     override val type: PSType? get() = null
+    override fun addTypeDeclaration(variable: ValueDeclarationGroup): ValueDeclarationGroup {
+        val factory = project.service<PSPsiFactory>()
+        add(factory.createNewLines(2))
+        return add(variable) as ValueDeclarationGroup
+    }
+
     override val valueNames: Sequence<PsiNamedElement>
         get() = valueGroups.asSequence() + foreignValues.asSequence() + classMembers.asSequence()
     override val constructors: List<PsiNamedElement>

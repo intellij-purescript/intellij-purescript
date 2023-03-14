@@ -1,5 +1,6 @@
 package org.purescript.ide.refactoring
 
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.DefaultPsiElementCellRenderer
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.openapi.application.runWriteAction
@@ -18,16 +19,16 @@ import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
 import org.purescript.file.PSFileType
-import org.purescript.psi.PSPsiFactory
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.ValueOwner
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionSelector
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
-import org.purescript.module.Module
+import org.purescript.psi.PSPsiFactory
 
 class TopLevelValueIntroducer :
-    IntroduceHandler<PsiIntroduceTarget<Expression>, Module>() {
+    IntroduceHandler<PsiIntroduceTarget<Expression>, ValueOwner>() {
     /**
      * example:
      * ```purescript
@@ -36,9 +37,10 @@ class TopLevelValueIntroducer :
      * `show n` can be extracted, and then the other `show n` is a usage
      *
      */
-    override fun collectUsages(target: PsiIntroduceTarget<Expression>, scope: Module): MutableList<UsageInfo> {
+    override fun collectUsages(target: PsiIntroduceTarget<Expression>, scope: ValueOwner): MutableList<UsageInfo> {
         val psi = target.place ?: return mutableListOf()
-        return scope.cache.valueDeclarations
+        return scope.valueNames.filterIsInstance<ValueDeclarationGroup>()
+            .flatMap { it.valueDeclarations.asSequence() }
             .flatMap { it.expressions }
             .filter { psi.areSimilarTo(it) }
             .map { UsageInfo(it) }
@@ -86,16 +88,26 @@ class TopLevelValueIntroducer :
     override fun getRefactoringName() = message("extract.method.title")
     override fun getHelpID() = null
     override fun getChooseScopeTitle() = "Choose scope <title>"
-    override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<Module>
+    override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<ValueOwner>
     override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? =
         null
 
     override fun collectTargetScopes(t: PsiIntroduceTarget<Expression>, e: Editor, f: PsiFile, p: Project)
-            : MutableList<Module> = t.place?.module?.let { mutableListOf(it) } ?: mutableListOf()
+            : MutableList<ValueOwner> {
+        val all = (t.place
+            ?.parentsOfType<ValueOwner>()
+            ?.toMutableList()
+            ?: mutableListOf())
+        return if (PluginManagerCore.isUnitTestMode) {
+            mutableListOf(all.last())
+        } else { 
+            all
+        }
+    }
 
     override fun getIntroducer(
         target: PsiIntroduceTarget<Expression>,
-        scope: Module,
+        scope: ValueOwner,
         usages: MutableList<UsageInfo>,
         replaceChoice: OccurrencesChooser.ReplaceChoice,
         file: PsiFile,
@@ -156,8 +168,7 @@ class TopLevelValueIntroducer :
                     this.expr?.parent?.addAfter(parameter, this.expr)
                     this.expr?.parent?.addAfter(factory.createSpace(), this.expr)
                 }
-                scope.add(factory.createNewLines(2))
-                scope.addTyped(variable)
+                scope.addTypeDeclaration(variable) as ValueDeclarationGroup 
             }
 
             override fun suggestNames(replaceAll: Boolean, variable: ValueDeclarationGroup?): Array<String> =
