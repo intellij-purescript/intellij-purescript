@@ -126,16 +126,13 @@ class ValueGroupIntroducer :
         val name = (identifiersInPsi.firstOrNull()?.name
             ?: "expr") + "'"
         
-        val moduleNamespace = psi.module?.valueNames?.toSet() ?: emptySet()
         val scopeNamespace = scope.parentsOfType<ValueNamespace>().flatMap { it.valueNames }.toSet()
-        val totalNamespace = moduleNamespace + scopeNamespace
-        
         val parameters = identifiersInPsi.filter { identifier ->
             val reference = identifier.reference.resolve() ?: return@filter true
             val exprNamespace = identifier.parentsOfType<ValueNamespace>().takeWhile { 
                 psi.textRange.contains(it.textRange)
             }.flatMap { it.valueNames }.toSet()
-            reference !in (totalNamespace + exprNamespace) 
+            reference !in (scopeNamespace + exprNamespace) 
         }.distinctBy { it.name }.toList()
         
         val nameWithParameters = (sequenceOf(name) + parameters.map { it.name } + when (psi) {
