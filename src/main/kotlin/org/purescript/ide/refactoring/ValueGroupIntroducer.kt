@@ -164,9 +164,11 @@ class ValueGroupIntroducer :
              * This inserts the extracted method into the document
              */
             override fun createFieldToStartTemplateOn(replaceAll: Boolean, names: Array<out String>) = runWriteAction {
-                for (parameter in parameters) {
-                    this.expr?.parent?.addAfter(parameter, this.expr)
-                    this.expr?.parent?.addAfter(factory.createSpace(), this.expr)
+                for (occurrence in occurrences) {
+                    for (parameter in parameters) {
+                        occurrence.parent?.addAfter(parameter, occurrence)
+                        occurrence.parent?.addAfter(factory.createSpace(), occurrence)
+                    }   
                 }
                 scope.addTypeDeclaration(variable) as ValueDeclarationGroup 
             }
