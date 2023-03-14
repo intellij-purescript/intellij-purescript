@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.purescript.module.declaration.value.Similar
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiFactory
 
@@ -21,5 +22,9 @@ class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
         val newName = factory.createIdentifier(name) ?: return null
         this.nameIdentifier.replace(newName)
         return this
+    }
+
+    override fun areSimilarTo(other: Similar): Boolean {
+        return false
     }
 }

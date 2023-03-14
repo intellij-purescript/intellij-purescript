@@ -1,11 +1,14 @@
 package org.purescript.module.declaration.value.expression.identifier
 
 import com.intellij.lang.ASTNode
-import org.purescript.psi.PSPsiElement
+import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
+import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
 import org.purescript.name.PSQualifiedIdentifier
+import org.purescript.psi.PSPsiElement
 
 /**
  * A identifier in an expression, e.g.
@@ -37,7 +40,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     override fun getReference(): ExpressionIdentifierReference =
         ExpressionIdentifierReference(this)
 
-    override fun areSimilarTo(other: org.purescript.module.declaration.value.expression.Expression): Boolean {
+    override fun areSimilarTo(other: Similar): Boolean {
         val ref = reference.resolve()
         val otherRef = other.reference?.resolve()
         return when {
@@ -45,6 +48,11 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             ref is ValueDeclarationGroup && otherRef is ValueDeclarationGroup -> ref.valueDeclarations
                 .zip(otherRef.valueDeclarations) { a, b -> a.value.areSimilarTo(b.value) }
                 .all { it }
+            ref is VarBinder && otherRef is VarBinder -> {
+                val expression = (ref.parent as? PSDoNotationBind)?.expression
+                val otherExpression = (otherRef.parent as? PSDoNotationBind)?.expression
+                expression?.let { otherExpression?.areSimilarTo(it) } ?: false
+            }
 
             else -> false
         }

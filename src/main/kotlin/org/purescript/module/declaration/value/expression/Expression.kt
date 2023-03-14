@@ -5,10 +5,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
 import org.purescript.module.Module
 import org.purescript.module.declaration.classes.PSClassMemberList
+import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.psi.PSPsiFactory
 
-interface Expression : PsiElement {
+interface Expression : PsiElement, Similar {
     /**
      * All expressions atoms recursively including this one if it is one
      */
@@ -32,14 +33,6 @@ interface Expression : PsiElement {
             }
         }
 
-    fun areSimilarTo(other: Expression): Boolean {
-        if (this.javaClass != other.javaClass) return false
-        if (children.size != other.children.size) return false
-        val children = childrenOfType<Expression>()
-        val otherChildren = other.childrenOfType<Expression>()
-        if (children.size != otherChildren.size) return false
-        return children.zip(otherChildren) { a, b -> a.areSimilarTo(b) }.all { it }
-    }
 
     fun withParenthesis(): PSParens? {
         val factory = project.service<PSPsiFactory>()

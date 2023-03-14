@@ -6,10 +6,11 @@ import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
+import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiElement
 
-open class Binder(node: ASTNode) : PSPsiElement(node) {
+open class Binder(node: ASTNode) : PSPsiElement(node), Similar {
     val descendantBinders get(): List<Binder> = 
         binderChildren.flatMap { it.descendantBinders } + listOf(this)
     val binderChildren get() = childrenOfType<Binder>()
