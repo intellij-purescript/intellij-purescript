@@ -3,6 +3,7 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.childrenOfType
 import org.purescript.parser.HIDING
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -44,5 +45,5 @@ class PSImportList : PSStubbedElement<PSImportList.Stub> {
      * either hidden or exposed depending on whether [isHiding]
      * is `true` or `false`, respectively.
      */
-    val importedItems: Array<PSImportedItem> get() = findChildrenByClass(PSImportedItem::class.java)
+    val importedItems: List<PSImportedItem> get() = childrenOfType<PSImportedItem>()
 }

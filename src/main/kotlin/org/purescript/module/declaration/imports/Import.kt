@@ -101,7 +101,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return all the items in [importList], or an empty array if
      * the import list is null.
      */
-    val importedItems get() = importList?.importedItems ?: emptyArray()
+    val importedItems get() = importList?.importedItems ?: emptyList()
 
     /**
      * @return the import alias of this import declaration,
