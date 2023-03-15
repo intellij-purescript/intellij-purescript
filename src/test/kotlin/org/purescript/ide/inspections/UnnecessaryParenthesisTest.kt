@@ -242,4 +242,27 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
     }
+    fun `test it report parenthesis around accessor and its identifier when being a argument`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |foo x = f <weak_warning descr="Unnecessary parentheses">(x.y)</weak_warning>
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }
+    
+    fun `test dont it report parenthesis around accessor and its identifier when it is part of a expression`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |foo x = f (x.y + 1)
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
+    }
 }

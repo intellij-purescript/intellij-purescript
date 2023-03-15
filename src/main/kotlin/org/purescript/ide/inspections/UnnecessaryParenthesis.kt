@@ -2,9 +2,7 @@ package org.purescript.ide.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PlatformPatterns.or
-import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
 import org.purescript.module.declaration.type.PSType
@@ -17,26 +15,32 @@ import org.purescript.module.declaration.value.expression.controll.ifthenelse.PS
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
+import org.purescript.module.declaration.value.expression.identifier.PSAccessor
 import org.purescript.module.declaration.value.parameters.Parameter
 
-class UnnecessaryParenthesis : LocalInspectionTool() {
+class UnnecessaryParenthesis() : LocalInspectionTool() {
+    private val twoChildren = collection<PsiElement?>().size(2)
     private val value = psiElement(PSValue::class.java)
     private val call = psiElement(Call::class.java)
     private val ifThanElse = psiElement(PSIfThenElse::class.java)
-
-    private val valueWithOneChild = value
-        .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
+    private val oneChild = collection<PsiElement?>().size(1)
+    private val valueWithOneChild = value.withChildren(oneChild)
     private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
     private val type: Capture<PSType> = psiElement(PSType::class.java)
-    private val hasOnlyOneChild = psiElement()
-        .withChildren(PlatformPatterns.collection<PsiElement?>().size(1))
-    private val parenthesisAroundIfThanElse =
-        parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
+    private val hasOnlyOneChild = psiElement().withChildren(oneChild)
+    private val parenthesisAroundIfThanElse = parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
     val wildcard = psiElement(ExpressionWildcard::class.java)
     val operatorSection = parenthesis.withChild(value.withChild(call.withChild(wildcard)))
     val isTyped = parenthesis.withSuperParent(2, value.withChild(type))
+    val accessor = psiElement(PSAccessor::class.java)
+    private val lonelyAccessor = parenthesis.withChild(
+        value
+            .withChildren(oneChild)
+            .withChild(call.withChild(accessor))
+    )
     private val pattern = or(
+        lonelyAccessor,
         parenthesis
             .withParent(hasOnlyOneChild)
             .withChild(valueWithOneChild)
@@ -46,8 +50,7 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
                 parenthesisAroundIfThanElse
                     .andNot(psiElement().withSuperParent(2, valueWithOneChild))
             )
-            .andNot(operatorSection)
-        ,
+            .andNot(operatorSection),
         parenthesis
             .withParent(hasOnlyOneChild)
             .withSuperParent(2, valueWithOneChild)
@@ -57,7 +60,7 @@ class UnnecessaryParenthesis : LocalInspectionTool() {
     private val recordLabelExprBinder = psiElement(RecordLabelExprBinder::class.java)
 
     private val hasOnlyTwoChildren = psiElement()
-        .withChildren(PlatformPatterns.collection<PsiElement?>().size(2))
+        .withChildren(twoChildren)
 
     private val binder = or(
         psiElement().withParent(hasOnlyOneChild.andNot(psiElement(Parameter::class.java))),
