@@ -167,7 +167,7 @@ class ParserDefinitions {
         ).relax("missing case branches")).relax("incomplete case of")
     )
     private val expr5 = Reference {
-        recordLayout1(propertyUpdate, "property update").heal /
+        RecordUpdateType(recordLayout1(propertyUpdate, "property update").heal) /
                 expr7 /
                 Lambda(backslash + parameters + arrow.relax("missing lambda arrow") + expr) /
                 exprCase /

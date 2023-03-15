@@ -20,7 +20,7 @@ import org.purescript.module.declaration.value.expression.identifier.PSExpressio
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.exports.ExportList
-import org.purescript.module.exports.RecordLabel
+import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.name.PSIdentifier
 import org.purescript.name.PSModuleName
 import org.purescript.name.PSOperatorName

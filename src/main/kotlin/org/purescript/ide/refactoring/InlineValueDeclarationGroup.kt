@@ -14,7 +14,7 @@ import com.intellij.util.alsoIfNull
 import org.purescript.psi.PSPsiFactory
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.ValueDeclarationGroup
-import org.purescript.module.exports.RecordLabel
+import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call

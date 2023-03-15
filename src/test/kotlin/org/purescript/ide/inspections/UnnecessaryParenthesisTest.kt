@@ -264,5 +264,16 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
+    }    
+    fun `test dont it report parenthesis around expression before record update`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |foo = (f {}) {x = 1}
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
     }
 }

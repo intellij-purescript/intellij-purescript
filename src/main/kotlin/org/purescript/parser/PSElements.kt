@@ -26,10 +26,7 @@ import org.purescript.module.declaration.value.binder.record.PunBinder
 import org.purescript.module.declaration.value.binder.record.RecordBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
-import org.purescript.module.declaration.value.expression.PSParens
-import org.purescript.module.declaration.value.expression.PSTypeHole
-import org.purescript.module.declaration.value.expression.PSUnaryMinus
-import org.purescript.module.declaration.value.expression.PSValue
+import org.purescript.module.declaration.value.expression.*
 import org.purescript.module.declaration.value.expression.controll.Guard
 import org.purescript.module.declaration.value.expression.controll.GuardBranch
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
@@ -121,6 +118,7 @@ val ArrayBinderType = WithPsi("ArrayBinder") { ArrayBinder(it) }
 val ParensBinderType = WithPsi("ParensBinder") { ParensBinder(it) }
 
 val RecordLabelType = WithPsi("RecordLabel") { RecordLabel(it) }
+val RecordUpdateType = WithPsi("RecordUpdate") { RecordUpdate(it) }
 val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
 val NumericLiteral = WithPsi("NumericLiteral") { PSNumericLiteral(it) }
 val StringLiteral = WithPsi("StringLiteral") { PSStringLiteral(it) }

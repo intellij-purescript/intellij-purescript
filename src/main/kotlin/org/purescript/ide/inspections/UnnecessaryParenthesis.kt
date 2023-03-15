@@ -10,6 +10,7 @@ import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.PSValue
+import org.purescript.module.declaration.value.expression.RecordUpdate
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.Argument
@@ -19,6 +20,7 @@ import org.purescript.module.declaration.value.expression.identifier.PSAccessor
 import org.purescript.module.declaration.value.parameters.Parameter
 
 class UnnecessaryParenthesis() : LocalInspectionTool() {
+    private val argument = psiElement(Argument::class.java)
     private val twoChildren = collection<PsiElement?>().size(2)
     private val value = psiElement(PSValue::class.java)
     private val call = psiElement(Call::class.java)
@@ -39,6 +41,8 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
             .withChildren(oneChild)
             .withChild(call.withChild(accessor))
     )
+    private val recordUpdate = psiElement(RecordUpdate::class.java)
+    private val recordUpdateArgument = parenthesis.withParent(call.withParent(call.withChild(argument.withChild(recordUpdate))))
     private val pattern = or(
         lonelyAccessor,
         parenthesis
@@ -50,6 +54,7 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
                 parenthesisAroundIfThanElse
                     .andNot(psiElement().withSuperParent(2, valueWithOneChild))
             )
+            .andNot(recordUpdateArgument)
             .andNot(operatorSection),
         parenthesis
             .withParent(hasOnlyOneChild)
