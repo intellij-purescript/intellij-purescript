@@ -3,7 +3,6 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.purescript.PSLanguage
 import org.purescript.module.Module
@@ -172,10 +171,8 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     /**
      * @return the [Module] that this declaration is importing from
      */
-    val importedModule get(): Module? = CachedValuesManager.getCachedValue(this) {
-        val resolve = reference.resolve()
-        if (resolve == null) CachedValueProvider.Result.create(resolve, this)
-        else CachedValueProvider.Result.create(resolve, this, resolve)
+    val importedModule get(): Module? = CachedValuesManager.getProjectPsiDependentCache(this) {
+        reference.resolve()
     }  
 
     /**
