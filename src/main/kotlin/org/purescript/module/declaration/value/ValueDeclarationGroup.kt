@@ -14,6 +14,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.Module
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.signature.PSSignature
 import org.purescript.module.declaration.type.PSType
@@ -22,9 +23,10 @@ import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.UsedElement
 
 class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
-    PsiNameIdentifierOwner, DocCommentOwner, org.purescript.module.declaration.Importable {
+    PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement {
     class Stub(val name: String, val isExported: Boolean, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isTopLevel get() = module != null

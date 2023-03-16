@@ -1,7 +1,6 @@
 package org.purescript.ide.refactoring
 
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.childrenOfType
@@ -11,24 +10,33 @@ import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.alsoIfNull
-import org.purescript.psi.PSPsiFactory
-import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.ValueDeclarationGroup
-import org.purescript.module.declaration.value.expression.literals.RecordLabel
+import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLet
+import org.purescript.psi.PSPsiFactory
 
-class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDeclarationGroup) :
-    BaseRefactoringProcessor(project) {
+class InlineValueDeclarationGroup(private val dialog: InlineDialog<ValueDeclarationGroup, PSExpressionIdentifier>) :
+    BaseRefactoringProcessor(dialog.project) {
+    private val toInline get() = dialog.toInline
+    private val location get() = dialog.location
+    private val project get() = dialog.project
+    private val isInlineThisOnly get() = dialog.isInlineThisOnly
+
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>): UsageViewDescriptor =
-        BaseUsageViewDescriptor(toInline)
+        BaseUsageViewDescriptor(dialog.toInline)
 
     override fun findUsages(): Array<UsageInfo> =
-        ReferencesSearch
+        if (isInlineThisOnly) when (val ref = location?.reference) {
+            null -> arrayOf() // TODO: show hint for user
+            else -> arrayOf(UsageInfo(ref))
+        }
+        else ReferencesSearch
             .search(toInline, GlobalSearchScope.projectScope(project))
             .findAll()
             .map(::UsageInfo)
@@ -72,7 +80,7 @@ class InlineValueDeclarationGroup(val project: Project, val toInline: ValueDecla
             }
         }
         // delete declaration
-        when (val parent = toInline.parent) {
+        if (!isInlineThisOnly) when (val parent = toInline.parent) {
             is PSLet ->
                 if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
                     parent.value?.let { parent.parent.parent.replace(it) }
