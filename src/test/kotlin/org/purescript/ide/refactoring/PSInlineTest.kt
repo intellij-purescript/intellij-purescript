@@ -38,8 +38,8 @@ class PSInlineTest : BasePlatformTestCase() {
         doTest(
             """
                 module Main where
-                x = 1
-                y = {-caret-}x
+                x{-caret-} = 1
+                y = x
             """.trimIndent(),
             """
                 module Main where
@@ -53,8 +53,8 @@ class PSInlineTest : BasePlatformTestCase() {
             """
                 module Main where
                 f a = a
-                x = f 1
-                y = {-caret-}x
+                x{-caret-} = f 1
+                y = x
             """.trimIndent(),
             """
                 module Main where
@@ -69,8 +69,8 @@ class PSInlineTest : BasePlatformTestCase() {
             """
                 module Main where
                 f a = a
-                x = f 1
-                y = f {-caret-}x
+                x{-caret-} = f 1
+                y = f x
             """.trimIndent(),
             """
                 module Main where
@@ -85,9 +85,9 @@ class PSInlineTest : BasePlatformTestCase() {
             """
                 |module Main where
                 |f a = a
-                |y = f {-caret-}x
+                |y = f x
                 |  where
-                |    x = f 1
+                |    x{-caret-} = f 1
             """.trimMargin(),
             """
                 |module Main where
@@ -105,8 +105,8 @@ class PSInlineTest : BasePlatformTestCase() {
                 |f a = a
                 |y = do
                 |  let
-                |    x = f 1
-                |  pure $ f {-caret-}x
+                |    x{-caret-} = f 1
+                |  pure $ f x
             """.trimMargin(),
             """
                 |module Main where
@@ -123,8 +123,8 @@ class PSInlineTest : BasePlatformTestCase() {
                 |f a = a
                 |y =
                 |  let
-                |    x = f 1
-                |  in f {-caret-}x
+                |    x{-caret-} = f 1
+                |  in f x
             """.trimMargin(),
             """
                 |module Main where
@@ -142,8 +142,8 @@ class PSInlineTest : BasePlatformTestCase() {
                 |f a = a
                 |y =
                 |  let
-                |    x = 1
-                |  in {-caret-}x
+                |    x{-caret-} = 1
+                |  in x
             """.trimMargin(),
             """
                 |module Main where
