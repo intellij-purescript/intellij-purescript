@@ -149,10 +149,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                     .map { it.name }
                     .toSet()
 
-                val exportsSelf = explicitlyExportedItems
-                    .filterIsInstance<ExportedModule>()
-                    .any { it.name == name }
-
                 if (exportsSelf) {
                     yieldAll(fixityDeclarations.asSequence())
                 } else {
@@ -218,11 +214,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .filterIsInstance(Wanted::class.java)
                 .map { it.name }
                 .toSet()
-
-            val exportsSelf = explicitlyExportedItems
-                .filterIsInstance<ExportedModule>()
-                .any { it.name == name }
-
+            
             val exportedDeclarations = mutableListOf<Declaration>()
             if (exportsSelf) {
                 exportedDeclarations.addAll(declarations)
@@ -255,8 +247,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                     .map { it.name }
                     .toSet()
                 val exportedModules = explicitlyExportedItems.filterIsInstance<ExportedModule>().toList()
-
-                val exportsSelf = exportedModules.any { it.name == name }
                 val local = if (exportsSelf) {
                     valueGroups.toList()
                 } else {
