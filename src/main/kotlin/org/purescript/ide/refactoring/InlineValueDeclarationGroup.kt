@@ -45,32 +45,21 @@ class InlineValueDeclarationGroup(private val dialog: InlineDialog<ValueDeclarat
         for (usage in usages) {
             val element = usage.element as? PSExpressionIdentifier ?: continue
             val arguments = element.arguments.toList()
+            val inline = valueDeclaration.inline(arguments)
             when (val parent = element.parent) {
                 is Call -> element
                     .parentsOfType<Call>()
                     .drop(arguments.size)
                     .first()
-                    .replace(valueDeclaration
-                        .inline(arguments)
-                        .let { it.withParenthesis()?.parent ?: it }
-                    )
+                    .replace(inline.let { it.withParenthesis()?.parent ?: it })
 
                 is RecordLabel -> factory
-                    .createRecordLabel("${element.name}: ${valueDeclaration.inline(arguments).text}")
+                    .createRecordLabel("${element.name}: ${inline.text}")
                     ?.let { parent.replace(it) }
-                    ?: element.replace(valueDeclaration.inline(arguments))
+                    ?: element.replace(inline)
 
-                is Argument -> element.replace(
-                    element.replace(valueDeclaration
-                        .inline(arguments)
-                        .let { it.withParenthesis() ?: it })
-                )
-
-                else -> element.replace(
-                    element.replace(valueDeclaration
-                        .inline(arguments)
-                        .let { it.withParenthesis() ?: it })
-                )
+                is Argument -> element.replace(element.replace(inline.let { it.withParenthesis() ?: it }))
+                else -> element.replace(element.replace(inline.let { it.withParenthesis() ?: it }))
             }
         }
         // delete declaration
