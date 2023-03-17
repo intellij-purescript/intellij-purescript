@@ -36,7 +36,7 @@ class InlineValueDeclarationGroup(private val dialog: InlineDialog<ValueDeclarat
         }
         else toInline.findUsages().toTypedArray()
 
-    override fun performRefactoring(usages: Array<out UsageInfo>) {
+    override fun performRefactoring(usages: Array<UsageInfo>) {
         val valueDeclaration = toInline.valueDeclarations.singleOrNull()
             ?: error("can only inline value declarations with one body")
         val binders = valueDeclaration.parameterList?.parameterBinders ?: emptyList()
