@@ -1,8 +1,6 @@
 package org.purescript.ide.refactoring
 
 import com.intellij.openapi.components.service
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentsOfType
 import com.intellij.refactoring.BaseRefactoringProcessor
@@ -36,11 +34,7 @@ class InlineValueDeclarationGroup(private val dialog: InlineDialog<ValueDeclarat
             null -> arrayOf() // TODO: show hint for user
             else -> arrayOf(UsageInfo(ref))
         }
-        else ReferencesSearch
-            .search(toInline, GlobalSearchScope.projectScope(project))
-            .findAll()
-            .map(::UsageInfo)
-            .toTypedArray()
+        else toInline.findUsages().toTypedArray()
 
     override fun performRefactoring(usages: Array<out UsageInfo>) {
         val valueDeclaration = toInline.valueDeclarations.singleOrNull()
