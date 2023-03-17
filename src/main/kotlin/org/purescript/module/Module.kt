@@ -179,11 +179,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .filterIsInstance(ExportedOperator.Psi::class.java)
                 .map { it.name }
                 .toSet()
-
-            val exportsSelf = explicitlyExportedItems.filterIsInstance<ExportedModule>().any { it.name == name }
-
+            
             if (exportsSelf || name in explicitlyNames) {
-                fixityDeclarations.first { it.name == name }.let { yield(it) }
+                fixityDeclarations.firstOrNull { it.name == name }?.let { yield(it) }
             }
 
             yieldAll(
