@@ -1,8 +1,7 @@
 package org.purescript.name
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.purescript.psi.PSPsiElement
 
 /**
@@ -13,7 +12,5 @@ import org.purescript.psi.PSPsiElement
  * - Eq
  */
 class PSProperName(node: ASTNode) : PSPsiElement(node) {
-    override fun getName(): String = CachedValuesManager.getCachedValue(this) { 
-        CachedValueProvider.Result.create(text.trim(), this) 
-    }
+    override fun getName(): String = getProjectPsiDependentCache(this) { text.trim() }
 }

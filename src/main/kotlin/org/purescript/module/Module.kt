@@ -9,9 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.CachedValueProvider.Result.create
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.CachedValuesManager.getCachedValue
+import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
@@ -69,25 +67,25 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     }
 
     override val valueNames: Sequence<PsiNamedElement>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             (valueGroups.asSequence() +
                     foreignValues.asSequence() +
                     classMembers.asSequence() +
                     cache.imports.flatMap { it.importedValueNames }).toList()
         }.asSequence()
     override val constructors: List<PsiNamedElement>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             cache.newTypeConstructors + cache.dataConstructors
         }
     val exportedConstructors: Sequence<PsiNamedElement>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             if (exports == null) constructors
             else exportedItems.flatMap { it.constructors }.toList()
         }.asSequence()
-    val valueGroups get() = getCachedValue(this) { create(children<ValueDeclarationGroup>(), this) }
-    val foreignValues get() = getCachedValue(this) { create(children<ForeignValueDecl>(), this) }
-    val classes get() = getCachedValue(this) { create(children<ClassDecl>(), this) }
-    val classMembers get() = getCachedValue(this) { create(classes.flatMap { it.classMembers.toList() }, this) }
+    val valueGroups get() = getProjectPsiDependentCache(this) { children<ValueDeclarationGroup>() }
+    val foreignValues get() = getProjectPsiDependentCache(this) { children<ForeignValueDecl>() }
+    val classes get() = getProjectPsiDependentCache(this) { children<ClassDecl>() }
+    val classMembers get() = getProjectPsiDependentCache(this) { classes.flatMap { it.classMembers.toList() } }
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"
@@ -175,7 +173,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .filterIsInstance(ExportedOperator.Psi::class.java)
                 .map { it.name }
                 .toSet()
-            
+
             if (exportsSelf || name in explicitlyNames) {
                 fixityDeclarations.firstOrNull { it.name == name }?.let { yield(it) }
             }
@@ -214,7 +212,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .filterIsInstance(Wanted::class.java)
                 .map { it.name }
                 .toSet()
-            
+
             val exportedDeclarations = mutableListOf<Declaration>()
             if (exportsSelf) {
                 exportedDeclarations.addAll(declarations)
@@ -278,7 +276,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             getExportedDeclarations<PSForeignDataDeclaration, ExportedData.Psi>(
                 cache.foreignDataDeclarations,
             ) { it.importedForeignDataDeclarations }
@@ -289,7 +287,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedNewTypeDeclarations: List<NewtypeDecl>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             getExportedDeclarations<NewtypeDecl, ExportedData.Psi>(
                 cache.newTypeDeclarations,
             ) { it.importedNewTypeDeclarations }
@@ -300,7 +298,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedDataDeclarations: List<PsiNamedElement>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             getExportedDeclarations<PsiNamedElement, ExportedData.Psi>(
                 cache.dataDeclarations.toList().toTypedArray()
             ) { it.importedDataDeclarations }
@@ -311,7 +309,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedTypeSynonymDeclarations: List<TypeDecl>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             getExportedDeclarations<TypeDecl, ExportedData.Psi>(
                 cache.typeSynonymDeclarations,
             ) { it.importedTypeSynonymDeclarations }
@@ -322,7 +320,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedClassDeclarations: List<ClassDecl>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
+        get() = getProjectPsiDependentCache(this) {
             getExportedDeclarations<ClassDecl, ExportedClass.Psi>(
                 classes,
             ) { it.importedClassDeclarations }
