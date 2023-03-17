@@ -48,9 +48,7 @@ class PSInline : InlineActionHandler() {
                         if (binders.any { it !is VarBinder }) error("can only inline simple parameters")
                         for (usage in usages) {
                             val toReplace = usage.element as? PSExpressionIdentifier ?: continue
-                            val arguments = toReplace.arguments.toList()
-                            val toInlineWith = valueDeclaration.inline(arguments)
-                            toReplace.replaceWithInline(arguments.size, toInlineWith)
+                            toReplace.replaceWithInline(valueDeclaration.inline(toReplace.arguments.toList()))
                         }
                         // delete declaration
                         if (!isInlineThisOnly) when (val parent = toInline.parent) {

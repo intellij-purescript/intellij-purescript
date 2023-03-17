@@ -41,14 +41,16 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
 
     override val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
-    override fun replaceWithInline(numberOfArgumentsInlined: Int, toInlineWith: Expression) {
+    override fun replaceWithInline(toInlineWith: Expression) {
         val factory = project.service<PSPsiFactory>()
         when (val parent = this.parent) {
-            is Call -> this
-                .parentsOfType<Call>()
-                .drop(numberOfArgumentsInlined)
-                .first()
-                .replace(toInlineWith.let { it.withParenthesis()?.parent ?: it })
+            is Call -> {
+                val arguments = this.arguments.toList()
+                this.parentsOfType<Call>()
+                    .drop(arguments.size)
+                    .first()
+                    .replace(toInlineWith.let { it.withParenthesis()?.parent ?: it })
+            }
 
             is RecordLabel -> factory
                 .createRecordLabel("${this.name}: ${toInlineWith.text}")
