@@ -15,6 +15,7 @@ import com.intellij.psi.util.prevLeaf
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.features.DocCommentOwner
 import org.purescript.module.declaration.signature.PSSignature
+import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.PSValue
@@ -131,5 +132,10 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
             factory.createLambda("\\${parametersLeft.joinToString(" ") { it.name }} -> ${copy.value!!.text}") ?:
                 error("could not create a lambda from declaration body")
         } else (copy.value ?: error("Copy of value declaration have no value node"))
+    }
+
+    override fun canBeInlined(): Boolean {
+        val binders = parameterList?.parameterBinders ?: emptyList()
+        return !binders.any { it !is VarBinder }
     }
 }

@@ -19,14 +19,13 @@ import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.signature.PSSignature
 import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
+import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.name.PSIdentifier
-import org.purescript.psi.AStub
-import org.purescript.psi.PSElementType
-import org.purescript.psi.PSStubbedElement
-import org.purescript.psi.UsedElement
+import org.purescript.psi.*
 
 class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
-    PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement {
+    PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement, InlinableElement {
     class Stub(val name: String, val isExported: Boolean, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isTopLevel get() = module != null
@@ -60,6 +59,16 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
 
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+
+    override fun inline(arguments: List<Argument>): Expression {
+        val valueDeclaration = valueDeclarations.singleOrNull() ?: error("can only inline value declarations with one body")
+        return valueDeclaration.inline(arguments)
+    }
+
+    override fun canBeInlined(): Boolean = 
+        valueDeclarations.singleOrNull()
+            ?.canBeInlined() 
+            ?: false
 
     override fun getIcon(flags: Int) = AllIcons.Nodes.Function
     override fun getPresentation() = object : ItemPresentation {

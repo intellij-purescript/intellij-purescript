@@ -13,23 +13,19 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.alsoIfNull
 import org.purescript.PSLanguage
 import org.purescript.module.declaration.value.ValueDeclarationGroup
-import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLet
+import org.purescript.psi.InlinableElement
 
 class PSInline : InlineActionHandler() {
     override fun isEnabledForLanguage(l: Language?): Boolean =
         l == PSLanguage
 
-    override fun canInlineElement(element: PsiElement?): Boolean {
-        return if (element is ValueDeclarationGroup) {
-            element.valueDeclarations.singleOrNull()?.let { true } ?: false
-        } else {
-            false
-        }
-    }
+    override fun canInlineElement(element: PsiElement?): Boolean =
+        if (element is InlinableElement) element.canBeInlined() 
+        else false
 
     override fun inlineElement(project: Project, editor: Editor, element: PsiElement?) {
         val document = editor.document
@@ -40,14 +36,10 @@ class PSInline : InlineActionHandler() {
             ?.parentOfType<PSExpressionIdentifier>(true)
         when (element) {
             is ValueDeclarationGroup -> {
-                val valueDeclaration = element.valueDeclarations.singleOrNull() ?: error("can only inline value declarations with one body")
-                val binders = valueDeclaration.parameterList?.parameterBinders ?: emptyList()
-                if (binders.any { it !is VarBinder }) error("can only inline simple parameters")
-                
                 val dialog = InlineDialog(project, element, original) {
                     InlineProcessor(this) { usages ->
                         for (usage in usages) {
-                            (usage.element as? PSExpressionIdentifier)?.replaceWithInline(valueDeclaration)
+                            (usage.element as? PSExpressionIdentifier)?.replaceWithInline(toInline)
                         }
                         // delete declaration
                         if (!isInlineThisOnly) when (val parent = toInline.parent) {

@@ -6,4 +6,5 @@ import org.purescript.module.declaration.value.expression.identifier.Argument
 
 interface InlinableElement: PsiElement {
     fun inline(arguments: List<Argument>): Expression
+    fun canBeInlined(): Boolean
 }
