@@ -8,15 +8,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
-import com.intellij.util.alsoIfNull
 import org.purescript.PSLanguage
 import org.purescript.module.declaration.value.ValueDeclarationGroup
-import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
+import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
-import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
-import org.purescript.module.declaration.value.expression.namespace.PSLet
 import org.purescript.psi.InlinableElement
 
 class PSInline : InlineActionHandler() {
@@ -39,28 +35,10 @@ class PSInline : InlineActionHandler() {
                 val dialog = InlineDialog(project, element, original) {
                     InlineProcessor(this) { usages ->
                         for (usage in usages) {
-                            (usage.element as? PSExpressionIdentifier)?.replaceWithInline(toInline)
+                            (usage.element as? ReplaceableWithInline)?.replaceWithInline(toInline)
                         }
                         // delete declaration
-                        if (!isInlineThisOnly) when (val parent = toInline.parent) {
-                            is PSLet ->
-                                if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
-                                    parent.value?.let { parent.parent.parent.replace(it) }
-                                        .alsoIfNull { toInline.delete() }
-                                } else {
-                                    toInline.delete()
-                                }
-
-                            is PSDoNotationLet, is PSExpressionWhere ->
-                                if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
-                                    parent.delete()
-                                } else {
-                                    toInline.delete()
-                                }
-
-                            else -> toInline.delete()
-                        }
-
+                        if (!isInlineThisOnly) toInline.deleteAfterInline()
                     }
                 }
                 if (!isUnitTestMode) {

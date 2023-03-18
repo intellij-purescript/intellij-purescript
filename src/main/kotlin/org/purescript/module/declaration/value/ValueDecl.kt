@@ -138,4 +138,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         val binders = parameterList?.parameterBinders ?: emptyList()
         return !binders.any { it !is VarBinder }
     }
+
+    override fun deleteAfterInline() {
+        parent.delete()
+    }
 }

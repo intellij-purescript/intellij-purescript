@@ -9,7 +9,9 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentsOfType
+import com.intellij.util.alsoIfNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
@@ -20,7 +22,10 @@ import org.purescript.module.declaration.signature.PSSignature
 import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
 import org.purescript.module.declaration.value.expression.identifier.Argument
+import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
+import org.purescript.module.declaration.value.expression.namespace.PSLet
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
@@ -69,6 +74,27 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
         valueDeclarations.singleOrNull()
             ?.canBeInlined() 
             ?: false
+
+    override fun deleteAfterInline() {
+        when (val parent = parent) {
+            is PSLet ->
+                if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
+                    parent.value?.let { parent.parent.parent.replace(it) }
+                        .alsoIfNull { delete() }
+                } else {
+                    delete()
+                }
+
+            is PSDoNotationLet, is PSExpressionWhere ->
+                if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
+                    parent.delete()
+                } else {
+                    delete()
+                }
+
+            else -> delete()
+        }
+    }
 
     override fun getIcon(flags: Int) = AllIcons.Nodes.Function
     override fun getPresentation() = object : ItemPresentation {
