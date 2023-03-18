@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.identifier.Argument
 
-interface InlinableElement: PsiElement {
+interface InlinableElement: PsiElement, UsedElement {
 
     /**
      * Returns an expression that can be used instead of its reference
