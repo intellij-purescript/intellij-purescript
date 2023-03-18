@@ -40,15 +40,14 @@ class PSInline : InlineActionHandler() {
             ?.parentOfType<PSExpressionIdentifier>(true)
         when (element) {
             is ValueDeclarationGroup -> {
+                val valueDeclaration = element.valueDeclarations.singleOrNull() ?: error("can only inline value declarations with one body")
+                val binders = valueDeclaration.parameterList?.parameterBinders ?: emptyList()
+                if (binders.any { it !is VarBinder }) error("can only inline simple parameters")
+                
                 val dialog = InlineDialog(project, element, original) {
                     InlineProcessor(this) { usages ->
-                        val valueDeclaration = toInline.valueDeclarations.singleOrNull()
-                            ?: error("can only inline value declarations with one body")
-                        val binders = valueDeclaration.parameterList?.parameterBinders ?: emptyList()
-                        if (binders.any { it !is VarBinder }) error("can only inline simple parameters")
                         for (usage in usages) {
-                            val toReplace = usage.element as? PSExpressionIdentifier ?: continue
-                            toReplace.replaceWithInline(valueDeclaration.inline(toReplace.arguments.toList()))
+                            (usage.element as? PSExpressionIdentifier)?.replaceWithInline(valueDeclaration)
                         }
                         // delete declaration
                         if (!isInlineThisOnly) when (val parent = toInline.parent) {

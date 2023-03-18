@@ -22,13 +22,10 @@ import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.name.PSIdentifier
-import org.purescript.psi.AStub
-import org.purescript.psi.PSElementType
-import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSStubbedElement
+import org.purescript.psi.*
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner {
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner, InlinableElement {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -114,7 +111,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner 
     val parameterList get() = findChildByClass(Parameters::class.java)
     val parameters get() = parameterList?.parameters ?: emptyList()
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
-    fun inline(arguments: List<Argument>): Expression {
+    override fun inline(arguments: List<Argument>): Expression {
         val copy = this.copy() as ValueDecl
         val binders = copy.namedParameters
         val parametersToInline = binders.map {

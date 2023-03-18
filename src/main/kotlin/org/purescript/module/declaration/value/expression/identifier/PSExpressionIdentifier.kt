@@ -6,13 +6,13 @@ import com.intellij.psi.util.parentsOfType
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
-import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
 import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.name.PSQualifiedIdentifier
+import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 
@@ -41,24 +41,25 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
 
     override val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
-    override fun replaceWithInline(toInlineWith: Expression) {
+    override fun replaceWithInline(toInlineWith: InlinableElement) {
+        val arguments = this.arguments.toList()
+        val toReplaceWith = toInlineWith.inline(arguments)
         val factory = project.service<PSPsiFactory>()
         when (val parent = this.parent) {
             is Call -> {
-                val arguments = this.arguments.toList()
                 this.parentsOfType<Call>()
                     .drop(arguments.size)
                     .first()
-                    .replace(toInlineWith.let { it.withParenthesis()?.parent ?: it })
+                    .replace(toReplaceWith.let { it.withParenthesis()?.parent ?: it })
             }
 
             is RecordLabel -> factory
-                .createRecordLabel("${this.name}: ${toInlineWith.text}")
+                .createRecordLabel("${this.name}: ${toReplaceWith.text}")
                 ?.let { parent.replace(it) }
-                ?: this.replace(toInlineWith)
+                ?: this.replace(toReplaceWith)
 
-            is Argument -> this.replace(this.replace(toInlineWith.let { it.withParenthesis() ?: it }))
-            else -> this.replace(this.replace(toInlineWith.let { it.withParenthesis() ?: it }))
+            is Argument -> this.replace(this.replace(toReplaceWith.let { it.withParenthesis() ?: it }))
+            else -> this.replace(this.replace(toReplaceWith.let { it.withParenthesis() ?: it }))
         }
     }
 
