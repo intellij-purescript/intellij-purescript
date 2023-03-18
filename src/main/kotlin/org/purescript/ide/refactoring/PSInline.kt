@@ -20,8 +20,11 @@ class PSInline : InlineActionHandler() {
         if (element is InlinableElement && element.canBeInlined()) {
             val dialog = InlineDialog(project, element, getOriginal(editor, project, element)) {
                 InlineProcessor(this) { usages ->
-                    for (usage in usages) (usage.element as? ReplaceableWithInline)?.replaceWithInline(toInline)
-                    if (!isInlineThisOnly) toInline.deleteAfterInline()
+                    val elements = usages.map { it.element }.filterIsInstance<ReplaceableWithInline>()
+                    if (elements.all { it.canBeReplacedWithInline() }) {
+                        elements.forEach { it.replaceWithInline(toInline) }
+                        if (!isInlineThisOnly) toInline.deleteAfterInline()
+                    }
                 }
             }
             if (!isUnitTestMode) dialog.show()

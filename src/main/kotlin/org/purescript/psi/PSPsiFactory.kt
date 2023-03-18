@@ -14,13 +14,14 @@ import org.purescript.ide.formatting.*
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.exports.ExportList
-import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.name.PSIdentifier
 import org.purescript.name.PSModuleName
 import org.purescript.name.PSOperatorName
@@ -155,6 +156,14 @@ class PSPsiFactory(private val project: Project) {
             """
             |module Main where
             |foo = ${name}
+            """.trimMargin()
+        )
+    }
+    fun createExpression(expression: String): Expression? {
+        return createFromText(
+            """
+            |module Main where
+            |foo = $expression
             """.trimMargin()
         )
     }

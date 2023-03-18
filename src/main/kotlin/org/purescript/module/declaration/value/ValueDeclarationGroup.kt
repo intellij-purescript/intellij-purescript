@@ -23,7 +23,6 @@ import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
-import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLet
 import org.purescript.name.PSIdentifier
@@ -65,7 +64,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    override fun inline(arguments: List<Argument>): Expression {
+    override fun inline(arguments: List<Expression>): Expression {
         val valueDeclaration = valueDeclarations.singleOrNull() ?: error("can only inline value declarations with one body")
         return valueDeclaration.inline(arguments)
     }

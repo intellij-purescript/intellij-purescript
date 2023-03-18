@@ -9,26 +9,31 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.parentsOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.module.Module
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.exports.ExportedOperator
 import org.purescript.name.PSOperatorName
 import org.purescript.name.PSQualifiedIdentifier
 import org.purescript.name.PSQualifiedProperName
 import org.purescript.parser.TYPE
 import org.purescript.psi.AStub
+import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 
 class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdentifierOwner,
-    org.purescript.module.declaration.Importable,
+    Importable, InlinableElement,
     DocCommentOwner {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<FixityDeclaration>(p, Type) {
@@ -74,6 +79,16 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
             (reference.resolve() as? DocCommentOwner)?.docComments ?: emptyList()
         }
 
+    override fun canBeInlined(): Boolean = true
+    override fun deleteAfterInline() = delete()
+    override fun inline(arguments: List<Expression>): Expression {
+        val factory = project.service<PSPsiFactory>()
+        val name = this.qualifiedIdentifier?.text ?: this.qualifiedProperName?.text
+        val (first, second) = arguments.map { it.text }.take(2)
+        val expression = "$name $first $second"
+        return factory.createParenthesis(expression)?.parentsOfType<PSValue>()?.lastOrNull()!!
+    }
+
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
     override fun asImport() = module?.name?.let { ImportDeclaration(it, false, setOf(ImportedOperator(name))) }
@@ -82,7 +97,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
         is PSClassMember -> ref.type
         else -> null
     }
-    val fixity: PSFixity get() = child<PSFixity>()!!
+    val fixity: PSFixity get() = child()!!
     val associativity get() = fixity.associativity
     val precedence get() = fixity.precedence
     private val isType get(): Boolean = findChildByType<PsiElement>(TYPE) != null

@@ -208,6 +208,102 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    fun `test operator`() {
+        doTest(
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |infix 0 add as +
+                |
+                |y a b = a {-caret-}+ b
+            """.trimMargin(),
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |infix 0 add as +
+                |
+                |y a b = (add a b)
+            """.trimMargin()
+        )
+    }
+    fun `test operator as argument`() {
+        doTest(
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |f x = x
+                |
+                |infix 0 add as +
+                |
+                |y a b = f (a {-caret-}+ b)
+            """.trimMargin(),
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |f x = x
+                |
+                |infix 0 add as +
+                |
+                |y a b = f ((add a b))
+            """.trimMargin()
+        )
+    }
+    fun `test operator as call`() {
+        doTest(
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |f x = x
+                |
+                |infix 0 add as +
+                |
+                |y a b = (a {-caret-}+ b) f
+            """.trimMargin(),
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |f x = x
+                |
+                |infix 0 add as +
+                |
+                |y a b = ((add a b)) f
+            """.trimMargin()
+        )
+    }
+    fun `test it dont inline operator as part of larger expression`() {
+        doTest(
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |infixl 0 add as +
+                |
+                |y a b c = a {-caret-}+ b + c
+            """.trimMargin(),
+            """
+                |module Main where
+                |
+                |add a b = a
+                |
+                |infixl 0 add as +
+                |
+                |y a b c = a {-caret-}+ b + c
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,

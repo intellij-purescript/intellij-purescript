@@ -19,14 +19,16 @@ import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.PSValue
-import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.name.PSIdentifier
-import org.purescript.psi.*
+import org.purescript.psi.AStub
+import org.purescript.psi.PSElementType
+import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.PSStubbedElement
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner, InlinableElement {
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner{
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -112,7 +114,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
     val parameterList get() = findChildByClass(Parameters::class.java)
     val parameters get() = parameterList?.parameters ?: emptyList()
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
-    override fun inline(arguments: List<Argument>): Expression {
+    fun inline(arguments: List<Expression>): Expression {
         val copy = this.copy() as ValueDecl
         val binders = copy.namedParameters
         val parametersToInline = binders.map {
@@ -134,12 +136,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         } else (copy.value ?: error("Copy of value declaration have no value node"))
     }
 
-    override fun canBeInlined(): Boolean {
+    fun canBeInlined(): Boolean {
         val binders = parameterList?.parameterBinders ?: emptyList()
         return !binders.any { it !is VarBinder }
-    }
-
-    override fun deleteAfterInline() {
-        parent.delete()
     }
 }

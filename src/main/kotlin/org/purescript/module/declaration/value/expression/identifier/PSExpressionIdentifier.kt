@@ -63,6 +63,8 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         }
     }
 
+    override fun canBeReplacedWithInline(): Boolean = true
+
     override fun getName(): String = qualifiedIdentifier.name
 
     override fun getReference(): ExpressionIdentifierReference =
