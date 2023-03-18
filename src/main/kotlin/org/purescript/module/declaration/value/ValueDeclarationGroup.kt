@@ -95,6 +95,8 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
         }
     }
 
+    override fun importsAfterInline(): List<ImportDeclaration> = emptyList()
+
     override fun getIcon(flags: Int) = AllIcons.Nodes.Function
     override fun getPresentation() = object : ItemPresentation {
         override fun getPresentableText() = name

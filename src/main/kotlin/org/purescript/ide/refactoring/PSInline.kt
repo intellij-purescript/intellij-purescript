@@ -22,7 +22,11 @@ class PSInline : InlineActionHandler() {
                 InlineProcessor(this) { usages ->
                     val elements = usages.map { it.element }.filterIsInstance<ReplaceableWithInline>()
                     if (elements.all { it.canBeReplacedWithInline() }) {
-                        elements.forEach { it.replaceWithInline(toInline) }
+                        elements.forEach { element ->
+                            toInline.importsAfterInline()
+                                .forEach { element.module?.addImportDeclaration(it) }
+                            element.replaceWithInline(toInline)
+                        }
                         if (!isInlineThisOnly) toInline.deleteAfterInline()
                     }
                 }

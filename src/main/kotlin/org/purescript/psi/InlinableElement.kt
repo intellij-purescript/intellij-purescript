@@ -1,6 +1,7 @@
 package org.purescript.psi
 
 import com.intellij.psi.PsiElement
+import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.module.declaration.value.expression.Expression
 
 interface InlinableElement: PsiElement, UsedElement {
@@ -20,4 +21,10 @@ interface InlinableElement: PsiElement, UsedElement {
      * deletes the psi and any parents that no longer are valid
      */
     fun deleteAfterInline()
+
+
+    /**
+     * deletes the psi and any parents that no longer are valid
+     */
+    fun importsAfterInline(): List<ImportDeclaration>
 }

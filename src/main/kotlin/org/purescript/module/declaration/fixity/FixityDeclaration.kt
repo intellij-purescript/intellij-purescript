@@ -81,6 +81,14 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
 
     override fun canBeInlined(): Boolean = true
     override fun deleteAfterInline() = delete()
+    override fun importsAfterInline(): List<ImportDeclaration> {
+        val qualifier: String? = this.qualifiedIdentifier?.moduleName?.name 
+            ?: this.qualifiedProperName?.moduleName?.name
+        val importable = reference.resolve() as? Importable
+        val import = importable?.asImport()?.withAlias(qualifier)
+        return listOfNotNull(import)
+    }
+
     override fun inline(arguments: List<Expression>): Expression {
         val factory = project.service<PSPsiFactory>()
         val name = this.qualifiedIdentifier?.text ?: this.qualifiedProperName?.text
