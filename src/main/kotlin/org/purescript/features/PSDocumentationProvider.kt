@@ -57,8 +57,12 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         pursuitUrlsFromSpagoPath(element)
 
     private fun pursuitUrlsFromSpagoPath(element: PsiElement?): MutableList<String> {
-        val path = element?.containingFile?.virtualFile?.toNioPath()
-            ?: return mutableListOf()
+        val path = try {
+            element?.containingFile?.virtualFile?.toNioPath()
+                ?: return mutableListOf()
+        } catch (e: Exception) {
+            TODO("Not yet implemented")
+        }
         val spagoPath = path
             .normalize()
             .map { it.fileName.toString() }
