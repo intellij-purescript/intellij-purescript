@@ -375,6 +375,41 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    fun `test rename argument that is subject of case expression`() {
+        doTestRename(
+            """
+                |module Main where
+                |
+                |foo {-caret-}a b = case a of
+                |  r -> b
+            """.trimMargin(),
+            "c",
+            """
+                |module Main where
+                |
+                |foo c b = case c of
+                |  r -> b
+            """.trimMargin()
+        )
+    }
+    
+    fun `test rename argument that is subject of case branch expression`() {
+        doTestRename(
+            """
+                |module Main where
+                |
+                |foo a {-caret-}b = case a of
+                |  r -> b
+            """.trimMargin(),
+            "c",
+            """
+                |module Main where
+                |
+                |foo a c = case a of
+                |  r -> c
+            """.trimMargin()
+        )
+    }
 
     private fun doTestRename(@Language("Purescript") before: String, newName: String, @Language("Purescript") after: String) {
         myFixture.configureByText("Main.purs", before.replace("{-caret-}", "<caret>"))
