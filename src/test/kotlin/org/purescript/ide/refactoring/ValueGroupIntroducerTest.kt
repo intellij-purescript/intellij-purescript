@@ -162,6 +162,22 @@ class ValueGroupIntroducerTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    fun `test finds dependencies in record expressions `() {
+        doTest(
+            """
+                |module Main where
+                |
+                |foo a b = {-caret-}{a, b}
+            """.trimMargin(),
+            """
+                |module Main where
+                |
+                |foo a b = a' a b
+                |
+                |a' a b = {a, b}
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,
