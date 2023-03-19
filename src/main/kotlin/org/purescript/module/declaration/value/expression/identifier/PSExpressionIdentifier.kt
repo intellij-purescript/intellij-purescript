@@ -37,10 +37,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     /**
      * @return the [PSQualifiedIdentifier] identifying this constructor
      */
-    internal val qualifiedIdentifier: PSQualifiedIdentifier
-        get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
-
+    internal val qualifiedIdentifier: PSQualifiedIdentifier get() = findNotNullChildByClass(PSQualifiedIdentifier::class.java)
     override val qualifierName: String? get() = qualifiedIdentifier.moduleName?.name
+    override fun canBeReplacedWithInline(): Boolean = true
     override fun replaceWithInline(toInlineWith: InlinableElement) {
         val arguments = this.arguments.toList()
         val toReplaceWith = toInlineWith.inline(arguments)
@@ -63,13 +62,8 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         }
     }
 
-    override fun canBeReplacedWithInline(): Boolean = true
-
     override fun getName(): String = qualifiedIdentifier.name
-
-    override fun getReference(): ExpressionIdentifierReference =
-        ExpressionIdentifierReference(this)
-
+    override fun getReference(): ExpressionIdentifierReference = ExpressionIdentifierReference(this)
     override fun areSimilarTo(otherUnknown: Similar): Boolean {
         val other = otherUnknown as? PSExpressionIdentifier ?: return false
         val ref = reference.resolve()

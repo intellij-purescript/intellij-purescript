@@ -20,11 +20,9 @@ class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
     override fun setName(name: String): PsiElement? {
         val factory = project.service<PSPsiFactory>()
         val newName = factory.createIdentifier(name) ?: return null
-        this.nameIdentifier.replace(newName)
+        nameIdentifier.replace(newName)
         return this
     }
 
-    override fun areSimilarTo(other: Similar): Boolean {
-        return false
-    }
+    override fun areSimilarTo(other: Similar): Boolean = false
 }
