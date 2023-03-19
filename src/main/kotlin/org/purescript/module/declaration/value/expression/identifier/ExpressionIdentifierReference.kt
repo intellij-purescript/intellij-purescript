@@ -16,11 +16,11 @@ import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiFactory
 
-class ExpressionIdentifierReference(expressionConstructor: PSExpressionIdentifier) :
+class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier) :
     LocalQuickFixProvider,
     PsiReferenceBase<PSExpressionIdentifier>(
-        expressionConstructor,
-        expressionConstructor.qualifiedIdentifier.identifier.textRangeInParent,
+        expressionIdentifier,
+        expressionIdentifier.qualifiedIdentifier.identifier.textRangeInParent,
         false
     ) {
 
