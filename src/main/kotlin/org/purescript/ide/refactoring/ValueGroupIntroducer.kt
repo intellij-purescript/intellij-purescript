@@ -123,9 +123,7 @@ class ValueGroupIntroducer :
             else -> psi.text
         } ?: error("Could not extract text form expression")
         val identifiersInPsi = psi.expressions.filterIsInstance<PSExpressionIdentifier>().toList()
-        val name = (identifiersInPsi.firstOrNull()?.name
-            ?: "expr") + "'"
-        
+        val name = (identifiersInPsi.firstOrNull()?.name ?: "expr") + "'"
         val scopeNamespace = scope.parentsOfType<ValueNamespace>().flatMap { it.valueNames }.toSet()
         val parameters = identifiersInPsi.filter { identifier ->
             val reference = identifier.reference.resolve() ?: return@filter true
@@ -177,13 +175,13 @@ class ValueGroupIntroducer :
             override fun createFieldToStartTemplateOn(replaceAll: Boolean, names: Array<out String>) = runWriteAction {
                 if (replaceAll) {
                     for (occurrence in occurrences) {
-                        for (parameter in parameters) {
+                        for (parameter in parameters.reversed()) {
                             occurrence.parent?.addAfter(parameter, occurrence)
                             occurrence.parent?.addAfter(factory.createSpace(), occurrence)
                         }
                     }
                 } else {
-                    for (parameter in parameters) {
+                    for (parameter in parameters.reversed()) {
                         this.expr?.parent?.addAfter(parameter, this.expr)
                         this.expr?.parent?.addAfter(factory.createSpace(), this.expr)
                     }

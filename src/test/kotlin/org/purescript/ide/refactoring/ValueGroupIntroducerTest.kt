@@ -144,6 +144,24 @@ class ValueGroupIntroducerTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    fun `test it finds dependencies in case branch expression`() {
+        doTest(
+            """
+                |module Main where
+                |foo a b =
+                |  {-caret-}case a of
+                |    r -> b
+            """.trimMargin(),
+            """
+                |module Main where
+                |foo a b =
+                |  a' a b
+                |
+                |a' a b = case a of
+                |    r -> b
+            """.trimMargin()
+        )
+    }
 
     private fun doTest(
         @Language("Purescript") before: String,
