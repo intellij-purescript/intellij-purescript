@@ -74,7 +74,7 @@ class Spago(val project: Project) {
 
     private fun updateLibraries() =
         runBackgroundableTask("Spago", project, true) {
-            val commandLine = this.commandLine.withParameters("ls", "deps", "--json")
+            val commandLine = this.commandLine.withParameters("ls", "deps", "--transitive", "--json")
             val lines = try {
                 ExecUtil.execAndGetOutput(commandLine, "").split("\n")
             } catch (e: ExecutionException) {
@@ -111,19 +111,12 @@ class Spago(val project: Project) {
 
     @Serializable
     data class Dep(val packageName: String, val version: String, val repo: Repo)
-
     @Serializable
     data class Repo(val contents: String, val tag: String)
-
     data class SpagoLibrary(val packageName: String, val version: String, val sourceRoots: MutableList<VirtualFile>) :
         SyntheticLibrary(), ItemPresentation {
-        override fun getSourceRoots(): MutableCollection<VirtualFile> {
-            return sourceRoots
-        }
-
-        override fun getPresentableText() = "$packageName:$version"
-
+        override fun getSourceRoots(): MutableCollection<VirtualFile> = sourceRoots
+        override fun getPresentableText() = "Spago: $packageName:$version"
         override fun getIcon(unused: Boolean) = PSIcons.SPAGO
-
     }
 }
