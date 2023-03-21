@@ -22,25 +22,21 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
      */
     private val candidates: List<PsiNamedElement>
         get() {
-            val name = element.moduleName?.name
-            return if (name != null) {
-                candidatesFor(name)
+            val qualifier = element.moduleName?.name
+            return if (qualifier != null) {
+                candidatesFor(qualifier)
             } else {
-                allCandidates
+                allCandidatesWithoutAlias
             }
         }
 
-    private fun candidatesFor(name: String): List<PsiNamedElement> {
+    private fun candidatesFor(qualifier: String): List<PsiNamedElement> {
         val module: Module = element.module ?: return emptyList()
-        val importDeclaration = module.cache.imports
-            .firstOrNull { it.importAlias?.name == name }
-            ?: return emptyList()
-        val candidates = mutableListOf<PsiNamedElement>()
-        candidates.addAll(importDeclaration.importedTypeNames)
-        return candidates
+        val importDeclaration = module.cache.imports.filter { it.importAlias?.name == qualifier }
+        return importDeclaration.flatMap { it.importedTypeNames }.toMutableList()
     }
 
-    private val allCandidates: List<PsiNamedElement>
+    private val allCandidatesWithoutAlias: List<PsiNamedElement>
         get() {
             val module: Module = element.module ?: return emptyList()
             val candidates = mutableListOf<PsiNamedElement>()
@@ -50,6 +46,7 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
             candidates.addAll(module.cache.foreignDataDeclarations)
             candidates.addAll(module.cache.classDeclarations)
             for (importDeclaration in module.cache.imports) {
+                if (importDeclaration.importAlias != null) continue
                 candidates.addAll(importDeclaration.importedTypeNames)
             }
             return candidates
