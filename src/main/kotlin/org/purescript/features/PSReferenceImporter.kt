@@ -16,14 +16,13 @@ import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.ImportableTypeIndex
+import org.purescript.module.declaration.value.binder.ConstructorBinder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
 import java.util.function.BooleanSupplier
 
 class PSReferenceImporter : ReferenceImporter {
-    override fun isAddUnambiguousImportsOnTheFlyEnabled(file: PsiFile): Boolean {
-        return file is PSFile
-    }
+    override fun isAddUnambiguousImportsOnTheFlyEnabled(file: PsiFile): Boolean = file is PSFile
 
     @Suppress("UnstableApiUsage")
     override fun computeAutoImportAtOffset(
@@ -44,6 +43,7 @@ class PSReferenceImporter : ReferenceImporter {
         val name = element.getName()
         val possibleImports = when(element) {
             is ExpressionAtom -> ImportableIndex.get(name, project, scope)
+            is ConstructorBinder -> ImportableIndex.get(name, project, scope)
             else -> ImportableTypeIndex.get(name, project, scope)
         } .mapNotNull { it.asImport() }.map { it.withAlias(element.qualifierName) }.toList()
         val qualifiedImports: List<String> = module.cache.importsByName
