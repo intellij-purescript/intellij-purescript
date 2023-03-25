@@ -40,7 +40,9 @@ class ValueGroupIntroducer :
      */
     override fun collectUsages(target: PsiIntroduceTarget<Expression>, scope: ValueOwner): MutableList<UsageInfo> {
         val psi = target.place ?: return mutableListOf()
-        return scope.valueNames.filterIsInstance<ValueDeclarationGroup>()
+        return scope.valueNames
+            .filter { it.containingFile == psi.containingFile }
+            .filterIsInstance<ValueDeclarationGroup>()
             .flatMap { it.valueDeclarations.asSequence() }
             .flatMap { it.expressions }
             .filter { psi.areSimilarTo(it) }
