@@ -24,6 +24,9 @@ class SpagoRunConfigurationProducer :
         if (psi != main.nameIdentifier.firstChild && psi !is PSFile) return false
         configuration.name = module.name
         configuration.options.moduleName = module.name
+//        configuration.options.environment = mutableMapOf(
+//                Pair("NODE_OPTIONS", "--enable-source-maps")
+//        )
         return module.exportedValueDeclarationGroups.any { it.name == "main" }
     }
 

@@ -22,17 +22,17 @@ import org.purescript.module.ModuleNameIndex
 import javax.swing.JComponent
 
 class SpagoRunConfiguration(
-    private val project: Project,
-    factory: SpagoConfigurationFactory
+        private val project: Project,
+        factory: SpagoConfigurationFactory
 ) : LocatableConfigurationBase<SpagoRunConfigurationOptions>(project, factory) {
 
     public override fun getOptions() =
-        super.getOptions() as SpagoRunConfigurationOptions
+            super.getOptions() as SpagoRunConfigurationOptions
 
 
     override fun getState(
-        executor: Executor,
-        environment: ExecutionEnvironment
+            executor: Executor,
+            environment: ExecutionEnvironment
     ) = object : CommandLineState(environment) {
         override fun startProcess(): ProcessHandler {
             val parameters = mutableListOf<String>()
@@ -47,31 +47,32 @@ class SpagoRunConfiguration(
                 parameters += "--source-maps"
                 parameters += "--purs-args"
                 parameters += "-g sourcemaps"
-                parameters += "--node-args"
-                parameters += "--enable-source-maps"
+//                parameters += "--node-args"
+//                parameters += "--enable-source-maps"
             }
+            System.out.println("SpagoRunConfiguration: options.nodeOptions = ${options.nodeOptions}")
             val commandLine = project.service<Spago>().commandLine
+                .withEnvironment("NODE_OPTIONS", options.nodeOptions ?: "--enable-source-maps")
                 .withParameters(parameters)
-                .withEnvironment("NODE_OPTIONS", "--enable-source-maps")
             return ColoredProcessHandler(commandLine)
         }
 
         override fun createConsole(executor: Executor): ConsoleView? {
             return if (usesTeamcityReporter()) {
                 val runConfiguration =
-                    environment.runProfile as RunConfiguration
+                        environment.runProfile as RunConfiguration
                 val properties =
-                    SMTRunnerConsoleProperties(
-                        project,
-                        runConfiguration,
-                        "SpagoTest",
-                        executor
-                    )
+                        SMTRunnerConsoleProperties(
+                                project,
+                                runConfiguration,
+                                "SpagoTest",
+                                executor
+                        )
                 properties.isIdBasedTestTree = true
                 SMTRunnerConsoleView(properties).also {
                     SMTestRunnerConnectionUtil.initConsoleView(
-                        it,
-                        properties.testFrameworkName
+                            it,
+                            properties.testFrameworkName
                     )
                 }
             } else {
@@ -86,7 +87,7 @@ class SpagoRunConfiguration(
             ModuleNameIndex().get(it, project, scope)
         }?.firstOrNull() ?: return false
         val main = module.exportedValueDeclarationGroups
-            .firstOrNull { it.name == "main" } ?: return false
+                .firstOrNull { it.name == "main" } ?: return false
         return main.expressionAtoms.any { it.text == "teamcityReporter" }
     }
 
@@ -94,7 +95,8 @@ class SpagoRunConfiguration(
         return object : SettingsEditor<SpagoRunConfiguration>() {
             private lateinit var panel: DialogPanel
             override fun resetEditorFrom(s: SpagoRunConfiguration) =
-                panel.reset()
+                    panel.reset()
+
 
             override fun applyEditorTo(s: SpagoRunConfiguration) = panel.apply()
             override fun createEditor(): JComponent {
@@ -104,16 +106,48 @@ class SpagoRunConfiguration(
                     }
                     row("Command") {
                         textField().bindText(
-                            { options.command ?: "run" },
-                            { options.command = it }
+                                { options.command ?: "run" },
+                                { options.command = it }
                         )
                     }
                     row("Config") {
                         textField().bindText(
-                            { options.config ?: "spago.dhall" },
-                            { options.config = it }
+                                { options.config ?: "spago.dhall" },
+                                { options.config = it }
                         )
                     }
+                    row("Node Options") {
+                        textField().bindText(
+                                { options.nodeOptions ?: "" },
+                                { options.nodeOptions = it }
+                        )
+                    }
+//                    group("Environment") {
+//                        options.environment.toList().map { (key, value) ->
+//                            twoColumnsRow(
+//                                    {
+//                                        textField().bindText(
+//                                                { key }, { newKey: String ->
+//                                            options.environment.remove(key)
+//                                            options.environment[newKey] = value
+//                                        })
+//                                    },
+//                                    {
+//                                        textField().bindText(
+//                                                { value }, { newValue: String ->
+//                                            options.environment[key] = newValue
+//                                        })
+//                                    })
+//
+//                        }
+//                        twoColumnsRow(
+//                                {
+//                                    textField().bindText(
+//                                            { "" }, { newValue: String ->
+//                                        options.environment[newValue] = ""
+//                                    })
+//                                })
+//                    }
                 }
                 return panel
             }
