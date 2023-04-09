@@ -173,7 +173,7 @@ class ParserDefinitions {
                 exprCase /
                 ifThenElse /
                 doBlock /
-                AdoBlockType(`'ado'` + layout(doStatement, "ado statement") + `'in'` + expr) /
+                AdoBlockType(qualified(`'ado'`).heal + layout(doStatement, "ado statement") + `'in'` + expr) /
                 letIn
     }
 
