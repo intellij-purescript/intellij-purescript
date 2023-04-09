@@ -21,8 +21,10 @@ data class Response(val result: List<Result>, val resultType: String) {
         fun getStart(document: Document) =
             document.getLineStartOffset(this.startLine - 1) + startColumn - 1
 
-        fun getEnd(document: Document) =
-            document.getLineStartOffset(this.endLine - 1) + endColumn - 1
+        fun getEnd(document: Document): Int = minOf(
+            document.getLineStartOffset(endLine - 1) + endColumn - 1,
+            document.getLineEndOffset(endLine - 1)
+        )
     }
 
     data class Suggestion(val replacement: String, val replaceRange: Position)

@@ -83,6 +83,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             if (result.errorCode == "UnusedExplicitImport") continue
             if (result.errorCode == "ModuleNotFound") continue
             val textRange = result.position.textRange(document)
+                .let { if (it.length <= 0) it.grown(1).shiftLeft(1) else it }
             val annotationBuilder = holder
                 .newAnnotation(severity, "Purs ide rebuild: ${result.errorCode}")
                 .tooltip(result.message)
