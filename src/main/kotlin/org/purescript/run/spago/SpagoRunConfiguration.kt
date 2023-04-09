@@ -50,7 +50,7 @@ class SpagoRunConfiguration(
             }
             val commandLine = project.service<Spago>().commandLine
                 .withParameters(parameters)
-                .withEnvironment("NODE_OPTIONS", "--enable-source-maps")
+                .withEnvironment("NODE_OPTIONS", options.nodeOptions ?: "--enable-source-maps")
             return ColoredProcessHandler(commandLine)
         }
 
@@ -110,6 +110,12 @@ class SpagoRunConfiguration(
                         textField().bindText(
                             { options.config ?: "spago.dhall" },
                             { options.config = it }
+                        )
+                    }
+                    row("NODE_OPTIONS") {
+                        textField().bindText(
+                            { options.nodeOptions ?: "--enable-source-maps" },
+                            { options.nodeOptions = it }
                         )
                     }
                 }
