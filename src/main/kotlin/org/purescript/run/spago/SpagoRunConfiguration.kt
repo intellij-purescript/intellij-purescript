@@ -47,8 +47,6 @@ class SpagoRunConfiguration(
                 parameters += "--source-maps"
                 parameters += "--purs-args"
                 parameters += "-g sourcemaps"
-                parameters += "--node-args"
-                parameters += "--enable-source-maps"
             }
             val commandLine = project.service<Spago>().commandLine
                 .withParameters(parameters)
