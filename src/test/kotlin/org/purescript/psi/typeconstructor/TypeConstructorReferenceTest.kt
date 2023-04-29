@@ -1,5 +1,6 @@
 package org.purescript.psi.typeconstructor
 
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.*
 
@@ -56,7 +57,8 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Foo.purs", "Qux", "Bum")
+        val completions = myFixture.complete(CompletionType.BASIC)
+        assertContainsElements(completions.map { it.lookupString }, "Qux", "Bum")
     }
 
     fun `test finds usages from local data declarations`() {
@@ -146,7 +148,8 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Foo.purs", "Qux", "Bum")
+        val completions = myFixture.complete(CompletionType.BASIC)
+        assertContainsElements(completions.map { it.lookupString }, "Qux", "Bum")
     }
 
     fun `test finds usages from local newtype declarations`() {
@@ -276,7 +279,8 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Foo.purs", "Qux", "Bum")
+        val completions = myFixture.complete(CompletionType.BASIC)
+        assertContainsElements(completions.map { it.lookupString }, "Qux", "Bum")
     }
 
     fun `test finds usages from local type synonym declarations`() {
@@ -370,7 +374,8 @@ class TypeConstructorReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.testCompletionVariants("Foo.purs", "Qux", "Bum")
+        val completions = myFixture.complete(CompletionType.BASIC)
+        assertContainsElements(completions.map { it.lookupString }, "Qux", "Bum")
     }
 
     fun `test finds usages from local foreign data declarations`() {
