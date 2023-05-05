@@ -248,9 +248,12 @@ class ParserDefinitions {
     private val classMember = ClassMember(ident + dcolon + type)
     private val classDeclaration =
         ClassDeclType(classHead + !ClassMemberList(`'where'` + layout1(classMember, "class member")).heal)
-    private val instHead =
-        `'instance'` + !(ident + dcolon) + !(constraints + darrow)
-            .heal + (TypeCtor(qualProperName) + !+typeAtom)
+
+    private val instName = ident + dcolon
+    private val instConstraint = TypeCtor(qualProperName) + !+typeAtom
+    private val instConstraints = parens((instConstraint).sepBy1(`,`)) / instConstraint + darrow
+    private val instHead = `'instance'` + !instName + !instConstraints.heal + (TypeCtor(qualProperName) + !+typeAtom)
+
     private val importedDataMembers = ImportedDataMemberList(parens(ddot / ImportedDataMember(properName).sepBy(`,`)))
     private val importedItem = Choice.of(
         ImportedType(`'type'` + parens(Identifier(operator))),
