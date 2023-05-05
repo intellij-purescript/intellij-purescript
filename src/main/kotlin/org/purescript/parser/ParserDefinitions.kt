@@ -333,7 +333,7 @@ class ParserDefinitions {
         NumberBinderType(("-".dsl + number).heal),
         binderAtom,
     )
-    private val binder1 = binder2.sepBy1(qualOp)
+    private val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
     private val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
     private val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
     private val caseBranch = CaseAlternativeType(binder1.sepBy1(`,`) + guardedCase)
