@@ -250,7 +250,7 @@ class ParserDefinitions {
         ClassDeclType(classHead + !ClassMemberList(`'where'` + layout1(classMember, "class member")).heal)
     private val instHead =
         `'instance'` + !(ident + dcolon) + !(constraints + darrow)
-            .heal + constraint // this constraint is the instance type
+            .heal + (TypeCtor(qualProperName) + !+typeAtom)
     private val importedDataMembers = ImportedDataMemberList(parens(ddot / ImportedDataMember(properName).sepBy(`,`)))
     private val importedItem = Choice.of(
         ImportedType(`'type'` + parens(Identifier(operator))),
