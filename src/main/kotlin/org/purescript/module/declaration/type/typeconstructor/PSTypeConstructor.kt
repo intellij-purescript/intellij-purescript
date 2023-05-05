@@ -3,7 +3,7 @@ package org.purescript.module.declaration.type.typeconstructor
 import com.intellij.lang.ASTNode
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.signature.PSSignature
+import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
 import org.purescript.psi.*

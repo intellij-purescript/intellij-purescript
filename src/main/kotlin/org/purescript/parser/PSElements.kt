@@ -12,7 +12,7 @@ import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.signature.PSSignature
+import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.type.*
 import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 import org.purescript.module.declaration.value.ValueDecl

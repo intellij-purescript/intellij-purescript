@@ -14,7 +14,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.prevLeaf
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.features.DocCommentOwner
-import org.purescript.module.declaration.signature.PSSignature
+import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom

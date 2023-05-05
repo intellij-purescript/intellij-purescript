@@ -1,13 +1,13 @@
-package org.purescript.module.declaration.signature
+package org.purescript.module.declaration
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
-import org.purescript.psi.PSPsiFactory
-import org.purescript.psi.PSPsiElement
-import org.purescript.name.PSIdentifier
 import org.purescript.module.declaration.type.PSType
+import org.purescript.name.PSIdentifier
+import org.purescript.psi.PSPsiElement
+import org.purescript.psi.PSPsiFactory
 
 /**
  * `foo :: int` in

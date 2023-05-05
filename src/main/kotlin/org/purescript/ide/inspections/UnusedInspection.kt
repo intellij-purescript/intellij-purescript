@@ -24,7 +24,7 @@ import org.purescript.module.declaration.classes.PSInstanceDeclaration
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.signature.PSSignature
+import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class UnusedInspection : LocalInspectionTool() {
