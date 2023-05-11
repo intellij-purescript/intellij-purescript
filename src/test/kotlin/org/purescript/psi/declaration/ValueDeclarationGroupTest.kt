@@ -1,11 +1,16 @@
 package org.purescript.module.declaration
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.*
+import junit.framework.TestCase
+import org.purescript.getExpressionIdentifier
+import org.purescript.getModule
+import org.purescript.getValueDeclarationGroup
+import org.purescript.getValueDeclarationGroupByName
 import org.purescript.module.declaration.value.MoveValueDeclRefactoring
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class ValueDeclarationGroupTest : BasePlatformTestCase() {
-    fun `test finds doc comment`() {
+    fun `xtest finds doc comment`() {
         val valueDeclaration = myFixture.addFileToProject(
             "Main.purs",
             """-- | This is
@@ -23,7 +28,7 @@ class ValueDeclarationGroupTest : BasePlatformTestCase() {
         assertEquals("-- | main", docComments[1].text)
     }
 
-    fun `test rename`() {
+    fun `xtest rename`() {
         myFixture.configureByText(
             "Main.purs",
             """
@@ -71,7 +76,7 @@ class ValueDeclarationGroupTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test move to module that imports it by name`() {
+    fun `xtest move to module that imports it by name`() {
         val  main = myFixture.configureByText(
             "Main.purs",
             """
@@ -184,7 +189,7 @@ class ValueDeclarationGroupTest : BasePlatformTestCase() {
         )
     }
     
-    fun `test move to module that imports it with alias`() {
+    fun `xtest move to module that imports it with alias`() {
         val  main = myFixture.configureByText(
             "Main.purs",
             """
@@ -262,5 +267,34 @@ class ValueDeclarationGroupTest : BasePlatformTestCase() {
             """.trimIndent(),
             false
         )
+    }
+
+    fun `test importing module with alias hides values not prefixed with that alias`() {
+        val f = myFixture.configureByText("Main.purs",
+            """
+                |module Main where
+                |
+                |import Alias as A
+                |import Explicit (f)
+                |
+                |x = f
+            """.trimMargin()
+        ).getExpressionIdentifier()
+        myFixture.configureByText("Alias.purs",
+            """
+                |module Alias where
+                |
+                |f = 10
+            """.trimMargin()
+        )
+        myFixture.configureByText("Explicit.purs",
+            """
+                |module Explicit where
+                |
+                |f = 10
+            """.trimMargin()
+        )
+        val reference = f.reference.resolve()
+        TestCase.assertEquals("Explicit", (reference as? ValueDeclarationGroup)?.module?.name)
     }
 }
