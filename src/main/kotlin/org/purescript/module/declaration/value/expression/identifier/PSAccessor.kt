@@ -17,7 +17,7 @@ class PSAccessor(node: ASTNode) : PSPsiElement(node), Similar {
     
     class AccessorReference(val accessor: PSAccessor) : PsiReferenceBase<PSAccessor>(
         accessor,
-        accessor.textRangeInParent,
+        accessor.identifier.textRangeInParent,
         false
     ) {
         override fun resolve(): PsiElement? {
