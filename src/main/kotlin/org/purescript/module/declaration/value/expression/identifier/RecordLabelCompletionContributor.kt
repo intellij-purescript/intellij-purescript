@@ -18,5 +18,10 @@ class RecordLabelCompletionContributor : CompletionContributor() {
             psiElement().withSuperParent(2, RecordLabel::class.java),
             provider
         )
+        extend(
+            CompletionType.BASIC,
+            psiElement().withSuperParent(2, PSAccessor::class.java),
+            provider
+        )
     }
 }
