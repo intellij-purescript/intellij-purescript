@@ -94,6 +94,11 @@
         />
         <completion.contributor
             language="Purescript"
+            implementationClass="org.purescript.module.declaration.value.expression.identifier.RecordLabelCompletionContributor"
+            id="RecordLabelCompletionContributor"
+        />
+        <completion.contributor
+            language="Purescript"
             implementationClass="org.purescript.module.declaration.type.TypeCompletionContributor"
             id="TypeCompletionContributor"
         />

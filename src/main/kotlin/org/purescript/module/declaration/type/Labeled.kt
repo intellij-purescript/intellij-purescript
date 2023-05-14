@@ -14,7 +14,7 @@ class Labeled : PSStubbedElement<Labeled.Stub> {
     object Type : PSElementType.WithPsiAndStub<Stub, Labeled>("Labeled") {
         override fun createPsi(node: ASTNode) = Labeled(node)
         override fun createPsi(stub: Stub) = Labeled(stub, this)
-        override fun createStub(labeled: Labeled, p: StubElement<*>?) = Stub(labeled.label, labeled.typeAsString, p)
+        override fun createStub(labeled: Labeled, p: StubElement<*>?) = Stub(labeled.name, labeled.typeAsString, p)
         override fun serialize(stub: Stub, d: StubOutputStream) {
             d.writeName(stub.label)
             d.writeName(stub.type)
@@ -28,9 +28,9 @@ class Labeled : PSStubbedElement<Labeled.Stub> {
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    private val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
-    private val label get() = greenStub?.label ?: identifier.name
-    private val type get() = findNotNullChildByClass(PSType::class.java)
-    private val typeAsString get() = greenStub?.type ?: type.text
+    val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
+    override fun getName() = greenStub?.label ?: identifier.name
+    val type get() = findNotNullChildByClass(PSType::class.java)
+    val typeAsString get() = greenStub?.type ?: type.text
 
 }
