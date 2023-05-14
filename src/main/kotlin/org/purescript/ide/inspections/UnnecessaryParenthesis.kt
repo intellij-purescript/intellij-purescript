@@ -17,12 +17,14 @@ import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
 import org.purescript.module.declaration.value.expression.identifier.PSAccessor
+import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.declaration.value.parameters.Parameter
 
 class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val argument = psiElement(Argument::class.java)
     private val twoChildren = collection<PsiElement?>().size(2)
     private val value = psiElement(PSValue::class.java)
+    private val lambda = psiElement(PSLambda::class.java)
     private val call = psiElement(Call::class.java)
     private val ifThanElse = psiElement(PSIfThenElse::class.java)
     private val oneChild = collection<PsiElement?>().size(1)
@@ -32,6 +34,7 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val type: Capture<PSType> = psiElement(PSType::class.java)
     private val hasOnlyOneChild = psiElement().withChildren(oneChild)
     private val parenthesisAroundIfThanElse = parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
+    private val parenthesisAroundLambda = parenthesis.withChild(value.withChild(call.withChild(lambda)))
     val wildcard = psiElement(ExpressionWildcard::class.java)
     val operatorSection = parenthesis.withChild(value.withChild(call.withChild(wildcard)))
     val isTyped = parenthesis.withSuperParent(2, value.withChild(type))
@@ -52,6 +55,10 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
             .andNot(parentIsArgument)
             .andNot(
                 parenthesisAroundIfThanElse
+                    .andNot(psiElement().withSuperParent(2, valueWithOneChild))
+            )
+            .andNot(
+                parenthesisAroundLambda
                     .andNot(psiElement().withSuperParent(2, valueWithOneChild))
             )
             .andNot(recordUpdateArgument)

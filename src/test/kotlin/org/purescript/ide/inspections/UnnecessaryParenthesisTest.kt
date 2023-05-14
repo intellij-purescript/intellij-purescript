@@ -275,5 +275,16 @@ class UnnecessaryParenthesisTest : BasePlatformTestCase() {
         )
         myFixture.enableInspections(UnnecessaryParenthesis())
         myFixture.checkHighlighting()
+    }    
+    fun `test dont it report parenthesis around lambdas in expression`() {
+        myFixture.configureByText(
+            "Foo.purs",
+            """
+            |module Foo where
+            |foo = (\ x -> x) $ 1
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnnecessaryParenthesis())
+        myFixture.checkHighlighting()
     }
 }
