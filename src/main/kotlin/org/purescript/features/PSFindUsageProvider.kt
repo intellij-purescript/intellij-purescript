@@ -18,6 +18,7 @@ import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.PSImportAlias
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.PSTypeVarName
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
@@ -41,6 +42,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is FixityDeclaration
             || psiElement is PSForeignDataDeclaration
             || psiElement is PSTypeVarName
+            || psiElement is Labeled
 
     override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(
         PSLexer(),

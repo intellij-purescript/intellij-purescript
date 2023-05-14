@@ -72,7 +72,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     val importedConstructors: Sequence<PsiNamedElement>
         get() =
-            if (importedModule == null) PSLanguage.getBuiltins(moduleNameName).asSequence()
+            if (importedModule == null) PSLanguage.getBuiltins(project, moduleNameName).asSequence()
             else when {
                 importedItems.isEmpty() -> importedModule?.exportedConstructors
                 isHiding -> (importedDataConstructors + importedNewTypeConstructors).asSequence()
@@ -189,7 +189,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedTypeNames: List<PsiNamedElement>
         get() = CachedValuesManager.getProjectPsiDependentCache(this) {
             if (importedModule == null) {
-                PSLanguage.getBuiltins(moduleNameName)
+                PSLanguage.getBuiltins(project, moduleNameName)
             } else importedDataDeclarations +
                     importedNewTypeDeclarations +
                     importedTypeSynonymDeclarations +
@@ -267,7 +267,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      * @return the [DataDeclaration] elements imported by this declaration
      */
     val importedDataDeclarations: List<PsiNamedElement>
-        get() = if (importedModule == null) PSLanguage.getBuiltins(moduleNameName)
+        get() = if (importedModule == null) PSLanguage.getBuiltins(project, moduleNameName)
         else getImportedDeclarations<PsiNamedElement, PSImportedData>(Module::exportedDataDeclarations)
 
     /**
