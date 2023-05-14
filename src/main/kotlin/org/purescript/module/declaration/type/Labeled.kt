@@ -21,6 +21,7 @@ class Labeled : PSStubbedElement<Labeled.Stub> {
         }
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
+            sink.occurrence(LabeledIndex.KEY, stub.label)
         }
     }
 
