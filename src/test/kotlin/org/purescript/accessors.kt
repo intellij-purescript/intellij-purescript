@@ -16,12 +16,14 @@ import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.binder.record.PunBinder
+import org.purescript.module.declaration.value.expression.identifier.PSAccessor
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionConstructor
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.module.exports.*
@@ -230,3 +232,12 @@ fun PsiFile.getExpressionIdentifiers(): List<PSExpressionIdentifier> =
 
 fun PsiFile.getExpressionIdentifier(): PSExpressionIdentifier =
     getExpressionIdentifiers().single()
+
+fun PsiFile.getAllLabeled(): List<Labeled> =
+    collectDescendantsOfType()
+
+fun PsiFile.getLabeled(): Labeled =
+    getAllLabeled().single()
+
+fun PsiFile.getAllAccessors(): List<PSAccessor> =
+    collectDescendantsOfType()
