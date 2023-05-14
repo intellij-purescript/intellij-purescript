@@ -239,6 +239,8 @@
             implementation="org.purescript.module.declaration.fixity.ExportedFixityNameIndex"/>
         <stubIndex
             implementation="org.purescript.module.declaration.imports.ReExportedImportIndex"/>
+        <stubIndex
+            implementation="org.purescript.module.declaration.type.LabeledIndex"/>
         <codeInsight.template.postfixTemplateProvider
                 language="Purescript"
                 implementationClass="org.purescript.module.declaration.value.expression.ExpressionPostfixTemplateProvider"
