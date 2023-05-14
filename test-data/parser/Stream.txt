@@ -466,7 +466,7 @@ Purescript File
                                             PsiElement(identifier)('dones')
                                 PsiElement())(')')
                         PsiElement())(')')
+                      PsiElement(.)('.')
                       PSAccessor(Accessor)
-                        PsiElement(.)('.')
                         PSIdentifier(identifier)
                           PsiElement(identifier)('head')

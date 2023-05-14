@@ -152,7 +152,7 @@ class ParserDefinitions {
         RecordLiteralType(recordLayout(recordLabel, "record label")),
         Parens(parens(expr.relax("empty parenthesis"))),
     )
-    private val expr7 = exprAtom + !+Accessor(dot + label)
+    private val expr7 = exprAtom + !+(dot + Accessor(label))
 
     private val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 

@@ -210,7 +210,7 @@ Purescript File
                                 PsiElement())(')')
                         PsiElement())(')')
                 PsiElement())(')')
+              PsiElement(.)('.')
               PSAccessor(Accessor)
-                PsiElement(.)('.')
                 PSIdentifier(identifier)
                   PsiElement(identifier)('x')
