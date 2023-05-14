@@ -8,7 +8,7 @@ import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement
 
 class Labeled : PSStubbedElement<Labeled.Stub> {
-    class Stub(val label: String, val type: String, p: StubElement<*>?) : AStub<Labeled>(p, Type) {
+    class Stub(val label: String, val type: String?, p: StubElement<*>?) : AStub<Labeled>(p, Type) {
     }
 
     object Type : PSElementType.WithPsiAndStub<Stub, Labeled>("Labeled") {
@@ -19,7 +19,7 @@ class Labeled : PSStubbedElement<Labeled.Stub> {
             d.writeName(stub.label)
             d.writeName(stub.type)
         }
-        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, d.readNameString()!!, p)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, d.readNameString(), p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
             sink.occurrence(LabeledIndex.KEY, stub.label)
         }
@@ -30,7 +30,7 @@ class Labeled : PSStubbedElement<Labeled.Stub> {
 
     val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName() = greenStub?.label ?: identifier.name
-    val type get() = findNotNullChildByClass(PSType::class.java)
-    val typeAsString get() = greenStub?.type ?: type.text
+    val type get() = findChildByClass(PSType::class.java)
+    val typeAsString get() = greenStub?.type ?: type?.text
 
 }
