@@ -67,7 +67,7 @@ class ParserDefinitions {
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
     private val typeVar = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val forAll = ForAll(`'forall'` + +typeVar + dot) + Reference { constrainedType }
-    private val rowLabel = label + dcolon + type.relax("malformed type")
+    private val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
     private val row = Row(
         (`|` + type) /
                 (!(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type))

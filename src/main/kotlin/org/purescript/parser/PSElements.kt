@@ -61,6 +61,7 @@ val TypeParametersType = WithPsi("TypeParameters") { TypeParameters(it) }
 val ForAll = WithPsi("ForAll") { PSForAll(it) }
 val ConstrainedType = WithPsi("ConstrainedType") { PSConstrainedType(it) }
 val Row = WithPsi("Row") { PSRow(it) }
+val LabeledType = Labeled.Type
 val ObjectType = WithPsi("ObjectType") { PSObjectType(it) }
 val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
 val TypeIdentifierType = WithPsi("TypeIdentifier") { TypeIdentifier(it) }
