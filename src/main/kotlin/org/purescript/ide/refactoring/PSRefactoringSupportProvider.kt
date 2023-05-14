@@ -7,6 +7,7 @@ import org.purescript.module.Module
 import org.purescript.module.declaration.fixity.FixityDeclaration
 import org.purescript.module.declaration.imports.PSImportedDataMember
 import org.purescript.module.declaration.imports.PSImportedItem
+import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.PSTypeVarName
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -16,6 +17,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
         element is Module ||
                 element is ValueDeclarationGroup ||
+                element is Labeled ||
                 element is FixityDeclaration ||
                 element is VarBinder ||
                 element is PSTypeVarName

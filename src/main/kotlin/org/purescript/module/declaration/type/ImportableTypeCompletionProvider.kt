@@ -41,7 +41,7 @@ class ImportableTypeCompletionProvider : CompletionProvider<CompletionParameters
         }
 
         for (entry in PSLanguage.BUILTIN_MODULES_MAP) {
-            for (element in PSLanguage.getBuiltins(entry.key)) {
+            for (element in PSLanguage.getBuiltins(project, entry.key)) {
                 if (result.isStopped) return
                 if (!result.prefixMatcher.prefixMatches(element.name)) continue
                 val elementBuilder = lookupElementBuilderForPrim(element, entry, qualifierName, project)
