@@ -28,7 +28,7 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
             val elementBuilders = elements
                 .mapNotNull { labeled: Labeled ->
                     LookupElementBuilder
-                        .create(labeled.name)
+                        .create(labeled, labeled.name)
                         .withTypeText(labeled.typeAsString)
                         .withTailText("(${labeled.module?.name})")
                 }
