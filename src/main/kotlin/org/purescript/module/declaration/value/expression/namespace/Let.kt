@@ -8,7 +8,7 @@ import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.psi.PSPsiElement
 
-class PSLet(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
+class Let(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
     val valueDeclarationGroups get() = childrenOfType<ValueDeclarationGroup>().asSequence()
     val value: PSValue? = findChildByClass(PSValue::class.java)
     private val binderChildren = childrenOfType<LetBinder>().asSequence()

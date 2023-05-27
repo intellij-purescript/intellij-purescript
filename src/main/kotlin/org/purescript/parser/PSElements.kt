@@ -38,7 +38,7 @@ import org.purescript.module.declaration.value.expression.literals.*
 import org.purescript.module.declaration.value.expression.namespace.LetBinder
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
-import org.purescript.module.declaration.value.expression.namespace.PSLet
+import org.purescript.module.declaration.value.expression.namespace.Let
 import org.purescript.module.declaration.value.parameters.Parameter
 import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.module.exports.*
@@ -152,7 +152,7 @@ val ExpressionWhere = WithPsi("ExpressionWhere") { PSExpressionWhere(it) }
 val Case = WithPsi("Case") { PSCase(it) }
 val CaseAlternativeType = WithPsi("CaseAlternative") { CaseAlternative(it) }
 val IfThenElse = WithPsi("IfThenElse") { PSIfThenElse(it) }
-val Let = WithPsi("Let") { PSLet(it) }
+val Let = WithPsi("Let") { Let(it) }
 val Parens = WithPsi("Parens") { PSParens(it) }
 val UnaryMinus = WithPsi("UnaryMinus") { PSUnaryMinus(it) }
 val CallType = WithPsi("Call") { Call(it) }

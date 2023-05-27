@@ -24,7 +24,7 @@ import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
-import org.purescript.module.declaration.value.expression.namespace.PSLet
+import org.purescript.module.declaration.value.expression.namespace.Let
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
@@ -76,7 +76,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
 
     override fun deleteAfterInline() {
         when (val parent = parent) {
-            is PSLet ->
+            is Let ->
                 if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
                     parent.value?.let { parent.parent.parent.replace(it) }
                         .alsoIfNull { delete() }
