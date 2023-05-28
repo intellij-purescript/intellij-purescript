@@ -26,7 +26,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
      */
     internal val qualifiedOperator: PSQualifiedOperatorName
         get() = findNotNullChildByClass(PSQualifiedOperatorName::class.java)
-    override val qualifierName: String? = qualifiedOperator.moduleName?.name
+    override val qualifierName: String? get() = qualifiedOperator.moduleName?.name
     val arguments get() = listOf(
         siblings(false, false).filterIsInstance<Expression>().first(),
         siblings(true, false).filterIsInstance<Expression>().first(),
