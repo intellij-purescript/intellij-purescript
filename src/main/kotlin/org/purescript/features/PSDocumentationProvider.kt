@@ -12,7 +12,6 @@ import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
-import org.purescript.module.declaration.fixity.FixityDeclaration
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.PSPsiElement
 
@@ -28,19 +27,6 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 ),
                 docCommentsToDocstring(element.docComments.map { it.text })
             )
-
-        element is FixityDeclaration -> {
-            val docComments = element.docComments
-            layout(
-                HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
-                    element.project,
-                    PSLanguage,
-                    element.type?.text?.let { "(${element.name}) :: $it" } ?: element.name,
-                    1f
-                ),
-                docCommentsToDocstring(docComments.map { it.text })
-            )
-        }
 
         element is DocCommentOwner && element is PsiNamedElement ->
             layout(
