@@ -25,7 +25,7 @@ class PSExpressionWhere(node: ASTNode) : PSPsiElement(node) {
             (where?.expressionAtoms ?: emptyList())
     val where get() = findChildByClass(PSExpressionWhere::class.java)
     val valueDeclarationGroups get() = childrenOfType<ValueDeclarationGroup>()
-    private val binderChildren = childrenOfType<LetBinder>()
-    private val namedBinders = binderChildren.asSequence().flatMap { it.namedBinders }
+    private val binderChildren get()  = childrenOfType<LetBinder>()
+    private val namedBinders get() = binderChildren.asSequence().flatMap { it.namedBinders }
     val valueNames: Sequence<PsiNamedElement> get() = namedBinders + valueDeclarationGroups.asSequence()
 }

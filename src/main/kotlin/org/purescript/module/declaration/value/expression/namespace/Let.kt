@@ -10,8 +10,8 @@ import org.purescript.psi.PSPsiElement
 
 class Let(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
     val valueDeclarationGroups get() = childrenOfType<ValueDeclarationGroup>().asSequence()
-    val value: PSValue? = findChildByClass(PSValue::class.java)
-    private val binderChildren = childrenOfType<LetBinder>().asSequence()
-    private val namedBinders = binderChildren.flatMap { it.namedBinders }
+    val value: PSValue? get() = findChildByClass(PSValue::class.java)
+    private val binderChildren get() = childrenOfType<LetBinder>().asSequence()
+    private val namedBinders get() = binderChildren.flatMap { it.namedBinders }
     override val valueNames get() = valueDeclarationGroups + namedBinders
 }
