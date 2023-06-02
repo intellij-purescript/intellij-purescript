@@ -65,7 +65,8 @@ class ParserDefinitions {
      */
     private val qualProperName = QualifiedProperName(qualified(properName))
     private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
-    private val typeVar = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
+    private val typeVarPlain = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
+    private val typeVar = ("@".dsl + TypeVarName(ident)) / ("@".dsl + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
     private val forAll = ForAll(`'forall'` + +typeVar + dot) + Reference { constrainedType }
     private val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
     private val row = Row(
