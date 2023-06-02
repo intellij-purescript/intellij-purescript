@@ -7,4 +7,5 @@ class TypeParserTest: PSLanguageParserTestBase("type") {
     fun testRecordRowNamedType() = doTest(true, true)
     fun testTypeLevelInt() = doTest(true, true)
     fun testHole() = doTest(true, true)
+    fun testVisibleTypeApplications() = doTest(true, true)
 }
