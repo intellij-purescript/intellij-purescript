@@ -181,7 +181,7 @@ class ParserDefinitions {
     /**
      * Function application
      */
-    private val expr4: DSL = object : DSL {
+    private val expr4: DSL = +(("@".dsl + typeAtom) / object : DSL {
         override fun parse(builder: PsiBuilder): Boolean {
             var start = builder.mark()
             if (expr5.parse(builder)) {
@@ -199,7 +199,7 @@ class ParserDefinitions {
             start.drop()
             return true
         }
-    }
+    })
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
