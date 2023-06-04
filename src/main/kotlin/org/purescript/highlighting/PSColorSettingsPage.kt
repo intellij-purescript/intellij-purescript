@@ -37,9 +37,6 @@ class PSColorSettingsPage : ColorSettingsPage {
             AttributesDescriptor("Number", NUMBER),
             AttributesDescriptor("String//String text", STRING),
             AttributesDescriptor("Operator", OPERATOR),
-            AttributesDescriptor("Type", TYPE_NAME),
-            AttributesDescriptor("Type variable", TYPE_VARIABLE),
-            AttributesDescriptor("Type annotation//name", TYPE_ANNOTATION_NAME),
             AttributesDescriptor("Braces and Operators//Operation sign", OPERATOR),
             AttributesDescriptor("Braces and Operators//Equals", PS_EQ),
             AttributesDescriptor("Braces and Operators//Arrows", PS_ARROW),
@@ -52,6 +49,9 @@ class PSColorSettingsPage : ColorSettingsPage {
             AttributesDescriptor("Identifiers//Function declaration", FUNCTION_DECLARATION),
             AttributesDescriptor("Identifiers//Function call", FUNCTION_CALL),
             AttributesDescriptor("Identifiers//Parameter", PARAMETER),
+            AttributesDescriptor("Identifiers//Type", TYPE_NAME),
+            AttributesDescriptor("Identifiers//Type variable", TYPE_VARIABLE),
+            AttributesDescriptor("Identifiers//Type annotation//name", TYPE_ANNOTATION_NAME),
             AttributesDescriptor("Import reference", IMPORT_REF)
         )
 
