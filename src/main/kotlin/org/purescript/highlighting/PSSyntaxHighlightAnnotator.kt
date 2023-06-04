@@ -16,11 +16,13 @@ import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
 import org.purescript.highlighting.PSSyntaxHighlighter.GLOBAL_VARIABLE
 import org.purescript.highlighting.PSSyntaxHighlighter.LOCAL_VARIABLE
+import org.purescript.highlighting.PSSyntaxHighlighter.PARAMETER
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_VARIABLE
 import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.name.PSIdentifier
@@ -32,49 +34,39 @@ class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is PSIdentifier -> when {
-                element.parent is ValueDecl || element.parent is PSSignature ->
-                    holder.newSilentAnnotation(INFORMATION)
-                        .textAttributes(FUNCTION_DECLARATION)
-                        .create()
+                element.parent is ValueDecl || element.parent is PSSignature -> holder.newSilentAnnotation(INFORMATION)
+                    .textAttributes(FUNCTION_DECLARATION).create()
 
                 element.parent.parent.parent is Call -> {
-                    holder.newSilentAnnotation(INFORMATION)
-                        .textAttributes(FUNCTION_CALL)
-                        .create()
+                    holder.newSilentAnnotation(INFORMATION).textAttributes(FUNCTION_CALL).create()
                 }
             }
 
             is PSExpressionIdentifier -> when (val ref = element.reference.resolve()) {
-                is ValueDeclarationGroup ->
-                    holder.newSilentAnnotation(INFORMATION)
-                        .textAttributes(
-                            if (ref.isTopLevel) GLOBAL_VARIABLE
-                            else LOCAL_VARIABLE
-                        )
-                        .create()
+                is ValueDeclarationGroup -> holder.newSilentAnnotation(INFORMATION).textAttributes(
+                    if (ref.isTopLevel) GLOBAL_VARIABLE
+                    else LOCAL_VARIABLE
+                ).create()
 
-                else -> {}
+                is VarBinder -> holder.newSilentAnnotation(INFORMATION).textAttributes(PARAMETER).create()
             }
+
+            is VarBinder -> holder.newSilentAnnotation(INFORMATION).textAttributes(PARAMETER).create()
 
         }
         when (element.node.elementType) {
             TypeCtor, ClassName -> {
-                holder.newSilentAnnotation(INFORMATION)
-                    .textAttributes(TYPE_NAME)
-                    .create()
+                holder.newSilentAnnotation(INFORMATION).textAttributes(TYPE_NAME).create()
             }
 
             ExpressionCtor -> {
-                holder.newSilentAnnotation(INFORMATION)
-                    .textAttributes(TYPE_VARIABLE)
-                    .create()
+                holder.newSilentAnnotation(INFORMATION).textAttributes(TYPE_VARIABLE).create()
             }
         }
         when (element) {
             is PsiErrorElement -> when (element.errorDescription) {
                 "missing lambda arrow" -> {
-                    holder
-                        .newAnnotation(ERROR, "missing arrow")
+                    holder.newAnnotation(ERROR, "missing arrow")
                         .withFix(object : IntentionAction {
                             override fun getText(): String = "Add lambda arrow"
                             override fun getFamilyName(): String = "Fix Syntax"
@@ -84,9 +76,7 @@ class PSSyntaxHighlightAnnotator : Annotator {
                             }
 
                             override fun startInWriteAction() = true
-                        })
-                        .range(element.textRange)
-                        .create()
+                        }).range(element.textRange).create()
                 }
             }
         }
