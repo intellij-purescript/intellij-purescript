@@ -25,6 +25,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     val OPERATOR = createKey("PS_OPERATOR", Default.OPERATION_SIGN)
     val VARIABLE = createKey("PS_VARIABLE", Default.INSTANCE_FIELD)
     val FUNCTION_CALL = createKey("PS_FUNCTION_CALL", Default.FUNCTION_CALL)
+    val FUNCTION_DECLARATION = createKey("PS_FUNCTION_DECLARATION", Default.FUNCTION_DECLARATION)
     val PS_EQ = createKey("PS_EQ", Default.OPERATION_SIGN)
     val PS_COMMA = createKey("PS_COMMA", Default.COMMA)
     val PS_DOT = createKey("PS_DOT", Default.OPERATION_SIGN)

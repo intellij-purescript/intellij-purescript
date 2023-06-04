@@ -12,28 +12,50 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
+import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_VARIABLE
+import org.purescript.module.declaration.PSSignature
+import org.purescript.module.declaration.value.ValueDecl
+import org.purescript.module.declaration.value.expression.identifier.Call
+import org.purescript.name.PSIdentifier
 import org.purescript.parser.ClassName
 import org.purescript.parser.ExpressionCtor
 import org.purescript.parser.TypeCtor
 
 class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        when (element) {
+            is PSIdentifier -> when {
+                element.parent is ValueDecl || element.parent is PSSignature ->
+                    holder.newSilentAnnotation(INFORMATION)
+                        .textAttributes(FUNCTION_DECLARATION)
+                        .create()
+
+                element.parent.parent.parent is Call -> {
+                    holder.newSilentAnnotation(INFORMATION)
+                        .textAttributes(FUNCTION_CALL)
+                        .create()
+                }
+            }
+
+        }
         when (element.node.elementType) {
             TypeCtor, ClassName -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_NAME)
                     .create()
             }
+
             ExpressionCtor -> {
                 holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(TYPE_VARIABLE)
                     .create()
             }
         }
-        when(element) {
-            is PsiErrorElement -> when(element.errorDescription) {
+        when (element) {
+            is PsiErrorElement -> when (element.errorDescription) {
                 "missing lambda arrow" -> {
                     holder
                         .newAnnotation(ERROR, "missing arrow")
