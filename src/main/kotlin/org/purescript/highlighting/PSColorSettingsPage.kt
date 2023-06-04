@@ -5,102 +5,71 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
-import org.purescript.icons.PSIcons
 import org.jetbrains.annotations.NonNls
-import java.util.*
+import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
+import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
+import org.purescript.highlighting.PSSyntaxHighlighter.IMPORT_REF
+import org.purescript.highlighting.PSSyntaxHighlighter.KEYWORD
+import org.purescript.highlighting.PSSyntaxHighlighter.NUMBER
+import org.purescript.highlighting.PSSyntaxHighlighter.OPERATOR
+import org.purescript.highlighting.PSSyntaxHighlighter.PARAMETER
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_ARROW
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_BRACES
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_BRACKETS
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_COMMA
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_DOT
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_EQ
+import org.purescript.highlighting.PSSyntaxHighlighter.PS_PARENTHESIS
+import org.purescript.highlighting.PSSyntaxHighlighter.STRING
+import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_ANNOTATION_NAME
+import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_NAME
+import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_VARIABLE
+import org.purescript.icons.PSIcons
 import javax.swing.Icon
 
 class PSColorSettingsPage : ColorSettingsPage {
     companion object {
         @NonNls
-        private val TAG_HIGHLIGHTING_MAP: MutableMap<String, TextAttributesKey> =
-            HashMap()
+        private val TAG_HIGHLIGHTING_MAP: MutableMap<String, TextAttributesKey> = HashMap()
         private val ATTRIBS = arrayOf(
-            AttributesDescriptor(
-                "Keyword",
-                PSSyntaxHighlighter.KEYWORD
-            ),
-            AttributesDescriptor(
-                "Number",
-                PSSyntaxHighlighter.NUMBER
-            ),
-            AttributesDescriptor(
-                "String",
-                PSSyntaxHighlighter.STRING
-            ),
-            AttributesDescriptor(
-                "Operator",
-                PSSyntaxHighlighter.OPERATOR
-            ),
-            AttributesDescriptor(
-                "Type",
-                PSSyntaxHighlighter.TYPE_NAME
-            ),
-            AttributesDescriptor(
-                "Type variable",
-                PSSyntaxHighlighter.TYPE_VARIABLE
-            ),
-            AttributesDescriptor(
-                "Type annotation//name",
-                PSSyntaxHighlighter.TYPE_ANNOTATION_NAME
-            ),
-            AttributesDescriptor(
-                "Punctuation//Arrows",
-                PSSyntaxHighlighter.PS_ARROW
-            ),
-            AttributesDescriptor(
-                "Punctuation//Parentheses",
-                PSSyntaxHighlighter.PS_PARENTHESIS
-            ),
-            AttributesDescriptor(
-                "Punctuation//Braces",
-                PSSyntaxHighlighter.PS_BRACES
-            ),
-            AttributesDescriptor(
-                "Punctuation//Brackets",
-                PSSyntaxHighlighter.PS_BRACKETS
-            ),
-            AttributesDescriptor(
-                "Punctuation//Comma",
-                PSSyntaxHighlighter.PS_COMMA
-            ),
-            AttributesDescriptor(
-                "Punctuation//Dot",
-                PSSyntaxHighlighter.PS_DOT
-            ),
-            AttributesDescriptor(
-                "Punctuation//Equals",
-                PSSyntaxHighlighter.PS_EQ
-            ),
-            AttributesDescriptor(
-                "Import reference",
-                PSSyntaxHighlighter.IMPORT_REF
-            )
+            AttributesDescriptor("Keyword", KEYWORD),
+            AttributesDescriptor("Number", NUMBER),
+            AttributesDescriptor("String", STRING),
+            AttributesDescriptor("Operator", OPERATOR),
+            AttributesDescriptor("Type", TYPE_NAME),
+            AttributesDescriptor("Type variable", TYPE_VARIABLE),
+            AttributesDescriptor("Type annotation//name", TYPE_ANNOTATION_NAME),
+            AttributesDescriptor("Braces and Operators//Operation sign", OPERATOR),
+            AttributesDescriptor("Braces and Operators//Equals", PS_EQ),
+            AttributesDescriptor("Braces and Operators//Arrows", PS_ARROW),
+            AttributesDescriptor("Braces and Operators//Braces", PS_BRACES),
+            AttributesDescriptor("Braces and Operators//Parentheses", PS_PARENTHESIS),
+            AttributesDescriptor("Braces and Operators//Brackets", PS_BRACKETS),
+            AttributesDescriptor("Braces and Operators//Comma", PS_COMMA),
+            AttributesDescriptor("Braces and Operators//Dot", PS_DOT),
+            AttributesDescriptor("Identifiers//Function declaration", FUNCTION_DECLARATION),
+            AttributesDescriptor("Identifiers//Function call", FUNCTION_CALL),
+            AttributesDescriptor("Identifiers//Parameter", PARAMETER),
+            AttributesDescriptor("Import reference", IMPORT_REF)
         )
 
         init {
-            TAG_HIGHLIGHTING_MAP["import_ref"] = PSSyntaxHighlighter.IMPORT_REF // blue
-            TAG_HIGHLIGHTING_MAP["type_variable"] = PSSyntaxHighlighter.TYPE_VARIABLE // red
-            TAG_HIGHLIGHTING_MAP["type_name"] = PSSyntaxHighlighter.TYPE_NAME // yellow
-            TAG_HIGHLIGHTING_MAP["type_annotation_name"] = PSSyntaxHighlighter.TYPE_ANNOTATION_NAME // blue
+            TAG_HIGHLIGHTING_MAP["import_ref"] = IMPORT_REF // blue
+            TAG_HIGHLIGHTING_MAP["type_variable"] = TYPE_VARIABLE // red
+            TAG_HIGHLIGHTING_MAP["type_name"] = TYPE_NAME // yellow
+            TAG_HIGHLIGHTING_MAP["type_annotation_name"] = TYPE_ANNOTATION_NAME // blue
         }
     }
 
-    override fun getIcon(): Icon {
-        return PSIcons.FILE
-    }
+    override fun getIcon(): Icon = PSIcons.FILE
+    override fun getHighlighter(): SyntaxHighlighter = PSSyntaxHighlighter
+    override fun getDemoText(): String = """
+module DemoText.View where
 
-    override fun getHighlighter(): SyntaxHighlighter {
-        return PSSyntaxHighlighter
-    }
-
-    override fun getDemoText(): String {
-        return """module DemoText.View where
-
-import Prelude hiding (<import_ref>div</import_ref>)
-import UserManagement.Models (<type_name>Model(..)</type_name>, <type_name>User(..)</type_name>, <type_name>class Cool</type_name>)
+import Prelude hiding (div)
+import UserManagement.Models (Model(..), User(..), class Cool)
 import UserManagement.Query
-import Data.Functor (<import_ref>map</import_ref>)
+import Data.Functor (map)
 
 -- This is a line comment
 
@@ -108,7 +77,7 @@ import Data.Functor (<import_ref>map</import_ref>)
  This is a block comment
 -}
 
-newtype <type_name>X</type_name> = <type_name>X Int</type_name>
+newtype X = X Int
 
 <type_annotation_name>patternNewtype</type_annotation_name> :: <type_name>Boolean</type_name>
 patternNewtype =
@@ -153,22 +122,13 @@ clunky2 a b | x <- max a b
             , x > 5
             = x
             | otherwise
-            = a + b"""
-    }
+            = a + b
+            """
 
-    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> {
-        return TAG_HIGHLIGHTING_MAP
-    }
+    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = 
+        TAG_HIGHLIGHTING_MAP
 
-    override fun getAttributeDescriptors(): Array<AttributesDescriptor> {
-        return ATTRIBS
-    }
-
-    override fun getColorDescriptors(): Array<ColorDescriptor> {
-        return ColorDescriptor.EMPTY_ARRAY
-    }
-
-    override fun getDisplayName(): String {
-        return "Purescript"
-    }
+    override fun getAttributeDescriptors(): Array<AttributesDescriptor> = ATTRIBS
+    override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
+    override fun getDisplayName(): String = "Purescript"
 }
