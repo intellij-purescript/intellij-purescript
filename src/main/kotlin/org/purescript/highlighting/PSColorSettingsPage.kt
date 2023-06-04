@@ -8,6 +8,7 @@ import com.intellij.openapi.options.colors.ColorSettingsPage
 import org.jetbrains.annotations.NonNls
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
+import org.purescript.highlighting.PSSyntaxHighlighter.IDENTIFIER
 import org.purescript.highlighting.PSSyntaxHighlighter.IMPORT_REF
 import org.purescript.highlighting.PSSyntaxHighlighter.KEYWORD
 import org.purescript.highlighting.PSSyntaxHighlighter.NUMBER
@@ -34,7 +35,7 @@ class PSColorSettingsPage : ColorSettingsPage {
         private val ATTRIBS = arrayOf(
             AttributesDescriptor("Keyword", KEYWORD),
             AttributesDescriptor("Number", NUMBER),
-            AttributesDescriptor("String", STRING),
+            AttributesDescriptor("String//String text", STRING),
             AttributesDescriptor("Operator", OPERATOR),
             AttributesDescriptor("Type", TYPE_NAME),
             AttributesDescriptor("Type variable", TYPE_VARIABLE),
@@ -47,6 +48,7 @@ class PSColorSettingsPage : ColorSettingsPage {
             AttributesDescriptor("Braces and Operators//Brackets", PS_BRACKETS),
             AttributesDescriptor("Braces and Operators//Comma", PS_COMMA),
             AttributesDescriptor("Braces and Operators//Dot", PS_DOT),
+            AttributesDescriptor("Identifiers//Default", IDENTIFIER),
             AttributesDescriptor("Identifiers//Function declaration", FUNCTION_DECLARATION),
             AttributesDescriptor("Identifiers//Function call", FUNCTION_CALL),
             AttributesDescriptor("Identifiers//Parameter", PARAMETER),

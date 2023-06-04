@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType.BAD_CHARACTER
 import com.intellij.psi.tree.IElementType
-import com.intellij.psi.tree.TokenSet.create
 import org.purescript.lexer.PSHighlightLexer
 import org.purescript.parser.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors as Default
@@ -23,7 +22,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     val PS_BRACES = createKey("PS_BRACES", Default.BRACES)
     val PS_PARENTHESIS = createKey("PS_PARENTHESIS", Default.PARENTHESES)
     val OPERATOR = createKey("PS_OPERATOR", Default.OPERATION_SIGN)
-    val VARIABLE = createKey("PS_VARIABLE", Default.INSTANCE_FIELD)
+    val IDENTIFIER = createKey("PS_IDENTIFIER", Default.IDENTIFIER)
     val FUNCTION_CALL = createKey("PS_FUNCTION_CALL", Default.FUNCTION_CALL)
     val FUNCTION_DECLARATION = createKey("PS_FUNCTION_DECLARATION", Default.FUNCTION_DECLARATION)
     val PARAMETER = createKey("PS_PARAMETER", Default.PARAMETER)
@@ -32,37 +31,37 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     val PS_DOT = createKey("PS_DOT", Default.OPERATION_SIGN)
     val PS_DCOLON = createKey("PS_DCOLON", Default.OPERATION_SIGN)
     val PS_ARROW = createKey("PS_ARROW", Default.OPERATION_SIGN)
+
     // annotation highlighting
     // 'log' in 'import Control.Monad.Eff.Console (log)'
     val IMPORT_REF = createKey("PS_IMPORT_REF", Default.LOCAL_VARIABLE)
+
     // 'String' in 'foo :: String -> String'
     val TYPE_NAME = createKey("PS_TYPE_NAME", Default.METADATA)
+
     // 'foo' in 'foo :: String -> String'
-    val TYPE_ANNOTATION_NAME = 
+    val TYPE_ANNOTATION_NAME =
         createKey("PS_TYPE_ANNOTATION_NAME", Default.METADATA)
+
     // 'a' in 'foo:: forall a. a -> a -> String'
     val TYPE_VARIABLE = createKey("PS_TYPE_VARIABLE", Default.METADATA)
-    private fun createKey(
-        externalName: String,
-        fallbackAttrs: TextAttributesKey
-    ) = createTextAttributesKey(externalName, fallbackAttrs)
+    private fun createKey(externalName: String, fallbackAttrs: TextAttributesKey) =
+        createTextAttributesKey(externalName, fallbackAttrs)
 
     init {
-        fillMap(keys, create(SLCOMMENT), LINE_COMMENT)
-        fillMap(keys, create(MLCOMMENT), BLOCK_COMMENT)
+        fillMap(keys, LINE_COMMENT, SLCOMMENT)
+        fillMap(keys, BLOCK_COMMENT, MLCOMMENT)
         fillMap(keys, kKeywords, KEYWORD)
-        fillMap(keys, create(NATURAL), NUMBER)
+        fillMap(keys, NUMBER, NATURAL)
         fillMap(keys, kStrings, STRING)
-        fillMap(keys, create(LPAREN, RPAREN), PS_PARENTHESIS)
-        fillMap(keys, create(LBRACK, RBRACK), PS_BRACKETS)
-        fillMap(keys, create(LCURLY, RCURLY), PS_BRACES)
+        fillMap(keys, PS_PARENTHESIS, LPAREN, RPAREN)
+        fillMap(keys, PS_BRACKETS, LBRACK, RBRACK)
+        fillMap(keys, PS_BRACES, LCURLY, RCURLY)
         fillMap(keys, kOperators, OPERATOR)
-        fillMap(keys, create(LOWER), VARIABLE)
-        fillMap(keys, create(ModuleName), TYPE_NAME)
-        fillMap(keys, create(STRING_ESCAPED), KEYWORD)
-        fillMap(keys, create(org.purescript.parser.STRING_GAP), STRING_GAP)
-        fillMap(keys, create(STRING_ERROR), ERRORS_ATTRIBUTES)
-        fillMap(keys, create(BAD_CHARACTER), ERRORS_ATTRIBUTES)
+        fillMap(keys, IDENTIFIER, LOWER, ModuleName)
+        fillMap(keys, KEYWORD, STRING_ESCAPED)
+        fillMap(keys, STRING_GAP, org.purescript.parser.STRING_GAP)
+        fillMap(keys, ERRORS_ATTRIBUTES, STRING_ERROR, BAD_CHARACTER)
         keys[EQ] = PS_EQ
         keys[COMMA] = PS_COMMA
         keys[DOT] = PS_DOT
@@ -71,6 +70,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
         keys[LARROW] = PS_ARROW
         keys[FLOAT] = NUMBER
     }
+
     override fun getHighlightingLexer() = PSHighlightLexer()
     override fun getTokenHighlights(token: IElementType) = pack(keys[token])
 }
