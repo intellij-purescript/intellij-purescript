@@ -8,9 +8,11 @@ import com.intellij.openapi.options.colors.ColorSettingsPage
 import org.jetbrains.annotations.NonNls
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
+import org.purescript.highlighting.PSSyntaxHighlighter.GLOBAL_VARIABLE
 import org.purescript.highlighting.PSSyntaxHighlighter.IDENTIFIER
 import org.purescript.highlighting.PSSyntaxHighlighter.IMPORT_REF
 import org.purescript.highlighting.PSSyntaxHighlighter.KEYWORD
+import org.purescript.highlighting.PSSyntaxHighlighter.LOCAL_VARIABLE
 import org.purescript.highlighting.PSSyntaxHighlighter.NUMBER
 import org.purescript.highlighting.PSSyntaxHighlighter.OPERATOR
 import org.purescript.highlighting.PSSyntaxHighlighter.PARAMETER
@@ -46,6 +48,8 @@ class PSColorSettingsPage : ColorSettingsPage {
             AttributesDescriptor("Braces and Operators//Comma", PS_COMMA),
             AttributesDescriptor("Braces and Operators//Dot", PS_DOT),
             AttributesDescriptor("Identifiers//Default", IDENTIFIER),
+            AttributesDescriptor("Identifiers//Local variable", LOCAL_VARIABLE),
+            AttributesDescriptor("Identifiers//Global variable", GLOBAL_VARIABLE),
             AttributesDescriptor("Identifiers//Function declaration", FUNCTION_DECLARATION),
             AttributesDescriptor("Identifiers//Function call", FUNCTION_CALL),
             AttributesDescriptor("Identifiers//Parameter", PARAMETER),

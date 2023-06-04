@@ -23,8 +23,8 @@ import org.purescript.module.declaration.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
-import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.Let
+import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
@@ -135,12 +135,12 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     val isExported
         get() = greenStub?.isExported ?: when {
             module == null -> false
-            isTopLevel -> false
+            !isTopLevel -> false
             module?.exports == null -> true
             module?.exportsSelf == null -> true
             else -> name in (module?.exports?.values?.map { it.name } ?: emptyList())
         }
-    val isTopLevel get() = parent !is Module
+    val isTopLevel get() = parent is Module
     override fun getUseScope(): SearchScope = (
             if (isExported) super.getUseScope()
             else if (isExported) module?.let { LocalSearchScope(it) }

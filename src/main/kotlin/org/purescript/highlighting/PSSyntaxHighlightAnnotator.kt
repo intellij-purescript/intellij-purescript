@@ -14,11 +14,15 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
+import org.purescript.highlighting.PSSyntaxHighlighter.GLOBAL_VARIABLE
+import org.purescript.highlighting.PSSyntaxHighlighter.LOCAL_VARIABLE
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_VARIABLE
 import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.ValueDecl
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.expression.identifier.Call
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.name.PSIdentifier
 import org.purescript.parser.ClassName
 import org.purescript.parser.ExpressionCtor
@@ -38,6 +42,18 @@ class PSSyntaxHighlightAnnotator : Annotator {
                         .textAttributes(FUNCTION_CALL)
                         .create()
                 }
+            }
+
+            is PSExpressionIdentifier -> when (val ref = element.reference.resolve()) {
+                is ValueDeclarationGroup ->
+                    holder.newSilentAnnotation(INFORMATION)
+                        .textAttributes(
+                            if (ref.isTopLevel) GLOBAL_VARIABLE
+                            else LOCAL_VARIABLE
+                        )
+                        .create()
+
+                else -> {}
             }
 
         }
