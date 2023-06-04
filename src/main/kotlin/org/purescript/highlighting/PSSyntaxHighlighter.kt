@@ -10,7 +10,6 @@ import com.intellij.psi.tree.TokenSet.create
 import org.purescript.lexer.PSHighlightLexer
 import org.purescript.parser.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors as Default
-import org.purescript.parser.OPERATOR as PARSER_OPERATOR
 
 object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     private val keys: MutableMap<IElementType, TextAttributesKey> = HashMap()
@@ -56,7 +55,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
         fillMap(keys, create(LBRACK, RBRACK), PS_BRACKETS)
         fillMap(keys, create(LCURLY, RCURLY), PS_BRACES)
         fillMap(keys, kOperators, OPERATOR)
-        fillMap(keys, create(LOWER, PARSER_OPERATOR), VARIABLE)
+        fillMap(keys, create(LOWER), VARIABLE)
         fillMap(keys, create(PROPER_NAME), FUNCTION_CALL)
         fillMap(keys, create(ModuleName), TYPE_NAME)
         fillMap(keys, create(STRING_ESCAPED), KEYWORD)
