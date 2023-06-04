@@ -6,8 +6,8 @@ class ParserDefinitions {
     // Literals
     private val boolean = `'true'` / `'false'`
     private val number = NumericLiteral(NATURAL / FLOAT)
-    private val moduleName = ModuleName(!MODULE_PREFIX + PROPER_NAME)
-    private val qualifier = ModuleName(MODULE_PREFIX)
+    private val moduleName = MODULE_NAME(!MODULE_PREFIX + PROPER_NAME)
+    private val qualifier = MODULE_NAME(MODULE_PREFIX)
 
     // Utils
     private fun qualified(p: DSL) = !(qualifier) + p

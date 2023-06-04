@@ -58,7 +58,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
         fillMap(keys, PS_BRACKETS, LBRACK, RBRACK)
         fillMap(keys, PS_BRACES, LCURLY, RCURLY)
         fillMap(keys, kOperators, OPERATOR)
-        fillMap(keys, IDENTIFIER, LOWER, ModuleName)
+        fillMap(keys, IDENTIFIER, LOWER, MODULE_NAME)
         fillMap(keys, KEYWORD, STRING_ESCAPED)
         fillMap(keys, STRING_GAP, org.purescript.parser.STRING_GAP)
         fillMap(keys, ERRORS_ATTRIBUTES, STRING_ERROR, BAD_CHARACTER)
