@@ -121,12 +121,7 @@
         <annotator
             language="Purescript"
             implementationClass="org.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
-
-        <additionalTextAttributes scheme="Default"
-                                  file="colorSchemes/PurescriptDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula"
-                                  file="colorSchemes/PurescriptDarcula.xml"/>
-
+        
         <colorSettingsPage
             implementation="org.purescript.highlighting.PSColorSettingsPage"/>
 
