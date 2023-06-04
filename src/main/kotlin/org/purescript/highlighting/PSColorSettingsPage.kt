@@ -38,7 +38,6 @@ class PSColorSettingsPage : ColorSettingsPage {
             AttributesDescriptor("Keyword", KEYWORD),
             AttributesDescriptor("Number", NUMBER),
             AttributesDescriptor("String//String text", STRING),
-            AttributesDescriptor("Operator", OPERATOR),
             AttributesDescriptor("Braces and Operators//Operation sign", OPERATOR),
             AttributesDescriptor("Braces and Operators//Equals", PS_EQ),
             AttributesDescriptor("Braces and Operators//Arrows", PS_ARROW),
