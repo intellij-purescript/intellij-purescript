@@ -77,7 +77,6 @@ class ParserDefinitions() {
         (`|` + type) /
                 (!(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type))
     )
-    private val typeCtor = TypeCtor(qualProperName)
     private val hole = TypeHole("?".dsl + ident)
 
     private val typeAtom: DSL = (
@@ -85,9 +84,9 @@ class ParserDefinitions() {
                     squares(!type) /
                     ObjectType(braces(row)) /
                     `_` /
-                    string /
-                    number /
-                    typeCtor /
+                    TypeStringType(string) /
+                    TypeIntType(number) /
+                    TypeCtor(qualProperName) /
                     TypeIdentifierType(ident) /
                     parens(arrow / row).heal /
                     parens(type)
