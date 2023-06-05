@@ -1,6 +1,7 @@
 package org.purescript.parser
 
 import org.purescript.module.Module
+import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.classes.*
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataConstructorList
@@ -12,7 +13,6 @@ import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.type.*
 import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
 import org.purescript.module.declaration.value.ValueDecl
@@ -35,10 +35,10 @@ import org.purescript.module.declaration.value.expression.controll.ifthenelse.PS
 import org.purescript.module.declaration.value.expression.dostmt.*
 import org.purescript.module.declaration.value.expression.identifier.*
 import org.purescript.module.declaration.value.expression.literals.*
+import org.purescript.module.declaration.value.expression.namespace.Let
 import org.purescript.module.declaration.value.expression.namespace.LetBinder
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
-import org.purescript.module.declaration.value.expression.namespace.Let
 import org.purescript.module.declaration.value.parameters.Parameter
 import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.module.exports.*
@@ -58,7 +58,8 @@ val ExportedDataMember = PSExportedDataMember.Type
 val ExportedDataMemberListType = PSExportedDataMemberList.Type
 val Type = WithPsi("Type") { PSType(it) }
 val TypeParametersType = WithPsi("TypeParameters") { TypeParameters(it) }
-val ForAll = WithPsi("ForAll") { PSForAll(it) }
+val ForAllType = WithPsi("ForAll") { ForAll(it) }
+val TypeArrType = WithPsi("TypeArr") { TypeArr(it) }
 val ConstrainedType = WithPsi("ConstrainedType") { PSConstrainedType(it) }
 val Row = WithPsi("Row") { PSRow(it) }
 val LabeledType = Labeled.Type

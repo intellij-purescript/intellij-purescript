@@ -11,7 +11,7 @@ Purescript File
       <empty list>
     PsiElement(::)('::')
     PSType(Type)
-      PSForAll(ForAll)
+      ForAll(ForAll)
         PsiElement(forall)('forall')
         PSTypeVarKinded(TypeVarKinded)
           PsiElement(()('(')
@@ -49,7 +49,7 @@ Purescript File
         PsiElement(proper name)('A')
       PsiElement(::)('::')
       PSType(Type)
-        PSForAll(ForAll)
+        ForAll(ForAll)
           PsiElement(forall)('forall')
           PSTypeVarKinded(TypeVarKinded)
             PsiElement(()('(')

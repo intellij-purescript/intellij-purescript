@@ -87,7 +87,7 @@ Purescript File
           PsiElement(identifier)('genConfig')
         PsiElement(::)('∷')
         PSType(Type)
-          PSForAll(ForAll)
+          ForAll(ForAll)
             PsiElement(forall)('∀')
             PSTypeVarName(TypeVarName)
               PSIdentifier(identifier)

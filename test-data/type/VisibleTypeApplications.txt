@@ -10,7 +10,7 @@ Purescript File
           PsiElement(identifier)('def')
         PsiElement(::)('::')
         PSType(Type)
-          PSForAll(ForAll)
+          ForAll(ForAll)
             PsiElement(forall)('forall')
             PsiElement(operator)('@')
             PSTypeVarName(TypeVarName)

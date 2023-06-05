@@ -284,7 +284,7 @@ Purescript File
             PsiElement(identifier)('c4')
           PsiElement(::)('::')
           PSType(Type)
-            PSForAll(ForAll)
+            ForAll(ForAll)
               PsiElement(forall)('forall')
               PSTypeVarName(TypeVarName)
                 PSIdentifier(identifier)

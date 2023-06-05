@@ -12,7 +12,7 @@ Purescript File
         <empty list>
       PsiElement(=)('=')
       PSType(Type)
-        PSForAll(ForAll)
+        ForAll(ForAll)
           PsiElement(forall)('forall')
           PSTypeVarName(TypeVarName)
             PSIdentifier(identifier)
