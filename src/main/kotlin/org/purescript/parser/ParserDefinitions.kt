@@ -86,8 +86,9 @@ class ParserDefinitions() {
                     TypeIntType(number) /
                     TypeCtor(qualProperName) /
                     TypeIdentifierType(ident) /
-                    parens(arrow / row).heal /
-                    parens(type)
+                    parens(arrow).heal /
+                    parens(row).heal /
+                    TypeParenthesisType(parens(type))
             )
     private val binderAtom: DSL = Reference {
         Choice.of(
