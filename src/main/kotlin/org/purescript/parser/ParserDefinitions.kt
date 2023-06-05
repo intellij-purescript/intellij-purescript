@@ -115,11 +115,19 @@ class ParserDefinitions() {
     private val type5 = +typeAtom
     private val type4 = ("-".dsl + number) / type5
     private val type3 = type4.sepBy1(qualOp)
+
+    /**
+     * Function or constraint
+     */
     private val type2: DSL = Choice.of(
         TypeArrType(type3 + (arrow + Reference { type1 })).heal,
         ConstrainedType(type3 + (darrow + Reference { type1 })).heal,
         type3
     )
+
+    /**
+     * Forall
+     */
     private val type1 = Choice.of(
         ForAllType(`'forall'` + +typeVar + dot + type2),
         type2
