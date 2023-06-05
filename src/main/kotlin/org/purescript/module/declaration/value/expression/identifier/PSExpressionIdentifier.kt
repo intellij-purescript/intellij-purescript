@@ -15,6 +15,8 @@ import org.purescript.name.PSQualifiedIdentifier
 import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A identifier in an expression, e.g.
@@ -83,5 +85,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
 
             else -> false
         }
+    }
+
+    override fun checkType(): TypeCheckerType? {
+        return (reference.resolve() as? TypeCheckable)?.checkType()
     }
 }

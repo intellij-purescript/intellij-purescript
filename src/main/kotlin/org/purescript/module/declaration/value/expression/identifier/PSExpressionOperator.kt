@@ -7,6 +7,7 @@ import org.purescript.module.declaration.value.expression.*
 import org.purescript.name.PSQualifiedOperatorName
 import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * An Operator in an expression, e.g.
@@ -40,6 +41,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
     }
 
     override fun getName(): String = qualifiedOperator.name
+    override fun checkType(): TypeCheckerType? = null
 
 
     val associativity get() = reference.resolve()?.associativity

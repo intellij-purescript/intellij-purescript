@@ -4,8 +4,12 @@ import com.intellij.lang.ASTNode
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckerType
+import org.purescript.typechecker.TypeConstructor
 
 class PSBooleanLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     override fun areSimilarTo(other: Similar): Boolean =
         other is PSBooleanLiteral && other.text == this.text
+
+    override fun checkType(): TypeCheckerType = TypeConstructor("Prim.Boolean")
 }

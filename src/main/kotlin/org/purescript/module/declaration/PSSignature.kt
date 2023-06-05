@@ -8,6 +8,8 @@ import org.purescript.module.declaration.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * `foo :: int` in
@@ -16,7 +18,7 @@ import org.purescript.psi.PSPsiFactory
  * foo = 42
  * ```
  */
-class PSSignature(node: ASTNode) : PSPsiElement(node) {
+class PSSignature(node: ASTNode) : PSPsiElement(node), TypeCheckable {
     val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     val type get() = findNotNullChildByClass(PSType::class.java)
     override fun getName() = identifier.name
@@ -30,4 +32,6 @@ class PSSignature(node: ASTNode) : PSPsiElement(node) {
 
     override fun getReference(): PsiReference? = 
         parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
+
+    override fun checkType(): TypeCheckerType? = type.checkType()
 }
