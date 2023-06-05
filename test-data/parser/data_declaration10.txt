@@ -23,7 +23,7 @@ Purescript File
         PSDataConstructor(DataConstructor)
           PSProperName(ProperName)
             PsiElement(proper name)('Cool')
-          PSObjectType(ObjectType)
+          TypeRecord(TypeRecord)
             PsiElement({)('{')
             PSRow(Row)
               Labeled(Labeled)

@@ -16,7 +16,7 @@ Purescript File
       NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('User7')
-        PSObjectType(ObjectType)
+        TypeRecord(TypeRecord)
           PsiElement({)('{')
           PSRow(Row)
             Labeled(Labeled)

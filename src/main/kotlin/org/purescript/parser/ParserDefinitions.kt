@@ -80,7 +80,7 @@ class ParserDefinitions() {
 
     private val typeAtom: DSL = (
             hole /
-                    ObjectType(braces(row)) /
+                    TypeRecordType(braces(row)) /
                     TypeWildcardType(`_`) /
                     TypeStringType(string) /
                     TypeIntType(number) /

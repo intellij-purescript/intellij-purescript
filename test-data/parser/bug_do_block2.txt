@@ -262,7 +262,7 @@ Purescript File
       NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('Credentials')
-        PSObjectType(ObjectType)
+        TypeRecord(TypeRecord)
           PsiElement({)('{')
           PSRow(Row)
             Labeled(Labeled)

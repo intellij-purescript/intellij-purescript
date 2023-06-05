@@ -14,7 +14,7 @@ Purescript File
       NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('Foo')
-        PSObjectType(ObjectType)
+        TypeRecord(TypeRecord)
           PsiElement({)('{')
           PSRow(Row)
             <empty list>
@@ -31,7 +31,7 @@ Purescript File
           PsiElement(proper name)('Foo')
         PsiElement(()('(')
         PSType(Type)
-          PSObjectType(ObjectType)
+          TypeRecord(TypeRecord)
             PsiElement({)('{')
             PSRow(Row)
               <empty list>

@@ -22,7 +22,7 @@ Purescript File
       NewtypeCtor(NewtypeCtor)
         PSProperName(ProperName)
           PsiElement(proper name)('Cool')
-        PSObjectType(ObjectType)
+        TypeRecord(TypeRecord)
           PsiElement({)('{')
           PSRow(Row)
             Labeled(Labeled)

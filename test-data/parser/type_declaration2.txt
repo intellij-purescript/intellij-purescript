@@ -20,7 +20,7 @@ Purescript File
             PSIdentifier(identifier)
               PsiElement(identifier)('a')
           PsiElement(.)('.')
-          PSObjectType(ObjectType)
+          TypeRecord(TypeRecord)
             PsiElement({)('{')
             PSRow(Row)
               Labeled(Labeled)

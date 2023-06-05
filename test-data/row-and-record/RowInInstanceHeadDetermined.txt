@@ -92,7 +92,7 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Empty')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
@@ -125,7 +125,7 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Cons')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           Labeled(Labeled)
@@ -229,12 +229,12 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Empty')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
         PsiElement(})('}')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
@@ -344,12 +344,12 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Empty')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
         PsiElement(})('}')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
@@ -415,12 +415,12 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Empty')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
         PsiElement(})('}')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
@@ -479,12 +479,12 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Empty')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
         PsiElement(})('}')
-      PSObjectType(ObjectType)
+      TypeRecord(TypeRecord)
         PsiElement({)('{')
         PSRow(Row)
           <empty list>
