@@ -74,6 +74,7 @@ val TypeVarName = WithPsi("TypeVarName") { PSTypeVarName(it) }
 val TypeIdentifierType = WithPsi("TypeIdentifier") { TypeIdentifier(it) }
 val TypeParenthesisType = WithPsi("TypeParenthesis") { TypeParenthesis(it) }
 val TypeRowType = WithPsi("TypeRow") { TypeRow(it) }
+val TypeArrNameType = WithPsi("TypeArrName") { TypeArrName(it) }
 val TypeVarKinded = WithPsi("TypeVarKinded") { PSTypeVarKinded(it) }
 val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val DataDecl = DataDeclaration.Type

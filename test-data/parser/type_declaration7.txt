@@ -17,7 +17,8 @@ Purescript File
             PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('RandomConsoleEffects')
-          PsiElement(()('(')
-          PSRow(Row)
-            <empty list>
-          PsiElement())(')')
+          TypeRow(TypeRow)
+            PsiElement(()('(')
+            PSRow(Row)
+              <empty list>
+            PsiElement())(')')
