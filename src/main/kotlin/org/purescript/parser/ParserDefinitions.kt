@@ -2,7 +2,7 @@ package org.purescript.parser
 
 import com.intellij.lang.PsiBuilder
 
-class ParserDefinitions {
+class ParserDefinitions() {
     // Literals
     private val boolean = `'true'` / `'false'`
     private val number = NumericLiteral(NATURAL / FLOAT)
@@ -64,7 +64,11 @@ class ParserDefinitions {
      * ProperName with optional qualification
      */
     private val qualProperName = QualifiedProperName(qualified(properName))
-    private val type: DSL = Type(Reference { type1 }.sepBy1(dcolon))
+    private val typeRef: Reference = Reference { type }
+    private val type: DSL = Type(Choice.of(
+        (Reference { type1 } + dcolon + typeRef).heal,
+        Reference { type1 }
+    ))
     private val typeVarPlain = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val typeVar =
         ("@".dsl + TypeVarName(ident)) / ("@".dsl + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
