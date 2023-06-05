@@ -110,8 +110,11 @@ class ParserDefinitions() {
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
     private val type5: DSL = TypeAppType.cons(typeAtom, typeAtom)
-    private val type4 = ("-".dsl + number) / type5
-    private val type3 = type4.sepBy1(qualOp)
+    private val type4 = TypeIntType("-".dsl + number) / type5
+    private val type3 = Choice.of(
+        TypeOperatorExpressionType(type4 + qualOp + type4.sepBy1(qualOp)).heal,
+        type4,
+    )
 
     /**
      * Function or constraint

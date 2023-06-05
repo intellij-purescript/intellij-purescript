@@ -12,6 +12,7 @@ Purescript File
         <empty list>
       PsiElement(=)('=')
       PSType(Type)
-        PsiElement(operator)('-')
-        PSNumericLiteral(NumericLiteral)
-          PsiElement(natural)('1')
+        TypeInt(TypeInt)
+          PsiElement(operator)('-')
+          PSNumericLiteral(NumericLiteral)
+            PsiElement(natural)('1')

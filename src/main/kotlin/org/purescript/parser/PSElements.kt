@@ -58,6 +58,7 @@ val ExportedDataMember = PSExportedDataMember.Type
 val ExportedDataMemberListType = PSExportedDataMemberList.Type
 val Type = WithPsi("Type") { PSType(it) }
 val TypeAppType = WithPsi("TypeApp") { TypeApp(it) }
+val TypeOperatorExpressionType = WithPsi("TypeOperatorExpression") { TypeOperatorExpression(it) }
 val TypeStringType = WithPsi("TypeString") { TypeString(it) }
 val TypeWildcardType = WithPsi("TypeWildcard") { TypeWildcard(it) }
 val TypeIntType = WithPsi("TypeInt") { TypeInt(it) }
