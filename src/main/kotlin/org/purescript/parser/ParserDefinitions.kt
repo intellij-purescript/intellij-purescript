@@ -66,7 +66,7 @@ class ParserDefinitions() {
     private val qualProperName = QualifiedProperName(qualified(properName))
     private val typeRef: Reference = Reference { type }
     private val type: DSL = Type(Choice.of(
-        (Reference { type1 } + dcolon + typeRef).heal,
+        KindedType(Reference { type1 } + dcolon + typeRef).heal,
         Reference { type1 }
     ))
     private val typeVarPlain = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))

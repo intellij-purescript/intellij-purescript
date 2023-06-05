@@ -57,6 +57,7 @@ val ExportedValueType = ExportedValue.Type
 val ExportedDataMember = PSExportedDataMember.Type
 val ExportedDataMemberListType = PSExportedDataMemberList.Type
 val Type = WithPsi("Type") { PSType(it) }
+val KindedType = WithPsi("Kinded") { Kinded(it) }
 val TypeParametersType = WithPsi("TypeParameters") { TypeParameters(it) }
 val ForAllType = WithPsi("ForAll") { ForAll(it) }
 val TypeArrType = WithPsi("TypeArr") { TypeArr(it) }
