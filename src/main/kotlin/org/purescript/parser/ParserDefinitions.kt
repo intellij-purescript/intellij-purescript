@@ -124,9 +124,9 @@ class ParserDefinitions() {
         type3
     )
     private val type1 = Choice.of(
-            ForAllType(`'forall'` + +typeVar + dot) + type2,
-            type2
-        )
+        ForAllType(`'forall'` + +typeVar + dot + type2),
+        type2
+    )
     private val propertyUpdate: DSL = label + !eq + expr
     val symbol = Symbol(parens(operatorName))
 
