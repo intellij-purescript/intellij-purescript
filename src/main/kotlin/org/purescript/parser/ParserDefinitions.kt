@@ -1,7 +1,5 @@
 package org.purescript.parser
 
-import com.intellij.lang.PsiBuilder
-
 class ParserDefinitions() {
     // Literals
     private val boolean = `'true'` / `'false'`
@@ -110,12 +108,7 @@ class ParserDefinitions() {
     private val `expr?` = expr.relax("missing expression")
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
-    private val type5: DSL = Reference {
-        Choice.of(
-            TypeAppType(typeAtom + this).heal,
-            typeAtom
-        )
-    }
+    private val type5: DSL = TypeAppType.cons(typeAtom, typeAtom)
     private val type4 = ("-".dsl + number) / type5
     private val type3 = type4.sepBy1(qualOp)
 
@@ -201,25 +194,10 @@ class ParserDefinitions() {
     /**
      * Function application
      */
-    private val expr4: DSL = +(("@".dsl + typeAtom) / object : DSL {
-        override fun parse(builder: PsiBuilder): Boolean {
-            var start = builder.mark()
-            if (expr5.parse(builder)) {
-                start.done(CallType)
-                start = start.precede()
-            } else {
-                start.drop()
-                return false
-            }
-            val argument = ArgumentType(expr5).heal
-            while (argument.parse(builder)) {
-                start.done(CallType)
-                start = start.precede()
-            }
-            start.drop()
-            return true
-        }
-    })
+    private val expr4: DSL = +Choice.of(
+        "@".dsl + typeAtom,
+        CallType.cons(CallType(expr5), ArgumentType(expr5))
+    )
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)

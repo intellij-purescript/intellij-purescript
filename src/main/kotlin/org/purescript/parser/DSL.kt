@@ -28,6 +28,19 @@ operator fun String.unaryPlus() = OneOrMore(this.dsl)
 operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
 operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
 operator fun IElementType.invoke(o: IElementType) = Symbolic(o.dsl, this)
+fun IElementType.cons(start: DSL, next: DSL) = object : DSL {
+    override fun parse(builder: PsiBuilder): Boolean {
+        var marker = builder.mark()
+        val result = start.parse(builder)
+        if (result) while (next.heal.parse(builder)) {
+            marker.done(this@cons)
+            marker = marker.precede()
+        }
+        marker.drop()
+        return result
+    }
+
+}
 
 operator fun DSL.plus(other: DSL) = Seq(dsl, other.dsl)
 operator fun DSL.plus(other: String) = Seq(dsl, other.dsl)
@@ -123,7 +136,7 @@ data class Transaction(val child: DSL) : DSL {
 
 data class Reference(val init: DSL.() -> DSL) : DSL {
     override fun parse(builder: PsiBuilder): Boolean =
-        this.init(this).parse(builder)
+        this.init().parse(builder)
 }
 
 data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
