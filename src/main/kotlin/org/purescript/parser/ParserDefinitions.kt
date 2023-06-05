@@ -76,10 +76,10 @@ class ParserDefinitions() {
         (`|` + type) /
                 (!(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type))
     )
-    private val hole = TypeHole("?".dsl + ident)
+    private val hole = "?".dsl + ident
 
     private val typeAtom: DSL = (
-            hole /
+            TypeHole(hole) /
                     TypeRecordType(braces(row)) /
                     TypeWildcardType(`_`) /
                     TypeStringType(string) /
@@ -159,7 +159,7 @@ class ParserDefinitions() {
      *   */
     private val exprAtom = Choice.of(
         ExpressionWildcardType(`_`),
-        hole.heal,
+        ExpressionHoleType(hole.heal),
         ExpressionIdentifier(QualifiedIdentifier(qualified(ident))).heal,
         ExpressionSymbol(QualifiedSymbol(qualified(symbol))).heal,
         ExpressionCtor(qualProperName).heal,
