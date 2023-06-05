@@ -63,11 +63,11 @@ data class StringToken(val token: String) : DSL {
         }
 }
 
-data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean): DSL {
+data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean) : DSL {
     override fun parse(builder: PsiBuilder) = builder.filter() && next.parse(builder)
 }
 
-data class Capture(val next: (String) -> DSL): DSL {
+data class Capture(val next: (String) -> DSL) : DSL {
     override fun parse(builder: PsiBuilder): Boolean {
         val tokenText = builder.tokenText ?: return false
         return next(tokenText).parse(builder)
@@ -128,20 +128,18 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
 
 data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
     override fun parse(builder: PsiBuilder): Boolean {
-        val pack = builder.mark()
-        return when (child.parse(builder)) {
-            false -> {
-                pack.drop()
-                false
-            }
-
-            true -> {
-                pack.done(symbol)
-                true
-            }
+        val start = builder.mark()
+        return if (child.parse(builder)) {
+            start.done(symbol)
+            true
+        } else {
+            start.drop()
+            false
         }
     }
-} 
+}
+
+
 data class Relax(val dsl: DSL, val message: String) : DSL {
     override fun parse(builder: PsiBuilder): Boolean {
         return if (dsl.heal.parse(builder)) {
@@ -151,7 +149,8 @@ data class Relax(val dsl: DSL, val message: String) : DSL {
             true
         }
     }
-} 
+}
+
 data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     override fun parse(builder: PsiBuilder): Boolean {
         return if (dsl.heal.parse(builder)) {
@@ -160,7 +159,7 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
             val error = builder.mark()
             while (!builder.eof()) {
                 val endOfError = builder.mark()
-                if(to.parse(builder)) {
+                if (to.parse(builder)) {
                     endOfError.rollbackTo()
                     break
                 } else {
