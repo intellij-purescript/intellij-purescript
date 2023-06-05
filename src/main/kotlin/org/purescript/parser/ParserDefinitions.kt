@@ -112,7 +112,11 @@ class ParserDefinitions() {
     private val `expr?` = expr.relax("missing expression")
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
-    private val type5 = +typeAtom
+    private val type5Ref = Reference { type5 }
+    private val type5: DSL = Choice.of(
+        (typeAtom + type5Ref).heal,
+        typeAtom
+    )
     private val type4 = ("-".dsl + number) / type5
     private val type3 = type4.sepBy1(qualOp)
 
