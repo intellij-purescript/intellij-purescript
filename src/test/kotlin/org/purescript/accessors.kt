@@ -18,7 +18,7 @@ import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.TypeDecl
-import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
+import org.purescript.module.declaration.type.type.PSTypeConstructor
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder

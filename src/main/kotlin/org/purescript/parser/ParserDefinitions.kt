@@ -63,10 +63,10 @@ class ParserDefinitions() {
      */
     private val qualProperName = QualifiedProperName(qualified(properName))
     private val type: DSL = Reference {
-        Type(Choice.of(
+        Choice.of(
             KindedType(Reference { type1 } + dcolon + this).heal,
             Reference { type1 }
-        ))
+        )
     }
     private val typeVarPlain = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val typeVar =
@@ -121,8 +121,8 @@ class ParserDefinitions() {
      * Function or constraint
      */
     private val type2: DSL = Choice.of(
-        TypeArrType(type3 + (arrow + Reference { type1 })).heal,
-        ConstrainedType(type3 + (darrow + Reference { type1 })).heal,
+        TypeArrType(type3 + arrow + Reference { type1 }).heal,
+        ConstrainedType(type3 + darrow + Reference { type1 }).heal,
         type3
     )
 

@@ -11,7 +11,7 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableIndex
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.exports.ExportedValue
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub

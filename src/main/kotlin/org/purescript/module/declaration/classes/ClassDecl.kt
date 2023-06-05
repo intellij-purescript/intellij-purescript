@@ -13,7 +13,7 @@ import org.purescript.psi.AStub
 import org.purescript.psi.PSStubbedElement
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.name.PSClassName
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.type.PSTypeVarBinding
 
 /**

@@ -10,7 +10,7 @@ import com.intellij.psi.util.descendantsOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
 import org.purescript.module.declaration.Importable
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 
 class PurescriptParameterInfoHandler : ParameterInfoHandler<PSExpressionIdentifier, PSType> {
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PSExpressionIdentifier? {

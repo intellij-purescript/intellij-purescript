@@ -8,7 +8,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableIndex
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSProperName

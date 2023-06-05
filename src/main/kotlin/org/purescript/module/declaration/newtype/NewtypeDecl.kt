@@ -9,7 +9,7 @@ import org.purescript.ide.formatting.ImportedData
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.module.declaration.type.TypeParameters
 import org.purescript.module.exports.ExportedData

@@ -22,7 +22,7 @@ import org.purescript.module.declaration.foreign.ForeignValueDecl
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup

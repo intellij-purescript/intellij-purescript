@@ -2,7 +2,7 @@ package org.purescript.module.declaration
 
 import com.intellij.psi.PsiNamedElement
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 
 interface Importable: PsiNamedElement {
     fun asImport(): ImportDeclaration?

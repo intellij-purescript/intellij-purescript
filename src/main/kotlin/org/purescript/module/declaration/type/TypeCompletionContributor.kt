@@ -3,7 +3,7 @@ package org.purescript.module.declaration.type
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns.psiElement
-import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
+import org.purescript.module.declaration.type.type.PSTypeConstructor
 
 class TypeCompletionContributor : CompletionContributor() {
     init {

@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
 import org.purescript.module.declaration.value.expression.PSParens

@@ -8,7 +8,7 @@ import com.intellij.psi.util.PsiUtilCore.NULL_PSI_FILE
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
 import org.purescript.module.declaration.Importable
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 
 object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript", "application/x-purescript") {
     /**

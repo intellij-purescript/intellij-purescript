@@ -14,7 +14,7 @@ import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.*
-import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
+import org.purescript.module.declaration.type.type.*
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.*
@@ -56,7 +56,6 @@ val ExportedTypeType = ExportedType.Type
 val ExportedValueType = ExportedValue.Type
 val ExportedDataMember = PSExportedDataMember.Type
 val ExportedDataMemberListType = PSExportedDataMemberList.Type
-val Type = WithPsi("Type") { PSType(it) }
 val TypeAppType = WithPsi("TypeApp") { TypeApp(it) }
 val TypeOperatorExpressionType = WithPsi("TypeOperatorExpression") { TypeOperatorExpression(it) }
 val TypeStringType = WithPsi("TypeString") { TypeString(it) }

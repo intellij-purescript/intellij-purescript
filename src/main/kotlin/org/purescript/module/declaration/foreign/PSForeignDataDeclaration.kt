@@ -9,7 +9,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableTypeIndex
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSProperName

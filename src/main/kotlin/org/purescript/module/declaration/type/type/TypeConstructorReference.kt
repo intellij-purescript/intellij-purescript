@@ -1,4 +1,4 @@
-package org.purescript.module.declaration.type.typeconstructor
+package org.purescript.module.declaration.type.type
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider

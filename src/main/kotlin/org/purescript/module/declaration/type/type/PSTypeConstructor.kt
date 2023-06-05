@@ -1,9 +1,9 @@
-package org.purescript.module.declaration.type.typeconstructor
+package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
+import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
 import org.purescript.psi.*
@@ -18,7 +18,7 @@ import org.purescript.psi.*
  *  - [PSSignature]
  *  - [DataConstructor.PSDataConstructor]
  */
-class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified {
+class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     /**
      * @return the [PSQualifiedProperName] identifying this type constructor
      */

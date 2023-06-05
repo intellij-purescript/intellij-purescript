@@ -17,7 +17,7 @@ import org.purescript.module.declaration.value.expression.identifier.PSExpressio
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionSymbol
 import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.imports.PSImportedOperator
-import org.purescript.module.declaration.type.typeconstructor.PSTypeConstructor
+import org.purescript.module.declaration.type.type.PSTypeConstructor
 
 class PSUnresolvedReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(

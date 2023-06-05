@@ -19,7 +19,7 @@ import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.PSSignature
-import org.purescript.module.declaration.type.PSType
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationLet
