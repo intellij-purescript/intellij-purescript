@@ -72,7 +72,6 @@ class ParserDefinitions() {
     private val typeVarPlain = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
     private val typeVar =
         ("@".dsl + TypeVarName(ident)) / ("@".dsl + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
-    private val forAll = ForAllType(`'forall'` + +typeVar + dot) + Reference { constrainedType }
     private val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
     private val row = Row(
         (`|` + type) /
@@ -89,12 +88,10 @@ class ParserDefinitions() {
                     string /
                     number /
                     typeCtor /
-                    forAll.heal /
                     TypeIdentifierType(ident) /
                     parens(arrow / row).heal /
                     parens(type)
             )
-    private val constrainedType = ConstrainedType(!(parens((typeCtor + !+typeAtom).sepBy1(`,`)) + darrow).heal + type)
     private val binderAtom: DSL = Reference {
         Choice.of(
             WildcardBinderType(`_`),
@@ -120,7 +117,7 @@ class ParserDefinitions() {
     private val type3 = type4.sepBy1(qualOp)
     private val type2: DSL = Choice.of(
         TypeArrType(type3 + (arrow + Reference { type1 })).heal,
-        (type3 + (darrow + Reference { type1 })).heal,
+        ConstrainedType(type3 + (darrow + Reference { type1 })).heal,
         type3
     )
     private val type1 = Choice.of(
