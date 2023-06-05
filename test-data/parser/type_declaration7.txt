@@ -12,11 +12,12 @@ Purescript File
         <empty list>
       PsiElement(=)('=')
       PSType(Type)
-        PSTypeConstructor(TypeConstructor)
-          PSQualifiedProperName(QualifiedProperName)
-            PSProperName(ProperName)
-              PsiElement(proper name)('RandomConsoleEffects')
-        PsiElement(()('(')
-        PSRow(Row)
-          <empty list>
-        PsiElement())(')')
+        TypeApp(TypeApp)
+          PSTypeConstructor(TypeConstructor)
+            PSQualifiedProperName(QualifiedProperName)
+              PSProperName(ProperName)
+                PsiElement(proper name)('RandomConsoleEffects')
+          PsiElement(()('(')
+          PSRow(Row)
+            <empty list>
+          PsiElement())(')')

@@ -114,7 +114,7 @@ class ParserDefinitions() {
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
     private val type5: DSL = Reference {
         Choice.of(
-            (typeAtom + this).heal,
+            TypeAppType(typeAtom + this).heal,
             typeAtom
         )
     }
