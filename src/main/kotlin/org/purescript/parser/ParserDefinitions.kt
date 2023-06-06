@@ -72,9 +72,11 @@ class ParserDefinitions() {
     private val typeVar =
         ("@".dsl + TypeVarName(ident)) / ("@".dsl + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
     private val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
-    private val row = Row(
-        (`|` + type) /
-                (!(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type))
+    private val row = Choice.of(
+        `|` + type,
+        !(rowLabel +
+                !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) +
+                !(`|` + type)
     )
     private val hole = "?".dsl + ident
 

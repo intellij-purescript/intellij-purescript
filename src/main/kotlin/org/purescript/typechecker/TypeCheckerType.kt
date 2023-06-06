@@ -8,7 +8,7 @@ sealed interface TypeCheckerType {
     data class TypeLevelInt(val value: Int) : TypeCheckerType
     data class TypeConstructor(val name: String) : TypeCheckerType
     data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType
-    data class Row(val label: List<Pair<String, TypeCheckerType>>) : TypeCheckerType
+    data class Row(val labels: List<Pair<String, TypeCheckerType?>>) : TypeCheckerType
     /*
 data class TypeWildCard(val value: WildcardData) : TypeCheckerType {
     interface WildcardData

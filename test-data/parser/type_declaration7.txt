@@ -18,6 +18,4 @@ Purescript File
               PsiElement(proper name)('RandomConsoleEffects')
         TypeRow(TypeRow)
           PsiElement(()('(')
-          PSRow(Row)
-            <empty list>
           PsiElement())(')')

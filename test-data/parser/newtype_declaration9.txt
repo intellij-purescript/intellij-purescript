@@ -16,8 +16,6 @@ Purescript File
           PsiElement(proper name)('Foo')
         TypeRecord(TypeRecord)
           PsiElement({)('{')
-          PSRow(Row)
-            <empty list>
           PsiElement(})('}')
     NewtypeDecl(NewtypeDecl)
       PsiElement(newtype)('newtype')
@@ -33,7 +31,5 @@ Purescript File
           PsiElement(()('(')
           TypeRecord(TypeRecord)
             PsiElement({)('{')
-            PSRow(Row)
-              <empty list>
             PsiElement(})('}')
           PsiElement())(')')

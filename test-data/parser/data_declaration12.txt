@@ -17,8 +17,6 @@ Purescript File
             PsiElement(proper name)('Foo')
           TypeRecord(TypeRecord)
             PsiElement({)('{')
-            PSRow(Row)
-              <empty list>
             PsiElement(})('}')
     PSDataDeclaration(DataDeclaration)
       PsiElement(data)('data')
@@ -35,7 +33,5 @@ Purescript File
             PsiElement(()('(')
             TypeRecord(TypeRecord)
               PsiElement({)('{')
-              PSRow(Row)
-                <empty list>
               PsiElement(})('}')
             PsiElement())(')')
