@@ -7,6 +7,8 @@ import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
 import org.purescript.psi.*
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A type constructor is a PSI element that references one of the following PSI elements:
@@ -26,5 +28,6 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     val moduleName get() = identifier.moduleName
     override fun getName(): String = identifier.name
     override val qualifierName: String? get() = moduleName?.name
+    override fun checkType(): TypeCheckerType? = (reference.resolve() as? TypeCheckable)?.checkType()
     override fun getReference() = TypeConstructorReference(this)
 }

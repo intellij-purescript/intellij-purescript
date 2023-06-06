@@ -4,14 +4,15 @@ import com.intellij.lang.ASTNode
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.psi.PSPsiElement
-import org.purescript.typechecker.*
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 class PSArrayLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     val values get() = findChildrenByClass(PSValue::class.java)
 
-    override fun checkType(): TypeCheckerType = TypeApp(
-        TypeConstructor("Prim.Array"),
+    override fun checkType(): TypeCheckerType = TypeCheckerType.TypeApp(
+        TypeCheckerType.TypeConstructor("Prim.Array"),
         values.firstNotNullOfOrNull { (it as? TypeCheckable)?.checkType() }
-            ?: Unknown(-1)
+            ?: TypeCheckerType.Unknown(-1)
     )
 }
