@@ -6,5 +6,5 @@ import org.purescript.typechecker.TypeCheckerType
 
 class PSParens(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     val value get() = findChildByClass(PSValue::class.java)
-    override fun checkType(): TypeCheckerType? = null
+    override fun checkType(): TypeCheckerType? = value?.checkType()
 }

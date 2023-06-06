@@ -4,9 +4,12 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckerType
 
 class Call(node: ASTNode) : PSPsiElement(node), Expression {
     val arguments: Sequence<Argument> get() = 
         childrenOfType<Argument>().asSequence() + 
             ((parent as? Call)?.arguments ?: emptySequence())
+
+    override fun checkType(): TypeCheckerType? = null
 }

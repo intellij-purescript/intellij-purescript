@@ -8,8 +8,10 @@ import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
-class CaseAlternative(node: ASTNode) : PSPsiElement(node), ValueNamespace, Similar {
+class CaseAlternative(node: ASTNode) : PSPsiElement(node), ValueNamespace, Similar, TypeCheckable {
     private val where get() = childrenOfType<PSExpressionWhere>().asSequence()
     private val binders get() = childrenOfType<Binder>().asSequence()
     override val valueNames
@@ -18,4 +20,8 @@ class CaseAlternative(node: ASTNode) : PSPsiElement(node), ValueNamespace, Simil
 
     val expressions: Sequence<Expression>
         get() = childrenOfType<Expression>().asSequence().flatMap { it.expressions }
+
+    override fun checkType(): TypeCheckerType? {
+        return childrenOfType<Expression>().firstNotNullOfOrNull { it.checkType() }
+    }
 }

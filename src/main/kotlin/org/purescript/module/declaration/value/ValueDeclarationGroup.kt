@@ -27,9 +27,11 @@ import org.purescript.module.declaration.value.expression.namespace.Let
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
-    PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement, InlinableElement {
+    PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement, InlinableElement, TypeCheckable {
     class Stub(val name: String, val isExported: Boolean, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isTopLevel get() = module != null
@@ -146,4 +148,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             else if (isExported) module?.let { LocalSearchScope(it) }
             else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
         ?: super.getUseScope()
+
+    override fun checkType(): TypeCheckerType? = signature?.checkType()
+        ?: valueDeclarations.firstNotNullOfOrNull { it.checkType() }
 }

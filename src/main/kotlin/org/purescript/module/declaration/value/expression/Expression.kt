@@ -6,8 +6,9 @@ import com.intellij.psi.util.childrenOfType
 import org.purescript.module.Module
 import org.purescript.module.declaration.value.Similar
 import org.purescript.psi.PSPsiFactory
+import org.purescript.typechecker.TypeCheckable
 
-interface Expression : PsiElement, Similar {
+interface Expression : PsiElement, Similar, TypeCheckable {
 
     /**
      * All expressions recursively including this one
