@@ -27,6 +27,7 @@ import org.purescript.module.declaration.value.binder.record.RecordBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
 import org.purescript.module.declaration.value.expression.*
+import org.purescript.module.declaration.value.expression.RecordAccess
 import org.purescript.module.declaration.value.expression.controll.Guard
 import org.purescript.module.declaration.value.expression.controll.GuardBranch
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
@@ -167,6 +168,7 @@ val UnaryMinus = WithPsi("UnaryMinus") { PSUnaryMinus(it) }
 val CallType = WithPsi("Call") { Call(it) }
 val ArgumentType = WithPsi("Argument") { Argument(it) }
 val Accessor = WithPsi("Accessor") { PSAccessor(it) }
+val RecordAccessType = WithPsi("RecordAccess") { RecordAccess(it) }
 val DoBlock = WithPsi("DoBlock") { PSDoBlock(it) }
 val AdoBlockType = WithPsi("AdoBlock") { AdoBlock(it) }
 val DoNotationLet = WithPsi("DoNotationLet") { PSDoNotationLet(it) }

@@ -10,13 +10,13 @@ import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.PSValue
+import org.purescript.module.declaration.value.expression.RecordAccess
 import org.purescript.module.declaration.value.expression.RecordUpdate
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
-import org.purescript.module.declaration.value.expression.identifier.PSAccessor
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.declaration.value.parameters.Parameter
 
@@ -38,11 +38,11 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     val wildcard = psiElement(ExpressionWildcard::class.java)
     val operatorSection = parenthesis.withChild(value.withChild(call.withChild(wildcard)))
     val isTyped = parenthesis.withSuperParent(2, value.withChild(type))
-    val accessor = psiElement(PSAccessor::class.java)
+    val recordAccsess = psiElement(RecordAccess::class.java)
     private val lonelyAccessor = parenthesis.withChild(
         value
             .withChildren(oneChild)
-            .withChild(call.withChild(accessor))
+            .withChild(call.withChild(recordAccsess))
     )
     private val recordUpdate = psiElement(RecordUpdate::class.java)
     private val recordUpdateArgument = parenthesis.withParent(call.withParent(call.withChild(argument.withChild(recordUpdate))))
