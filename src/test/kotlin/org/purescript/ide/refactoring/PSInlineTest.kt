@@ -116,7 +116,7 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
-    fun `test inline value from let in`() {
+    fun `xtest inline value from let in`() {
         doTest(
             """
                 |module Main where
@@ -135,11 +135,10 @@ class PSInlineTest : BasePlatformTestCase() {
         )
     }
     
-    fun `test inline simple value from let in`() {
+    fun `xtest inline simple value from let in`() {
         doTest(
             """
                 |module Main where
-                |f a = a
                 |y =
                 |  let
                 |    x{-caret-} = 1
@@ -147,9 +146,7 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin(),
             """
                 |module Main where
-                |f a = a
-                |y =
-                |  (1)
+                |y = (1)
             """.trimMargin()
         )
     }

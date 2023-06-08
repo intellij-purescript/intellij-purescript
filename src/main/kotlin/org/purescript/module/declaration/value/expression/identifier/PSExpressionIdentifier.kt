@@ -7,6 +7,7 @@ import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
+import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
@@ -49,9 +50,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         when (val parent = this.parent) {
             is Call -> {
                 this.parentsOfType<Call>()
-                    .drop(arguments.size)
+                    .drop(arguments.size - 1)
                     .first()
-                    .replace(toReplaceWith.let { it.withParenthesis()?.parent ?: it })
+                    .replace(toReplaceWith.let { it.withParenthesis() ?: it })
             }
 
             is RecordLabel -> factory
@@ -60,7 +61,8 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
                 ?: this.replace(toReplaceWith)
 
             is Argument -> this.replace(this.replace(toReplaceWith.let { it.withParenthesis() ?: it }))
-            else -> this.replace(this.replace(toReplaceWith.let { it.withParenthesis() ?: it }))
+            is PSValue -> this.replace(toReplaceWith.let { it.withParenthesis() ?: it })
+            else -> this.replace(toReplaceWith.let { it.withParenthesis() ?: it })
         }
     }
 

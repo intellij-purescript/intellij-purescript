@@ -65,6 +65,5 @@ Purescript File
             <empty list>
           PsiElement(=)('=')
           PSValue(Value)
-            Call(Call)
-              PSStringLiteral(StringLiteral)
-                PsiElement(string)('""')
+            PSStringLiteral(StringLiteral)
+              PsiElement(string)('""')

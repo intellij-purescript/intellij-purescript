@@ -203,7 +203,7 @@ class ParserDefinitions() {
      */
     private val expr4: DSL = +Choice.of(
         "@".dsl + typeAtom,
-        CallType.cons(CallType(expr5), ArgumentType(expr5))
+        CallType.cons(expr5, ArgumentType(expr5))
     )
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)

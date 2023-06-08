@@ -36,37 +36,41 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val parenthesisAroundIfThanElse = parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
     private val parenthesisAroundLambda = parenthesis.withChild(value.withChild(call.withChild(lambda)))
     val wildcard = psiElement(ExpressionWildcard::class.java)
-    val operatorSection = parenthesis.withChild(value.withChild(call.withChild(wildcard)))
+    val operatorSection = parenthesis.withChild(value.withChild(wildcard))
     val isTyped = parenthesis.withSuperParent(2, value.withChild(type))
     val recordAccsess = psiElement(RecordAccess::class.java)
     private val lonelyAccessor = parenthesis.withChild(
         value
             .withChildren(oneChild)
-            .withChild(call.withChild(recordAccsess))
+            .withChild(recordAccsess)
     )
     private val recordUpdate = psiElement(RecordUpdate::class.java)
-    private val recordUpdateArgument = parenthesis.withParent(call.withParent(call.withChild(argument.withChild(recordUpdate))))
-    private val pattern = or(
-        lonelyAccessor,
-        parenthesis
-            .withParent(hasOnlyOneChild)
-            .withChild(valueWithOneChild)
-            .andNot(isTyped)
-            .andNot(parentIsArgument)
-            .andNot(
-                parenthesisAroundIfThanElse
-                    .andNot(psiElement().withSuperParent(2, valueWithOneChild))
-            )
-            .andNot(
-                parenthesisAroundLambda
-                    .andNot(psiElement().withSuperParent(2, valueWithOneChild))
-            )
-            .andNot(recordUpdateArgument)
-            .andNot(operatorSection),
-        parenthesis
-            .withParent(hasOnlyOneChild)
-            .withSuperParent(2, valueWithOneChild)
-            .andNot(operatorSection)
+    private val recordUpdateCall = call.withChild(
+        argument.withChild(recordUpdate)
+    )
+    private val pattern = and(
+        not(operatorSection),
+        not(parenthesis.withParent(recordUpdateCall)),
+        or(
+            lonelyAccessor,
+            parenthesis.withParent(valueWithOneChild),
+            parenthesis
+                .withParent(call)
+                .withChild(valueWithOneChild),
+            parenthesis
+                .withParent(hasOnlyOneChild)
+                .withChild(valueWithOneChild)
+                .andNot(isTyped)
+                .andNot(parentIsArgument)
+                .andNot(
+                    parenthesisAroundIfThanElse
+                        .andNot(psiElement().withSuperParent(2, valueWithOneChild))
+                )
+                .andNot(
+                    parenthesisAroundLambda
+                        .andNot(psiElement().withSuperParent(2, valueWithOneChild))
+                )
+        )
     )
     private val caseAlternative = psiElement(CaseAlternative::class.java)
     private val recordLabelExprBinder = psiElement(RecordLabelExprBinder::class.java)
