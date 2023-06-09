@@ -204,14 +204,15 @@ class ParserDefinitions() {
     /**
      * Function application
      */
-    private val expr4: DSL = +Choice.of(
-        "@".dsl + typeAtom,
-        CallType.cons(expr5, ArgumentType(expr5))
+    private val expr4 = CallType.cons(
+        expr5,
+        ArgumentType(expr5) / TypeArgumentType("@".dsl + typeAtom)
     )
+
     private val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-    private val expr1 = Choice.of(
+    private val expr1: DSL = Choice.of(
         OperatorExpressionType(expr2 + ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))).heal,
         expr2
     ) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal

@@ -167,6 +167,7 @@ val TypedExpressionType = WithPsi("TypedExpression") { TypedExpression(it) }
 val UnaryMinus = WithPsi("UnaryMinus") { PSUnaryMinus(it) }
 val CallType = WithPsi("Call") { Call(it) }
 val ArgumentType = WithPsi("Argument") { Argument(it) }
+val TypeArgumentType = WithPsi("TypeArgument") { TypeArgument(it) }
 val Accessor = WithPsi("Accessor") { PSAccessor(it) }
 val RecordAccessType = WithPsi("RecordAccess") { RecordAccess(it) }
 val DoBlock = WithPsi("DoBlock") { PSDoBlock(it) }
