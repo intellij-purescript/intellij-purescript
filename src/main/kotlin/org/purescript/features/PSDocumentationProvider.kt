@@ -14,6 +14,7 @@ import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckable
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?) = when {
@@ -22,7 +23,9 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                     element.project,
                     PSLanguage,
-                    element.type?.let { "${element.name} :: ${it.text}" } ?: element.name,
+                    element.type?.text?.let { "${element.name} :: ${it}" } 
+                        ?: (element as? TypeCheckable)?.checkType()?.let { "${element.name} :: ${it}" }
+                        ?: element.name,
                     1f
                 ),
                 docCommentsToDocstring(element.docComments.map { it.text })
