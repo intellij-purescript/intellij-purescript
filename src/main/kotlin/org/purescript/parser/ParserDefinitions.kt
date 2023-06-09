@@ -1,6 +1,6 @@
 package org.purescript.parser
 
-class ParserDefinitions() {
+object ParserDefinitions {
     // Literals
     private val boolean = `'true'` / `'false'`
     private val number = NumericLiteral(NATURAL / FLOAT)
