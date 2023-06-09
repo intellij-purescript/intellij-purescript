@@ -108,7 +108,10 @@ class ParserDefinitions() {
         )
     }
     private val binder: DSL = Reference { binder1 } + !(dcolon + type)
-    private val expr = Value(Reference { expr1 } + !(dcolon + type))
+    private val expr = Value(Choice.of(
+        TypedExpressionType(Reference { expr1 } + dcolon + type).heal,
+        Reference { expr1 }
+    ))
     private val `expr?` = expr.relax("missing expression")
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
