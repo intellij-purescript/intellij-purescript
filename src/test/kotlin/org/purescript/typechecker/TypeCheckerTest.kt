@@ -56,7 +56,7 @@ class TypeCheckerTest : BasePlatformTestCase() {
         )
     }
     
-    fun `test it applies arguments to functions of primitive type`() {
+    fun `test it applies argument to functions of primitive type`() {
         val file = myFixture.configureByText(
             "Main.purs",
             """
@@ -66,6 +66,96 @@ class TypeCheckerTest : BasePlatformTestCase() {
                 |f y = y + 42
                 |
                 |x = f 10
+            """.trimMargin()
+        )
+        val x = file.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.Int", x.checkType().toString())
+    }
+    
+    fun `test it applies arguments to functions of primitive type`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: Int -> Int -> Int
+                |f y z = y + 42 + z
+                |
+                |x = f 10 42
+            """.trimMargin()
+        )
+        val x = file.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.Int", x.checkType().toString())
+    }
+
+
+    fun `test it applies arguments to functions of simple for all`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: forall a. a -> a
+                |f y = y
+                |
+                |x = f 10
+            """.trimMargin()
+        )
+        val x = file.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.Int", x.checkType().toString())
+        val file2 = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: forall a. a -> a
+                |f y = y
+                |
+                |x = f "Hello World"
+            """.trimMargin()
+        )
+        val x2 = file2.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.String", x2.checkType().toString())
+    }
+    fun `test it applies arguments to functions of simple for all with primitive return type`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: forall a. a -> String
+                |f y = "Hello World"
+                |
+                |x = f 10
+            """.trimMargin()
+        )
+        val x = file.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.String", x.checkType().toString())
+
+        val file2 = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: forall a. a -> Int
+                |f _ = 42
+                |
+                |x = f 10
+            """.trimMargin()
+        )
+        val x2 = file2.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.Int", x2.checkType().toString())
+    }
+    fun `xtest it applies arguments to functions of forall with two variables`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: forall a b. a -> b -> a
+                |f a _ = a
+                |
+                |x = f 10 "Hello"
             """.trimMargin()
         )
         val x = file.getValueDeclarationGroupByName("x")

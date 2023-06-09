@@ -8,5 +8,6 @@ import org.purescript.typechecker.TypeCheckerType
 
 class Argument(node: ASTNode) : PSPsiElement(node), Expression {
     val arguments: Sequence<ExpressionAtom> get() = emptySequence()
-    override fun checkType(): TypeCheckerType? = null
+    val value get() = findChildByClass(Expression::class.java)
+    override fun checkType(): TypeCheckerType? = value?.checkType()
 }

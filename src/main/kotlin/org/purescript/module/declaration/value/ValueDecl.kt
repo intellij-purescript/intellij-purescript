@@ -142,7 +142,5 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         return !binders.any { it !is VarBinder }
     }
 
-    override fun checkType(): TypeCheckerType? {
-        return value?.checkType()
-    }
+    override fun checkType(): TypeCheckerType? = value?.checkType()
 }
