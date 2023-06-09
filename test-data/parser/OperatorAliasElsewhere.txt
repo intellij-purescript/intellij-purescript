@@ -40,7 +40,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSExpressionIdentifier(ExpressionIdentifier)
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)

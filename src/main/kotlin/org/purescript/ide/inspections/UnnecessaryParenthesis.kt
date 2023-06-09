@@ -24,7 +24,7 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     val wildcard = psiElement(ExpressionWildcard::class.java)
     val recordAccsess = psiElement(RecordAccess::class.java)
     private val recordUpdate = psiElement(RecordUpdate::class.java)
-    private val value = psiElement(PSValue::class.java)
+    private val value = psiElement(OperatorExpression::class.java)
 
     private val neccesery = or(
         parenthesis.withChild(value.withChild(wildcard)),

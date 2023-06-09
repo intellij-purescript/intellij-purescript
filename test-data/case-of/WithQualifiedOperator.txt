@@ -26,7 +26,7 @@ Purescript File
         PsiElement(=)('=')
         PSCase(Case)
           PsiElement(case)('case')
-          PSValue(Value)
+          OperatorExpression(OperatorExpression)
             PSNumericLiteral(NumericLiteral)
               PsiElement(natural)('1')
             PSExpressionOperator(ExpressionOperator)

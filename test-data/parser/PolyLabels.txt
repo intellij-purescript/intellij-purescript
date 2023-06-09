@@ -529,7 +529,7 @@ Purescript File
               PSIdentifier(identifier)
                 PsiElement(identifier)('r')
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           Call(Call)
             Call(Call)
               PSExpressionIdentifier(ExpressionIdentifier)

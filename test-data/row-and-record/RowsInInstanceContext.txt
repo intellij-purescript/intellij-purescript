@@ -210,7 +210,7 @@ Purescript File
           Parameters(Parameters)
             <empty list>
           PsiElement(=)('=')
-          PSValue(Value)
+          OperatorExpression(OperatorExpression)
             PSExpressionConstructor(ExpressionConstructor)
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)

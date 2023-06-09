@@ -72,7 +72,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSNumericLiteral(NumericLiteral)
             PsiElement(natural)('4')
           PSExpressionOperator(ExpressionOperator)

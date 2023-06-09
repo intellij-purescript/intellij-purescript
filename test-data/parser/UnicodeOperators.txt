@@ -119,7 +119,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSParens(Parens)
             PsiElement(()('(')
             PSLambda(Lambda)
@@ -258,7 +258,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSNumericLiteral(NumericLiteral)
             PsiElement(natural)('1')
           PSExpressionOperator(ExpressionOperator)

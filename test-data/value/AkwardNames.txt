@@ -40,7 +40,7 @@ Purescript File
           Argument(Argument)
             PSParens(Parens)
               PsiElement(()('(')
-              PSValue(Value)
+              OperatorExpression(OperatorExpression)
                 PSExpressionIdentifier(ExpressionIdentifier)
                   PSQualifiedIdentifier(QualifiedIdentifier)
                     PSIdentifier(identifier)

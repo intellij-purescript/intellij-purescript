@@ -984,7 +984,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSExpressionIdentifier(ExpressionIdentifier)
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
@@ -1115,7 +1115,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           Call(Call)
             PSParens(Parens)
               PsiElement(()('(')
@@ -1311,7 +1311,7 @@ Purescript File
                     PSIdentifier(identifier)
                       PsiElement(identifier)('mel')
               PsiElement(=)('=')
-              PSValue(Value)
+              OperatorExpression(OperatorExpression)
                 PSExpressionConstructor(ExpressionConstructor)
                   PSQualifiedProperName(QualifiedProperName)
                     PSProperName(ProperName)
@@ -1335,7 +1335,7 @@ Purescript File
                     Argument(Argument)
                       PSParens(Parens)
                         PsiElement(()('(')
-                        PSValue(Value)
+                        OperatorExpression(OperatorExpression)
                           PSExpressionIdentifier(ExpressionIdentifier)
                             PSQualifiedIdentifier(QualifiedIdentifier)
                               PSIdentifier(identifier)
@@ -1538,7 +1538,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           Call(Call)
             PSExpressionIdentifier(ExpressionIdentifier)
               PSQualifiedIdentifier(QualifiedIdentifier)
@@ -1619,7 +1619,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           Call(Call)
             PSExpressionIdentifier(ExpressionIdentifier)
               PSQualifiedIdentifier(QualifiedIdentifier)
@@ -3281,7 +3281,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSExpressionIdentifier(ExpressionIdentifier)
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
@@ -3815,7 +3815,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           Call(Call)
             PSExpressionIdentifier(ExpressionIdentifier)
               PSQualifiedIdentifier(QualifiedIdentifier)

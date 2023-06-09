@@ -35,7 +35,7 @@ Purescript File
               PsiElement(=)('=')
               PSParens(Parens)
                 PsiElement(()('(')
-                PSValue(Value)
+                OperatorExpression(OperatorExpression)
                   ExpressionWildcard(ExpressionWildcard)
                     PsiElement(identifier)('_')
                   PSExpressionOperator(ExpressionOperator)

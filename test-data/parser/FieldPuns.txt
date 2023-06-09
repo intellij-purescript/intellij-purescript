@@ -30,7 +30,7 @@ Purescript File
                   PsiElement(identifier)('name')
               PsiElement(})('}')
         PsiElement(=)('=')
-        PSValue(Value)
+        OperatorExpression(OperatorExpression)
           PSExpressionIdentifier(ExpressionIdentifier)
             PSQualifiedIdentifier(QualifiedIdentifier)
               PSIdentifier(identifier)
