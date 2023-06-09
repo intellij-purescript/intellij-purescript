@@ -3,7 +3,10 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
-import org.purescript.module.declaration.value.expression.*
+import org.purescript.module.declaration.value.expression.Expression
+import org.purescript.module.declaration.value.expression.ExpressionAtom
+import org.purescript.module.declaration.value.expression.Qualified
+import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.name.PSQualifiedOperatorName
 import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
@@ -34,7 +37,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
         siblings(true, false).filterIsInstance<Expression>().first(),
     )
     override fun replaceWithInline(toInlineWith: InlinableElement) {
-        parentOfType<PSValue>()?.replace(toInlineWith.inline(arguments))
+        parentOfType<Expression>()?.replace(toInlineWith.inline(arguments))
     }
 
     override fun canBeReplacedWithInline(): Boolean {
