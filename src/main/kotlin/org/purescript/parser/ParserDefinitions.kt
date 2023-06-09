@@ -1,17 +1,19 @@
 package org.purescript.parser
 
-object ParserDefinitions {
-    // Literals
-    private val boolean = `'true'` / `'false'`
-    private val number = NumericLiteral(NATURAL / FLOAT)
-    private val moduleName = MODULE_NAME(!MODULE_PREFIX + PROPER_NAME)
-    private val qualifier = MODULE_NAME(MODULE_PREFIX)
+// Literals
+val boolean = `'true'` / `'false'`
+val number = NumericLiteral(NATURAL / FLOAT)
+val moduleName = MODULE_NAME(!MODULE_PREFIX + PROPER_NAME)
+val qualifier = MODULE_NAME(MODULE_PREFIX)
 
-    // Utils
-    private fun qualified(p: DSL) = !(qualifier) + p
-    private fun braces(p: DSL) = LCURLY + p + RCURLY
-    private fun parens(p: DSL) = LPAREN + p + RPAREN
-    private fun squares(p: DSL) = LBRACK + p + RBRACK
+// Utils
+fun qualified(p: DSL) = !(qualifier) + p
+fun braces(p: DSL) = LCURLY + p + RCURLY
+fun parens(p: DSL) = LPAREN + p + RPAREN
+fun squares(p: DSL) = LBRACK + p + RBRACK
+
+object ParserDefinitions {
+
 
     // TODO: add 'representational' and 'phantom'
     private val ident = Identifier(LOWER / `'as'` / `'hiding'` / `'role'` / `'nominal'`)
