@@ -100,6 +100,10 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
 
         return processor.markdown(markdown).trim()
     }
+    
+
+    override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? =
+        (originalElement as? TypeCheckable)?.checkType()?.toString()
 
     fun layout(definition: String, mainDescription: String) =
         DEFINITION_START + definition + DEFINITION_END +
