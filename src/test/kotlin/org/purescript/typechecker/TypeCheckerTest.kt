@@ -162,5 +162,22 @@ class TypeCheckerTest : BasePlatformTestCase() {
         TestCase.assertEquals("Prim.Int", x.checkType().toString())
     }
 
+    fun `test it rembers type aliases`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |type Truth = Int
+                |
+                |truth :: Truth
+                |truth = 42
+                |
+                |f = truth
+            """.trimMargin()
+        )
+        val f = file.getValueDeclarationGroupByName("f")
+        TestCase.assertEquals("Main.Truth", f.checkType().toString())
+    }
 }
 

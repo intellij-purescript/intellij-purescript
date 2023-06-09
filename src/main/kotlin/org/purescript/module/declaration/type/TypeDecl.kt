@@ -15,6 +15,8 @@ import org.purescript.name.PSProperName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A type synonym declaration, e.g.
@@ -22,7 +24,7 @@ import org.purescript.psi.PSStubbedElement
  * type GlobalEvents r = ( onContextMenu :: Event | r )
  * ```
  */
-class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace {
+class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace, TypeCheckable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<TypeDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isExported
@@ -65,4 +67,5 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
 
     override fun getTextOffset(): Int = identifier.textOffset
+    override fun checkType(): TypeCheckerType = TypeCheckerType.TypeConstructor("${module?.name}.$name")
 }
