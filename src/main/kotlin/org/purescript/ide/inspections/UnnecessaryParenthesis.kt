@@ -8,8 +8,8 @@ import com.intellij.psi.PsiElement
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
+import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.PSParens
-import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.RecordAccess
 import org.purescript.module.declaration.value.expression.RecordUpdate
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
@@ -17,30 +17,30 @@ import org.purescript.module.declaration.value.expression.controll.ifthenelse.PS
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
+import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.declaration.value.parameters.Parameter
 
 class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val argument = psiElement(Argument::class.java)
     private val twoChildren = collection<PsiElement?>().size(2)
-    private val value = psiElement(PSValue::class.java)
+    private val expression = psiElement(Expression::class.java)
     private val lambda = psiElement(PSLambda::class.java)
     private val call = psiElement(Call::class.java)
     private val ifThanElse = psiElement(PSIfThenElse::class.java)
     private val oneChild = collection<PsiElement?>().size(1)
-    private val valueWithOneChild = value.withChildren(oneChild)
+    private val expressionWithOneChild = expression.withChildren(oneChild)
     private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
     private val type: Capture<PSType> = psiElement(PSType::class.java)
     private val hasOnlyOneChild = psiElement().withChildren(oneChild)
-    private val parenthesisAroundIfThanElse = parenthesis.withChild(value.withChild(call.withChild(ifThanElse)))
-    private val parenthesisAroundLambda = parenthesis.withChild(value.withChild(call.withChild(lambda)))
+    private val parenthesisAroundIfThanElse = parenthesis.withChild(expression.withChild(call.withChild(ifThanElse)))
+    private val parenthesisAroundLambda = parenthesis.withChild(expression.withChild(call.withChild(lambda)))
     val wildcard = psiElement(ExpressionWildcard::class.java)
-    val operatorSection = parenthesis.withChild(value.withChild(wildcard))
-    val isTyped = parenthesis.withSuperParent(2, value.withChild(type))
+    val operatorSection = parenthesis.withChild(expression.withChild(wildcard))
     val recordAccsess = psiElement(RecordAccess::class.java)
     private val lonelyAccessor = parenthesis.withChild(
-        value
+        expression
             .withChildren(oneChild)
             .withChild(recordAccsess)
     )
@@ -51,24 +51,29 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val pattern = and(
         not(operatorSection),
         not(parenthesis.withParent(recordUpdateCall)),
+        not(parenthesis.withParent(argument)
+            .withChild(psiElement().withChild(or(
+                call,
+                psiElement(PSExpressionOperator::class.java))
+            ))
+        ),
         or(
             lonelyAccessor,
-            parenthesis.withParent(valueWithOneChild),
+            parenthesis.withParent(expressionWithOneChild),
             parenthesis
                 .withParent(call)
-                .withChild(valueWithOneChild),
+                .withChild(expressionWithOneChild),
             parenthesis
                 .withParent(hasOnlyOneChild)
-                .withChild(valueWithOneChild)
-                .andNot(isTyped)
+                .withChild(expressionWithOneChild)
                 .andNot(parentIsArgument)
                 .andNot(
                     parenthesisAroundIfThanElse
-                        .andNot(psiElement().withSuperParent(2, valueWithOneChild))
+                        .andNot(psiElement().withSuperParent(2, expressionWithOneChild))
                 )
                 .andNot(
                     parenthesisAroundLambda
-                        .andNot(psiElement().withSuperParent(2, valueWithOneChild))
+                        .andNot(psiElement().withSuperParent(2, expressionWithOneChild))
                 )
         )
     )
