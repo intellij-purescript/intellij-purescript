@@ -6,14 +6,6 @@ import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
 
 class PSValue(node: ASTNode) : PSPsiElement(node), Expression, TypeCheckable {
-    val expressionAtoms
-        get() = sequence {
-            var steps = children.asList()
-            while (steps.isNotEmpty()) {
-                this.yieldAll(steps)
-                steps = steps.flatMap { it.children.asList() }
-            }
-        }.filterIsInstance<ExpressionAtom>().toList()
 
     override fun checkType(): TypeCheckerType? =
         findChildrenByClass(Expression::class.java)

@@ -18,7 +18,6 @@ import org.purescript.module.declaration.PSSignature
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
-import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.parameters.Parameters
 import org.purescript.name.PSIdentifier
@@ -45,7 +44,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     val expressions: Sequence<Expression> get() = value?.expressions ?: emptySequence()
-    val value get() = findChildByClass(PSValue::class.java)
+    val value get() = findChildByClass(Expression::class.java)
     val expressionAtoms: List<ExpressionAtom>
         get() =
             (value?.expressionAtoms?.toList() ?: emptyList()) +
