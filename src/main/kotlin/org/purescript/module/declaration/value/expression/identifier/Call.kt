@@ -10,6 +10,7 @@ class Call(node: ASTNode) : PSPsiElement(node), Expression {
     val arguments: Sequence<Argument> get() = 
         childrenOfType<Argument>().asSequence() + 
             ((parent as? Call)?.arguments ?: emptySequence())
-
-    override fun checkType(): TypeCheckerType? = null
+    val function get() = findChildByClass(Expression::class.java)
+    val argument get() = findChildByClass(Argument::class.java)
+    override fun checkType(): TypeCheckerType? = (function?.checkType() as? TypeCheckerType.TypeApp)?.to
 }

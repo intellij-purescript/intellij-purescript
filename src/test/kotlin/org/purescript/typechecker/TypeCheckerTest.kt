@@ -55,6 +55,22 @@ class TypeCheckerTest : BasePlatformTestCase() {
             f.checkType().toString()
         )
     }
+    
+    fun `test it applies arguments to functions of primitive type`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: Int -> Int
+                |f y = y + 42
+                |
+                |x = f 10
+            """.trimMargin()
+        )
+        val x = file.getValueDeclarationGroupByName("x")
+        TestCase.assertEquals("Prim.Int", x.checkType().toString())
+    }
 
 }
 
