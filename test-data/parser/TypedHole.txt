@@ -76,8 +76,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
-          ExpressionHole(ExpressionHole)
-            PsiElement(operator)('?')
-            PSIdentifier(identifier)
-              PsiElement(identifier)('ummm')
+        ExpressionHole(ExpressionHole)
+          PsiElement(operator)('?')
+          PSIdentifier(identifier)
+            PsiElement(identifier)('ummm')

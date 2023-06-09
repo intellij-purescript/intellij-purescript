@@ -66,8 +66,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
-          PSExpressionConstructor(ExpressionConstructor)
-            PSQualifiedProperName(QualifiedProperName)
-              PSProperName(ProperName)
-                PsiElement(proper name)('AProxy')
+        PSExpressionConstructor(ExpressionConstructor)
+          PSQualifiedProperName(QualifiedProperName)
+            PSProperName(ProperName)
+              PsiElement(proper name)('AProxy')

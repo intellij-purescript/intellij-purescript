@@ -92,6 +92,5 @@ Purescript File
             WildcardBinder(WildcardBinder)
               PsiElement(identifier)('_')
         PsiElement(=)('=')
-        PSValue(Value)
-          PSNumericLiteral(NumericLiteral)
-            PsiElement(natural)('0')
+        PSNumericLiteral(NumericLiteral)
+          PsiElement(natural)('0')

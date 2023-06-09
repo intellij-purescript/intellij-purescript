@@ -213,7 +213,7 @@ class ParserDefinitions() {
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = Choice.of(
         Value(expr2 + ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))).heal,
-        Value(expr2)
+        expr2
     ) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
     private val patternGuard = !(binder + larrow).heal + Reference { expr1 }
     private val guard = GuardType(`|` + patternGuard.sepBy(`,`))

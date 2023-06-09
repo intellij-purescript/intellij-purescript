@@ -9,75 +9,42 @@ import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
 import org.purescript.module.declaration.value.expression.*
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
-import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.Argument
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
-import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
-import org.purescript.module.declaration.value.expression.namespace.PSLambda
 import org.purescript.module.declaration.value.parameters.Parameter
 
 class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val argument = psiElement(Argument::class.java)
     private val twoChildren = collection<PsiElement?>().size(2)
-    private val expression = psiElement(Expression::class.java)
-    private val lambda = psiElement(PSLambda::class.java)
     private val call = psiElement(Call::class.java)
-    private val ifThanElse = psiElement(PSIfThenElse::class.java)
     private val oneChild = collection<PsiElement?>().size(1)
-    private val expressionWithOneChild = expression.withChildren(oneChild)
-    private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
     private val hasOnlyOneChild = psiElement().withChildren(oneChild)
-    private val parenthesisAroundIfThanElse = parenthesis.withChild(expression.withChild(call.withChild(ifThanElse)))
-    private val parenthesisAroundLambda = parenthesis.withChild(expression.withChild(call.withChild(lambda)))
     val wildcard = psiElement(ExpressionWildcard::class.java)
-    val operatorSection = parenthesis.withChild(expression.withChild(wildcard))
     val recordAccsess = psiElement(RecordAccess::class.java)
-    private val lonelyAccessor = parenthesis.withChild(
-        expression
-            .withChildren(oneChild)
-            .withChild(recordAccsess)
-    )
     private val recordUpdate = psiElement(RecordUpdate::class.java)
-    private val recordUpdateCall = call.withChild(
-        argument.withChild(recordUpdate)
-    )
-    private val pattern = and(
-        not(operatorSection),
-        not(parenthesis.withSuperParent(2, TypedExpression::class.java)),
-        not(parenthesis.withParent(recordUpdateCall)),
-        not(parenthesis.withParent(argument)
-            .withChild(psiElement().withChild(or(
-                call,
-                psiElement(PSExpressionOperator::class.java))
-            ))
+    private val value = psiElement(PSValue::class.java)
+
+    private val neccesery = or(
+        parenthesis.withChild(value.withChild(wildcard)),
+        parenthesis.withParent(argument).withChild(or(call, value)),
+        parenthesis.withParent(
+            or(
+                recordAccsess,
+                psiElement(TypedExpression::class.java),
+                call.withChild(argument.withChild(recordUpdate)),
+                value
+            )
         ),
-        or(
-            lonelyAccessor,
-            parenthesis.withParent(expressionWithOneChild),
-            parenthesis
-                .withParent(call)
-                .withChild(expressionWithOneChild),
-            parenthesis
-                .withParent(hasOnlyOneChild)
-                .withChild(expressionWithOneChild)
-                .andNot(parentIsArgument)
-                .andNot(
-                    parenthesisAroundIfThanElse
-                        .andNot(psiElement().withSuperParent(2, expressionWithOneChild))
-                )
-                .andNot(
-                    parenthesisAroundLambda
-                        .andNot(psiElement().withSuperParent(2, expressionWithOneChild))
-                )
-        )
+        parenthesis.withParent(call).withChild(value)
     )
+
+    private val pattern = and(parenthesis, not(neccesery))
     private val caseAlternative = psiElement(CaseAlternative::class.java)
     private val recordLabelExprBinder = psiElement(RecordLabelExprBinder::class.java)
 
-    private val hasOnlyTwoChildren = psiElement()
-        .withChildren(twoChildren)
+    private val hasOnlyTwoChildren = psiElement().withChildren(twoChildren)
 
     private val binder = or(
         psiElement().withParent(hasOnlyOneChild.andNot(psiElement(Parameter::class.java))),

@@ -11,6 +11,5 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSValue(Value)
-          PSNumericLiteral(NumericLiteral)
-            PsiElement(natural)('1')
+        PSNumericLiteral(NumericLiteral)
+          PsiElement(natural)('1')
