@@ -11,7 +11,7 @@ import org.purescript.module.declaration.fixity.PSFixity.Associativity.Infixr
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 
 class ExpressionExtendWordSelectionHandler : ExtendWordSelectionHandler {
-    override fun canSelect(e: PsiElement) = e is PSValue
+    override fun canSelect(e: PsiElement) = e is Expression
 
     override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor)
             : MutableList<TextRange> = fromElement(e)
