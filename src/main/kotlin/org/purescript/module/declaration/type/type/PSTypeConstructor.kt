@@ -28,6 +28,6 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     val moduleName get() = identifier.moduleName
     override fun getName(): String = identifier.name
     override val qualifierName: String? get() = moduleName?.name
-    override fun checkType(): TypeCheckerType? = (reference.resolve() as? TypeCheckable)?.checkType()
+    override fun checkType(): TypeCheckerType? = (reference.resolve() as? TypeCheckable)?.checkType() 
     override fun getReference() = TypeConstructorReference(this)
 }

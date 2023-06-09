@@ -6,9 +6,19 @@ sealed interface TypeCheckerType {
     data class TypeVar(val name: String) : TypeCheckerType
     data class TypeLevelString(val value: String) : TypeCheckerType
     data class TypeLevelInt(val value: Int) : TypeCheckerType
-    data class TypeConstructor(val name: String) : TypeCheckerType
-    data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType
+    data class TypeConstructor(val name: String) : TypeCheckerType {
+        override fun toString() = name
+    }
+
+    data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType {
+        override fun toString() = when ("$apply") {
+            "Prim.Function" -> "$to ->"
+            else -> "$apply $to"
+        }
+    }
+
     data class Row(val labels: List<Pair<String, TypeCheckerType?>>) : TypeCheckerType
+
     // ForAll a TypeVarVisibility Text (Maybe (Type a)) (Type a) (Maybe SkolemScope)
     data class ForAll(val name: String, val scope: TypeCheckerType) : TypeCheckerType
     /*

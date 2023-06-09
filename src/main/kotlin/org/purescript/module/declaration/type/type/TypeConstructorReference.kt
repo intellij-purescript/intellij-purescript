@@ -5,6 +5,7 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import org.purescript.PSLanguage
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.imports.ImportQuickFix
@@ -14,7 +15,11 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
     PsiReferenceBase<PSTypeConstructor>(typeConstructor, typeConstructor.identifier.textRangeInParent, false) {
 
     override fun getVariants(): Array<PsiNamedElement> = candidates.toTypedArray()
-    override fun resolve(): PsiNamedElement? = candidates.firstOrNull { it.name == element.name }
+    override fun resolve(): PsiNamedElement? = 
+        candidates.firstOrNull { it.name == element.name } 
+        ?: PSLanguage
+            .getBuiltins(element.project, "Prim")
+            .firstOrNull { it.name == element.name }
 
     /**
      * Type constructors can reference any data, new type, or synonym declaration

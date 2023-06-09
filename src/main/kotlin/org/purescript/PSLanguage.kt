@@ -9,6 +9,8 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.type.type.PSType
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript", "application/x-purescript") {
     /**
@@ -161,11 +163,12 @@ object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript
 }
 
 class PrimTypePsiElement(private val project: Project, val moduleName: String, private val name: String) 
-    : FakePsiElement(), Importable {
+    : FakePsiElement(), Importable, TypeCheckable {
     override fun asImport() = ImportDeclaration(moduleName, importedItems = setOf(ImportedClass(name)))
     override val type: PSType? get() = null
     override fun getParent() = null
     override fun getName(): String = name
     override fun getProject(): Project = project
     override fun getContainingFile(): PsiFile = NULL_PSI_FILE
+    override fun checkType() = TypeCheckerType.TypeConstructor("$moduleName.$name")
 }
