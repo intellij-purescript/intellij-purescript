@@ -20,7 +20,6 @@ import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.expression.Expression
-import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.exports.ExportedOperator
 import org.purescript.name.PSOperatorName
 import org.purescript.name.PSQualifiedIdentifier
@@ -94,7 +93,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
         val name = this.qualifiedIdentifier?.text ?: this.qualifiedProperName?.text
         val (first, second) = arguments.map { it.text }.take(2)
         val expression = "$name $first $second"
-        return factory.createParenthesis(expression)?.parentsOfType<PSValue>()?.lastOrNull()!!
+        return factory.createParenthesis(expression)?.parentsOfType<Expression>()?.lastOrNull()!!
     }
 
     // Todo clean this up
