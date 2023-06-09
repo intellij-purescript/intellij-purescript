@@ -23,9 +23,8 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                     element.project,
                     PSLanguage,
-                    element.type?.text?.let { "${element.name} :: ${it}" } 
-                        ?: (element as? TypeCheckable)?.checkType()?.let { "${element.name} :: ${it}" }
-                        ?: element.name,
+                    (element.type?.text ?: (element as? TypeCheckable)?.checkType())
+                        ?.let { "${element.name} :: ${it}" } ?: element.name,
                     1f
                 ),
                 docCommentsToDocstring(element.docComments.map { it.text })
