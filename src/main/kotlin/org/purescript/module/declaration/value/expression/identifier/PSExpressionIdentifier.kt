@@ -7,7 +7,6 @@ import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
-import org.purescript.module.declaration.value.expression.PSValue
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
@@ -61,7 +60,6 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
                 ?: this.replace(toReplaceWith)
 
             is Argument -> this.replace(this.replace(toReplaceWith.let { it.withParenthesis() ?: it }))
-            is PSValue -> this.replace(toReplaceWith.let { it.withParenthesis() ?: it })
             else -> this.replace(toReplaceWith.let { it.withParenthesis() ?: it })
         }
     }
