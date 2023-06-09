@@ -24,7 +24,7 @@ class TypeCheckerTest : BasePlatformTestCase() {
         TestCase.assertEquals("Prim.String", string.checkType().toString())
         TestCase.assertEquals("Prim.Boolean", bool.checkType().toString())
     }
-    
+
     fun `test it follows identifier references`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -37,7 +37,8 @@ class TypeCheckerTest : BasePlatformTestCase() {
         )
         val f = file.getValueDeclarationGroupByName("f")
         TestCase.assertEquals("Prim.Int", f.checkType().toString())
-    }    
+    }
+
     fun `test it uses type annotations on value groups`() {
         val file = myFixture.configureByText(
             "Main.purs",
