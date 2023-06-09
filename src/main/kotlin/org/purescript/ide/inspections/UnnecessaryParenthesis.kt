@@ -5,13 +5,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
-import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.binder.ParensBinder
 import org.purescript.module.declaration.value.binder.record.RecordLabelExprBinder
-import org.purescript.module.declaration.value.expression.Expression
-import org.purescript.module.declaration.value.expression.PSParens
-import org.purescript.module.declaration.value.expression.RecordAccess
-import org.purescript.module.declaration.value.expression.RecordUpdate
+import org.purescript.module.declaration.value.expression.*
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
 import org.purescript.module.declaration.value.expression.identifier.Argument
@@ -32,7 +28,6 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     private val expressionWithOneChild = expression.withChildren(oneChild)
     private val parentIsArgument = psiElement().withParent(Argument::class.java)
     private val parenthesis: Capture<PSParens> = psiElement(PSParens::class.java)
-    private val type: Capture<PSType> = psiElement(PSType::class.java)
     private val hasOnlyOneChild = psiElement().withChildren(oneChild)
     private val parenthesisAroundIfThanElse = parenthesis.withChild(expression.withChild(call.withChild(ifThanElse)))
     private val parenthesisAroundLambda = parenthesis.withChild(expression.withChild(call.withChild(lambda)))
@@ -50,6 +45,7 @@ class UnnecessaryParenthesis() : LocalInspectionTool() {
     )
     private val pattern = and(
         not(operatorSection),
+        not(parenthesis.withSuperParent(2, TypedExpression::class.java)),
         not(parenthesis.withParent(recordUpdateCall)),
         not(parenthesis.withParent(argument)
             .withChild(psiElement().withChild(or(

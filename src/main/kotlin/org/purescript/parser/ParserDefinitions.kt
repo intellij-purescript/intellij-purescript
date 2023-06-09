@@ -108,10 +108,10 @@ class ParserDefinitions() {
         )
     }
     private val binder: DSL = Reference { binder1 } + !(dcolon + type)
-    private val expr = Value(Choice.of(
+    private val expr = Choice.of(
         TypedExpressionType(Reference { expr1 } + dcolon + type).heal,
         Reference { expr1 }
-    ))
+    )
     private val `expr?` = expr.relax("missing expression")
     private val operatorName = OperatorName(operator)
     private val qualOp = QualifiedOperatorName(qualified(operatorName))
@@ -212,8 +212,8 @@ class ParserDefinitions() {
     private val exprBacktick2 = expr3.sepBy1(qualOp)
     private val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
     private val expr1 = Choice.of(
-        (expr2 + ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))).heal,
-        expr2
+        Value(expr2 + ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))).heal,
+        Value(expr2)
     ) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
     private val patternGuard = !(binder + larrow).heal + Reference { expr1 }
     private val guard = GuardType(`|` + patternGuard.sepBy(`,`))
