@@ -1,6 +1,5 @@
 package org.purescript.typechecker
 
-
 sealed interface TypeCheckerType {
     data class Unknown(val id: Int) : TypeCheckerType
     data class TypeVar(val name: String) : TypeCheckerType
@@ -23,7 +22,7 @@ sealed interface TypeCheckerType {
     data class ForAll(val name: String, val scope: TypeCheckerType) : TypeCheckerType {
         fun removeArgument(argument: TypeCheckerType): TypeCheckerType? {
             val (call, ret) = scope as? TypeApp ?: return null
-            val (_ , arg) = (call as? TypeApp) ?: return null
+            val (_, arg) = (call as? TypeApp) ?: return null
             return when (ret) {
                 is TypeConstructor -> ret
                 TypeVar(name) -> argument
@@ -40,5 +39,9 @@ data class ConstrainedTypeCheckerType(val name: String) : TypeCheckerType
 data class Skolem(val name: String) : TypeCheckerType
 data class KindedType(val label: String) : TypeCheckerType
 */
+    companion object {
+        fun function(first: TypeCheckerType, vararg arguments: TypeCheckerType): TypeCheckerType =
+            arguments.fold(first) { f, a -> TypeApp(TypeApp(Prim.function, f), a) }
+    }
 }
 
