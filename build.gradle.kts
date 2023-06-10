@@ -42,9 +42,6 @@ tasks {
         reports.junitXml.required.set(false)
     }
 
-    processResources {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
     
     publishPlugin {
         token.set(intellijPublishToken)
