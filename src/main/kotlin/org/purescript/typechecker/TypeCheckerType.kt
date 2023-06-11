@@ -1,8 +1,20 @@
 package org.purescript.typechecker
 
 sealed interface TypeCheckerType {
-    data class Unknown(val id: Int) : TypeCheckerType
-    data class TypeVar(val name: String) : TypeCheckerType
+    fun call(argument: TypeCheckerType): TypeCheckerType? = null
+    fun substitute(varName: String, type: TypeCheckerType): TypeCheckerType = this
+
+    object Unknown : TypeCheckerType
+    data class TypeVar(val name: String) : TypeCheckerType {
+        override fun toString() = name
+        override fun substitute(varName: String, type: TypeCheckerType) =
+            if (name == varName) {
+                type
+            } else {
+                this
+            }
+    }
+
     data class TypeLevelString(val value: String) : TypeCheckerType
     data class TypeLevelInt(val value: Int) : TypeCheckerType
     data class TypeConstructor(val name: String) : TypeCheckerType {
@@ -10,26 +22,31 @@ sealed interface TypeCheckerType {
     }
 
     data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType {
+        override fun call(argument: TypeCheckerType): TypeCheckerType? =
+            when (val parameter = (apply as? TypeApp)?.to) {
+                argument -> to
+                is TypeVar -> to.substitute(parameter.name, argument)
+                else -> null
+            }
+
         override fun toString() = when ("$apply") {
             "Prim.Function" -> "$to ->"
             else -> "$apply $to"
         }
+
+        override fun substitute(varName: String, type: TypeCheckerType): TypeCheckerType =
+            copy(apply.substitute(varName, type), to.substitute(varName, type))
     }
 
     data class Row(val labels: List<Pair<String, TypeCheckerType?>>) : TypeCheckerType
 
     // ForAll a TypeVarVisibility Text (Maybe (Type a)) (Type a) (Maybe SkolemScope)
     data class ForAll(val name: String, val scope: TypeCheckerType) : TypeCheckerType {
-        fun removeArgument(argument: TypeCheckerType): TypeCheckerType? {
-            val (call, ret) = scope as? TypeApp ?: return null
-            val (_, arg) = (call as? TypeApp) ?: return null
-            return when (ret) {
-                is TypeConstructor -> ret
-                TypeVar(name) -> argument
-                else -> TypeConstructor("Prim.Int")
-            }
+        override fun call(argument: TypeCheckerType): TypeCheckerType? {
+            return scope.call(argument)
         }
     }
+
     /*
 data class TypeWildCard(val value: WildcardData) : TypeCheckerType {
     interface WildcardData

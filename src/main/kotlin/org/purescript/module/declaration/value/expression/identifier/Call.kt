@@ -14,7 +14,7 @@ class Call(node: ASTNode) : PSPsiElement(node), Expression {
     val argument get() = findChildByClass(Argument::class.java)
     override fun checkType(): TypeCheckerType? = when( val functionType = function?.checkType()) {
         is TypeCheckerType.TypeApp -> functionType.to
-        is TypeCheckerType.ForAll -> argument?.checkType()?.let { functionType.removeArgument(it) }
+        is TypeCheckerType.ForAll -> argument?.checkType()?.let { functionType.call(it) }
         else -> null
     }
 }

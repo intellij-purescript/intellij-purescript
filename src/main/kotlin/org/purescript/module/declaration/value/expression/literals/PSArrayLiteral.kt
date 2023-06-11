@@ -13,6 +13,6 @@ class PSArrayLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     override fun checkType(): TypeCheckerType = TypeCheckerType.TypeApp(
         TypeCheckerType.TypeConstructor("Prim.Array"),
         values.firstNotNullOfOrNull { (it as? TypeCheckable)?.checkType() }
-            ?: TypeCheckerType.Unknown(-1)
+            ?: TypeCheckerType.Unknown
     )
 }
