@@ -24,7 +24,7 @@ import org.purescript.module.declaration.classes.PSInstanceDeclaration
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.PSSignature
+import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class UnusedInspection : LocalInspectionTool() {
@@ -36,7 +36,7 @@ class UnusedInspection : LocalInspectionTool() {
             is ValueDeclarationGroup -> when {
                 element.name == "main" -> Unit
                 element.parent is PSInstanceDeclaration -> Unit
-                search(element).anyMatch { it.element !is PSSignature } -> Unit
+                search(element).anyMatch { it.element !is Signature } -> Unit
                 else -> holder.registerProblem(
                     element.nameIdentifier,
                     getDescription(element),

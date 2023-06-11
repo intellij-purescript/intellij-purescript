@@ -24,7 +24,7 @@ Purescript File
       PSOperatorName(OperatorName)
         PsiElement(operator)('?!')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('what')
         PsiElement(::)('::')

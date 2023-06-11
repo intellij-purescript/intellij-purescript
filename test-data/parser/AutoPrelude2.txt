@@ -22,7 +22,7 @@ Purescript File
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         PsiElement(::)('::')

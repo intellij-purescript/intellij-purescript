@@ -18,7 +18,7 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
-import org.purescript.module.declaration.PSSignature
+import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
@@ -106,7 +106,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
         override fun getIcon(unused: Boolean) = getIcon(0)
     }
 
-    val signature: PSSignature? get() = findChildByClass(PSSignature::class.java)
+    val signature: Signature? get() = child()
     val valueDeclarations: Array<out ValueDecl> get() = children()
     val expressionAtoms get() = valueDeclarations.flatMap { it.expressionAtoms }
     val binderAtoms

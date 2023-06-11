@@ -19,7 +19,7 @@ import org.purescript.highlighting.PSSyntaxHighlighter.LOCAL_VARIABLE
 import org.purescript.highlighting.PSSyntaxHighlighter.PARAMETER
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_VARIABLE
-import org.purescript.module.declaration.PSSignature
+import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -34,7 +34,7 @@ class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is PSIdentifier -> when {
-                element.parent is ValueDecl || element.parent is PSSignature -> holder.newSilentAnnotation(INFORMATION)
+                element.parent is ValueDecl || element.parent is Signature -> holder.newSilentAnnotation(INFORMATION)
                     .textAttributes(FUNCTION_DECLARATION).create()
 
                 element.parent.parent.parent is Call -> {

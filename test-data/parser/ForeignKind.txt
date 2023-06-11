@@ -60,7 +60,7 @@ Purescript File
             PsiElement(identifier)('log')
         PsiElement())(')')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('proxy1Add2Is3')
         PsiElement(::)('::')

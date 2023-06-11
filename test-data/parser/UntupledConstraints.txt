@@ -132,7 +132,7 @@ Purescript File
                     PSIdentifier(identifier)
                       PsiElement(identifier)('a')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('strangeThing')
         PsiElement(::)('::')

@@ -109,7 +109,8 @@ val type3 = Choice.of(
 /**
  * Function or constraint
  */
-val type2: DSL = Choice.of(TypeArrType(type3 + arrow + Reference { type1 }).heal,
+val type2: DSL = Choice.of(
+    TypeArrType(type3 + arrow + Reference { type1 }).heal,
     ConstrainedType(type3 + darrow + Reference { type1 }).heal,
     type3
 )
@@ -173,14 +174,16 @@ val exprCase: DSL = Case(
     ).relax("missing case branches")).relax("incomplete case of")
 )
 val expr5 = Reference {
-    RecordUpdateType(
-        recordLayout1(
-            propertyUpdate,
-            "property update"
-        ).heal
-    ) / expr7 / Lambda(backslash + parameters + arrow.relax("missing lambda arrow") + expr) / exprCase / ifThenElse / doBlock / AdoBlockType(
-        qualified(`'ado'`).heal + layout(doStatement, "ado statement") + `'in'` + expr
-    ) / letIn
+    Choice.of(
+        RecordUpdateType(recordLayout1(propertyUpdate, "property update").heal),
+        expr7,
+        Lambda(backslash + parameters + arrow.relax("missing lambda arrow") + expr),
+        exprCase,
+        ifThenElse,
+        doBlock,
+        AdoBlockType(qualified(`'ado'`).heal + layout(doStatement, "ado statement") + `'in'` + expr),
+        letIn,
+    )
 }
 
 /**
@@ -265,7 +268,7 @@ val parameters = ParametersType(!+ParameterType(binderAtom))
 fun namedValueDecl(name: String) = ValueDeclType(Lookahead(ident.heal) { tokenText == name } + parameters + guardedDecl)
 
 fun valueDeclarationGroup() = ValueDeclarationGroupType(Capture { name ->
-    !(Signature(ident + dcolon + type.relax("malformed type")) + `L-sep`).heal + namedValueDecl(name).sepBy1(
+    !(SignatureType(ident + dcolon + type.relax("malformed type")) + `L-sep`).heal + namedValueDecl(name).sepBy1(
         `L-sep`
     )
 }).heal
@@ -283,7 +286,7 @@ val decl = Choice.of(
     (`'type'` + properName + dcolon).heal + type,
     TypeDeclType(`'type'` + properName + TypeParametersType(!+typeVar) + eq + type),
     valueDeclarationGroup(),
-    Signature(ident + dcolon + type.relax("malformed type")).heal,
+    SignatureType(ident + dcolon + type.relax("malformed type")).heal,
     foreignDeclaration,
     fixityDeclaration,
     classDeclaration,
@@ -346,7 +349,7 @@ fun recordLayout1(statement: DSL, name: String): DSL {
 
 val letBinding = Choice.of(
     valueDeclarationGroup(),
-    Signature(ident + dcolon + type.relax("malformed type")).heal,
+    SignatureType(ident + dcolon + type.relax("malformed type")).heal,
     LetBinderType(binder1 + eq + exprWhere).heal,
     (ident + !+binderAtom + guardedDecl).heal
 )

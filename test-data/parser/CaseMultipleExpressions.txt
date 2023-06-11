@@ -30,7 +30,7 @@ Purescript File
         PsiElement(module prefix)('Control.Monad.')
         PsiElement(proper name)('Eff')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('doIt')
         PsiElement(::)('::')

@@ -82,7 +82,7 @@ Purescript File
         PSModuleName(ModuleName)
           PsiElement(proper name)('CB')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('genConfig')
         PsiElement(::)('∷')

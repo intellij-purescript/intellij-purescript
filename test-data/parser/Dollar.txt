@@ -16,7 +16,7 @@ Purescript File
             PsiElement(identifier)('log')
         PsiElement())(')')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('applyFn')
         PsiElement(::)('::')

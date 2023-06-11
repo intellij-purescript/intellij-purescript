@@ -1,7 +1,7 @@
 package org.purescript.parser
 
 import org.purescript.module.Module
-import org.purescript.module.declaration.PSSignature
+import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.classes.*
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataConstructorList
@@ -78,7 +78,7 @@ val TypeCtor = WithPsi("TypeConstructor") { PSTypeConstructor(it) }
 val DataDecl = DataDeclaration.Type
 val DataCtorList = DataConstructorList.Type
 val DataCtor = DataConstructor.Type
-val Signature = WithPsi("Signature") { PSSignature(it) }
+val SignatureType = Signature.Type
 val LetBinderType = WithPsi("LetBinder") { LetBinder(it) }
 val TypeDeclType = TypeDecl.Type
 val ValueDeclType = ValueDecl.Type 

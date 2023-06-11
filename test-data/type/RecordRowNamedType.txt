@@ -34,7 +34,7 @@ Purescript File
                 PsiElement(proper name)('String')
         PsiElement(})('}')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         PsiElement(::)('::')

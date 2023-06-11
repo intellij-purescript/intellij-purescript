@@ -1,7 +1,7 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
-import org.purescript.module.declaration.PSSignature
+import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.value.expression.Qualified
@@ -14,10 +14,10 @@ import org.purescript.typechecker.TypeCheckerType
  * A type constructor is a PSI element that references one of the following PSI elements:
  *  - [DataDeclaration]
  *  - [NewtypeDecl]
- *  - [PSSignature]
+ *  - [Signature]
  *
  * It can appear in many places, for example in one of the following PSI elements:
- *  - [PSSignature]
+ *  - [Signature]
  *  - [DataConstructor.PSDataConstructor]
  */
 class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {

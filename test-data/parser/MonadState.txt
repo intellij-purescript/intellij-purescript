@@ -672,7 +672,7 @@ Purescript File
         PSExpressionWhere(ExpressionWhere)
           PsiElement(where)('where')
           ValueDeclarationGroup(ValueDeclarationGroup)
-            PSSignature(Signature)
+            Signature(Signature)
               PSIdentifier(identifier)
                 PsiElement(identifier)('same')
               PsiElement(::)('::')

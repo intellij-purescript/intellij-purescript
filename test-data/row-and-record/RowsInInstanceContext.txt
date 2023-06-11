@@ -251,7 +251,7 @@ Purescript File
                   PSIdentifier(identifier)
                     PsiElement(identifier)('rec')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
         PsiElement(::)('::')

@@ -150,7 +150,7 @@ Purescript File
           PSProperName(ProperName)
             PsiElement(proper name)('Proxy')
     ValueDeclarationGroup(ValueDeclarationGroup)
-      PSSignature(Signature)
+      Signature(Signature)
         PSIdentifier(identifier)
           PsiElement(identifier)('appendProxy')
         PsiElement(::)('::')
