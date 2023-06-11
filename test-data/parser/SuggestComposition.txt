@@ -37,7 +37,7 @@ Purescript File
                 PsiElement(()('(')
                 OperatorExpression(OperatorExpression)
                   ExpressionWildcard(ExpressionWildcard)
-                    PsiElement(identifier)('_')
+                    PsiElement(wildcard)('_')
                   PSExpressionOperator(ExpressionOperator)
                     PSQualifiedOperatorName(QualifiedOperatorName)
                       PSOperatorName(OperatorName)

@@ -51,7 +51,7 @@ val `,` = COMMA.dsl
 @Suppress("ObjectPropertyName")
 val `@` = "@".dsl
 @Suppress("ObjectPropertyName")
-val `_` = "_".dsl
+val `_` = WILDCARD.dsl
 
 val `(` = LPAREN.dsl
 val `)` = RPAREN.dsl

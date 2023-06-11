@@ -87,6 +87,7 @@ charControl = "^" [:uppercase:]
 "--" " "* "|" [^\n]*           { return DOC_COMMENT; }
 "--" [^\n]*                    { return SLCOMMENT; }
 
+"_"                            { return WILDCARD; }
 "data"                         { return DATA; }
 "type"                         { return TYPE; }
 "newtype"                      { return NEWTYPE; }

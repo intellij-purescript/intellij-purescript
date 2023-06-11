@@ -870,7 +870,7 @@ Purescript File
           PsiElement(do)('do')
           PSDoNotationBind(DoNotationBind)
             WildcardBinder(WildcardBinder)
-              PsiElement(identifier)('_')
+              PsiElement(wildcard)('_')
             PsiElement(<-)('<-')
             Call(Call)
               Call(Call)

@@ -9,6 +9,7 @@ import org.purescript.psi.PSElementType
 @JvmField val MLCOMMENT = PSElementType("block comment")
 @JvmField val SLCOMMENT = PSElementType("line comment")
 @JvmField val DOC_COMMENT = PSElementType("doc comment")
+@JvmField val WILDCARD = PSElementType("wildcard")
 @JvmField val DATA = PSElementType("data")
 @JvmField val NEWTYPE = PSElementType("newtype")
 @JvmField val TYPE = PSElementType("type")

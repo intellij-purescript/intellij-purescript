@@ -426,7 +426,7 @@ Purescript File
         Parameters(Parameters)
           Parameter(Parameter)
             WildcardBinder(WildcardBinder)
-              PsiElement(identifier)('_')
+              PsiElement(wildcard)('_')
           Parameter(Parameter)
             VarBinder(VarBinder)
               PSIdentifier(identifier)

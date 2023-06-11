@@ -126,7 +126,7 @@ Purescript File
         Parameters(Parameters)
           Parameter(Parameter)
             WildcardBinder(WildcardBinder)
-              PsiElement(identifier)('_')
+              PsiElement(wildcard)('_')
         PsiElement(=)('=')
         PSBooleanLiteral(BooleanLiteral)
           PsiElement(false)('false')

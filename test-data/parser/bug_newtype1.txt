@@ -650,7 +650,7 @@ Purescript File
               PsiElement(identifier)('i')
         PsiElement())(')')
       TypeWildcard(TypeWildcard)
-        PsiElement(identifier)('_')
+        PsiElement(wildcard)('_')
     PsiComment(doc comment)('-- | Creates an indexed HTML property.')
     ValueDeclarationGroup(ValueDeclarationGroup)
       PSSignature(Signature)

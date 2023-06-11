@@ -62,7 +62,7 @@ Purescript File
                   PsiElement(identifier)('a')
           CaseAlternative(CaseAlternative)
             WildcardBinder(WildcardBinder)
-              PsiElement(identifier)('_')
+              PsiElement(wildcard)('_')
             PsiElement(->)('->')
             PSNumericLiteral(NumericLiteral)
               PsiElement(natural)('0')

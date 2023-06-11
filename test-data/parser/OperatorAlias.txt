@@ -60,7 +60,7 @@ Purescript File
                 PsiElement(identifier)('a')
           Parameter(Parameter)
             WildcardBinder(WildcardBinder)
-              PsiElement(identifier)('_')
+              PsiElement(wildcard)('_')
         PsiElement(=)('=')
         PSExpressionIdentifier(ExpressionIdentifier)
           PSQualifiedIdentifier(QualifiedIdentifier)
