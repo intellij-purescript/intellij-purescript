@@ -118,6 +118,7 @@ data class Optional(val child: DSL) : DSL {
 }
 
 data class Transaction(val child: DSL) : DSL {
+    override val heal: Transaction get() = this
     override fun parse(builder: PsiBuilder): Boolean {
         val pack = builder.mark()
         return when (child.parse(builder)) {
@@ -135,8 +136,8 @@ data class Transaction(val child: DSL) : DSL {
 }
 
 data class Reference(val init: DSL.() -> DSL) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean =
-        this.init().parse(builder)
+    private val cache by lazy { this.init() }
+    override fun parse(builder: PsiBuilder): Boolean = cache.parse(builder)
 }
 
 data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
@@ -154,8 +155,9 @@ data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
 
 
 data class Relax(val dsl: DSL, val message: String) : DSL {
+    private val healedDsl = dsl.heal
     override fun parse(builder: PsiBuilder): Boolean {
-        return if (dsl.heal.parse(builder)) {
+        return if (healedDsl.parse(builder)) {
             true
         } else {
             builder.error(message)
@@ -165,8 +167,9 @@ data class Relax(val dsl: DSL, val message: String) : DSL {
 }
 
 data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
+    private val healedDsl = dsl.heal
     override fun parse(builder: PsiBuilder): Boolean {
-        return if (dsl.heal.parse(builder)) {
+        return if (healedDsl.parse(builder)) {
             true
         } else {
             val error = builder.mark()
