@@ -8,7 +8,7 @@ import com.intellij.psi.tree.IElementType
 interface DSL {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
-    val heal get() = Transaction(this)
+    val heal: DSL get() = Transaction(this)
     fun relax(message: String) = Relax(this, message)
     fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
     fun parse(builder: PsiBuilder): Boolean
@@ -58,6 +58,7 @@ operator fun String.div(other: DSL) = Choice(dsl, other.dsl)
 operator fun DSL.div(other: String) = Choice(dsl, other.dsl)
 
 data class ElementToken(val token: IElementType) : DSL {
+    override val heal get() = this
     override fun parse(builder: PsiBuilder): Boolean =
         if (builder.tokenType === token) {
             builder.advanceLexer()
@@ -68,6 +69,7 @@ data class ElementToken(val token: IElementType) : DSL {
 }
 
 data class StringToken(val token: String) : DSL {
+    override val heal get() = this
     override fun parse(builder: PsiBuilder): Boolean =
         when (builder.tokenText) {
             token -> {
