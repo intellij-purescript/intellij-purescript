@@ -4,7 +4,6 @@ import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.FakePsiElement
-import com.intellij.psi.util.PsiUtilCore.NULL_PSI_FILE
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
 import org.purescript.module.declaration.Importable
@@ -169,6 +168,7 @@ class PrimTypePsiElement(private val project: Project, val moduleName: String, p
     override fun getParent() = null
     override fun getName(): String = name
     override fun getProject(): Project = project
-    override fun getContainingFile(): PsiFile = NULL_PSI_FILE
+    override fun getContainingFile(): PsiFile? = null
+    override fun isValid() = true
     override fun checkType() = TypeCheckerType.TypeConstructor("$moduleName.$name")
 }
