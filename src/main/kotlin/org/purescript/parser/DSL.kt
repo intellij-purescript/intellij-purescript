@@ -31,6 +31,7 @@ operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
 operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
 operator fun IElementType.invoke(o: IElementType) = Symbolic(o.dsl, this)
 fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
+fun IElementType.cont(start: DSL, next: DSL) = Continuation(this, start, next)
 
 data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     private val healedNext = next.heal
@@ -212,4 +213,25 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     }
 
     override val tokenSet: TokenSet? = null
-} 
+}
+
+class Continuation(val type: IElementType, val init: DSL, val continuaton: DSL) : DSL {
+    override val tokenSet: TokenSet? = init.tokenSet
+    override fun parse(b: PsiBuilder): Boolean {
+        val marker = b.mark()
+        return when {
+            !init.parse(b) -> {
+                marker.drop()
+                false
+            }
+            continuaton.heal.parse(b) -> {
+                marker.done(type)
+                true
+            }
+            else -> {
+                marker.drop()
+                true
+            }
+        }
+    }
+}

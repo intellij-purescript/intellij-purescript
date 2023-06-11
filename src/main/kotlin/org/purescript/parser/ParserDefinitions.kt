@@ -95,8 +95,6 @@ val binderAtom: DSL = Reference {
     )
 }
 val binder: DSL = Reference { binder1 } + !(dcolon + type)
-val expr = Choice.of(TypedExpressionType(Reference { expr1 } + dcolon + type).heal, Reference { expr1 })
-val `expr?` = expr.relax("missing expression")
 val operatorName = OperatorName(operator)
 val qualOp = QualifiedOperatorName(qualified(operatorName))
 val type5: DSL = TypeAppType.fold(typeAtom, typeAtom)
@@ -121,6 +119,10 @@ val type2: DSL = Choice.of(
 val type1 = Choice.of(
     ForAllType(`'forall'` + +typeVar + dot + type2), type2
 )
+
+val expr = TypedExpressionType.cont(Reference { expr1 }, dcolon + type)
+
+val `expr?` = expr.relax("missing expression")
 val propertyUpdate: DSL = label + !eq + expr
 val symbol = Symbol(parens(operatorName))
 
@@ -196,9 +198,9 @@ val expr4 = CallType.fold(
 val expr3 = UnaryMinus(+`-` + expr4) / expr4
 val exprBacktick2 = expr3.sepBy1(qualOp)
 val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-val expr1: DSL = Choice.of(
-    OperatorExpressionType(expr2 + ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))).heal,
-    expr2
+val expr1: DSL = OperatorExpressionType.cont(
+    expr2,
+    ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))
 ) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
 val patternGuard = !(binder + larrow).heal + Reference { expr1 }
 val guard = GuardType(`|` + patternGuard.sepBy(`,`))
