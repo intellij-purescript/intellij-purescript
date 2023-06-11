@@ -28,12 +28,15 @@ operator fun String.unaryPlus() = OneOrMore(this.dsl)
 operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
 operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
 operator fun IElementType.invoke(o: IElementType) = Symbolic(o.dsl, this)
-fun IElementType.cons(start: DSL, next: DSL) = object : DSL {
+fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
+
+data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
+    private val healedNext = next.heal
     override fun parse(builder: PsiBuilder): Boolean {
         var marker = builder.mark()
         val result = start.parse(builder)
-        if (result) while (next.heal.parse(builder)) {
-            marker.done(this@cons)
+        if (result) while (healedNext.parse(builder)) {
+            marker.done(type)
             marker = marker.precede()
         }
         marker.drop()
@@ -95,7 +98,7 @@ data class Seq(val first: DSL, val next: DSL) : DSL {
 data class Choice(val first: DSL, val next: DSL) : DSL {
 
     companion object {
-        fun of(vararg all: DSL): DSL = 
+        fun of(vararg all: DSL): DSL =
             all.reduce { acc, dsl -> Choice(acc, dsl) }
     }
 

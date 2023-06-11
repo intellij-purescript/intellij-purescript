@@ -82,6 +82,9 @@ val typeAtom: DSL =
 val binderAtom: DSL = Reference {
     Choice.of(
         WildcardBinderType(`_`),
+        CtorBinderType(qualProperName),
+        NamedBinderType(VarBinderType(ident) + `@` + this).heal,
+        VarBinderType(ident),
         CharBinderType(char),
         StringBinderType(string),
         NumberBinderType(number),
@@ -89,9 +92,6 @@ val binderAtom: DSL = Reference {
         RecordBinderType(recordLayout(recordBinder, "record binder")),
         ParensBinderType(parens(binder)),
         BooleanBinderType(boolean),
-        CtorBinderType(qualProperName),
-        NamedBinderType(VarBinderType(ident) + `@` + this).heal,
-        VarBinderType(ident),
     )
 }
 val binder: DSL = Reference { binder1 } + !(dcolon + type)
@@ -99,7 +99,7 @@ val expr = Choice.of(TypedExpressionType(Reference { expr1 } + dcolon + type).he
 val `expr?` = expr.relax("missing expression")
 val operatorName = OperatorName(operator)
 val qualOp = QualifiedOperatorName(qualified(operatorName))
-val type5: DSL = TypeAppType.cons(typeAtom, typeAtom)
+val type5: DSL = TypeAppType.fold(typeAtom, typeAtom)
 val type4 = TypeIntType("-".dsl + number) / type5
 val type3 = Choice.of(
     TypeOperatorExpressionType(type4 + qualOp + type4.sepBy1(qualOp)).heal,
@@ -159,7 +159,7 @@ val exprAtom = Choice.of(
     RecordLiteralType(recordLayout(recordLabel, "record label")),
     Parens(parens(expr.relax("empty parenthesis"))),
 )
-val expr7 = RecordAccessType.cons(exprAtom, dot + Accessor(label))
+val expr7 = RecordAccessType.fold(exprAtom, dot + Accessor(label))
 
 val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
 
@@ -186,7 +186,7 @@ val expr5 = Reference {
 /**
  * Function application
  */
-val expr4 = CallType.cons(
+val expr4 = CallType.fold(
     expr5, ArgumentType(expr5) / TypeArgumentType("@".dsl + typeAtom)
 )
 
