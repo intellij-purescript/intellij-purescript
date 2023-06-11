@@ -5,5 +5,5 @@ import com.intellij.psi.util.childrenOfType
 import org.purescript.psi.PSPsiElement
 
 class TypeParameters(node: ASTNode) : PSPsiElement(node) {
-    val typeNames get() = childrenOfType<PSTypeVarName>().asSequence()
+    val typeNames get() = childrenOfType<TypeVarName>().asSequence()
 }

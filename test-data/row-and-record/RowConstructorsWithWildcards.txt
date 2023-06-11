@@ -72,7 +72,7 @@ Purescript File
       PSProperName(ProperName)
         PsiElement(proper name)('Quux')
       TypeParameters(TypeParameters)
-        PSTypeVarName(TypeVarName)
+        TypeVarName(TypeVarName)
           PSIdentifier(identifier)
             PsiElement(identifier)('r')
       PsiElement(=)('=')

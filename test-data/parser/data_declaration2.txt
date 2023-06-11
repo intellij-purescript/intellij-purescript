@@ -9,6 +9,6 @@ Purescript File
       PSProperName(ProperName)
         PsiElement(proper name)('User2')
       TypeParameters(TypeParameters)
-        PSTypeVarName(TypeVarName)
+        TypeVarName(TypeVarName)
           PSIdentifier(identifier)
             PsiElement(identifier)('a')

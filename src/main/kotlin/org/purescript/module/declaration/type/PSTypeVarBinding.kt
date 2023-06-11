@@ -5,14 +5,29 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
+import com.intellij.psi.stubs.*
 import com.intellij.psi.util.parentOfType
 import org.purescript.name.PSIdentifier
-import org.purescript.psi.PSPsiElement
-import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.*
 
-sealed class PSTypeVarBinding(node: ASTNode) : PSPsiElement(node)
+sealed interface PSTypeVarBinding
 
-class PSTypeVarName(node: ASTNode) : PSTypeVarBinding(node), PsiNameIdentifierOwner {
+class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
+    PSTypeVarBinding,
+    PsiNameIdentifierOwner {
+    class Stub(val name:String, p: StubElement<*>?) : AStub<TypeVarName>(p, Type)
+    object Type : PSElementType.WithPsiAndStub<Stub, TypeVarName>("TypeVarName") {
+        override fun createPsi(node: ASTNode) = TypeVarName(node)
+        override fun createPsi(stub: Stub) = TypeVarName(stub, this)
+        override fun createStub(me: TypeVarName, p: StubElement<*>?) = Stub(me.name, p)
+        override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
+        override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
+        override fun indexStub(stub: Stub, sink: IndexSink) {}
+    }
+
+    constructor(node: ASTNode) : super(node)
+    constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+
     val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getNameIdentifier() = identifier
     override fun getName(): String = identifier.name
@@ -25,4 +40,4 @@ class PSTypeVarName(node: ASTNode) : PSTypeVarBinding(node), PsiNameIdentifierOw
     }
 }
 
-class PSTypeVarKinded(node: ASTNode) : PSTypeVarBinding(node)
+class PSTypeVarKinded(node: ASTNode) : PSPsiElement(node), PSTypeVarBinding

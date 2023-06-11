@@ -2,7 +2,7 @@ package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
-import org.purescript.module.declaration.type.PSTypeVarName
+import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement
@@ -23,7 +23,7 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType {
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     private val type get() = findChildByClass(PSType::class.java)
-    private val typeVars get() = findChildrenByClass(PSTypeVarName::class.java)
+    private val typeVars get() = findChildrenByClass(TypeVarName::class.java)
     override fun checkType(): TypeCheckerType? {
         return typeVars
             .mapNotNull { it.name }

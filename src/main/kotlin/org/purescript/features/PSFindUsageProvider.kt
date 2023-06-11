@@ -19,7 +19,7 @@ import org.purescript.module.declaration.imports.PSImportAlias
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.Labeled
-import org.purescript.module.declaration.type.PSTypeVarName
+import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -41,7 +41,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is PSClassMember
             || psiElement is FixityDeclaration
             || psiElement is PSForeignDataDeclaration
-            || psiElement is PSTypeVarName
+            || psiElement is TypeVarName
             || psiElement is Labeled
 
     override fun getWordsScanner(): WordsScanner = DefaultWordsScanner(

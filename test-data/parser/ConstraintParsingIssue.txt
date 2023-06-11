@@ -14,7 +14,7 @@ Purescript File
       PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('X')
-      PSTypeVarName(TypeVarName)
+      TypeVarName(TypeVarName)
         PSIdentifier(identifier)
           PsiElement(identifier)('a')
     PSInstanceDeclaration(TypeInstanceDeclaration)

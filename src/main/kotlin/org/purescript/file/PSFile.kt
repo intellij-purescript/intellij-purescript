@@ -20,7 +20,7 @@ class PSFile(viewProvider: FileViewProvider) :
     }
 
     object Type : IStubFileElementType<Stub>("PSFile", PSLanguage) {
-        override fun getStubVersion(): Int = 12
+        override fun getStubVersion(): Int = 13
         override fun getBuilder(): StubBuilder = object : DefaultStubBuilder() {
             override fun createStubForFile(file: PsiFile): Stub = Stub(file as PSFile)
         }

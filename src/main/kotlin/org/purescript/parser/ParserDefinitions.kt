@@ -65,8 +65,8 @@ val qualProperName = QualifiedProperName(qualified(properName))
 val type: DSL = Reference {
     Choice.of(KindedType(Reference { type1 } + dcolon + this).heal, Reference { type1 })
 }
-val typeVarPlain = TypeVarName(ident) / TypeVarKinded(parens(ident + dcolon + type))
-val typeVar = ("@".dsl + TypeVarName(ident)) / ("@".dsl + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
+val typeVarPlain = TypeVarNameType(ident) / TypeVarKinded(parens(ident + dcolon + type))
+val typeVar = ("@".dsl + TypeVarNameType(ident)) / ("@".dsl + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
 val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
 val row = Choice.of(
     `|` + type, !(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type)

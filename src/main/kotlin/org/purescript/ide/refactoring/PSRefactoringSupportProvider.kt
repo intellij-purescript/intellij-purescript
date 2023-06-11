@@ -8,7 +8,7 @@ import org.purescript.module.declaration.fixity.FixityDeclaration
 import org.purescript.module.declaration.imports.PSImportedDataMember
 import org.purescript.module.declaration.imports.PSImportedItem
 import org.purescript.module.declaration.type.Labeled
-import org.purescript.module.declaration.type.PSTypeVarName
+import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
@@ -20,7 +20,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
                 element is Labeled ||
                 element is FixityDeclaration ||
                 element is VarBinder ||
-                element is PSTypeVarName
+                element is TypeVarName
 
     override fun isSafeDeleteAvailable(element: PsiElement): Boolean =
         element is ValueDeclarationGroup ||

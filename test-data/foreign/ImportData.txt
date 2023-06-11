@@ -37,7 +37,7 @@ Purescript File
       PSProperName(ProperName)
         PsiElement(proper name)('TList')
       TypeParameters(TypeParameters)
-        PSTypeVarName(TypeVarName)
+        TypeVarName(TypeVarName)
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
     PsiElement(foreign)('foreign')
