@@ -4,6 +4,7 @@ package org.purescript.parser
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
 
 interface DSL {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
@@ -11,7 +12,8 @@ interface DSL {
     val heal: DSL get() = Transaction(this)
     fun relax(message: String) = Relax(this, message)
     fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
-    fun parse(builder: PsiBuilder): Boolean
+    fun parse(b: PsiBuilder): Boolean
+    val tokenSet: TokenSet?
 }
 
 val IElementType.dsl get() = ElementToken(this)
@@ -32,17 +34,19 @@ fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
 
 data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     private val healedNext = next.heal
-    override fun parse(builder: PsiBuilder): Boolean {
-        var marker = builder.mark()
-        val result = start.parse(builder)
-        if (result) while (healedNext.parse(builder)) {
+    override fun parse(b: PsiBuilder): Boolean {
+        if (start.tokenSet?.contains(b.tokenType) == false) return false
+        var marker = b.mark()
+        val result = start.parse(b)
+        if (result) while (healedNext.parse(b)) {
             marker.done(type)
+            if (healedNext.tokenSet?.contains(b.tokenType) == false) return result
             marker = marker.precede()
         }
         marker.drop()
         return result
     }
-
+    override val tokenSet: TokenSet? = start.tokenSet
 }
 
 operator fun DSL.plus(other: DSL) = Seq(dsl, other.dsl)
@@ -58,10 +62,11 @@ operator fun String.div(other: DSL) = Choice(dsl, other.dsl)
 operator fun DSL.div(other: String) = Choice(dsl, other.dsl)
 
 data class ElementToken(val token: IElementType) : DSL {
+    override val tokenSet: TokenSet = TokenSet.create(token)
     override val heal get() = this
-    override fun parse(builder: PsiBuilder): Boolean =
-        if (builder.tokenType === token) {
-            builder.advanceLexer()
+    override fun parse(b: PsiBuilder): Boolean =
+        if (b.tokenType === token) {
+            b.advanceLexer()
             true
         } else {
             false
@@ -70,10 +75,11 @@ data class ElementToken(val token: IElementType) : DSL {
 
 data class StringToken(val token: String) : DSL {
     override val heal get() = this
-    override fun parse(builder: PsiBuilder): Boolean =
-        when (builder.tokenText) {
+    override val tokenSet: TokenSet? = null
+    override fun parse(b: PsiBuilder): Boolean =
+        when (b.tokenText) {
             token -> {
-                builder.advanceLexer()
+                b.advanceLexer()
                 true
             }
 
@@ -82,51 +88,57 @@ data class StringToken(val token: String) : DSL {
 }
 
 data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean) : DSL {
-    override fun parse(builder: PsiBuilder) = builder.filter() && next.parse(builder)
+    override fun parse(b: PsiBuilder) = b.filter() && next.parse(b)
+    override val tokenSet: TokenSet? = next.tokenSet
 }
 
 data class Capture(val next: (String) -> DSL) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean {
-        val tokenText = builder.tokenText ?: return false
-        return next(tokenText).parse(builder)
+    override val tokenSet: TokenSet? = null
+    override fun parse(b: PsiBuilder): Boolean {
+        val tokenText = b.tokenText ?: return false
+        return next(tokenText).parse(b)
     }
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean =
-        first.parse(builder) && next.parse(builder)
+    override fun parse(b: PsiBuilder)= 
+        tokenSet?.contains(b.tokenType) != false && first.parse(b) && next.parse(b)
+    override val tokenSet: TokenSet? = first.tokenSet
 }
 
 data class Choice(val first: DSL, val next: DSL) : DSL {
+    override fun parse(b: PsiBuilder) = 
+        tokenSet?.contains(b.tokenType) != false && first.parse(b) || next.parse(b)
+    override val tokenSet: TokenSet? =
+        first.tokenSet?.let {a -> next.tokenSet?.let { b -> TokenSet.orSet(a, b) } }
 
     companion object {
-        fun of(vararg all: DSL): DSL =
-            all.reduce { acc, dsl -> Choice(acc, dsl) }
+        fun of(vararg all: DSL) = all.reduce { acc, dsl -> Choice(acc, dsl) }
     }
-
-    override fun parse(builder: PsiBuilder): Boolean =
-        first.parse(builder) || next.parse(builder)
 }
 
 @Suppress("ControlFlowWithEmptyBody")
 data class OneOrMore(val child: DSL) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean {
-        val ret = child.parse(builder)
-        if (ret) while (child.parse(builder)){}
+    override val tokenSet: TokenSet? get() = child.tokenSet
+    override fun parse(b: PsiBuilder): Boolean {
+        val ret = child.parse(b)
+        if (ret) while (tokenSet?.contains(b.tokenType) != false && child.parse(b)){}
         return ret
     }
 }
 
 @Suppress("KotlinConstantConditions")
 data class Optional(val child: DSL) : DSL {
-    override fun parse(builder: PsiBuilder) = child.parse(builder) || true
+    override fun parse(b: PsiBuilder) = child.parse(b) || true
+    override val tokenSet: TokenSet? = null
 }
 
 data class Transaction(val child: DSL) : DSL {
     override val heal: Transaction get() = this
-    override fun parse(builder: PsiBuilder): Boolean {
-        val pack = builder.mark()
-        return when (child.parse(builder)) {
+    override fun parse(b: PsiBuilder): Boolean {
+        if (child.tokenSet?.contains(b.tokenType) == false) return false
+        val pack = b.mark()
+        return when (child.parse(b)) {
             false -> {
                 pack.rollbackTo()
                 false
@@ -138,17 +150,22 @@ data class Transaction(val child: DSL) : DSL {
             }
         }
     }
+
+    override val tokenSet: TokenSet? = child.tokenSet
 }
 
 data class Reference(val init: DSL.() -> DSL) : DSL {
     private val cache by lazy { this.init() }
-    override fun parse(builder: PsiBuilder): Boolean = cache.parse(builder)
+    override fun parse(b: PsiBuilder): Boolean = cache.parse(b)
+    override val tokenSet: TokenSet? = null
 }
 
 data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean {
-        val start = builder.mark()
-        return if (child.parse(builder)) {
+    override val tokenSet: TokenSet? = child.tokenSet
+    override fun parse(b: PsiBuilder): Boolean {
+        if (tokenSet?.contains(b.tokenType) == false) return false
+        val start = b.mark()
+        return if (child.parse(b)) {
             start.done(symbol)
             true
         } else {
@@ -160,12 +177,13 @@ data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
 
 
 data class Relax(val dsl: DSL, val message: String) : DSL {
+    override val tokenSet: TokenSet? get() = null
     private val healedDsl = dsl.heal
-    override fun parse(builder: PsiBuilder): Boolean {
-        return if (healedDsl.parse(builder)) {
+    override fun parse(b: PsiBuilder): Boolean {
+        return if (healedDsl.parse(b)) {
             true
         } else {
-            builder.error(message)
+            b.error(message)
             true
         }
     }
@@ -173,23 +191,25 @@ data class Relax(val dsl: DSL, val message: String) : DSL {
 
 data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     private val healedDsl = dsl.heal
-    override fun parse(builder: PsiBuilder): Boolean {
-        return if (healedDsl.parse(builder)) {
+    override fun parse(b: PsiBuilder): Boolean {
+        return if (healedDsl.parse(b)) {
             true
         } else {
-            val error = builder.mark()
-            while (!builder.eof()) {
-                val endOfError = builder.mark()
-                if (to.parse(builder)) {
+            val error = b.mark()
+            while (!b.eof()) {
+                val endOfError = b.mark()
+                if (to.parse(b)) {
                     endOfError.rollbackTo()
                     break
                 } else {
                     endOfError.drop()
                 }
-                builder.advanceLexer()
+                b.advanceLexer()
             }
             error.error(message)
             true
         }
     }
+
+    override val tokenSet: TokenSet? = null
 } 
