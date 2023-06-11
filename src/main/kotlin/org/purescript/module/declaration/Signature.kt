@@ -5,7 +5,6 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
-import org.purescript.module.Module
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
@@ -24,11 +23,7 @@ import org.purescript.typechecker.TypeCheckerType
  */
 class Signature : PSStubbedElement<Signature.Stub>, TypeCheckable {
 
-    class Stub(val name: String, p: StubElement<*>?) : AStub<Signature>(p, Type) {
-        val module get() = parentStub as? Module.Stub
-        val isTopLevel get() = module != null
-    }
-
+    class Stub(val name: String, p: StubElement<*>?) : AStub<Signature>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, Signature>("Signature") {
         override fun createPsi(node: ASTNode) = Signature(node)
         override fun createPsi(stub: Stub) = Signature(stub, this)
