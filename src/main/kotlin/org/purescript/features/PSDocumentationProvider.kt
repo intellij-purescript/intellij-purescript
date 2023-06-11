@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
-import com.petebevin.markdown.MarkdownProcessor
 import org.purescript.PSLanguage
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
@@ -87,7 +86,6 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
     }
 
     fun docCommentsToDocstring(commentText: List<String>): String {
-        val processor = MarkdownProcessor()
         val lines = commentText
             .joinToString("\n") { it.trim().removePrefix("-- |") }
             .trimIndent()
@@ -98,7 +96,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
 
         val markdown = lines.joinToString("\n")
 
-        return processor.markdown(markdown).trim()
+        return markdown.trim()
     }
     
 

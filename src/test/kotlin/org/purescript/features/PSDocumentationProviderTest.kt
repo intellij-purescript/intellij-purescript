@@ -14,7 +14,7 @@ class PSDocumentationProviderTest {
                     "-- | main",
                 )
             )
-        assertEquals("<p>This is\nmain</p>", documentation)
+        assertEquals("This is\nmain", documentation)
     }
 
     @Test
@@ -27,7 +27,7 @@ class PSDocumentationProviderTest {
                     "-- | main",
                 )
             )
-        assertEquals("<p>This is</p>\n\n<p>main</p>", documentation)
+        assertEquals("This is\n\nmain", documentation)
     }
 
     @Test
