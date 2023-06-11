@@ -13,4 +13,4 @@ Purescript File
           PsiElement(proper name)('Cons')
       PsiElement(as)('as')
       PSOperatorName(OperatorName)
-        PsiElement(::)(':')
+        PsiElement(:)(':')

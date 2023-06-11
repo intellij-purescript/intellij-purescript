@@ -48,7 +48,8 @@ import org.purescript.psi.PSElementType
 @JvmField val DDOT = PSElementType("..") // contextual keyword
 @JvmField val SEMI = PSElementType(";")
 @JvmField val DCOLON = PSElementType("::")
-@JvmField val COLON = PSElementType("::")
+@JvmField val COLON = PSElementType(":")
+@JvmField val MINUS = PSElementType("-")
 @JvmField val TICK = PSElementType("`")
 @JvmField val PIPE = PSElementType("|")
 @JvmField val COMMA = PSElementType(",")

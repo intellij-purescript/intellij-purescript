@@ -61,7 +61,7 @@ Purescript File
               PSExpressionOperator(ExpressionOperator)
                 PSQualifiedOperatorName(QualifiedOperatorName)
                   PSOperatorName(OperatorName)
-                    PsiElement(::)(':')
+                    PsiElement(:)(':')
               WildcardBinder(WildcardBinder)
                 PsiElement(wildcard)('_')
               PsiElement())(')')

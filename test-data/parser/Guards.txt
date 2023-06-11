@@ -425,7 +425,7 @@ Purescript File
             PSExpressionOperator(ExpressionOperator)
               PSQualifiedOperatorName(QualifiedOperatorName)
                 PSOperatorName(OperatorName)
-                  PsiElement(operator)('-')
+                  PsiElement(-)('-')
             PSExpressionIdentifier(ExpressionIdentifier)
               PSQualifiedIdentifier(QualifiedIdentifier)
                 PSIdentifier(identifier)

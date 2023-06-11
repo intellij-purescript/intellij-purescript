@@ -136,6 +136,7 @@ charControl = "^" [:uppercase:]
 "\\"                           { return BACKSLASH; }
 
 ":"                            { return COLON; }
+"-"                            { return MINUS; }
 
 ";"                            { return SEMI; }
 "::"                           { return DCOLON; }

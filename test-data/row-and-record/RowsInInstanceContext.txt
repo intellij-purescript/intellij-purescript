@@ -310,7 +310,7 @@ Purescript File
                             RecordLabel(RecordLabel)
                               PSIdentifier(identifier)
                                 PsiElement(identifier)('x')
-                              PsiElement(::)(':')
+                              PsiElement(:)(':')
                               PSStringLiteral(StringLiteral)
                                 PsiElement(string)('"Done"')
                             PsiElement(})('}')
