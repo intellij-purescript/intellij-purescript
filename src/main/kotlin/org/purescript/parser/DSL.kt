@@ -95,9 +95,8 @@ data class Seq(val first: DSL, val next: DSL) : DSL {
 data class Choice(val first: DSL, val next: DSL) : DSL {
 
     companion object {
-        fun of(vararg all: DSL): DSL {
-            return all.reduce { acc, dsl -> Choice(acc, dsl) }
-        }
+        fun of(vararg all: DSL): DSL = 
+            all.reduce { acc, dsl -> Choice(acc, dsl) }
     }
 
     override fun parse(builder: PsiBuilder): Boolean =
