@@ -190,7 +190,7 @@ val expr5 = Reference {
  * Function application
  */
 val expr4 = CallType.fold(
-    expr5, ArgumentType(expr5) / TypeArgumentType("@".dsl + typeAtom)
+    expr5, ArgumentType(expr5) / TypeArgumentType(`@` + typeAtom)
 )
 
 val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
