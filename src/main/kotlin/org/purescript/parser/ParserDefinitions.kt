@@ -363,5 +363,5 @@ val doBlock = DoBlock(
     qualified(`'do'`).heal + layout1(doStatement, "do statement").relax("missing do statements")
 )
 val recordBinder =
-    RecordLabelBinderType((label + eq / ":").heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
+    RecordLabelBinderType((label + eq / colon).heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
 

@@ -135,6 +135,8 @@ charControl = "^" [:uppercase:]
 "."                            { return DOT; }
 "\\"                           { return BACKSLASH; }
 
+":"                            { return COLON; }
+
 ";"                            { return SEMI; }
 "::"                           { return DCOLON; }
 "∷"                            { return DCOLON; }

@@ -226,7 +226,7 @@ Purescript File
               RecordLabel(RecordLabel)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('foo')
-                PsiElement(operator)(':')
+                PsiElement(::)(':')
                 PSLambda(Lambda)
                   PsiElement(\)('\')
                   Parameters(Parameters)

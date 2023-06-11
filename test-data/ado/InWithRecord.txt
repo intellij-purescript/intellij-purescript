@@ -19,7 +19,7 @@ Purescript File
             RecordLabel(RecordLabel)
               PSIdentifier(identifier)
                 PsiElement(identifier)('a')
-              PsiElement(operator)(':')
+              PsiElement(::)(':')
               PSNumericLiteral(NumericLiteral)
                 PsiElement(natural)('1')
             PsiElement(})('}')

@@ -523,7 +523,7 @@ Purescript File
                   RecordLabel(RecordLabel)
                     PSIdentifier(identifier)
                       PsiElement(identifier)('props')
-                    PsiElement(operator)(':')
+                    PsiElement(::)(':')
                     PSExpressionIdentifier(ExpressionIdentifier)
                       PSQualifiedIdentifier(QualifiedIdentifier)
                         PSIdentifier(identifier)
