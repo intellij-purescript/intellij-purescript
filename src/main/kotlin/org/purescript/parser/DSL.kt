@@ -108,10 +108,13 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
         first.parse(builder) || next.parse(builder)
 }
 
-@Suppress("KotlinConstantConditions")
+@Suppress("ControlFlowWithEmptyBody")
 data class OneOrMore(val child: DSL) : DSL {
-    override fun parse(builder: PsiBuilder): Boolean =
-        child.parse(builder) && (parse(builder) || true)
+    override fun parse(builder: PsiBuilder): Boolean {
+        val ret = child.parse(builder)
+        if (ret) while (child.parse(builder)){}
+        return ret
+    }
 }
 
 @Suppress("KotlinConstantConditions")
