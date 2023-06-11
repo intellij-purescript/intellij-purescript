@@ -193,7 +193,7 @@ val expr4 = CallType.fold(
     expr5, ArgumentType(expr5) / TypeArgumentType(`@` + typeAtom)
 )
 
-val expr3 = UnaryMinus(+"-".dsl + expr4) / expr4
+val expr3 = UnaryMinus(+`-` + expr4) / expr4
 val exprBacktick2 = expr3.sepBy1(qualOp)
 val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
 val expr1: DSL = Choice.of(
@@ -313,7 +313,7 @@ val moduleBody = Choice.of(
 val module = ModuleType(moduleHeader + moduleBody)
 val binder2 = Choice.of(
     (CtorBinderType(qualProperName) + !+binderAtom).heal,
-    NumberBinderType(("-".dsl + number).heal),
+    NumberBinderType((`-` + number).heal),
     binderAtom,
 )
 val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))

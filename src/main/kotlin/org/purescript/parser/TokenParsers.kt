@@ -41,6 +41,7 @@ val `'nominal'` = "nominal".dsl
 val `'of'` = OF.dsl
 val phantom = "phantom".dsl
 val `|` = PIPE.dsl
+val `-` = "-".dsl
 val representational = "representational".dsl
 val string = STRING.dsl
 val `'then'` = THEN.dsl 
