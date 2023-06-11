@@ -119,9 +119,7 @@ data class OneOrMore(val child: DSL) : DSL {
 
 @Suppress("KotlinConstantConditions")
 data class Optional(val child: DSL) : DSL {
-
-    override fun parse(builder: PsiBuilder): Boolean =
-        child.parse(builder) || true
+    override fun parse(builder: PsiBuilder) = child.parse(builder) || true
 }
 
 data class Transaction(val child: DSL) : DSL {
