@@ -39,14 +39,14 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     val IMPORT_REF = createKey("PS_IMPORT_REF", Default.LOCAL_VARIABLE)
 
     // 'String' in 'foo :: String -> String'
-    val TYPE_NAME = createKey("PS_TYPE_NAME", Default.METADATA)
+    val TYPE_NAME = createKey("PS_TYPE_NAME", Default.CLASS_NAME)
 
     // 'foo' in 'foo :: String -> String'
     val TYPE_ANNOTATION_NAME =
-        createKey("PS_TYPE_ANNOTATION_NAME", Default.METADATA)
+        createKey("PS_TYPE_ANNOTATION_NAME", Default.FUNCTION_DECLARATION)
 
     // 'a' in 'foo:: forall a. a -> a -> String'
-    val TYPE_VARIABLE = createKey("PS_TYPE_VARIABLE", Default.METADATA)
+    val TYPE_VARIABLE = createKey("PS_TYPE_VARIABLE", Default.IDENTIFIER)
     private fun createKey(externalName: String, fallbackAttrs: TextAttributesKey) =
         createTextAttributesKey(externalName, fallbackAttrs)
 
@@ -60,7 +60,8 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
         fillMap(keys, PS_BRACKETS, LBRACK, RBRACK)
         fillMap(keys, PS_BRACES, LCURLY, RCURLY)
         fillMap(keys, kOperators, OPERATOR)
-        fillMap(keys, IDENTIFIER, LOWER, MODULE_NAME)
+        fillMap(keys, IDENTIFIER, LOWER)
+        fillMap(keys, TYPE_NAME, PROPER_NAME, MODULE_PREFIX)
         fillMap(keys, KEYWORD, STRING_ESCAPED)
         fillMap(keys, STRING_GAP, org.purescript.parser.STRING_GAP)
         fillMap(keys, ERRORS_ATTRIBUTES, STRING_ERROR, BAD_CHARACTER)

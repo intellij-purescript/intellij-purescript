@@ -113,7 +113,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                             it.value,
                             1f
                         )
-                    }
+                    }.let { "<code>$it</code>" }
                     Normal(project, "$out\n$formated")
                 }
             }
@@ -122,17 +122,16 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         data class CodeBlock(val project: Project, val out: String, val code: String) : MState {
             override fun text(): String = out
             override fun process(line: String): MState {
-                if (line.startsWith("```")) {
+                return if (line.startsWith("```")) {
                     val formated = HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         project,
                         PSLanguage,
                         code,
                         1f
-                    )
-                    return Normal(project, "$out\n$formated")
+                    ).let { "<code>$it</code>" }
+                    Normal(project, "$out\n$formated")
                 } else {
-
-                    return CodeBlock(project, out, "$code\n$line")
+                    CodeBlock(project, out, "$code\n$line")
                 }
             }
         }

@@ -26,6 +26,7 @@ import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.name.PSIdentifier
+import org.purescript.name.PSModuleName
 import org.purescript.parser.ClassName
 import org.purescript.parser.ExpressionCtor
 import org.purescript.parser.TypeCtor
@@ -34,8 +35,9 @@ class PSSyntaxHighlightAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is PSIdentifier -> when {
-                element.parent is ValueDecl || element.parent is Signature -> holder.newSilentAnnotation(INFORMATION)
-                    .textAttributes(FUNCTION_DECLARATION).create()
+                element.parent is ValueDecl || element.parent is Signature ->
+                    holder.newSilentAnnotation(INFORMATION)
+                        .textAttributes(FUNCTION_DECLARATION).create()
 
                 element.parent.parent.parent is Call -> {
                     holder.newSilentAnnotation(INFORMATION).textAttributes(FUNCTION_CALL).create()
@@ -52,6 +54,8 @@ class PSSyntaxHighlightAnnotator : Annotator {
             }
 
             is VarBinder -> holder.newSilentAnnotation(INFORMATION).textAttributes(PARAMETER).create()
+            is PSModuleName -> holder.newSilentAnnotation(INFORMATION)
+                .textAttributes(TYPE_NAME).create()
 
         }
         when (element.node.elementType) {
