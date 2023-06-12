@@ -47,6 +47,7 @@ data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
         marker.drop()
         return result
     }
+
     override val tokenSet: TokenSet? = start.tokenSet
 }
 
@@ -102,28 +103,55 @@ data class Capture(val next: (String) -> DSL) : DSL {
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun parse(b: PsiBuilder)= 
+    override fun parse(b: PsiBuilder) =
         tokenSet?.contains(b.tokenType) != false && first.parse(b) && next.parse(b)
+
     override val tokenSet: TokenSet? = first.tokenSet
 }
 
 data class Choice(val first: DSL, val next: DSL) : DSL {
-    override fun parse(b: PsiBuilder) = 
+    override fun parse(b: PsiBuilder) =
         tokenSet?.contains(b.tokenType) != false && first.parse(b) || next.parse(b)
+
     override val tokenSet: TokenSet? =
-        first.tokenSet?.let {a -> next.tokenSet?.let { b -> TokenSet.orSet(a, b) } }
+        first.tokenSet?.let { a -> next.tokenSet?.let { b -> TokenSet.orSet(a, b) } }
 
     companion object {
         fun of(vararg all: DSL) = all.reduce { acc, dsl -> Choice(acc, dsl) }
+        fun optOf(vararg all: DSL): DSL {
+            var currentMap = hashMapOf<IElementType, DSL>()
+            var ret : DSL = OptChoice(currentMap)
+            for (dsl in all) {
+                when (val tokens = dsl.tokenSet) {
+                    null -> {
+                        currentMap = hashMapOf()
+                        ret = ret / dsl / OptChoice(currentMap)
+                    }
+                    else -> for (type in tokens.types) {
+                        currentMap[type] = currentMap[type]?.let { it / dsl } ?: dsl
+                    }
+                }
+            }
+            return ret
+        }
     }
 }
+
+data class OptChoice(val table: Map<IElementType, DSL>) : DSL {
+    override val tokenSet: TokenSet = 
+        TokenSet.create(*table.keys.map { it }.toTypedArray())
+    override fun parse(b: PsiBuilder): Boolean =
+        table[b.tokenType]?.parse(b) ?: false
+}
+
 
 @Suppress("ControlFlowWithEmptyBody")
 data class OneOrMore(val child: DSL) : DSL {
     override val tokenSet: TokenSet? get() = child.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         val ret = child.parse(b)
-        if (ret) while (tokenSet?.contains(b.tokenType) != false && child.parse(b)){}
+        if (ret) while (tokenSet?.contains(b.tokenType) != false && child.parse(b)) {
+        }
         return ret
     }
 }
@@ -224,10 +252,12 @@ class Continuation(val type: IElementType, val init: DSL, val continuaton: DSL) 
                 marker.drop()
                 false
             }
+
             continuaton.heal.parse(b) -> {
                 marker.done(type)
                 true
             }
+
             else -> {
                 marker.drop()
                 true

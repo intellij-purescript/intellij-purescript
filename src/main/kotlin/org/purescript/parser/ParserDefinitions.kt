@@ -14,7 +14,7 @@ fun squares(p: DSL) = LBRACK + p + RBRACK
 
 
 // TODO: add 'representational' and 'phantom'
-val ident = Identifier(LOWER / `'as'` / `'hiding'` / `'role'` / `'nominal'`)
+val ident = Identifier(Choice.of(LOWER.dsl , `'as'` , `'hiding'` , `'role'` , `'nominal'`))
 val label = Identifier(
     Choice.of(
         LOWER.dsl,
@@ -55,7 +55,7 @@ val label = Identifier(
 
 // this doesn't match parser.y but i dont feel like changing it right now
 // it might be due to differences in the lexer
-val operator = OPERATOR / dot / ddot / ldarrow / OPTIMISTIC / "<=" / "-" / ":"
+val operator = OPERATOR.dsl / dot / ddot / ldarrow / OPTIMISTIC.dsl / `-` / colon
 val properName: DSL = ProperName(PROPER_NAME)
 
 /**
