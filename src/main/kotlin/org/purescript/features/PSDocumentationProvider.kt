@@ -106,7 +106,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 return if (line.startsWith("```")) {
                     CodeBlock(project, out, "")
                 } else {
-                    val formated = line.replace(Regex("`([^`]*)`")) {
+                    val formatted = line.replace(Regex("`([^`]*)`")) {
                         HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                             project,
                             PSLanguage,
@@ -114,7 +114,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                             1f
                         )
                     }.let { "<code>$it</code>" }
-                    Normal(project, "$out\n$formated")
+                    Normal(project, "$out\n$formatted")
                 }
             }
         }
@@ -123,13 +123,13 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             override fun text(): String = out
             override fun process(line: String): MState {
                 return if (line.startsWith("```")) {
-                    val formated = HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                    val formatted = HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                         project,
                         PSLanguage,
                         code,
                         1f
                     ).let { "<code>$it</code>" }
-                    Normal(project, "$out\n$formated")
+                    Normal(project, "$out\n$formatted")
                 } else {
                     CodeBlock(project, out, "$code\n$line")
                 }
