@@ -3,9 +3,9 @@ package org.purescript.features
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
 import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
-import com.intellij.util.text.MarkdownUtil.replaceCodeBlock
 import org.purescript.PSLanguage
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
@@ -26,15 +26,13 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                         ?.let { "${element.name} :: ${it}" } ?: element.name,
                     1f
                 ),
-                docCommentsToDocstring(element.docComments.map { it.text })
+                docCommentsToDocstring(element.docComments.map { it.text }, element.project)
             )
 
         element is DocCommentOwner && element is PsiNamedElement ->
             layout(
                 element.name ?: "unknown",
-                docCommentsToDocstring(
-                    element.docComments.map { it.text }
-                )
+                docCommentsToDocstring(element.docComments.map { it.text }, element.project)
             )
 
         else -> null
@@ -85,20 +83,60 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
 
-    fun docCommentsToDocstring(commentText: List<String>): String {
+    fun docCommentsToDocstring(commentText: List<String>, project: Project): String {
         val lines = commentText
             .joinToString("\n") { it.trim().removePrefix("-- |") }
             .trimIndent()
             .lines()
             .toMutableList()
-
-        replaceCodeBlock(lines)
-
-        val markdown = lines.joinToString("\n")
-
-        return markdown.trim()
+        HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(project, PSLanguage, "", 1f)
+        val initial: MState = MState.Normal(project, "")
+        val markdown = lines.fold(initial) { a, b ->
+            a.process(b)
+        }
+        return markdown.text().trim()
     }
-    
+
+    sealed interface MState {
+        fun process(line: String): MState
+        fun text(): String
+        data class Normal(val project: Project, val out: String) : MState {
+            override fun text(): String = out
+            override fun process(line: String): MState {
+                return if (line.startsWith("```")) {
+                    CodeBlock(project, out, "")
+                } else {
+                    val formated = line.replace(Regex("`([^`]*)`")) {
+                        HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                            project,
+                            PSLanguage,
+                            it.value,
+                            1f
+                        )
+                    }
+                    Normal(project, "$out\n$formated")
+                }
+            }
+        }
+
+        data class CodeBlock(val project: Project, val out: String, val code: String) : MState {
+            override fun text(): String = out
+            override fun process(line: String): MState {
+                if (line.startsWith("```")) {
+                    val formated = HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                        project,
+                        PSLanguage,
+                        code,
+                        1f
+                    )
+                    return Normal(project, "$out\n$formated")
+                } else {
+
+                    return CodeBlock(project, out, "$code\n$line")
+                }
+            }
+        }
+    }
 
     override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? =
         (originalElement as? TypeCheckable)?.checkType()?.toString()
