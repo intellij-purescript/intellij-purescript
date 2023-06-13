@@ -119,29 +119,32 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
     companion object {
         fun of(vararg all: DSL) = all.reduce { acc, dsl -> Choice(acc, dsl) }
         fun optOf(vararg all: DSL): DSL {
-            var currentMap = hashMapOf<IElementType, DSL>()
-            var ret : DSL = OptChoice(currentMap)
+            val tokens = all.flatMap { it.tokenSet?.types?.asSequence() ?: emptySequence() }
+            val maxIndex = tokens.maxOfOrNull { it.index }?.toInt() ?: 256
+            val array = List(maxIndex + 1) { mutableListOf<DSL>() }
+            var fallBack: DSL? = null
             for (dsl in all) {
-                when (val tokens = dsl.tokenSet) {
+                when (val dslTokens = dsl.tokenSet) {
                     null -> {
-                        currentMap = hashMapOf()
-                        ret = ret / dsl / OptChoice(currentMap)
+                        for (dsls in array) dsls.add(dsl)
+                        fallBack = fallBack?.let { it / dsl } ?: dsl 
                     }
-                    else -> for (type in tokens.types) {
-                        currentMap[type] = currentMap[type]?.let { it / dsl } ?: dsl
-                    }
+                    else -> for (type in dslTokens.types) array[type.index.toInt()].add(dsl)
                 }
             }
-            return ret
+            val table = array.map { it.reduce { acc, dsl -> Choice(acc, dsl) } }.toTypedArray()
+            return OptChoice(table, fallBack, TokenSet.create(*tokens.toTypedArray()))
         }
     }
 }
 
-data class OptChoice(val table: Map<IElementType, DSL>) : DSL {
-    override val tokenSet: TokenSet = 
-        TokenSet.create(*table.keys.map { it }.toTypedArray())
+data class OptChoice(val table: Array<DSL>, val fallBack: DSL?, val tokens: TokenSet?) : DSL {
+    override val tokenSet: TokenSet? = null
     override fun parse(b: PsiBuilder): Boolean =
-        table[b.tokenType]?.parse(b) ?: false
+        b.tokenType?.index?.toInt()
+            ?.let { table.getOrNull(it)?.parse(b) ?: false } 
+            ?: fallBack?.parse(b)
+            ?: false
 }
 
 
