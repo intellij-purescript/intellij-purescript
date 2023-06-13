@@ -174,11 +174,12 @@ data class OneOrMore(val child: DSL) : DSL {
 }
 
 object True: DSL {
-    override val tokenSet: TokenSet? get() = TokenSet.ANY
+    override val tokenSet: TokenSet? get() = null
     override fun parse(b: PsiBuilder): Boolean = true
 }
 
 data class Transaction(val child: DSL) : DSL {
+    override fun choices() = child.choices()
     override val heal: Transaction get() = this
     override fun parse(b: PsiBuilder): Boolean {
         if (child.tokenSet?.contains(b.tokenType) == false) return false
