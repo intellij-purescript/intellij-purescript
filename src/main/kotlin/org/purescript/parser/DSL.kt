@@ -131,7 +131,7 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
                 null -> for (dsls in array) dsls.add(dsl)
                 else -> for (type in dslTokens.types) array[type.index.toInt()].add(dsl)
             }
-            val table = array.map { it.reduce { acc, dsl -> Choice(acc, dsl) } }.toTypedArray<DSL>()
+            val table = array.map { it.reduce { acc, dsl -> Choice(acc.heal, dsl) } }.toTypedArray<DSL>()
             return OptChoice(table, tokens)
         }
     }
