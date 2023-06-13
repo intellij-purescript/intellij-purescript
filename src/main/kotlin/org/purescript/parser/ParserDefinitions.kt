@@ -110,7 +110,7 @@ val binder: DSL = Reference { binder1 } + !(dcolon + type)
 val operatorName = OperatorName(operator)
 val qualOp = QualifiedOperatorName(qualified(operatorName))
 val type5: DSL = TypeAppType.fold(typeAtom, typeAtom)
-val type4 = TypeIntType("-".dsl + number) / type5
+val type4 = TypeIntType(`-` + number) / type5
 val type3 = Choice.of(
     TypeOperatorExpressionType(type4 + qualOp + type4.sepBy1(qualOp)),
     type4,
