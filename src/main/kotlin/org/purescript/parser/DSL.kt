@@ -6,22 +6,23 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
-interface DSL:Parser {
+interface DSL : Parser {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
     val heal: DSL get() = Transaction(this)
     fun relax(message: String) = Relax(this, message)
     fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
     val tokenSet: TokenSet?
+    fun choices(): List<DSL> = listOf(this)
 }
 
 val IElementType.dsl get() = ElementToken(this)
 val String.dsl get() = StringToken(this)
 val DSL.dsl get() = this
 
-operator fun DSL.not() = Optional(dsl)
-operator fun IElementType.not() = Optional(dsl)
-operator fun String.not() = Optional(dsl)
+operator fun DSL.not() = Choice(dsl, True)
+operator fun IElementType.not() = Choice(dsl, True)
+operator fun String.not() = Choice(dsl, True)
 
 operator fun DSL.unaryPlus() = OneOrMore(this)
 operator fun String.unaryPlus() = OneOrMore(this.dsl)
@@ -108,7 +109,9 @@ data class Seq(val first: DSL, val next: DSL) : DSL {
     override val tokenSet: TokenSet? = first.tokenSet
 }
 
+
 data class Choice(val first: DSL, val next: DSL) : DSL {
+    override fun choices(): List<DSL> = listOf(first, next).flatMap { it.choices() }
     override fun parse(b: PsiBuilder) =
         tokenSet?.contains(b.tokenType) != false && first.parse(b) || next.parse(b)
 
@@ -117,9 +120,15 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
 
     companion object {
         fun of(vararg all: DSL): DSL {
-            val tokens = if (all.none { it.tokenSet == null }) {
+            val sequences = all.flatMap {
+                when (it) {
+                    is Choice -> it.choices()
+                    else -> listOf(it)
+                }
+            }
+            val tokens = if (sequences.none { it.tokenSet == null }) {
                 TokenSet.create(
-                    *all
+                    *sequences
                         .flatMap { it.tokenSet?.types?.asSequence() ?: emptySequence() }
                         .toTypedArray<IElementType?>()
                 )
@@ -127,7 +136,7 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
                 null
             }
             val array = List<MutableList<DSL>>(Short.MAX_VALUE + 1) { mutableListOf() }
-            for (dsl in all) when (val dslTokens = dsl.tokenSet) {
+            for (dsl in sequences) when (val dslTokens = dsl.tokenSet) {
                 null -> for (dsls in array) dsls.add(dsl)
                 else -> for (type in dslTokens.types) array[type.index.toInt()].add(dsl)
             }
@@ -135,9 +144,16 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
             return OptChoice(table, tokens)
         }
     }
+
+
 }
 
 data class OptChoice(val table: Array<DSL>, val tokens: TokenSet?) : DSL {
+    override fun choices(): List<DSL> = table
+        .flatMap { it.choices() }
+        .distinct()
+        .toList()
+
     override val tokenSet: TokenSet? = tokens
     override fun parse(b: PsiBuilder): Boolean =
         b.tokenType?.index?.toInt()
@@ -157,10 +173,9 @@ data class OneOrMore(val child: DSL) : DSL {
     }
 }
 
-@Suppress("KotlinConstantConditions")
-data class Optional(val child: DSL) : DSL {
-    override fun parse(b: PsiBuilder) = child.parse(b) || true
-    override val tokenSet: TokenSet? = null
+object True: DSL {
+    override val tokenSet: TokenSet? get() = TokenSet.ANY
+    override fun parse(b: PsiBuilder): Boolean = true
 }
 
 data class Transaction(val child: DSL) : DSL {
