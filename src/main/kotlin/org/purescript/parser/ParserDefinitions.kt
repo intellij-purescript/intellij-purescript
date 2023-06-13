@@ -14,7 +14,7 @@ fun squares(p: DSL) = LBRACK + p + RBRACK
 
 
 // TODO: add 'representational' and 'phantom'
-val ident = Identifier(Choice.of(LOWER.dsl , `'as'` , `'hiding'` , `'role'` , `'nominal'`))
+val ident = Identifier(Choice.of(LOWER.dsl, `'as'`, `'hiding'`, `'role'`, `'nominal'`))
 val label = Identifier(
     Choice.of(
         LOWER.dsl,
@@ -62,23 +62,35 @@ val properName: DSL = ProperName(PROPER_NAME)
  * ProperName with optional qualification
  */
 val qualProperName = QualifiedProperName(qualified(properName))
-val type: DSL = Reference {
-    Choice.of(KindedType(Reference { type1 } + dcolon + this).heal, Reference { type1 })
-}
-val typeVarPlain = TypeVarNameType(ident) / TypeVarKinded(parens(ident + dcolon + type))
-val typeVar = (`@` + TypeVarNameType(ident)) / (`@` + TypeVarKinded(parens(ident + dcolon + type))) / typeVarPlain
+val typeRef = Reference {type}
+val type: DSL = KindedType.cont(Reference { type1 }, dcolon + typeRef)
+val typeVarPlain = Choice.of(
+    TypeVarNameType(ident),
+    TypeVarKinded(parens(ident + dcolon + type))
+)
+val typeVar = Choice.of(
+    `@` + typeVarPlain,
+    typeVarPlain
+)
 val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
 val row = Choice.of(
     `|` + type, !(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type)
 )
 val hole = "?".dsl + ident
 
-val typeAtom: DSL =
-    (TypeHole(hole) / TypeRecordType(braces(row)) / TypeWildcardType(`_`) / TypeStringType(string) / TypeIntType(number) / TypeCtor(
-        qualProperName
-    ) / TypeIdentifierType(ident) / TypeArrNameType(parens(arrow)).heal / TypeRowType(parens(row)).heal / TypeParenthesisType(
-        parens(type)
-    ))
+val typeAtom: DSL = Choice.of(
+    TypeHole(hole),
+    TypeRecordType(braces(row)),
+    TypeWildcardType(`_`),
+    TypeStringType(string),
+    TypeIntType(number),
+    TypeCtor(qualProperName),
+    TypeIdentifierType(ident),
+    TypeArrNameType(parens(arrow)).heal,
+    TypeRowType(parens(row)).heal,
+    TypeParenthesisType(parens(type))
+)
+
 val binderAtom: DSL = Reference {
     Choice.of(
         WildcardBinderType(`_`),
