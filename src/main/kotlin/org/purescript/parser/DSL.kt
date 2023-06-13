@@ -117,33 +117,32 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
         first.tokenSet?.let { a -> next.tokenSet?.let { b -> TokenSet.orSet(a, b) } }
 
     companion object {
-        fun of(vararg all: DSL) = all.reduce { acc, dsl -> Choice(acc, dsl) }
-        fun optOf(vararg all: DSL): DSL {
-            val tokens = all.flatMap { it.tokenSet?.types?.asSequence() ?: emptySequence() }
-            val maxIndex = tokens.maxOfOrNull { it.index }?.toInt() ?: 256
-            val array = List(maxIndex + 1) { mutableListOf<DSL>() }
-            var fallBack: DSL? = null
-            for (dsl in all) {
-                when (val dslTokens = dsl.tokenSet) {
-                    null -> {
-                        for (dsls in array) dsls.add(dsl)
-                        fallBack = fallBack?.let { it / dsl } ?: dsl 
-                    }
-                    else -> for (type in dslTokens.types) array[type.index.toInt()].add(dsl)
-                }
+        fun of(vararg all: DSL): DSL {
+            val tokens = if (all.none { it.tokenSet == null }) {
+                TokenSet.create(
+                    *all
+                        .flatMap { it.tokenSet?.types?.asSequence() ?: emptySequence() }
+                        .toTypedArray<IElementType?>()
+                )
+            } else {
+                null
             }
-            val table = array.map { it.reduce { acc, dsl -> Choice(acc, dsl) } }.toTypedArray()
-            return OptChoice(table, fallBack, TokenSet.create(*tokens.toTypedArray()))
+            val array = List<MutableList<DSL>>(Short.MAX_VALUE + 1) { mutableListOf() }
+            for (dsl in all) when (val dslTokens = dsl.tokenSet) {
+                null -> for (dsls in array) dsls.add(dsl)
+                else -> for (type in dslTokens.types) array[type.index.toInt()].add(dsl)
+            }
+            val table = array.map { it.reduce { acc, dsl -> Choice(acc, dsl) } }.toTypedArray<DSL>()
+            return OptChoice(table, tokens)
         }
     }
 }
 
-data class OptChoice(val table: Array<DSL>, val fallBack: DSL?, val tokens: TokenSet?) : DSL {
-    override val tokenSet: TokenSet? = null
+data class OptChoice(val table: Array<DSL>, val tokens: TokenSet?) : DSL {
+    override val tokenSet: TokenSet? = tokens
     override fun parse(b: PsiBuilder): Boolean =
         b.tokenType?.index?.toInt()
-            ?.let { table.getOrNull(it)?.parse(b) ?: false } 
-            ?: fallBack?.parse(b)
+            ?.let { table.getOrNull(it)?.parse(b) ?: false }
             ?: false
 }
 
