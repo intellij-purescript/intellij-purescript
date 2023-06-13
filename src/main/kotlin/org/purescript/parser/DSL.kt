@@ -6,13 +6,12 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
-interface DSL {
+interface DSL:Parser {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
     val heal: DSL get() = Transaction(this)
     fun relax(message: String) = Relax(this, message)
     fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
-    fun parse(b: PsiBuilder): Boolean
     val tokenSet: TokenSet?
 }
 
