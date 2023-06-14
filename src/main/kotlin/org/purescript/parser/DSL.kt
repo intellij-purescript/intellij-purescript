@@ -104,9 +104,16 @@ data class Capture(val next: (String) -> DSL) : DSL {
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun choices() = first.choices().map { Seq(first, next) }
+    override fun choices() = first.choices().map { Seq(first, next).removeTrueInSeq() }
     override fun parse(b: PsiBuilder) = first.parse(b) && next.parse(b)
     override val tokenSet: TokenSet? = first.tokenSet
+    fun removeTrueInSeq(): DSL = when (first) {
+        is True -> (next as? Seq)?.removeTrueInSeq() ?: next
+        else -> when (next) {
+            is True -> (first as? Seq)?.removeTrueInSeq() ?: first
+            else -> this
+        }
+    }
 }
 
 
@@ -155,8 +162,8 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
 
 }
 
-data class OptChoice(val orgChoices:List<DSL>, val table: Array<DSL>, val tokens: TokenSet?) : DSL {
-    override fun choices(): List<DSL> =  if (orgChoices.size < 4) orgChoices else listOf(this)
+data class OptChoice(val orgChoices: List<DSL>, val table: Array<DSL>, val tokens: TokenSet?) : DSL {
+    override fun choices(): List<DSL> = if (orgChoices.size < 4) orgChoices else listOf(this)
     override val tokenSet: TokenSet? = tokens
     override fun parse(b: PsiBuilder): Boolean =
         b.tokenType?.index?.toInt()
@@ -171,8 +178,11 @@ data class OneOrMore(val child: DSL) : DSL {
     override fun parse(b: PsiBuilder): Boolean {
         val ret = child.parse(b)
         if (ret) when (val ts = tokenSet) {
-            null -> while (child.parse(b)) { /* no-op */ }
-            else -> while (ts.contains(b.tokenType) != false && child.parse(b)) { /* no-op */ }
+            null -> while (child.parse(b)) { /* no-op */
+            }
+
+            else -> while (ts.contains(b.tokenType) != false && child.parse(b)) { /* no-op */
+            }
         }
         return ret
     }
