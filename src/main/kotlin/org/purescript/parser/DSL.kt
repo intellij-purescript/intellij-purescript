@@ -148,14 +148,15 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
             val table =
                 array.map { it.reduce { acc, dsl -> Choice(acc.heal, dsl) } }
                     .toTypedArray<DSL>()
-            return OptChoice(table, tokens)
+            return OptChoice(sequences, table, tokens)
         }
     }
 
 
 }
 
-data class OptChoice(val table: Array<DSL>, val tokens: TokenSet?) : DSL {
+data class OptChoice(val orgChoices:List<DSL>, val table: Array<DSL>, val tokens: TokenSet?) : DSL {
+    override fun choices(): List<DSL> = orgChoices
     override val tokenSet: TokenSet? = tokens
     override fun parse(b: PsiBuilder): Boolean =
         b.tokenType?.index?.toInt()
