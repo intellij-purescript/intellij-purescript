@@ -104,41 +104,30 @@ data class Capture(val next: (String) -> DSL) : DSL {
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun choices() = first.choices().map { copy(first = it) }
-    override fun parse(b: PsiBuilder) =
-                first.parse(b) &&
-                next.parse(b)
+    override fun choices() = first.choices().map { Seq(first, next) }
+    override fun parse(b: PsiBuilder) = first.parse(b) && next.parse(b)
     override val tokenSet: TokenSet? = first.tokenSet
 }
 
 
 data class Choice(val first: DSL, val next: DSL) : DSL {
-    override fun choices(): List<DSL> =
-        listOf(first, next).flatMap { it.choices() }
+    override fun choices(): List<DSL> = listOf(first, next).flatMap { it.choices() }
 
     override fun parse(b: PsiBuilder) =
-        tokenSet?.contains(b.tokenType) != false && first.parse(b) || next.parse(
-            b
-        )
+        tokenSet?.contains(b.tokenType) != false &&
+                first.parse(b) ||
+                next.parse(b)
 
     override val tokenSet: TokenSet? =
         first.tokenSet?.let { a ->
             next.tokenSet?.let { b ->
-                TokenSet.orSet(
-                    a,
-                    b
-                )
+                TokenSet.orSet(a, b)
             }
         }
 
     companion object {
         fun of(vararg all: DSL): DSL {
-            val sequences = all.flatMap {
-                when (it) {
-                    is Choice -> it.choices()
-                    else -> listOf(it)
-                }
-            }
+            val sequences = all.flatMap { it.choices() }
             val tokens = if (sequences.none { it.tokenSet == null }) {
                 TokenSet.create(
                     *sequences
@@ -153,10 +142,8 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
             val array =
                 List<MutableList<DSL>>(Short.MAX_VALUE + 1) { mutableListOf() }
             for (dsl in sequences) when (val dslTokens = dsl.tokenSet) {
-                null -> for (dsls in array) dsls.add(dsl)
-                else -> for (type in dslTokens.types) array[type.index.toInt()].add(
-                    dsl
-                )
+                null -> for (ds in array) ds.add(dsl)
+                else -> for (t in dslTokens.types) array[t.index.toInt()].add(dsl)
             }
             val table =
                 array.map { it.reduce { acc, dsl -> Choice(acc.heal, dsl) } }
@@ -169,11 +156,6 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
 }
 
 data class OptChoice(val table: Array<DSL>, val tokens: TokenSet?) : DSL {
-    override fun choices(): List<DSL> = table
-        .flatMap { it.choices() }
-        .distinct()
-        .toList()
-
     override val tokenSet: TokenSet? = tokens
     override fun parse(b: PsiBuilder): Boolean =
         b.tokenType?.index?.toInt()
@@ -187,10 +169,9 @@ data class OneOrMore(val child: DSL) : DSL {
     override val tokenSet: TokenSet? get() = child.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         val ret = child.parse(b)
-        if (ret) while (tokenSet?.contains(b.tokenType) != false && child.parse(
-                b
-            )
-        ) {
+        if (ret) when (val ts = tokenSet) {
+            null -> while (child.parse(b)) { /* no-op */ }
+            else -> while (ts.contains(b.tokenType) != false && child.parse(b)) { /* no-op */ }
         }
         return ret
     }
@@ -230,7 +211,7 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
 }
 
 data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
-    override fun choices() = child.choices().map { copy(child = it) }
+    override fun choices() = child.choices().map { Symbolic(it, symbol) }
     override val tokenSet = child.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         if (tokenSet?.contains(b.tokenType) == false) return false
@@ -284,12 +265,8 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? = null
 }
 
-data class Continuation(
-    val type: IElementType,
-    val init: DSL,
-    val continuaton: DSL
-) : DSL {
-    override fun choices() = init.choices().map { copy(init = it) }
+data class Continuation(val type: IElementType, val init: DSL, val cont: DSL) : DSL {
+    //override fun choices() = init.choices().map { Continuation(type, it, cont) }
     override val tokenSet: TokenSet? = init.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
@@ -299,7 +276,7 @@ data class Continuation(
                 false
             }
 
-            continuaton.heal.parse(b) -> {
+            cont.heal.parse(b) -> {
                 marker.done(type)
                 true
             }
