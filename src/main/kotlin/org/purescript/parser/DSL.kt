@@ -104,7 +104,7 @@ data class Capture(val next: (String) -> DSL) : DSL {
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun choices() =  listOf(toFlatSequence())
+    override fun choices() = listOf(toFlatSequence())
     override fun parse(b: PsiBuilder) = first.parse(b) && next.parse(b)
     override val tokenSet: TokenSet? = first.tokenSet
     fun toFlatSequence(): FlatSequence = FlatSequence(flatten().filterNot { it is True })
@@ -119,7 +119,7 @@ data class Seq(val first: DSL, val next: DSL) : DSL {
 }
 
 @JvmInline
-value class FlatSequence(val sequence: List<DSL>): DSL {
+value class FlatSequence(val sequence: List<DSL>) : DSL {
     override val tokenSet: TokenSet? get() = sequence.firstOrNull()?.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         for (alt in sequence) if (!alt.parse(b)) return false
@@ -190,11 +190,8 @@ data class OneOrMore(val child: DSL) : DSL {
     override fun parse(b: PsiBuilder): Boolean {
         val ret = child.parse(b)
         if (ret) when (val ts = tokenSet) {
-            null -> while (child.parse(b)) { /* no-op */
-            }
-
-            else -> while (ts.contains(b.tokenType) != false && child.parse(b)) { /* no-op */
-            }
+            null -> while (child.parse(b));
+            else -> while (ts.contains(b.tokenType) != false && child.parse(b));
         }
         return ret
     }
