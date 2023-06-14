@@ -156,7 +156,7 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
 }
 
 data class OptChoice(val orgChoices:List<DSL>, val table: Array<DSL>, val tokens: TokenSet?) : DSL {
-    override fun choices(): List<DSL> = orgChoices
+    override fun choices(): List<DSL> =  if (orgChoices.size < 4) orgChoices else listOf(this)
     override val tokenSet: TokenSet? = tokens
     override fun parse(b: PsiBuilder): Boolean =
         b.tokenType?.index?.toInt()
