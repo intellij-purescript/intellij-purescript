@@ -104,16 +104,28 @@ data class Capture(val next: (String) -> DSL) : DSL {
 }
 
 data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun choices() = first.choices().map { Seq(first, next).removeTrueInSeq() }
+    override fun choices() =  listOf(toFlatSequence())
     override fun parse(b: PsiBuilder) = first.parse(b) && next.parse(b)
     override val tokenSet: TokenSet? = first.tokenSet
-    fun removeTrueInSeq(): DSL = when (first) {
-        is True -> (next as? Seq)?.removeTrueInSeq() ?: next
-        else -> when (next) {
-            is True -> (first as? Seq)?.removeTrueInSeq() ?: first
-            else -> this
+    fun toFlatSequence(): FlatSequence = FlatSequence(flatten().filterNot { it is True })
+    fun flatten(): List<DSL> {
+        return listOf(first, next).flatMap {
+            when (it) {
+                is Seq -> it.flatten()
+                else -> listOf(it)
+            }
         }
     }
+}
+
+@JvmInline
+value class FlatSequence(val sequence: List<DSL>): DSL {
+    override val tokenSet: TokenSet? get() = sequence.firstOrNull()?.tokenSet
+    override fun parse(b: PsiBuilder): Boolean {
+        for (alt in sequence) if (!alt.parse(b)) return false
+        return true
+    }
+
 }
 
 
