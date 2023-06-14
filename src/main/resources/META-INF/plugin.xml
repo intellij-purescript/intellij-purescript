@@ -249,6 +249,9 @@
             language="Purescript"
             implementationClass="org.purescript.module.declaration.value.expression.identifier.PurescriptParameterInfoHandler"
         />
+        <codeInsight.declarativeInlayProviderFactory
+                implementation="org.purescript.module.declaration.SignatureInlayHintFactory"
+               />
     </extensions>
 
     <actions>
