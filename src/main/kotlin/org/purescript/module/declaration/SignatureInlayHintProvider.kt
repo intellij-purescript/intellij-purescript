@@ -13,7 +13,12 @@ class SignatureInlayHintProvider : InlayHintsProvider {
             override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
                 when (element) {
                     is ValueDeclarationGroup -> if (element.signature == null) {
-                        val type = element.checkType()
+                        val type = element
+                            .checkType()
+                            ?.substituteModuleNames(mapOf(
+                                "Prim" to "",
+                                "${element.module?.name}" to ""
+                            ))
                         if (type != null) {
                             val tooltip = ":: $type"
                             sink.addPresentation(

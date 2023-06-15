@@ -3,6 +3,8 @@ package org.purescript.typechecker
 sealed interface TypeCheckerType {
     val argument get(): TypeCheckerType? = null
 
+    fun substituteModuleNames(nameMap: Map<String, String>): TypeCheckerType
+
     /**
      * substitute first argument, returning the type of the resulting call
      */
@@ -18,10 +20,14 @@ sealed interface TypeCheckerType {
     object Unknown : TypeCheckerType {
         override fun freeVarNames() = emptySet<String>()
         override fun unify(with: TypeCheckerType): TypeCheckerType = with
+        override fun substituteModuleNames(nameMap: Map<String, String>) = this
+
     }
 
     data class TypeVar(val name: String) : TypeCheckerType {
         override fun toString() = name
+        override fun substituteModuleNames(nameMap: Map<String, String>) = this
+
         override fun freeVarNames() = setOf(name)
         override fun substitute(varName: String, type: TypeCheckerType) =
             if (name == varName) {
@@ -34,11 +40,13 @@ sealed interface TypeCheckerType {
     }
 
     data class TypeLevelString(val value: String) : TypeCheckerType {
+        override fun substituteModuleNames(nameMap: Map<String, String>) = this
         override fun freeVarNames() = emptySet<String>()
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
     }
 
     data class TypeLevelInt(val value: Int) : TypeCheckerType {
+        override fun substituteModuleNames(nameMap: Map<String, String>) = this
         override fun freeVarNames() = emptySet<String>()
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
     }
@@ -48,6 +56,9 @@ sealed interface TypeCheckerType {
             fullName.substringBeforeLast("."),
             fullName.substringAfterLast(".")
         )
+
+        override fun substituteModuleNames(nameMap: Map<String, String>) =
+            copy(moduleName = nameMap[moduleName] ?: moduleName)
 
         override fun freeVarNames() = emptySet<String>()
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
@@ -64,6 +75,11 @@ sealed interface TypeCheckerType {
             }
 
         override val argument: TypeCheckerType get() = to
+        override fun substituteModuleNames(nameMap: Map<String, String>) = TypeApp(
+            apply.substituteModuleNames(nameMap),
+            to.substituteModuleNames(nameMap)
+        )
+
         override fun toString() = when ("$apply") {
             "Prim.Function" -> "$to ->"
             else -> "$apply $to"
@@ -73,11 +89,16 @@ sealed interface TypeCheckerType {
             apply = apply.substitute(varName, type),
             to = to.substitute(varName, type)
         )
+
         // TODO: do deep compare
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
     }
 
     data class Row(val labels: List<Pair<String, TypeCheckerType?>>) : TypeCheckerType {
+        override fun substituteModuleNames(nameMap: Map<String, String>): TypeCheckerType {
+            return this
+        }
+
         override fun freeVarNames() = emptySet<String>()
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
     }
@@ -89,6 +110,8 @@ sealed interface TypeCheckerType {
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
         override fun call(argument: TypeCheckerType) = scope.call(argument)
         override val argument: TypeCheckerType? get() = scope.argument
+        override fun substituteModuleNames(nameMap: Map<String, String>) =
+            copy(scope = scope.substituteModuleNames(nameMap))
     }
 
     /*
