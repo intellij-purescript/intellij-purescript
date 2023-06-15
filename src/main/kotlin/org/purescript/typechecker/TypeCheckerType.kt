@@ -62,7 +62,9 @@ sealed interface TypeCheckerType {
 
         override fun freeVarNames() = emptySet<String>()
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
-        override fun toString() = "$moduleName.$name"
+        override fun toString() =
+            if (moduleName.isEmpty()) name
+            else "$moduleName.$name"
     }
 
     data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType {
@@ -80,8 +82,9 @@ sealed interface TypeCheckerType {
             to.substituteModuleNames(nameMap)
         )
 
-        override fun toString() = when ("$apply") {
-            "Prim.Function" -> "$to ->"
+        override fun toString() = when (apply) {
+            Prim.function -> "$to ->"
+            TypeConstructor("", "Function") -> "$to ->"
             else -> "$apply $to"
         }
 
