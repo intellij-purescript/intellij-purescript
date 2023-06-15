@@ -10,6 +10,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.Module
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.exports.ExportedValue
@@ -17,6 +18,8 @@ import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A foreign value import declaration, e.g.
@@ -26,7 +29,10 @@ import org.purescript.psi.PSStubbedElement
  * ```
  */
 class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
-    PsiNameIdentifierOwner, DocCommentOwner, org.purescript.module.declaration.Importable {
+    PsiNameIdentifierOwner,
+    DocCommentOwner,
+    Importable,
+    TypeCheckable {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<ForeignValueDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
@@ -65,4 +71,5 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
     override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
+    override fun checkReferenceType(): TypeCheckerType? = type?.checkType()
 }
