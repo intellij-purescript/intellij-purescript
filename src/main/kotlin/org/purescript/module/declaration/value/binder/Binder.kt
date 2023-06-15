@@ -9,12 +9,16 @@ import com.intellij.psi.util.parentOfType
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
-open class Binder(node: ASTNode) : PSPsiElement(node), Similar {
+open class Binder(node: ASTNode) : PSPsiElement(node), TypeCheckable, Similar {
     val descendantBinders get(): List<Binder> = 
         binderChildren.flatMap { it.descendantBinders } + listOf(this)
     val binderChildren get() = childrenOfType<Binder>()
     val namedDescendant get() = descendantBinders.filterIsInstance<PsiNamedElement>()
     override fun getUseScope(): SearchScope =
         LocalSearchScope(parentOfType<ValueNamespace>()?.scopes ?: arrayOf(containingFile))
+
+    override fun checkType(): TypeCheckerType? = null
 }

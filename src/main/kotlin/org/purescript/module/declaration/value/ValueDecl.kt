@@ -29,7 +29,7 @@ import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner, TypeCheckable{
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner, TypeCheckable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -56,6 +56,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         nameIdentifier.replace(identifier)
         return this
     }
+
     override fun getName() = nameIdentifier.name
     override fun addTypeDeclaration(variable: ValueDeclarationGroup): ValueDeclarationGroup {
         val factory = project.service<PSPsiFactory>()
@@ -65,9 +66,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
                 val indentText = (thisIndent.text + "  ")
                 val indent = project.service<PsiParserFacade>().createWhiteSpaceFromText(indentText)
                 add(indent)
-                val newWhere = factory.createWhere(indentText.replace("\n",""), variable) ?: error("could not create where")
+                val newWhere =
+                    factory.createWhere(indentText.replace("\n", ""), variable) ?: error("could not create where")
                 add(newWhere).childrenOfType<ValueDeclarationGroup>().single()
             }
+
             else -> {
                 val thisIndent = w
                     .valueNames.maxBy { it.startOffset }
@@ -79,9 +82,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         }
     }
 
-    override val valueNames get() = 
-        parameterValueNames + 
-                (where?.valueNames ?: emptySequence())
+    override val valueNames
+        get() =
+            parameterValueNames +
+                    (where?.valueNames ?: emptySequence())
+
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     val signature: Signature? get() = doSignature(this.prevSibling)
     private fun doSignature(sibling: PsiElement?): Signature? =
@@ -112,7 +117,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
     override val docComments get() = this.getDocComments()
     val parameterValueNames get() = parameterList?.valueNames ?: emptySequence()
     val namedParameters get() = parameterList?.varBinderParameters ?: emptyList()
-    val parameterList get() = findChildByClass(Parameters::class.java)
+    val parameterList get() = findNotNullChildByClass(Parameters::class.java)
     val parameters get() = parameterList?.parameters ?: emptyList()
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     fun inline(arguments: List<Expression>): Expression {
@@ -132,8 +137,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         return if (arguments.size < parametersToInline.size) {
             val parametersLeft = binders.drop(arguments.size)
             val factory = project.service<PSPsiFactory>()
-            factory.createLambda("\\${parametersLeft.joinToString(" ") { it.name }} -> ${copy.value!!.text}") ?:
-                error("could not create a lambda from declaration body")
+            factory.createLambda("\\${parametersLeft.joinToString(" ") { it.name }} -> ${copy.value!!.text}")
+                ?: error("could not create a lambda from declaration body")
         } else (copy.value ?: error("Copy of value declaration have no value node"))
     }
 
@@ -142,5 +147,10 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         return !binders.any { it !is VarBinder }
     }
 
-    override fun checkType(): TypeCheckerType? = value?.checkType()
+    override fun checkType(): TypeCheckerType? = 
+        if (parameterList.parameters.isEmpty()) value?.checkType()
+        else value?.checkType()
+            ?.let { parameterList.checkType()?.arrow(it) }
+            ?.addForall()
+
 }

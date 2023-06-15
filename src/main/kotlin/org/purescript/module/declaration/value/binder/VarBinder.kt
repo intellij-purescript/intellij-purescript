@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.module.declaration.value.Similar
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiFactory
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * The node `a` in the code
@@ -15,6 +16,7 @@ import org.purescript.psi.PSPsiFactory
  * ```
  */
 class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
+    override fun checkType(): TypeCheckerType = TypeCheckerType.TypeVar(name)
     override fun getName(): String = nameIdentifier.name
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
     override fun setName(name: String): PsiElement? {

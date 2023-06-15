@@ -179,5 +179,19 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val f = file.getValueDeclarationGroupByName("f")
         TestCase.assertEquals("Main.Truth", f.checkType().toString())
     }
+    
+    fun `test it types single argument`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |id a = a
+                |
+            """.trimMargin()
+        )
+        val id = file.getValueDeclarationGroupByName("id")
+        TestCase.assertEquals("forall a. a -> a", id.checkType().toString())
+    }
 }
 

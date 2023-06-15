@@ -1,12 +1,23 @@
 package org.purescript.typechecker
 
 sealed interface TypeCheckerType {
+    /**
+     * substitute first argument, returning the type of the resulting call
+     */
     fun call(argument: TypeCheckerType): TypeCheckerType? = null
+    fun arrow(value: TypeCheckerType): TypeCheckerType = function(this, value)
+    fun freeVarNames(): Set<String>
     fun substitute(varName: String, type: TypeCheckerType): TypeCheckerType = this
+    fun addForall(): TypeCheckerType = 
+        freeVarNames().fold(this) { scope, name -> ForAll(name, scope) }
 
-    object Unknown : TypeCheckerType
+    object Unknown : TypeCheckerType {
+        override fun freeVarNames() = emptySet<String>()
+    }
+
     data class TypeVar(val name: String) : TypeCheckerType {
         override fun toString() = name
+        override fun freeVarNames() = setOf(name)
         override fun substitute(varName: String, type: TypeCheckerType) =
             if (name == varName) {
                 type
@@ -15,13 +26,21 @@ sealed interface TypeCheckerType {
             }
     }
 
-    data class TypeLevelString(val value: String) : TypeCheckerType
-    data class TypeLevelInt(val value: Int) : TypeCheckerType
+    data class TypeLevelString(val value: String) : TypeCheckerType {
+        override fun freeVarNames() = emptySet<String>()
+    }
+
+    data class TypeLevelInt(val value: Int) : TypeCheckerType {
+        override fun freeVarNames() = emptySet<String>()
+    }
+
     data class TypeConstructor(val name: String) : TypeCheckerType {
+        override fun freeVarNames() = emptySet<String>()
         override fun toString() = name
     }
 
     data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType {
+        override fun freeVarNames() = apply.freeVarNames() + to.freeVarNames()
         override fun call(argument: TypeCheckerType): TypeCheckerType? =
             when (val parameter = (apply as? TypeApp)?.to) {
                 argument -> to
@@ -34,17 +53,21 @@ sealed interface TypeCheckerType {
             else -> "$apply $to"
         }
 
-        override fun substitute(varName: String, type: TypeCheckerType): TypeCheckerType =
-            copy(apply.substitute(varName, type), to.substitute(varName, type))
+        override fun substitute(varName: String, type: TypeCheckerType) = copy(
+            apply = apply.substitute(varName, type),
+            to = to.substitute(varName, type)
+        )
     }
 
-    data class Row(val labels: List<Pair<String, TypeCheckerType?>>) : TypeCheckerType
+    data class Row(val labels: List<Pair<String, TypeCheckerType?>>) : TypeCheckerType {
+        override fun freeVarNames() = emptySet<String>()
+    }
 
     // ForAll a TypeVarVisibility Text (Maybe (Type a)) (Type a) (Maybe SkolemScope)
     data class ForAll(val name: String, val scope: TypeCheckerType) : TypeCheckerType {
-        override fun call(argument: TypeCheckerType): TypeCheckerType? {
-            return scope.call(argument)
-        }
+        override fun toString(): String = "forall $name. $scope"
+        override fun freeVarNames() = scope.freeVarNames() - setOf(name)
+        override fun call(argument: TypeCheckerType) = scope.call(argument)
     }
 
     /*

@@ -4,7 +4,11 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.psi.PSPsiElement
+import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
-class Parameter(node: ASTNode) : PSPsiElement(node) {
+class Parameter(node: ASTNode) : PSPsiElement(node), TypeCheckable {
     val parameterBinders get() = childrenOfType<Binder>()
+    val binder get() = parameterBinders.first()
+    override fun checkType(): TypeCheckerType? = binder.checkType()
 }
