@@ -9,7 +9,8 @@ import org.purescript.typechecker.Prim
 class PSNumericLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     override fun areSimilarTo(other: Similar): Boolean = 
         other is PSNumericLiteral && other.text == this.text
-    override fun checkReferenceType() = Prim.int
-    override fun checkUsageType() = Prim.int
-    override fun checkType() = Prim.int
+    override fun checkReferenceType() = 
+        if (text.contains(".")) Prim.number 
+        else Prim.int
+
 }
