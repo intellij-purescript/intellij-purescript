@@ -3,6 +3,7 @@ package org.purescript.typechecker
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.getValueDeclarationGroupByName
+import org.purescript.module.declaration.value.expression.OperatorExpression
 
 class TypeCheckerIntegrationTest : BasePlatformTestCase() {
 
@@ -234,6 +235,14 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
             """.trimMargin()
         )
         val f = file.getValueDeclarationGroupByName("f")
+        val value = f.valueDeclarations.first().value
+        val operatorExpression = value as OperatorExpression
+        val operatorTree = operatorExpression.tree as OperatorExpression.Tree.Operator
+        val operator = operatorTree.o
+        TestCase.assertEquals("Prim.Int -> Prim.Int -> Prim.Int", operator.checkType().toString())
+        val left = operatorTree.l as OperatorExpression.Tree.Atom
+        TestCase.assertEquals("Prim.Int", left.checkReferenceType().toString())
+        TestCase.assertEquals("Prim.Int", value.checkType().toString())
         TestCase.assertEquals("Prim.Int -> Prim.Int -> Prim.Int", f.checkType().toString())
     }
 }

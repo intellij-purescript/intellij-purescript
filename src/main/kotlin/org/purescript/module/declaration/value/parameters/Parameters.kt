@@ -13,5 +13,5 @@ class Parameters(node: ASTNode) : PSPsiElement(node), TypeCheckable {
     val parameters get() = childrenOfType<Parameter>()
     override fun checkType() = parameters
         .map { it.checkType() }
-        .reduce { a, b -> a?.arrow(b ?: return@reduce null) }
+        .reduceOrNull { a, b -> a?.arrow(b ?: return@reduceOrNull null) }
 }

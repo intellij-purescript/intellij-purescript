@@ -18,6 +18,7 @@ import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 import org.purescript.typechecker.Prim
 import org.purescript.typechecker.TypeCheckable
+import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A identifier in an expression, e.g.
@@ -87,11 +88,28 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             else -> false
         }
     }
-    
+
     override fun checkReferenceType() = (reference.resolve() as? TypeCheckable)?.checkType()
     override fun checkUsageType() = when (val p = parent) {
         is Argument -> p.checkUsageType()
         is OperatorExpression -> Prim.int
         else -> null
-    } 
+    }
+
+    fun checkTree(t: OperatorExpression.Tree, e: PSExpressionIdentifier): TypeCheckerType? =
+        when (t) {
+            is OperatorExpression.Tree.Operator -> when {
+                t.l is OperatorExpression.Tree.Atom && t.l.e == e ->
+                    t.checkReferenceType()?.parameter
+
+                t.r is OperatorExpression.Tree.Atom && t.r.e == e ->
+                    t.l.checkReferenceType()?.let { t.checkReferenceType()?.call(it) }
+
+                else -> checkTree(t.l, e) ?: checkTree(t.r, e)
+            }
+
+            is OperatorExpression.Tree.Tmp -> null
+            is OperatorExpression.Tree.Atom -> null
+            is OperatorExpression.Tree.Call -> null
+        }
 }
