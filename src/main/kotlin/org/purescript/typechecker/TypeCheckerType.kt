@@ -71,8 +71,10 @@ sealed interface TypeCheckerType {
         override fun freeVarNames() = apply.freeVarNames() + to.freeVarNames()
         override fun call(argument: TypeCheckerType): TypeCheckerType? =
             when (val parameter = this.parameter) {
+                null -> null
                 argument -> to
                 is TypeVar -> to.substitute(parameter.name, argument)
+                argument.unify(parameter) -> to
                 else -> null
             }
 

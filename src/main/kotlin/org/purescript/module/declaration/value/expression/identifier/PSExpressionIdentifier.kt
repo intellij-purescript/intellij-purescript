@@ -16,7 +16,6 @@ import org.purescript.name.PSQualifiedIdentifier
 import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
-import org.purescript.typechecker.Prim
 import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
 
@@ -92,7 +91,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     override fun checkReferenceType() = (reference.resolve() as? TypeCheckable)?.checkType()
     override fun checkUsageType() = when (val p = parent) {
         is Argument -> p.checkUsageType()
-        is OperatorExpression -> Prim.int
+        is OperatorExpression -> p.tree?.let { checkTree(it, this) }
         else -> null
     }
 
@@ -100,10 +99,10 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         when (t) {
             is OperatorExpression.Tree.Operator -> when {
                 t.l is OperatorExpression.Tree.Atom && t.l.e == e ->
-                    t.checkReferenceType()?.parameter
+                    t.o.checkReferenceType()?.parameter
 
                 t.r is OperatorExpression.Tree.Atom && t.r.e == e ->
-                    t.l.checkReferenceType()?.let { t.checkReferenceType()?.call(it) }
+                    t.l.checkReferenceType()?.let { t.o.checkReferenceType()?.call(it)?.parameter }
 
                 else -> checkTree(t.l, e) ?: checkTree(t.r, e)
             }

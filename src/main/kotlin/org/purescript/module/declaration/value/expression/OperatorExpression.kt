@@ -68,9 +68,11 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
             override val end: Int get() = r.end
             
             override fun checkUsageType(): TypeCheckerType? {
+                val leftType = l.checkType() ?: return null
+                val rightType = r.checkType() ?: return null
                 return o.checkReferenceType()
-                    ?.call(l.checkType() ?: return null)
-                    ?.call(r.checkType() ?: return null)
+                    ?.call(leftType)
+                    ?.call(rightType)
             }
             
             override fun insertRight(other: Expression) = when (other) {

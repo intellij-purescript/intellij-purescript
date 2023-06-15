@@ -241,8 +241,9 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val operator = operatorTree.o
         TestCase.assertEquals("Prim.Int -> Prim.Int -> Prim.Int", operator.checkType().toString())
         val left = operatorTree.l as OperatorExpression.Tree.Atom
-        TestCase.assertEquals("Prim.Int", left.checkReferenceType().toString())
-        TestCase.assertEquals("Prim.Int", value.checkType().toString())
+        TestCase.assertEquals("Prim.Int", left.checkType().toString())
+        TestCase.assertEquals("Prim.Int", operatorTree.checkType().toString())
+        TestCase.assertEquals("Prim.Int", operatorExpression.checkType().toString())
         TestCase.assertEquals("Prim.Int -> Prim.Int -> Prim.Int", f.checkType().toString())
     }
 }
