@@ -30,10 +30,14 @@ import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
+import org.purescript.typechecker.TypeCheckable
 
-class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdentifierOwner,
-    Importable, InlinableElement,
-    DocCommentOwner {
+class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
+    PsiNameIdentifierOwner,
+    Importable,
+    InlinableElement,
+    DocCommentOwner,
+    TypeCheckable {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<FixityDeclaration>(p, Type) {
         val module get() = parentStub as? Module.Stub
@@ -122,12 +126,12 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>, PsiNameIdent
         return this
     }
 
-    override fun getReference(): PsiReferenceBase<FixityDeclaration> {
-        if (qualifiedIdentifier != null)
-            return FixityReference(this)
-        else if (isType)
-            return TypeFixityReference(this)
-        else
-            return ConstructorFixityReference(this)
+    override fun getReference(): PsiReferenceBase<FixityDeclaration> = when {
+        qualifiedIdentifier != null -> FixityReference(this)
+        isType -> TypeFixityReference(this)
+        else -> ConstructorFixityReference(this)
     }
+
+    override fun checkReferenceType() = 
+        (reference.resolve() as? TypeCheckable)?.checkReferenceType()
 }

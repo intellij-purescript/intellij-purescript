@@ -28,7 +28,6 @@ import org.purescript.module.declaration.value.expression.namespace.PSExpression
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 
 class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement, InlinableElement, TypeCheckable {
@@ -67,13 +66,14 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     override fun inline(arguments: List<Expression>): Expression {
-        val valueDeclaration = valueDeclarations.singleOrNull() ?: error("can only inline value declarations with one body")
+        val valueDeclaration =
+            valueDeclarations.singleOrNull() ?: error("can only inline value declarations with one body")
         return valueDeclaration.inline(arguments)
     }
 
-    override fun canBeInlined(): Boolean = 
+    override fun canBeInlined(): Boolean =
         valueDeclarations.singleOrNull()
-            ?.canBeInlined() 
+            ?.canBeInlined()
             ?: false
 
     override fun deleteAfterInline() {
@@ -149,6 +149,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
         ?: super.getUseScope()
 
-    override fun checkType(): TypeCheckerType? = signature?.checkType()
-        ?: valueDeclarations.firstNotNullOfOrNull { it.checkType() }
+    override fun checkReferenceType() = signature?.checkType()
+    override fun checkUsageType() = 
+        valueDeclarations.firstNotNullOfOrNull { it.checkType() }
 }

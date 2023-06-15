@@ -7,6 +7,7 @@ import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
+import org.purescript.module.declaration.value.expression.OperatorExpression
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
@@ -15,6 +16,7 @@ import org.purescript.name.PSQualifiedIdentifier
 import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
+import org.purescript.typechecker.Prim
 import org.purescript.typechecker.TypeCheckable
 
 /**
@@ -87,5 +89,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     }
     
     override fun checkReferenceType() = (reference.resolve() as? TypeCheckable)?.checkType()
-    override fun checkUsageType() = (parent as? Argument)?.checkUsageType()
+    override fun checkUsageType() = when (val p = parent) {
+        is Argument -> p.checkUsageType()
+        is OperatorExpression -> Prim.int
+        else -> null
+    } 
 }

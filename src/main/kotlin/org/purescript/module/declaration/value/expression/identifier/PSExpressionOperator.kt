@@ -45,8 +45,8 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
     }
 
     override fun getName(): String = qualifiedOperator.name
-    override fun checkType(): TypeCheckerType? = 
-        (reference.resolve() as? TypeCheckable)?.checkType()
+    override fun checkReferenceType(): TypeCheckerType? = 
+        (reference.resolve() as? TypeCheckable)?.checkReferenceType()
 
 
     val associativity get() = reference.resolve()?.associativity

@@ -51,9 +51,8 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
 
             override val start: Int get() = c.start
             override val end: Int get() = a.end
-            override fun checkUsageType(): TypeCheckerType? {
-                return c.checkType()?.call(a.checkType() ?: return null)
-            }
+            override fun checkUsageType() = 
+                a.checkType()?.let {  c.checkType()?.call(it)}
         }
 
         data class Tmp(val l: Tree, val o: PSExpressionOperator) : Tree {
