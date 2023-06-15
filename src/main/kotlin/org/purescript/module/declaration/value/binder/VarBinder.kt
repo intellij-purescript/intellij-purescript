@@ -7,6 +7,8 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.module.declaration.value.Similar
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiFactory
+import org.purescript.psi.UsedElement
+import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
 
 /**
@@ -15,8 +17,15 @@ import org.purescript.typechecker.TypeCheckerType
  * f a = 1
  * ```
  */
-class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner {
-    override fun checkType(): TypeCheckerType = TypeCheckerType.TypeVar(name)
+class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner, UsedElement {
+    override fun checkReferenceType() = TypeCheckerType.TypeVar(name)
+    override fun checkUsageType() =
+        findUsages()
+            .filter { it.isValid }
+            .map { it.element }
+            .filterIsInstance<TypeCheckable>()
+            .firstNotNullOfOrNull { it.checkUsageType() }
+
     override fun getName(): String = nameIdentifier.name
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
     override fun setName(name: String): PsiElement? {

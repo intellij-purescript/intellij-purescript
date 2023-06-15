@@ -26,7 +26,6 @@ import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 import javax.swing.Icon
 
 class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner, TypeCheckable {
@@ -147,10 +146,13 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         return !binders.any { it !is VarBinder }
     }
 
-    override fun checkType(): TypeCheckerType? = 
-        if (parameterList.parameters.isEmpty()) value?.checkType()
-        else value?.checkType()
-            ?.let { parameterList.checkType()?.arrow(it) }
-            ?.addForall()
+    override fun checkType() = 
+        if (parameterList.parameters.isEmpty()) {
+            value?.checkType()
+        } else {
+            value?.checkType()
+                ?.let { parameterList.checkType()?.arrow(it) }
+                ?.addForall()
+        }
 
 }

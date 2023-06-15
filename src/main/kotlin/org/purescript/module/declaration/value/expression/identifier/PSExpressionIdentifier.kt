@@ -86,8 +86,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             else -> false
         }
     }
-
-    override fun checkType(): TypeCheckerType? {
-        return (reference.resolve() as? TypeCheckable)?.checkType()
-    }
+    
+    override fun checkReferenceType() = (reference.resolve() as? TypeCheckable)?.checkType()
+    override fun checkUsageType() = (parent as? Argument)
+        ?.let{it.checkUsageType() }
+        ?: TypeCheckerType.TypeVar(name)
 }

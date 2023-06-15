@@ -55,7 +55,7 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
             f.checkType().toString()
         )
     }
-    
+
     fun `test it applies argument to functions of primitive type`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -71,7 +71,7 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val x = file.getValueDeclarationGroupByName("x")
         TestCase.assertEquals("Prim.Int", x.checkType().toString())
     }
-    
+
     fun `test it applies arguments to functions of primitive type`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -117,6 +117,7 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val x2 = file2.getValueDeclarationGroupByName("x")
         TestCase.assertEquals("Prim.String", x2.checkType().toString())
     }
+
     fun `test it applies arguments to functions of simple for all with primitive return type`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -146,6 +147,7 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val x2 = file2.getValueDeclarationGroupByName("x")
         TestCase.assertEquals("Prim.Int", x2.checkType().toString())
     }
+
     fun `xtest it applies arguments to functions of forall with two variables`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -179,7 +181,7 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val f = file.getValueDeclarationGroupByName("f")
         TestCase.assertEquals("Main.Truth", f.checkType().toString())
     }
-    
+
     fun `test it types single argument`() {
         val file = myFixture.configureByText(
             "Main.purs",
@@ -188,10 +190,24 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
                 |
                 |id a = a
                 |
+                |intToInt :: Int -> Int
+                |intToInt x = x
+                |
+                |stringToString :: String -> String
+                |stringToString x = x
+                |
+                |int a = intToInt a
+                |
+                |string a = stringToString a
+                |
             """.trimMargin()
         )
         val id = file.getValueDeclarationGroupByName("id")
         TestCase.assertEquals("forall a. a -> a", id.checkType().toString())
+        val int = file.getValueDeclarationGroupByName("int")
+        TestCase.assertEquals("Prim.Int -> Prim.Int", int.checkType().toString())
+        val string = file.getValueDeclarationGroupByName("string")
+        TestCase.assertEquals("Prim.String -> Prim.String", string.checkType().toString())
     }
 }
 
