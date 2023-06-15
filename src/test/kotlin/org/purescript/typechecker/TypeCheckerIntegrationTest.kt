@@ -217,5 +217,24 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         val stringToTen = file.getValueDeclarationGroupByName("stringToTen")
         TestCase.assertEquals("Prim.String -> Prim.Int", stringToTen.checkType().toString())
     }
+
+
+    fun `xtest it implies types from operators`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |add :: Int -> Int -> Int
+                |add a b = a
+                |
+                |infixl 6 add as +
+                |
+                |f a b = a + b 
+            """.trimMargin()
+        )
+        val f = file.getValueDeclarationGroupByName("f")
+        TestCase.assertEquals("Prim.Int -> Prim.Int", f.checkType().toString())
+    }
 }
 
