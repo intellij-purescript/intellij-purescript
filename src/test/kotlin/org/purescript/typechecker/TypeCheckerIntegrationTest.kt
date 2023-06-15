@@ -196,9 +196,15 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
                 |stringToString :: String -> String
                 |stringToString x = x
                 |
+                |
+                |stringToInt :: String -> Int
+                |stringToInt x = 10
+                |
                 |int a = intToInt a
                 |
                 |string a = stringToString a
+                |
+                |stringToTen a = stringToInt a
                 |
             """.trimMargin()
         )
@@ -208,6 +214,8 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         TestCase.assertEquals("Prim.Int -> Prim.Int", int.checkType().toString())
         val string = file.getValueDeclarationGroupByName("string")
         TestCase.assertEquals("Prim.String -> Prim.String", string.checkType().toString())
+        val stringToTen = file.getValueDeclarationGroupByName("stringToTen")
+        TestCase.assertEquals("Prim.String -> Prim.Int", stringToTen.checkType().toString())
     }
 }
 

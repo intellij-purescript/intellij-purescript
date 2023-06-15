@@ -1,7 +1,7 @@
 package org.purescript.typechecker
 
 sealed interface TypeCheckerType {
-    val argument get(): TypeCheckerType? = null
+    val parameter get(): TypeCheckerType? = null
 
     fun substituteModuleNames(nameMap: Map<String, String>): TypeCheckerType
 
@@ -70,13 +70,13 @@ sealed interface TypeCheckerType {
     data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType {
         override fun freeVarNames() = apply.freeVarNames() + to.freeVarNames()
         override fun call(argument: TypeCheckerType): TypeCheckerType? =
-            when (val parameter = (apply as? TypeApp)?.to) {
+            when (val parameter = this.parameter) {
                 argument -> to
                 is TypeVar -> to.substitute(parameter.name, argument)
                 else -> null
             }
 
-        override val argument: TypeCheckerType get() = to
+        override val parameter: TypeCheckerType? get() = (apply as? TypeApp)?.to
         override fun substituteModuleNames(nameMap: Map<String, String>) = TypeApp(
             apply.substituteModuleNames(nameMap),
             to.substituteModuleNames(nameMap)
@@ -112,7 +112,7 @@ sealed interface TypeCheckerType {
         override fun freeVarNames() = scope.freeVarNames() - setOf(name)
         override fun unify(with: TypeCheckerType): TypeCheckerType = this
         override fun call(argument: TypeCheckerType) = scope.call(argument)
-        override val argument: TypeCheckerType? get() = scope.argument
+        override val parameter: TypeCheckerType? get() = scope.parameter
         override fun substituteModuleNames(nameMap: Map<String, String>) =
             copy(scope = scope.substituteModuleNames(nameMap))
     }
