@@ -8,19 +8,21 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
-import kotlin.io.path.exists
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 @Service
 class Npm(val project: Project) {
 
-    val localBinPath: String? by lazy { run("npm bin") }
-    val globalBinPath: String? by lazy { run("npm -g bin") }
+    val localBinPath: String? = project.basePath?.let {
+        Path.of("$it/node_modules/.bin").toString()
+    } 
+    val globalBinPath: String? by lazy { run("npm config get prefix") }
 
     private fun run(command: String): String? {
         val npmCmd = when {
             SystemInfo.isWindows -> listOf("cmd", "/c", command)
-            else -> listOf("/usr/bin/env", "bash", "-c", command)
+            else -> listOf("/usr/bin/env", "sh", "-c", command)
         }
         
         val cwd = try {
