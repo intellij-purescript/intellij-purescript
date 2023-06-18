@@ -250,7 +250,7 @@
             implementationClass="org.purescript.module.declaration.value.expression.identifier.PurescriptParameterInfoHandler"
         />
         <codeInsight.declarativeInlayProviderFactory
-                implementation="org.purescript.module.declaration.SignatureInlayHintFactory"
+                implementation="org.purescript.module.declaration.TypeInlayHintFactory"
                />
     </extensions>
 

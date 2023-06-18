@@ -5,7 +5,7 @@ import com.intellij.codeInsight.hints.declarative.InlayProviderInfo
 import com.intellij.lang.Language
 import org.purescript.PSLanguage
 
-class SignatureInlayHintFactory: InlayHintsProviderFactory {
+class TypeInlayHintFactory: InlayHintsProviderFactory {
     override fun getSupportedLanguages(): Set<Language> = setOf(PSLanguage)
     private val inlayProviderInfo =
         InlayProviderInfo(
