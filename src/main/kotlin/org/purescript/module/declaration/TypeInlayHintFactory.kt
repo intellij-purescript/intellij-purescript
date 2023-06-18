@@ -5,9 +5,11 @@ import com.intellij.codeInsight.hints.declarative.InlayProviderInfo
 import com.intellij.lang.Language
 import org.purescript.PSLanguage
 
-class TypeInlayHintFactory: InlayHintsProviderFactory {
+class TypeInlayHintFactory : InlayHintsProviderFactory {
     override fun getSupportedLanguages(): Set<Language> = setOf(PSLanguage)
-    private val inlayProviderInfo =
+    override fun getProviderInfo(l: Language, id: String) = providers.firstOrNull { it.providerId == id }
+    override fun getProvidersForLanguage(language: Language) = providers
+    private val providers = listOf(
         InlayProviderInfo(
             SignatureInlayHintProvider(),
             "purescript.signature",
@@ -15,10 +17,5 @@ class TypeInlayHintFactory: InlayHintsProviderFactory {
             true,
             "Signature"
         )
-
-    override fun getProviderInfo(language: Language, providerId: String): InlayProviderInfo? = 
-        inlayProviderInfo
-
-    override fun getProvidersForLanguage(language: Language): List<InlayProviderInfo> = 
-        listOf(inlayProviderInfo)
+    )
 }
