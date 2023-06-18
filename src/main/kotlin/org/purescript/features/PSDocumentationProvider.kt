@@ -16,6 +16,12 @@ import org.purescript.psi.PSPsiElement
 import org.purescript.typechecker.TypeCheckable
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
+    override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? =
+        when (originalElement) {
+            is TypeCheckable -> originalElement.checkType()?.toString()
+            else -> null
+        }
+
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?) = when {
         element is Importable && element is DocCommentOwner ->
             layout(
@@ -136,9 +142,6 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             }
         }
     }
-
-    override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? =
-        (originalElement as? TypeCheckable)?.checkType()?.toString()
 
     fun layout(definition: String, mainDescription: String) =
         DEFINITION_START + definition + DEFINITION_END +

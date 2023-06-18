@@ -5,6 +5,7 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import org.purescript.module.declaration.value.Similar
+import org.purescript.module.declaration.value.parameters.Parameter
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.UsedElement
@@ -18,7 +19,11 @@ import org.purescript.typechecker.TypeCheckerType
  * ```
  */
 class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner, UsedElement {
-    override fun checkReferenceType() = TypeCheckerType.TypeVar(name)
+    override fun checkReferenceType() = when (val p = parent) {
+        is Parameter -> p.checkReferenceType()
+        else -> null
+    }  ?: TypeCheckerType.TypeVar(name)
+
     override fun checkUsageType() =
         findUsages()
             .filter { it.isValid }

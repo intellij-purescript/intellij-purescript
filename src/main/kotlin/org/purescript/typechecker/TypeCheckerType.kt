@@ -1,6 +1,7 @@
 package org.purescript.typechecker
 
 sealed interface TypeCheckerType {
+    val ret get(): TypeCheckerType? = null
     val parameter get(): TypeCheckerType? = null
 
     fun substituteModuleNames(nameMap: Map<String, String>): TypeCheckerType
@@ -69,6 +70,8 @@ sealed interface TypeCheckerType {
 
     data class TypeApp(val apply: TypeCheckerType, val to: TypeCheckerType) : TypeCheckerType {
         override fun freeVarNames() = apply.freeVarNames() + to.freeVarNames()
+        override val parameter: TypeCheckerType? get() = (apply as? TypeApp)?.to
+        override val ret: TypeCheckerType get() = to
         override fun call(argument: TypeCheckerType): TypeCheckerType? =
             when (val parameter = this.parameter) {
                 null -> null
@@ -77,8 +80,6 @@ sealed interface TypeCheckerType {
                 argument.unify(parameter) -> to
                 else -> null
             }
-
-        override val parameter: TypeCheckerType? get() = (apply as? TypeApp)?.to
         override fun substituteModuleNames(nameMap: Map<String, String>) = TypeApp(
             apply.substituteModuleNames(nameMap),
             to.substituteModuleNames(nameMap)

@@ -14,13 +14,11 @@ class DebugTypeInlayHintProvider : InlayHintsProvider {
                 when (element) {
                     is TypeCheckable -> {
                         if(element.children.any { it is TypeCheckable }) return
-                        val document = editor.document
-                        val line = document.getLineNumber(element.endOffset)
-                        val position = EndOfLinePosition(line)
                         val type = element.checkType().toString()
-                        val hint = "${element.text} :: $type"
+                        val hint = ":: $type"
                         sink.addPresentation(
-                            position, null, null, true
+                            InlineInlayPosition(element.endOffset, true),
+                            null, null, true
                         ) { text(hint) }
                     }
                 }

@@ -170,5 +170,5 @@ class PrimTypePsiElement(private val project: Project, val moduleName: String, p
     override fun getProject(): Project = project
     override fun getContainingFile(): PsiFile? = null
     override fun isValid() = true
-    override fun checkType() = TypeCheckerType.TypeConstructor("$moduleName.$name")
+    override fun checkReferenceType() = TypeCheckerType.TypeConstructor("$moduleName.$name")
 }

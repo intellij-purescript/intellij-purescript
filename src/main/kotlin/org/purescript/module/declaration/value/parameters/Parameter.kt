@@ -9,5 +9,16 @@ import org.purescript.typechecker.TypeCheckable
 class Parameter(node: ASTNode) : PSPsiElement(node), TypeCheckable {
     val parameterBinders get() = childrenOfType<Binder>()
     val binder get() = parameterBinders.first()
-    override fun checkType() = binder.checkType()
+    override fun checkUsageType() = binder.checkType()
+    override fun checkReferenceType() = when(val parameters = parent) {
+        is Parameters -> parameters.checkReferenceType()?.let {
+            val index = parameters.childrenOfType<Parameter>().indexOf(this)
+            var type = it
+            for (i in 1..index) {
+                type = type.ret ?: return@let null
+            }
+            type.parameter
+        }
+        else -> null
+    }
 }

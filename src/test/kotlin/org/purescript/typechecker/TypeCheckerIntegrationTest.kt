@@ -3,6 +3,7 @@ package org.purescript.typechecker
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.getValueDeclarationGroupByName
+import org.purescript.getVarBinders
 import org.purescript.module.declaration.value.expression.OperatorExpression
 
 class TypeCheckerIntegrationTest : BasePlatformTestCase() {
@@ -245,6 +246,20 @@ class TypeCheckerIntegrationTest : BasePlatformTestCase() {
         TestCase.assertEquals("Prim.Int", operatorTree.checkType().toString())
         TestCase.assertEquals("Prim.Int", operatorExpression.checkType().toString())
         TestCase.assertEquals("Prim.Int -> Prim.Int -> Prim.Int", f.checkType().toString())
+    }
+
+    fun `test it unifies varbinder with value declaration type`() {
+        val file = myFixture.configureByText(
+            "Main.purs",
+            """
+                |module Main where
+                |
+                |f :: Int -> Int -> Int
+                |f a b = a
+            """.trimMargin()
+        )
+        val varBindA = file.getVarBinders().first() { it.name == "a"}
+        TestCase.assertEquals(Prim.int, varBindA.checkType())
     }
 }
 

@@ -147,12 +147,13 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
         return !binders.any { it !is VarBinder }
     }
 
-    override fun checkType(): TypeCheckerType? {
+    override fun checkUsageType(): TypeCheckerType? {
         val valueType = value?.checkType() ?: return null
-        return parameterList.checkType()
+        return parameterList.checkUsageType()
             ?.arrow(valueType)
             ?.addForall() 
             ?: valueType
     }
 
+    override fun checkReferenceType() = (parent as? ValueDeclarationGroup)?.checkReferenceType()
 }
