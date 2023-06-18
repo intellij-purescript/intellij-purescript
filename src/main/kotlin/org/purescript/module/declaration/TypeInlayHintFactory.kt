@@ -16,6 +16,13 @@ class TypeInlayHintFactory : InlayHintsProviderFactory {
             setOf(),
             true,
             "Signature"
-        )
+        ),
+        InlayProviderInfo(
+            DebugTypeInlayHintProvider(),
+            "purescript.type.debug",
+            setOf(),
+            false,
+            "Debug Type"
+        ),
     )
 }
