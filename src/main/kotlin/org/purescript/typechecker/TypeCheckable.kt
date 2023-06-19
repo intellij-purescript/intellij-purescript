@@ -6,8 +6,8 @@ interface TypeCheckable {
         val referenceType = checkReferenceType()
         return usageType
             ?.let { referenceType?.unify(it) }
-            ?: usageType
             ?: referenceType
+            ?: usageType
     }
 
     /**

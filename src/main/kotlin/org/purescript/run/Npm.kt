@@ -17,23 +17,20 @@ class Npm(val project: Project) {
     val localBinPath: String? = project.basePath?.let {
         Path.of("$it/node_modules/.bin").toString()
     } 
-    val globalBinPath: String? by lazy { run("npm config get prefix") }
-
-    private fun run(command: String): String? {
+    val globalBinPath: String? by lazy {
         val npmCmd = when {
-            SystemInfo.isWindows -> listOf("cmd", "/c", command)
-            else -> listOf("/usr/bin/env", "sh", "-c", command)
+            SystemInfo.isWindows -> listOf("cmd", "/c", "npm config get prefix")
+            else -> listOf("/usr/bin/env", "npm", "config", "get", "prefix")
         }
-        
         val cwd = try {
             project.guessProjectDir()?.toNioPath()?.toFile()
-        } catch (_:UnsupportedOperationException) {
+        } catch (_: UnsupportedOperationException) {
             null
         }
         val commandLine = GeneralCommandLine(npmCmd)
             .withParentEnvironmentType(CONSOLE)
             .withWorkDirectory(cwd)
-        return ExecUtil.execAndReadLine(commandLine)
+        ExecUtil.execAndReadLine(commandLine)
     }
 
     private val log = logger<Npm>()
