@@ -7,9 +7,8 @@ import org.purescript.inference.Inferable
 import org.purescript.module.Module
 import org.purescript.module.declaration.value.Similar
 import org.purescript.psi.PSPsiFactory
-import org.purescript.typechecker.TypeCheckable
 
-interface Expression : PsiElement, Similar, TypeCheckable, Inferable {
+interface Expression : PsiElement, Similar, Inferable {
     val expressionAtoms
         get() = sequence {
             var steps = children.asList()

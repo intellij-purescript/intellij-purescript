@@ -6,7 +6,6 @@ import org.purescript.inference.Scope
 import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
-import org.purescript.typechecker.TypeCheckerType
 
 class PSDoBlock(node: ASTNode) : PSPsiElement(node), Expression {
     val letDeclarations: Array<PSDoNotationLet>
@@ -15,13 +14,7 @@ class PSDoBlock(node: ASTNode) : PSPsiElement(node), Expression {
 
     override val expressions: Sequence<Expression>
         get() = statements.flatMap { it.expressions }.asSequence()
-
-    override fun checkType(): TypeCheckerType? {
-        return null
-    }
-
     val statements = childrenOfType<DoStatement>()
-
     val valueDeclarationGroups get () =
             letDeclarations
                 .asSequence()

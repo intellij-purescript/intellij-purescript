@@ -7,20 +7,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import org.purescript.PSLanguage
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.PSPsiElement
-import org.purescript.typechecker.TypeCheckable
 
 class PSDocumentationProvider : AbstractDocumentationProvider() {
-    override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? =
-        when (originalElement) {
-            is TypeCheckable -> originalElement.checkType()?.toString()
-            else -> null
-        }
 
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?) = when {
         element is Importable && element is DocCommentOwner ->
@@ -28,7 +24,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                     element.project,
                     PSLanguage,
-                    (element.type?.text ?: (element as? TypeCheckable)?.checkType())
+                    (element.type?.text ?: (element as? Inferable)?.infer(Scope.new()))
                         ?.let { "${element.name} :: ${it}" } ?: element.name,
                     1f
                 ),

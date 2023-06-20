@@ -3,24 +3,29 @@ package org.purescript.inference
 sealed interface Type {
     @JvmInline
     value class Unknown(val id: Int) : Type {
+        override fun contains(t: Unknown) = t == this
         override fun toString(): String = "u$id"
     }
 
     @JvmInline
     value class Constructor(val name: String) : Type {
+        override fun contains(t: Unknown): Boolean = false
         override fun toString(): String = name
     }
     @JvmInline
     value class Prim(val name: String) : Type {
+        override fun contains(t: Unknown): Boolean = false
         override fun toString(): String = name
     }
 
     @JvmInline
     value class Var(val name: String) : Type {
+        override fun contains(t: Unknown): Boolean = false
         override fun toString(): String = name
     }
 
     data class App(val f: Type, val on: Type) : Type {
+        override fun contains(t: Unknown): Boolean = f.contains(t) || on.contains(t)
         override fun toString() = when{
             f == Function -> "$on ->"
            else -> "$f $on" 
@@ -28,6 +33,7 @@ sealed interface Type {
     }
 
     fun app(other: Type): App = App(this, other)
+    fun contains(t: Unknown): Boolean
 
     companion object {
         val Char = Prim("Char")
@@ -45,7 +51,11 @@ sealed interface Type {
 
 fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.Var, is Type.Prim, is Type.Constructor -> t
-    is Type.Unknown -> this[t]?.let { substitute(it) } ?: t
+    is Type.Unknown -> 
+        this[t]?.let {
+            if (it.contains(t)) throw IllegalArgumentException("$it is recursive")
+            else substitute(it)
+        } ?: t
     is Type.App -> Type.App(substitute(t.f), substitute(t.on))
 }
 
@@ -80,6 +90,10 @@ class Scope(
         val ret = newUnknown()
         unify(func, Type.function(argument, ret))
         return substitute(ret)
+    }
+
+    companion object {
+        fun new(): Scope = Scope(mutableMapOf(), mutableMapOf())
     }
 }
 

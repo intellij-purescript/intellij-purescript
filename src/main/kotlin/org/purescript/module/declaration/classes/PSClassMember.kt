@@ -22,7 +22,6 @@ import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
-import org.purescript.typechecker.TypeCheckable
 import javax.swing.Icon
 
 /**
@@ -40,7 +39,6 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
     PsiNameIdentifierOwner,
     DocCommentOwner,
     Importable,
-    TypeCheckable,
     Inferable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<PSClassMember>(p, Type) {
         val module get() = parentStub.parentStub.parentStub as? Module.Stub
@@ -103,6 +101,5 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
         parentOfType<ClassDecl>()?.docComments ?: emptyList()
     }
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Function
-    override fun checkReferenceType() = type.checkType()?.addForall()
     override fun infer(scope: Scope): org.purescript.inference.Type = type.infer(scope)
 }

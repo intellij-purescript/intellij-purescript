@@ -29,7 +29,6 @@ import org.purescript.module.declaration.value.expression.namespace.Let
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
-import org.purescript.typechecker.TypeCheckable
 
 class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     PsiNameIdentifierOwner,
@@ -37,7 +36,6 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     Importable,
     UsedElement,
     InlinableElement,
-    TypeCheckable,
     Inferable {
     class Stub(val name: String, val isExported: Boolean, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
@@ -156,10 +154,6 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             else if (isExported) module?.let { LocalSearchScope(it) }
             else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
         ?: super.getUseScope()
-
-    override fun checkReferenceType() = signature?.checkType()
-    override fun checkUsageType() = 
-        valueDeclarations.firstNotNullOfOrNull { it.checkType() }
 
     override fun infer(scope: Scope): org.purescript.inference.Type {
         val groupType = signature?.infer(scope) ?: scope.newUnknown()

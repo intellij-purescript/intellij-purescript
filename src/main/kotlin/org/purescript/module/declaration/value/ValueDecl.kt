@@ -27,14 +27,11 @@ import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
-import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 import javax.swing.Icon
 
 class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     DocCommentOwner,
     ValueOwner,
-    TypeCheckable,
     Inferable{
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
@@ -121,10 +118,10 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
 
     val nameIdentifier: PSIdentifier get() = findNotNullChildByClass(PSIdentifier::class.java)
     override val docComments get() = this.getDocComments()
-    val parameterValueNames get() = parameterList?.valueNames ?: emptySequence()
-    val namedParameters get() = parameterList?.varBinderParameters ?: emptyList()
+    val parameterValueNames get() = parameterList.valueNames
+    val namedParameters get() = parameterList.varBinderParameters
     val parameterList get() = findNotNullChildByClass(Parameters::class.java)
-    val parameters get() = parameterList?.parameters ?: emptyList()
+    val parameters get() = parameterList.parameters
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     fun inline(arguments: List<Expression>): Expression {
         val copy = this.copy() as ValueDecl
@@ -152,18 +149,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
         val binders = parameterList?.parameterBinders ?: emptyList()
         return !binders.any { it !is VarBinder }
     }
-
-    override fun checkUsageType(): TypeCheckerType? {
-        val valueType = value?.checkType() ?: return null
-        return parameterList.checkUsageType()
-            ?.arrow(valueType)
-            ?.addForall() 
-            ?: valueType
-    }
-
-    override fun checkReferenceType() = (parent as? ValueDeclarationGroup)?.checkReferenceType()
     override fun infer(scope: Scope): org.purescript.inference.Type {
-        val retType = value!!.infer(scope)
+        val retType = value?.infer(scope) ?: scope.newUnknown()
         return parameters.foldRight(retType) { arg, ret -> 
             org.purescript.inference.Type.function(arg.infer(scope), ret)
         }

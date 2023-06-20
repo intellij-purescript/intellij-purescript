@@ -11,17 +11,14 @@ import org.purescript.inference.Type
 import org.purescript.module.declaration.fixity.PSFixity
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 import org.purescript.psi.PSPsiElement
-import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 
-class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCheckable {
+class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
     val tree get() = Tree.fromElement(this)
-    override fun checkUsageType() = tree?.checkType()
     override fun infer(scope: Scope): Type {
         return tree!!.infer(scope)
     }
 
-    sealed interface Tree : TypeCheckable, Inferable {
+    sealed interface Tree : Inferable {
         companion object {
             fun fromElement(e: Expression): Tree? {
                 var tree: Tree? = null
@@ -37,7 +34,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
         val start: Int
         val end: Int
 
-        data class Atom(val e: Expression) : Tree, TypeCheckable by e {
+        data class Atom(val e: Expression) : Tree {
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = e.startOffset
             override val end: Int get() = e.endOffset
@@ -59,9 +56,6 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
 
             override val start: Int get() = c.start
             override val end: Int get() = a.end
-            override fun checkUsageType() =
-                a.checkType()?.let { c.checkType()?.call(it) }
-
             override fun infer(scope: Scope): Type =
                 scope.inferApp(c.infer(scope), a.infer(scope))
         }
@@ -80,15 +74,6 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
             override fun ranges() = l.ranges() + r.ranges() + sequenceOf(TextRange(start, end))
             override val start: Int get() = l.start
             override val end: Int get() = r.end
-
-            override fun checkUsageType(): TypeCheckerType? {
-                val leftType = l.checkType() ?: return null
-                val rightType = r.checkType() ?: return null
-                return o.checkReferenceType()
-                    ?.call(leftType)
-                    ?.call(rightType)
-            }
-
             override fun infer(scope: Scope): Type = scope.inferApp(
                 scope.inferApp(o.infer(scope), l.infer(scope)),
                 r.infer(scope)

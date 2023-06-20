@@ -6,7 +6,6 @@ import org.purescript.inference.Scope
 import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
-import org.purescript.typechecker.TypeCheckerType
 
 class PSCase(node: ASTNode) : PSPsiElement(node), Expression {
     val alternatives get() = childrenOfType<CaseAlternative>()
@@ -14,13 +13,6 @@ class PSCase(node: ASTNode) : PSPsiElement(node), Expression {
         get() = super.expressions +
                 alternatives.asSequence()
                     .flatMap { it.expressions }
-
-    override fun checkType(): TypeCheckerType? {
-        return findChildrenByClass(CaseAlternative::class.java)
-            .asList()
-            .firstNotNullOfOrNull { it.checkType() }
-    }
-
     override fun infer(scope: Scope): Type {
         TODO("Implement infer for case")
     }

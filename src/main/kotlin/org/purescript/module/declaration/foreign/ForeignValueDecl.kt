@@ -20,8 +20,6 @@ import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement
-import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A foreign value import declaration, e.g.
@@ -34,7 +32,6 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     PsiNameIdentifierOwner,
     DocCommentOwner,
     Importable,
-    TypeCheckable,
     Inferable {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<ForeignValueDecl>(p, Type) {
@@ -74,6 +71,5 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
     override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
-    override fun checkReferenceType(): TypeCheckerType? = type?.checkType()
     override fun infer(scope: Scope): org.purescript.inference.Type = type!!.infer(scope)
 }

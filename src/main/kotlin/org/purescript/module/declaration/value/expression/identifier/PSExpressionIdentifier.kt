@@ -10,7 +10,6 @@ import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.ExpressionAtom
-import org.purescript.module.declaration.value.expression.OperatorExpression
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.module.declaration.value.expression.ReplaceableWithInline
 import org.purescript.module.declaration.value.expression.dostmt.PSDoNotationBind
@@ -19,8 +18,6 @@ import org.purescript.name.PSQualifiedIdentifier
 import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
-import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 
 /**
  * A identifier in an expression, e.g.
@@ -91,32 +88,6 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         }
     }
 
-    override fun checkReferenceType() = (reference.resolve() as? TypeCheckable)?.checkType()
-    override fun infer(scope: Scope): Type {
-        val ref = reference.resolve() as Inferable
-        return ref.infer(scope)
-    }
-
-    override fun checkUsageType() = when (val p = parent) {
-        is Argument -> p.checkUsageType()
-        is OperatorExpression -> p.tree?.let { checkTree(it, this) }
-        else -> null
-    }
-
-    fun checkTree(t: OperatorExpression.Tree, e: PSExpressionIdentifier): TypeCheckerType? =
-        when (t) {
-            is OperatorExpression.Tree.Operator -> when {
-                t.l is OperatorExpression.Tree.Atom && t.l.e == e ->
-                    t.o.checkReferenceType()?.parameter
-
-                t.r is OperatorExpression.Tree.Atom && t.r.e == e ->
-                    t.l.checkReferenceType()?.let { t.o.checkReferenceType()?.call(it)?.parameter }
-
-                else -> checkTree(t.l, e) ?: checkTree(t.r, e)
-            }
-
-            is OperatorExpression.Tree.Tmp -> null
-            is OperatorExpression.Tree.Atom -> null
-            is OperatorExpression.Tree.Call -> null
-        }
+    override fun infer(scope: Scope): Type = 
+        (reference.resolve() as? Inferable)?.infer(scope) ?: scope.newUnknown()
 }

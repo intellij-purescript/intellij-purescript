@@ -13,8 +13,6 @@ import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
-import org.purescript.typechecker.TypeCheckable
-import org.purescript.typechecker.TypeCheckerType
 
 /**
  * `foo :: int` in
@@ -25,7 +23,6 @@ import org.purescript.typechecker.TypeCheckerType
  */
 class Signature :
     PSStubbedElement<Signature.Stub>,
-    TypeCheckable,
     Inferable {
 
     class Stub(val name: String, p: StubElement<*>?) : AStub<Signature>(p, Type)
@@ -58,8 +55,6 @@ class Signature :
 
     override fun getReference(): PsiReference? =
         parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
-
-    override fun checkType(): TypeCheckerType? = type.checkType()
     override fun infer(scope: Scope): org.purescript.inference.Type {
         return type.infer(scope)
     }

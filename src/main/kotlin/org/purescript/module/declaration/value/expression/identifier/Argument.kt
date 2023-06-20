@@ -11,8 +11,5 @@ class Argument(node: ASTNode) : PSPsiElement(node), Expression {
     val arguments: Sequence<ExpressionAtom> get() = emptySequence()
     val value get() = findChildByClass(Expression::class.java)
     val call get() = parent as? Call
-    override fun checkUsageType() = 
-        call?.function?.checkType()?.parameter
-    override fun checkReferenceType() = value?.checkReferenceType()
     override fun infer(scope: Scope): Type = value!!.infer(scope)
 }

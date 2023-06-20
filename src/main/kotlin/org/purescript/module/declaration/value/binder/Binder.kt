@@ -12,14 +12,13 @@ import org.purescript.inference.Type
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiElement
-import org.purescript.typechecker.TypeCheckable
 
 open class Binder(node: ASTNode) : PSPsiElement(node),
-    TypeCheckable,
     Similar,
     Inferable {
-    val descendantBinders get(): List<Binder> = 
-        binderChildren.flatMap { it.descendantBinders } + listOf(this)
+    val descendantBinders
+        get(): List<Binder> =
+            binderChildren.flatMap { it.descendantBinders } + listOf(this)
     val binderChildren get() = childrenOfType<Binder>()
     val namedDescendant get() = descendantBinders.filterIsInstance<PsiNamedElement>()
     override fun getUseScope(): SearchScope =

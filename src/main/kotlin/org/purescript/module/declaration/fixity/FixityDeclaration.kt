@@ -32,14 +32,12 @@ import org.purescript.psi.InlinableElement
 import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
-import org.purescript.typechecker.TypeCheckable
 
 class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     PsiNameIdentifierOwner,
     Importable,
     InlinableElement,
     DocCommentOwner,
-    TypeCheckable,
     Inferable {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<FixityDeclaration>(p, Type) {
@@ -104,7 +102,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     }
 
     override fun infer(scope: Scope): org.purescript.inference.Type = 
-        (reference.resolve() as Inferable).infer(scope)
+        (reference.resolve() as? Inferable)?.infer(scope) ?: scope.newUnknown()
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
@@ -137,7 +135,4 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         isType -> TypeFixityReference(this)
         else -> ConstructorFixityReference(this)
     }
-
-    override fun checkReferenceType() = 
-        (reference.resolve() as? TypeCheckable)?.checkReferenceType()
 }

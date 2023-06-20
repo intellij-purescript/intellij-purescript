@@ -7,7 +7,6 @@ import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement
-import org.purescript.typechecker.TypeCheckerType
 
 class ForAll: PSStubbedElement<ForAll.Stub>, PSType {
     class Stub( p: StubElement<*>?) : AStub<ForAll>(p, Type)
@@ -25,14 +24,6 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType {
 
     private val type get() = findChildByClass(PSType::class.java)
     private val typeVars get() = findChildrenByClass(TypeVarName::class.java)
-    override fun checkType(): TypeCheckerType? {
-        return typeVars
-            .mapNotNull { it.name }
-            .fold(type?.checkType() ?: return null) { acc: TypeCheckerType, name: String ->
-                TypeCheckerType.ForAll(name, acc)
-            }
-    }
-
     override fun infer(scope: Scope): org.purescript.inference.Type {
         TODO("Not yet implemented")
     }
