@@ -62,7 +62,7 @@ val properName: DSL = ProperName(PROPER_NAME)
  * ProperName with optional qualification
  */
 val qualProperName = QualifiedProperName(qualified(properName))
-val typeRef = Reference {type}
+val typeRef = Reference { type }
 val type: DSL = KindedType.cont(Reference { type1 }, dcolon + typeRef)
 val typeVarPlain = Choice.of(
     TypeVarNameType(ident),
@@ -112,7 +112,7 @@ val operatorName = OperatorName(operator)
 val qualOp = QualifiedOperatorName(qualified(operatorName))
 val type5: DSL = TypeAppType.fold(typeAtom, typeAtom)
 val type4 = Choice.of(
-    TypeIntType(`-` + number) ,
+    TypeIntType(`-` + number),
     type5
 )
 val type3 = Choice.of(
@@ -338,9 +338,11 @@ val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
 val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
 val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
 val caseBranch = CaseAlternativeType(binder1.sepBy1(`,`) + guardedCase)
-val ifThenElse = IfThenElse(
-    `'if'` + `expr?` + (`'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")).relax("missing then")
-)
+val ifThenElse =
+    IfThenElseType(`'if'` + `expr?` + `'then'` + `expr?` + `'else'` + `expr?`) /
+            ErrorIfThenType(`'if'` + `expr?` + `'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")) /
+            ErrorIfType(`'if'` + `expr?` + (`'then'` + `expr?` + `'else'` + `expr?`).relax("missing then"))
+        
 
 fun layout1(statement: DSL, name: String): DSL {
     val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
