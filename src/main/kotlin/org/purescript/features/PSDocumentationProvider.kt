@@ -39,17 +39,14 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         else -> null
     }
 
-    private fun getType(element: Importable): String? {
-        val fromSignature = element.type?.text
-        val inferred = try {
+    private fun getType(element: Importable): String? =
+        (element.type?.text ?: try {
             (element as? Inferable)?.infer(Scope.new())
         } catch (e: Exception) {
             null
         } catch (e: NotImplementedError) {
             null
-        }
-        return (fromSignature ?: inferred)?.let { "${element.name} :: ${it}" } ?: element.name
-    }
+        })?.let { "${element.name} :: ${it}" } ?: element.name
 
     override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?) =
         pursuitUrlsFromSpagoPath(element)
