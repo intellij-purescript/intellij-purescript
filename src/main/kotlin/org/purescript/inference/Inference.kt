@@ -12,6 +12,7 @@ sealed interface Type {
         override fun contains(t: Unknown): Boolean = false
         override fun toString(): String = name
     }
+
     @JvmInline
     value class Prim(val name: String) : Type {
         override fun contains(t: Unknown): Boolean = false
@@ -25,11 +26,14 @@ sealed interface Type {
     }
 
     data class App(val f: Type, val on: Type) : Type {
+        private val isFunction get() = f is App && f.f == Function
         override fun contains(t: Unknown): Boolean = f.contains(t) || on.contains(t)
-        override fun toString() = when{
-            f == Function -> "$on ->"
-           else -> "$f $on" 
-        } 
+        override fun toString() = when {
+            f is App && f.f == Function -> 
+                if (f.on is App && f.on.isFunction) "(${f.on}) -> $on"
+                else "${f.on} -> $on"
+            else -> "$f $on"
+        }
     }
 
     fun app(other: Type): App = App(this, other)
@@ -51,11 +55,12 @@ sealed interface Type {
 
 fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.Var, is Type.Prim, is Type.Constructor -> t
-    is Type.Unknown -> 
+    is Type.Unknown ->
         this[t]?.let {
             if (it.contains(t)) throw IllegalArgumentException("$it is recursive")
             else substitute(it)
         } ?: t
+
     is Type.App -> Type.App(substitute(t.f), substitute(t.on))
 }
 

@@ -9,4 +9,20 @@ class InferenceTest: TestCase()  {
         val id = Type.function(a, a)
         assertEquals(Type.Int, scope.inferApp(id, Type.Int))
     }
+    
+    fun `test to string of function argument`() {
+        val scope = Scope(mutableMapOf(), mutableMapOf())
+        val a = scope.lookup("a")
+        val parameter = Type.function(Type.Int, a)
+        val higherOrderFunction = Type.function(parameter, a)
+        assertEquals("(Int -> u0) -> u0", higherOrderFunction.toString())
+    } 
+    
+    fun `test to string of Kind argument`() {
+        val scope = Scope(mutableMapOf(), mutableMapOf())
+        val a = scope.lookup("a")
+        val parameter = Type.Array.app(a)
+        val unsafeHead = Type.function(parameter, a)
+        assertEquals("Array u0 -> u0", unsafeHead.toString())
+    }
 }
