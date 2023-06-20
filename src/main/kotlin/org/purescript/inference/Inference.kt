@@ -2,15 +2,26 @@ package org.purescript.inference
 
 sealed interface Type {
     @JvmInline
-    value class Unknown(val id: Int) : Type
+    value class Unknown(val id: Int) : Type {
+        override fun toString(): String = "u$id"
+    }
 
     @JvmInline
-    value class Constructor(val name: String) : Type
+    value class Constructor(val name: String) : Type {
+        override fun toString(): String = name
+    }
 
     @JvmInline
     value class Var(val name: String) : Type
-    data class Reference(val modules: List<String>, val type: Constructor) : Type
-    data class App(val f: Type, val on: Type) : Type
+    data class Reference(val modules: List<String>, val type: Constructor) : Type  {
+        override fun toString(): String = "${modules.first()}#$type"
+    }
+    data class App(val f: Type, val on: Type) : Type {
+        override fun toString() = when{
+            f == Function && on is App -> "${on.f} -> ${on.on}"
+           else -> "$f $on" 
+        } 
+    }
 
     fun app(other: Type): App = App(this, other)
 
@@ -24,9 +35,7 @@ sealed interface Type {
         val Array = Reference(listOf("Prim"), Constructor("Array"))
         val Row = Reference(listOf("Prim"), Constructor("Row"))
         val Record = Reference(listOf("Prim"), Constructor("Record"))
-        fun function(parameter: Type, ret: Type): App =
-            Function.app(parameter).app(ret)
-
+        fun function(parameter: Type, ret: Type): App = Function.app(parameter).app(ret)
     }
 }
 

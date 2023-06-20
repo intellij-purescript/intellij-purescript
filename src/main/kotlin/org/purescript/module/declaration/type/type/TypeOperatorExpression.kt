@@ -1,6 +1,9 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.psi.PSPsiElement
 import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
@@ -18,5 +21,14 @@ class TypeOperatorExpression(node: ASTNode) : PSPsiElement(node), PSType {
             TypeCheckerType.TypeApp(operatorType, firstType),
             secondType
         )
+    }
+
+    override fun infer(scope: Scope): Type {
+        val (first, second) = types
+        val firstType = first.infer(scope)
+        val secondType = second.infer(scope)
+        val operatorType = (reference?.resolve() as Inferable).infer(scope)
+        val funcType = scope.inferApp(operatorType, firstType)
+        return scope.inferApp(funcType, secondType)
     }
 }

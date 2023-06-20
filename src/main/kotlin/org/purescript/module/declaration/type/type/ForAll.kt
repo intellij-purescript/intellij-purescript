@@ -2,6 +2,7 @@ package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -30,5 +31,9 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType {
             .fold(type?.checkType() ?: return null) { acc: TypeCheckerType, name: String ->
                 TypeCheckerType.ForAll(name, acc)
             }
+    }
+
+    override fun infer(scope: Scope): org.purescript.inference.Type {
+        TODO("Not yet implemented")
     }
 }

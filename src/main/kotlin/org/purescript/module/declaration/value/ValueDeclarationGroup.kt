@@ -162,7 +162,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
         valueDeclarations.firstNotNullOfOrNull { it.checkType() }
 
     override fun infer(scope: Scope): org.purescript.inference.Type {
-        val groupType = scope.newUnknown()
+        val groupType = signature?.infer(scope) ?: scope.newUnknown()
         for (valueDeclaration in valueDeclarations) {
             val valueType = valueDeclaration.infer(scope)
             scope.unify(groupType, valueType)

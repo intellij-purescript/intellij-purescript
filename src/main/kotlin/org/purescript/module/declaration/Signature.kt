@@ -5,6 +5,8 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
@@ -21,7 +23,10 @@ import org.purescript.typechecker.TypeCheckerType
  * foo = 42
  * ```
  */
-class Signature : PSStubbedElement<Signature.Stub>, TypeCheckable {
+class Signature :
+    PSStubbedElement<Signature.Stub>,
+    TypeCheckable,
+    Inferable {
 
     class Stub(val name: String, p: StubElement<*>?) : AStub<Signature>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, Signature>("Signature") {
@@ -55,4 +60,7 @@ class Signature : PSStubbedElement<Signature.Stub>, TypeCheckable {
         parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
 
     override fun checkType(): TypeCheckerType? = type.checkType()
+    override fun infer(scope: Scope): org.purescript.inference.Type {
+        return type.infer(scope)
+    }
 }

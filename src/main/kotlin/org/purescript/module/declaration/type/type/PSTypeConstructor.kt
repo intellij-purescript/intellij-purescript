@@ -1,6 +1,8 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
@@ -28,6 +30,17 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     val moduleName get() = identifier.moduleName
     override fun getName(): String = identifier.name
     override val qualifierName: String? get() = moduleName?.name
-    override fun checkType(): TypeCheckerType? = (reference.resolve() as? TypeCheckable)?.checkType() 
+    override fun checkType(): TypeCheckerType? = (reference.resolve() as? TypeCheckable)?.checkType()
     override fun getReference() = TypeConstructorReference(this)
+    override fun infer(scope: Scope): Type {
+        return when (name) {
+            "Int" -> Type.Int
+            "Number" -> Type.Number
+            "String" -> Type.String
+            "Boolean" -> Type.Boolean
+            "Char" -> Type.Char
+            "Function" -> Type.Function
+            else -> Type.Constructor(name)
+        }
+    }
 }
