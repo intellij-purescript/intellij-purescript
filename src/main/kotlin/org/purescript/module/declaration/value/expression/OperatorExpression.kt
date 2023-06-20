@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.childrenOfType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
 import org.purescript.inference.Type
 import org.purescript.module.declaration.fixity.PSFixity
@@ -17,10 +18,10 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
     val tree get() = Tree.fromElement(this)
     override fun checkUsageType() = tree?.checkType()
     override fun infer(scope: Scope): Type {
-        TODO("Implement infer for operator expression")
+        return tree!!.infer(scope)
     }
 
-    sealed interface Tree: TypeCheckable {
+    sealed interface Tree : TypeCheckable, Inferable {
         companion object {
             fun fromElement(e: Expression): Tree? {
                 var tree: Tree? = null
@@ -30,6 +31,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
                 return tree
             }
         }
+
         fun insertRight(other: Expression): Tree
         fun ranges(): Sequence<TextRange>
         val start: Int
@@ -39,6 +41,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = e.startOffset
             override val end: Int get() = e.endOffset
+            override fun infer(scope: Scope): Type = e.infer(scope)
             override fun insertRight(other: Expression) = when (other) {
                 is PSExpressionOperator -> Tmp(this, other)
                 else -> Call(this, Atom(other))
@@ -56,8 +59,11 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
 
             override val start: Int get() = c.start
             override val end: Int get() = a.end
-            override fun checkUsageType() = 
-                a.checkType()?.let {  c.checkType()?.call(it)}
+            override fun checkUsageType() =
+                a.checkType()?.let { c.checkType()?.call(it) }
+
+            override fun infer(scope: Scope): Type =
+                scope.inferApp(c.infer(scope), a.infer(scope))
         }
 
         data class Tmp(val l: Tree, val o: PSExpressionOperator) : Tree {
@@ -65,13 +71,16 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = l.start
             override val end: Int get() = o.endOffset
+            override fun infer(scope: Scope): Type {
+                TODO("Tmp should not exist")
+            }
         }
 
         data class Operator(val l: Tree, val o: PSExpressionOperator, val r: Tree) : Tree {
             override fun ranges() = l.ranges() + r.ranges() + sequenceOf(TextRange(start, end))
             override val start: Int get() = l.start
             override val end: Int get() = r.end
-            
+
             override fun checkUsageType(): TypeCheckerType? {
                 val leftType = l.checkType() ?: return null
                 val rightType = r.checkType() ?: return null
@@ -79,7 +88,12 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCh
                     ?.call(leftType)
                     ?.call(rightType)
             }
-            
+
+            override fun infer(scope: Scope): Type = scope.inferApp(
+                scope.inferApp(o.infer(scope), l.infer(scope)),
+                r.infer(scope)
+            )
+
             override fun insertRight(other: Expression) = when (other) {
                 is PSExpressionOperator -> when {
                     (o.precedence ?: 0) > (other.precedence ?: 0) -> Tmp(this, other)
