@@ -10,14 +10,16 @@ sealed interface Type {
     value class Constructor(val name: String) : Type {
         override fun toString(): String = name
     }
+    @JvmInline
+    value class Prim(val name: String) : Type {
+        override fun toString(): String = name
+    }
 
     @JvmInline
     value class Var(val name: String) : Type {
         override fun toString(): String = name
     }
-    data class Reference(val modules: List<String>, val type: Constructor) : Type  {
-        override fun toString(): String = "${modules.first()}#$type"
-    }
+
     data class App(val f: Type, val on: Type) : Type {
         override fun toString() = when{
             f == Function -> "$on ->"
@@ -28,21 +30,21 @@ sealed interface Type {
     fun app(other: Type): App = App(this, other)
 
     companion object {
-        val Char = Reference(listOf("Prim"), Constructor("Char"))
-        val Boolean = Reference(listOf("Prim"), Constructor("Boolean"))
-        val Int = Reference(listOf("Prim"), Constructor("Int"))
-        val Number = Reference(listOf("Prim"), Constructor("Number"))
-        val String = Reference(listOf("Prim"), Constructor("String"))
-        val Function = Reference(listOf("Prim"), Constructor("Function"))
-        val Array = Reference(listOf("Prim"), Constructor("Array"))
-        val Row = Reference(listOf("Prim"), Constructor("Row"))
-        val Record = Reference(listOf("Prim"), Constructor("Record"))
+        val Char = Prim("Char")
+        val Boolean = Prim("Boolean")
+        val Int = Prim("Int")
+        val Number = Prim("Number")
+        val String = Prim("String")
+        val Function = Prim("Function")
+        val Array = Prim("Array")
+        val Row = Prim("Row")
+        val Record = Prim("Record")
         fun function(parameter: Type, ret: Type): App = Function.app(parameter).app(ret)
     }
 }
 
 fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
-    is Type.Var, is Type.Reference, is Type.Constructor -> t
+    is Type.Var, is Type.Prim, is Type.Constructor -> t
     is Type.Unknown -> this[t]?.let { substitute(it) } ?: t
     is Type.App -> Type.App(substitute(t.f), substitute(t.on))
 }
