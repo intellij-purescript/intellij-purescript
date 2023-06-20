@@ -45,6 +45,8 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             (element as? Inferable)?.infer(Scope.new())
         } catch (e: Exception) {
             null
+        } catch (e: NotImplementedError) {
+            null
         }
         return (fromSignature ?: inferred)?.let { "${element.name} :: ${it}" } ?: element.name
     }
