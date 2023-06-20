@@ -10,19 +10,19 @@ import org.purescript.PSLanguage
 
 open class PSElementType(@NonNls debugName: String) :
     IElementType(debugName, PSLanguage) {
-    interface HasPsi {
-        fun createPsi(node: ASTNode): PsiElement
+    interface HasPsi<Psi: PsiElement> {
+        fun createPsi(node: ASTNode): Psi
     }
-    open class WithPsi(
+    open class WithPsi<Psi: PsiElement>(
         @NonNls debugName: String,
-        val constructor: (ASTNode) -> PsiElement
-    ) : HasPsi, PSElementType(debugName) {
-        override fun createPsi(node: ASTNode): PsiElement = constructor(node)
+        val constructor: (ASTNode) -> Psi
+    ) : HasPsi<Psi>, PSElementType(debugName) {
+        override fun createPsi(node: ASTNode): Psi = constructor(node)
     }
 
-    abstract class WithPsiAndStub<S : StubElement<*>?, E : PsiElement?>(
+    abstract class WithPsiAndStub<S : StubElement<*>?, E : PsiElement>(
         @NonNls debugName: String
-    ) : HasPsi, IStubElementType<S, E>(debugName, PSLanguage) {
+    ) : HasPsi<E>, IStubElementType<S, E>(debugName, PSLanguage) {
         override fun getExternalId(): String {
             return "purescript.$this"
         }

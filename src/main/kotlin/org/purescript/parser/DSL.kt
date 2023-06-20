@@ -3,8 +3,10 @@
 package org.purescript.parser
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
+import org.purescript.psi.PSElementType
 
 interface DSL : Parser {
     fun sepBy(delimiter: DSL) = !sepBy1(delimiter)
@@ -27,9 +29,9 @@ operator fun String.not() = Choice(dsl, True)
 operator fun DSL.unaryPlus() = OneOrMore(this)
 operator fun String.unaryPlus() = OneOrMore(this.dsl)
 
-operator fun IElementType.invoke(dsl: DSL) = Symbolic(dsl, this)
-operator fun IElementType.invoke(other: String) = Symbolic(other.dsl, this)
-operator fun IElementType.invoke(o: IElementType) = Symbolic(o.dsl, this)
+operator fun <Psi: PsiElement> PSElementType.HasPsi<Psi>.invoke(dsl: DSL) = Symbolic<Psi>(dsl, this as IElementType)
+operator fun <Psi: PsiElement> PSElementType.HasPsi<Psi>.invoke(other: String) = Symbolic<Psi>(other.dsl, this as IElementType)
+operator fun <Psi: PsiElement> PSElementType.HasPsi<Psi>.invoke(o: IElementType) = Symbolic<Psi>(o.dsl, this as IElementType)
 fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
 fun IElementType.cont(start: DSL, next: DSL) = Continuation(this, start, next)
 
@@ -230,8 +232,8 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
     override val tokenSet: TokenSet? = null
 }
 
-data class Symbolic(val child: DSL, val symbol: IElementType) : DSL {
-    override fun choices() = child.choices().map { Symbolic(it, symbol) }
+data class Symbolic<Tag>(val child: DSL, val symbol: IElementType) : DSL {
+    override fun choices() = child.choices().map { Symbolic<Tag>(it, symbol) }
     override val tokenSet = child.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         if (tokenSet?.contains(b.tokenType) == false) return false
