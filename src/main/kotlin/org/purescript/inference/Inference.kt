@@ -12,13 +12,15 @@ sealed interface Type {
     }
 
     @JvmInline
-    value class Var(val name: String) : Type
+    value class Var(val name: String) : Type {
+        override fun toString(): String = name
+    }
     data class Reference(val modules: List<String>, val type: Constructor) : Type  {
         override fun toString(): String = "${modules.first()}#$type"
     }
     data class App(val f: Type, val on: Type) : Type {
         override fun toString() = when{
-            f == Function && on is App -> "${on.f} -> ${on.on}"
+            f == Function -> "$on ->"
            else -> "$f $on" 
         } 
     }

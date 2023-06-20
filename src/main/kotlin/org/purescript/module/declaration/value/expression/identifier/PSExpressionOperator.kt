@@ -51,7 +51,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
         (reference.resolve() as? TypeCheckable)?.checkReferenceType()
 
     override fun infer(scope: Scope): Type {
-        TODO("Implement infer for operator")
+        return reference.resolve()!!.infer(scope)
     }
 
 

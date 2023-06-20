@@ -5,21 +5,29 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
-import org.purescript.typechecker.TypeCheckable
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 
 class DebugTypeInlayHintProvider : InlayHintsProvider {
     override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
         return object : SharedBypassCollector {
             override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
                 when (element) {
-                    is TypeCheckable -> {
-                        if(element.children.any { it is TypeCheckable }) return
-                        val type = element.checkType().toString()
-                        val hint = ":: $type"
-                        sink.addPresentation(
-                            InlineInlayPosition(element.endOffset, true),
-                            null, null, true
-                        ) { text(hint) }
+                    is Inferable -> {
+                        if(element.children.any { it is Inferable }) return
+                        try {
+                            val type = element.infer(Scope(mutableMapOf(), mutableMapOf())).toString()
+                            val hint = ":: $type"
+                            sink.addPresentation(
+                                InlineInlayPosition(element.endOffset, true),
+                                null, null, true
+                            ) { text(hint) }
+                        } catch (e: NotImplementedError) {
+                            sink.addPresentation(
+                                InlineInlayPosition(element.endOffset, true),
+                                null, null, true
+                            ) { text("?! ${e.message?.removePrefix("An operation is not implemented: ")}") }
+                        }
                     }
                 }
             }

@@ -9,6 +9,8 @@ import com.intellij.psi.util.childrenOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -32,7 +34,8 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     PsiNameIdentifierOwner,
     DocCommentOwner,
     Importable,
-    TypeCheckable {
+    TypeCheckable,
+    Inferable {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<ForeignValueDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
@@ -67,9 +70,10 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override fun getIcon(flags: Int) = AllIcons.Ide.External_link_arrow
     override fun setName(name: String) = null
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
-    override fun asImport() = module?.name?.let{ ImportDeclaration(it).withItems(ImportedValue(name)) }
+    override fun asImport() = module?.name?.let { ImportDeclaration(it).withItems(ImportedValue(name)) }
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
     override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
     override fun checkReferenceType(): TypeCheckerType? = type?.checkType()
+    override fun infer(scope: Scope): org.purescript.inference.Type = type!!.infer(scope)
 }

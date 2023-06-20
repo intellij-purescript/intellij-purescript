@@ -10,6 +10,8 @@ import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -38,7 +40,8 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
     PsiNameIdentifierOwner,
     DocCommentOwner,
     Importable,
-    TypeCheckable {
+    TypeCheckable,
+    Inferable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<PSClassMember>(p, Type) {
         val module get() = parentStub.parentStub.parentStub as? Module.Stub
         val isExported = when {
@@ -101,4 +104,5 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
     }
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Function
     override fun checkReferenceType() = type.checkType()?.addForall()
+    override fun infer(scope: Scope): org.purescript.inference.Type = type.infer(scope)
 }

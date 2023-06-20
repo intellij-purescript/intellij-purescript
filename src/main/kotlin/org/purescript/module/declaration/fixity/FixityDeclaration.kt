@@ -13,6 +13,8 @@ import com.intellij.psi.util.parentsOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -37,7 +39,8 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     Importable,
     InlinableElement,
     DocCommentOwner,
-    TypeCheckable {
+    TypeCheckable,
+    Inferable {
     class Stub(val name: String, p: StubElement<*>?) :
         AStub<FixityDeclaration>(p, Type) {
         val module get() = parentStub as? Module.Stub
@@ -99,6 +102,9 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         val expression = "$name $first $second"
         return factory.createParenthesis(expression)?.parentsOfType<Expression>()?.lastOrNull()!!
     }
+
+    override fun infer(scope: Scope): org.purescript.inference.Type = 
+        (reference.resolve() as Inferable).infer(scope)
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
