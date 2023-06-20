@@ -32,15 +32,13 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     override val qualifierName: String? get() = moduleName?.name
     override fun checkType(): TypeCheckerType? = (reference.resolve() as? TypeCheckable)?.checkType()
     override fun getReference() = TypeConstructorReference(this)
-    override fun infer(scope: Scope): Type {
-        return when (name) {
-            "Int" -> Type.Int
-            "Number" -> Type.Number
-            "String" -> Type.String
-            "Boolean" -> Type.Boolean
-            "Char" -> Type.Char
-            "Function" -> Type.Function
-            else -> Type.Constructor(name)
-        }
+    override fun infer(scope: Scope): Type = when (name) {
+        "Int" -> Type.Int
+        "Number" -> Type.Number
+        "String" -> Type.String
+        "Boolean" -> Type.Boolean
+        "Char" -> Type.Char
+        "Function" -> Type.Function
+        else -> Type.Constructor(name)
     }
 }
