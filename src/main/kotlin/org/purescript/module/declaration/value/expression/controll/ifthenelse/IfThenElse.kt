@@ -7,7 +7,7 @@ import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
-class PSIfThenElse(node: ASTNode) : PSPsiElement(node), Expression {
+class IfThenElse(node: ASTNode) : PSPsiElement(node), Expression {
     val ifThenAndElse get() = childrenOfType<Expression>()
     override fun infer(scope: Scope): Type {
         val types = ifThenAndElse.map { it.infer(scope) }

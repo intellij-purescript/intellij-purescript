@@ -85,7 +85,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSIfThenElse(IfThenElse)
+        IfThenElse(IfThenElse)
           PsiElement(if)('if')
           ExpressionWildcard(ExpressionWildcard)
             PsiElement(wildcard)('_')
@@ -116,7 +116,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        PSIfThenElse(IfThenElse)
+        IfThenElse(IfThenElse)
           PsiElement(if)('if')
           ExpressionWildcard(ExpressionWildcard)
             PsiElement(wildcard)('_')

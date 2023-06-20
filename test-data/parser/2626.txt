@@ -174,7 +174,7 @@ Purescript File
                     PSIdentifier(identifier)
                       PsiElement(identifier)('f')
               PsiElement(->)('->')
-              PSIfThenElse(IfThenElse)
+              IfThenElse(IfThenElse)
                 PsiElement(if)('if')
                 Call(Call)
                   PSExpressionIdentifier(ExpressionIdentifier)

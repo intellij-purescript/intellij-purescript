@@ -3847,7 +3847,7 @@ Purescript File
                     PSIdentifier(identifier)
                       PsiElement(identifier)('b')
               PsiElement(->)('->')
-              PSIfThenElse(IfThenElse)
+              IfThenElse(IfThenElse)
                 PsiElement(if)('if')
                 PSExpressionIdentifier(ExpressionIdentifier)
                   PSQualifiedIdentifier(QualifiedIdentifier)

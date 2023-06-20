@@ -31,7 +31,7 @@ import org.purescript.module.declaration.value.expression.controll.Guard
 import org.purescript.module.declaration.value.expression.controll.GuardBranch
 import org.purescript.module.declaration.value.expression.controll.caseof.CaseAlternative
 import org.purescript.module.declaration.value.expression.controll.caseof.PSCase
-import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
+import org.purescript.module.declaration.value.expression.controll.ifthenelse.IfThenElse
 import org.purescript.module.declaration.value.expression.dostmt.*
 import org.purescript.module.declaration.value.expression.identifier.*
 import org.purescript.module.declaration.value.expression.literals.*
@@ -160,7 +160,7 @@ val ExpressionOperator = WithPsi("ExpressionOperator") { PSExpressionOperator(it
 val ExpressionWhere = WithPsi("ExpressionWhere") { PSExpressionWhere(it) }
 val Case = WithPsi("Case") { PSCase(it) }
 val CaseAlternativeType = WithPsi("CaseAlternative") { CaseAlternative(it) }
-val IfThenElse = WithPsi("IfThenElse") { PSIfThenElse(it) }
+val IfThenElse = WithPsi("IfThenElse") { IfThenElse(it) }
 val Let = WithPsi("Let") { Let(it) }
 val Parens = WithPsi("Parens") { PSParens(it) }
 val TypedExpressionType = WithPsi("TypedExpression") { TypedExpression(it) }

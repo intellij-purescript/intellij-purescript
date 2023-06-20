@@ -16,7 +16,7 @@ import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.PSParens
-import org.purescript.module.declaration.value.expression.controll.ifthenelse.PSIfThenElse
+import org.purescript.module.declaration.value.expression.controll.ifthenelse.IfThenElse
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
 import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
@@ -180,7 +180,7 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createIfThenElse(test: String, then:String, otherwise: String): PSIfThenElse? {
+    fun createIfThenElse(test: String, then:String, otherwise: String): IfThenElse? {
         return createFromText(
             """
             |module Main where
