@@ -24,8 +24,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
                     element.project,
                     PSLanguage,
-                    (element.type?.text ?: (element as? Inferable)?.infer(Scope.new()))
-                        ?.let { "${element.name} :: ${it}" } ?: element.name,
+                    getType(element),
                     1f
                 ),
                 docCommentsToDocstring(element.docComments.map { it.text }, element.project)
@@ -38,6 +37,16 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             )
 
         else -> null
+    }
+
+    private fun getType(element: Importable): String? {
+        val fromSignature = element.type?.text
+        val inferred = try {
+            (element as? Inferable)?.infer(Scope.new())
+        } catch (e: Exception) {
+            null
+        }
+        return (fromSignature ?: inferred)?.let { "${element.name} :: ${it}" } ?: element.name
     }
 
     override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?) =

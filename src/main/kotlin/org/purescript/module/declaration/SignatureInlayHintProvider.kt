@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
+import org.purescript.inference.RecursiveTypeException
 import org.purescript.inference.Scope
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 
@@ -30,7 +31,7 @@ class SignatureInlayHintProvider : InlayHintsProvider {
                             }
                         } catch (e : NotImplementedError) {
                             return
-                        } catch (e : IllegalArgumentException) {
+                        } catch (e : RecursiveTypeException) {
                             return
                         }
                     }

@@ -57,7 +57,7 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.Var, is Type.Prim, is Type.Constructor -> t
     is Type.Unknown ->
         this[t]?.let {
-            if (it.contains(t)) throw IllegalArgumentException("$it is recursive")
+            if (it.contains(t)) throw RecursiveTypeException(it)
             else substitute(it)
         } ?: t
 
@@ -106,3 +106,4 @@ interface Inferable {
     fun infer(scope: Scope): Type
 }
 
+class RecursiveTypeException(t:Type): Exception("$t is recursive")

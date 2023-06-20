@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import org.purescript.inference.Inferable
+import org.purescript.inference.RecursiveTypeException
 import org.purescript.inference.Scope
 
 class DebugTypeInlayHintProvider : InlayHintsProvider {
@@ -27,6 +28,11 @@ class DebugTypeInlayHintProvider : InlayHintsProvider {
                                 InlineInlayPosition(element.endOffset, true),
                                 null, null, true
                             ) { text("?! ${e.message?.removePrefix("An operation is not implemented: ")}") }
+                        } catch (e: RecursiveTypeException) {
+                            sink.addPresentation(
+                                InlineInlayPosition(element.endOffset, true),
+                                null, null, true
+                            ) { text("?! ${e.message}") }
                         }
                     }
                 }
