@@ -46,7 +46,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             null
         } catch (e: NotImplementedError) {
             null
-        })?.let { "${element.name} :: ${it}" } ?: element.name
+        })?.let { "${element.name} :: $it" } ?: element.name
 
     override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?) =
         pursuitUrlsFromSpagoPath(element)
