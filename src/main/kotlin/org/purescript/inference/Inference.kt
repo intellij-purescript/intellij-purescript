@@ -59,6 +59,7 @@ sealed interface Type {
         val Array = Prim("Array")
         val Record = Prim("Record")
         fun function(parameter: Type, ret: Type): App = Function.app(parameter).app(ret)
+        fun record(labels: List<Pair<String, Type>>) = Record.app(Row(labels))
     }
 }
 
@@ -96,6 +97,13 @@ class Scope(
                 unify(sx.f, sy.f)
                 unify(sx.on, sy.on)
             }
+            sx is Type.Row && sy is Type.Row -> {
+                for ((xname, xtype) in sx.labels) {
+                    for ((yname, ytype) in sy.labels) {
+                        if (xname == yname) unify(xtype, ytype)
+                    }
+                }
+            }
         }
     }
 
@@ -105,6 +113,11 @@ class Scope(
         val ret = newUnknown()
         unify(func, Type.function(argument, ret))
         return substitute(ret)
+    }
+    fun inferAccess(record: Type, name: String): Type {
+        return newUnknown().also {
+            unify(record, Type.record(listOf(name to it)))
+        }
     }
 
     companion object {

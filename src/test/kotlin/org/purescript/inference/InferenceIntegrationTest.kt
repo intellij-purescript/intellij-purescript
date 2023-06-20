@@ -46,27 +46,38 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | number = 42.0
                 | string = "Hello World"
                 | boolean = True
-                | record =
-                |  { int: 42
-                |  , number: 42.0
-                |  , string: "Hello World"
-                |  , boolean: True
-                |  }
             """.trimMargin()
         )
         val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
         val number = Main.getValueDeclarationGroupByName("number").infer(Scope.new())
         val string = Main.getValueDeclarationGroupByName("string").infer(Scope.new())
         val boolean = Main.getValueDeclarationGroupByName("boolean").infer(Scope.new())
-        val record = Main.getValueDeclarationGroupByName("record").infer(Scope.new())
-        
         TestCase.assertEquals("Int", int.toString())
         TestCase.assertEquals("Number", number.toString())
         TestCase.assertEquals("String", string.toString())
         TestCase.assertEquals("Boolean", boolean.toString())
+    }
+    fun `test records`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | record =
+                |  { int: 42
+                |  , number: 42.0
+                |  , string: "Hello World"
+                |  , boolean: True
+                |  }
+                | int = record.int
+            """.trimMargin()
+        )
+        val record = Main.getValueDeclarationGroupByName("record").infer(Scope.new())
         TestCase.assertEquals(
             "{ int::Int, number::Number, string::String, boolean::Boolean }",
             record.toString()
         )
+        val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
+        TestCase.assertEquals("Int", int.toString())
     }
 }
