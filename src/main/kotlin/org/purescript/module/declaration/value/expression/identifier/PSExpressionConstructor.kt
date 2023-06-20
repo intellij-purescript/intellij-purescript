@@ -1,6 +1,8 @@
 package org.purescript.module.declaration.value.expression.identifier
 
 import com.intellij.lang.ASTNode
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
@@ -28,6 +30,10 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAto
 
     override fun getName(): String = qualifiedProperName.name
     override fun checkType(): TypeCheckerType? = null
+    override fun infer(scope: Scope): Type = when (qualifierName) {
+        null -> Type.Constructor(name)
+        else -> TODO("Implement infer of imported Constructors")
+    }
 
     override val qualifierName get() = qualifiedProperName.moduleName?.name
 

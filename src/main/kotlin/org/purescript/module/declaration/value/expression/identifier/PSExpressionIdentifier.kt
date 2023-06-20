@@ -3,6 +3,9 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -89,6 +92,11 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     }
 
     override fun checkReferenceType() = (reference.resolve() as? TypeCheckable)?.checkType()
+    override fun infer(scope: Scope): Type {
+        val ref = reference.resolve() as Inferable
+        return ref.infer(scope)
+    }
+
     override fun checkUsageType() = when (val p = parent) {
         is Argument -> p.checkUsageType()
         is OperatorExpression -> p.tree?.let { checkTree(it, this) }

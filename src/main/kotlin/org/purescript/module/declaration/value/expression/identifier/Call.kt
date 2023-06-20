@@ -2,6 +2,8 @@ package org.purescript.module.declaration.value.expression.identifier
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 import org.purescript.typechecker.TypeCheckerType
@@ -19,6 +21,14 @@ class Call(node: ASTNode) : PSPsiElement(node), Expression {
             is TypeCheckerType.ForAll -> argument?.checkType()?.let { functionType.call(it) }
             else -> null
         }
+    }
+
+    override fun infer(scope: Scope): Type {
+        val argumentType = argument!!.infer(scope)
+        val functionType = function!!.infer(scope)
+        val returnType = scope.newUnknown()
+        scope.unify(functionType, Type.function(argumentType, returnType))
+        return returnType
     }
 
     override fun checkUsageType(): TypeCheckerType? = null

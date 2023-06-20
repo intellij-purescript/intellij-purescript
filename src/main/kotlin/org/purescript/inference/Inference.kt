@@ -15,6 +15,8 @@ sealed interface Type {
     fun app(other: Type): App = App(this, other)
 
     companion object {
+        val Char = Reference(listOf("Prim"), Constructor("Char"))
+        val Boolean = Reference(listOf("Prim"), Constructor("Boolean"))
         val Int = Reference(listOf("Prim"), Constructor("Int"))
         val Number = Reference(listOf("Prim"), Constructor("Number"))
         val String = Reference(listOf("Prim"), Constructor("String"))

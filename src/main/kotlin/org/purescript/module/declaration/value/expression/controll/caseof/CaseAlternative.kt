@@ -12,7 +12,7 @@ import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
 
 class CaseAlternative(node: ASTNode) : PSPsiElement(node), ValueNamespace, Similar, TypeCheckable {
-    private val where get() = childrenOfType<PSExpressionWhere>().asSequence()
+    val where get() = childrenOfType<PSExpressionWhere>().asSequence()
     private val binders get() = childrenOfType<Binder>().asSequence()
     override val valueNames
         get() = binders.flatMap { it.namedDescendant } +

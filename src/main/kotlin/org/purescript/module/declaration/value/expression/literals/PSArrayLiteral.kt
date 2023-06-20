@@ -1,6 +1,8 @@
 package org.purescript.module.declaration.value.expression.literals
 
 import com.intellij.lang.ASTNode
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.psi.PSPsiElement
@@ -15,4 +17,6 @@ class PSArrayLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
         values.firstNotNullOfOrNull { (it as? TypeCheckable)?.checkType() }
             ?: TypeCheckerType.Unknown
     )
+
+    override fun infer(scope: Scope): Type = Type.Array
 }

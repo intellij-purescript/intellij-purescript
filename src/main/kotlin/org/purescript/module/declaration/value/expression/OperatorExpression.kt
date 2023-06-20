@@ -5,6 +5,8 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.childrenOfType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.fixity.PSFixity
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 import org.purescript.psi.PSPsiElement
@@ -14,6 +16,9 @@ import org.purescript.typechecker.TypeCheckerType
 class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression, TypeCheckable {
     val tree get() = Tree.fromElement(this)
     override fun checkUsageType() = tree?.checkType()
+    override fun infer(scope: Scope): Type {
+        TODO("Implement infer for operator expression")
+    }
 
     sealed interface Tree: TypeCheckable {
         companion object {

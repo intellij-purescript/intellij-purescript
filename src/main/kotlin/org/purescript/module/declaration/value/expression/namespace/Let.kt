@@ -2,6 +2,8 @@ package org.purescript.module.declaration.value.expression.namespace
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.expression.Expression
@@ -15,4 +17,5 @@ class Let(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
     private val namedBinders get() = binderChildren.flatMap { it.namedBinders }
     override val valueNames get() = valueDeclarationGroups + namedBinders
     override fun checkType(): TypeCheckerType? = value?.checkType()
+    override fun infer(scope: Scope): Type = value!!.infer(scope)
 }

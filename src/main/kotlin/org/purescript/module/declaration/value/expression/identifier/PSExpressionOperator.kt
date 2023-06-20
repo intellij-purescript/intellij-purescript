@@ -3,6 +3,8 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
@@ -47,6 +49,10 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
     override fun getName(): String = qualifiedOperator.name
     override fun checkReferenceType(): TypeCheckerType? = 
         (reference.resolve() as? TypeCheckable)?.checkReferenceType()
+
+    override fun infer(scope: Scope): Type {
+        TODO("Implement infer for operator")
+    }
 
 
     val associativity get() = reference.resolve()?.associativity
