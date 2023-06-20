@@ -10,9 +10,11 @@ import org.purescript.psi.PSPsiElement
 
 class RecordLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     override val expressions: Sequence<Expression>
-        get() = super.expressions +
-                childrenOfType<RecordLabel>().asSequence().flatMap { it.expressions }
+        get() = super.expressions + labels.asSequence().flatMap { it.expressions }
+    val labels get() = childrenOfType<RecordLabel>()
     override fun infer(scope: Scope): Type {
-        TODO("Implement infer for ${this.node.elementType.debugName}")
+        return Type.Record.app(Type.Row(labels.map { 
+            it.name to (it.expression?.infer(scope) ?: scope.newUnknown())
+        }))
     }
 }

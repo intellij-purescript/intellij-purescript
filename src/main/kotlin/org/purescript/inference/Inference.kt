@@ -29,6 +29,9 @@ sealed interface Type {
         private val isFunction get() = f is App && f.f == Function
         override fun contains(t: Unknown): Boolean = f.contains(t) || on.contains(t)
         override fun toString() = when {
+            f == Record && on is Row -> on.labels.joinToString(", ", "{ ", " }") {
+                "${it.first}::${it.second}"
+            }
             f is App && f.f == Function -> 
                 if (f.on is App && f.on.isFunction) "(${f.on}) -> $on"
                 else "${f.on} -> $on"

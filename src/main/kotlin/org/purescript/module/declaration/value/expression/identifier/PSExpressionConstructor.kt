@@ -30,7 +30,10 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAto
     override fun getName(): String = qualifiedProperName.name
     override val qualifierName get() = qualifiedProperName.moduleName?.name
     override fun infer(scope: Scope): Type = when (qualifierName) {
-        null -> Type.Constructor(name)
+        null -> when(name) {
+            "True", "False" -> Type.Boolean
+            else -> Type.Constructor(name)
+        }
         else -> TODO("Implement infer of imported Constructors")
     }
 
