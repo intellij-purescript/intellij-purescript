@@ -9,6 +9,8 @@ import org.purescript.psi.PSPsiElement
 class TypeRecord(node: ASTNode) : PSPsiElement(node), PSType {
     private val labels get() = findChildrenByClass(Labeled::class.java)
     override fun infer(scope: Scope): Type {
-        TODO("Not yet implemented")
+        return Type.Record.app(Type.Row(labels.map { 
+            it.name to (it.type?.infer(scope) ?: scope.newUnknown()) 
+        }))
     }
 }

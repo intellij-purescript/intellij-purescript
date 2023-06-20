@@ -36,6 +36,13 @@ sealed interface Type {
         }
     }
 
+    data class Row(val labels: List<Pair<String, Type>>) : Type {
+        override fun contains(t: Unknown) = labels.any { it.second.contains(t) }
+        override fun toString() = labels.joinToString(",", "(", ")") { 
+            "${it.first}::${it.second}"
+        }
+    }
+
     fun app(other: Type): App = App(this, other)
     fun contains(t: Unknown): Boolean
 
@@ -47,7 +54,6 @@ sealed interface Type {
         val String = Prim("String")
         val Function = Prim("Function")
         val Array = Prim("Array")
-        val Row = Prim("Row")
         val Record = Prim("Record")
         fun function(parameter: Type, ret: Type): App = Function.app(parameter).app(ret)
     }
@@ -62,6 +68,7 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
         } ?: t
 
     is Type.App -> Type.App(substitute(t.f), substitute(t.on))
+    is Type.Row -> Type.Row(t.labels.map { it.first to substitute(it.second) })
 }
 
 /**
