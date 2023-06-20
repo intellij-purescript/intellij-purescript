@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.parameters.Parameter
 import org.purescript.name.PSIdentifier
@@ -41,4 +42,5 @@ class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner, UsedEleme
     }
 
     override fun areSimilarTo(other: Similar): Boolean = false
+    override fun infer(scope: Scope) = scope.lookup(name)
 }

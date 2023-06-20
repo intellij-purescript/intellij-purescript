@@ -15,6 +15,8 @@ import com.intellij.util.alsoIfNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -30,7 +32,13 @@ import org.purescript.psi.*
 import org.purescript.typechecker.TypeCheckable
 
 class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
-    PsiNameIdentifierOwner, DocCommentOwner, Importable, UsedElement, InlinableElement, TypeCheckable {
+    PsiNameIdentifierOwner,
+    DocCommentOwner,
+    Importable,
+    UsedElement,
+    InlinableElement,
+    TypeCheckable,
+    Inferable {
     class Stub(val name: String, val isExported: Boolean, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isTopLevel get() = module != null
@@ -152,4 +160,13 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     override fun checkReferenceType() = signature?.checkType()
     override fun checkUsageType() = 
         valueDeclarations.firstNotNullOfOrNull { it.checkType() }
+
+    override fun infer(scope: Scope): org.purescript.inference.Type {
+        val groupType = scope.newUnknown()
+        for (valueDeclaration in valueDeclarations) {
+            val valueType = valueDeclaration.infer(scope)
+            scope.unify(groupType, valueType)
+        }
+        return scope.substitute(groupType)
+    }
 }

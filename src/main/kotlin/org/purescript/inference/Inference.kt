@@ -38,15 +38,18 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
 
 /**
  * There should only be one scope per file, so that serializing unknown ids
- * don't get reused in the same file. 
+ * don't get reused in the same file.
  */
-class Scope(private val substitutions: MutableMap<Type.Unknown, Type>) {
+class Scope(
+    private val substitutions: MutableMap<Type.Unknown, Type>,
+    val environment: MutableMap<String, Type>
+) {
     private var unknownCounter = 0
     fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
-    
-    fun unify(x: Type, y: Type): Unit {
-        val sx = substitutions.substitute(x)
-        val sy = substitutions.substitute(y)
+
+    fun unify(x: Type, y: Type) {
+        val sx = substitute(x)
+        val sy = substitute(y)
         when {
             sx == sy -> return
             sx is Type.Unknown -> substitutions[sx] = sy
@@ -56,6 +59,14 @@ class Scope(private val substitutions: MutableMap<Type.Unknown, Type>) {
                 unify(sx.on, sy.on)
             }
         }
+    }
+
+    fun substitute(type: Type): Type = substitutions.substitute(type)
+    fun lookup(name: String): Type = environment.getOrPut(name, ::newUnknown)
+    fun inferApp(func: Type, argument: Type): Type {
+        val ret = newUnknown()
+        unify(func, Type.function(argument, ret))
+        return substitute(ret)
     }
 }
 

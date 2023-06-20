@@ -14,6 +14,8 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.prevLeaf
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.features.DocCommentOwner
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
@@ -29,7 +31,11 @@ import org.purescript.typechecker.TypeCheckable
 import org.purescript.typechecker.TypeCheckerType
 import javax.swing.Icon
 
-class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner, TypeCheckable {
+class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
+    DocCommentOwner,
+    ValueOwner,
+    TypeCheckable,
+    Inferable{
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -156,4 +162,10 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>, DocCommentOwner, ValueOwner,
     }
 
     override fun checkReferenceType() = (parent as? ValueDeclarationGroup)?.checkReferenceType()
+    override fun infer(scope: Scope): org.purescript.inference.Type {
+        val retType = value!!.infer(scope)
+        return parameters.foldRight(retType) { arg, ret -> 
+            org.purescript.inference.Type.function(arg.infer(scope), ret)
+        }
+    }
 }

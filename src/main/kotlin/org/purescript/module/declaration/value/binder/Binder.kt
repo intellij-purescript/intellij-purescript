@@ -6,16 +6,26 @@ import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiElement
 import org.purescript.typechecker.TypeCheckable
 
-open class Binder(node: ASTNode) : PSPsiElement(node), TypeCheckable, Similar {
+open class Binder(node: ASTNode) : PSPsiElement(node),
+    TypeCheckable,
+    Similar,
+    Inferable {
     val descendantBinders get(): List<Binder> = 
         binderChildren.flatMap { it.descendantBinders } + listOf(this)
     val binderChildren get() = childrenOfType<Binder>()
     val namedDescendant get() = descendantBinders.filterIsInstance<PsiNamedElement>()
     override fun getUseScope(): SearchScope =
         LocalSearchScope(parentOfType<ValueNamespace>()?.scopes ?: arrayOf(containingFile))
+
+    override fun infer(scope: Scope): Type {
+        TODO("Not yet implemented")
+    }
 }
