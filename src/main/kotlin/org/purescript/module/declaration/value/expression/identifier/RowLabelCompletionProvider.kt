@@ -83,7 +83,8 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
     private fun getRowTypeFromFunctionCall(element: PsiElement): Type.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()
         val function = ((recordLiteral?.parent as? Argument)?.parent as? Call)?.function
-        return (((function?.infer(Scope.new()) as? Type.App)?.f as? Type.App)?.on as? Type.App)?.on as? Type.Row
+        val functionType = function?.infer(Scope.new()) as? Type.App
+        return ((functionType?.f as? Type.App)?.on as? Type.App)?.on as? Type.Row
     }
     private fun getRowTypeFromLiteral(element: PsiElement): Type.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()?.infer(Scope.new())
