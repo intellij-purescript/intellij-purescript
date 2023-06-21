@@ -13,8 +13,8 @@ class RecordLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
         get() = super.expressions + labels.asSequence().flatMap { it.expressions }
     val labels get() = childrenOfType<RecordLabel>()
     override fun infer(scope: Scope): Type {
-        return Type.Record.app(Type.Row(labels.map { 
-            it.name to (it.expression?.infer(scope) ?: scope.newUnknown())
+        return Type.Record.app(Type.Row(labels.mapNotNull { 
+            (it.name ?: return@mapNotNull null) to (it.expression?.infer(scope) ?: scope.newUnknown())
         }))
     }
 }

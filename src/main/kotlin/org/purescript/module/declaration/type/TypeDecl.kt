@@ -9,6 +9,7 @@ import org.purescript.ide.formatting.ImportedData
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSProperName
@@ -59,7 +60,7 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
     override fun getNameIdentifier(): PsiElement = identifier
     override fun getName(): String = greenStub?.name ?: identifier.name
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
-    override val type get() = null
+    override val type get() = findChildByClass(PSType::class.java)
     override val typeNames get() = parameters?.typeNames ?: emptySequence()
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
 

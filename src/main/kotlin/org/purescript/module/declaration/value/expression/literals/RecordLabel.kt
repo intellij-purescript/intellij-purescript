@@ -9,6 +9,6 @@ import org.purescript.psi.PSPsiElement
 class RecordLabel(node: ASTNode) : PSPsiElement(node) {
     val expressions get() = childrenOfType<Expression>().asSequence()
     val identifier get() = findChildByClass(PSIdentifier::class.java)
-    val expression get() = findNotNullChildByClass(Expression::class.java)
-    override fun getName(): String = identifier?.name ?: expression.getName()!!
+    val expression get() = findChildByClass(Expression::class.java)
+    override fun getName(): String? = identifier?.name ?: expression?.getName()
 }

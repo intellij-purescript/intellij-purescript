@@ -6,6 +6,7 @@ import org.purescript.inference.Type
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
+import org.purescript.module.declaration.type.TypeDecl
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
 import org.purescript.psi.*
@@ -36,6 +37,9 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
         "Boolean" -> Type.Boolean
         "Char" -> Type.Char
         "Function" -> Type.Function
-        else -> Type.Constructor(name)
+        else -> when(val ref = reference.resolve()){
+            is TypeDecl -> ref.type?.infer(scope)
+            else -> null
+        } ?: Type.Constructor(name)
     }
 }

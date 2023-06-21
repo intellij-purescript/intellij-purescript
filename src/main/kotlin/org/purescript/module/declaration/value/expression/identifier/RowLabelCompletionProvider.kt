@@ -27,11 +27,13 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         // import Module as Alias
         val project = parameters.editor.project ?: return
         val element = parameters.position
-        val recordLiteralRowType = getRowTypeFromRecordLiteral(element)
+        val functionCallLabels = getRowTypeFromFunctionCall(element)?.labels
+        val literalLabels = getRowTypeFromLiteral(element)?.labels
         val recordAccessRowType = getRowTypeFromRecordAccessor(element)
-        if (recordLiteralRowType != null) for ((label, type) in recordLiteralRowType.labels) {
+        if (functionCallLabels != null) for ((label, type) in functionCallLabels) {
             if (result.isStopped) return
             if (!result.prefixMatcher.prefixMatches(label)) continue
+            if (literalLabels?.contains(label to type) == true) continue
             val labelInsertHandler = SingleInsertionDeclarativeInsertHandler(":", MemberLookup)
             result.addElement(
                 LookupElementBuilder
@@ -51,35 +53,41 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
                     .withTailText("(from type)")
             )
         }
-        val scope = GlobalSearchScope.allScope(project)
-        val index = LabeledIndex
-        val labels = index.getAllKeys(project)
-        for (label in labels) {
-            if (result.isStopped) return
-            if (!result.prefixMatcher.prefixMatches(label)) continue
-            val elements = index.get(label, project, scope)
-            val elementBuilders = elements
-                .mapNotNull { labeled: Labeled ->
-                    LookupElementBuilder
-                        .create(labeled, labeled.name)
-                        .withTypeText(labeled.typeAsString)
-                        .withTailText("(${labeled.module?.name})")
-                }
-            result.addAllElements(elementBuilders)
+        if (parameters.isExtendedCompletion) {
+            val scope = GlobalSearchScope.allScope(project)
+            val index = LabeledIndex
+            val labels = index.getAllKeys(project)
+            for (label in labels) {
+                if (result.isStopped) return
+                if (!result.prefixMatcher.prefixMatches(label)) continue
+                val elements = index.get(label, project, scope)
+                val elementBuilders = elements
+                    .mapNotNull { labeled: Labeled ->
+                        LookupElementBuilder
+                            .create(labeled, labeled.name)
+                            .withTypeText(labeled.typeAsString)
+                            .withTailText("(${labeled.module?.name})")
+                    }
+                result.addAllElements(elementBuilders)
+            }
         }
     }
 
     private fun getRowType(element: PsiElement): Type.Row? =
-        getRowTypeFromRecordLiteral(element) 
+        getRowTypeFromFunctionCall(element) 
             ?: getRowTypeFromRecordAccessor(element)
 
     private fun getRowTypeFromRecordAccessor(element: PsiElement): Type.Row? =
         (element.parentOfType<RecordAccess>()?.record?.infer(Scope.new()) as? Type.App)?.on as? Type.Row
 
-    private fun getRowTypeFromRecordLiteral(element: PsiElement): Type.Row? {
+    private fun getRowTypeFromFunctionCall(element: PsiElement): Type.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()
         val function = ((recordLiteral?.parent as? Argument)?.parent as? Call)?.function
         return (((function?.infer(Scope.new()) as? Type.App)?.f as? Type.App)?.on as? Type.App)?.on as? Type.Row
+    }
+    private fun getRowTypeFromLiteral(element: PsiElement): Type.Row? {
+        val recordLiteral = element.parentOfType<RecordLiteral>()?.infer(Scope.new())
+        return (recordLiteral as? Type.App)?.on as? Type.Row
     }
 
 }
