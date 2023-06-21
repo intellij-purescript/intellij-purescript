@@ -46,6 +46,16 @@ sealed interface Type {
         }
     }
 
+    data class Constraint(val constraint: Type, val of: Type) : Type {
+        override fun contains(t: Unknown): Boolean = constraint.contains(t) || of.contains(t)
+        override fun toString() = "$constraint => $of"
+    }
+
+    data class ForAll(val names: List<String>, val scope: Type) : Type {
+        override fun contains(t: Unknown) = scope.contains(t)
+        override fun toString() = "forall ${names.joinToString(" ")}. $scope"
+    }
+
     fun app(other: Type): App = App(this, other)
     fun contains(t: Unknown): Boolean
 
@@ -73,6 +83,8 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
 
     is Type.App -> Type.App(substitute(t.f), substitute(t.on))
     is Type.Row -> Type.Row(t.labels.map { it.first to substitute(it.second) })
+    is Type.Constraint -> Type.Constraint(substitute(t.constraint), substitute(t.of))
+    is Type.ForAll -> Type.ForAll(t.names, substitute(t.scope))
 }
 
 /**
@@ -81,7 +93,7 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
  */
 class Scope(
     private val substitutions: MutableMap<Type.Unknown, Type>,
-    val environment: MutableMap<String, Type>
+    private val environment: MutableMap<String, Type>
 ) {
     private var unknownCounter = 0
     fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
@@ -104,6 +116,10 @@ class Scope(
                     }
                 }
             }
+            sx is Type.ForAll -> unify(sx.scope, sy)
+            sy is Type.ForAll -> unify(sx, sy.scope)
+            sx is Type.Constraint -> unify(sx.of, sy)
+            sy is Type.Constraint -> unify(sx, sy.of)
         }
     }
 

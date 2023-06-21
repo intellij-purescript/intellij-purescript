@@ -22,9 +22,8 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType {
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    private val type get() = findChildByClass(PSType::class.java)
+    private val type get() = findNotNullChildByClass(PSType::class.java)
     private val typeVars get() = findChildrenByClass(TypeVarName::class.java)
-    override fun infer(scope: Scope): org.purescript.inference.Type {
-        TODO("Not yet implemented")
-    }
+    override fun infer(scope: Scope): org.purescript.inference.Type =
+        org.purescript.inference.Type.ForAll(typeVars.map { it.name }.toList(), type.infer(scope))
 }

@@ -80,4 +80,28 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
         TestCase.assertEquals("Int", int.toString())
     }
+    fun `xtest signature`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | f :: forall a. a -> a
+                | f x = x
+                | 
+                | eq :: forall a. Eq a => a -> a
+                | eq x = x
+                | 
+                | int = eq 1
+            """.trimMargin()
+        )
+        val f = Main.getValueDeclarationGroupByName("f").infer(Scope.new())
+        TestCase.assertEquals("forall a. a -> a", f.toString())
+        
+        val eq = Main.getValueDeclarationGroupByName("eq").infer(Scope.new())
+        TestCase.assertEquals("forall a. Eq a => a -> a", eq.toString())
+        
+        val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
+        TestCase.assertEquals("Int", int.toString())
+    }
 }
