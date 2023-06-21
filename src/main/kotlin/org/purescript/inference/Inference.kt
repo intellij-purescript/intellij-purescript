@@ -50,6 +50,11 @@ sealed interface Type {
         override fun contains(t: Unknown): Boolean = constraint.contains(t) || of.contains(t)
         override fun toString() = "$constraint => $of"
     }
+    
+    data class Alias(val name:String, val type:Type): Type {
+        override fun contains(t: Unknown): Boolean = type.contains(t)
+        override fun toString(): String = name
+    }
 
     data class ForAll(val names: List<String>, val scope: Type) : Type {
         override fun contains(t: Unknown) = scope.contains(t)
@@ -85,6 +90,7 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.Row -> Type.Row(t.labels.map { it.first to substitute(it.second) })
     is Type.Constraint -> Type.Constraint(substitute(t.constraint), substitute(t.of))
     is Type.ForAll -> Type.ForAll(t.names, substitute(t.scope))
+    is Type.Alias -> Type.Alias(t.name, substitute(t.type))
 }
 
 /**
@@ -120,6 +126,8 @@ class Scope(
             sy is Type.ForAll -> unify(sx, sy.scope)
             sx is Type.Constraint -> unify(sx.of, sy)
             sy is Type.Constraint -> unify(sx, sy.of)
+            sy is Type.Alias -> unify(sx, sy.type)
+            sx is Type.Alias -> unify(sx.type, sy)
         }
     }
 
