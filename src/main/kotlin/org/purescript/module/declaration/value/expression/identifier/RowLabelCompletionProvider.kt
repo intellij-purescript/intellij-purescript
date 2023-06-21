@@ -73,19 +73,45 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         }
     }
 
-    private fun getRowType(element: PsiElement): Type.Row? =
-        getRowTypeFromFunctionCall(element) 
-            ?: getRowTypeFromRecordAccessor(element)
-
     private fun getRowTypeFromRecordAccessor(element: PsiElement): Type.Row? =
         (element.parentOfType<RecordAccess>()?.record?.infer(Scope.new()) as? Type.App)?.on as? Type.Row
 
     private fun getRowTypeFromFunctionCall(element: PsiElement): Type.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()
         val function = ((recordLiteral?.parent as? Argument)?.parent as? Call)?.function
-        val functionType = function?.infer(Scope.new()) as? Type.App
-        return ((functionType?.f as? Type.App)?.on as? Type.App)?.on as? Type.Row
+        val scope = Scope.new()
+        val functionType = function?.infer(scope)
+        return when (functionType) {
+            is Type.Constraint -> {
+                val (constraint, expr) = functionType
+                val cleanExpr = (constraint as? Type.App)
+                    ?.let { (f, union) ->
+                        (f as? Type.App)?.let { (f, right) ->
+                            (f as? Type.App)?.let { (f, left) ->
+                                if (
+                                    f == Type.Constructor("Union") &&
+                                    right is Type.Row &&
+                                    left is Type.Row
+                                ) {
+                                    val merge = Type.Row(left.labels + right.labels)
+                                    scope.unify(merge, union)
+                                    scope.substitute(expr)
+                                } else expr
+                            }
+                        }
+                    } as? Type.App
+                ((cleanExpr?.f
+                        as? Type.App)?.on
+                        as? Type.App)?.on
+                        as? Type.Row
+            }
+
+            is Type.App -> ((functionType.f as? Type.App)?.on as? Type.App)?.on as? Type.Row
+            else -> null
+        }
+
     }
+
     private fun getRowTypeFromLiteral(element: PsiElement): Type.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()?.infer(Scope.new())
         return (recordLiteral as? Type.App)?.on as? Type.Row

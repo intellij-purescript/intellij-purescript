@@ -6,6 +6,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.FakePsiElement
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
+import org.purescript.inference.Inferable
+import org.purescript.inference.Scope
+import org.purescript.inference.Type
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.type.type.PSType
 
@@ -160,7 +163,7 @@ object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript
 }
 
 class PrimTypePsiElement(private val project: Project, val moduleName: String, private val name: String) 
-    : FakePsiElement(), Importable {
+    : FakePsiElement(), Importable, Inferable {
     override fun asImport() = ImportDeclaration(moduleName, importedItems = setOf(ImportedClass(name)))
     override val type: PSType? get() = null
     override fun getParent() = null
@@ -168,4 +171,7 @@ class PrimTypePsiElement(private val project: Project, val moduleName: String, p
     override fun getProject(): Project = project
     override fun getContainingFile(): PsiFile? = null
     override fun isValid() = true
+    override fun infer(scope: Scope): Type {
+        return Type.Prim(name)
+    }
 }
