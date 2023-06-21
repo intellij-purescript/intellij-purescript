@@ -15,7 +15,7 @@ import org.purescript.psi.PSPsiFactory
 class TypeIdentifier(node: ASTNode) : PSPsiElement(node), PSType {
     val identifier = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName() = identifier.name
-    override fun infer(scope: Scope): Type = Type.Var(name)
+    override fun infer(scope: Scope): Type = scope.lookupTypeVar(name)
     override fun getReference() = object : PsiReferenceBase<TypeIdentifier>(this, identifier.textRangeInParent, false) {
         private val candidates = element.parentsOfType<TypeNamespace>().flatMap { it.typeNames }
         override fun getVariants() = candidates.toList().toTypedArray()

@@ -17,7 +17,7 @@ class DebugTypeInlayHintProvider : InlayHintsProvider {
                     is Inferable -> {
                         if(element.children.any { it is Inferable }) return
                         try {
-                            val type = element.infer(Scope(mutableMapOf(), mutableMapOf())).toString()
+                            val type = element.infer(Scope.new()).toString()
                             val hint = ":: $type"
                             sink.addPresentation(
                                 InlineInlayPosition(element.endOffset, true),

@@ -6,8 +6,8 @@ import org.purescript.getValueDeclarationGroupByName
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
     fun `test everything`() {
-        val xScope = Scope(mutableMapOf(), mutableMapOf())
-        val fScope = Scope(mutableMapOf(), mutableMapOf())
+        val xScope = Scope.new()
+        val fScope = Scope.new()
         val Main = myFixture.configureByText(
             "Main.purs",
             """
@@ -31,7 +31,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         )
         TestCase.assertEquals(
             Type.function(Type.Int, Type.Int),
-            int.infer(Scope(mutableMapOf(), mutableMapOf()))
+            int.infer(Scope.new())
         )
         val xValue = x.valueDeclarations.single().value!!
         TestCase.assertEquals(Type.Int, xValue.infer(xScope))

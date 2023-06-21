@@ -19,12 +19,6 @@ sealed interface Type {
         override fun toString(): String = name
     }
 
-    @JvmInline
-    value class Var(val name: String) : Type {
-        override fun contains(t: Unknown): Boolean = false
-        override fun toString(): String = name
-    }
-
     data class App(val f: Type, val on: Type) : Type {
         private val isFunction get() = f is App && f.f == Function
         override fun contains(t: Unknown): Boolean = f.contains(t) || on.contains(t)
@@ -56,11 +50,6 @@ sealed interface Type {
         override fun toString(): String = name
     }
 
-    data class ForAll(val names: List<String>, val scope: Type) : Type {
-        override fun contains(t: Unknown) = scope.contains(t)
-        override fun toString() = "forall ${names.joinToString(" ")}. $scope"
-    }
-
     fun app(other: Type): App = App(this, other)
     fun contains(t: Unknown): Boolean
 
@@ -79,7 +68,7 @@ sealed interface Type {
 }
 
 fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
-    is Type.Var, is Type.Prim, is Type.Constructor -> t
+    is Type.Prim, is Type.Constructor -> t
     is Type.Unknown ->
         this[t]?.let {
             if (it.contains(t)) throw RecursiveTypeException(it)
@@ -89,7 +78,6 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.App -> Type.App(substitute(t.f), substitute(t.on))
     is Type.Row -> Type.Row(t.labels.map { it.first to substitute(it.second) })
     is Type.Constraint -> Type.Constraint(substitute(t.constraint), substitute(t.of))
-    is Type.ForAll -> Type.ForAll(t.names, substitute(t.scope))
     is Type.Alias -> Type.Alias(t.name, substitute(t.type))
 }
 
@@ -99,7 +87,8 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
  */
 class Scope(
     private val substitutions: MutableMap<Type.Unknown, Type>,
-    private val environment: MutableMap<String, Type>
+    private val environment: MutableMap<String, Type>,
+    private val typeVarEnvironment: MutableMap<String, Type>
 ) {
     private var unknownCounter = 0
     fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
@@ -122,8 +111,6 @@ class Scope(
                     }
                 }
             }
-            sx is Type.ForAll -> unify(sx.scope, sy)
-            sy is Type.ForAll -> unify(sx, sy.scope)
             sx is Type.Constraint -> unify(sx.of, sy)
             sy is Type.Constraint -> unify(sx, sy.of)
             sy is Type.Alias -> unify(sx, sy.type)
@@ -133,6 +120,7 @@ class Scope(
 
     fun substitute(type: Type): Type = substitutions.substitute(type)
     fun lookup(name: String): Type = environment.getOrPut(name, ::newUnknown)
+    fun lookupTypeVar(name: String): Type = typeVarEnvironment.getOrPut(name, ::newUnknown)
     fun inferApp(func: Type, argument: Type): Type {
         val ret = newUnknown()
         unify(func, Type.function(argument, ret))
@@ -145,7 +133,11 @@ class Scope(
     }
 
     companion object {
-        fun new(): Scope = Scope(mutableMapOf(), mutableMapOf())
+        fun new(): Scope = Scope(
+            mutableMapOf(),
+            mutableMapOf(),
+            mutableMapOf()
+        )
     }
 }
 
