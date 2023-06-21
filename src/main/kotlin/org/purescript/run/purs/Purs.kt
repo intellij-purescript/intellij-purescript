@@ -77,9 +77,9 @@ class Purs(val project: Project) {
             }
             val npm = project.service<Npm>()
             val pathEnv = listOfNotNull(
-                EnvironmentUtil.getValue("PATH"),
+                npm.localBinPath,
                 npm.globalBinPath,
-                npm.localBinPath
+                EnvironmentUtil.getValue("PATH"),
             ).joinToString(pathEnvSeparator)
             return GeneralCommandLine(path)
                 .withCharset(charset("UTF8"))
