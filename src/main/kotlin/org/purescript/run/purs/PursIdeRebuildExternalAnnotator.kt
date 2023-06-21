@@ -3,7 +3,6 @@ package org.purescript.run.purs
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
@@ -39,11 +38,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         val gson = Gson()
         return purs.withServer {
             val output = ExecUtil.execAndGetOutput(
-                GeneralCommandLine(
-                    purs.path,
-                    "ide",
-                    "client"
-                ),
+                purs.commandLine.withParameters("ide", "client"),
                 gson.toJson(
                     mapOf(
                         "command" to "rebuild",
