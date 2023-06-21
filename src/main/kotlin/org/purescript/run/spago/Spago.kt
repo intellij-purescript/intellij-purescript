@@ -2,6 +2,7 @@ package org.purescript.run.spago
 
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.GeneralCommandLine.ParentEnvironmentType.CONSOLE
 import com.intellij.execution.util.ExecUtil
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.application.invokeLater
@@ -19,7 +20,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
-import com.intellij.util.EnvironmentUtil
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
@@ -55,21 +55,13 @@ class Spago(val project: Project) {
                 SystemInfo.isWindows -> "spago.cmd"
                 else -> "spago"
             }
-            val pathEnvSeparator = when {
-                SystemInfo.isWindows -> ";"
-                else -> ":"
-            }
             val npm = project.service<Npm>()
-            val pathEnv = listOfNotNull(
-                npm.localBinPath,
-                npm.globalBinPath,
-                EnvironmentUtil.getValue("PATH")
-            ).joinToString(pathEnvSeparator)
+            val pathEnv = npm.populatedPath
             return GeneralCommandLine(commandName)
                 .withCharset(charset("UTF8"))
                 .withWorkDirectory(project.basePath)
                 .withEnvironment("PATH", pathEnv)
-                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+                .withParentEnvironmentType(CONSOLE)
         }
 
     private fun updateLibraries() =

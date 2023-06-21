@@ -2,6 +2,7 @@ package org.purescript.run.purs
 
 import com.google.gson.Gson
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.GeneralCommandLine.ParentEnvironmentType.CONSOLE
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.util.ExecUtil
 import com.intellij.ide.plugins.PluginManagerCore
@@ -12,7 +13,6 @@ import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.util.EnvironmentUtil
 import org.purescript.run.Npm
 
 @Service
@@ -71,21 +71,13 @@ class Purs(val project: Project) {
 
     val commandLine: GeneralCommandLine
         get() {
-            val pathEnvSeparator = when {
-                SystemInfo.isWindows -> ";"
-                else -> ":"
-            }
             val npm = project.service<Npm>()
-            val pathEnv = listOfNotNull(
-                npm.localBinPath,
-                npm.globalBinPath,
-                EnvironmentUtil.getValue("PATH"),
-            ).joinToString(pathEnvSeparator)
+            val pathEnv = npm.populatedPath
             return GeneralCommandLine(path)
                 .withCharset(charset("UTF8"))
                 .withWorkDirectory(project.basePath)
                 .withEnvironment("PATH", pathEnv)
-                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+                .withParentEnvironmentType(CONSOLE)
         }
 
 }

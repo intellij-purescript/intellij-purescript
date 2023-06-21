@@ -8,6 +8,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.EnvironmentUtil
 import java.nio.file.Path
 import kotlin.io.path.exists
 
@@ -31,6 +32,18 @@ class Npm(val project: Project) {
             .withParentEnvironmentType(CONSOLE)
             .withWorkDirectory(cwd)
         ExecUtil.execAndReadLine(commandLine)
+    }
+    val populatedPath by lazy {
+        listOfNotNull(
+            localBinPath,
+            globalBinPath,
+            EnvironmentUtil.getValue("PATH"),
+        ).joinToString(
+            when {
+                SystemInfo.isWindows -> ";"
+                else -> ":"
+            }
+        )
     }
 
     private val log = logger<Npm>()
