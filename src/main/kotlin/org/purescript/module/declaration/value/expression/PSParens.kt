@@ -7,5 +7,5 @@ import org.purescript.psi.PSPsiElement
 
 class PSParens(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     val value get() = findChildByClass(Expression::class.java)
-    override fun infer(scope: Scope): Type = value!!.infer(scope)
+    override fun infer(scope: Scope): Type = value?.infer(scope) ?: scope.newUnknown()
 }

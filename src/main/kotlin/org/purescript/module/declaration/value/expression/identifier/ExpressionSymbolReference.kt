@@ -24,6 +24,13 @@ class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleNa
         return candidates(name).firstOrNull { it.name == name }
     }
 
+    override fun isReferenceTo(element: PsiElement) = when (element) {
+        is FixityDeclaration ->
+            if (element.name == this.element.name) super.isReferenceTo(element)
+            else false
+        else -> false
+    }
+
     val candidates
         get() = sequence {
             val module = element.module ?: return@sequence

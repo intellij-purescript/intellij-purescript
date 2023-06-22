@@ -13,19 +13,20 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch.search
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
-import org.purescript.parser.COMMA
-import org.purescript.parser.PSParserDefinition
+import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.classes.PSInstanceDeclaration
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.ValueDeclarationGroup
+import org.purescript.parser.COMMA
+import org.purescript.parser.PSParserDefinition
 
 class UnusedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
@@ -96,7 +97,7 @@ class UnusedInspection : LocalInspectionTool() {
 
         private inline fun <reified E : PsiElement> referenceIsUsedInFile(element: E): Boolean {
             val reference = element.reference?.resolve()
-            val scope = GlobalSearchScope.fileScope(element.containingFile)
+            val scope = LocalSearchScope(element.containingFile)
             return reference == null || search(reference, scope, true).anyMatch {
                 it.element !is PSImportedItem && it.element !is PSImportedDataMember
             }

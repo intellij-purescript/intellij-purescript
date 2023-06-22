@@ -5,5 +5,4 @@ import org.purescript.psi.PSPsiElement
 
 class PSOperatorName(node: ASTNode) : PSPsiElement(node) {
     override fun getName(): String = text
-    fun nameMatches(name: String) = textMatches(name)
 }

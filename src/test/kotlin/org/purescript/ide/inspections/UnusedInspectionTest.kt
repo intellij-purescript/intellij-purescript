@@ -223,5 +223,30 @@ class UnusedInspectionTest : BasePlatformTestCase() {
         myFixture.enableInspections(UnusedInspection())
         myFixture.checkHighlighting()
     }
+    
+    fun `test it don't report used symbol`() {
+        myFixture.configureByText(
+            "Array.purs",
+            """
+            |module Data.Array where
+            |
+            |cons a b = b
+            |
+            |infixr 6 cons as :
+            """.trimMargin()
+        )
+        myFixture.configureByText(
+            "Bar.purs",
+            """
+            |module Bar (x) where
+            |
+            |import Data.Array ((:))
+            |
+            |x = (:) 1 []
+            """.trimMargin()
+        )
+        myFixture.enableInspections(UnusedInspection())
+        myFixture.checkHighlighting()
+    }
 
 }
