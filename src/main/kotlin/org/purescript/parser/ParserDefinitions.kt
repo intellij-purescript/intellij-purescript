@@ -376,7 +376,7 @@ val letBinding = Choice.of(
 val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
 val doStatement = Choice.of(
     DoNotationLet(`'let'` + layout1(letBinding, "let binding").relax("missing binding")),
-    DoNotationBind(binder + larrow + expr.relax("malformed expression")),
+    DoNotationBind(binder + larrow + `expr?`),
     DoNotationValue(expr)
 )
 val doBlock = DoBlock(
