@@ -43,7 +43,8 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
             null -> element
                 .parentsOfType<ValueNamespace>(withSelf = false)
                 .flatMap { it.valueNames }
-                .filter { it.containingFile == element.containingFile }.firstOrNull { it.name == name }
+                .filter { it.containingFile == element.containingFile }
+                .firstOrNull { it.name == name }
                 ?: getImportedCandidates().firstOrNull { it.name == name }
 
             else -> getImportedCandidates().firstOrNull { it.name == name }
