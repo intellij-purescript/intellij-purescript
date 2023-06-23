@@ -39,14 +39,14 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
 
     override fun resolve(): PsiNamedElement? {
         val name = element.name
-        val importedCandidates = getImportedCandidates()
         return when (element.qualifiedIdentifier.moduleName?.name) {
             null -> element
                 .parentsOfType<ValueNamespace>(withSelf = false)
                 .flatMap { it.valueNames }
                 .filter { it.containingFile == element.containingFile }.firstOrNull { it.name == name }
-                ?: importedCandidates.firstOrNull { it.name == name }
-            else -> importedCandidates.firstOrNull { it.name == name }
+                ?: getImportedCandidates().firstOrNull { it.name == name }
+
+            else -> getImportedCandidates().firstOrNull { it.name == name }
         } 
     }
 
