@@ -2,6 +2,7 @@ package org.purescript.inference
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
+import org.purescript.getModule
 import org.purescript.getValueDeclarationGroupByName
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
@@ -70,6 +71,14 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 |  , boolean: True
                 |  }
                 | int = record.int
+                | 
+                | type User = { age:: Int, name :: String }
+                | 
+                | mkUser :: User -> Int
+                | mkUser user = 42
+                | 
+                | checkUser u = mkUser u
+                | 
             """.trimMargin()
         )
         val record = Main.getValueDeclarationGroupByName("record").infer(Scope.new())
@@ -79,6 +88,11 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         )
         val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
         TestCase.assertEquals("Int", int.toString())
+
+        val moduleScope = Main.getModule().typeCheck
+        val checkUserType = moduleScope.lookup("checkUser")
+        TestCase.assertEquals("{ age::Int, name::String } -> Int", "$checkUserType")
+
     }
     fun `test signature`() {
         val Main = myFixture.configureByText(

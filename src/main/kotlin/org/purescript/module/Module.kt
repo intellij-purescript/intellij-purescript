@@ -13,6 +13,7 @@ import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
@@ -422,4 +423,16 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             }
         }
     }
+
+    val typeCheck: Scope
+        get() {
+            val scope = Scope.new()
+            for (valueGroup in valueGroups) {
+                scope.declare(valueGroup.name)
+            }
+            for (valueGroup in valueGroups) {
+                scope.unify(scope.lookup(valueGroup.name), valueGroup.infer(scope.subScope()))
+            }
+            return scope
+        }
 }

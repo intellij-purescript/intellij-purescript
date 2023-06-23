@@ -26,16 +26,18 @@ sealed interface Type {
             f == Record && on is Row -> on.labels.joinToString(", ", "{ ", " }") {
                 "${it.first}::${it.second}"
             }
-            f is App && f.f == Function -> 
+
+            f is App && f.f == Function ->
                 if (f.on is App && f.on.isFunction) "(${f.on}) -> $on"
                 else "${f.on} -> $on"
+
             else -> "$f $on"
         }
     }
 
     data class Row(val labels: List<Pair<String, Type>>) : Type {
         override fun contains(t: Unknown) = labels.any { it.second.contains(t) }
-        override fun toString() = labels.joinToString(",", "(", ")") { 
+        override fun toString() = labels.joinToString(",", "(", ")") {
             "${it.first}::${it.second}"
         }
     }
@@ -44,8 +46,8 @@ sealed interface Type {
         override fun contains(t: Unknown): Boolean = constraint.contains(t) || of.contains(t)
         override fun toString() = "$constraint => $of"
     }
-    
-    data class Alias(val name:String, val type:Type): Type {
+
+    data class Alias(val name: String, val type: Type) : Type {
         override fun contains(t: Unknown): Boolean = type.contains(t)
         override fun toString(): String = name
     }
@@ -85,47 +87,86 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
  * There should only be one scope per file, so that serializing unknown ids
  * don't get reused in the same file.
  */
-class Scope(
-    private val substitutions: MutableMap<Type.Unknown, Type>,
-    private val environment: MutableMap<String, Type>,
-    private val typeVarEnvironment: MutableMap<String, Type>
-) {
-    private var unknownCounter = 0
-    fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
+sealed interface Scope {
+    fun newUnknown(): Type.Unknown
+    fun unify(x: Type, y: Type)
+    fun substitute(type: Type): Type
+    fun lookup(name: String): Type
+    fun declare(name: String): Type
+    fun lookupTypeVar(name: String): Type
+    class Simple(
+        private val substitutions: MutableMap<Type.Unknown, Type>,
+        private val environment: MutableMap<String, Type>,
+        private val typeVarEnvironment: MutableMap<String, Type>
+    ) : Scope {
+        private var unknownCounter = 0
+        override fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
+        override fun unify(x: Type, y: Type) {
+            val sx = substitute(x)
+            val sy = substitute(y)
+            when {
+                sx == sy -> return
+                sx is Type.Unknown -> substitutions[sx] = sy
+                sy is Type.Unknown -> substitutions[sy] = sx
+                sx is Type.App && sy is Type.App -> {
+                    unify(sx.f, sy.f)
+                    unify(sx.on, sy.on)
+                }
 
-    fun unify(x: Type, y: Type) {
-        val sx = substitute(x)
-        val sy = substitute(y)
-        when {
-            sx == sy -> return
-            sx is Type.Unknown -> substitutions[sx] = sy
-            sy is Type.Unknown -> substitutions[sy] = sx
-            sx is Type.App && sy is Type.App -> {
-                unify(sx.f, sy.f)
-                unify(sx.on, sy.on)
-            }
-            sx is Type.Row && sy is Type.Row -> {
-                for ((xname, xtype) in sx.labels) {
-                    for ((yname, ytype) in sy.labels) {
-                        if (xname == yname) unify(xtype, ytype)
+                sx is Type.Row && sy is Type.Row -> {
+                    for ((xname, xtype) in sx.labels) {
+                        for ((yname, ytype) in sy.labels) {
+                            if (xname == yname) unify(xtype, ytype)
+                        }
                     }
                 }
+
+                sx is Type.Constraint -> unify(sx.of, sy)
+                sy is Type.Constraint -> unify(sx, sy.of)
+                sy is Type.Alias -> unify(sx, sy.type)
+                sx is Type.Alias -> unify(sx.type, sy)
             }
-            sx is Type.Constraint -> unify(sx.of, sy)
-            sy is Type.Constraint -> unify(sx, sy.of)
-            sy is Type.Alias -> unify(sx, sy.type)
-            sx is Type.Alias -> unify(sx.type, sy)
         }
+
+        override fun substitute(type: Type): Type = substitutions.substitute(type)
+        override fun lookup(name: String): Type = substitute(environment[name] ?: declare(name))
+        override fun declare(name: String): Type = newUnknown().also { environment[name] = it }
+
+        override fun has(name: String): Boolean = environment.contains(name)
+        override fun lookupTypeVar(name: String): Type = typeVarEnvironment.getOrPut(name, ::newUnknown)
+        override fun hasTypevar(name: String): Boolean = typeVarEnvironment.contains(name)
     }
 
-    fun substitute(type: Type): Type = substitutions.substitute(type)
-    fun lookup(name: String): Type = environment.getOrPut(name, ::newUnknown)
-    fun lookupTypeVar(name: String): Type = typeVarEnvironment.getOrPut(name, ::newUnknown)
+    data class Nested(
+        val parent: Scope,
+        private val environment: MutableMap<String, Type>,
+        private val typeVarEnvironment: MutableMap<String, Type>
+    ) : Scope {
+        override fun newUnknown(): Type.Unknown = parent.newUnknown()
+        override fun unify(x: Type, y: Type) = parent.unify(x, y)
+        override fun substitute(type: Type): Type = parent.substitute(type)
+        override fun declare(name: String) = newUnknown().also { environment[name] = it }
+        override fun lookup(name: String) = substitute(environment[name] ?: when {
+            parent.has(name) -> parent.lookupTypeVar(name)
+            else -> environment.getOrPut(name, ::newUnknown)
+        })
+
+        override fun lookupTypeVar(name: String) = typeVarEnvironment[name] ?: when {
+            parent.hasTypevar(name) -> parent.lookupTypeVar(name)
+            else -> typeVarEnvironment.getOrPut(name, ::newUnknown)
+        }
+        override fun has(name: String): Boolean = parent.has(name)
+        override fun hasTypevar(name: String): Boolean = parent.hasTypevar(name)
+    }
+
+    fun subScope(): Nested = Nested(this, mutableMapOf(), mutableMapOf())
+
     fun inferApp(func: Type, argument: Type): Type {
         val ret = newUnknown()
         unify(func, Type.function(argument, ret))
         return substitute(ret)
     }
+
     fun inferAccess(record: Type, name: String): Type {
         return newUnknown().also {
             unify(record, Type.record(listOf(name to it)))
@@ -133,16 +174,23 @@ class Scope(
     }
 
     companion object {
-        fun new(): Scope = Scope(
+        fun new(): Scope = Simple(
             mutableMapOf(),
             mutableMapOf(),
             mutableMapOf()
         )
     }
+
+    fun has(name: String): Boolean
+    fun hasTypevar(name: String): Boolean
 }
 
 interface Inferable {
     fun infer(scope: Scope): Type
 }
 
-class RecursiveTypeException(t:Type): Exception("$t is recursive")
+interface ScopeOwner {
+    val scope: Scope
+}
+
+class RecursiveTypeException(t: Type) : Exception("$t is recursive")
