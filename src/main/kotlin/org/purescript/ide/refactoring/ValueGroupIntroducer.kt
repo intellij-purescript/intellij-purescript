@@ -188,7 +188,7 @@ class ValueGroupIntroducer :
                         this.expr?.parent?.addAfter(factory.createSpace(), this.expr)
                     }
                 }
-                scope.addTypeDeclaration(variable) as ValueDeclarationGroup
+                scope.addTypeDeclaration(variable)
             }
 
             override fun suggestNames(replaceAll: Boolean, variable: ValueDeclarationGroup?): Array<String> =

@@ -14,7 +14,7 @@ import com.intellij.usageView.UsageInfo
 class ValueDeclSafeDeleteProcessorDelegate : SafeDeleteProcessorDelegateBase() {
     override fun handlesElement(it: PsiElement?): Boolean = it is ValueDeclarationGroup
     override fun findUsages(it: PsiElement, toDelete: Array<out PsiElement>, result: MutableList<in UsageInfo>)
-            : NonCodeUsageSearchInfo? {
+            : NonCodeUsageSearchInfo {
         findGenericElementUsages(it, result, toDelete)
         val condition = getDefaultInsideDeletedCondition(toDelete)
         return NonCodeUsageSearchInfo(condition, it)

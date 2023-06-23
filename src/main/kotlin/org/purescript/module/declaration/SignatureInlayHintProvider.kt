@@ -10,7 +10,7 @@ import org.purescript.inference.Scope
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class SignatureInlayHintProvider : InlayHintsProvider {
-    override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
+    override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector {
         return object : SharedBypassCollector {
             override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
                 when (element) {

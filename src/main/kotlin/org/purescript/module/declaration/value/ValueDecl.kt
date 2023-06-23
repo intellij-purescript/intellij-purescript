@@ -146,7 +146,7 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     }
 
     fun canBeInlined(): Boolean {
-        val binders = parameterList?.parameterBinders ?: emptyList()
+        val binders = parameterList.parameterBinders
         return !binders.any { it !is VarBinder }
     }
     override fun infer(scope: Scope): org.purescript.inference.Type {

@@ -14,7 +14,7 @@ import org.purescript.module.declaration.value.expression.identifier.Call
 import org.purescript.module.declaration.value.expression.identifier.ExpressionWildcard
 import org.purescript.module.declaration.value.parameters.Parameter
 
-class UnnecessaryParenthesis() : LocalInspectionTool() {
+class UnnecessaryParenthesis : LocalInspectionTool() {
     private val argument = psiElement(Argument::class.java)
     private val twoChildren = collection<PsiElement?>().size(2)
     private val call = psiElement(Call::class.java)

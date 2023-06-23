@@ -41,13 +41,13 @@ class SpagoRunAnythingProvider : RunAnythingCommandProvider() {
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
             .withWorkDirectory(workDirectory!!.path)
         val commandLine =
-            RunAnythingCommandCustomizer.customizeCommandLine(dataContext1, workDirectory!!, initialCommandLine)
+            RunAnythingCommandCustomizer.customizeCommandLine(dataContext1, workDirectory, initialCommandLine)
         try {
             val runAnythingRunProfile = RunAnythingRunProfile(
                 if (Registry.`is`("run.anything.use.pty", false)) PtyCommandLine(commandLine) else commandLine,
                 value
             )
-            ExecutionEnvironmentBuilder.create(project!!, executor!!, runAnythingRunProfile)
+            ExecutionEnvironmentBuilder.create(project, executor!!, runAnythingRunProfile)
                 .dataContext(dataContext1)
                 .buildAndExecute()
         } catch (e: ExecutionException) {

@@ -10,7 +10,7 @@ import org.purescript.inference.RecursiveTypeException
 import org.purescript.inference.Scope
 
 class DebugTypeInlayHintProvider : InlayHintsProvider {
-    override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
+    override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector {
         return object : SharedBypassCollector {
             override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
                 when (element) {
