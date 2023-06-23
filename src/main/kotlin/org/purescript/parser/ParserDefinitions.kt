@@ -214,10 +214,11 @@ val expr4 = CallType.fold(
 val expr3 = UnaryMinus(+`-` + expr4) / expr4
 val exprBacktick2 = expr3.sepBy1(qualOp)
 val expr2 = expr3.sepBy1(tick + exprBacktick2 + tick)
-val expr1: DSL = OperatorExpressionType.cont(
+val expr1: DSL = (OperatorExpressionType.cont(
     expr2,
     ExpressionOperator(qualOp) + expr2.sepBy1(ExpressionOperator(qualOp.heal))
-) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal
+) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal) /
+        parens(`_`.relax("missing hole") + qualOp + expr2).heal
 val patternGuard = !(binder + larrow).heal + Reference { expr1 }
 val guard = GuardType(`|` + patternGuard.sepBy(`,`))
 val dataCtor = DataCtor(properName + !+typeAtom)
