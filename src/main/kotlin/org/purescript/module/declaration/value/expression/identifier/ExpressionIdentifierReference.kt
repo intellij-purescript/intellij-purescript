@@ -44,11 +44,10 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
             null -> element
                 .parentsOfType<ValueNamespace>(withSelf = false)
                 .flatMap { it.valueNames }
-                .filter { it.containingFile == element.containingFile }
+                .filter { it.containingFile == element.containingFile }.firstOrNull { it.name == name }
 
-            else -> emptySequence()
-        }.firstOrNull { it.name == name }
-            ?: importedCandidates.firstOrNull { it.name == name }
+            else -> null
+        } ?: importedCandidates.firstOrNull { it.name == name }
     }
 
     private fun getImportedCandidates(): Sequence<PsiNamedElement> {
