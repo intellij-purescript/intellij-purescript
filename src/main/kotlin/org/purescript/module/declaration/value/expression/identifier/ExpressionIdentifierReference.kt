@@ -40,8 +40,8 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
     override fun resolve(): PsiNamedElement? {
         val name = element.name
         val importedCandidates = getImportedCandidates()
-        val asList = moduleLocalCandidates.toList()
-        return asList.firstOrNull { it.name == name } ?: importedCandidates.firstOrNull { it.name == name }
+        return moduleLocalCandidates.firstOrNull { it.name == name }
+            ?: importedCandidates.firstOrNull { it.name == name }
     }
 
     private fun getImportedCandidates(): Sequence<PsiNamedElement> {
