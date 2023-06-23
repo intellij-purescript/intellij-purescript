@@ -43,9 +43,9 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
             null -> element
                 .parentsOfType<ValueNamespace>(withSelf = false)
                 .flatMap { it.valueNames }
-                .filter { it.containingFile == element.containingFile }
+                .takeWhile { it.containingFile == element.containingFile }
                 .firstOrNull { it.name == name }
-                ?: getImportedCandidates(qualifyingName).firstOrNull { it.name == name }
+                ?: getImportedCandidates(null).firstOrNull { it.name == name }
 
             else -> getImportedCandidates(qualifyingName).firstOrNull { it.name == name }
         } 
