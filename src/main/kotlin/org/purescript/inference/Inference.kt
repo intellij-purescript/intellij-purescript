@@ -1,8 +1,11 @@
 package org.purescript.inference
 
 sealed interface InferType {
+    val argument: InferType?
+
     @JvmInline
     value class Id(val id: Int) : InferType {
+        override val argument: InferType? get() = null
         override fun contains(t: Id) = t == this
         override fun toString(): String = "u$id"
         override fun withNewIds(map: (Id)-> Id): InferType = map(this)
@@ -10,6 +13,7 @@ sealed interface InferType {
 
     @JvmInline
     value class Constructor(val name: String) : InferType {
+        override val argument: InferType? get() = null
         override fun contains(t: Id): Boolean = false
         override fun toString(): String = name
         override fun withNewIds(map: (Id)-> Id): InferType = this
@@ -17,12 +21,17 @@ sealed interface InferType {
 
     @JvmInline
     value class Prim(val name: String) : InferType {
+        override val argument: InferType? get() = null
         override fun contains(t: Id): Boolean = false
         override fun withNewIds(map: (Id)-> Id): InferType = this
         override fun toString(): String = name
     }
 
     data class App(val f: InferType, val on: InferType) : InferType {
+        override val argument: InferType? get() = when {
+            f is App && f.f == Function -> f.on
+            else -> null
+        }
         private val isFunction get() = f is App && f.f == Function
         override fun contains(t: Id): Boolean = f.contains(t) || on.contains(t)
         override fun withNewIds(map: (Id)-> Id): InferType = App(f.withNewIds(map), on.withNewIds(map))
@@ -43,12 +52,14 @@ sealed interface InferType {
         fun mergedLabels(): List<Pair<String, InferType>>
     }
     data class RowList(val labels: List<Pair<String, InferType>>) : Row {
+        override val argument: InferType? get() = null
         override fun contains(t: Id) = labels.any { it.second.contains(t) }
         override fun toString() = labels.joinToString(", ", "(", ")") { "${it.first}::${it.second}" }
         override fun withNewIds(map: (Id)-> Id): RowList = RowList(labels.map { it.first to it.second.withNewIds(map) })
         override fun mergedLabels(): List<Pair<String, InferType>> = labels
     }
     data class RowMerge(val left: Row, val right:Row): Row {
+        override val argument: InferType? get() = null
         override fun contains(t: Id): Boolean = left.contains(t) || right.contains(t)
         override fun toString() = mergedLabels().joinToString(", ", "(", ")") { "${it.first}::${it.second}" }
         override fun withNewIds(map: (Id) -> Id): RowMerge = RowMerge(left.withNewIds(map), right.withNewIds(map))
@@ -56,12 +67,14 @@ sealed interface InferType {
     }
 
     data class Constraint(val constraint: InferType, val of: InferType) : InferType {
+        override val argument: InferType? get() = of.argument
         override fun toString() = "$constraint => $of"
         override fun contains(t: Id): Boolean = constraint.contains(t) || of.contains(t)
         override fun withNewIds(map: (Id)-> Id) = Constraint(constraint.withNewIds(map), of.withNewIds(map))
     }
 
     data class Alias(val name: String, val type: InferType) : InferType {
+        override val argument: InferType? get() = type.argument
         override fun toString(): String = name
         override fun contains(t: Id): Boolean = type.contains(t)
         override fun withNewIds(map: (Id)-> Id): InferType = Alias(name, type.withNewIds(map))

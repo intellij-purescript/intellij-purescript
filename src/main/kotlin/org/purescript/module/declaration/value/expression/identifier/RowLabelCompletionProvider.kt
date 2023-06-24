@@ -10,8 +10,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
-import org.purescript.inference.Scope
 import org.purescript.inference.InferType
+import org.purescript.inference.Scope
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.LabeledIndex
 import org.purescript.module.declaration.value.expression.RecordAccess
@@ -27,8 +28,8 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         // import Module as Alias
         val project = parameters.editor.project ?: return
         val element = parameters.position
-        val functionCallLabels = getRowTypeFromFunctionCall(element)?.labels
-        val literalLabels = getRowTypeFromLiteral(element)?.labels
+        val functionCallLabels = getRowTypeFromFunctionCall(element)?.mergedLabels()
+        val literalLabels = getRowTypeFromLiteral(element)?.mergedLabels()
         val recordAccessRowType = getRowTypeFromRecordAccessor(element)
         if (functionCallLabels != null) for ((label, type) in functionCallLabels) {
             if (result.isStopped) return
@@ -43,7 +44,7 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
                     .withInsertHandler(labelInsertHandler)
             )
         }
-        if (recordAccessRowType != null) for ((label, type) in recordAccessRowType.labels) {
+        if (recordAccessRowType != null) for ((label, type) in recordAccessRowType.mergedLabels()) {
             if (result.isStopped) return
             if (!result.prefixMatcher.prefixMatches(label)) continue
             result.addElement(
@@ -73,43 +74,13 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         }
     }
 
-    private fun getRowTypeFromRecordAccessor(element: PsiElement): InferType.RowList? =
+    private fun getRowTypeFromRecordAccessor(element: PsiElement): InferType.Row? =
         (element.parentOfType<RecordAccess>()?.record?.infer(Scope.new()) as? InferType.App)?.on as? InferType.RowList
 
-    private fun getRowTypeFromFunctionCall(element: PsiElement): InferType.RowList? {
+    private fun getRowTypeFromFunctionCall(element: PsiElement): InferType.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()
         val function = ((recordLiteral?.parent as? Argument)?.parent as? Call)?.function
-        val scope = Scope.new()
-        val functionType = function?.infer(scope)
-        return when (functionType) {
-            is InferType.Constraint -> {
-                val (constraint, expr) = functionType
-                val cleanExpr = (constraint as? InferType.App)
-                    ?.let { (f, union) ->
-                        (f as? InferType.App)?.let { (f, right) ->
-                            (f as? InferType.App)?.let { (f, left) ->
-                                if (
-                                    f == InferType.Constructor("Union") &&
-                                    right is InferType.RowList &&
-                                    left is InferType.RowList
-                                ) {
-                                    val merge = InferType.RowList(left.labels + right.labels)
-                                    scope.unify(merge, union)
-                                    scope.substitute(expr)
-                                } else expr
-                            }
-                        }
-                    } as? InferType.App
-                ((cleanExpr?.f
-                        as? InferType.App)?.on
-                        as? InferType.App)?.on
-                        as? InferType.RowList
-            }
-
-            is InferType.App -> ((functionType.f as? InferType.App)?.on as? InferType.App)?.on as? InferType.RowList
-            else -> null
-        }
-
+        return ((function?.unifyAndSubstitute()?.argument) as? InferType.App)?.on as? InferType.Row
     }
 
     private fun getRowTypeFromLiteral(element: PsiElement): InferType.RowList? {
