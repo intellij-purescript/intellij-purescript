@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import org.purescript.inference.Scope
-import org.purescript.inference.Type
+import org.purescript.inference.InferType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
@@ -45,7 +45,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
     }
 
     override fun getName(): String = qualifiedOperator.name
-    override fun infer(scope: Scope): Type = 
+    override fun infer(scope: Scope): InferType = 
         reference.resolve()?.infer(scope) ?: scope.newUnknown()
 
 

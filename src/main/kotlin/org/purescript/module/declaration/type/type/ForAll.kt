@@ -24,7 +24,7 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType {
 
     private val type get() = findNotNullChildByClass(PSType::class.java)
     private val typeVars get() = findChildrenByClass(TypeVarName::class.java)
-    override fun infer(scope: Scope): org.purescript.inference.Type {
+    override fun infer(scope: Scope): org.purescript.inference.InferType {
         for (n in typeVars.map { it.name }) {
             scope.lookupTypeVar(n)
         }

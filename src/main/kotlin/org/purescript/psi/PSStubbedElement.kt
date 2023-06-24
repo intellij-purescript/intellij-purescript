@@ -47,4 +47,6 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
     inline fun <reified T: PsiElement>addTyped(element: T): T {
         return add(element) as T
     }
+    
+    val typeId get() = module?.typeIdOf(this)
 }

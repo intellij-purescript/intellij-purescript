@@ -71,5 +71,5 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
     override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
-    override fun infer(scope: Scope): org.purescript.inference.Type = type!!.infer(scope)
+    override fun infer(scope: Scope): org.purescript.inference.InferType = type!!.infer(scope)
 }

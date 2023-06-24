@@ -13,10 +13,7 @@ import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
-import org.purescript.inference.Scope
-import org.purescript.inference.UnknownGenerator
-import org.purescript.inference.substitute
-import org.purescript.inference.unify
+import org.purescript.inference.*
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
@@ -439,17 +436,18 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             return scope
         }
     
-    val unknownGenerator = UnknownGenerator()
-    fun newUnknown(): org.purescript.inference.Type.Unknown = unknownGenerator.newUnknown()
-    val substitutions = mutableMapOf<org.purescript.inference.Type.Unknown, org.purescript.inference.Type>()
-    fun substitute(type: org.purescript.inference.Type): org.purescript.inference.Type = substitutions.substitute(type)
-    fun unify(x: org.purescript.inference.Type, y: org.purescript.inference.Type) = substitutions.unify(x, y)
-
-    fun inferApp(func: org.purescript.inference.Type, argument: org.purescript.inference.Type): org.purescript.inference.Type =
-        newUnknown()
-            .also { unify(func, org.purescript.inference.Type.function(argument, it)) }
+    val idGenerator = IdGenerator()
+    fun newId(): InferType.Id = idGenerator.newId()
+    val substitutions = mutableMapOf<InferType.Id, InferType>()
+    fun substitute(type: InferType): InferType = substitutions.substitute(type)
+    fun unify(x: InferType, y: InferType) = substitutions.unify(x, y)
+    val typeMap = mutableMapOf<PsiElement, InferType.Id>()
+    fun typeIdOf(descendant: PsiElement): InferType.Id = typeMap.getOrPut(descendant, ::newId)
+    fun inferApp(func: InferType, argument: InferType): InferType =
+        newId()
+            .also { unify(func, InferType.function(argument, it)) }
             .let(::substitute)
 
-    fun inferAccess(record: org.purescript.inference.Type, name: String): org.purescript.inference.Type =
-        newUnknown().also { unify(record, org.purescript.inference.Type.record(listOf(name to it))) }
+    fun inferAccess(record: InferType, name: String): InferType =
+        newId().also { unify(record, InferType.record(listOf(name to it))) }
 }

@@ -55,7 +55,7 @@ class Signature :
 
     override fun getReference(): PsiReference? =
         parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
-    override fun infer(scope: Scope): org.purescript.inference.Type {
+    override fun infer(scope: Scope): org.purescript.inference.InferType {
         return type.infer(scope)
     }
 }

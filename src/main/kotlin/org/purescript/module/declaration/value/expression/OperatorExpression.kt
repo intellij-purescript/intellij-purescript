@@ -7,14 +7,14 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
-import org.purescript.inference.Type
+import org.purescript.inference.InferType
 import org.purescript.module.declaration.fixity.PSFixity
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 import org.purescript.psi.PSPsiElement
 
 class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
     val tree get() = Tree.fromElement(this)
-    override fun infer(scope: Scope): Type {
+    override fun infer(scope: Scope): InferType {
         return tree!!.infer(scope)
     }
 
@@ -38,7 +38,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override fun ranges(): Sequence<TextRange> = sequenceOf(e.textRange)
             override val start: Int get() = e.startOffset
             override val end: Int get() = e.endOffset
-            override fun infer(scope: Scope): Type = e.infer(scope)
+            override fun infer(scope: Scope): InferType = e.infer(scope)
             override fun insertRight(other: Expression) = when {
                 other is PSExpressionOperator -> TmpLeftHand(this, other)
                 e is PSExpressionOperator -> TmpRightHand(e, Atom(other))
@@ -51,7 +51,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = o.startOffset
             override val end: Int get() = r.end
-            override fun infer(scope: Scope): Type = TODO("Tmp should not exist")
+            override fun infer(scope: Scope): InferType = TODO("Tmp should not exist")
         }
 
         data class TmpLeftHand(val l: Tree, val o: PSExpressionOperator) : Tree {
@@ -59,14 +59,14 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = l.start
             override val end: Int get() = o.endOffset
-            override fun infer(scope: Scope): Type = TODO("Tmp should not exist")
+            override fun infer(scope: Scope): InferType = TODO("Tmp should not exist")
         }
 
         data class Operator(val l: Tree, val o: PSExpressionOperator, val r: Tree) : Tree {
             override fun ranges() = l.ranges() + r.ranges() + sequenceOf(TextRange(start, end))
             override val start: Int get() = l.start
             override val end: Int get() = r.end
-            override fun infer(scope: Scope): Type = scope.inferApp(
+            override fun infer(scope: Scope): InferType = scope.inferApp(
                 scope.inferApp(o.infer(scope), l.infer(scope)),
                 r.infer(scope)
             )

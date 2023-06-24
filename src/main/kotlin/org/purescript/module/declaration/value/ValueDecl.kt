@@ -149,10 +149,10 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
         val binders = parameterList.parameterBinders
         return !binders.any { it !is VarBinder }
     }
-    override fun infer(scope: Scope): org.purescript.inference.Type {
+    override fun infer(scope: Scope): org.purescript.inference.InferType {
         val retType = value?.infer(scope) ?: scope.newUnknown()
         return parameters.foldRight(retType) { arg, ret -> 
-            org.purescript.inference.Type.function(arg.infer(scope), ret)
+            org.purescript.inference.InferType.function(arg.infer(scope), ret)
         }
     }
 }

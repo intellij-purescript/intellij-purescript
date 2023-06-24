@@ -155,7 +155,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
         ?: super.getUseScope()
 
-    override fun infer(scope: Scope): org.purescript.inference.Type {
+    override fun infer(scope: Scope): org.purescript.inference.InferType {
         val groupType = signature?.infer(scope) ?: scope.newUnknown()
         for (valueDeclaration in valueDeclarations) {
             val valueType = valueDeclaration.infer(scope)

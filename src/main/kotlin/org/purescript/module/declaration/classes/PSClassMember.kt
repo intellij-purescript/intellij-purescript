@@ -101,5 +101,5 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
         parentOfType<ClassDecl>()?.docComments ?: emptyList()
     }
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Function
-    override fun infer(scope: Scope): org.purescript.inference.Type = type.infer(scope)
+    override fun infer(scope: Scope): org.purescript.inference.InferType = type.infer(scope)
 }

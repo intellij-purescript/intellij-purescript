@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.inference.Scope
-import org.purescript.inference.Type
+import org.purescript.inference.InferType
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.LabeledIndex
 import org.purescript.module.declaration.value.expression.RecordAccess
@@ -73,48 +73,48 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         }
     }
 
-    private fun getRowTypeFromRecordAccessor(element: PsiElement): Type.Row? =
-        (element.parentOfType<RecordAccess>()?.record?.infer(Scope.new()) as? Type.App)?.on as? Type.Row
+    private fun getRowTypeFromRecordAccessor(element: PsiElement): InferType.Row? =
+        (element.parentOfType<RecordAccess>()?.record?.infer(Scope.new()) as? InferType.App)?.on as? InferType.Row
 
-    private fun getRowTypeFromFunctionCall(element: PsiElement): Type.Row? {
+    private fun getRowTypeFromFunctionCall(element: PsiElement): InferType.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()
         val function = ((recordLiteral?.parent as? Argument)?.parent as? Call)?.function
         val scope = Scope.new()
         val functionType = function?.infer(scope)
         return when (functionType) {
-            is Type.Constraint -> {
+            is InferType.Constraint -> {
                 val (constraint, expr) = functionType
-                val cleanExpr = (constraint as? Type.App)
+                val cleanExpr = (constraint as? InferType.App)
                     ?.let { (f, union) ->
-                        (f as? Type.App)?.let { (f, right) ->
-                            (f as? Type.App)?.let { (f, left) ->
+                        (f as? InferType.App)?.let { (f, right) ->
+                            (f as? InferType.App)?.let { (f, left) ->
                                 if (
-                                    f == Type.Constructor("Union") &&
-                                    right is Type.Row &&
-                                    left is Type.Row
+                                    f == InferType.Constructor("Union") &&
+                                    right is InferType.Row &&
+                                    left is InferType.Row
                                 ) {
-                                    val merge = Type.Row(left.labels + right.labels)
+                                    val merge = InferType.Row(left.labels + right.labels)
                                     scope.unify(merge, union)
                                     scope.substitute(expr)
                                 } else expr
                             }
                         }
-                    } as? Type.App
+                    } as? InferType.App
                 ((cleanExpr?.f
-                        as? Type.App)?.on
-                        as? Type.App)?.on
-                        as? Type.Row
+                        as? InferType.App)?.on
+                        as? InferType.App)?.on
+                        as? InferType.Row
             }
 
-            is Type.App -> ((functionType.f as? Type.App)?.on as? Type.App)?.on as? Type.Row
+            is InferType.App -> ((functionType.f as? InferType.App)?.on as? InferType.App)?.on as? InferType.Row
             else -> null
         }
 
     }
 
-    private fun getRowTypeFromLiteral(element: PsiElement): Type.Row? {
+    private fun getRowTypeFromLiteral(element: PsiElement): InferType.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()?.infer(Scope.new())
-        return (recordLiteral as? Type.App)?.on as? Type.Row
+        return (recordLiteral as? InferType.App)?.on as? InferType.Row
     }
 
 }

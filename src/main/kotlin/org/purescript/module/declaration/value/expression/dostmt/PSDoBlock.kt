@@ -3,7 +3,7 @@ package org.purescript.module.declaration.value.expression.dostmt
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.inference.Scope
-import org.purescript.inference.Type
+import org.purescript.inference.InferType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
@@ -20,7 +20,7 @@ class PSDoBlock(node: ASTNode) : PSPsiElement(node), Expression {
                 .asSequence()
                 .flatMap { it.valueDeclarationGroups.asSequence() }
 
-    override fun infer(scope: Scope): Type {
+    override fun infer(scope: Scope): InferType {
         TODO("Implement infer for Do block")
     }
 }

@@ -17,4 +17,5 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
      * @return the [Module] containing this element
      */
     val module: Module? get() = this.parentOfType(true)
+    val typeId get() = module?.typeIdOf(this)
 }

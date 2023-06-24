@@ -5,7 +5,7 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
-import org.purescript.inference.Type
+import org.purescript.inference.InferType
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -88,6 +88,6 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         }
     }
 
-    override fun infer(scope: Scope): Type = 
+    override fun infer(scope: Scope): InferType = 
         (reference.resolve() as? Inferable)?.infer(scope) ?: scope.newUnknown()
 }

@@ -101,7 +101,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         return factory.createParenthesis(expression)?.parentsOfType<Expression>()?.lastOrNull()!!
     }
 
-    override fun infer(scope: Scope): org.purescript.inference.Type = 
+    override fun infer(scope: Scope): org.purescript.inference.InferType = 
         (reference.resolve() as? Inferable)?.infer(scope) ?: scope.newUnknown()
 
     // Todo clean this up

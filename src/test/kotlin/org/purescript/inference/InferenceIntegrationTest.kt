@@ -27,15 +27,15 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val x = Main.getValueDeclarationGroupByName("x")
         val int = Main.getValueDeclarationGroupByName("int")
         TestCase.assertEquals(
-            Type.function(fScope.lookup("a"), fScope.lookup("a")),
+            InferType.function(fScope.lookup("a"), fScope.lookup("a")),
             f.infer(fScope)
         )
         TestCase.assertEquals(
-            Type.function(Type.Int, Type.Int),
+            InferType.function(InferType.Int, InferType.Int),
             int.infer(Scope.new())
         )
         val xValue = x.valueDeclarations.single().value!!
-        TestCase.assertEquals(Type.Int, xValue.infer(xScope))
+        TestCase.assertEquals(InferType.Int, xValue.infer(xScope))
     }
     fun `test primitives`() {
         val Main = myFixture.configureByText(
