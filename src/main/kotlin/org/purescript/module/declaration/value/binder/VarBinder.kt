@@ -27,4 +27,5 @@ class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner, UsedEleme
         nameIdentifier.replace(newName)
         return this
     }
+    override fun unify() { /*is its own identifier*/}
 }

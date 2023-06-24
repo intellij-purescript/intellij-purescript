@@ -14,8 +14,10 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.prevLeaf
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.features.DocCommentOwner
+import org.purescript.inference.InferType.Companion.function
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
+import org.purescript.inference.Unifiable
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
@@ -32,7 +34,8 @@ import javax.swing.Icon
 class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     DocCommentOwner,
     ValueOwner,
-    Inferable{
+    Inferable,
+    Unifiable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ValueDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ValueDecl>("ValueDecl") {
         override fun createPsi(node: ASTNode) = ValueDecl(node)
@@ -151,8 +154,12 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     }
     override fun infer(scope: Scope): org.purescript.inference.InferType {
         val retType = value?.infer(scope) ?: scope.newUnknown()
-        return parameters.foldRight(retType) { arg, ret -> 
-            org.purescript.inference.InferType.function(arg.infer(scope), ret)
-        }
+        return parameters.foldRight(retType) { arg, ret -> function(arg.infer(scope), ret) }
+    }
+
+    override fun unify() {
+        unify(parameters.foldRight(value?.substitutedType ?: return) { arg, ret ->
+            arg.substitutedType?.let{ function(it, ret) } ?: ret
+        })
     }
 }

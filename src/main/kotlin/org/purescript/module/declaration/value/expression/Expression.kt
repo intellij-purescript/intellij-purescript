@@ -3,12 +3,13 @@ package org.purescript.module.declaration.value.expression
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
+import org.purescript.inference.HasTypeId
 import org.purescript.inference.Inferable
 import org.purescript.module.Module
 import org.purescript.module.declaration.value.Similar
 import org.purescript.psi.PSPsiFactory
 
-interface Expression : PsiElement, Similar, Inferable {
+interface Expression : PsiElement, Similar, Inferable, HasTypeId {
     val expressionAtoms
         get() = sequence {
             var steps = children.asList()

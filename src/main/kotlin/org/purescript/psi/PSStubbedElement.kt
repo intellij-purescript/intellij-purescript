@@ -7,11 +7,14 @@ import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.util.parentOfType
+import org.purescript.inference.HasTypeId
+import org.purescript.inference.InferType
 import org.purescript.module.Module
 
 abstract class PSStubbedElement<Stub : StubElement<*>> :
     StubBasedPsiElement<Stub>,
-    StubBasedPsiElementBase<Stub> {
+    StubBasedPsiElementBase<Stub>,
+    HasTypeId {
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
 
@@ -48,5 +51,9 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
         return add(element) as T
     }
     
-    val typeId get() = module?.typeIdOf(this)
+    override val typeId get() = module?.typeIdOf(this)
+    override val substitutedType: InferType? get() = typeId?.let {  module?.substitute(it)}
+    fun unify(other: InferType) {
+        module?.unify(typeId ?: return, other )
+    }
 }

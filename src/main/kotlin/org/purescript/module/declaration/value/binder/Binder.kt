@@ -6,16 +6,18 @@ import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
+import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
-import org.purescript.inference.InferType
+import org.purescript.inference.Unifiable
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiElement
 
 open class Binder(node: ASTNode) : PSPsiElement(node),
     Similar,
-    Inferable {
+    Inferable,
+    Unifiable {
     val descendantBinders
         get(): List<Binder> =
             binderChildren.flatMap { it.descendantBinders } + listOf(this)
@@ -25,6 +27,10 @@ open class Binder(node: ASTNode) : PSPsiElement(node),
         LocalSearchScope(parentOfType<ValueNamespace>()?.scopes ?: arrayOf(containingFile))
 
     override fun infer(scope: Scope): InferType {
+        TODO("Not yet implemented")
+    }
+
+    override fun unify() {
         TODO("Not yet implemented")
     }
 }

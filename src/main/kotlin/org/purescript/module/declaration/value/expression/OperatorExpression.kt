@@ -5,9 +5,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.childrenOfType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
-import org.purescript.inference.InferType
 import org.purescript.module.declaration.fixity.PSFixity
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 import org.purescript.psi.PSPsiElement

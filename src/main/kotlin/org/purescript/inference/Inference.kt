@@ -193,8 +193,13 @@ interface Inferable {
     fun infer(scope: Scope): InferType
 }
 
-interface ScopeOwner {
-    val scope: Scope
+interface HasTypeId {
+    val typeId: InferType.Id?
+    val substitutedType: InferType?
+}
+
+interface Unifiable {
+    fun unify(): Unit
 }
 
 class RecursiveTypeException(t: InferType) : Exception("$t is recursive")
