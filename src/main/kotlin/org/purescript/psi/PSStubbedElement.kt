@@ -52,8 +52,10 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
     }
     
     override val typeId get() = module?.typeIdOf(this)
-    override val substitutedType: InferType? get() = typeId?.let {  module?.substitute(it)}
+    override val substitutedType: InferType get() = 
+        typeId?.let {  module?.substitute(it)} 
+            ?: error("failed to substitute type for $this")
     fun unify(other: InferType) {
-        module?.unify(typeId ?: return, other )
+        module?.unify(substitutedType ?: return, other )
     }
 }

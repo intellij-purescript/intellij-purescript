@@ -2,7 +2,9 @@ package org.purescript.module.declaration.value.expression.identifier
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
+import org.purescript.inference.InferType
 import org.purescript.inference.Scope
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
@@ -17,4 +19,12 @@ class Call(node: ASTNode) : PSPsiElement(node), Expression {
         function!!.infer(scope),
         argument!!.infer(scope)
     )
+
+    override fun unify() {
+        val functionType = function?.unifyAndSubstitute() ?: return
+        val argumentType = argument?.unifyAndSubstitute() ?: return 
+        val returnType = substitutedType ?: return
+        val callType = InferType.function(argumentType, returnType)
+        unify(functionType, callType)
+    }
 }

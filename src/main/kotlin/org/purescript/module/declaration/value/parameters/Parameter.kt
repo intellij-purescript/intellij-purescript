@@ -13,5 +13,7 @@ class Parameter(node: ASTNode) : PSPsiElement(node), Inferable, Unifiable {
     val parameterBinders get() = childrenOfType<Binder>()
     val binder get() = parameterBinders.first()
     override fun infer(scope: Scope): InferType = binder.infer(scope)
-    override fun unify() { binder.unify() }
+    override fun unify() { 
+        unify(binder.substitutedType)
+    }
 }

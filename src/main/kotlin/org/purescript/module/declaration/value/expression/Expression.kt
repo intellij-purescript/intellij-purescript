@@ -5,11 +5,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.Inferable
+import org.purescript.inference.Unifiable
 import org.purescript.module.Module
 import org.purescript.module.declaration.value.Similar
 import org.purescript.psi.PSPsiFactory
 
-interface Expression : PsiElement, Similar, Inferable, HasTypeId {
+interface Expression : PsiElement, Similar, Inferable, HasTypeId, Unifiable {
     val expressionAtoms
         get() = sequence {
             var steps = children.asList()
@@ -31,5 +32,9 @@ interface Expression : PsiElement, Similar, Inferable, HasTypeId {
     fun withParenthesis(): PSParens? {
         val factory = project.service<PSPsiFactory>()
         return factory.createParenthesis(text)
+    }
+
+    override fun unify() {
+        TODO("Not yet implemented")
     }
 }

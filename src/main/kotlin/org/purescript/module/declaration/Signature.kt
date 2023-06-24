@@ -7,6 +7,8 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
+import org.purescript.inference.Unifiable
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
@@ -23,7 +25,8 @@ import org.purescript.psi.PSStubbedElement
  */
 class Signature :
     PSStubbedElement<Signature.Stub>,
-    Inferable {
+    Inferable,
+    Unifiable{
 
     class Stub(val name: String, p: StubElement<*>?) : AStub<Signature>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, Signature>("Signature") {
@@ -57,5 +60,9 @@ class Signature :
         parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
     override fun infer(scope: Scope): org.purescript.inference.InferType {
         return type.infer(scope)
+    }
+
+    override fun unify() {
+        type.unifyAndSubstitute()?.let { unify(it) }
     }
 }

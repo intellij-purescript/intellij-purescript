@@ -1,8 +1,10 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
-import org.purescript.inference.Scope
+import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
+import org.purescript.inference.Scope
+import org.purescript.inference.Unifiable
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
@@ -41,5 +43,23 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
             is TypeDecl -> ref.type?.infer(scope)
             else -> null
         } ?: InferType.Constructor(name)
+    }
+
+    override fun unify() {
+        unify(when (name) {
+            "Int" -> InferType.Int
+            "Number" -> InferType.Number
+            "String" -> InferType.String
+            "Boolean" -> InferType.Boolean
+            "Char" -> InferType.Char
+            "Function" -> InferType.Function
+            else -> {
+                val ref = reference.resolve()
+                when {
+                    ref is HasTypeId && ref is Unifiable -> ref.also { it.unify() }.substitutedType 
+                    else -> InferType.Constructor(name)
+                }
+            }
+        })
     }
 }

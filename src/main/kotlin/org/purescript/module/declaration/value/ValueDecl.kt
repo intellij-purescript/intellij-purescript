@@ -18,6 +18,7 @@ import org.purescript.inference.InferType.Companion.function
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
 import org.purescript.inference.Unifiable
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression
@@ -158,8 +159,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     }
 
     override fun unify() {
-        unify(parameters.foldRight(value?.substitutedType ?: return) { arg, ret ->
-            arg.substitutedType?.let{ function(it, ret) } ?: ret
-        })
+        unify(parameters.foldRight(value?.unifyAndSubstitute() ?: return) { parameter, ret -> 
+                function(parameter.unifyAndSubstitute(), ret) 
+            })
     }
 }

@@ -6,6 +6,9 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
 import org.purescript.ide.formatting.ImportedData
+import org.purescript.inference.HasTypeId
+import org.purescript.inference.Unifiable
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
@@ -22,7 +25,7 @@ import org.purescript.psi.PSStubbedElement
  * type GlobalEvents r = ( onContextMenu :: Event | r )
  * ```
  */
-class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace {
+class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace, Unifiable, HasTypeId {
     class Stub(val name: String, p: StubElement<*>?) : AStub<TypeDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isExported
@@ -65,4 +68,7 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
 
     override fun getTextOffset(): Int = identifier.textOffset
+    override fun unify() {
+        unify(type?.unifyAndSubstitute() ?: return)
+    }
 }

@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.parentOfType
+import org.purescript.inference.Unifiable
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
@@ -14,7 +15,7 @@ sealed interface PSTypeVarBinding
 
 class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
     PSTypeVarBinding,
-    PsiNameIdentifierOwner {
+    PsiNameIdentifierOwner, Unifiable {
     class Stub(val name:String, p: StubElement<*>?) : AStub<TypeVarName>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, TypeVarName>("TypeVarName") {
         override fun createPsi(node: ASTNode) = TypeVarName(node)
@@ -37,6 +38,10 @@ class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
         val identifier = factory.createIdentifier(name) ?: return null
         nameIdentifier.replace(identifier)
         return this
+    }
+
+    override fun unify() {
+        substitutedType
     }
 }
 

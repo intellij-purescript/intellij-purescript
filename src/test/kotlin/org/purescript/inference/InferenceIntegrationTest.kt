@@ -7,8 +7,6 @@ import org.purescript.getValueDeclarationGroupByName
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
     fun `test everything`() {
-        val xScope = Scope.new()
-        val fScope = Scope.new()
         val Main = myFixture.configureByText(
             "Main.purs",
             """
@@ -23,19 +21,12 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val f = Main.getValueDeclarationGroupByName("f")
-        val x = Main.getValueDeclarationGroupByName("x")
-        val int = Main.getValueDeclarationGroupByName("int")
-        TestCase.assertEquals(
-            InferType.function(fScope.lookup("a"), fScope.lookup("a")),
-            f.infer(fScope)
-        )
-        TestCase.assertEquals(
-            InferType.function(InferType.Int, InferType.Int),
-            int.infer(Scope.new())
-        )
-        val xValue = x.valueDeclarations.single().value!!
-        TestCase.assertEquals(InferType.Int, xValue.infer(xScope))
+        val f = Main.getValueDeclarationGroupByName("f").unifyAndSubstitute()
+        TestCase.assertEquals(InferType.function(InferType.Id(0), InferType.Id(0)).toString(), "$f")
+        val int = Main.getValueDeclarationGroupByName("int").unifyAndSubstitute()
+        TestCase.assertEquals(InferType.function(InferType.Int, InferType.Int), int)
+        val x = Main.getValueDeclarationGroupByName("x").unifyAndSubstitute()
+        TestCase.assertEquals(InferType.Int, x)
     }
     fun `test primitives`() {
         val Main = myFixture.configureByText(
@@ -46,9 +37,10 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | int = 42
                 | number = 42.0
                 | string = "Hello World"
-                | boolean = True
+                | boolean = true
             """.trimMargin()
         )
+        Main.getModule().unify()
         val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
         val number = Main.getValueDeclarationGroupByName("number").infer(Scope.new())
         val string = Main.getValueDeclarationGroupByName("string").infer(Scope.new())
@@ -68,7 +60,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 |  { int: 42
                 |  , number: 42.0
                 |  , string: "Hello World"
-                |  , boolean: True
+                |  , boolean: true
                 |  }
                 | int = record.int
                 | 
@@ -81,16 +73,15 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val record = Main.getValueDeclarationGroupByName("record").infer(Scope.new())
+        val record = Main.getValueDeclarationGroupByName("record").unifyAndSubstitute()
         TestCase.assertEquals(
             "{ int::Int, number::Number, string::String, boolean::Boolean }",
             record.toString()
         )
-        val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
+        val int = Main.getValueDeclarationGroupByName("int").unifyAndSubstitute()
         TestCase.assertEquals("Int", int.toString())
 
-        val moduleScope = Main.getModule().typeCheck
-        val checkUserType = moduleScope.lookup("checkUser")
+        val checkUserType = Main.getValueDeclarationGroupByName("checkUser").unifyAndSubstitute()
         TestCase.assertEquals("{ age::Int, name::String } -> Int", "$checkUserType")
 
     }
@@ -109,13 +100,14 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | int = eq 1
             """.trimMargin()
         )
-        val f = Main.getValueDeclarationGroupByName("f").infer(Scope.new())
-        TestCase.assertEquals("u1 -> u1", f.toString())
-        
-        val eq = Main.getValueDeclarationGroupByName("eq").infer(Scope.new())
-        TestCase.assertEquals("Eq u1 => u1 -> u1", eq.toString())
-        
-        val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
+        Main.getModule().unify()
+        val f = Main.getValueDeclarationGroupByName("f").substitutedType
+        TestCase.assertEquals("u0 -> u0", f.toString())
+
+        val eq = Main.getValueDeclarationGroupByName("eq").substitutedType
+        TestCase.assertEquals("Eq u7 => u7 -> u7", eq.toString())
+
+        val int = Main.getValueDeclarationGroupByName("int").substitutedType
         TestCase.assertEquals("Int", int.toString())
     }
 }

@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.purescript.inference.InferType
 import org.purescript.inference.Scope
 import org.purescript.module.declaration.value.Similar
 import org.purescript.name.PSIdentifier
@@ -28,4 +29,6 @@ class VarBinder(node: ASTNode) : Binder(node), PsiNameIdentifierOwner, UsedEleme
         return this
     }
     override fun unify() { /*is its own identifier*/}
+    override val substitutedType: InferType
+        get() = super.substitutedType
 }

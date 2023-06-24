@@ -1,8 +1,9 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
-import org.purescript.inference.Scope
 import org.purescript.inference.InferType
+import org.purescript.inference.Scope
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.psi.PSPsiElement
 
 class TypeApp(node: ASTNode) : PSPsiElement(node), PSType {
@@ -10,5 +11,10 @@ class TypeApp(node: ASTNode) : PSPsiElement(node), PSType {
     override fun infer(scope: Scope): InferType {
         val (kind, argument) = types
         return kind.infer(scope).app(argument.infer(scope))
+    }
+
+    override fun unify() {
+        val (kind, argument) = types
+        unify(kind.unifyAndSubstitute().app(argument.unifyAndSubstitute()))
     }
 }

@@ -5,23 +5,28 @@ sealed interface InferType {
     value class Id(val id: Int) : InferType {
         override fun contains(t: Id) = t == this
         override fun toString(): String = "u$id"
+        override fun withNewIds(map: (Id)-> Id): InferType = map(this)
     }
 
     @JvmInline
     value class Constructor(val name: String) : InferType {
         override fun contains(t: Id): Boolean = false
         override fun toString(): String = name
+        override fun withNewIds(map: (Id)-> Id): InferType = this
     }
 
     @JvmInline
     value class Prim(val name: String) : InferType {
         override fun contains(t: Id): Boolean = false
+        override fun withNewIds(map: (Id)-> Id): InferType = this
+
         override fun toString(): String = name
     }
 
     data class App(val f: InferType, val on: InferType) : InferType {
         private val isFunction get() = f is App && f.f == Function
         override fun contains(t: Id): Boolean = f.contains(t) || on.contains(t)
+        override fun withNewIds(map: (Id)-> Id): InferType = App(f.withNewIds(map), on.withNewIds(map))
         override fun toString() = when {
             f == Record && on is Row -> on.labels.joinToString(", ", "{ ", " }") {
                 "${it.first}::${it.second}"
@@ -40,20 +45,28 @@ sealed interface InferType {
         override fun toString() = labels.joinToString(",", "(", ")") {
             "${it.first}::${it.second}"
         }
+
+        override fun withNewIds(map: (Id)-> Id): InferType =
+            Row(labels.map { it.first to it.second.withNewIds(map) })
     }
 
     data class Constraint(val constraint: InferType, val of: InferType) : InferType {
-        override fun contains(t: Id): Boolean = constraint.contains(t) || of.contains(t)
         override fun toString() = "$constraint => $of"
+        override fun contains(t: Id): Boolean = constraint.contains(t) || of.contains(t)
+        override fun withNewIds(map: (Id)-> Id) = 
+            Constraint(constraint.withNewIds(map), of.withNewIds(map))
+        
     }
 
     data class Alias(val name: String, val type: InferType) : InferType {
-        override fun contains(t: Id): Boolean = type.contains(t)
         override fun toString(): String = name
+        override fun contains(t: Id): Boolean = type.contains(t)
+        override fun withNewIds(map: (Id)-> Id): InferType = Alias(name, type.withNewIds(map))
     }
 
     fun app(other: InferType): App = App(this, other)
     fun contains(t: Id): Boolean
+    fun withNewIds(map: (Id)-> Id): InferType
 
     companion object {
         val Char = Prim("Char")
@@ -195,11 +208,15 @@ interface Inferable {
 
 interface HasTypeId {
     val typeId: InferType.Id?
-    val substitutedType: InferType?
+    val substitutedType: InferType
 }
 
 interface Unifiable {
     fun unify(): Unit
+}
+fun <E> E.unifyAndSubstitute(): InferType where E: Unifiable, E: HasTypeId {
+    this.unify()
+    return this.substitutedType 
 }
 
 class RecursiveTypeException(t: InferType) : Exception("$t is recursive")

@@ -5,8 +5,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentsOfType
-import org.purescript.inference.Scope
+import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
+import org.purescript.inference.Scope
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiElement
@@ -30,5 +31,9 @@ class TypeIdentifier(node: ASTNode) : PSPsiElement(node), PSType {
             oldName.replace(newName)
             return element
         }
+    }
+
+    override fun unify() {
+        (reference.resolve() as? HasTypeId)?.substitutedType?.let { unify(it) }
     }
 }

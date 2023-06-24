@@ -38,7 +38,7 @@ import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 
 class Module : PsiNameIdentifierOwner, DocCommentOwner,
-    PSStubbedElement<Module.Stub>, Importable, ValueOwner {
+    PSStubbedElement<Module.Stub>, Importable, ValueOwner, Unifiable {
     object Type : PSElementType.WithPsiAndStub<Stub, Module>("Module") {
         override fun createPsi(node: ASTNode) = Module(node)
         override fun createPsi(stub: Stub) = Module(stub, this)
@@ -443,11 +443,11 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     fun unify(x: InferType, y: InferType) = substitutions.unify(x, y)
     val typeMap = mutableMapOf<PsiElement, InferType.Id>()
     fun typeIdOf(descendant: PsiElement): InferType.Id = typeMap.getOrPut(descendant, ::newId)
-    fun inferApp(func: InferType, argument: InferType): InferType =
-        newId()
-            .also { unify(func, InferType.function(argument, it)) }
-            .let(::substitute)
-
-    fun inferAccess(record: InferType, name: String): InferType =
-        newId().also { unify(record, InferType.record(listOf(name to it))) }
+    fun replaceMap(): (InferType.Id)->InferType.Id {
+        val map = mutableMapOf<InferType.Id, InferType.Id>()
+        return { map.getOrPut(it, ::newId) }
+    }
+    override fun unify() {
+        for (valueGroup in valueGroups) unify(valueGroup.unifyAndSubstitute() ?: continue)
+    }
 }
