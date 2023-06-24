@@ -28,7 +28,7 @@ sealed interface InferType {
         override fun contains(t: Id): Boolean = f.contains(t) || on.contains(t)
         override fun withNewIds(map: (Id)-> Id): InferType = App(f.withNewIds(map), on.withNewIds(map))
         override fun toString() = when {
-            f == Record && on is Row -> on.labels.joinToString(", ", "{ ", " }") {
+            f == Record && on is RowList -> on.labels.joinToString(", ", "{ ", " }") {
                 "${it.first}::${it.second}"
             }
 
@@ -40,22 +40,28 @@ sealed interface InferType {
         }
     }
 
-    data class Row(val labels: List<Pair<String, InferType>>) : InferType {
+    interface Row: InferType {
+        override fun withNewIds(map: (Id)-> Id): Row
+        fun mergedLabels(): List<Pair<String, InferType>>
+    }
+    data class RowList(val labels: List<Pair<String, InferType>>) : Row {
         override fun contains(t: Id) = labels.any { it.second.contains(t) }
-        override fun toString() = labels.joinToString(",", "(", ")") {
-            "${it.first}::${it.second}"
-        }
+        override fun toString() = 
+            labels.joinToString(",", "(", ")") { "${it.first}::${it.second}" }
 
-        override fun withNewIds(map: (Id)-> Id): InferType =
-            Row(labels.map { it.first to it.second.withNewIds(map) })
+        override fun withNewIds(map: (Id)-> Id): RowList = RowList(labels.map { it.first to it.second.withNewIds(map) })
+        override fun mergedLabels(): List<Pair<String, InferType>> = labels
+    }
+    data class RowMerge(val left: Row, val right:Row): Row {
+        override fun contains(t: Id): Boolean = left.contains(t) || right.contains(t)
+        override fun withNewIds(map: (Id) -> Id): RowMerge = RowMerge(left.withNewIds(map), right.withNewIds(map))
+        override fun mergedLabels(): List<Pair<String, InferType>> = left.mergedLabels() + right.mergedLabels()
     }
 
     data class Constraint(val constraint: InferType, val of: InferType) : InferType {
         override fun toString() = "$constraint => $of"
         override fun contains(t: Id): Boolean = constraint.contains(t) || of.contains(t)
-        override fun withNewIds(map: (Id)-> Id) = 
-            Constraint(constraint.withNewIds(map), of.withNewIds(map))
-        
+        override fun withNewIds(map: (Id)-> Id) = Constraint(constraint.withNewIds(map), of.withNewIds(map))
     }
 
     data class Alias(val name: String, val type: InferType) : InferType {
@@ -78,7 +84,7 @@ sealed interface InferType {
         val Array = Prim("Array")
         val Record = Prim("Record")
         fun function(parameter: InferType, ret: InferType): App = Function.app(parameter).app(ret)
-        fun record(labels: List<Pair<String, InferType>>) = Record.app(Row(labels))
+        fun record(labels: List<Pair<String, InferType>>) = Record.app(RowList(labels))
     }
 }
 
@@ -95,9 +101,14 @@ fun Map<InferType.Id, InferType>.substitute(t: InferType): InferType = when (t) 
         } ?: t
 
     is InferType.App -> InferType.App(substitute(t.f), substitute(t.on))
-    is InferType.Row -> InferType.Row(t.labels.map { it.first to substitute(it.second) })
     is InferType.Constraint -> InferType.Constraint(substitute(t.constraint), substitute(t.of))
     is InferType.Alias -> InferType.Alias(t.name, substitute(t.type))
+    is InferType.RowList -> InferType.RowList(t.labels.map { it.first to substitute(it.second) })
+    is InferType.RowMerge -> InferType.RowMerge(
+            substitute(t.left) as InferType.Row,
+            substitute(t.right) as InferType.Row
+    )
+    is InferType.Row -> error("Should be unreachable")
 }
 fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
     val sx = substitute(x)
@@ -112,8 +123,9 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
         }
 
         sx is InferType.Row && sy is InferType.Row -> {
-            for ((xname, xtype) in sx.labels) {
-                for ((yname, ytype) in sy.labels) {
+            val syLabels = sy.mergedLabels()
+            for ((xname, xtype) in sx.mergedLabels()) {
+                for ((yname, ytype) in syLabels) {
                     if (xname == yname) unify(xtype, ytype)
                 }
             }

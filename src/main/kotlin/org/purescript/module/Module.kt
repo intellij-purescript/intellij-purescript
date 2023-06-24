@@ -448,6 +448,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         return { map.getOrPut(it, ::newId) }
     }
     override fun unify() {
-        for (valueGroup in valueGroups) unify(valueGroup.unifyAndSubstitute() ?: continue)
+        for (valueGroup in valueGroups) unify(valueGroup.unifyAndSubstitute())
     }
 }

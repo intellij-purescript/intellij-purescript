@@ -169,7 +169,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
 
     override fun unify() {
         signature?.unifyAndSubstitute()?.let(::unify)
-            ?: valueDeclarations.forEach { it.unifyAndSubstitute()?.let(::unify) }
+            ?: valueDeclarations.forEach { it.unifyAndSubstitute().let(::unify) }
     }
 
 }

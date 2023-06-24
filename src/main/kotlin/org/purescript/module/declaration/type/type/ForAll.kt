@@ -36,7 +36,7 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType, TypeNamespace {
 
     override fun unify() {
         typeVars.forEach { it.unify() }
-        type.unifyAndSubstitute()?.let { unify(it) }
+        type.unifyAndSubstitute().let { unify(it) }
     }
 
     override val typeNames: Sequence<PsiNamedElement> get() = typeVars.asSequence()

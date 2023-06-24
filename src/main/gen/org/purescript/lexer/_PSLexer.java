@@ -34,7 +34,7 @@ class _PSLexer implements FlexLexer {
    *                  at the beginning of a line
    * l is of the form l = 2*k, k a non negative integer
    */
-  private static final int ZZ_LEXSTATE[] = { 
+  private static final int[] ZZ_LEXSTATE = { 
      0,  0,  1,  1,  2,  2,  3, 3
   };
 
@@ -48,7 +48,7 @@ class _PSLexer implements FlexLexer {
   }
 
   /* The ZZ_CMAP_Z table has 4352 entries */
-  static final char ZZ_CMAP_Z[] = zzUnpackCMap(
+  static final char[] ZZ_CMAP_Z = zzUnpackCMap(
     "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1\17\1"+
     "\20\1\21\1\22\1\23\1\24\1\21\1\25\1\26\1\27\1\30\1\31\1\32\1\33\1\34\1\35"+
     "\1\36\1\37\1\40\1\41\1\42\1\43\2\44\1\45\1\44\1\46\1\44\1\47\1\50\1\51\1\52"+
@@ -64,7 +64,7 @@ class _PSLexer implements FlexLexer {
     "\71\2\21\1\173\u0b06\71\1\174\u02fe\71");
 
   /* The ZZ_CMAP_Y table has 8000 entries */
-  static final char ZZ_CMAP_Y[] = zzUnpackCMap(
+  static final char[] ZZ_CMAP_Y = zzUnpackCMap(
     "\2\0\1\1\1\2\4\0\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1"+
     "\17\1\20\1\21\1\22\1\23\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\0\1\33\6\0\1"+
     "\34\1\35\1\36\1\37\1\40\1\41\1\42\1\43\5\44\1\45\1\44\1\46\1\47\4\50\1\51"+
@@ -196,7 +196,7 @@ class _PSLexer implements FlexLexer {
     "\0\15\65\1\135\2\0\67\65\1\122\140\65\1\122\27\0\7\65\1\122\70\0\74\65\4\0");
 
   /* The ZZ_CMAP_A table has 688 entries */
-  static final char ZZ_CMAP_A[] = zzUnpackCMap(
+  static final char[] ZZ_CMAP_A = zzUnpackCMap(
     "\5\0\1\1\1\71\1\146\2\145\2\0\1\67\1\2\1\22\1\2\1\11\1\2\1\31\1\6\1\140\1"+
     "\141\1\2\1\30\1\137\1\27\1\24\1\2\1\117\1\55\1\56\1\57\1\60\2\21\1\135\1\12"+
     "\1\126\1\131\1\132\1\124\1\121\1\122\2\2\1\52\1\33\1\42\1\54\1\26\1\40\1\46"+
@@ -716,7 +716,7 @@ class _PSLexer implements FlexLexer {
   }
 
   /** the input device */
-  private java.io.Reader zzReader;
+  private final java.io.Reader zzReader;
 
   /** the current state of the DFA */
   private int zzState;
@@ -919,8 +919,6 @@ class _PSLexer implements FlexLexer {
   private void zzDoEOF() {
     if (!zzEOFDone) {
       zzEOFDone = true;
-    
-return;
 
 
     }

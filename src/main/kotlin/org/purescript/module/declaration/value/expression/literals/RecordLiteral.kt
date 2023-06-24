@@ -14,12 +14,12 @@ class RecordLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
         get() = super.expressions + labels.asSequence().flatMap { it.expressions }
     val labels get() = childrenOfType<RecordLabel>()
     override fun infer(scope: Scope): InferType {
-        return InferType.Record.app(InferType.Row(labels.mapNotNull { 
+        return InferType.Record.app(InferType.RowList(labels.mapNotNull { 
             (it.name ?: return@mapNotNull null) to (it.expression?.infer(scope) ?: scope.newUnknown())
         }))
     }
     override fun unify() {
-        unify(InferType.Record.app(InferType.Row(labels.mapNotNull { 
+        unify(InferType.Record.app(InferType.RowList(labels.mapNotNull { 
             val name = it.name ?: return@mapNotNull null
             val expression = it.expression?.unifyAndSubstitute() ?: return@mapNotNull null
             name to expression

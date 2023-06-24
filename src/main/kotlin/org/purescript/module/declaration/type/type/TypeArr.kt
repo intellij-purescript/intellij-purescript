@@ -15,8 +15,8 @@ class TypeArr(node: ASTNode) : PSPsiElement(node), PSType {
 
     override fun unify() {
         val (first, second) = types
-        val parameter = first.unifyAndSubstitute() ?: return
-        val ret = second.unifyAndSubstitute() ?: return
+        val parameter = first.unifyAndSubstitute()
+        val ret = second.unifyAndSubstitute()
         unify(InferType.function(parameter, ret))
     }
 }

@@ -11,13 +11,13 @@ import org.purescript.psi.PSPsiElement
 class TypeRecord(node: ASTNode) : PSPsiElement(node), PSType, Unifiable {
     private val labels get() = findChildrenByClass(Labeled::class.java)
     override fun infer(scope: Scope): InferType {
-        return InferType.Record.app(InferType.Row(labels.map { 
+        return InferType.Record.app(InferType.RowList(labels.map { 
             it.name to (it.type?.infer(scope) ?: scope.newUnknown()) 
         }))
     }
 
     override fun unify() {
-        unify(InferType.Record.app(InferType.Row(labels.mapNotNull {
+        unify(InferType.Record.app(InferType.RowList(labels.mapNotNull {
             it.name to (it.type?.unifyAndSubstitute() ?: error("$it.name did not have a type") )
         })))
     }

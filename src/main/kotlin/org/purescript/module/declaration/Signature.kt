@@ -63,6 +63,6 @@ class Signature :
     }
 
     override fun unify() {
-        type.unifyAndSubstitute()?.let { unify(it) }
+        type.unifyAndSubstitute().let { unify(it) }
     }
 }

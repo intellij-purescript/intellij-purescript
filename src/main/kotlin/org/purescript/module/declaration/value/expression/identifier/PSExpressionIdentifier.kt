@@ -93,7 +93,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         val module = module ?: error("$this has no module")
         val ref = reference.resolve()
         when {
-            ref is ValueDeclarationGroup -> ref.unifyAndSubstitute()?.withNewIds(module.replaceMap())
+            ref is ValueDeclarationGroup -> ref.unifyAndSubstitute().withNewIds(module.replaceMap())
             ref is HasTypeId && ref is Unifiable -> ref.unifyAndSubstitute()
             else -> null
         }?.let { unify(it) }

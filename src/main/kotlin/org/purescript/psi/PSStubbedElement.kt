@@ -56,6 +56,6 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
         typeId?.let {  module?.substitute(it)} 
             ?: error("failed to substitute type for $this")
     fun unify(other: InferType) {
-        module?.unify(substitutedType ?: return, other )
+        module?.unify(substitutedType, other )
     }
 }

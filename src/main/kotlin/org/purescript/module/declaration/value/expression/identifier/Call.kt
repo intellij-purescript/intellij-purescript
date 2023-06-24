@@ -23,7 +23,7 @@ class Call(node: ASTNode) : PSPsiElement(node), Expression {
     override fun unify() {
         val functionType = function?.unifyAndSubstitute() ?: return
         val argumentType = argument?.unifyAndSubstitute() ?: return 
-        val returnType = substitutedType ?: return
+        val returnType = substitutedType
         val callType = InferType.function(argumentType, returnType)
         unify(functionType, callType)
     }

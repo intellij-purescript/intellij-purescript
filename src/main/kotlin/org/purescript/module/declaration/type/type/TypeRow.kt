@@ -12,6 +12,6 @@ class TypeRow(node: ASTNode) : PSPsiElement(node), PSType {
         val pairs = labels.mapNotNull {
             it.name to (it.type?.infer(scope) ?: return@mapNotNull null)
         }
-        return InferType.Row(pairs)
+        return InferType.RowList(pairs)
     }
 }

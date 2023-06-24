@@ -16,8 +16,8 @@ class PSConstrainedType(node: ASTNode) : PSPsiElement(node), PSType {
 
     override fun unify() {
         val (constraint, of) = types
-        val constraintType = constraint.unifyAndSubstitute() ?: return
-        val onType = of.unifyAndSubstitute() ?: return
+        val constraintType = constraint.unifyAndSubstitute()
+        val onType = of.unifyAndSubstitute()
         unify(InferType.Constraint(constraintType, onType))
     }
 }

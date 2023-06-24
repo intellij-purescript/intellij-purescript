@@ -16,8 +16,8 @@ class RecordAccess(node: ASTNode) : PSPsiElement(node), Expression {
         }
 
     override fun unify() {
-        val recordType = record.unifyAndSubstitute() ?: return
-        val thisType = substitutedType ?: return
+        val recordType = record.unifyAndSubstitute()
+        val thisType = substitutedType
         unify(recordType, InferType.record(listOf(accessor.name to thisType)))
     }
 }
