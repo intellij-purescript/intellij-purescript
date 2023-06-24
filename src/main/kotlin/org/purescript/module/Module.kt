@@ -14,6 +14,9 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.inference.Scope
+import org.purescript.inference.UnknownGenerator
+import org.purescript.inference.substitute
+import org.purescript.inference.unify
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
@@ -435,4 +438,18 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             }
             return scope
         }
+    
+    val unknownGenerator = UnknownGenerator()
+    fun newUnknown(): org.purescript.inference.Type.Unknown = unknownGenerator.newUnknown()
+    val substitutions = mutableMapOf<org.purescript.inference.Type.Unknown, org.purescript.inference.Type>()
+    fun substitute(type: org.purescript.inference.Type): org.purescript.inference.Type = substitutions.substitute(type)
+    fun unify(x: org.purescript.inference.Type, y: org.purescript.inference.Type) = substitutions.unify(x, y)
+
+    fun inferApp(func: org.purescript.inference.Type, argument: org.purescript.inference.Type): org.purescript.inference.Type =
+        newUnknown()
+            .also { unify(func, org.purescript.inference.Type.function(argument, it)) }
+            .let(::substitute)
+
+    fun inferAccess(record: org.purescript.inference.Type, name: String): org.purescript.inference.Type =
+        newUnknown().also { unify(record, org.purescript.inference.Type.record(listOf(name to it))) }
 }
