@@ -35,7 +35,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
         val end: Int
 
         data class Atom(val e: Expression) : Tree {
-            override fun ranges(): Sequence<TextRange> = emptySequence()
+            override fun ranges(): Sequence<TextRange> = sequenceOf(e.textRange)
             override val start: Int get() = e.startOffset
             override val end: Int get() = e.endOffset
             override fun infer(scope: Scope): Type = e.infer(scope)
