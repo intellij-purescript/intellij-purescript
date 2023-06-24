@@ -39,35 +39,27 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override val start: Int get() = e.startOffset
             override val end: Int get() = e.endOffset
             override fun infer(scope: Scope): Type = e.infer(scope)
-            override fun insertRight(other: Expression) = when (other) {
-                is PSExpressionOperator -> Tmp(this, other)
-                else -> Call(this, Atom(other))
+            override fun insertRight(other: Expression) = when {
+                other is PSExpressionOperator -> TmpLeftHand(this, other)
+                e is PSExpressionOperator -> TmpRightHand(e, Atom(other))
+                else -> TODO("syntax broken")
             }
         }
 
-        data class Call(val c: Tree, val a: Tree) : Tree {
-            override fun insertRight(other: Expression) = when (other) {
-                is PSExpressionOperator -> Tmp(this, other)
-                else -> Call(this, Atom(other))
-            }
-
-            override fun ranges(): Sequence<TextRange> =
-                c.ranges() + a.ranges() + sequenceOf(TextRange(start, end))
-
-            override val start: Int get() = c.start
-            override val end: Int get() = a.end
-            override fun infer(scope: Scope): Type =
-                scope.inferApp(c.infer(scope), a.infer(scope))
+        data class TmpRightHand(val o: PSExpressionOperator, val r: Tree) : Tree {
+            override fun insertRight(other: Expression) = Operator(Atom(other), o, r)
+            override fun ranges(): Sequence<TextRange> = emptySequence()
+            override val start: Int get() = o.startOffset
+            override val end: Int get() = r.end
+            override fun infer(scope: Scope): Type = TODO("Tmp should not exist")
         }
 
-        data class Tmp(val l: Tree, val o: PSExpressionOperator) : Tree {
+        data class TmpLeftHand(val l: Tree, val o: PSExpressionOperator) : Tree {
             override fun insertRight(other: Expression) = Operator(l, o, Atom(other))
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = l.start
             override val end: Int get() = o.endOffset
-            override fun infer(scope: Scope): Type {
-                TODO("Tmp should not exist")
-            }
+            override fun infer(scope: Scope): Type = TODO("Tmp should not exist")
         }
 
         data class Operator(val l: Tree, val o: PSExpressionOperator, val r: Tree) : Tree {
@@ -81,12 +73,12 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
 
             override fun insertRight(other: Expression) = when (other) {
                 is PSExpressionOperator -> when {
-                    (o.precedence ?: 0) > (other.precedence ?: 0) -> Tmp(this, other)
+                    (o.precedence ?: 0) > (other.precedence ?: 0) -> TmpLeftHand(this, other)
                     (o.precedence ?: 0) < (other.precedence ?: 0) -> copy(r = r.insertRight(other))
                     else -> when (o.associativity) {
-                        PSFixity.Associativity.Infixl -> Tmp(this, other)
+                        PSFixity.Associativity.Infixl -> TmpLeftHand(this, other)
                         PSFixity.Associativity.Infixr -> copy(r = r.insertRight(other))
-                        else -> Tmp(this, other)
+                        else -> TmpLeftHand(this, other)
                     }
                 }
 
