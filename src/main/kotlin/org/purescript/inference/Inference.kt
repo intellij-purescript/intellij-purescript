@@ -82,6 +82,32 @@ fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.Constraint -> Type.Constraint(substitute(t.constraint), substitute(t.of))
     is Type.Alias -> Type.Alias(t.name, substitute(t.type))
 }
+fun MutableMap<Type.Unknown, Type>.unify(x: Type, y: Type) {
+    val sx = substitute(x)
+    val sy = substitute(y)
+    when {
+        sx == sy -> return
+        sx is Type.Unknown -> this[sx] = sy
+        sy is Type.Unknown -> this[sy] = sx
+        sx is Type.App && sy is Type.App -> {
+            unify(sx.f, sy.f)
+            unify(sx.on, sy.on)
+        }
+
+        sx is Type.Row && sy is Type.Row -> {
+            for ((xname, xtype) in sx.labels) {
+                for ((yname, ytype) in sy.labels) {
+                    if (xname == yname) unify(xtype, ytype)
+                }
+            }
+        }
+
+        sx is Type.Constraint -> unify(sx.of, sy)
+        sy is Type.Constraint -> unify(sx, sy.of)
+        sy is Type.Alias -> unify(sx, sy.type)
+        sx is Type.Alias -> unify(sx.type, sy)
+    }
+}
 
 /**
  * There should only be one scope per file, so that serializing unknown ids
@@ -101,33 +127,7 @@ sealed interface Scope {
     ) : Scope {
         private var unknownCounter = 0
         override fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
-        override fun unify(x: Type, y: Type) {
-            val sx = substitute(x)
-            val sy = substitute(y)
-            when {
-                sx == sy -> return
-                sx is Type.Unknown -> substitutions[sx] = sy
-                sy is Type.Unknown -> substitutions[sy] = sx
-                sx is Type.App && sy is Type.App -> {
-                    unify(sx.f, sy.f)
-                    unify(sx.on, sy.on)
-                }
-
-                sx is Type.Row && sy is Type.Row -> {
-                    for ((xname, xtype) in sx.labels) {
-                        for ((yname, ytype) in sy.labels) {
-                            if (xname == yname) unify(xtype, ytype)
-                        }
-                    }
-                }
-
-                sx is Type.Constraint -> unify(sx.of, sy)
-                sy is Type.Constraint -> unify(sx, sy.of)
-                sy is Type.Alias -> unify(sx, sy.type)
-                sx is Type.Alias -> unify(sx.type, sy)
-            }
-        }
-
+        override fun unify(x: Type, y: Type) = substitutions.unify(x, y)
         override fun substitute(type: Type): Type = substitutions.substitute(type)
         override fun lookup(name: String): Type = substitute(environment[name] ?: declare(name))
         override fun declare(name: String): Type = newUnknown().also { environment[name] = it }
