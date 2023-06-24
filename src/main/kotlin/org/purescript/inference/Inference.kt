@@ -19,7 +19,6 @@ sealed interface InferType {
     value class Prim(val name: String) : InferType {
         override fun contains(t: Id): Boolean = false
         override fun withNewIds(map: (Id)-> Id): InferType = this
-
         override fun toString(): String = name
     }
 
@@ -28,9 +27,8 @@ sealed interface InferType {
         override fun contains(t: Id): Boolean = f.contains(t) || on.contains(t)
         override fun withNewIds(map: (Id)-> Id): InferType = App(f.withNewIds(map), on.withNewIds(map))
         override fun toString() = when {
-            f == Record && on is RowList -> on.labels.joinToString(", ", "{ ", " }") {
-                "${it.first}::${it.second}"
-            }
+            f == Record && on is Row -> on.mergedLabels()
+                .joinToString(", ", "{ ", " }") { "${it.first}::${it.second}" }
 
             f is App && f.f == Function ->
                 if (f.on is App && f.on.isFunction) "(${f.on}) -> $on"
@@ -46,14 +44,13 @@ sealed interface InferType {
     }
     data class RowList(val labels: List<Pair<String, InferType>>) : Row {
         override fun contains(t: Id) = labels.any { it.second.contains(t) }
-        override fun toString() = 
-            labels.joinToString(",", "(", ")") { "${it.first}::${it.second}" }
-
+        override fun toString() = labels.joinToString(", ", "(", ")") { "${it.first}::${it.second}" }
         override fun withNewIds(map: (Id)-> Id): RowList = RowList(labels.map { it.first to it.second.withNewIds(map) })
         override fun mergedLabels(): List<Pair<String, InferType>> = labels
     }
     data class RowMerge(val left: Row, val right:Row): Row {
         override fun contains(t: Id): Boolean = left.contains(t) || right.contains(t)
+        override fun toString() = mergedLabels().joinToString(", ", "(", ")") { "${it.first}::${it.second}" }
         override fun withNewIds(map: (Id) -> Id): RowMerge = RowMerge(left.withNewIds(map), right.withNewIds(map))
         override fun mergedLabels(): List<Pair<String, InferType>> = left.mergedLabels() + right.mergedLabels()
     }
@@ -75,6 +72,7 @@ sealed interface InferType {
     fun withNewIds(map: (Id)-> Id): InferType
 
     companion object {
+        val Union = Prim("Row.Union")
         val Char = Prim("Char")
         val Boolean = Prim("Boolean")
         val Int = Prim("Int")

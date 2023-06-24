@@ -2,6 +2,7 @@ package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
+import com.intellij.util.alsoIfNull
 import org.purescript.inference.InferType
 import org.purescript.inference.Scope
 import org.purescript.inference.unifyAndSubstitute
@@ -11,13 +12,23 @@ class PSConstrainedType(node: ASTNode) : PSPsiElement(node), PSType {
     val types get() = childrenOfType<PSType>()
     override fun infer(scope: Scope): InferType {
         val (constraint, of) = types
-        return InferType.Constraint( constraint.infer(scope), of.infer(scope))
+        return InferType.Constraint(constraint.infer(scope), of.infer(scope))
     }
 
     override fun unify() {
         val (constraint, of) = types
         val constraintType = constraint.unifyAndSubstitute()
-        val onType = of.unifyAndSubstitute()
-        unify(InferType.Constraint(constraintType, onType))
+        (constraintType as? InferType.App)?.let { (f, union) ->
+            (f as? InferType.App)?.let { (f, r) ->
+                (f as? InferType.App)?.let { (unionName, l) ->
+                    if (unionName == InferType.Union) {
+                        unify(union, InferType.RowMerge(l as InferType.Row, r as InferType.Row))
+                        of
+                    } else null
+                }
+            }
+        }
+            ?.also { unify(it.unifyAndSubstitute()) }
+            .alsoIfNull { unify(InferType.Constraint(constraintType, of.unifyAndSubstitute())) }
     }
 }

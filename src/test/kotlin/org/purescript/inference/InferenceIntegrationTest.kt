@@ -110,4 +110,19 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val int = Main.getValueDeclarationGroupByName("int").substitutedType
         TestCase.assertEquals("Int", int.toString())
     }
+    
+    fun `test union`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | f :: forall a. Union (name :: String) (age :: Int) a => Record a -> Int
+                | f x = 42
+                | 
+            """.trimMargin()
+        )
+        val f = Main.getValueDeclarationGroupByName("f").unifyAndSubstitute()
+        TestCase.assertEquals("{ name::String, age::Int } -> Int", f.toString())
+    }
 }

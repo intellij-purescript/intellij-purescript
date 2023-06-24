@@ -5,6 +5,8 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import org.purescript.inference.Unifiable
+import org.purescript.inference.unifyAndSubstitute
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
@@ -12,7 +14,7 @@ import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
 
-class Labeled : PSStubbedElement<Labeled.Stub>, PsiNameIdentifierOwner {
+class Labeled : PSStubbedElement<Labeled.Stub>, PsiNameIdentifierOwner, Unifiable {
     class Stub(val label: String, val type: String?, p: StubElement<*>?) : AStub<Labeled>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, Labeled>("Labeled") {
         override fun createPsi(node: ASTNode) = Labeled(node)
@@ -44,4 +46,5 @@ class Labeled : PSStubbedElement<Labeled.Stub>, PsiNameIdentifierOwner {
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     val type get() = findChildByClass(PSType::class.java)
     val typeAsString get() = greenStub?.type ?: type?.text
+    override fun unify() = unify(type?.unifyAndSubstitute() ?: error("label $text are missing type"))
 }

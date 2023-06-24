@@ -53,6 +53,8 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
             "Boolean" -> InferType.Boolean
             "Char" -> InferType.Char
             "Function" -> InferType.Function
+            "Record" -> InferType.Record
+            "Union" -> InferType.Union
             else -> {
                 val ref = reference.resolve()
                 when {
