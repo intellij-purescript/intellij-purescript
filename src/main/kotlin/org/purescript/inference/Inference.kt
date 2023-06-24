@@ -69,6 +69,10 @@ sealed interface Type {
     }
 }
 
+data class UnknownGenerator(private var unknownCounter: Int = 0) {
+    fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
+}
+
 fun Map<Type.Unknown, Type>.substitute(t: Type): Type = when (t) {
     is Type.Prim, is Type.Constructor -> t
     is Type.Unknown ->
@@ -125,8 +129,8 @@ sealed interface Scope {
         private val environment: MutableMap<String, Type>,
         private val typeVarEnvironment: MutableMap<String, Type>
     ) : Scope {
-        private var unknownCounter = 0
-        override fun newUnknown(): Type.Unknown = Type.Unknown(unknownCounter++)
+        private val unknownGenerator = UnknownGenerator()
+        override fun newUnknown(): Type.Unknown = unknownGenerator.newUnknown()
         override fun unify(x: Type, y: Type) = substitutions.unify(x, y)
         override fun substitute(type: Type): Type = substitutions.substitute(type)
         override fun lookup(name: String): Type = substitute(environment[name] ?: declare(name))
