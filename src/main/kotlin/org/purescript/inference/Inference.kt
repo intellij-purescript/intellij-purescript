@@ -32,7 +32,7 @@ sealed interface InferType {
             f is App && f.f == Function -> f.on
             else -> null
         }
-        private val isFunction get() = f is App && f.f == Function
+        val isFunction get() = f is App && f.f == Function
         override fun contains(t: Id): Boolean = f.contains(t) || on.contains(t)
         override fun withNewIds(map: (Id)-> Id): InferType = App(f.withNewIds(map), on.withNewIds(map))
         override fun toString() = when {

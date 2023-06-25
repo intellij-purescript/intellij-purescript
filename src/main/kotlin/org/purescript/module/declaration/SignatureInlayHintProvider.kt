@@ -19,26 +19,44 @@ class SignatureInlayHintProvider : InlayHintsProvider {
                         fun PresentationTreeBuilder.pprint(type: InferType) {
                             when (type) {
                                 is InferType.App -> {
-                                    if (type.f == InferType.Record) {
-                                        text("{")
-                                        collapsibleList(CollapseState.Collapsed,
-                                            {
-                                                toggleButton {
-                                                    var first = true
-                                                    for (label in (type.on as InferType.Row).mergedLabels()) {
-                                                        if (!first) text(", ")
-                                                        first = false
-                                                        text("${label.first} :: ")
-                                                        pprint(label.second)
+                                    when (type.f) {
+                                        InferType.Record -> {
+                                            text("{")
+                                            collapsibleList(CollapseState.Collapsed,
+                                                {
+                                                    toggleButton {
+                                                        var first = true
+                                                        for (label in (type.on as InferType.Row).mergedLabels()) {
+                                                            if (!first) text(", ")
+                                                            first = false
+                                                            text("${label.first} :: ")
+                                                            pprint(label.second)
+                                                        }
                                                     }
+                                                },
+                                                {toggleButton { text("...") }}
+                                            )
+                                            text("}")
+                                        }
+                                        else -> {
+                                            if(type.f is InferType.App && type.f.f == InferType.Function) {
+                                                if (type.f.on is InferType.App && type.f.on.isFunction) {
+                                                    text("(")
+                                                    pprint(type.f.on)
+                                                    text(")")
+                                                    text(" -> ")
+                                                    pprint(type.on)
+                                                } else {
+                                                    pprint(type.f.on)
+                                                    text(" -> ")
+                                                    pprint(type.on)
                                                 }
-                                            },
-                                            {toggleButton { text("...") }}
-                                        )
-                                        text("}")
-                                    } else {
-                                        text("${type.f} ")
-                                        pprint(type.on)
+                                            } else {
+                                                pprint(type.f)
+                                                text(" ")
+                                                pprint(type.on)
+                                            }
+                                        }
                                     }    
                                 }
                                 is InferType.Row -> {
