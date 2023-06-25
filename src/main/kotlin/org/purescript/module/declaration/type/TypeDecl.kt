@@ -6,10 +6,8 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
 import org.purescript.ide.formatting.ImportedData
-import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
-import org.purescript.inference.Unifiable
-
+import org.purescript.inference.Inferable
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
@@ -26,7 +24,7 @@ import org.purescript.psi.PSStubbedElement
  * type GlobalEvents r = ( onContextMenu :: Event | r )
  * ```
  */
-class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace, Unifiable, HasTypeId {
+class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace, Inferable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<TypeDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isExported

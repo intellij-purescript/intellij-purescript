@@ -12,7 +12,7 @@ class InferableTypeProvider<E>: ExpressionTypeProvider<E>() where E:Inferable, E
         for (parent in elementAt.parents(true)) {
             (parent as? Inferable)?.let { ret.add(it as E) }
         }
-        return ret
+        return ret.distinctBy { it.textRange }.toMutableList()
     }
     
 }
