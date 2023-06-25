@@ -8,7 +8,7 @@ import org.purescript.module.Module
 import org.purescript.module.declaration.value.Similar
 import org.purescript.psi.PSPsiFactory
 
-interface Expression : PsiElement, Similar, Inferable{
+interface Expression : PsiElement, Similar, Inferable {
     val expressionAtoms
         get() = sequence {
             var steps = children.asList()

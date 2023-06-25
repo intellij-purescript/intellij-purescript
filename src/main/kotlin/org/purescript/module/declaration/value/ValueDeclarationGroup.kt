@@ -16,8 +16,6 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
-import org.purescript.inference.Unifiable
-
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -37,8 +35,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     Importable,
     UsedElement,
     InlinableElement,
-    Inferable,
-    Unifiable {
+    Inferable {
     class Stub(val name: String, val isExported: Boolean, p: StubElement<*>?) : AStub<ValueDeclarationGroup>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isTopLevel get() = module != null
@@ -144,22 +141,20 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     override val type: PSType? get() = signature?.type
     val isExported
         get() = greenStub?.isExported ?: when {
-            module == null -> false
             !isTopLevel -> false
-            module?.exports == null -> true
-            module?.exportsSelf == null -> true
-            else -> name in (module?.exports?.values?.map { it.name } ?: emptyList())
+            module.exports == null -> true
+            else -> name in (module.exports?.values?.map { it.name } ?: emptyList())
         }
     val isTopLevel get() = parent is Module
     override fun getUseScope(): SearchScope = (
             if (isExported) super.getUseScope()
-            else if (isExported) module?.let { LocalSearchScope(it) }
+            else if (isExported) LocalSearchScope(module)
             else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
-        ?: super.getUseScope()
+
     
     override fun unify() {
         signature?.inferType()?.let(::unify)
-            ?: valueDeclarations.forEach { it.inferType().let(::unify) }
+        valueDeclarations.forEach { it.inferType().let(::unify) }
     }
 
 }

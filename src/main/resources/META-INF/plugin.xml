@@ -252,6 +252,10 @@
         <codeInsight.declarativeInlayProviderFactory
                 implementation="org.purescript.module.declaration.TypeInlayHintFactory"
                />
+        <codeInsight.typeInfo
+            language="Purescript"
+            implementationClass="org.purescript.inference.InferableTypeProvider"
+        />
     </extensions>
 
     <actions>
