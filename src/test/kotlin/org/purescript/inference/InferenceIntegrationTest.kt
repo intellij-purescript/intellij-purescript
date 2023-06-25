@@ -104,10 +104,10 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         )
         Main.getModule().unify()
         val f = Main.getValueDeclarationGroupByName("f").inferType()
-        TestCase.assertEquals("u0 -> u0", f.toString())
+        TestCase.assertEquals("a -> a", pprint(f.toString()))
 
         val type_class = Main.getValueDeclarationGroupByName("type_class").inferType()
-        TestCase.assertEquals("Eq u10 => u10 -> u10", type_class.toString())
+        TestCase.assertEquals("Eq a => a -> a",  pprint(type_class.toString()))
 
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
@@ -149,5 +149,34 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("String", "$name")
         val boxName = Main.getValueDeclarationGroupByName("boxName").inferType()
         TestCase.assertEquals("String", "$boxName")
+    }
+    fun `test new type`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | newtype Box a = Box a
+                | 
+                | boxString :: Box String
+                | boxString = Box "Box"
+                | 
+            """.trimMargin()
+        )
+        val boxString = Main.getValueDeclarationGroupByName("boxString").inferType()
+        TestCase.assertEquals("Box String", "$boxString")
+    }
+    
+    fun pprint(string : String): String {
+        val letters = ('a'..'z').joinToString("")
+        val id = Regex("u\\d+")
+        val us: Map<String, CharSequence> = id.find(string)
+            ?.groupValues
+            ?.sorted()
+            ?.distinct()
+            ?.withIndex()
+            ?.associate { it.value.toString() to letters[it.index].toString() }
+            ?: return string
+        return string.replace(id) { us[it.value]!!}
     }
 }
