@@ -18,7 +18,7 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
 
-    val module get() = parentOfType<Module>()
+    val module get() = parentOfType<Module>() ?: error("failed to parse module in file ${containingFile.name}")
     override fun toString() = "${javaClass.simpleName}($elementType)"
 
     inline fun <Stub : StubElement<Out>, reified Out : StubBasedPsiElement<Stub>>

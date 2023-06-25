@@ -102,7 +102,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     }
 
     override fun unify() =
-        unify((reference.resolve() as? Inferable)?.inferType() ?: error("could not find reference for $name"))
+        unify((reference.resolve() as? Inferable)?.inferType()?.withNewIds(module.replaceMap()) ?: error("could not find reference for $name"))
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
