@@ -80,7 +80,7 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
         return module?.asImport()?.withItems(items)
     }
 
-    private val types = childrenOfType<PSType>()
+    private val types get() = childrenOfType<PSType>()
     internal val dataDeclaration: DataDeclaration get() = parentOfType()!!
 
     override val type: PSType? get() = null
