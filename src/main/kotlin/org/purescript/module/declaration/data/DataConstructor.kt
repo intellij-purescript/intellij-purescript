@@ -6,7 +6,6 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
@@ -99,11 +98,6 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
             InferType.function(parameter.inferType(), ret)
         }
         unify(function)
-        CachedValueProvider.Result(
-            unify(function),
-            *typeNames.toTypedArray(),
-            *types.toTypedArray()
-        )
     }
 
     /**
