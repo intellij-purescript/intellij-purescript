@@ -1,8 +1,6 @@
 package org.purescript.module.declaration.value.expression.namespace
 
 import com.intellij.lang.ASTNode
-import org.purescript.inference.Scope
-import org.purescript.inference.InferType
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.parameters.Parameters
@@ -13,7 +11,4 @@ class PSLambda(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
     val parameters get() = parameterList?.parameters
     val value get() = findChildByClass(Expression::class.java)
     override val valueNames get() = parameterList?.valueNames ?: emptySequence()
-
-    override fun infer(scope: Scope): InferType {
-        TODO("Implement infer for ${this.node.elementType.debugName}")
-    }}
+}

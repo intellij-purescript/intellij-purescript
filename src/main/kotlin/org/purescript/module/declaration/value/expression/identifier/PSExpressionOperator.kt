@@ -3,8 +3,7 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
-import org.purescript.inference.Scope
-import org.purescript.inference.InferType
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
@@ -32,10 +31,12 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
     internal val qualifiedOperator: PSQualifiedOperatorName
         get() = findNotNullChildByClass(PSQualifiedOperatorName::class.java)
     override val qualifierName: String? get() = qualifiedOperator.moduleName?.name
-    val arguments get() = listOf(
-        siblings(false, false).filterIsInstance<Expression>().first(),
-        siblings(true, false).filterIsInstance<Expression>().first(),
-    )
+    val arguments
+        get() = listOf(
+            siblings(false, false).filterIsInstance<Expression>().first(),
+            siblings(true, false).filterIsInstance<Expression>().first(),
+        )
+
     override fun replaceWithInline(toInlineWith: InlinableElement) {
         parentOfType<Expression>()?.replace(toInlineWith.inline(arguments))
     }
@@ -45,9 +46,8 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
     }
 
     override fun getName(): String = qualifiedOperator.name
-    override fun infer(scope: Scope): InferType = 
-        reference.resolve()?.infer(scope) ?: scope.newUnknown()
-
+    override fun unify() = 
+        unify(reference.resolve()?.inferType()?.withNewIds(module.replaceMap()) ?: module.newId())
 
     val associativity get() = reference.resolve()?.associativity
     val precedence get() = reference.resolve()?.precedence

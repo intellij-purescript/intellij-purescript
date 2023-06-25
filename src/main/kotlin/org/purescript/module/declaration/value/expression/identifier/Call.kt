@@ -3,7 +3,6 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.inference.InferType
-import org.purescript.inference.Scope
 import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
@@ -15,11 +14,6 @@ class Call(node: ASTNode) : PSPsiElement(node), Expression {
                     ((parent as? Call)?.arguments ?: emptySequence())
     val function get() = findChildByClass(Expression::class.java)
     val argument get() = findChildByClass(Argument::class.java)
-    override fun infer(scope: Scope) = scope.inferApp(
-        function!!.infer(scope),
-        argument!!.infer(scope)
-    )
-
     override fun unify() {
         val functionType = function?.inferType() ?: return
         val argumentType = argument?.inferType() ?: return 

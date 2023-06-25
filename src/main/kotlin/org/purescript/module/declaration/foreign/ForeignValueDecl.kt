@@ -10,7 +10,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
+import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -71,5 +71,5 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
     override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
-    override fun infer(scope: Scope): org.purescript.inference.InferType = type!!.infer(scope)
+    override fun unify() = unify(type?.inferType() ?: error("could not validate type of foreign value"))
 }

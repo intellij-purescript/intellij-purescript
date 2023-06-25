@@ -14,7 +14,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
+import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -86,7 +86,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     override fun canBeInlined(): Boolean = true
     override fun deleteAfterInline() = delete()
     override fun importsAfterInline(): List<ImportDeclaration> {
-        val qualifier: String? = this.qualifiedIdentifier?.moduleName?.name 
+        val qualifier: String? = this.qualifiedIdentifier?.moduleName?.name
             ?: this.qualifiedProperName?.moduleName?.name
         val importable = reference.resolve() as? Importable
         val import = importable?.asImport()?.withAlias(qualifier)
@@ -101,17 +101,18 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
         return factory.createParenthesis(expression)?.parentsOfType<Expression>()?.lastOrNull()!!
     }
 
-    override fun infer(scope: Scope): org.purescript.inference.InferType = 
-        (reference.resolve() as? Inferable)?.infer(scope) ?: scope.newUnknown()
+    override fun unify() =
+        unify((reference.resolve() as? Inferable)?.inferType() ?: error("could not find reference for $name"))
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
     override fun asImport() = module?.name?.let { ImportDeclaration(it, false, setOf(ImportedOperator(name))) }
-    override val type: PSType? get() = when(val ref = reference.resolve()) {
-        is ValueDeclarationGroup -> ref.signature?.type
-        is PSClassMember -> ref.type
-        else -> null
-    }
+    override val type: PSType?
+        get() = when (val ref = reference.resolve()) {
+            is ValueDeclarationGroup -> ref.signature?.type
+            is PSClassMember -> ref.type
+            else -> null
+        }
     val fixity: PSFixity get() = child()!!
     val associativity get() = fixity.associativity
     val precedence get() = fixity.precedence

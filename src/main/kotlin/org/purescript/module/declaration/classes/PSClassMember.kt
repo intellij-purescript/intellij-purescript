@@ -11,7 +11,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
+import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -101,5 +101,5 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
         parentOfType<ClassDecl>()?.docComments ?: emptyList()
     }
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Function
-    override fun infer(scope: Scope): org.purescript.inference.InferType = type.infer(scope)
+    override fun unify() = unify(type.inferType())
 }

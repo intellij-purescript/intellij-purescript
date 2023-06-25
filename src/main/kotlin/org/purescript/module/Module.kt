@@ -87,6 +87,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val foreignValues get() = getProjectPsiDependentCache(this) { children<ForeignValueDecl>() }
     val classes get() = getProjectPsiDependentCache(this) { children<ClassDecl>() }
     val classMembers get() = getProjectPsiDependentCache(this) { classes.flatMap { it.classMembers.toList() } }
+    override fun unify() {}
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"
@@ -423,19 +424,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             }
         }
     }
-
-    val typeCheck: Scope
-        get() {
-            val scope = Scope.new()
-            for (valueGroup in valueGroups) {
-                scope.declare(valueGroup.name)
-            }
-            for (valueGroup in valueGroups) {
-                scope.unify(scope.lookup(valueGroup.name), valueGroup.infer(scope.subScope()))
-            }
-            return scope
-        }
-    
     val idGenerator = IdGenerator()
     fun newId(): InferType.Id = idGenerator.newId()
     val substitutions = mutableMapOf<InferType.Id, InferType>()
@@ -446,8 +434,5 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     fun replaceMap(): (InferType.Id)->InferType.Id {
         val map = mutableMapOf<InferType.Id, InferType.Id>()
         return { map.getOrPut(it, ::newId) }
-    }
-    override fun unify() {
-        for (valueGroup in valueGroups) unify(valueGroup.inferType())
     }
 }

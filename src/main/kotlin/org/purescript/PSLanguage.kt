@@ -6,9 +6,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.FakePsiElement
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
-import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
 import org.purescript.inference.InferType
+import org.purescript.inference.Inferable
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.type.type.PSType
 
@@ -171,7 +170,7 @@ class PrimTypePsiElement(private val project: Project, val moduleName: String, p
     override fun getProject(): Project = project
     override fun getContainingFile(): PsiFile? = null
     override fun isValid() = true
-    override fun infer(scope: Scope): InferType {
-        return InferType.Prim(name)
-    }
+    override val typeId: InferType.Id get() = InferType.Id(-1) 
+    override val substitutedType: InferType get() = InferType.Prim(name)
+    override fun unify() {}
 }

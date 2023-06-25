@@ -149,85 +149,7 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
     }
 }
 
-/**
- * There should only be one scope per file, so that serializing unknown ids
- * don't get reused in the same file.
- */
-sealed interface Scope {
-    fun newUnknown(): InferType.Id
-    fun unify(x: InferType, y: InferType)
-    fun substitute(type: InferType): InferType
-    fun lookup(name: String): InferType
-    fun declare(name: String): InferType
-    fun lookupTypeVar(name: String): InferType
-    class Simple(
-        private val substitutions: MutableMap<InferType.Id, InferType>,
-        private val environment: MutableMap<String, InferType>,
-        private val typeVarEnvironment: MutableMap<String, InferType>
-    ) : Scope {
-        private val idGenerator = IdGenerator()
-        override fun newUnknown(): InferType.Id = idGenerator.newId()
-        override fun unify(x: InferType, y: InferType) = substitutions.unify(x, y)
-        override fun substitute(type: InferType): InferType = substitutions.substitute(type)
-        override fun lookup(name: String): InferType = substitute(environment[name] ?: declare(name))
-        override fun declare(name: String): InferType = newUnknown().also { environment[name] = it }
-
-        override fun has(name: String): Boolean = environment.contains(name)
-        override fun lookupTypeVar(name: String): InferType = typeVarEnvironment.getOrPut(name, ::newUnknown)
-        override fun hasTypevar(name: String): Boolean = typeVarEnvironment.contains(name)
-    }
-
-    data class Nested(
-        val parent: Scope,
-        private val environment: MutableMap<String, InferType>,
-        private val typeVarEnvironment: MutableMap<String, InferType>
-    ) : Scope {
-        override fun newUnknown(): InferType.Id = parent.newUnknown()
-        override fun unify(x: InferType, y: InferType) = parent.unify(x, y)
-        override fun substitute(type: InferType): InferType = parent.substitute(type)
-        override fun declare(name: String) = newUnknown().also { environment[name] = it }
-        override fun lookup(name: String) = substitute(environment[name] ?: when {
-            parent.has(name) -> parent.lookupTypeVar(name)
-            else -> environment.getOrPut(name, ::newUnknown)
-        })
-
-        override fun lookupTypeVar(name: String) = typeVarEnvironment[name] ?: when {
-            parent.hasTypevar(name) -> parent.lookupTypeVar(name)
-            else -> typeVarEnvironment.getOrPut(name, ::newUnknown)
-        }
-        override fun has(name: String): Boolean = parent.has(name)
-        override fun hasTypevar(name: String): Boolean = parent.hasTypevar(name)
-    }
-
-    fun subScope(): Nested = Nested(this, mutableMapOf(), mutableMapOf())
-
-    fun inferApp(func: InferType, argument: InferType): InferType {
-        val ret = newUnknown()
-        unify(func, InferType.function(argument, ret))
-        return substitute(ret)
-    }
-
-    fun inferAccess(record: InferType, name: String): InferType {
-        return newUnknown().also {
-            unify(record, InferType.record(listOf(name to it)))
-        }
-    }
-
-    companion object {
-        fun new(): Scope = Simple(
-            mutableMapOf(),
-            mutableMapOf(),
-            mutableMapOf()
-        )
-    }
-
-    fun has(name: String): Boolean
-    fun hasTypevar(name: String): Boolean
-}
-
-interface Inferable {
-    fun infer(scope: Scope): InferType
-}
+interface Inferable: HasTypeId, Unifiable
 
 interface HasTypeId {
     val typeId: InferType.Id?
@@ -237,7 +159,7 @@ interface HasTypeId {
 interface Unifiable {
     fun unify(): Unit
 }
-fun <E> E.inferType(): InferType where E: Unifiable, E: HasTypeId {
+fun Inferable.inferType(): InferType {
     this.unify()
     return this.substitutedType 
 }

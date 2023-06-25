@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import org.purescript.PSLanguage
 import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.data.DataConstructor
@@ -41,7 +41,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
 
     private fun getType(element: Importable): String? =
         (element.type?.text ?: try {
-            (element as? Inferable)?.infer(Scope.new())
+            (element as? Inferable)?.inferType()
         } catch (e: Exception) {
             null
         } catch (e: NotImplementedError) {

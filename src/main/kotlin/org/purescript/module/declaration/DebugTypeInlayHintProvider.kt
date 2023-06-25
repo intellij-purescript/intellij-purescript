@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import org.purescript.inference.Inferable
 import org.purescript.inference.RecursiveTypeException
-import org.purescript.inference.Scope
+import org.purescript.inference.inferType
 
 class DebugTypeInlayHintProvider : InlayHintsProvider {
     override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector {
@@ -17,8 +17,7 @@ class DebugTypeInlayHintProvider : InlayHintsProvider {
                     is Inferable -> {
                         if(element.children.any { it is Inferable }) return
                         try {
-                            val type = element.infer(Scope.new()).toString()
-                            val hint = ":: $type"
+                            val hint = ":: ${element.inferType()}"
                             sink.addPresentation(
                                 InlineInlayPosition(element.endOffset, true),
                                 null, null, true

@@ -6,8 +6,6 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentsOfType
 import org.purescript.inference.HasTypeId
-import org.purescript.inference.InferType
-import org.purescript.inference.Scope
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.PSPsiElement
@@ -16,7 +14,6 @@ import org.purescript.psi.PSPsiFactory
 class TypeIdentifier(node: ASTNode) : PSPsiElement(node), PSType {
     val identifier = findNotNullChildByClass(PSIdentifier::class.java)
     override fun getName() = identifier.name
-    override fun infer(scope: Scope): InferType = scope.lookupTypeVar(name)
     override fun getReference() = object : PsiReferenceBase<TypeIdentifier>(this, identifier.textRangeInParent, false) {
         private val candidates = element.parentsOfType<TypeNamespace>().flatMap { it.typeNames }
         override fun getVariants() = candidates.toList().toTypedArray()

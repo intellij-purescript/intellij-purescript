@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import org.purescript.inference.RecursiveTypeException
-import org.purescript.inference.Scope
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class SignatureInlayHintProvider : InlayHintsProvider {
@@ -16,8 +16,7 @@ class SignatureInlayHintProvider : InlayHintsProvider {
                 when (element) {
                     is ValueDeclarationGroup -> if (element.signature == null) {
                         try {
-                            val type = element.infer(Scope.new())
-                            val tooltip = ":: $type"
+                            val tooltip = ":: ${element.inferType()}"
                             sink.addPresentation(
                                 InlineInlayPosition(
                                     element.nameIdentifier.endOffset,

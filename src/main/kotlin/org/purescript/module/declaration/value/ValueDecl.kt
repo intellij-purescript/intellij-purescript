@@ -16,7 +16,6 @@ import com.intellij.refactoring.suggested.startOffset
 import org.purescript.features.DocCommentOwner
 import org.purescript.inference.InferType.Companion.function
 import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
 import org.purescript.inference.Unifiable
 import org.purescript.inference.inferType
 import org.purescript.module.declaration.Signature
@@ -153,11 +152,6 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
         val binders = parameterList.parameterBinders
         return !binders.any { it !is VarBinder }
     }
-    override fun infer(scope: Scope): org.purescript.inference.InferType {
-        val retType = value?.infer(scope) ?: scope.newUnknown()
-        return parameters.foldRight(retType) { arg, ret -> function(arg.infer(scope), ret) }
-    }
-
     override fun unify() {
         unify(parameters.foldRight(value?.inferType() ?: return) { parameter, ret -> 
                 function(parameter.inferType(), ret) 

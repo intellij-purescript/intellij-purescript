@@ -3,7 +3,8 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
-import org.purescript.inference.*
+import org.purescript.inference.Inferable
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -85,16 +86,12 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             else -> false
         }
     }
-
-    override fun infer(scope: Scope): InferType =
-        (reference.resolve() as? Inferable)?.infer(scope) ?: scope.newUnknown()
-
     override fun unify() {
         val module = module ?: error("$this has no module")
         val ref = reference.resolve()
         when {
             ref is ValueDeclarationGroup -> ref.inferType().withNewIds(module.replaceMap())
-            ref is HasTypeId && ref is Unifiable -> ref.inferType()
+            ref is Inferable -> ref.inferType()
             else -> null
         }?.let { unify(it) }
     }

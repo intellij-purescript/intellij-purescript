@@ -16,7 +16,6 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
-import org.purescript.inference.Scope
 import org.purescript.inference.Unifiable
 import org.purescript.inference.inferType
 import org.purescript.module.Module
@@ -157,16 +156,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             else if (isExported) module?.let { LocalSearchScope(it) }
             else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
         ?: super.getUseScope()
-
-    override fun infer(scope: Scope): org.purescript.inference.InferType {
-        val groupType = signature?.infer(scope) ?: scope.newUnknown()
-        for (valueDeclaration in valueDeclarations) {
-            val valueType = valueDeclaration.infer(scope)
-            scope.unify(groupType, valueType)
-        }
-        return scope.substitute(groupType)
-    }
-
+    
     override fun unify() {
         signature?.inferType()?.let(::unify)
             ?: valueDeclarations.forEach { it.inferType().let(::unify) }

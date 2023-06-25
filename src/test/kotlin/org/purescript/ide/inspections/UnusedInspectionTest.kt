@@ -165,6 +165,8 @@ class UnusedInspectionTest : BasePlatformTestCase() {
             |
             |import Prelude
             |
+            |add a b = a
+            |
             |infix 0 add as + 
             """.trimMargin()
         )

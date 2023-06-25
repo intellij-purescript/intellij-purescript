@@ -40,11 +40,10 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | boolean = true
             """.trimMargin()
         )
-        Main.getModule().unify()
-        val int = Main.getValueDeclarationGroupByName("int").infer(Scope.new())
-        val number = Main.getValueDeclarationGroupByName("number").infer(Scope.new())
-        val string = Main.getValueDeclarationGroupByName("string").infer(Scope.new())
-        val boolean = Main.getValueDeclarationGroupByName("boolean").infer(Scope.new())
+        val int = Main.getValueDeclarationGroupByName("int").inferType()
+        val number = Main.getValueDeclarationGroupByName("number").inferType()
+        val string = Main.getValueDeclarationGroupByName("string").inferType()
+        val boolean = Main.getValueDeclarationGroupByName("boolean").inferType()
         TestCase.assertEquals("Int", int.toString())
         TestCase.assertEquals("Number", number.toString())
         TestCase.assertEquals("String", string.toString())
@@ -101,13 +100,13 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             """.trimMargin()
         )
         Main.getModule().unify()
-        val f = Main.getValueDeclarationGroupByName("f").substitutedType
+        val f = Main.getValueDeclarationGroupByName("f").inferType()
         TestCase.assertEquals("u0 -> u0", f.toString())
 
-        val eq = Main.getValueDeclarationGroupByName("eq").substitutedType
+        val eq = Main.getValueDeclarationGroupByName("eq").inferType()
         TestCase.assertEquals("Eq u7 => u7 -> u7", eq.toString())
 
-        val int = Main.getValueDeclarationGroupByName("int").substitutedType
+        val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
     }
     
