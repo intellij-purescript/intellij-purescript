@@ -159,12 +159,16 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | newtype Box a = Box a
                 | 
                 | boxString :: Box String
-                | boxString = Box "Box"
+                | boxString = Box "Box" 
+                | 
+                | boxNoType = Box "Box"
                 | 
             """.trimMargin()
         )
         val boxString = Main.getValueDeclarationGroupByName("boxString").inferType()
         TestCase.assertEquals("Box String", "$boxString")
+        val boxNoType = Main.getValueDeclarationGroupByName("boxNoType").inferType()
+        TestCase.assertEquals("Box String", "$boxNoType")
     }
     
     fun pprint(string : String): String {

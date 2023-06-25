@@ -5,7 +5,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.parentOfType
 import org.purescript.ide.formatting.ImportedData
+import org.purescript.inference.InferType
+import org.purescript.inference.Inferable
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.type.type.PSType
@@ -29,7 +32,8 @@ import org.purescript.psi.PSStubbedElement
  */
 class NewtypeCtor :
     PSStubbedElement<NewtypeCtor.Stub>,
-    PsiNameIdentifierOwner, org.purescript.module.declaration.Importable {
+    PsiNameIdentifierOwner, org.purescript.module.declaration.Importable,
+    Inferable{
     class Stub(val name: String, p: StubElement<*>?) : AStub<NewtypeCtor>(p, Type) {
         val module get() = parentStub.parentStub as? Module.Stub
         val isExported get() = when {
@@ -60,6 +64,8 @@ class NewtypeCtor :
     }
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
+ 
+
     /**
      * @return the [PSProperName] identifying this constructor
      */
@@ -69,5 +75,15 @@ class NewtypeCtor :
     override fun getNameIdentifier(): PSProperName = identifier
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name, dataMembers = setOf(name)))
     override val type: PSType? get() = null
+    val typeAtom: PSType get() = findChildByClass(PSType::class.java) ?: error("newtype constructor without type")
     override fun getIcon(flags: Int) = AllIcons.Nodes.Class
+    val newTypeDeclaration get() = parentOfType<NewtypeDecl>() ?: error("newtype constructor without newtype declaration")
+    override fun unify() {
+        val typeNames = newTypeDeclaration.typeNames.toList()
+        val type = InferType.Constructor(name).app(typeAtom.inferType())
+        val function = typeNames.foldRight(type) { parameter, ret ->
+            InferType.function(parameter.inferType(), ret)
+        }
+        unify(function)
+    }
 }
