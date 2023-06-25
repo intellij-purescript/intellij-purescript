@@ -17,7 +17,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.inference.InferType.Companion.function
 import org.purescript.inference.Inferable
 import org.purescript.inference.Unifiable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.Signature
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.module.declaration.value.expression.Expression

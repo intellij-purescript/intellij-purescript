@@ -36,14 +36,14 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
         }
 
     private fun candidatesFor(qualifier: String): List<PsiNamedElement> {
-        val module: Module = element.module ?: return emptyList()
+        val module: Module = element.module
         val importDeclaration = module.cache.imports.filter { it.importAlias?.name == qualifier }
         return importDeclaration.flatMap { it.importedTypeNames }.toMutableList()
     }
 
     private val allCandidatesWithoutAlias: List<PsiNamedElement>
         get() {
-            val module: Module = element.module ?: return emptyList()
+            val module: Module = element.module
             val candidates = mutableListOf<PsiNamedElement>()
             candidates.addAll(module.cache.dataDeclarations)
             candidates.addAll(module.cache.newTypeDeclarations)

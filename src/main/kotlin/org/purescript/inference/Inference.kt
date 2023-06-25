@@ -172,7 +172,12 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
     }
 }
 
-interface Inferable : HasTypeId, Unifiable
+interface Inferable : HasTypeId, Unifiable {
+    fun inferType(): InferType {
+        this.unify()
+        return this.substitutedType
+    }
+}
 
 interface HasTypeId {
     val typeId: InferType.Id?
@@ -183,9 +188,5 @@ interface Unifiable {
     fun unify(): Unit
 }
 
-fun Inferable.inferType(): InferType {
-    this.unify()
-    return this.substitutedType
-}
 
 class RecursiveTypeException(t: InferType) : Exception("$t is recursive")

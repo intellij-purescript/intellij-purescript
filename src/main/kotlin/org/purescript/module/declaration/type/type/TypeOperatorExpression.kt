@@ -3,7 +3,7 @@ package org.purescript.module.declaration.type.type
 import com.intellij.lang.ASTNode
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.psi.PSPsiElement
 
 class TypeOperatorExpression(node: ASTNode) : PSPsiElement(node), PSType {

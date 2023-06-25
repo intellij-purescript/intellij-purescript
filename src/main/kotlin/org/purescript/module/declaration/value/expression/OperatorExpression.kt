@@ -9,7 +9,7 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.fixity.PSFixity
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionOperator
 import org.purescript.psi.PSPsiElement
@@ -54,7 +54,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = o.startOffset
             override val end: Int get() = r.end
-            override val typeId: InferType.Id? get() = TODO("Not yet implemented")
+            override val typeId: InferType.Id get() = TODO("Not yet implemented")
             override val substitutedType: InferType get() = TODO("Not yet implemented")
             override fun unify(): Unit = TODO("Not yet implemented")
         }
@@ -64,7 +64,7 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override fun ranges(): Sequence<TextRange> = emptySequence()
             override val start: Int get() = l.start
             override val end: Int get() = o.endOffset
-            override val typeId: InferType.Id? get() = TODO("Not yet implemented")
+            override val typeId: InferType.Id get() = TODO("Not yet implemented")
             override val substitutedType: InferType get() = TODO("Not yet implemented")
             override fun unify():Unit = TODO("Not yet implemented")
         }

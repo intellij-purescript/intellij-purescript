@@ -8,7 +8,7 @@ import com.intellij.psi.util.childrenOfType
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex

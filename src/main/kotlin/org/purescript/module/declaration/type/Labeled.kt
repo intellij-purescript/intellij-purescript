@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub

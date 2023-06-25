@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import org.purescript.inference.InferType
 import org.purescript.inference.RecursiveTypeException
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 
 class SignatureInlayHintProvider : InlayHintsProvider {

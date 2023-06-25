@@ -10,7 +10,7 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.type.PSTypeVarBinding
 import org.purescript.module.declaration.type.type.PSType

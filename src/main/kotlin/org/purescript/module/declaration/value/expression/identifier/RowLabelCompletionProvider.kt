@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.inference.InferType
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.LabeledIndex
 import org.purescript.module.declaration.value.expression.RecordAccess

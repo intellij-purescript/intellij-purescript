@@ -33,13 +33,13 @@ class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleNa
 
     val candidates
         get() = sequence {
-            val module = element.module ?: return@sequence
+            val module = element.module
             yieldAll(module.fixityDeclarations.asSequence())
             yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations })
         }
 
     fun candidates(name: String) = sequence {
-        val module = element.module ?: return@sequence
+        val module = element.module
         yieldAll(module.fixityDeclarations.asSequence())
         yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations(name) })
     }

@@ -104,7 +104,7 @@ class MoveValueDeclRefactoring(
                             false,
                             setOf(ImportedValue(toPatch.name)),
                         )
-                        sourceModule?.addImportDeclaration(importDeclaration)
+                        sourceModule.addImportDeclaration(importDeclaration)
                         importedInSource = true
                     }
                 }

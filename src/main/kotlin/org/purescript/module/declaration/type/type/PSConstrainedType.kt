@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.alsoIfNull
 import org.purescript.inference.InferType
-import org.purescript.inference.inferType
+
 import org.purescript.psi.PSPsiElement
 
 class PSConstrainedType(node: ASTNode) : PSPsiElement(node), PSType {

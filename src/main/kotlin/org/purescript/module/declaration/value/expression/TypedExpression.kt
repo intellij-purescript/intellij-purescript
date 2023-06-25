@@ -1,7 +1,7 @@
 package org.purescript.module.declaration.value.expression
 
 import com.intellij.lang.ASTNode
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.psi.PSPsiElement
 

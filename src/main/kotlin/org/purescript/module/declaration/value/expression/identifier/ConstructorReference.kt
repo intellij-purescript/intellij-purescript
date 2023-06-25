@@ -33,7 +33,7 @@ class ConstructorReference(
 
     private val candidates: Sequence<PsiNamedElement>
         get() {
-            val module = element.module ?: return emptySequence()
+            val module = element.module
             val qualifyingName = qualifiedProperName.moduleName?.name
             return sequence {
                 if (qualifyingName == null) yieldAll(module.constructors)

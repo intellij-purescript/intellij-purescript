@@ -2,7 +2,7 @@ package org.purescript.module.declaration.value.expression.controll.caseof
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 

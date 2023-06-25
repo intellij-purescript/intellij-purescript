@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.stubs.*
 import org.purescript.inference.Inferable
 import org.purescript.inference.Unifiable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub

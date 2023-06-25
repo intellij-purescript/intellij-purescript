@@ -52,7 +52,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
     }
 
     private fun getImportedCandidates(qualifyingName: String?): Sequence<PsiNamedElement> {
-        val module = element.module ?: return emptySequence()
+        val module = element.module
         val name = element.name
         return sequence {
             val importDeclarations = module.cache.imports

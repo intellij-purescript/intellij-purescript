@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
@@ -87,7 +87,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         }
     }
     override fun unify() {
-        val module = module ?: error("$this has no module")
+        val module = module
         val ref = reference.resolve()
         when (ref) {
             is VarBinder -> ref.inferType()

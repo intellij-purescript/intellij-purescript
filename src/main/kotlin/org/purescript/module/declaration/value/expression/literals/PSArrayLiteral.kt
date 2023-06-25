@@ -2,7 +2,7 @@ package org.purescript.module.declaration.value.expression.literals
 
 import com.intellij.lang.ASTNode
 import org.purescript.inference.InferType
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.psi.PSPsiElement

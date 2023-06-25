@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import org.purescript.PSLanguage
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.data.DataConstructor
@@ -87,7 +86,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
 
             is PSPsiElement ->
-                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}")
+                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module.name}")
 
             else -> mutableListOf()
         }

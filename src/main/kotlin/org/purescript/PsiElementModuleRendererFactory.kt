@@ -11,7 +11,7 @@ class PsiElementModuleRendererFactory : ModuleRendererFactory() {
         element is PSPsiElement || element is PSStubbedElement<*>
 
     override fun getModuleTextWithIcon(element: Any?): TextWithIcon? = when (element) {
-        is PSPsiElement -> element.module?.name
+        is PSPsiElement -> element.module.name
         is PSStubbedElement<*> -> element.module?.name
         else -> null
     }?.let { TextWithIcon(it, PSIcons.FILE)}

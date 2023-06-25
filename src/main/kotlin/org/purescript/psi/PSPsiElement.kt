@@ -18,13 +18,13 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
      * @return the [Module] containing this element
      */
     val module: Module get() = this.parentOfType(true) ?: error("Failed to pares module")
-    override val typeId get() = module?.typeIdOf(this)
+    override val typeId get() = module.typeIdOf(this)
     override val substitutedType: InferType
         get() =
-            typeId?.let { module?.substitute(it) } ?: error("failed to substitute type for $this")
+            typeId?.let { module.substitute(it) } ?: error("failed to substitute type for $this")
 
     fun unify(other: InferType) = unify(substitutedType, other)
     fun unify(first: InferType, other: InferType) {
-        module?.unify(first, other)
+        module.unify(first, other)
     }
 }

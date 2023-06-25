@@ -3,7 +3,7 @@ package org.purescript.module.declaration.value.expression.controll.caseof
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.inference.Inferable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.value.Similar
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.binder.Binder

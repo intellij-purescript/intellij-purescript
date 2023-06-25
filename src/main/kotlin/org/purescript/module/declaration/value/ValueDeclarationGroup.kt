@@ -17,7 +17,7 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
 import org.purescript.inference.Unifiable
-import org.purescript.inference.inferType
+
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex

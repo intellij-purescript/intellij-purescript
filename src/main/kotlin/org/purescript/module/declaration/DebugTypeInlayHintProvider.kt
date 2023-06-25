@@ -7,7 +7,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import org.purescript.inference.Inferable
 import org.purescript.inference.RecursiveTypeException
-import org.purescript.inference.inferType
 
 class DebugTypeInlayHintProvider : InlayHintsProvider {
     override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector {

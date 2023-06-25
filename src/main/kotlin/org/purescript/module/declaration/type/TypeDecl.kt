@@ -9,7 +9,7 @@ import org.purescript.ide.formatting.ImportedData
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
 import org.purescript.inference.Unifiable
-import org.purescript.inference.inferType
+
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex

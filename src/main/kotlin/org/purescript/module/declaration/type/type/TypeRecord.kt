@@ -3,7 +3,7 @@ package org.purescript.module.declaration.type.type
 import com.intellij.lang.ASTNode
 import org.purescript.inference.InferType
 import org.purescript.inference.Unifiable
-import org.purescript.inference.inferType
+
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.psi.PSPsiElement
 
