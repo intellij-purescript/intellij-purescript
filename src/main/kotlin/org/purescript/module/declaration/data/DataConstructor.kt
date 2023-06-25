@@ -6,10 +6,14 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedData
+import org.purescript.inference.InferType
+import org.purescript.inference.Inferable
+import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.type.type.PSType
@@ -33,7 +37,8 @@ import javax.swing.Icon
  * ```
  */
 class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifierOwner,
-    org.purescript.module.declaration.Importable, DocCommentOwner {
+    org.purescript.module.declaration.Importable, DocCommentOwner, 
+    Inferable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<DataConstructor>(p, Type) {
         val module get() = dataDeclaration?.parentStub as? Module.Stub
         val dataDeclaration get() = parentStub.parentStub as? DataDeclaration.Stub
@@ -75,6 +80,7 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
         return module?.asImport()?.withItems(items)
     }
 
+    private val types = childrenOfType<PSType>()
     internal val dataDeclaration: DataDeclaration get() = parentOfType()!!
 
     override val type: PSType? get() = null
@@ -82,6 +88,16 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
 
     // Todo clean this up
     override fun toString(): String = "PSDataConstructor($elementType)"
+    override fun unify() {
+        val constructorName = InferType.Constructor(dataDeclaration.name) as InferType
+        val app = dataDeclaration.typeNames.fold(constructorName) { f, arg ->
+            f.app(arg.inferType())
+        }
+        val function = types.foldRight(app) { parameter, ret ->
+            InferType.function(parameter.inferType(), ret)
+        }
+        unify(function)
+    }
 
     /**
      * @return the [PSProperName] identifying this constructor

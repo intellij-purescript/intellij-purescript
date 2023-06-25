@@ -6,12 +6,15 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
 import org.purescript.ide.formatting.ImportedData
+import org.purescript.inference.InferType
+import org.purescript.inference.Inferable
+import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
-import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.module.declaration.type.TypeParameters
+import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSProperName
@@ -26,7 +29,11 @@ import org.purescript.psi.PSStubbedElement
  * data CatQueue a = CatQueue (List a) (List a)
  * ```
  */
-class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>, PsiNameIdentifierOwner, Importable, TypeNamespace {
+class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>,
+    PsiNameIdentifierOwner,
+    Importable,
+    TypeNamespace,
+    Inferable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<DataDeclaration>(p, Type) {
         val module get() = parentStub as? Module.Stub
         val isExported
@@ -66,6 +73,16 @@ class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>, PsiNameIdentifie
 
     // Todo clean this up
     override fun toString(): String = "PSDataDeclaration($elementType)"
+    override fun unify() {
+        val constructorName = InferType.Constructor(name) as InferType
+        val varNames = typeNames.toList()
+        val app = varNames.fold(constructorName) { f, arg ->
+            f.app(arg.inferType())
+        }
+        unify(varNames.foldRight(app) { parameter, ret ->
+            InferType.function(parameter.inferType(), ret)
+        })
+    }
 
     /**
      * @return the [PSProperName] that identifies this declaration
@@ -87,4 +104,5 @@ class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>, PsiNameIdentifie
     override fun getNameIdentifier(): PSProperName = identifier
     override fun getName(): String = greenStub?.name ?: nameIdentifier.name
     override fun getTextOffset(): Int = nameIdentifier.textOffset
+    
 }

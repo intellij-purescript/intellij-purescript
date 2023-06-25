@@ -89,9 +89,9 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
     override fun unify() {
         val module = module ?: error("$this has no module")
         val ref = reference.resolve()
-        when {
-            ref is ValueDeclarationGroup -> ref.inferType().withNewIds(module.replaceMap())
-            ref is Inferable -> ref.inferType()
+        when (ref) {
+            is VarBinder -> ref.inferType()
+            is Inferable -> ref.inferType().withNewIds(module.replaceMap())
             else -> null
         }?.let { unify(it) }
     }
