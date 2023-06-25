@@ -6,6 +6,8 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
@@ -89,14 +91,23 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
     // Todo clean this up
     override fun toString(): String = "PSDataConstructor($elementType)"
     override fun unify() {
-        val constructorName = InferType.Constructor(dataDeclaration.name) as InferType
-        val app = dataDeclaration.typeNames.fold(constructorName) { f, arg ->
-            f.app(arg.inferType())
+        CachedValuesManager.getCachedValue(this) {
+            val constructorName = InferType.Constructor(dataDeclaration.name) as InferType
+            val typeNames = dataDeclaration.typeNames.toList()
+            val types = types
+            val app = typeNames.fold(constructorName) { f, arg ->
+                f.app(arg.inferType())
+            }
+            val function = types.foldRight(app) { parameter, ret ->
+                InferType.function(parameter.inferType(), ret)
+            }
+            unify(function)
+            CachedValueProvider.Result(
+                unify(function),
+                *typeNames.toTypedArray(),
+                *types.toTypedArray()
+            )
         }
-        val function = types.foldRight(app) { parameter, ret ->
-            InferType.function(parameter.inferType(), ret)
-        }
-        unify(function)
     }
 
     /**
