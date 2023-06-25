@@ -84,9 +84,9 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         return ((function?.inferType()?.argument) as? InferType.App)?.on as? InferType.Row
     }
 
-    private fun getRowTypeFromLiteral(element: PsiElement): InferType.RowList? {
+    private fun getRowTypeFromLiteral(element: PsiElement): InferType.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()?.inferType()
-        return (recordLiteral as? InferType.App)?.on as? InferType.RowList
+        return (recordLiteral as? InferType.App)?.on as? InferType.Row
     }
 
 }
