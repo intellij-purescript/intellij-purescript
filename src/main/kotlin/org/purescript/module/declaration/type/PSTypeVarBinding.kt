@@ -7,15 +7,15 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.parentOfType
-import org.purescript.inference.Unifiable
+import org.purescript.inference.Inferable
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
-sealed interface PSTypeVarBinding
+sealed interface PSTypeVarBinding: Inferable
 
 class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
     PSTypeVarBinding,
-    PsiNameIdentifierOwner, Unifiable {
+    PsiNameIdentifierOwner {
     class Stub(val name:String, p: StubElement<*>?) : AStub<TypeVarName>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, TypeVarName>("TypeVarName") {
         override fun createPsi(node: ASTNode) = TypeVarName(node)
@@ -40,9 +40,9 @@ class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
         return this
     }
 
-    override fun unify() {
-        substitutedType
-    }
+    override fun unify() {}
 }
 
-class PSTypeVarKinded(node: ASTNode) : PSPsiElement(node), PSTypeVarBinding
+class PSTypeVarKinded(node: ASTNode) : PSPsiElement(node), PSTypeVarBinding {
+    override fun unify() {}
+}

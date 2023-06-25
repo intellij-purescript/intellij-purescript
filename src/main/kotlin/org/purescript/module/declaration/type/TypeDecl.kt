@@ -7,6 +7,7 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.inference.HasTypeId
+import org.purescript.inference.InferType
 import org.purescript.inference.Unifiable
 import org.purescript.inference.inferType
 import org.purescript.module.Module
@@ -69,6 +70,8 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
 
     override fun getTextOffset(): Int = identifier.textOffset
     override fun unify() {
-        unify(type?.inferType() ?: return)
+        unify(typeNames.toList().foldRight(type?.inferType() ?: return) { parameter, ret ->
+            InferType.function(parameter.inferType(), ret)
+        })
     }
 }

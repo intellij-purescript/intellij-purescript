@@ -93,18 +93,21 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | f :: forall a. a -> a
                 | f x = x
                 | 
-                | eq :: forall a. Eq a => a -> a
-                | eq x = x
+                | class Eq a where
+                |   eq :: a -> a -> Boolean
                 | 
-                | int = eq 1
+                | type_class :: forall a. Eq a => a -> a
+                | type_class x = x
+                | 
+                | int = type_class 1
             """.trimMargin()
         )
         Main.getModule().unify()
         val f = Main.getValueDeclarationGroupByName("f").inferType()
         TestCase.assertEquals("u0 -> u0", f.toString())
 
-        val eq = Main.getValueDeclarationGroupByName("eq").inferType()
-        TestCase.assertEquals("Eq u7 => u7 -> u7", eq.toString())
+        val type_class = Main.getValueDeclarationGroupByName("type_class").inferType()
+        TestCase.assertEquals("Eq u10 => u10 -> u10", type_class.toString())
 
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
@@ -123,5 +126,28 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         )
         val f = Main.getValueDeclarationGroupByName("f").inferType()
         TestCase.assertEquals("{ name::String, age::Int } -> Int", f.toString())
+    }
+    
+    fun `test type synonym`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | type Name = String
+                | type Box a = a
+                | 
+                | name :: Name
+                | name = "Haskell"
+                | 
+                | boxName :: Box String
+                | boxName = "Box"
+                | 
+            """.trimMargin()
+        )
+        val name = Main.getValueDeclarationGroupByName("name").inferType()
+        TestCase.assertEquals("String", "$name")
+        val boxName = Main.getValueDeclarationGroupByName("boxName").inferType()
+        TestCase.assertEquals("String", "$boxName")
     }
 }

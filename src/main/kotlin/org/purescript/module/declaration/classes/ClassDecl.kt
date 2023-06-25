@@ -8,13 +8,16 @@ import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
-import org.purescript.psi.PSElementType
-import org.purescript.psi.AStub
-import org.purescript.psi.PSStubbedElement
+import org.purescript.inference.InferType
+import org.purescript.inference.Inferable
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.ImportableTypeIndex
-import org.purescript.name.PSClassName
-import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.type.PSTypeVarBinding
+import org.purescript.module.declaration.type.type.PSType
+import org.purescript.name.PSClassName
+import org.purescript.psi.AStub
+import org.purescript.psi.PSElementType
+import org.purescript.psi.PSStubbedElement
 
 /**
  * A class declaration, e.g.
@@ -29,7 +32,8 @@ class ClassDecl :
     PSStubbedElement<ClassDecl.Stub>,
     PsiNameIdentifierOwner,
     DocCommentOwner,
-    org.purescript.module.declaration.Importable {
+    org.purescript.module.declaration.Importable,
+    Inferable{
     class Stub(val name: String, p: StubElement<*>?) : AStub<ClassDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ClassDecl>("ClassDecl") {
         override fun createPsi(node: ASTNode) = ClassDecl(node)
@@ -70,4 +74,13 @@ class ClassDecl :
     override val type: PSType? get() = null
     override fun getTextOffset(): Int = className.textOffset
     override val docComments: List<PsiComment> get() = getDocComments()
+    override fun unify() {
+        val constructorName = InferType.Constructor(name) as InferType
+        val app = typeVarBindings.fold(constructorName) { f, arg ->
+            f.app(arg.inferType())
+        }
+        unify(typeVarBindings.foldRight(app) { parameter, ret ->
+            InferType.function(parameter.inferType(), ret)
+        })
+    }
 }

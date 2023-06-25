@@ -31,22 +31,52 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     override val qualifierName: String? get() = moduleName?.name
     override fun getReference() = TypeConstructorReference(this)
     override fun unify() {
-        unify(when (name) {
-            "Int" -> InferType.Int
-            "Number" -> InferType.Number
-            "String" -> InferType.String
-            "Boolean" -> InferType.Boolean
-            "Char" -> InferType.Char
-            "Function" -> InferType.Function
-            "Record" -> InferType.Record
-            "Union" -> InferType.Union
-            else -> {
-                val ref = reference.resolve()
-                when {
-                    ref is HasTypeId && ref is Unifiable -> ref.also { it.unify() }.substitutedType 
-                    else -> InferType.Constructor(name)
+        unify(
+            when (name) {
+                "Int" -> InferType.Int
+                "Number" -> InferType.Number
+                "String" -> InferType.String
+                "Boolean" -> InferType.Boolean
+                "Char" -> InferType.Char
+                "Function" -> {
+                    val a = module.newId()
+                    val b = module.newId()
+                    InferType.function(
+                        a,
+                        InferType.function(
+                            b,
+                            InferType.Function.app(a).app(b)
+                        )
+                    )
+                    InferType.Function.app(a).app(b)
+                }
+
+                "Record" -> {
+                    val a = module.newId()
+                    InferType.function(a, InferType.Record.app(a))
+                }
+                "Union" -> {
+                    val left = module.newId()
+                    val right = module.newId()
+                    val union = module.newId()
+                    InferType.function(
+                        left,
+                        InferType.function(
+                            right,
+                            InferType.function(union,
+                                InferType.Union.app(left).app(right).app(union)
+                            )
+                        )
+                    )
+                }
+                else -> {
+                    val ref = reference.resolve()
+                    when {
+                        ref is HasTypeId && ref is Unifiable -> ref.also { it.unify() }.substitutedType
+                        else -> InferType.Constructor(name)
+                    }
                 }
             }
-        })
+        )
     }
 }
