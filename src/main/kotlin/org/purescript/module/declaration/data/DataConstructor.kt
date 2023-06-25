@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
@@ -15,7 +14,6 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
-
 import org.purescript.module.Module
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.type.type.PSType
@@ -91,23 +89,21 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
     // Todo clean this up
     override fun toString(): String = "PSDataConstructor($elementType)"
     override fun unify() {
-        CachedValuesManager.getCachedValue(this) {
-            val constructorName = InferType.Constructor(dataDeclaration.name) as InferType
-            val typeNames = dataDeclaration.typeNames.toList()
-            val types = types
-            val app = typeNames.fold(constructorName) { f, arg ->
-                f.app(arg.inferType())
-            }
-            val function = types.foldRight(app) { parameter, ret ->
-                InferType.function(parameter.inferType(), ret)
-            }
-            unify(function)
-            CachedValueProvider.Result(
-                unify(function),
-                *typeNames.toTypedArray(),
-                *types.toTypedArray()
-            )
+        val constructorName = InferType.Constructor(dataDeclaration.name) as InferType
+        val typeNames = dataDeclaration.typeNames.toList()
+        val types = types
+        val app = typeNames.fold(constructorName) { f, arg ->
+            f.app(arg.inferType())
         }
+        val function = types.foldRight(app) { parameter, ret ->
+            InferType.function(parameter.inferType(), ret)
+        }
+        unify(function)
+        CachedValueProvider.Result(
+            unify(function),
+            *typeNames.toTypedArray(),
+            *types.toTypedArray()
+        )
     }
 
     /**
