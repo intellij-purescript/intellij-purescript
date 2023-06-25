@@ -8,7 +8,7 @@ import com.intellij.psi.stubs.*
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
 import org.purescript.inference.Unifiable
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
@@ -63,6 +63,6 @@ class Signature :
     }
 
     override fun unify() {
-        type.unifyAndSubstitute().let { unify(it) }
+        type.inferType().let { unify(it) }
     }
 }

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import org.purescript.inference.Unifiable
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
@@ -46,5 +46,5 @@ class Labeled : PSStubbedElement<Labeled.Stub>, PsiNameIdentifierOwner, Unifiabl
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     val type get() = findChildByClass(PSType::class.java)
     val typeAsString get() = greenStub?.type ?: type?.text
-    override fun unify() = unify(type?.unifyAndSubstitute() ?: error("label $text are missing type"))
+    override fun unify() = unify(type?.inferType() ?: error("label $text are missing type"))
 }

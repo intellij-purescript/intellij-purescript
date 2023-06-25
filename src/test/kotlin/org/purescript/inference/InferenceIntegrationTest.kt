@@ -21,11 +21,11 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val f = Main.getValueDeclarationGroupByName("f").unifyAndSubstitute()
+        val f = Main.getValueDeclarationGroupByName("f").inferType()
         TestCase.assertEquals(InferType.function(InferType.Id(0), InferType.Id(0)).toString(), "$f")
-        val int = Main.getValueDeclarationGroupByName("int").unifyAndSubstitute()
+        val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals(InferType.function(InferType.Int, InferType.Int), int)
-        val x = Main.getValueDeclarationGroupByName("x").unifyAndSubstitute()
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals(InferType.Int, x)
     }
     fun `test primitives`() {
@@ -73,15 +73,15 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val record = Main.getValueDeclarationGroupByName("record").unifyAndSubstitute()
+        val record = Main.getValueDeclarationGroupByName("record").inferType()
         TestCase.assertEquals(
             "{ int::Int, number::Number, string::String, boolean::Boolean }",
             record.toString()
         )
-        val int = Main.getValueDeclarationGroupByName("int").unifyAndSubstitute()
+        val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
 
-        val checkUserType = Main.getValueDeclarationGroupByName("checkUser").unifyAndSubstitute()
+        val checkUserType = Main.getValueDeclarationGroupByName("checkUser").inferType()
         TestCase.assertEquals("{ age::Int, name::String } -> Int", "$checkUserType")
 
     }
@@ -122,7 +122,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val f = Main.getValueDeclarationGroupByName("f").unifyAndSubstitute()
+        val f = Main.getValueDeclarationGroupByName("f").inferType()
         TestCase.assertEquals("{ name::String, age::Int } -> Int", f.toString())
     }
 }

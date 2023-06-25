@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import org.purescript.inference.Scope
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.psi.AStub
@@ -36,7 +36,7 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType, TypeNamespace {
 
     override fun unify() {
         typeVars.forEach { it.unify() }
-        type.unifyAndSubstitute().let { unify(it) }
+        type.inferType().let { unify(it) }
     }
 
     override val typeNames: Sequence<PsiNamedElement> get() = typeVars.asSequence()

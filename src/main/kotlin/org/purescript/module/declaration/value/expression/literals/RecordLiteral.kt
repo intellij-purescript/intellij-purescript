@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.util.childrenOfType
 import org.purescript.inference.InferType
 import org.purescript.inference.Scope
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.psi.PSPsiElement
@@ -21,7 +21,7 @@ class RecordLiteral(node: ASTNode) : PSPsiElement(node), ExpressionAtom {
     override fun unify() {
         unify(InferType.Record.app(InferType.RowList(labels.mapNotNull { 
             val name = it.name ?: return@mapNotNull null
-            val expression = it.expression?.unifyAndSubstitute() ?: return@mapNotNull null
+            val expression = it.expression?.inferType() ?: return@mapNotNull null
             name to expression
         })))
     }

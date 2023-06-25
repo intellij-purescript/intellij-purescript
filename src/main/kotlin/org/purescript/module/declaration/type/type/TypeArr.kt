@@ -3,7 +3,7 @@ package org.purescript.module.declaration.type.type
 import com.intellij.lang.ASTNode
 import org.purescript.inference.InferType
 import org.purescript.inference.Scope
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.psi.PSPsiElement
 
 class TypeArr(node: ASTNode) : PSPsiElement(node), PSType {
@@ -15,8 +15,8 @@ class TypeArr(node: ASTNode) : PSPsiElement(node), PSType {
 
     override fun unify() {
         val (first, second) = types
-        val parameter = first.unifyAndSubstitute()
-        val ret = second.unifyAndSubstitute()
+        val parameter = first.inferType()
+        val ret = second.inferType()
         unify(InferType.function(parameter, ret))
     }
 }

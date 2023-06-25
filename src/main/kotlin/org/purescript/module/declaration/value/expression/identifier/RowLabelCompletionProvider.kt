@@ -11,8 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.inference.InferType
-import org.purescript.inference.Scope
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.LabeledIndex
 import org.purescript.module.declaration.value.expression.RecordAccess
@@ -74,17 +73,19 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
         }
     }
 
-    private fun getRowTypeFromRecordAccessor(element: PsiElement): InferType.Row? =
-        (element.parentOfType<RecordAccess>()?.record?.infer(Scope.new()) as? InferType.App)?.on as? InferType.RowList
+    private fun getRowTypeFromRecordAccessor(element: PsiElement): InferType.Row? {
+        val type = element.parentOfType<RecordAccess>()?.record?.inferType()
+        return (type as? InferType.App)?.on as? InferType.RowList
+    }
 
     private fun getRowTypeFromFunctionCall(element: PsiElement): InferType.Row? {
         val recordLiteral = element.parentOfType<RecordLiteral>()
         val function = ((recordLiteral?.parent as? Argument)?.parent as? Call)?.function
-        return ((function?.unifyAndSubstitute()?.argument) as? InferType.App)?.on as? InferType.Row
+        return ((function?.inferType()?.argument) as? InferType.App)?.on as? InferType.Row
     }
 
     private fun getRowTypeFromLiteral(element: PsiElement): InferType.RowList? {
-        val recordLiteral = element.parentOfType<RecordLiteral>()?.infer(Scope.new())
+        val recordLiteral = element.parentOfType<RecordLiteral>()?.inferType()
         return (recordLiteral as? InferType.App)?.on as? InferType.RowList
     }
 

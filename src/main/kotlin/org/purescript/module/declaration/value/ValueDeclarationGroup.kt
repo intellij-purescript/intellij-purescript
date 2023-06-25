@@ -18,7 +18,7 @@ import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
 import org.purescript.inference.Scope
 import org.purescript.inference.Unifiable
-import org.purescript.inference.unifyAndSubstitute
+import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -168,8 +168,8 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     }
 
     override fun unify() {
-        signature?.unifyAndSubstitute()?.let(::unify)
-            ?: valueDeclarations.forEach { it.unifyAndSubstitute().let(::unify) }
+        signature?.inferType()?.let(::unify)
+            ?: valueDeclarations.forEach { it.inferType().let(::unify) }
     }
 
 }

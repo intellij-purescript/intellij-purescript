@@ -237,7 +237,7 @@ interface HasTypeId {
 interface Unifiable {
     fun unify(): Unit
 }
-fun <E> E.unifyAndSubstitute(): InferType where E: Unifiable, E: HasTypeId {
+fun <E> E.inferType(): InferType where E: Unifiable, E: HasTypeId {
     this.unify()
     return this.substitutedType 
 }
