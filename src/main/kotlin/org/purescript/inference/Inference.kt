@@ -44,6 +44,7 @@ sealed interface InferType {
                 if (f.on is App && f.on.isFunction) "(${f.on}) -> $on"
                 else "${f.on} -> $on"
 
+            on is App -> "$f ($on)"
             else -> "$f $on"
         }
     }
