@@ -10,6 +10,7 @@ import com.intellij.psi.util.parentOfType
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
+import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
 
 import org.purescript.module.Module
@@ -101,5 +102,13 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
         parentOfType<ClassDecl>()?.docComments ?: emptyList()
     }
     override fun getIcon(flags: Int): Icon = AllIcons.Nodes.Function
-    override fun unify() = unify(type.inferType())
+    override fun unify() {
+        val classDecl = parentOfType<ClassDecl>(false) ?: error("class member without class decl")
+        val constructorName = InferType.Constructor(classDecl.name) as InferType
+        val app = classDecl.typeVarBindings.fold(constructorName) { f, arg ->
+            f.app(arg.inferType())
+        }
+        val type = type.inferType()
+        unify(InferType.Constraint(app, type))
+    }
 }

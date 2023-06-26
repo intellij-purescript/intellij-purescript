@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
@@ -13,6 +14,8 @@ import org.purescript.inference.Inferable
 
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.type.PSTypeVarBinding
+import org.purescript.module.declaration.type.TypeNamespace
+import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.name.PSClassName
 import org.purescript.psi.AStub
@@ -33,7 +36,8 @@ class ClassDecl :
     PsiNameIdentifierOwner,
     DocCommentOwner,
     org.purescript.module.declaration.Importable,
-    Inferable{
+    Inferable,
+    TypeNamespace {
     class Stub(val name: String, p: StubElement<*>?) : AStub<ClassDecl>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, ClassDecl>("ClassDecl") {
         override fun createPsi(node: ASTNode) = ClassDecl(node)
@@ -72,6 +76,10 @@ class ClassDecl :
     override fun getNameIdentifier(): PsiElement = className
     override fun asImport(): ImportDeclaration? = module?.asImport()?.withItems(ImportedClass(name))
     override val type: PSType? get() = null
+    override val typeNames: Sequence<PsiNamedElement> get() = typeVarBindings
+        .asSequence()
+        .filterIsInstance<TypeVarName>()
+
     override fun getTextOffset(): Int = className.textOffset
     override val docComments: List<PsiComment> get() = getDocComments()
     override fun unify() {

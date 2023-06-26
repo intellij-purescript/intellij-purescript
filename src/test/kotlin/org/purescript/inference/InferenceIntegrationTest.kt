@@ -112,6 +112,27 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
     }
+    fun `xtest function types`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | f :: Int -> Int
+                | f x = x
+                | 
+                | g :: forall f a. Functor f => (a -> a) -> f a -> f a
+                | g a f = f
+                | 
+                | h = g intToInt
+            """.trimMargin()
+        )
+        val f = Main.getValueDeclarationGroupByName("f").inferType()
+        TestCase.assertEquals("Int -> Int", pprint("$f"))
+        val h = Main.getValueDeclarationGroupByName("h").inferType()
+        TestCase.assertEquals("Array Int -> Array Int", pprint("$h"))
+        
+    }
     
     fun `test union`() {
         val Main = myFixture.configureByText(
@@ -191,6 +212,25 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("Box String", "$fullBox")
         val emptyBox = Main.getValueDeclarationGroupByName("emptyBox").inferType()
         TestCase.assertEquals("Box a", pprint("$emptyBox"))
+    }
+    fun `xtest classes`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | class Functor f where
+                |   map :: forall a b. (a -> b) -> f a -> f b
+                | 
+                | intToInt :: Int -> Int
+                | intToInt x = x
+                | 
+                | mapInt = map intToInt
+                | 
+            """.trimMargin()
+        )
+        val mapInt = Main.getValueDeclarationGroupByName("mapInt").inferType()
+        TestCase.assertEquals("Functor f => f Int -> f Int", "$mapInt")
     }
     
     fun pprint(string : String): String {
