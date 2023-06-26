@@ -2,7 +2,6 @@ package org.purescript.inference
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
-import org.purescript.getModule
 import org.purescript.getValueDeclarationGroupByName
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
@@ -48,6 +47,23 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("Number", number.toString())
         TestCase.assertEquals("String", string.toString())
         TestCase.assertEquals("Boolean", boolean.toString())
+    }
+    fun `test forall`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | f :: forall a. a -> a
+                | f a = a
+                | 
+                | int = f 10
+            """.trimMargin()
+        )
+        val f = Main.getValueDeclarationGroupByName("f").inferType()
+        TestCase.assertEquals("forall a. a -> a", pprint("$f"))
+        val int = Main.getValueDeclarationGroupByName("int").inferType()
+        TestCase.assertEquals("Int", "$int")
     }
     fun `test records`() {
         val Main = myFixture.configureByText(
@@ -102,12 +118,8 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | int = type_class 1
             """.trimMargin()
         )
-        Main.getModule().unify()
-        val f = Main.getValueDeclarationGroupByName("f").inferType()
-        TestCase.assertEquals("a -> a", pprint(f.toString()))
-
         val type_class = Main.getValueDeclarationGroupByName("type_class").inferType()
-        TestCase.assertEquals("Eq a => a -> a",  pprint(type_class.toString()))
+        TestCase.assertEquals("forall a. Eq a => a -> a",  pprint(type_class.toString()))
 
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())

@@ -93,6 +93,12 @@ sealed interface InferType {
         override fun contains(t: Id): Boolean = type.contains(t)
         override fun withNewIds(map: (Id) -> Id): InferType = Alias(name, type.withNewIds(map))
     }
+    data class ForAll(val name: Id, val scope: InferType): InferType {
+        override val argument get() = scope.argument
+        override fun contains(t: Id): Boolean = name == t || scope.contains(t)
+        override fun withNewIds(map: (Id) -> Id): InferType = ForAll(map(name), scope.withNewIds(map))
+        override fun toString(): String = "forall $name. $scope"
+    }
 
     fun app(other: InferType): App = App(this, other)
     fun contains(t: Id): Boolean
@@ -107,6 +113,7 @@ sealed interface InferType {
         is RowId -> this
         is RowList -> RowList(labels.map { it.first to it.second.withoutConstraints() })
         is RowMerge -> RowMerge(left.withoutConstraints() as Row, right.withoutConstraints() as Row)
+        is ForAll -> ForAll(name, scope.withoutConstraints())
     }
 
     companion object {
@@ -163,6 +170,14 @@ tailrec fun Map<InferType.Id, InferType>.substitute(t: InferType, andThen: (Infe
             andThen(InferType.Alias(t.name, type))
         }
         is InferType.Row -> substituteRow(t)
+        is InferType.ForAll -> {
+            substitute(t.scope) { 
+                andThen(when(val name = substitute(t.name)) {
+                    is InferType.Id -> InferType.ForAll(name, it)
+                    else -> it
+                })
+            }
+        }
     }
 
 fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
@@ -172,6 +187,8 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
         sx == sy -> return
         sx is InferType.Id -> this[sx] = sy
         sy is InferType.Id -> this[sy] = sx
+        sy is InferType.ForAll -> unify(sy.scope, sx)
+        sx is InferType.ForAll -> unify(sx.scope, sy)
         sx is InferType.App && sy is InferType.App -> {
             unify(sx.f, sy.f)
             unify(sx.on, sy.on)
@@ -181,10 +198,7 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
             unifyRowId(sx, sy)
         }
         sx is InferType.Constraint && sy is InferType.Constraint -> {
-            unify(sx.constraint, sy.constraint)
             unify(sx.of, sy.of)
-            unify(sx, sy.of)
-            unify(sx.of, sy)
         }
         sx is InferType.Constraint -> unify(sx.of, sy)
         sy is InferType.Constraint -> unify(sx, sy.of)

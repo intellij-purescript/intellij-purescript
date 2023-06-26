@@ -3,6 +3,7 @@ package org.purescript.module.declaration.type.type
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
+import org.purescript.inference.InferType
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.psi.AStub
@@ -26,8 +27,12 @@ class ForAll: PSStubbedElement<ForAll.Stub>, PSType, TypeNamespace {
     private val type get() = findNotNullChildByClass(PSType::class.java)
     private val typeVars get() = findChildrenByClass(TypeVarName::class.java)
     override fun unify() {
-        typeVars.forEach { it.unify() }
-        unify(type.inferType())
+        val names:List<InferType.Id> = typeVars
+            .toList()
+            .map{ it.inferType()}
+            .filterIsInstance<InferType.Id>()
+        val chain = names.foldRight(type.inferType(), InferType::ForAll)
+        unify(chain)
     }
 
     override val typeNames: Sequence<PsiNamedElement> get() = typeVars.asSequence()

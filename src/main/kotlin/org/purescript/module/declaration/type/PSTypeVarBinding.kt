@@ -39,7 +39,6 @@ class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
         nameIdentifier.replace(identifier)
         return this
     }
-
     override fun unify() {}
 }
 
