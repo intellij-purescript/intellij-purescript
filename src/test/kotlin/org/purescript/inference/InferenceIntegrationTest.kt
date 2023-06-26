@@ -173,6 +173,25 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val boxNoType = Main.getValueDeclarationGroupByName("boxNoType").inferType()
         TestCase.assertEquals("Box String", "$boxNoType")
     }
+    fun `test data type`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | data Box a = Full a | Empty
+                | 
+                | fullBox = Full "Box" 
+                | 
+                | emptyBox = Empty
+                | 
+            """.trimMargin()
+        )
+        val fullBox = Main.getValueDeclarationGroupByName("fullBox").inferType()
+        TestCase.assertEquals("Box String", "$fullBox")
+        val emptyBox = Main.getValueDeclarationGroupByName("emptyBox").inferType()
+        TestCase.assertEquals("Box a", pprint("$emptyBox"))
+    }
     
     fun pprint(string : String): String {
         val letters = ('a'..'z').joinToString("")
