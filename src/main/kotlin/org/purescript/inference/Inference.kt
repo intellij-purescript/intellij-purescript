@@ -8,7 +8,7 @@ sealed interface InferType {
         override val argument: InferType? get() = null
         override fun contains(t: Id) = t == this
         override fun toString(): String = "u$id"
-        override fun withNewIds(map: (Id) -> Id): InferType = map(this)
+        override fun withNewIds(map: (Id) -> Id): Id = map(this)
     }
 
     @JvmInline
@@ -62,6 +62,14 @@ sealed interface InferType {
             RowList(labels.map { it.first to it.second.withNewIds(map) })
 
         override fun mergedLabels(): List<Pair<String, InferType>> = labels
+    }
+    
+    @JvmInline
+    value class RowId(val id: Id): Row {
+        override val argument: InferType? get() = null
+        override fun withNewIds(map: (Id) -> Id): Row = RowId(id.withNewIds(map))
+        override fun mergedLabels(): List<Pair<String, InferType>> = emptyList()
+        override fun contains(t: Id): Boolean = id.contains(t)
     }
 
     data class RowMerge(val left: Row, val right: Row) : Row {
@@ -142,6 +150,11 @@ tailrec fun Map<InferType.Id, InferType>.substitute(t: InferType, andThen: (Infe
             )
         }
 
+        is InferType.RowId -> substitute(t.id) {andThen(when(it) {
+            is InferType.Row -> it 
+            is InferType.Id -> InferType.RowId(it)
+            else -> error("substitution of row but got ${it::class.java} value $it")
+        })}
         is InferType.Row -> error("Should be unreachable")
     }
 
@@ -186,7 +199,7 @@ interface HasTypeId {
 }
 
 interface Unifiable {
-    fun unify(): Unit
+    fun unify()
 }
 
 
