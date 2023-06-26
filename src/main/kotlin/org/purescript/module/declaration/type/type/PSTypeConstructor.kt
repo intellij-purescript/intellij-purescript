@@ -56,9 +56,9 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
                     InferType.function(a, InferType.Record.app(a))
                 }
                 "Union" -> {
-                    val left = module.newId()
-                    val right = module.newId()
-                    val union = module.newId()
+                    val left = InferType.RowId(module.newId())
+                    val right = InferType.RowId(module.newId())
+                    val union = InferType.RowMerge(left, right)
                     InferType.function(
                         left,
                         InferType.function(

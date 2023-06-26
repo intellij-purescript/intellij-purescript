@@ -49,7 +49,7 @@ sealed interface InferType {
         }
     }
 
-    interface Row : InferType {
+    sealed interface Row : InferType {
         override fun withNewIds(map: (Id) -> Id): Row
         fun mergedLabels(): List<Pair<String, InferType>>
     }
@@ -63,9 +63,9 @@ sealed interface InferType {
 
         override fun mergedLabels(): List<Pair<String, InferType>> = labels
     }
-    
+
     @JvmInline
-    value class RowId(val id: Id): Row {
+    value class RowId(val id: Id) : Row {
         override val argument: InferType? get() = null
         override fun withNewIds(map: (Id) -> Id): Row = RowId(id.withNewIds(map))
         override fun mergedLabels(): List<Pair<String, InferType>> = emptyList()
@@ -97,6 +97,17 @@ sealed interface InferType {
     fun app(other: InferType): App = App(this, other)
     fun contains(t: Id): Boolean
     fun withNewIds(map: (Id) -> Id): InferType
+    fun withoutConstraints(): InferType = when(this) {
+        is Constraint -> of.withoutConstraints()
+        is Alias -> Alias(name, type.withoutConstraints())
+        is App -> App(f.withoutConstraints(), on.withoutConstraints())
+        is Constructor -> this
+        is Id -> this
+        is Prim -> this
+        is RowId -> this
+        is RowList -> RowList(labels.map { it.first to it.second.withoutConstraints() })
+        is RowMerge -> RowMerge(left.withoutConstraints() as Row, right.withoutConstraints() as Row)
+    }
 
     companion object {
         val Union = Prim("Row.Union")
@@ -118,6 +129,17 @@ data class IdGenerator(private var unknownCounter: Int = 0) {
 }
 
 fun Map<InferType.Id, InferType>.substitute(t: InferType): InferType = substitute(t) { it }
+
+fun Map<InferType.Id, InferType>.substituteRow(t: InferType.Row): InferType.Row = when (t) {
+    is InferType.RowList -> InferType.RowList(t.labels.map { it.first to substitute(it.second) })
+    is InferType.RowMerge -> InferType.RowMerge(substituteRow(t.left), substituteRow(t.right))
+    is InferType.RowId -> when (val it = substitute(t.id)) {
+        is InferType.Row -> it
+        is InferType.Id -> InferType.RowId(it)
+        else -> error("substitution of row but got ${it::class.java} value $it")
+    }
+}
+
 tailrec fun Map<InferType.Id, InferType>.substitute(t: InferType, andThen: (InferType) -> InferType): InferType =
     when (t) {
         is InferType.Prim, is InferType.Constructor -> andThen(t)
@@ -140,22 +162,7 @@ tailrec fun Map<InferType.Id, InferType>.substitute(t: InferType, andThen: (Infe
         is InferType.Alias -> substitute(t.type) { type ->
             andThen(InferType.Alias(t.name, type))
         }
-        is InferType.RowList -> andThen(InferType.RowList(t.labels.map { it.first to substitute(it.second) }))
-        is InferType.RowMerge -> substitute(t.left) { left ->
-            andThen(
-                InferType.RowMerge(
-                    left as InferType.Row,
-                    substitute(t.right) as InferType.Row
-                )
-            )
-        }
-
-        is InferType.RowId -> substitute(t.id) {andThen(when(it) {
-            is InferType.Row -> it 
-            is InferType.Id -> InferType.RowId(it)
-            else -> error("substitution of row but got ${it::class.java} value $it")
-        })}
-        is InferType.Row -> error("Should be unreachable")
+        is InferType.Row -> substituteRow(t)
     }
 
 fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
@@ -169,20 +176,61 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
             unify(sx.f, sy.f)
             unify(sx.on, sy.on)
         }
-
         sx is InferType.Row && sy is InferType.Row -> {
-            val syLabels = sy.mergedLabels()
-            for ((xname, xtype) in sx.mergedLabels()) {
-                for ((yname, ytype) in syLabels) {
-                    if (xname == yname) unify(xtype, ytype)
-                }
-            }
+            unifyLabels(sx, sy)
+            unifyRowId(sx, sy)
         }
-
+        sx is InferType.Constraint && sy is InferType.Constraint -> {
+            unify(sx.constraint, sy.constraint)
+            unify(sx.of, sy.of)
+            unify(sx, sy.of)
+            unify(sx.of, sy)
+        }
         sx is InferType.Constraint -> unify(sx.of, sy)
         sy is InferType.Constraint -> unify(sx, sy.of)
         sy is InferType.Alias -> unify(sx, sy.type)
         sx is InferType.Alias -> unify(sx.type, sy)
+    }
+}
+
+fun MutableMap<InferType.Id, InferType>.unifyRowId(x: InferType.Row, y: InferType.Row) {
+    val sx = substituteRow(x)
+    val sy = substituteRow(y)
+    when(sx) {
+        is InferType.RowId -> this[sx.id] = sy
+        is InferType.RowMerge -> when(sy) {
+            is InferType.RowId -> this[sy.id] = sx
+            is InferType.RowList -> {
+                val all = sy.labels
+                val left = all.toSet().subtract(sx.right.mergedLabels().toSet())
+                val right = all.toSet().subtract(sx.left.mergedLabels().toSet())
+                unifyRowId(sx.left, InferType.RowList(left.toList()))
+                unifyRowId(sx.right, InferType.RowList(right.toList()))
+            }
+            is InferType.RowMerge -> {
+                unifyRowId(sx, InferType.RowList(sy.mergedLabels()))
+                unifyRowId(sy, InferType.RowList(sx.mergedLabels()))
+            }
+        }
+        is InferType.RowList -> when(sy) {
+            is InferType.RowId -> this[sy.id] = sx
+            is InferType.RowList -> {}
+            is InferType.RowMerge -> {
+                val all = sx.labels
+                val left = all.toSet().subtract(sy.right.mergedLabels().toSet())
+                val right = all.toSet().subtract(sy.left.mergedLabels().toSet())
+                unifyRowId(sy.left, InferType.RowList(left.toList()))
+                unifyRowId(sy.right, InferType.RowList(right.toList()))
+            }
+        }
+    }
+}
+
+fun MutableMap<InferType.Id, InferType>.unifyLabels(sx: InferType.Row, sy: InferType.Row) {
+    for ((xLabel, xType) in sx.mergedLabels()) {
+        for ((yLabel, yType) in sy.mergedLabels()) {
+            if (yLabel == xLabel) unify(xType, yType)
+        }
     }
 }
 

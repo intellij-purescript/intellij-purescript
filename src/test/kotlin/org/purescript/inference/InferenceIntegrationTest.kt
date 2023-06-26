@@ -125,7 +125,10 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             """.trimMargin()
         )
         val f = Main.getValueDeclarationGroupByName("f").inferType()
-        TestCase.assertEquals("{ name::String, age::Int } -> Int", f.toString())
+        TestCase.assertEquals(
+            "Row.Union (name::String) (age::Int) (name::String, age::Int) => { name::String, age::Int } -> Int",
+            f.toString()
+        )
     }
     
     fun `test type synonym`() {
