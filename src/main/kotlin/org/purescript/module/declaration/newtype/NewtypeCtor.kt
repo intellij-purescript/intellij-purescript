@@ -81,9 +81,7 @@ class NewtypeCtor :
     override fun unify() {
         val typeNames = newTypeDeclaration.typeNames.toList()
         val type = InferType.Constructor(name).app(typeAtom.inferType())
-        val function = typeNames.foldRight(type) { parameter, ret ->
-            InferType.function(parameter.inferType(), ret)
-        }
+        val function = InferType.function(*typeNames.map { it.inferType() }.toTypedArray(), type)
         unify(function)
     }
 }

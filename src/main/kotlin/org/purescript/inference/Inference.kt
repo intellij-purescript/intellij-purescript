@@ -93,7 +93,8 @@ sealed interface InferType {
         override fun contains(t: Id): Boolean = type.contains(t)
         override fun withNewIds(map: (Id) -> Id): InferType = Alias(name, type.withNewIds(map))
     }
-    data class ForAll(val name: Id, val scope: InferType): InferType {
+
+    data class ForAll(val name: Id, val scope: InferType) : InferType {
         override val argument get() = scope.argument
         override fun contains(t: Id): Boolean = name == t || scope.contains(t)
         override fun withNewIds(map: (Id) -> Id): InferType = ForAll(map(name), scope.withNewIds(map))
@@ -103,7 +104,7 @@ sealed interface InferType {
     fun app(other: InferType): App = App(this, other)
     fun contains(t: Id): Boolean
     fun withNewIds(map: (Id) -> Id): InferType
-    fun withoutConstraints(): InferType = when(this) {
+    fun withoutConstraints(): InferType = when (this) {
         is Constraint -> of.withoutConstraints()
         is Alias -> Alias(name, type.withoutConstraints())
         is App -> App(f.withoutConstraints(), on.withoutConstraints())
@@ -126,7 +127,9 @@ sealed interface InferType {
         val Function = Prim("Function")
         val Array = Prim("Array")
         val Record = Prim("Record")
-        fun function(parameter: InferType, ret: InferType): App = Function.app(parameter).app(ret)
+        fun function(vararg parameters: InferType): InferType =
+            parameters.dropLast(1).foldRight(parameters.last()) { param, ret -> Function.app(param).app(ret) }
+
         fun record(labels: List<Pair<String, InferType>>) = Record.app(RowList(labels))
     }
 }
@@ -169,13 +172,16 @@ tailrec fun Map<InferType.Id, InferType>.substitute(t: InferType, andThen: (Infe
         is InferType.Alias -> substitute(t.type) { type ->
             andThen(InferType.Alias(t.name, type))
         }
+
         is InferType.Row -> substituteRow(t)
         is InferType.ForAll -> {
-            substitute(t.scope) { 
-                andThen(when(val name = substitute(t.name)) {
-                    is InferType.Id -> InferType.ForAll(name, it)
-                    else -> it
-                })
+            substitute(t.scope) {
+                andThen(
+                    when (val name = substitute(t.name)) {
+                        is InferType.Id -> InferType.ForAll(name, it)
+                        else -> it
+                    }
+                )
             }
         }
     }
@@ -193,13 +199,16 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
             unify(sx.f, sy.f)
             unify(sx.on, sy.on)
         }
+
         sx is InferType.Row && sy is InferType.Row -> {
             unifyLabels(sx, sy)
             unifyRowId(sx, sy)
         }
+
         sx is InferType.Constraint && sy is InferType.Constraint -> {
             unify(sx.of, sy.of)
         }
+
         sx is InferType.Constraint -> unify(sx.of, sy)
         sy is InferType.Constraint -> unify(sx, sy.of)
         sy is InferType.Alias -> unify(sx, sy.type)
@@ -210,9 +219,9 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
 fun MutableMap<InferType.Id, InferType>.unifyRowId(x: InferType.Row, y: InferType.Row) {
     val sx = substituteRow(x)
     val sy = substituteRow(y)
-    when(sx) {
+    when (sx) {
         is InferType.RowId -> this[sx.id] = sy
-        is InferType.RowMerge -> when(sy) {
+        is InferType.RowMerge -> when (sy) {
             is InferType.RowId -> this[sy.id] = sx
             is InferType.RowList -> {
                 val all = sy.labels
@@ -221,12 +230,14 @@ fun MutableMap<InferType.Id, InferType>.unifyRowId(x: InferType.Row, y: InferTyp
                 unifyRowId(sx.left, InferType.RowList(left.toList()))
                 unifyRowId(sx.right, InferType.RowList(right.toList()))
             }
+
             is InferType.RowMerge -> {
                 unifyRowId(sx, InferType.RowList(sy.mergedLabels()))
                 unifyRowId(sy, InferType.RowList(sx.mergedLabels()))
             }
         }
-        is InferType.RowList -> when(sy) {
+
+        is InferType.RowList -> when (sy) {
             is InferType.RowId -> this[sy.id] = sx
             is InferType.RowList -> {}
             is InferType.RowMerge -> {
