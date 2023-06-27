@@ -2,6 +2,7 @@ package org.purescript.inference
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
+import org.purescript.getClassMember
 import org.purescript.getValueDeclarationGroupByName
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
@@ -124,27 +125,6 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
     }
-    fun `xtest function types`() {
-        val Main = myFixture.configureByText(
-            "Main.purs",
-            """
-                | module Main where
-                | 
-                | f :: Int -> Int
-                | f x = x
-                | 
-                | g :: forall f a. Functor f => (a -> a) -> f a -> f a
-                | g a f = f
-                | 
-                | h = g intToInt
-            """.trimMargin()
-        )
-        val f = Main.getValueDeclarationGroupByName("f").inferType()
-        TestCase.assertEquals("Int -> Int", pprint("$f"))
-        val h = Main.getValueDeclarationGroupByName("h").inferType()
-        TestCase.assertEquals("Array Int -> Array Int", pprint("$h"))
-        
-    }
     
     fun `test union`() {
         val Main = myFixture.configureByText(
@@ -241,20 +221,24 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
+        val map = Main.getClassMember().inferType()
+        TestCase.assertEquals(
+            "Functor a => forall b. forall c. (b -> c) -> a b -> a c",
+            pprint("$map")
+        )
         val mapInt = Main.getValueDeclarationGroupByName("mapInt").inferType()
-        TestCase.assertEquals("Functor f => f Int -> f Int", "$mapInt")
+        TestCase.assertEquals("a Int -> a Int",  pprint("$mapInt"))
     }
     
     fun pprint(string : String): String {
         val letters = ('a'..'z').joinToString("")
         val id = Regex("u\\d+")
-        val us: Map<String, CharSequence> = id.find(string)
-            ?.groupValues
-            ?.sorted()
-            ?.distinct()
-            ?.withIndex()
-            ?.associate { it.value.toString() to letters[it.index].toString() }
-            ?: return string
-        return string.replace(id) { us[it.value]!!}
+        val us: Map<String, CharSequence> = id.findAll(string)
+            .map { it.value }
+            .sorted()
+            .distinct()
+            .withIndex()
+            .associate { it.value to letters[it.index].toString() }
+        return string.replace(id) { us[it.value]?: it.value}
     }
 }
