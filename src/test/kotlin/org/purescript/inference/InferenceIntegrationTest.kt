@@ -2,8 +2,9 @@ package org.purescript.inference
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
-import org.purescript.getClassMember
+import org.purescript.getClassDeclarations
 import org.purescript.getValueDeclarationGroupByName
+import org.purescript.module.declaration.classes.PSClassMember
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
     fun `test everything`() {
@@ -214,6 +215,11 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | class Functor f where
                 |   map :: forall a b. (a -> b) -> f a -> f b
                 | 
+                | class Foldable f where
+                |   foldr :: forall a b. (a -> b -> b) -> b -> f a -> b
+                |   foldl :: forall a b. (b -> a -> b) -> b -> f a -> b
+                |   foldMap :: forall a m. Monoid m => (a -> m) -> f a -> m
+                | 
                 | intToInt :: Int -> Int
                 | intToInt x = x
                 | 
@@ -221,13 +227,28 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val map = Main.getClassMember().inferType()
+        val map = Main.getClassDeclarations()
+            .first { it.name == "Functor"}
+            .classMembers
+            .single()
+            .inferType()
         TestCase.assertEquals(
             "Functor a => forall b. forall c. (b -> c) -> a b -> a c",
             pprint("$map")
         )
         val mapInt = Main.getValueDeclarationGroupByName("mapInt").inferType()
         TestCase.assertEquals("a Int -> a Int",  pprint("$mapInt"))
+        val foldable = Main.getClassDeclarations()
+            .first { it.name == "Foldable" }
+        val foldr = foldable
+            .classMembers
+            .also { it.map(PSClassMember::inferType) }
+            .single { it.name == "foldr"}
+            .inferType()
+        TestCase.assertEquals(
+            "Foldable a => forall b. forall c. (b -> c -> c) -> c -> a b -> c",
+            pprint("$foldr")
+        )
     }
     
     fun pprint(string : String): String {
