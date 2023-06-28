@@ -14,6 +14,7 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.inference.Inferable
+import org.purescript.inference.inferType
 
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
@@ -102,7 +103,7 @@ class FixityDeclaration : PSStubbedElement<FixityDeclaration.Stub>,
     }
 
     override fun unify() =
-        unify((reference.resolve() as? Inferable)?.inferType()?.withNewIds(module.replaceMap()) ?: error("could not find reference for $name"))
+        unify(reference.inferType(module.replaceMap()) ?: error("could not find reference for $name"))
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"

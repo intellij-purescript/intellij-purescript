@@ -1,8 +1,7 @@
 package org.purescript.module.declaration.value.expression.identifier
 
 import com.intellij.lang.ASTNode
-import org.purescript.inference.Inferable
-
+import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
@@ -31,7 +30,6 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAto
     override val qualifierName get() = qualifiedProperName.moduleName?.name
     override fun getReference(): ConstructorReference = ConstructorReference(this, qualifiedProperName)
     override fun unify() {
-        (reference.resolve() as? Inferable)
-            ?.let{ unify(it.inferType().withNewIds(module.replaceMap())) }
+        reference.inferType(module.replaceMap())?.let { unify(it) }
     }
 }

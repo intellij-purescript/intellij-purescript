@@ -1,5 +1,7 @@
 package org.purescript.inference
 
+import com.intellij.psi.PsiReference
+
 sealed interface InferType {
     val argument: InferType?
 
@@ -277,3 +279,6 @@ interface Unifiable {
 
 
 class RecursiveTypeException(t: InferType) : Exception("$t is recursive")
+
+fun PsiReference.inferType(map: (InferType.Id) -> InferType.Id): InferType? =
+    (this.resolve() as? Inferable)?.inferType()?.withNewIds(map)
