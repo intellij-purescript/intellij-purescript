@@ -250,13 +250,32 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             pprint("$foldr")
         )
     }
-    fun `test binders`() {
+    
+    fun `test binders referencing data`() {
         val Main = myFixture.configureByText(
             "Main.purs",
             """
                 | module Main where
                 | 
                 | data Box a = Box a
+                | 
+                | unbox (Box x) = x
+                | 
+            """.trimMargin()
+        )
+        val unbox =  Main.getValueDeclarationGroupByName("unbox").inferType()
+        TestCase.assertEquals(
+            "Box a -> a",
+            pprint("$unbox")
+        )
+    }
+    fun `test binders referencing newtype`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | newtype Box a = Box a
                 | 
                 | unbox (Box x) = x
                 | 
