@@ -205,7 +205,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val emptyBox = Main.getValueDeclarationGroupByName("emptyBox").inferType()
         TestCase.assertEquals("Box a", pprint("$emptyBox"))
     }
-    fun `xtest classes`() {
+    fun `test classes`() {
         val Main = myFixture.configureByText(
             "Main.purs",
             """

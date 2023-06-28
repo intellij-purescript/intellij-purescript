@@ -2,7 +2,7 @@ package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
 import org.purescript.inference.InferType
-
+import org.purescript.inference.InferType.Companion.function
 import org.purescript.psi.PSPsiElement
 
 class TypeApp(node: ASTNode) : PSPsiElement(node), PSType {
@@ -24,10 +24,14 @@ class TypeApp(node: ASTNode) : PSPsiElement(node), PSType {
      */
     override fun unify() {
         val (kind, argument) = types
-        val functionType = kind?.inferType() ?: return
+        val kindType = kind?.inferType() ?: return
         val argumentType = argument?.inferType() ?: return
-        val returnType = substitutedType
-        val callType = InferType.function(argumentType, returnType)
-        unify(functionType, callType)
+        if (kindType is InferType.App) {
+            val returnType = substitutedType
+            val callType = function(argumentType, returnType)
+            unify(kindType, callType)
+        } else {
+            unify(kindType.app(argumentType))
+        }
     }
 }
