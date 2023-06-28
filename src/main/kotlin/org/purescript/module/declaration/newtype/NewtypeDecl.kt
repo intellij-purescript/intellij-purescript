@@ -75,7 +75,7 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>,
     override val typeNames get() = parameters?.typeNames ?: emptySequence()
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
     override fun getTextOffset(): Int = identifier.textOffset
-    val typeVarBindings get() = parameters?.typeVars ?: emptyArray()
+    val typeVars get() = parameters?.typeVars ?: emptyArray()
 
     override fun unify() {
         val constructorName = InferType.Constructor(name) as InferType

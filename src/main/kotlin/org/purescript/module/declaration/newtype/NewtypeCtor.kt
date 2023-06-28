@@ -79,7 +79,7 @@ class NewtypeCtor :
     override fun getIcon(flags: Int) = AllIcons.Nodes.Class
     val newTypeDeclaration get() = parentOfType<NewtypeDecl>() ?: error("newtype constructor without newtype declaration")
     override fun unify() {
-        val typeNames = newTypeDeclaration.typeNames
+        val typeNames = newTypeDeclaration.typeVars
             .map { it.inferType() }
             .toList()
             .toTypedArray<InferType>()
