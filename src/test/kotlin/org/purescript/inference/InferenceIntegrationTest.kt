@@ -269,6 +269,42 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             pprint("$unbox")
         )
     }
+    
+    fun `test literal binder`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | 
+                | int 1 = 1
+                | int _ = 1
+                | 
+                | number 1.0 = 1.0
+                | number _ = 1.0
+                | 
+                | bool true = true
+                | bool _ = true
+                | 
+                | string "true" = "true"
+                | string _ = "true"
+                | 
+            """.trimMargin()
+        )
+        
+        val int =  Main.getValueDeclarationGroupByName("int").inferType()
+        TestCase.assertEquals("Int -> Int", "$int")
+        
+        val number =  Main.getValueDeclarationGroupByName("number").inferType()
+        TestCase.assertEquals("Number -> Number", "$number")
+        
+        val bool =  Main.getValueDeclarationGroupByName("bool").inferType()
+        TestCase.assertEquals("Boolean -> Boolean", "$bool")
+        
+        val string =  Main.getValueDeclarationGroupByName("string").inferType()
+        TestCase.assertEquals("String -> String", "$string")
+    }
+    
     fun `test binders referencing newtype`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -282,10 +318,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             """.trimMargin()
         )
         val unbox =  Main.getValueDeclarationGroupByName("unbox").inferType()
-        TestCase.assertEquals(
-            "Box a -> a",
-            pprint("$unbox")
-        )
+        TestCase.assertEquals("Box a -> a", pprint("$unbox"))
     }
     
     fun pprint(string : String): String {
