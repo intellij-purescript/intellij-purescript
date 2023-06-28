@@ -1,4 +1,4 @@
-package org.purescript.module.declaration.type
+package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
@@ -8,13 +8,14 @@ import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.parentOfType
 import org.purescript.inference.Inferable
+import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
-sealed interface PSTypeVarBinding: Inferable
+sealed interface TypeVar: Inferable
 
 class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
-    PSTypeVarBinding,
+    TypeVar,
     PsiNameIdentifierOwner {
     class Stub(val name:String, p: StubElement<*>?) : AStub<TypeVarName>(p, Type)
     object Type : PSElementType.WithPsiAndStub<Stub, TypeVarName>("TypeVarName") {
@@ -42,6 +43,9 @@ class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
     override fun unify() {}
 }
 
-class PSTypeVarKinded(node: ASTNode) : PSPsiElement(node), PSTypeVarBinding {
-    override fun unify() {}
+class PSTypeVarKinded(node: ASTNode) : PSPsiElement(node), TypeVar {
+    override fun unify() {
+        //val (a, t) = findChildrenByClass(PSType::class.java).map { it.inferType() }
+        //unify(a)
+    }
 }

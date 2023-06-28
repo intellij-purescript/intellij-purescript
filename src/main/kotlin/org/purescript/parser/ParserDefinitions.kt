@@ -66,7 +66,7 @@ val typeRef = Reference { type }
 val type: DSL = KindedType.cont(Reference { type1 }, dcolon + typeRef)
 val typeVarPlain = Choice.of(
     TypeVarNameType(ident),
-    TypeVarKinded(parens(ident + dcolon + type))
+    TypeVarKindedType(parens(TypeVarNameType(ident) + dcolon + type))
 )
 val typeVar = Choice.of(
     `@` + typeVarPlain,

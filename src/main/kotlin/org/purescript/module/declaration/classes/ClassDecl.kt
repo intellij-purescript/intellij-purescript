@@ -11,12 +11,11 @@ import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
-
 import org.purescript.module.declaration.ImportableTypeIndex
-import org.purescript.module.declaration.type.PSTypeVarBinding
 import org.purescript.module.declaration.type.TypeNamespace
-import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.module.declaration.type.type.PSType
+import org.purescript.module.declaration.type.type.TypeVar
+import org.purescript.module.declaration.type.type.TypeVarName
 import org.purescript.name.PSClassName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -55,7 +54,7 @@ class ClassDecl :
 
     internal val classConstraintList: PSClassConstraintList? get() = findChildByClass(PSClassConstraintList::class.java)
     internal val className: PSClassName get() = findNotNullChildByClass(PSClassName::class.java)
-    internal val typeVarBindings: Array<PSTypeVarBinding> get() = findChildrenByClass(PSTypeVarBinding::class.java)
+    internal val typeVarBindings get() = findChildrenByClass(TypeVar::class.java)
     internal val functionalDependencyList: PSClassFunctionalDependencyList?
         get() = findChildByClass(PSClassFunctionalDependencyList::class.java)
     internal val classMemberList: PSClassMemberList? get() = findChildByClass(PSClassMemberList::class.java)
@@ -74,7 +73,7 @@ class ClassDecl :
     override fun getName(): String = greenStub?.name ?: className.name
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = className
-    override fun asImport(): ImportDeclaration? = module?.asImport()?.withItems(ImportedClass(name))
+    override fun asImport(): ImportDeclaration = module.asImport().withItems(ImportedClass(name))
     override val type: PSType? get() = null
     override val typeNames: Sequence<PsiNamedElement> get() = typeVarBindings
         .asSequence()

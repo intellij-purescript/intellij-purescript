@@ -25,19 +25,21 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>,
     PsiNameIdentifierOwner,
     Importable,
     TypeNamespace,
-    Inferable{
+    Inferable {
     class Stub(val name: String, p: StubElement<*>?) : AStub<NewtypeDecl>(p, Type) {
         val module get() = parentStub as? Module.Stub
-        val isExported get() = when {
-            module == null -> false
-            module?.exportList == null -> true
-            module?.exportList?.childrenStubs
-                ?.filterIsInstance<ExportedModule.Stub>()
-                ?.find { it.name == module?.name }!= null -> true
-            else -> module?.exportList?.childrenStubs
-                ?.filterIsInstance<ExportedData.Stub>()
-                ?.find { exportedData -> exportedData.name == name } != null
-        }
+        val isExported
+            get() = when {
+                module == null -> false
+                module?.exportList == null -> true
+                module?.exportList?.childrenStubs
+                    ?.filterIsInstance<ExportedModule.Stub>()
+                    ?.find { it.name == module?.name } != null -> true
+
+                else -> module?.exportList?.childrenStubs
+                    ?.filterIsInstance<ExportedData.Stub>()
+                    ?.find { exportedData -> exportedData.name == name } != null
+            }
     }
 
     object Type : WithPsiAndStub<Stub, NewtypeDecl>("NewtypeDecl") {
@@ -47,7 +49,7 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>,
         override fun serialize(stub: Stub, d: StubOutputStream) = d.writeName(stub.name)
         override fun deserialize(d: StubInputStream, p: StubElement<*>?): Stub = Stub(d.readNameString()!!, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
-            if(stub.isExported) {
+            if (stub.isExported) {
                 sink.occurrence(ImportableTypeIndex.KEY, stub.name)
             }
         }
@@ -73,6 +75,8 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>,
     override val typeNames get() = parameters?.typeNames ?: emptySequence()
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
     override fun getTextOffset(): Int = identifier.textOffset
+    val typeVarBindings get() = parameters?.typeVars ?: emptyArray()
+
     override fun unify() {
         val constructorName = InferType.Constructor(name) as InferType
         val typeNames = typeNames.toList()

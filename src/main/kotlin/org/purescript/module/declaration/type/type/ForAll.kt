@@ -5,7 +5,6 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import org.purescript.inference.InferType
 import org.purescript.module.declaration.type.TypeNamespace
-import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSStubbedElement

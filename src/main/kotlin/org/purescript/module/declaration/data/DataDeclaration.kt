@@ -66,7 +66,7 @@ class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>,
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
+    override fun asImport() = module.asImport().withItems(ImportedData(name))
     override val type: PSType? get() = null
     override val typeNames get() = parameters?.typeNames ?: emptySequence()
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()

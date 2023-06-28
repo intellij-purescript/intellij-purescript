@@ -19,8 +19,8 @@ import org.purescript.module.declaration.imports.PSImportAlias
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.type.Labeled
-import org.purescript.module.declaration.type.TypeVarName
 import org.purescript.module.declaration.type.TypeDecl
+import org.purescript.module.declaration.type.type.TypeVarName
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.binder.VarBinder
 import org.purescript.parser.*
@@ -98,7 +98,7 @@ class PSFindUsageProvider : FindUsagesProvider {
     }
 
     override fun getDescriptiveName(element: PsiElement): String = when (element) {
-        is ValueDeclarationGroup -> "${element.module?.name}.${element.name}"
+        is ValueDeclarationGroup -> "${element.module.name}.${element.name}"
         is PsiNamedElement -> element.name ?: ""
         else -> ""
     }
