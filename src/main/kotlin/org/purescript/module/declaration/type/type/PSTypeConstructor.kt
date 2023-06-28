@@ -42,7 +42,6 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
                     val a = module.newId()
                     val b = module.newId()
                     InferType.function(a, b, InferType.Function.app(a).app(b))
-                    InferType.Function.app(a).app(b)
                 }
 
                 "Record" -> {
@@ -54,7 +53,7 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
                     val right = InferType.RowId(module.newId())
                     val union = InferType.RowMerge(left, right)
                     val ret = InferType.Union.app(left).app(right).app(union)
-                    InferType.function(left, right,union, ret)
+                    InferType.function(left, right, union, ret)
                 }
                 else -> {
                     val ref = reference.resolve()
