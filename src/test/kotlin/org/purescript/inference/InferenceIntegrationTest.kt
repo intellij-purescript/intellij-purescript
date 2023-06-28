@@ -174,11 +174,14 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | module Main where
                 | 
                 | newtype Box a = Box a
+                | newtype Paren a = Paren (Array a)
                 | 
                 | boxString :: Box String
                 | boxString = Box "Box" 
                 | 
                 | boxNoType = Box "Box"
+                | 
+                | paren a = Paren [a]
                 | 
             """.trimMargin()
         )
@@ -186,6 +189,8 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("Box String", "$boxString")
         val boxNoType = Main.getValueDeclarationGroupByName("boxNoType").inferType()
         TestCase.assertEquals("Box String", "$boxNoType")
+        val paren = Main.getValueDeclarationGroupByName("paren").inferType()
+        TestCase.assertEquals("a -> Paren a", pprint("$paren"))
     }
     fun `test data type`() {
         val Main = myFixture.configureByText(
