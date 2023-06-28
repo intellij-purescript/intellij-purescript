@@ -250,6 +250,24 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             pprint("$foldr")
         )
     }
+    fun `test binders`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | data Box a = Box a
+                | 
+                | unbox (Box x) = x
+                | 
+            """.trimMargin()
+        )
+        val unbox =  Main.getValueDeclarationGroupByName("unbox").inferType()
+        TestCase.assertEquals(
+            "Box a -> a",
+            pprint("$unbox")
+        )
+    }
     
     fun pprint(string : String): String {
         val letters = ('a'..'z').joinToString("")

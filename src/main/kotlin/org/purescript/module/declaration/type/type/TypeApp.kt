@@ -23,15 +23,10 @@ class TypeApp(node: ASTNode) : PSPsiElement(node), PSType {
      * 
      */
     override fun unify() {
-        val (kind, argument) = types
-        val kindType = kind?.inferType() ?: return
-        val argumentType = argument?.inferType() ?: return
-        if (kindType is InferType.App) {
-            val returnType = substitutedType
-            val callType = function(argumentType, returnType)
-            unify(kindType, callType)
-        } else {
-            unify(kindType.app(argumentType))
+        val (kind, argument) = types.map { it.inferType() }
+        when (kind) {
+            is InferType.App -> unify(kind, function(argument, substitutedType))
+            else -> unify(kind.app(argument))
         }
     }
 }

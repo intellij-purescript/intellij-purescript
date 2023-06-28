@@ -331,7 +331,7 @@ val moduleBody = Choice.of(
 
 val module = ModuleType(moduleHeader + moduleBody)
 val binder2 = Choice.of(
-    (CtorBinderType(qualProperName) + !+binderAtom),
+    AppBinderType.fold(CtorBinderType(qualProperName), binderAtom),
     NumberBinderType((`-` + number)),
     binderAtom,
 )

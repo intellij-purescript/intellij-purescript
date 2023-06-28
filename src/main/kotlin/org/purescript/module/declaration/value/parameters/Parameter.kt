@@ -10,5 +10,5 @@ import org.purescript.psi.PSPsiElement
 class Parameter(node: ASTNode) : PSPsiElement(node), Inferable, Unifiable {
     val parameterBinders get() = childrenOfType<Binder>()
     val binder get() = parameterBinders.first()
-    override fun unify() = unify(binder.substitutedType)
+    override fun unify() = unify(binder.inferType())
 }

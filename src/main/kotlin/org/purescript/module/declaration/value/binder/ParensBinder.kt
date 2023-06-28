@@ -9,4 +9,8 @@ import com.intellij.lang.ASTNode
  * f (Box a) = a
  * ```
  */
-class ParensBinder(node: ASTNode) : Binder(node)
+class ParensBinder(node: ASTNode) : Binder(node) {
+    override fun unify() {
+        findChildByClass(Binder::class.java)?.inferType()?.let { unify(it) }
+    }
+}
