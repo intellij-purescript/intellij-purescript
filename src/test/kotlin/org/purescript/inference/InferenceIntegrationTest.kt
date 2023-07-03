@@ -4,7 +4,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.getClassDeclarations
 import org.purescript.getValueDeclarationGroupByName
-import org.purescript.module.declaration.classes.PSClassMember
 
 class InferenceIntegrationTest: BasePlatformTestCase() {
     fun `test everything`() {
@@ -228,11 +227,6 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | class Functor f where
                 |   map :: forall a b. (a -> b) -> f a -> f b
                 | 
-                | class Foldable f where
-                |   foldr :: forall a b. (a -> b -> b) -> b -> f a -> b
-                |   foldl :: forall a b. (b -> a -> b) -> b -> f a -> b
-                |   foldMap :: forall a m. Monoid m => (a -> m) -> f a -> m
-                | 
                 | intToInt :: Int -> Int
                 | intToInt x = x
                 | 
@@ -251,13 +245,34 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         )
         val mapInt = Main.getValueDeclarationGroupByName("mapInt").inferType()
         TestCase.assertEquals("a Int -> a Int",  pprint("$mapInt"))
+    }
+
+    fun `test class with multiple members`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | class Foldable f where
+                |   foldr :: forall a b. (a -> b -> b) -> b -> f a -> b
+                |   foldMap :: forall a m. Monoid m => (a -> m) -> f a -> m
+                |
+                | newtype Additive a = Additive a
+                |
+                | f = foldMap Additive [1, 2, 3] 
+            """.trimMargin()
+        )
+        val f = Main.getValueDeclarationGroupByName("f").inferType()
+        TestCase.assertEquals("Additive Int", pprint("$f"))
         val foldable = Main.getClassDeclarations()
             .first { it.name == "Foldable" }
-        val foldr = foldable
-            .classMembers
-            .also { it.map(PSClassMember::inferType) }
-            .single { it.name == "foldr"}
-            .inferType()
+        val members = foldable.classMembers
+        val foldMap = members.single { it.name == "foldMap"}.inferType()
+        TestCase.assertEquals(
+            "Foldable a => forall b. forall c. Monoid c => (b -> c) -> a b -> c",
+            pprint("$foldMap")
+        )
+        val foldr = members.single { it.name == "foldr"}.inferType()
         TestCase.assertEquals(
             "Foldable a => forall b. forall c. (b -> c -> c) -> c -> a b -> c",
             pprint("$foldr")
