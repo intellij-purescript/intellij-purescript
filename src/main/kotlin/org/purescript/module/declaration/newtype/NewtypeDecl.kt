@@ -14,6 +14,7 @@ import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.module.declaration.type.TypeParameters
 import org.purescript.module.declaration.type.type.PSType
+import org.purescript.module.declaration.type.type.TypeVar
 import org.purescript.module.exports.ExportedData
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSProperName
@@ -72,10 +73,10 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>,
     override fun getName(): String = greenStub?.name ?: identifier.name
     override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
     override val type: PSType? get() = null
-    override val typeNames get() = parameters?.typeNames ?: emptySequence()
+    override val typeNames get() = typeVars.asSequence().map { it.typeName }
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
     override fun getTextOffset(): Int = identifier.textOffset
-    val typeVars get() = parameters?.typeVars ?: emptyArray()
+    val typeVars: Array<TypeVar> get() = parameters?.typeVars ?: emptyArray()
 
     override fun unify() {
         val constructorName = InferType.Constructor(name) as InferType

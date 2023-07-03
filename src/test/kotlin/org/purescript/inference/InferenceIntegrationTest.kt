@@ -196,8 +196,9 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("Box String", "$boxNoType")
         val paren = Main.getValueDeclarationGroupByName("paren").inferType()
         TestCase.assertEquals("a -> Paren a", pprint("$paren"))
-        val typed = Main.getValueDeclarationGroupByName("typed").inferType()
-        TestCase.assertEquals("b -> Typed a", pprint("$typed"))
+        val typedPsi = Main.getValueDeclarationGroupByName("typed")
+        val typed = typedPsi.inferType()
+        TestCase.assertEquals("a -> Typed a", pprint("$typed"))
     }
     fun `test data type`() {
         val Main = myFixture.configureByText(

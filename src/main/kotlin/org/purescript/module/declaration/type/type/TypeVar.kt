@@ -12,7 +12,9 @@ import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.*
 
-sealed interface TypeVar : Inferable
+sealed interface TypeVar : Inferable, PsiNameIdentifierOwner {
+    val typeName: TypeVarName
+}
 
 class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
     TypeVar,
@@ -41,13 +43,13 @@ class TypeVarName : PSStubbedElement<TypeVarName.Stub>,
         return this
     }
 
+    override val typeName: TypeVarName get() = this
     override fun unify() {}
 }
 
 class PSTypeVarKinded(node: ASTNode) : PSPsiElement(node), TypeVar {
-    override fun unify() = unify(
-        (findChildByClass(TypeVar::class.java)
-            ?: error("type var with kind but without type var")
-                ).inferType()
-    )
+    override val typeName: TypeVarName get() = findNotNullChildByClass(TypeVarName::class.java)
+    override fun getNameIdentifier() = typeName
+    override fun setName(name: String): PsiElement = nameIdentifier.setName(name).let { this }
+    override fun unify() = unify(typeName.inferType())
 }

@@ -7,6 +7,10 @@ import org.purescript.inference.InferType
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
+/**
+ * f a in expression like 
+ * x = f a
+ */
 class Call(node: ASTNode) : PSPsiElement(node), Expression {
     val arguments: Sequence<Argument>
         get() =
