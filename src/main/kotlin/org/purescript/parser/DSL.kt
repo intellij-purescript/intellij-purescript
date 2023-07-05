@@ -53,11 +53,14 @@ data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     override val tokenSet: TokenSet? = start.tokenSet
 }
 
-operator fun DSL.plus(other: DSL) = Seq(dsl, other.dsl)
-operator fun DSL.plus(other: String) = Seq(dsl, other.dsl)
-operator fun DSL.plus(other: IElementType) = Seq(dsl, other.dsl)
-operator fun IElementType.plus(other: DSL) = Seq(dsl, other.dsl)
-operator fun IElementType.plus(other: IElementType) = Seq(dsl, other.dsl)
+operator fun Sequence.plus(other: DSL) = Sequence(*sequence, other)
+operator fun DSL.plus(other: DSL) = Sequence(dsl, other.dsl)
+operator fun Sequence.plus(other: String) = Sequence(*sequence, other.dsl)
+operator fun DSL.plus(other: String) = Sequence(dsl, other.dsl)
+operator fun Sequence.plus(other: IElementType) = Sequence(*sequence, other.dsl)
+operator fun DSL.plus(other: IElementType) = Sequence(dsl, other.dsl)
+operator fun IElementType.plus(other: DSL) = Sequence(dsl, other.dsl)
+operator fun IElementType.plus(other: IElementType) = Sequence(dsl, other.dsl)
 operator fun DSL.div(other: DSL) = Choice(dsl, other.dsl)
 operator fun DSL.div(other: IElementType) = Choice(dsl, other.dsl)
 operator fun IElementType.div(other: DSL) = Choice(dsl, other.dsl)
@@ -105,23 +108,7 @@ data class Capture(val next: (String) -> DSL) : DSL {
     }
 }
 
-data class Seq(val first: DSL, val next: DSL) : DSL {
-    override fun choices() = listOf(toFlatSequence())
-    override fun parse(b: PsiBuilder) = first.parse(b) && next.parse(b)
-    override val tokenSet: TokenSet? = first.tokenSet
-    fun toFlatSequence(): FlatSequence = FlatSequence(flatten().filterNot { it is True })
-    fun flatten(): List<DSL> {
-        return listOf(first, next).flatMap {
-            when (it) {
-                is Seq -> it.flatten()
-                else -> listOf(it)
-            }
-        }
-    }
-}
-
-@JvmInline
-value class FlatSequence(val sequence: List<DSL>) : DSL {
+class Sequence(vararg val sequence: DSL) : DSL {
     override val tokenSet: TokenSet? get() = sequence.firstOrNull()?.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         for (alt in sequence) if (!alt.parse(b)) return false

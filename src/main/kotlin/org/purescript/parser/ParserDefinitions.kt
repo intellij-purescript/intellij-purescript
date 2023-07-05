@@ -91,22 +91,21 @@ val typeAtom: DSL = Choice.of(
     TypeRowType(parens(row)),
     TypeParenthesisType(parens(type))
 )
-
-val binderAtom: DSL = Reference {
+val binderAtomRef: DSL = Reference { binderAtom }
+val binderAtom: DSL =
     Choice.of(
         WildcardBinderType(`_`),
         CtorBinderType(qualProperName),
-        NamedBinderType(VarBinderType(ident) + `@` + this),
+        NamedBinderType(VarBinderType(ident) + `@` + binderAtomRef),
         VarBinderType(ident),
         CharBinderType(char),
         StringBinderType(string),
         NumberBinderType(number),
-        ArrayBinderType(squares(binder.sepBy(`,`))),
-        RecordBinderType(recordLayout(recordBinder, "record binder")),
-        ParensBinderType(parens(binder)),
+        ArrayBinderType(squares(Reference{ binder }.sepBy(`,`))),
+        RecordBinderType(recordLayout(Reference{ recordBinder }, "record binder")),
+        ParensBinderType(parens(Reference{ binder })),
         BooleanBinderType(boolean),
     )
-}
 val binder: DSL = Reference { binder1 } + !(dcolon + type)
 val operatorName = OperatorName(operator)
 val qualOp = QualifiedOperatorName(qualified(operatorName))
