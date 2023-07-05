@@ -111,7 +111,9 @@ data class Capture(val next: (String) -> DSL) : DSL {
 class Sequence(vararg val sequence: DSL) : DSL {
     override val tokenSet: TokenSet? get() = sequence.firstOrNull()?.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
-        for (alt in sequence) if (!alt.parse(b)) return false
+        for (alt in sequence) if (!alt.parse(b)) {
+            return false
+        }
         return true
     }
 
