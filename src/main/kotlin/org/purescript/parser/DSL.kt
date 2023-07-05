@@ -53,7 +53,9 @@ data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     override val tokenSet: TokenSet? = start.tokenSet
 }
 
+operator fun Sequence.plus(other: Sequence) = Sequence(*sequence, *other.sequence)
 operator fun Sequence.plus(other: DSL) = Sequence(*sequence, other)
+operator fun DSL.plus(other: Sequence) = Sequence(dsl, *other.sequence)
 operator fun DSL.plus(other: DSL) = Sequence(dsl, other.dsl)
 operator fun Sequence.plus(other: String) = Sequence(*sequence, other.dsl)
 operator fun DSL.plus(other: String) = Sequence(dsl, other.dsl)
