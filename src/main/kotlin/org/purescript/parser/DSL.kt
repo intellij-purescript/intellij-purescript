@@ -138,44 +138,9 @@ data class Choice(val first: DSL, val next: DSL) : DSL {
         }
 
     companion object {
-        fun of(vararg all: DSL): DSL {
-            val sequences = all.flatMap { it.choices() }
-            val tokens = if (sequences.none { it.tokenSet == null }) {
-                TokenSet.create(
-                    *sequences
-                        .flatMap {
-                            it.tokenSet?.types?.asSequence() ?: emptySequence()
-                        }
-                        .toTypedArray<IElementType?>()
-                )
-            } else {
-                null
-            }
-            val array =
-                List<MutableList<DSL>>(Short.MAX_VALUE + 1) { mutableListOf() }
-            for (dsl in sequences) when (val dslTokens = dsl.tokenSet) {
-                null -> for (ds in array) ds.add(dsl)
-                else -> for (t in dslTokens.types) array[t.index.toInt()].add(dsl)
-            }
-            val table =
-                array.map { it.reduce { acc, dsl -> Choice(acc.heal, dsl) } }
-                    .toTypedArray<DSL>()
-            return OptChoice(sequences, table, tokens)
-        }
+        fun of(vararg all: DSL): DSL = all.drop(1).fold(all.first()) { first, then -> first.heal / then}
     }
-
-
 }
-
-data class OptChoice(val orgChoices: List<DSL>, val table: Array<DSL>, val tokens: TokenSet?) : DSL {
-    override fun choices(): List<DSL> = if (orgChoices.size < 4) orgChoices else listOf(this)
-    override val tokenSet: TokenSet? = tokens
-    override fun parse(b: PsiBuilder): Boolean =
-        b.tokenType?.index?.toInt()
-            ?.let { table.getOrNull(it)?.parse(b) ?: false }
-            ?: false
-}
-
 
 @Suppress("ControlFlowWithEmptyBody")
 data class OneOrMore(val child: DSL) : DSL {
