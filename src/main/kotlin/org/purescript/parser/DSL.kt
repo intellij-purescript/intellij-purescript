@@ -112,8 +112,7 @@ data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean) :
     override val tokenSet: TokenSet? = next.tokenSet
 }
 
-data class Capture(val next: (String) -> DSL) : DSL {
-    override val tokenSet: TokenSet? = null
+data class Capture(override val tokenSet: TokenSet?, val next: (String) -> DSL) : DSL {
     override fun parse(b: PsiBuilder): Boolean {
         val tokenText = b.tokenText ?: return false
         return next(tokenText).parse(b)

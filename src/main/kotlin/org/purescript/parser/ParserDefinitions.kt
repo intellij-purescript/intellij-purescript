@@ -299,7 +299,7 @@ fun namedValueDecl(name: String) = ValueDeclType(
     )
 )
 
-fun valueDeclarationGroup() = ValueDeclarationGroupType(Capture { name ->
+fun valueDeclarationGroup() = ValueDeclarationGroupType(Capture(ident.tokenSet) { name ->
     !(SignatureType(ident + dcolon + type.relax("malformed type")) + `L-sep`).heal + namedValueDecl(name).sepBy1(
         `L-sep`
     )
@@ -322,9 +322,8 @@ val decl = Choice.of(
     foreignDeclaration,
     fixityDeclaration,
     classDeclaration,
-    InstanceDeclType(
-        !(`'derive'` + !`'newtype'`) + instHead + !(`'where'` + layout1(instBinder, "instance member"))
-    )
+    InstanceDeclType(`'derive'` + !`'newtype'` + instHead + !(`'where'` + layout1(instBinder, "instance member"))),
+    InstanceDeclType(instHead + !(`'where'` + layout1(instBinder, "instance member"))),
 )
 val dataMembers = ExportedDataMemberListType(parens(ddot / ExportedDataMember(properName).sepBy(`,`)))
 val exportedItem = Choice.of(
