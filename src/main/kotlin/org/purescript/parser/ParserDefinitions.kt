@@ -59,7 +59,7 @@ val label = Identifier(
 
 // this doesn't match parser.y but i dont feel like changing it right now
 // it might be due to differences in the lexer
-val operator = OPERATOR.dsl / dot / ddot / ldarrow / OPTIMISTIC.dsl / `-` / colon
+val operator = OPERATOR.dsl / `@` / dot / ddot / ldarrow / OPTIMISTIC.dsl / `-` / colon
 val properName: DSL = ProperName(PROPER_NAME)
 
 /**

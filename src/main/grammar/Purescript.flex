@@ -134,6 +134,7 @@ charControl = "^" [:uppercase:]
 "\\u2190"                      { return LARROW; }
 "\u2190"                       { return LARROW; }
 "="                            { return EQ; }
+"@"                            { return AT; }
 "."                            { return DOT; }
 "\\"                           { return BACKSLASH; }
 

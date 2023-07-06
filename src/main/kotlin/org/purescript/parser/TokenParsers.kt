@@ -52,7 +52,7 @@ val `'where'` = WHERE.dsl
 val `,` = COMMA.dsl
 
 @Suppress("ObjectPropertyName")
-val `@` = "@".dsl
+val `@` = AT.dsl
 @Suppress("ObjectPropertyName")
 val `_` = WILDCARD.dsl
 

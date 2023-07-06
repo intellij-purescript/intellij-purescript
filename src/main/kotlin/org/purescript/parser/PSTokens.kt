@@ -65,6 +65,7 @@ import org.purescript.psi.PSElementType
 @JvmField val BANG = PSElementType("!")
 @JvmField val BACKSLASH = PSElementType("\\")
 @JvmField val OPERATOR = PSElementType("operator")
+@JvmField val AT = PSElementType("@")
 @JvmField val MODULE_PREFIX = PSElementType("module prefix")
 @JvmField val PROPER_NAME = PSElementType("proper name")
 @JvmField val LOWER = PSElementType("identifier")
@@ -117,5 +118,6 @@ import org.purescript.psi.PSElementType
     EQ,
     DOT,
     OPTIMISTIC,
-    OPERATOR
+    OPERATOR,
+    AT
 )

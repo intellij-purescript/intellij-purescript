@@ -51,7 +51,7 @@ Purescript File
                 VarBinder(VarBinder)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('r')
-                PsiElement(operator)('@')
+                PsiElement(@)('@')
                 RecordBinder(RecordBinder)
                   PsiElement({)('{')
                   PunBinder(PunBinder)

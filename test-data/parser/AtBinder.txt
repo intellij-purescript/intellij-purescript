@@ -33,7 +33,7 @@ Purescript File
                 VarBinder(VarBinder)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('y')
-                PsiElement(operator)('@')
+                PsiElement(@)('@')
                 VarBinder(VarBinder)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('x')
