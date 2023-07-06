@@ -7,7 +7,10 @@ val moduleName = MODULE_NAME(!MODULE_PREFIX + PROPER_NAME)
 val qualifier = MODULE_NAME(MODULE_PREFIX)
 
 // Utils
-fun qualified(p: DSL) = !(qualifier) + p
+fun qualified(p: DSL) = Choice.of(
+    qualifier + p,
+    p
+)
 fun braces(p: DSL) = LCURLY + p + RCURLY
 fun parens(p: DSL) = LPAREN + p + RPAREN
 fun squares(p: DSL) = LBRACK + p + RBRACK
