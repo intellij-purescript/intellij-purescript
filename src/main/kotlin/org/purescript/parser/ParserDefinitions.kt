@@ -199,7 +199,7 @@ val expr5 = Reference {
     Choice.of(
         RecordUpdateType(recordLayout1(propertyUpdate, "property update")),
         expr7,
-        Lambda(backslash + parameters + arrow.relax("missing lambda arrow") + expr),
+        Lambda(backslash + ParametersType(!+ParameterType(binderAtom)) + arrow.relax("missing lambda arrow") + expr),
         exprCase,
         ifThenElse,
         doBlock,
@@ -277,10 +277,12 @@ val importedItem = Choice.of(
     ImportedValue(ident),
     ImportedData(properName + !importedDataMembers),
 )
-val importList = ImportList(Choice.of(
-    HIDING + parens(importedItem.sepBy(`,`)),
-    parens(importedItem.sepBy(`,`)),
-))
+val importList = ImportList(
+    Choice.of(
+        HIDING + parens(importedItem.sepBy(`,`)),
+        parens(importedItem.sepBy(`,`)),
+    )
+)
 val importDeclaration = ImportType(`'import'` + moduleName + !importList + !ImportAlias(`'as'` + moduleName))
 
 /**
@@ -289,9 +291,13 @@ val importDeclaration = ImportType(`'import'` + moduleName + !importList + !Impo
  * phantom - the type can always be coerced to another type.
  * */
 val role = `'nominal'` / representational / phantom
-val parameters = ParametersType(!+ParameterType(binderAtom))
 
-fun namedValueDecl(name: String) = ValueDeclType(Lookahead(ident.heal) { tokenText == name } + parameters + guardedDecl)
+fun namedValueDecl(name: String) = ValueDeclType(
+    Lookahead(ident.heal) { tokenText == name } + Choice.of(
+        ParametersType(+ParameterType(binderAtom)) + guardedDecl,
+        Empty(ParametersType, before = guardedDecl),
+    )
+)
 
 fun valueDeclarationGroup() = ValueDeclarationGroupType(Capture { name ->
     !(SignatureType(ident + dcolon + type.relax("malformed type")) + `L-sep`).heal + namedValueDecl(name).sepBy1(
@@ -332,8 +338,10 @@ val exportedItem = Choice.of(
 val exportList = ExportListType(parens(exportedItem.sepBy1(`,`)))
 val elseDecl = `'else'` + !`L-sep`
 val moduleHeader = `'module'` + moduleName + !exportList + `'where'` + `L{` + !+(importDeclaration + `L-sep`)
-val moduleBody = Choice.of(
-    `L}`, !+(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + `L-sep`) + `L}`
+val moduleBody = Choice(
+    `L}`,
+    +(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + `L-sep`) + `L}`,
+    `L}` // TODO: this looks funny, and cant be removed, why?
 )
 
 val module = ModuleType(moduleHeader + moduleBody)

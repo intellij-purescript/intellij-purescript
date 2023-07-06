@@ -28,6 +28,13 @@ operator fun String.not() = Choice(dsl, True)
 operator fun DSL.unaryPlus() = OneOrMore(this)
 operator fun String.unaryPlus() = OneOrMore(this.dsl)
 
+data class Empty(private val type: IElementType, private val before: DSL) : DSL {
+    override val tokenSet: TokenSet? get() = before.tokenSet
+    override fun parse(b: PsiBuilder): Boolean {
+        return b.mark().done(type).let { before.parse(b) }
+    }
+}
+
 operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(dsl: DSL) = Symbolic<Psi>(dsl, this as IElementType)
 operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(other: String) =
     Symbolic<Psi>(other.dsl, this as IElementType)
