@@ -23,6 +23,7 @@ import org.purescript.psi.PSElementType
 @JvmField val INSTANCE = PSElementType("instance")
 @JvmField val DERIVE = PSElementType("derive")
 @JvmField val MODULE = PSElementType("module")
+@JvmField val NOMINAL = PSElementType("nominal")
 @JvmField val CASE = PSElementType("case")
 @JvmField val OF = PSElementType("of")
 @JvmField val IF = PSElementType("if")

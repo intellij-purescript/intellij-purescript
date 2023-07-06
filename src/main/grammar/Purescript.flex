@@ -101,6 +101,7 @@ charControl = "^" [:uppercase:]
 "instance"                     { return INSTANCE; }
 "derive"                       { return DERIVE; }
 "module"                       { return MODULE; }
+"nominal"                      { return NOMINAL; }
 "case"                         { return CASE; }
 "of"                           { return OF; }
 "if"                           { return IF; }
