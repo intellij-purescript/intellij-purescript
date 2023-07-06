@@ -184,7 +184,7 @@ val exprAtom = Choice.of(
 )
 val expr7 = RecordAccessType.fold(exprAtom, dot + Accessor(label))
 
-val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + guardedCase) }
+val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + (arrow + exprWhere).heal / !+guardedCaseExpr) }
 
 /*
 * if there is only one case branch it can ignore layout so we need
@@ -350,8 +350,11 @@ val binder2 = Choice.of(
 )
 val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
 val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
-val guardedCase = (arrow + exprWhere).heal / !+guardedCaseExpr
-val caseBranch = CaseAlternativeType(binder1.sepBy1(`,`) + guardedCase)
+val caseBranch = Choice.of(
+    CaseAlternativeType(binder1.sepBy1(`,`) + arrow + exprWhere),
+    CaseAlternativeType(binder1.sepBy1(`,`) + +guardedCaseExpr),
+    CaseAlternativeType(binder1.sepBy1(`,`)),
+)
 val ifThenElse =
     IfThenElseType(`'if'` + `expr?` + `'then'` + `expr?` + `'else'` + `expr?`) /
             ErrorIfThenType(`'if'` + `expr?` + `'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")) /
