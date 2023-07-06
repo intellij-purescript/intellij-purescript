@@ -122,20 +122,12 @@ class Sequence(vararg val sequence: DSL) : DSL {
 }
 
 
-data class Choice(val first: DSL, val next: DSL) : DSL {
-    override fun choices(): List<DSL> = listOf(first, next).flatMap { it.choices() }
-
-    override fun parse(b: PsiBuilder) =
-        tokenSet?.contains(b.tokenType) != false &&
-                first.parse(b) ||
-                next.parse(b)
-
-    override val tokenSet: TokenSet? =
-        first.tokenSet?.let { a ->
-            next.tokenSet?.let { b ->
-                TokenSet.orSet(a, b)
-            }
-        }
+class Choice(vararg val choices: DSL) : DSL {
+    override fun choices(): List<DSL> = choices.flatMap { it.choices() }
+    override fun parse(b: PsiBuilder): Boolean = choices.any { it.parse(b) }
+    override val tokenSet: TokenSet? = if(choices.none { it.tokenSet == null }) {
+        TokenSet.orSet(*choices.mapNotNull { it.tokenSet }.toTypedArray())
+    } else null
 
     companion object {
         fun of(vararg all: DSL): DSL = all.drop(1).fold(all.first()) { first, then -> first.heal / then}
