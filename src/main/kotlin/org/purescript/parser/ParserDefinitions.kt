@@ -277,7 +277,10 @@ val importedItem = Choice.of(
     ImportedValue(ident),
     ImportedData(properName + !importedDataMembers),
 )
-val importList = ImportList(!HIDING + parens(importedItem.sepBy(`,`)))
+val importList = ImportList(Choice.of(
+    HIDING + parens(importedItem.sepBy(`,`)),
+    parens(importedItem.sepBy(`,`)),
+))
 val importDeclaration = ImportType(`'import'` + moduleName + !importList + !ImportAlias(`'as'` + moduleName))
 
 /**

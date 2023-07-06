@@ -126,12 +126,14 @@ class Sequence(vararg val sequence: DSL) : DSL {
 
 
 class Choice(vararg val choices: DSL) : DSL {
-    private val lookup by lazy {
+    private val lookup: Map<IElementType, List<DSL>> by lazy {
         val keys = choices.mapNotNull { it.tokenSet }.flatMap { it.types.asSequence() }.distinct()
         val table = mutableMapOf(*keys.map { it to mutableListOf<DSL>() }.toTypedArray())
         for (choice in choices) {
             when (val types = choice.tokenSet?.types) {
-                null -> for ((_, parser) in table) parser.add(choice)
+                null -> {
+                    for ((_, parser) in table) parser.add(choice)
+                }
                 else -> for (type in types) table[type]!!.add(choice)
             }
         }
