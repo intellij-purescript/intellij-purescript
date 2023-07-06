@@ -11,6 +11,7 @@ fun qualified(p: DSL) = Choice.of(
     qualifier + p,
     p
 )
+
 fun braces(p: DSL) = LCURLY + p + RCURLY
 fun parens(p: DSL) = LPAREN + p + RPAREN
 fun squares(p: DSL) = LBRACK + p + RBRACK
@@ -78,17 +79,19 @@ val typeVar = Choice.of(
 val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
 val row = Choice.of(
     `|` + type,
-    !(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type)
+    rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal + !(`|` + type)
 )
 
 val typeAtom: DSL = Choice.of(
     TypeHole(hole),
+    TypeRecordType(LCURLY + RCURLY),
     TypeRecordType(braces(row)),
     TypeWildcardType(`_`),
     TypeStringType(string),
     TypeIntType(number),
     TypeCtor(qualProperName),
     TypeIdentifierType(ident),
+    TypeRowType(LPAREN + RPAREN),
     TypeArrNameType(parens(arrow)),
     TypeRowType(parens(row)),
     TypeParenthesisType(parens(type))
@@ -103,9 +106,9 @@ val binderAtom: DSL =
         CharBinderType(char),
         StringBinderType(string),
         NumberBinderType(number),
-        ArrayBinderType(squares(Reference{ binder }.sepBy(`,`))),
-        RecordBinderType(recordLayout(Reference{ recordBinder }, "record binder")),
-        ParensBinderType(parens(Reference{ binder })),
+        ArrayBinderType(squares(Reference { binder }.sepBy(`,`))),
+        RecordBinderType(recordLayout(Reference { recordBinder }, "record binder")),
+        ParensBinderType(parens(Reference { binder })),
         BooleanBinderType(boolean),
     )
 val binder: DSL = Reference { binder1 } + !(dcolon + type)
@@ -344,7 +347,7 @@ val ifThenElse =
     IfThenElseType(`'if'` + `expr?` + `'then'` + `expr?` + `'else'` + `expr?`) /
             ErrorIfThenType(`'if'` + `expr?` + `'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")) /
             ErrorIfType(`'if'` + `expr?` + (`'then'` + `expr?` + `'else'` + `expr?`).relax("missing then"))
-        
+
 
 fun layout1(statement: DSL, name: String): DSL {
     val relaxedStatement = statement.relaxTo(`L-sep` / `L}`, "malformed $name")
