@@ -340,7 +340,6 @@ val moduleHeader = `'module'` + moduleName + !exportList + `'where'` + `L{` + !+
 val moduleBody = Choice(
     `L}`,
     +(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + !`L-sep`) + `L}`,
-    `L}` // TODO: this looks funny, and cant be removed, why?
 )
 
 val module = ModuleType(moduleHeader + moduleBody)
