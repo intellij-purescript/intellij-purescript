@@ -26,6 +26,7 @@ val char = CHAR.dsl
 val darrow = DARROW.dsl
 val `'data'` = DATA.dsl
 val dcolon = DCOLON.dsl
+val hole = HOLE.dsl
 val colon = COLON.dsl
 val ddot = DDOT.dsl
 val dot = DOT.dsl

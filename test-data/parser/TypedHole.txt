@@ -77,6 +77,4 @@ Purescript File
           <empty list>
         PsiElement(=)('=')
         ExpressionHole(ExpressionHole)
-          PsiElement(operator)('?')
-          PSIdentifier(identifier)
-            PsiElement(identifier)('ummm')
+          PsiElement(hole)('?ummm')

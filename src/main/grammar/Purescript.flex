@@ -163,6 +163,7 @@ charControl = "^" [:uppercase:]
 "\""                                           { yybegin(STRINGS); return STRING; }
 "'" ( "\\" {escapeCode} | . ) "'"               { return CHAR; }
 
+"?"{identStart}{identLetter}*     { return HOLE; }
 {identStart}{identLetter}*     { return LOWER; }
 ({properName}".")+             { return MODULE_PREFIX; }
 {properName}                   { return PROPER_NAME; }

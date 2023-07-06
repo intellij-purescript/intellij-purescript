@@ -77,7 +77,6 @@ val row = Choice.of(
     `|` + type,
     !(rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal) + !(`|` + type)
 )
-val hole = "?".dsl + ident
 
 val typeAtom: DSL = Choice.of(
     TypeHole(hole),
