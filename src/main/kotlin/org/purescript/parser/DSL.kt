@@ -130,7 +130,7 @@ class Choice(vararg val choices: DSL) : DSL {
     } else null
 
     companion object {
-        fun of(vararg all: DSL): DSL = all.drop(1).fold(all.first()) { first, then -> first.heal / then}
+        fun of(vararg all: DSL): DSL = Choice(*all.map {it.heal}.toTypedArray())
     }
 }
 
