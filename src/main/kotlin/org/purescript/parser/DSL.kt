@@ -23,10 +23,8 @@ val DSL.dsl get() = this
 
 operator fun DSL.not() = Choice(dsl, True)
 operator fun IElementType.not() = Choice(dsl, True)
-operator fun String.not() = Choice(dsl, True)
 
 operator fun DSL.unaryPlus() = OneOrMore(this)
-operator fun String.unaryPlus() = OneOrMore(this.dsl)
 
 data class Empty(private val type: IElementType, private val before: DSL) : DSL {
     override val tokenSet: TokenSet? get() = before.tokenSet
