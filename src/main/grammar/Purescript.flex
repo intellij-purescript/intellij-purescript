@@ -91,6 +91,7 @@ charControl = "^" [:uppercase:]
 "data"                         { return DATA; }
 "type"                         { return TYPE; }
 "newtype"                      { return NEWTYPE; }
+"role"                         { return ROLE; }
 "foreign"                      { return FOREIGN; }
 "import"                       { return IMPORT; }
 "infixl"                       { return INFIXL; }

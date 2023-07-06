@@ -12,6 +12,7 @@ import org.purescript.psi.PSElementType
 @JvmField val WILDCARD = PSElementType("wildcard")
 @JvmField val DATA = PSElementType("data")
 @JvmField val NEWTYPE = PSElementType("newtype")
+@JvmField val ROLE = PSElementType("role")
 @JvmField val TYPE = PSElementType("type")
 @JvmField val FOREIGN = PSElementType("foreign")
 @JvmField val IMPORT = PSElementType("import")

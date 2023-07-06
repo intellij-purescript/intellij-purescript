@@ -21,7 +21,7 @@ Purescript File
             PSIdentifier(identifier)
               PsiElement(identifier)('a')
     PsiElement(type)('type')
-    PsiElement(identifier)('role')
+    PsiElement(role)('role')
     PSProperName(ProperName)
       PsiElement(proper name)('Box')
     PsiElement(identifier)('representational')
