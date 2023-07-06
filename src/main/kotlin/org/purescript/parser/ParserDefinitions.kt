@@ -3,8 +3,11 @@ package org.purescript.parser
 // Literals
 val boolean = `'true'` / `'false'`
 val number = NumericLiteral(NATURAL / FLOAT)
-val moduleName = MODULE_NAME(!MODULE_PREFIX + PROPER_NAME)
-val qualifier = MODULE_NAME(MODULE_PREFIX)
+val moduleName = Choice.of(
+    ModuleNameType(MODULE_PREFIX + PROPER_NAME),
+    ModuleNameType(PROPER_NAME)
+)
+val qualifier = ModuleNameType(MODULE_PREFIX)
 
 // Utils
 fun qualified(p: DSL) = Choice.of(
