@@ -29,9 +29,13 @@ operator fun String.not() = Choice(dsl, True)
 operator fun DSL.unaryPlus() = OneOrMore(this)
 operator fun String.unaryPlus() = OneOrMore(this.dsl)
 
-operator fun <Psi: PsiElement> PSElementType.HasPsi<Psi>.invoke(dsl: DSL) = Symbolic<Psi>(dsl, this as IElementType)
-operator fun <Psi: PsiElement> PSElementType.HasPsi<Psi>.invoke(other: String) = Symbolic<Psi>(other.dsl, this as IElementType)
-operator fun <Psi: PsiElement> PSElementType.HasPsi<Psi>.invoke(o: IElementType) = Symbolic<Psi>(o.dsl, this as IElementType)
+operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(dsl: DSL) = Symbolic<Psi>(dsl, this as IElementType)
+operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(other: String) =
+    Symbolic<Psi>(other.dsl, this as IElementType)
+
+operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(o: IElementType) =
+    Symbolic<Psi>(o.dsl, this as IElementType)
+
 fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
 fun IElementType.cont(start: DSL, next: DSL) = Continuation(this, start, next)
 
@@ -123,14 +127,29 @@ class Sequence(vararg val sequence: DSL) : DSL {
 
 
 class Choice(vararg val choices: DSL) : DSL {
+    private val lookup by lazy {
+        val keys = choices.mapNotNull { it.tokenSet }.flatMap { it.types.asSequence() }.distinct()
+        val table = mutableMapOf(*keys.map { it to mutableListOf<DSL>() }.toTypedArray())
+        for (choice in choices) {
+            when (val types = choice.tokenSet?.types) {
+                null -> for ((_, parser) in table) parser.add(choice)
+                else -> for (type in types) table[type]!!.add(choice)
+            }
+        }
+        return@lazy table
+    }
+
     override fun choices(): List<DSL> = choices.flatMap { it.choices() }
-    override fun parse(b: PsiBuilder): Boolean = choices.any { it.parse(b) }
-    override val tokenSet: TokenSet? = if(choices.none { it.tokenSet == null }) {
+    override fun parse(b: PsiBuilder): Boolean =
+        if (b.tokenType in lookup) lookup[b.tokenType]!!.any { it.parse(b) }
+        else choices.any { it.parse(b) }
+
+    override val tokenSet: TokenSet? = if (choices.none { it.tokenSet == null }) {
         TokenSet.orSet(*choices.mapNotNull { it.tokenSet }.toTypedArray())
     } else null
 
     companion object {
-        fun of(vararg all: DSL): DSL = Choice(*all.map {it.heal}.toTypedArray())
+        fun of(vararg all: DSL): DSL = Choice(*all.map { it.heal }.toTypedArray())
     }
 }
 
