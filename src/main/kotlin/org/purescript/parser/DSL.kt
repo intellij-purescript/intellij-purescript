@@ -15,7 +15,6 @@ interface DSL : Parser {
     fun relax(message: String) = Relax(this, message)
     fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
     val tokenSet: TokenSet?
-    fun choices(): List<DSL> = listOf(this)
 }
 
 val IElementType.dsl get() = ElementToken(this)
@@ -138,8 +137,6 @@ class Choice(vararg val choices: DSL) : DSL {
         }
         return@lazy table
     }
-
-    override fun choices(): List<DSL> = choices.flatMap { it.choices() }
     override fun parse(b: PsiBuilder): Boolean =
         if (b.tokenType in lookup) lookup[b.tokenType]!!.any { it.parse(b) }
         else choices.any { it.parse(b) }
@@ -172,7 +169,6 @@ object True : DSL {
 }
 
 data class Transaction(val child: DSL) : DSL {
-    override fun choices() = child.choices()
     override val heal: Transaction get() = this
     override fun parse(b: PsiBuilder): Boolean {
         if (child.tokenSet?.contains(b.tokenType) == false) return false
@@ -200,7 +196,6 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
 }
 
 data class Symbolic<Tag>(val child: DSL, val symbol: IElementType) : DSL {
-    override fun choices() = child.choices().map { Symbolic<Tag>(it, symbol) }
     override val tokenSet = child.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         if (tokenSet?.contains(b.tokenType) == false) return false
