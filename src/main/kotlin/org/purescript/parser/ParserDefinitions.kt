@@ -339,7 +339,7 @@ val elseDecl = `'else'` + !`L-sep`
 val moduleHeader = `'module'` + moduleName + !exportList + `'where'` + `L{` + !+(importDeclaration + `L-sep`)
 val moduleBody = Choice(
     `L}`,
-    +(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + `L-sep`) + `L}`,
+    +(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + !`L-sep`) + `L}`,
     `L}` // TODO: this looks funny, and cant be removed, why?
 )
 

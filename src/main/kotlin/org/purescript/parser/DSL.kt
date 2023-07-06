@@ -254,7 +254,7 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
         }
     }
 
-    override val tokenSet: TokenSet? = null
+    override val tokenSet: TokenSet? = dsl.tokenSet
 }
 
 data class Continuation(val type: IElementType, val init: DSL, val cont: DSL) : DSL {
