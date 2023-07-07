@@ -91,10 +91,12 @@ class Sequence(vararg sequenceRaw: DSL) : DSL {
     /**
      * the sequence with True removed, since its a noop
      */
-    val sequence: Array<DSL> = sequenceRaw.flatMap { when(it) {
-        is Sequence -> it.sequence.asSequence()
-        else -> sequenceOf(it)
-    }}.filter { it !is True }.toTypedArray()
+    val sequence: Array<DSL> = sequenceRaw.flatMap {
+        when (it) {
+            is Sequence -> it.sequence.asSequence()
+            else -> sequenceOf(it)
+        }
+    }.filter { it !is True }.toTypedArray()
     override val tokenSet: TokenSet? get() = sequence.firstOrNull()?.tokenSet
     override fun parse(b: PsiBuilder): Boolean {
         for (alt in sequence) if (!alt.parse(b)) {
@@ -115,11 +117,13 @@ class Choice(vararg choicesRaw: DSL) : DSL {
                 is Choice -> choice.child.choices
                 else -> listOf(choice)
             }
+
             is PsiDSL<*> -> when (choice.child) {
                 is Choice -> choice.child.choices.map { PsiDSL<PsiElement>(it, choice.symbol) }
                 is Sequence -> fanSequence(choice.child).map { PsiDSL<PsiElement>(it, choice.symbol) }
                 else -> listOf(choice)
-            } 
+            }
+
             else -> listOf(choice)
         }
     }
@@ -140,8 +144,9 @@ class Choice(vararg choicesRaw: DSL) : DSL {
             if (choice is True) continue
             if (choice is Sequence && choice.sequence.isEmpty()) continue
             when (val types = choice.tokenSet?.types) {
-                null -> for ((_, parser) in table) 
+                null -> for ((_, parser) in table)
                     parser.add(choice)
+
                 else -> for (type in types) table[type]!!.add(choice)
             }
         }
@@ -167,20 +172,12 @@ class Choice(vararg choicesRaw: DSL) : DSL {
     }
 
     private val optional: Boolean by lazy { choices.any { it is True } }
-    
-    private val linear: List<DSL> by lazy { choices.filter { it !is True && it.tokenSet == null}}
-
-    override fun parse(b: PsiBuilder): Boolean = 
-        (lookup[b.tokenType] ?: linear).any { it.heal.parse(b) } || optional
-
+    private val linear: List<DSL> by lazy { choices.filter { it !is True && it.tokenSet == null } }
+    override fun parse(b: PsiBuilder): Boolean = (lookup[b.tokenType] ?: linear).any { it.heal.parse(b) } || optional
     override val tokenSet by lazy {
         if (choices.none { it.tokenSet == null }) {
             TokenSet.orSet(*choices.mapNotNull { it.tokenSet }.toTypedArray())
         } else null
-    }
-
-    companion object {
-        fun of(vararg all: DSL): DSL = Choice(*all)
     }
 }
 
@@ -200,7 +197,7 @@ data class OneOrMore(val child: DSL) : DSL {
 data class Transaction(val child: DSL) : DSL {
     override val heal: Transaction get() = this
     override fun parse(b: PsiBuilder): Boolean {
-        if (child.tokenSet?.contains(b.tokenType) == false) 
+        if (child.tokenSet?.contains(b.tokenType) == false)
             return false
         val pack = b.mark()
         return when (child.parse(b)) {
@@ -228,7 +225,7 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
 data class PsiDSL<Tag>(val child: DSL, val symbol: IElementType) : DSL {
     override val tokenSet by lazy { child.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
-        if (tokenSet?.contains(b.tokenType) == false) 
+        if (tokenSet?.contains(b.tokenType) == false)
             return false
         val start = b.mark()
         return if (child.parse(b)) {
@@ -284,7 +281,7 @@ class ContinuationMap(val init: DSL, private vararg val cont: Pair<DSL, IElement
     override val tokenSet: TokenSet? by lazy { init.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
-        if (!init.parse(b)){
+        if (!init.parse(b)) {
             marker.drop()
             return false
         }

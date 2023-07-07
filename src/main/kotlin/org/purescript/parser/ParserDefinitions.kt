@@ -6,14 +6,14 @@ import org.purescript.parser.dsl.Lookahead
 // Literals
 val boolean = `'true'` / `'false'`
 val number = NumericLiteral(NATURAL / FLOAT)
-val moduleName = Choice.of(
+val moduleName = Choice(
     ModuleNameType(MODULE_PREFIX + PROPER_NAME),
     ModuleNameType(PROPER_NAME)
 )
 val qualifier = ModuleNameType(MODULE_PREFIX)
 
 // Utils
-fun qualified(p: DSL) = Choice.of(
+fun qualified(p: DSL) = Choice(
     qualifier + p,
     p
 )
@@ -24,9 +24,9 @@ fun squares(p: DSL) = LBRACK + p + RBRACK
 
 
 // TODO: add 'representational' and 'phantom'
-val ident = Identifier(Choice.of(LOWER.dsl, `'as'`, `'hiding'`, `'role'`, `'nominal'`))
+val ident = Identifier(Choice(LOWER.dsl, `'as'`, `'hiding'`, `'role'`, `'nominal'`))
 val label = Identifier(
-    Choice.of(
+    Choice(
         LOWER.dsl,
         string,
         `'ado'`,
@@ -59,7 +59,7 @@ val label = Identifier(
         `'then'`,
         `'true'`,
         `'type'`,
-        `'where'`,
+        `'where'`
     )
 )
 
@@ -74,21 +74,21 @@ val properName: DSL = ProperName(PROPER_NAME)
 val qualProperName = QualifiedProperName(qualified(properName))
 val typeRef = Reference { type }
 val type: DSL = KindedType.cont(Reference { type1 }, dcolon + typeRef)
-val typeVarPlain = Choice.of(
+val typeVarPlain = Choice(
     TypeVarNameType(ident),
     TypeVarKindedType(parens(TypeVarNameType(ident) + dcolon + type))
 )
-val typeVar = Choice.of(
+val typeVar = Choice(
     `@` + typeVarPlain,
     typeVarPlain
 )
 val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
-val row = Choice.of(
+val row = Choice(
     `|` + type,
     rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal + !(`|` + type)
 )
 
-val typeAtom: DSL = Choice.of(
+val typeAtom: DSL = Choice(
     TypeHole(hole),
     TypeRecordType(LCURLY + RCURLY),
     TypeRecordType(braces(row)),
@@ -104,7 +104,7 @@ val typeAtom: DSL = Choice.of(
 )
 val binderAtomRef: DSL = Reference { binderAtom }
 val binderAtom: DSL =
-    Choice.of(
+    Choice(
         WildcardBinderType(`_`),
         CtorBinderType(qualProperName),
         NamedBinderType(VarBinderType(ident) + `@` + binderAtomRef),
@@ -115,13 +115,13 @@ val binderAtom: DSL =
         ArrayBinderType(squares(Reference { binder }.sepBy(`,`))),
         RecordBinderType(recordLayout(Reference { recordBinder }, "record binder")),
         ParensBinderType(parens(Reference { binder })),
-        BooleanBinderType(boolean),
+        BooleanBinderType(boolean)
     )
 val binder: DSL = Reference { binder1 } + !(dcolon + type)
 val operatorName = OperatorName(operator)
 val qualOp = QualifiedOperatorName(qualified(operatorName))
 val type5: DSL = TypeAppType.fold(typeAtom, typeAtom)
-val type4 = Choice.of(
+val type4 = Choice(
     TypeIntType(`-` + number),
     type5
 )
@@ -142,7 +142,7 @@ val type2: DSL = ContinuationMap(
 /**
  * Forall
  */
-val type1 = Choice.of(
+val type1 = Choice(
     ForAllType(`'forall'` + +typeVar + dot + type2),
     type2
 )
@@ -175,7 +175,7 @@ val recordLabel = RecordLabelType(
  *   | delim('{', recordLabel, ',', '}') { ExprRecord () $1 }
  *   | '(' expr ')' { ExprParens () (Wrapped $1 $2 $3) }
  *   */
-val exprAtom = Choice.of(
+val exprAtom = Choice(
     ExpressionWildcardType(`_`),
     ExpressionHoleType(hole),
     ExpressionIdentifier(QualifiedIdentifier(qualified(ident))),
@@ -187,7 +187,7 @@ val exprAtom = Choice.of(
     number,
     ArrayLiteral(squares(!(expr + !+(`,` + expr.relax("missing array element"))))),
     RecordLiteralType(recordLayout(recordLabel, "record label")),
-    Parens(parens(expr.relax("empty parenthesis"))),
+    Parens(parens(expr.relax("empty parenthesis")))
 )
 val expr7 = RecordAccessType.fold(exprAtom, dot + Accessor(label))
 
@@ -199,12 +199,12 @@ val badSingleCaseBranch =
 * to allow layout end at any time.
 */
 val exprCase: DSL = Case(
-    `'case'` + (`expr?`.sepBy1(`,`) + `'of'` + Choice.of(
+    `'case'` + (`expr?`.sepBy1(`,`) + `'of'` + Choice(
         badSingleCaseBranch, layout1(Reference { caseBranch }, "case branch")
     ).relax("missing case branches")).relax("incomplete case of")
 )
 val expr5 = Reference {
-    Choice.of(
+    Choice(
         RecordUpdateType(recordLayout1(propertyUpdate, "property update")),
         expr7,
         Lambda(backslash + ParametersType(!+ParameterType(binderAtom)) + arrow.relax("missing lambda arrow") + expr),
@@ -212,7 +212,7 @@ val expr5 = Reference {
         ifThenElse,
         doBlock,
         AdoBlockType(qualified(`'ado'`) + layout(doStatement, "ado statement") + `'in'` + expr),
-        letIn,
+        letIn
     )
 }
 
@@ -242,15 +242,14 @@ val exprWhere: DSL = `expr?` + !ExpressionWhere(
 )
 val guardedDeclExpr = GuardBranchType(guard + eq + exprWhere)
 val guardedDecl = (eq.heal + exprWhere.relax("Missing Value")) / +guardedDeclExpr
-val instBinder = Choice.of((ident + dcolon) + type, valueDeclarationGroup())
-val foreignDeclaration = `'foreign'` + `'import'` + Choice.of(
+val instBinder = Choice((ident + dcolon) + type, valueDeclarationGroup())
+val foreignDeclaration = `'foreign'` + `'import'` + Choice(
     ForeignDataDeclType(`'data'` + properName + dcolon + type), ForeignValueDeclType(ident.heal + dcolon + type)
 )
 val fixity = Fixity(`'infixl'` / `'infixr'` / `'infix'` + NATURAL)
 val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
 val fixityDeclaration = FixityDeclType(
-    fixity + Choice.of(
-        // TODO Should we differentiate Types and DataConstructors?
+    fixity + Choice(// TODO Should we differentiate Types and DataConstructors?
         // that would mean that when there is a `type` prefix we parse as Type
         // otherwise if it's a capital name it's a DataConstructor
         (!`'type'` + qualProperName), qualIdentifier
@@ -278,22 +277,22 @@ val instConstraints = parens((instConstraint).sepBy1(`,`)) / instConstraint + da
 val instHead = `'instance'` + !instName + !instConstraints.heal + (TypeCtor(qualProperName) + !+typeAtom)
 
 val importedDataMembers = ImportedDataMemberList(parens(ddot / ImportedDataMember(properName).sepBy(`,`)))
-val importedItem = Choice.of(
+val importedItem = Choice(
     ImportedType(`'type'` + parens(Identifier(operator))),
     ImportedClass(`'class'` + properName),
     ImportedOperator(symbol),
     ImportedValue(ident),
-    ImportedData(properName + !importedDataMembers),
+    ImportedData(properName + !importedDataMembers)
 )
 val importList = ImportList(
-    Choice.of(
+    Choice(
         HIDING + parens(importedItem.sepBy(`,`)),
-        parens(importedItem.sepBy(`,`)),
+        parens(importedItem.sepBy(`,`))
     )
 )
 val importDeclaration = ImportType(
     `'import'` + moduleName +
-            Choice.of(
+            Choice(
                 importList + ImportAlias(`'as'` + moduleName),
                 importList,
                 ImportAlias(`'as'` + moduleName),
@@ -309,9 +308,9 @@ val importDeclaration = ImportType(
 val role = `'nominal'` / representational / phantom
 
 fun namedValueDecl(name: String) = ValueDeclType(
-    Lookahead(ident.heal) { tokenText == name } + Choice.of(
+    Lookahead(ident.heal) { tokenText == name } + Choice(
         ParametersType(+ParameterType(binderAtom)) + guardedDecl,
-        Empty(ParametersType, before = guardedDecl),
+        Empty(ParametersType, before = guardedDecl)
     )
 )
 
@@ -321,7 +320,7 @@ fun valueDeclarationGroup() = ValueDeclarationGroupType(Capture(ident.tokenSet) 
     )
 }).heal
 
-val decl = Choice.of(
+val decl = Choice(
     (`'data'` + properName + TypeParametersType(!+typeVar) + dcolon) + type,
     DataDecl(
         `'data'` + properName + TypeParametersType(!+typeVar) + !(eq + DataCtorList(dataCtor.sepBy1(`|`)))
@@ -339,16 +338,16 @@ val decl = Choice.of(
     fixityDeclaration,
     classDeclaration,
     InstanceDeclType(`'derive'` + !`'newtype'` + instHead + !(`'where'` + layout1(instBinder, "instance member"))),
-    InstanceDeclType(instHead + !(`'where'` + layout1(instBinder, "instance member"))),
+    InstanceDeclType(instHead + !(`'where'` + layout1(instBinder, "instance member")))
 )
 val dataMembers = ExportedDataMemberListType(parens(ddot / ExportedDataMember(properName).sepBy(`,`)))
-val exportedItem = Choice.of(
+val exportedItem = Choice(
     ExportedClassType(`'class'` + properName),
     ExportedDataType(properName + !dataMembers),
     ExportedModuleType(`'module'` + moduleName),
     ExportedOperatorType(symbol),
     ExportedTypeType(`'type'` + parens(Identifier(operator))),
-    ExportedValueType(ident),
+    ExportedValueType(ident)
 )
 val exportList = ExportListType(parens(exportedItem.sepBy1(`,`)))
 val elseDecl = `'else'` + !`L-sep`
@@ -361,18 +360,18 @@ val moduleBody = Choice(
 )
 
 val module = ModuleType(moduleHeader + moduleBody)
-val binder2 = Choice.of(
+val binder2 = Choice(
     AppBinderType.fold(CtorBinderType(qualProperName), binderAtom),
     NumberBinderType((`-` + number)),
-    binderAtom,
+    binderAtom
 )
 val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
 val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
 val caseBranch = CaseAlternativeType(
-    Choice.of(
+    Choice(
         binder1.sepBy1(`,`) + arrow + exprWhere,
         binder1.sepBy1(`,`) + +guardedCaseExpr,
-        binder1.sepBy1(`,`),
+        binder1.sepBy1(`,`)
     )
 )
 val ifThenElse =
@@ -404,14 +403,14 @@ fun recordLayout1(statement: DSL, name: String): DSL {
     return LCURLY + (statement + !+(`,` + relaxedStatement).heal).heal + RCURLY
 }
 
-val letBinding = Choice.of(
+val letBinding = Choice(
     valueDeclarationGroup(),
     SignatureType(ident + dcolon + type.relax("malformed type")),
     LetBinderType(binder1 + eq + exprWhere),
     (ident + !+binderAtom + guardedDecl)
 )
 val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
-val doStatement = Choice.of(
+val doStatement = Choice(
     DoNotationLet(`'let'` + layout1(letBinding, "let binding").relax("missing binding")),
     DoNotationBind(binder + larrow + `expr?`),
     DoNotationValue(expr)
