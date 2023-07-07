@@ -110,26 +110,29 @@ class Choice(vararg choicesRaw: DSL) : DSL {
     private val choices: List<DSL> = choicesRaw.flatMap { choice ->
         when (choice) {
             is Choice -> choice.choices
-            is Sequence -> when (val first = choice.sequence.firstOrNull()) {
-                /*
-                *  (a | b) + c = (a + c) | (b + c)
-                * */
-                is Choice -> first.choices.map { Sequence(it, *choice.sequence.drop(1).toTypedArray()) }
-                null -> 
-                    listOf(True)
-                else -> listOf(choice)
-            }
+            is Sequence -> fanSequence(choice)
             is Transaction -> when (choice.child) {
                 is Choice -> choice.child.choices
                 else -> listOf(choice)
             }
             is PsiDSL<*> -> when (choice.child) {
                 is Choice -> choice.child.choices.map { PsiDSL<PsiElement>(it, choice.symbol) }
+                is Sequence -> fanSequence(choice.child).map { PsiDSL<PsiElement>(it, choice.symbol) }
                 else -> listOf(choice)
             } 
             else -> listOf(choice)
         }
     }
+
+    private fun fanSequence(choice: Sequence) = when (val first = choice.sequence.firstOrNull()) {
+        /*
+        *  (a | b) + c = (a + c) | (b + c)
+        * */
+        is Choice -> first.choices.map { Sequence(it, *choice.sequence.drop(1).toTypedArray()) }
+        null -> listOf(True)
+        else -> listOf(choice)
+    }
+
     private val lookup: Map<IElementType, List<DSL>> by lazy {
         val keys = choices.mapNotNull { it.tokenSet }.flatMap { it.types.asSequence() }.distinct()
         val table = mutableMapOf(*keys.map { it to mutableListOf<DSL>() }.toTypedArray())
