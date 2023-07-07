@@ -35,12 +35,12 @@ data class Empty(private val type: IElementType, private val before: DSL) : DSL 
     }
 }
 
-operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(dsl: DSL) = Symbolic<Psi>(dsl, this as IElementType)
+operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(dsl: DSL) = PsiDSL<Psi>(dsl, this as IElementType)
 operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(other: String) =
-    Symbolic<Psi>(other.dsl, this as IElementType)
+    PsiDSL<Psi>(other.dsl, this as IElementType)
 
 operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(o: IElementType) =
-    Symbolic<Psi>(o.dsl, this as IElementType)
+    PsiDSL<Psi>(o.dsl, this as IElementType)
 
 fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
 fun IElementType.cont(start: DSL, next: DSL) = Continuation(this, start, next)
@@ -123,8 +123,8 @@ class Choice(vararg choicesRaw: DSL) : DSL {
                 is Choice -> choice.child.choices
                 else -> listOf(choice)
             }
-            is Symbolic<*> -> when (choice.child) {
-                is Choice -> choice.child.choices.map { Symbolic<PsiElement>(it, choice.symbol) }
+            is PsiDSL<*> -> when (choice.child) {
+                is Choice -> choice.child.choices.map { PsiDSL<PsiElement>(it, choice.symbol) }
                 else -> listOf(choice)
             } 
             else -> listOf(choice)
@@ -220,7 +220,7 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
     override val tokenSet by lazy { cache.tokenSet }
 }
 
-data class Symbolic<Tag>(val child: DSL, val symbol: IElementType) : DSL {
+data class PsiDSL<Tag>(val child: DSL, val symbol: IElementType) : DSL {
     override val tokenSet by lazy { child.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         if (tokenSet?.contains(b.tokenType) == false) 
