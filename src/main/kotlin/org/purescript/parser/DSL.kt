@@ -137,7 +137,6 @@ class Choice(vararg val choices: DSL) : DSL {
                 is Choice -> choice.child.flattenChoices
                 else -> listOf(choice)
             }
-
             else -> listOf(choice)
         }
     }
@@ -174,12 +173,8 @@ class Choice(vararg val choices: DSL) : DSL {
 
     private val optional: Boolean by lazy { flattenChoices.any { it is True } }
 
-    override fun parse(b: PsiBuilder): Boolean {
-        val tokenType = b.tokenType
-        return (
-                if (tokenType in lookup) lookup[tokenType]!!.any { it.heal.parse(b) }
-                else flattenChoices.any { it.heal.parse(b) }) || optional
-    }
+    override fun parse(b: PsiBuilder): Boolean = 
+        (lookup[b.tokenType] ?: flattenChoices).any { it.heal.parse(b) } || optional
 
     override val tokenSet by lazy {
         if (flattenChoices.none { it.tokenSet == null }) {
