@@ -152,6 +152,9 @@ class Choice(vararg choicesRaw: DSL) : DSL {
         }
         return@lazy table.mapValues { (_, value) ->
             value.let { choices ->
+                /*
+                * (a + b) | (a + c) -> a + (b | c)
+                */
                 choices.groupBy {
                     when (it) {
                         is Sequence -> it.sequence.first()
