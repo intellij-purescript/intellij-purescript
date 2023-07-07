@@ -6,6 +6,8 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
+import org.purescript.parser.dsl.ElementToken
+import org.purescript.parser.dsl.StringToken
 import org.purescript.psi.PSElementType
 
 interface DSL : Parser {
@@ -78,43 +80,11 @@ operator fun IElementType.div(other: IElementType) = Choice(dsl, other.dsl)
 operator fun String.div(other: DSL) = Choice(dsl, other.dsl)
 operator fun DSL.div(other: String) = Choice(dsl, other.dsl)
 
-data class ElementToken(val token: IElementType) : DSL {
-    override val tokenSet: TokenSet = TokenSet.create(token)
-    override val heal get() = this
-    override fun parse(b: PsiBuilder): Boolean =
-        if (b.tokenType === token) {
-            b.advanceLexer()
-            true
-        } else {
-            false
-        }
-}
 
-data class StringToken(val token: String) : DSL {
-    override val heal get() = this
-    override val tokenSet: TokenSet? = null
-    override fun parse(b: PsiBuilder): Boolean =
-        when (b.tokenText) {
-            token -> {
-                b.advanceLexer()
-                true
-            }
-
-            else -> false
-        }
-}
-
-data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean) :
-    DSL {
-    override fun parse(b: PsiBuilder) = b.filter() && next.parse(b)
-    override val tokenSet: TokenSet? by lazy { next.tokenSet }
-}
-
-data class Capture(override val tokenSet: TokenSet?, val next: (String) -> DSL) : DSL {
-    override fun parse(b: PsiBuilder): Boolean {
-        val tokenText = b.tokenText ?: return false
-        return next(tokenText).parse(b)
-    }
+object True : DSL {
+    override val heal = this
+    override val tokenSet: TokenSet? get() = null
+    override fun parse(b: PsiBuilder): Boolean = true
 }
 
 class Sequence(vararg sequenceRaw: DSL) : DSL {
@@ -212,12 +182,6 @@ data class OneOrMore(val child: DSL) : DSL {
         }
         return ret
     }
-}
-
-object True : DSL {
-    override val heal = this
-    override val tokenSet: TokenSet? get() = null
-    override fun parse(b: PsiBuilder): Boolean = true
 }
 
 data class Transaction(val child: DSL) : DSL {

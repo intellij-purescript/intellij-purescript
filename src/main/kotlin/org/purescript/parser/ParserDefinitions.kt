@@ -1,5 +1,8 @@
 package org.purescript.parser
 
+import org.purescript.parser.dsl.Capture
+import org.purescript.parser.dsl.Lookahead
+
 // Literals
 val boolean = `'true'` / `'false'`
 val number = NumericLiteral(NATURAL / FLOAT)
