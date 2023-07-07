@@ -125,25 +125,26 @@ val type4 = Choice.of(
     TypeIntType(`-` + number),
     type5
 )
-val type3 = Choice.of(
-    TypeOperatorExpressionType(type4 + qualOp + type4.sepBy1(qualOp)),
+val type3 = TypeOperatorExpressionType.cont(
     type4,
+    qualOp + type4.sepBy1(qualOp)
 )
 
 /**
  * Function or constraint
  */
-val type2: DSL = Choice.of(
-    TypeArrType(type3 + arrow + Reference { type1 }),
-    ConstrainedType(type3 + darrow + Reference { type1 }),
-    type3
+val type2: DSL = ContinuationMap(
+    type3,
+    arrow + Reference { type1 } to TypeArrType,
+    darrow + Reference { type1 } to ConstrainedType
 )
 
 /**
  * Forall
  */
 val type1 = Choice.of(
-    ForAllType(`'forall'` + +typeVar + dot + type2), type2
+    ForAllType(`'forall'` + +typeVar + dot + type2),
+    type2
 )
 
 val expr = TypedExpressionType.cont(Reference { expr1 }, dcolon + type)

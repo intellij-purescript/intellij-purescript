@@ -43,7 +43,7 @@ operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(o: IElementType
     PsiDSL<Psi>(o.dsl, this as IElementType)
 
 fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
-fun IElementType.cont(start: DSL, next: DSL) = Continuation(this, start, next)
+fun IElementType.cont(start: DSL, next: DSL) = ContinuationMap(start, next to this)
 
 data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     private val healedNext = next.heal
@@ -167,9 +167,11 @@ class Choice(vararg choicesRaw: DSL) : DSL {
     }
 
     private val optional: Boolean by lazy { choices.any { it is True } }
+    
+    private val linear: List<DSL> by lazy { choices.filter { it !is True && it.tokenSet == null}}
 
     override fun parse(b: PsiBuilder): Boolean = 
-        (lookup[b.tokenType] ?: choices).any { it.heal.parse(b) } || optional
+        (lookup[b.tokenType] ?: linear).any { it.heal.parse(b) } || optional
 
     override val tokenSet by lazy {
         if (choices.none { it.tokenSet == null }) {
@@ -278,26 +280,21 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? by lazy { dsl.tokenSet }
 }
 
-data class Continuation(val type: IElementType, val init: DSL, val cont: DSL) : DSL {
-    //override fun choices() = init.choices().map { Continuation(type, it, cont) }
+class ContinuationMap(val init: DSL, private vararg val cont: Pair<DSL, IElementType>) : DSL {
     override val tokenSet: TokenSet? by lazy { init.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
-        return when {
-            !init.parse(b) -> {
-                marker.drop()
-                false
-            }
-
-            cont.heal.parse(b) -> {
+        if (!init.parse(b)){
+            marker.drop()
+            return false
+        }
+        for ((choice, type) in cont) {
+            if (choice.heal.parse(b)) {
                 marker.done(type)
-                true
-            }
-
-            else -> {
-                marker.drop()
-                true
+                return true
             }
         }
+        marker.drop()
+        return true
     }
 }
