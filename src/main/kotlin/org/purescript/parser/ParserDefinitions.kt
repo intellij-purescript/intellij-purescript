@@ -356,11 +356,11 @@ val binder2 = Choice.of(
 )
 val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
 val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
-val caseBranch = Choice.of(
-    CaseAlternativeType(binder1.sepBy1(`,`) + arrow + exprWhere),
-    CaseAlternativeType(binder1.sepBy1(`,`) + +guardedCaseExpr),
-    CaseAlternativeType(binder1.sepBy1(`,`)),
-)
+val caseBranch = CaseAlternativeType(Choice.of(
+    binder1.sepBy1(`,`) + arrow + exprWhere,
+    binder1.sepBy1(`,`) + +guardedCaseExpr,
+    binder1.sepBy1(`,`),
+))
 val ifThenElse =
     IfThenElseType(`'if'` + `expr?` + `'then'` + `expr?` + `'else'` + `expr?`) /
             ErrorIfThenType(`'if'` + `expr?` + `'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")) /
