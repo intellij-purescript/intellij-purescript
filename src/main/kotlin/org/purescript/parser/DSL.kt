@@ -111,14 +111,22 @@ class Choice(vararg choicesRaw: DSL) : DSL {
         when (choice) {
             is Choice -> choice.choices
             is Sequence -> when (val first = choice.sequence.firstOrNull()) {
+                /*
+                *  (a | b) + c = (a + c) | (b + c)
+                * */
                 is Choice -> first.choices.map { Sequence(it, *choice.sequence.drop(1).toTypedArray()) }
-                null -> listOf(True)
+                null -> 
+                    listOf(True)
                 else -> listOf(choice)
             }
             is Transaction -> when (choice.child) {
                 is Choice -> choice.child.choices
                 else -> listOf(choice)
             }
+            is Symbolic<*> -> when (choice.child) {
+                is Choice -> choice.child.choices.map { Symbolic<PsiElement>(it, choice.symbol) }
+                else -> listOf(choice)
+            } 
             else -> listOf(choice)
         }
     }
