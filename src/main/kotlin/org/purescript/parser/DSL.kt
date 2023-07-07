@@ -134,6 +134,7 @@ class Choice(vararg val choices: DSL) : DSL {
         val keys = choices.mapNotNull { it.tokenSet }.flatMap { it.types.asSequence() }.distinct()
         val table = mutableMapOf(*keys.map { it to mutableListOf<DSL>() }.toTypedArray())
         for (choice in choices) {
+            if (choice is True) continue
             when (val types = choice.tokenSet?.types) {
                 null -> {
                     for ((_, parser) in table) parser.add(choice)
@@ -143,10 +144,12 @@ class Choice(vararg val choices: DSL) : DSL {
         }
         return@lazy table
     }
+    
+    private val optional: Boolean by lazy { choices.any { it is True } }
 
-    override fun parse(b: PsiBuilder): Boolean =
+    override fun parse(b: PsiBuilder): Boolean =(
         if (b.tokenType in lookup) lookup[b.tokenType]!!.any { it.parse(b) }
-        else choices.any { it.parse(b) }
+        else choices.any { it.parse(b) }) || optional
 
     override val tokenSet by lazy {
         if (choices.none { it.tokenSet == null }) {
