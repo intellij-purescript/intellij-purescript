@@ -285,14 +285,12 @@ class ChoiceMap(val init: DSL, private vararg val choices: Pair<DSL, IElementTyp
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
         if (!init.parse(b)) {
-            marker.drop()
+            marker.rollbackTo()
             return false
         }
-        for ((choice, type) in choices) {
-            if (choice.heal.parse(b)) {
-                marker.done(type)
-                return true
-            }
+        for ((choice, type) in choices) if (choice.heal.parse(b)) {
+            marker.done(type)
+            return true
         }
         marker.drop()
         return true
