@@ -133,7 +133,7 @@ val type3 = TypeOperatorExpressionType.cont(
 /**
  * Function or constraint
  */
-val type2: DSL = ContinuationMap(
+val type2: DSL = ChoiceMap(
     type3,
     arrow + Reference { type1 } to TypeArrType,
     darrow + Reference { type1 } to ConstrainedType

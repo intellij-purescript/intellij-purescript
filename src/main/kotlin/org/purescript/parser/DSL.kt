@@ -43,7 +43,7 @@ operator fun <Psi : PsiElement> PSElementType.HasPsi<Psi>.invoke(o: IElementType
     PsiDSL<Psi>(o.dsl, this as IElementType)
 
 fun IElementType.fold(start: DSL, next: DSL) = Fold(this, start, next)
-fun IElementType.cont(start: DSL, next: DSL) = ContinuationMap(start, next to this)
+fun IElementType.cont(start: DSL, next: DSL) = ChoiceMap(start, next to this)
 
 data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     private val healedNext = next.heal
@@ -280,7 +280,7 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? by lazy { dsl.tokenSet }
 }
 
-class ContinuationMap(val init: DSL, private vararg val cont: Pair<DSL, IElementType>) : DSL {
+class ChoiceMap(val init: DSL, private vararg val choices: Pair<DSL, IElementType>) : DSL {
     override val tokenSet: TokenSet? by lazy { init.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
@@ -288,7 +288,7 @@ class ContinuationMap(val init: DSL, private vararg val cont: Pair<DSL, IElement
             marker.drop()
             return false
         }
-        for ((choice, type) in cont) {
+        for ((choice, type) in choices) {
             if (choice.heal.parse(b)) {
                 marker.done(type)
                 return true
