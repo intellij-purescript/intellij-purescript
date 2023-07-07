@@ -133,12 +133,14 @@ class Choice(vararg val choices: DSL) : DSL {
     private val flattenChoices: List<DSL> = choices.flatMap { choice ->
         when (choice) {
             is Choice -> choice.flattenChoices
-            is Transaction -> when(choice.child) {
+            is Transaction -> when (choice.child) {
                 is Choice -> {
                     choice.child.flattenChoices.map { it.heal }
                 }
+
                 else -> listOf(choice)
             }
+
             else -> listOf(choice)
         }
     }
@@ -152,7 +154,25 @@ class Choice(vararg val choices: DSL) : DSL {
                 else -> for (type in types) table[type]!!.add(choice)
             }
         }
-        return@lazy table
+        return@lazy table.mapValues { (_, value) ->
+            value.let { choices ->
+                choices.groupBy {
+                    when (it) {
+                        is Sequence -> it.sequence.first()
+                        else -> it
+                    }
+                }.map { (key, group) ->
+                    group.singleOrNull()
+                        ?: (key + Choice(*group.map {
+                            when (it) {
+                                key -> True
+                                is Sequence -> Sequence(*it.sequence.drop(1).toTypedArray())
+                                else -> error("This should not be able to happen")
+                            }
+                        }.toTypedArray()))
+                }
+            }.toList()
+        }
     }
 
     private val optional: Boolean by lazy { flattenChoices.any { it is True } }

@@ -82,10 +82,11 @@ val typeVar = Choice.of(
 val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
 val row = Choice.of(
     `|` + type,
-    rowLabel + +(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal + `|` + type,
-    rowLabel + +(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal,
-    rowLabel + `|` + type,
-    rowLabel,
+    rowLabel + Choice(
+        +(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal + Choice(`|` + type, True),
+        `|` + type,
+        True
+    ),
 )
 
 val typeAtom: DSL = Choice.of(
