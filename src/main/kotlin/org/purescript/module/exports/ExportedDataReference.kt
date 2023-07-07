@@ -17,11 +17,9 @@ class ExportedDataReference(exportedData: ExportedData.Psi) : PsiReferenceBase<E
         candidates.firstOrNull { it.name == myElement.name }
 
     private val candidates: Array<PsiNamedElement>
-        get() =
-            myElement.module?.run {
-                arrayOf(
-                    *cache.dataDeclarations,
-                    *cache.newTypeDeclarations,
-                )
-            } ?: emptyArray()
+        get() = try {
+            myElement.module.run { arrayOf(*cache.dataDeclarations, *cache.newTypeDeclarations) }
+        } catch (_: IllegalStateException) {
+            emptyArray<PsiNamedElement>()
+        }
 }
