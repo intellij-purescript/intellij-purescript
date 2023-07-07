@@ -280,7 +280,7 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? by lazy { dsl.tokenSet }
 }
 
-class ChoiceMap(val init: DSL, private vararg val choices: Pair<DSL, IElementType>) : DSL {
+class ChoiceMap(val init: DSL, private vararg val choices: Pair<DSL, IElementType?>) : DSL {
     override val tokenSet: TokenSet? by lazy { init.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
@@ -289,7 +289,7 @@ class ChoiceMap(val init: DSL, private vararg val choices: Pair<DSL, IElementTyp
             return false
         }
         for ((choice, type) in choices) if (choice.heal.parse(b)) {
-            marker.done(type)
+            type?.let { marker.done(it) } ?: marker.drop()
             return true
         }
         marker.drop()
