@@ -58,7 +58,7 @@ data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
         return result
     }
 
-    override val tokenSet: TokenSet? = start.tokenSet
+    override val tokenSet: TokenSet? by lazy { start.tokenSet }
 }
 
 operator fun Sequence.plus(other: Sequence) = Sequence(*sequence, *other.sequence)
@@ -107,7 +107,7 @@ data class StringToken(val token: String) : DSL {
 data class Lookahead(val next: DSL, val filter: PsiBuilder.() -> Boolean) :
     DSL {
     override fun parse(b: PsiBuilder) = b.filter() && next.parse(b)
-    override val tokenSet: TokenSet? = next.tokenSet
+    override val tokenSet: TokenSet? by lazy { next.tokenSet }
 }
 
 data class Capture(override val tokenSet: TokenSet?, val next: (String) -> DSL) : DSL {
@@ -143,13 +143,16 @@ class Choice(vararg val choices: DSL) : DSL {
         }
         return@lazy table
     }
+
     override fun parse(b: PsiBuilder): Boolean =
         if (b.tokenType in lookup) lookup[b.tokenType]!!.any { it.parse(b) }
         else choices.any { it.parse(b) }
 
-    override val tokenSet: TokenSet? = if (choices.none { it.tokenSet == null }) {
+    override val tokenSet by lazy {
+        if (choices.none { it.tokenSet == null }) {
         TokenSet.orSet(*choices.mapNotNull { it.tokenSet }.toTypedArray())
     } else null
+    }
 
     companion object {
         fun of(vararg all: DSL): DSL = Choice(*all.map { it.heal }.toTypedArray())
@@ -192,17 +195,17 @@ data class Transaction(val child: DSL) : DSL {
         }
     }
 
-    override val tokenSet: TokenSet? = child.tokenSet
+    override val tokenSet by lazy { child.tokenSet }
 }
 
 data class Reference(val init: DSL.() -> DSL) : DSL {
     private val cache by lazy { this.init() }
     override fun parse(b: PsiBuilder): Boolean = cache.parse(b)
-    override val tokenSet: TokenSet? = null
+    override val tokenSet by lazy { cache.tokenSet }
 }
 
 data class Symbolic<Tag>(val child: DSL, val symbol: IElementType) : DSL {
-    override val tokenSet = child.tokenSet
+    override val tokenSet by lazy { child.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         if (tokenSet?.contains(b.tokenType) == false) return false
         val start = b.mark()
@@ -252,12 +255,12 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
         }
     }
 
-    override val tokenSet: TokenSet? = dsl.tokenSet
+    override val tokenSet: TokenSet? by lazy { dsl.tokenSet }
 }
 
 data class Continuation(val type: IElementType, val init: DSL, val cont: DSL) : DSL {
     //override fun choices() = init.choices().map { Continuation(type, it, cont) }
-    override val tokenSet: TokenSet? = init.tokenSet
+    override val tokenSet: TokenSet? by lazy { init.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
         val marker = b.mark()
         return when {
