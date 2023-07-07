@@ -134,10 +134,7 @@ class Choice(vararg val choices: DSL) : DSL {
         when (choice) {
             is Choice -> choice.flattenChoices
             is Transaction -> when (choice.child) {
-                is Choice -> {
-                    choice.child.flattenChoices.map { it.heal }
-                }
-
+                is Choice -> choice.child.flattenChoices
                 else -> listOf(choice)
             }
 
@@ -217,7 +214,8 @@ object True : DSL {
 data class Transaction(val child: DSL) : DSL {
     override val heal: Transaction get() = this
     override fun parse(b: PsiBuilder): Boolean {
-        if (child.tokenSet?.contains(b.tokenType) == false) return false
+        if (child.tokenSet?.contains(b.tokenType) == false) 
+            return false
         val pack = b.mark()
         return when (child.parse(b)) {
             false -> {
@@ -244,7 +242,8 @@ data class Reference(val init: DSL.() -> DSL) : DSL {
 data class Symbolic<Tag>(val child: DSL, val symbol: IElementType) : DSL {
     override val tokenSet by lazy { child.tokenSet }
     override fun parse(b: PsiBuilder): Boolean {
-        if (tokenSet?.contains(b.tokenType) == false) return false
+        if (tokenSet?.contains(b.tokenType) == false) 
+            return false
         val start = b.mark()
         return if (child.parse(b)) {
             start.done(symbol)
