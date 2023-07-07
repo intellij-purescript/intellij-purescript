@@ -190,7 +190,8 @@ val exprAtom = Choice.of(
 )
 val expr7 = RecordAccessType.fold(exprAtom, dot + Accessor(label))
 
-val badSingleCaseBranch = Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + (arrow + exprWhere).heal / !+guardedCaseExpr) }
+val badSingleCaseBranch =
+    Reference { `L{` + binder1 + (arrow + `L}` + exprWhere) / (`L}` + (arrow + exprWhere).heal / !+guardedCaseExpr) }
 
 /*
 * if there is only one case branch it can ignore layout so we need
@@ -289,7 +290,15 @@ val importList = ImportList(
         parens(importedItem.sepBy(`,`)),
     )
 )
-val importDeclaration = ImportType(`'import'` + moduleName + !importList + !ImportAlias(`'as'` + moduleName))
+val importDeclaration = ImportType(
+    `'import'` + moduleName +
+            Choice.of(
+                importList + ImportAlias(`'as'` + moduleName),
+                importList,
+                ImportAlias(`'as'` + moduleName),
+                True
+            )
+)
 
 /**
  * nominal = the type can never be coerced to another type.
@@ -342,7 +351,9 @@ val exportedItem = Choice.of(
 )
 val exportList = ExportListType(parens(exportedItem.sepBy1(`,`)))
 val elseDecl = `'else'` + !`L-sep`
-val moduleHeader = `'module'` + moduleName + !exportList + `'where'` + `L{` + !+(importDeclaration + `L-sep`)
+val moduleHeader =
+    `'module'` + moduleName + !exportList + `'where'` + `L{` +
+            importDeclaration.sepBy(`L-sep`) + !`L-sep`
 val moduleBody = Choice(
     `L}`,
     +(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + !`L-sep`) + `L}`,
@@ -356,11 +367,13 @@ val binder2 = Choice.of(
 )
 val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
 val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
-val caseBranch = CaseAlternativeType(Choice.of(
-    binder1.sepBy1(`,`) + arrow + exprWhere,
-    binder1.sepBy1(`,`) + +guardedCaseExpr,
-    binder1.sepBy1(`,`),
-))
+val caseBranch = CaseAlternativeType(
+    Choice.of(
+        binder1.sepBy1(`,`) + arrow + exprWhere,
+        binder1.sepBy1(`,`) + +guardedCaseExpr,
+        binder1.sepBy1(`,`),
+    )
+)
 val ifThenElse =
     IfThenElseType(`'if'` + `expr?` + `'then'` + `expr?` + `'else'` + `expr?`) /
             ErrorIfThenType(`'if'` + `expr?` + `'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")) /

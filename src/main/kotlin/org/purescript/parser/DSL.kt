@@ -130,35 +130,45 @@ class Sequence(vararg val sequence: DSL) : DSL {
 
 
 class Choice(vararg val choices: DSL) : DSL {
+    private val flattenChoices: List<DSL> = choices.flatMap { choice ->
+        when (choice) {
+            is Choice -> choice.flattenChoices
+            is Transaction -> when(choice.child) {
+                is Choice -> {
+                    choice.child.flattenChoices.map { it.heal }
+                }
+                else -> listOf(choice)
+            }
+            else -> listOf(choice)
+        }
+    }
     private val lookup: Map<IElementType, List<DSL>> by lazy {
-        val keys = choices.mapNotNull { it.tokenSet }.flatMap { it.types.asSequence() }.distinct()
+        val keys = flattenChoices.mapNotNull { it.tokenSet }.flatMap { it.types.asSequence() }.distinct()
         val table = mutableMapOf(*keys.map { it to mutableListOf<DSL>() }.toTypedArray())
-        for (choice in choices) {
+        for (choice in flattenChoices) {
             if (choice is True) continue
             when (val types = choice.tokenSet?.types) {
-                null -> {
-                    for ((_, parser) in table) parser.add(choice)
-                }
+                null -> for ((_, parser) in table) parser.add(choice)
                 else -> for (type in types) table[type]!!.add(choice)
             }
         }
         return@lazy table
     }
-    
-    private val optional: Boolean by lazy { choices.any { it is True } }
 
-    override fun parse(b: PsiBuilder): Boolean =(
-        if (b.tokenType in lookup) lookup[b.tokenType]!!.any { it.parse(b) }
-        else choices.any { it.parse(b) }) || optional
+    private val optional: Boolean by lazy { flattenChoices.any { it is True } }
+
+    override fun parse(b: PsiBuilder): Boolean = (
+            if (b.tokenType in lookup) lookup[b.tokenType]!!.any { it.heal.parse(b) }
+            else flattenChoices.any { it.heal.parse(b) }) || optional
 
     override val tokenSet by lazy {
-        if (choices.none { it.tokenSet == null }) {
-        TokenSet.orSet(*choices.mapNotNull { it.tokenSet }.toTypedArray())
-    } else null
+        if (flattenChoices.none { it.tokenSet == null }) {
+            TokenSet.orSet(*flattenChoices.mapNotNull { it.tokenSet }.toTypedArray())
+        } else null
     }
 
     companion object {
-        fun of(vararg all: DSL): DSL = Choice(*all.map { it.heal }.toTypedArray())
+        fun of(vararg all: DSL): DSL = Choice(*all)
     }
 }
 
@@ -176,6 +186,7 @@ data class OneOrMore(val child: DSL) : DSL {
 }
 
 object True : DSL {
+    override val heal = this
     override val tokenSet: TokenSet? get() = null
     override fun parse(b: PsiBuilder): Boolean = true
 }
