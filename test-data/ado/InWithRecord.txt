@@ -11,7 +11,7 @@ Purescript File
         Parameters(Parameters)
           <empty list>
         PsiElement(=)('=')
-        AdoBlock(AdoBlock)
+        EmptyAdoBlock(EmptyAdoBlock)
           PsiElement(ado)('ado')
           PsiElement(in)('in')
           RecordLiteral(RecordLiteral)

@@ -6,15 +6,6 @@ import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
 class PSDoBlock(node: ASTNode) : PSPsiElement(node), Expression {
-    val letDeclarations: Array<PSDoNotationLet>
-        get() =
-        findChildrenByClass(PSDoNotationLet::class.java)
-
-    override val expressions: Sequence<Expression>
-        get() = statements.flatMap { it.expressions }.asSequence()
-    val statements = childrenOfType<DoStatement>()
-    val valueDeclarationGroups get () =
-            letDeclarations
-                .asSequence()
-                .flatMap { it.valueDeclarationGroups.asSequence() }
+    override val expressions: Sequence<Expression> get() = statements.expressions.asSequence()
+    private val statements = childrenOfType<DoStatements>().single()
 }

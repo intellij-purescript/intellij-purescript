@@ -211,7 +211,11 @@ val expr5 = Reference {
         exprCase,
         ifThenElse,
         doBlock,
-        AdoBlockType(qualified(`'ado'`) + layout(doStatement, "ado statement") + `'in'` + expr),
+        ChoiceMap(
+            qualified(`'ado'`),
+            `L{` + DoStatementsType.fold( DoStatementsType(doStatement) , `L-sep` + doStatement ) + `L}` + `'in'` + expr to AdoBlockType ,
+            `L{` + `L}` + `'in'` + expr to EmptyAdoBlockType,
+        ),
         letIn
     )
 }
@@ -417,7 +421,7 @@ val doStatement = Choice(
 )
 val doBlock = ChoiceMap(
     qualified(`'do'`),
-    layout1(doStatement, "do statement") to DoBlock,
+    `L{` + DoStatementsType.fold( DoStatementsType(doStatement) , `L-sep` + doStatement ) + `L}` to DoBlock,
     True to EmptyDoBlockType
 )
 val recordBinder =
