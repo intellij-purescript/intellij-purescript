@@ -415,8 +415,10 @@ val doStatement = Choice(
     DoNotationBind(binder + larrow + `expr?`),
     DoNotationValue(expr)
 )
-val doBlock = DoBlock(
-    qualified(`'do'`).heal + layout1(doStatement, "do statement").relax("missing do statements")
+val doBlock = ChoiceMap(
+    qualified(`'do'`),
+    layout1(doStatement, "do statement") to DoBlock,
+    True to EmptyDoBlockType
 )
 val recordBinder =
     RecordLabelBinderType((label + eq / colon).heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)

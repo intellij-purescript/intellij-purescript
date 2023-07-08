@@ -13,7 +13,9 @@ import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.*
 import org.purescript.module.declaration.newtype.NewtypeCtor
 import org.purescript.module.declaration.newtype.NewtypeDecl
-import org.purescript.module.declaration.type.*
+import org.purescript.module.declaration.type.Labeled
+import org.purescript.module.declaration.type.TypeDecl
+import org.purescript.module.declaration.type.TypeParameters
 import org.purescript.module.declaration.type.type.*
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
@@ -176,6 +178,7 @@ val TypeArgumentType = WithPsi("TypeArgument") { TypeArgument(it) }
 val Accessor = WithPsi("Accessor") { PSAccessor(it) }
 val RecordAccessType = WithPsi("RecordAccess") { RecordAccess(it) }
 val DoBlock = WithPsi("DoBlock") { PSDoBlock(it) }
+val EmptyDoBlockType = WithPsi("EmptyBlock") { EmptyDoBlock(it) }
 val AdoBlockType = WithPsi("AdoBlock") { AdoBlock(it) }
 val DoNotationLet = WithPsi("DoNotationLet") { PSDoNotationLet(it) }
 val DoNotationBind = WithPsi("DoNotationBind") { PSDoNotationBind(it) }
