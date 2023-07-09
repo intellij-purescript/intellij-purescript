@@ -1,15 +1,19 @@
 package org.purescript
 
 import com.intellij.lang.Language
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.FakePsiElement
+import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedClass
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
+import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.type.type.PSType
+
 
 object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript", "application/x-purescript") {
     /**
@@ -34,6 +38,9 @@ object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript
         val members = BUILTIN_MODULES_MAP[moduleName] ?: emptyList()
         return members.map { PrimTypePsiElement(project, moduleName, it) }
     }
+    
+    
+    fun getPrimModule(project: Project): Module? = (project.service<Prim>().file as PSFile).module
 
     val BUILTIN_MODULES_MAP = mapOf<String, List<String>>(
         "Prim" to listOf(
@@ -161,8 +168,8 @@ object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript
     )
 }
 
-class PrimTypePsiElement(private val project: Project, val moduleName: String, private val name: String) 
-    : FakePsiElement(), Importable, Inferable {
+class PrimTypePsiElement(private val project: Project, val moduleName: String, private val name: String) :
+    FakePsiElement(), Importable, Inferable {
     override fun asImport() = ImportDeclaration(moduleName, importedItems = setOf(ImportedClass(name)))
     override val type: PSType? get() = null
     override fun getParent() = null
@@ -170,7 +177,7 @@ class PrimTypePsiElement(private val project: Project, val moduleName: String, p
     override fun getProject(): Project = project
     override fun getContainingFile(): PsiFile? = null
     override fun isValid() = true
-    override val typeId: InferType.Id get() = InferType.Id(-1) 
+    override val typeId: InferType.Id get() = InferType.Id(-1)
     override val substitutedType: InferType get() = InferType.Prim(name)
     override fun unify() {}
 }
