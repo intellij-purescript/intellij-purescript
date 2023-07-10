@@ -9,6 +9,7 @@ import com.intellij.formatting.service.AsyncFormattingRequest
 import com.intellij.formatting.service.FormattingService
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
@@ -30,6 +31,7 @@ class PSExternalFormatter : AsyncDocumentFormattingService() {
             val commandLine = GeneralCommandLine()
                 .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
                 .withExePath(pursTidyBin.toString())
+                .withWorkDirectory(project.basePath ?: project.guessProjectDir()?.path)
                 .withParameters(params)
                 .withInput(request.ioFile)
                 .withCharset(StandardCharsets.UTF_8)
