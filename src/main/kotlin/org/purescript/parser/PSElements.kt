@@ -129,8 +129,10 @@ val RecordLabelExprBinderType = WithPsi("RecordLabelExprBinder") { RecordLabelEx
 val CtorBinderType = WithPsi("ConstructorBinder") { ConstructorBinder(it) }
 val AppBinderType = WithPsi("AppBinder") { AppBinder(it) }
 val ArrayBinderType = WithPsi("ArrayBinder") { ArrayBinder(it) }
-val ParensBinderType = WithPsi("ParensBinder") { ParensBinder(it) }
+val BinderOperatorType = WithPsi("BinderOperator") { BinderOperator(it) }
+val BinderOperatorExpressionType = WithPsi("BinderOperatorExpression") { BinderOperatorExpression(it) }
 
+val ParensBinderType = WithPsi("ParensBinder") { ParensBinder(it) }
 val RecordLabelType = WithPsi("RecordLabel") { RecordLabel(it) }
 val RecordUpdateType = WithPsi("RecordUpdate") { RecordUpdate(it) }
 val BooleanLiteral = WithPsi("BooleanLiteral") { PSBooleanLiteral(it) }
@@ -140,12 +142,12 @@ val CharLiteral = WithPsi("CharLiteral") { PSCharLiteral(it) }
 val ArrayLiteral = WithPsi("ArrayLiteral") { PSArrayLiteral(it) }
 val RecordLiteralType = WithPsi("RecordLiteral") { RecordLiteral(it) }
 val Lambda = WithPsi("Lambda") { PSLambda(it) }
-val ExpressionCtor = WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
 
+val ExpressionCtor = WithPsi("ExpressionConstructor") { PSExpressionConstructor(it) }
 val ExpressionIdentifier = WithPsi("ExpressionIdentifier") { PSExpressionIdentifier(it) }
 val ExpressionWildcardType = WithPsi("ExpressionWildcard") { ExpressionWildcard(it) }
-val ExpressionHoleType = WithPsi("ExpressionHole") { ExpressionHole(it) }
 
+val ExpressionHoleType = WithPsi("ExpressionHole") { ExpressionHole(it) }
 /** Symbol is a operator in parenthesis
 `(+)`
 in

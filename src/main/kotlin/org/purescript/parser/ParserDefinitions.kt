@@ -369,7 +369,8 @@ val binder2 = Choice(
     NumberBinderType((`-` + number)),
     binderAtom
 )
-val binder1 = binder2.sepBy1(ExpressionOperator(qualOp))
+val binder1 = BinderOperatorExpressionType(binder2.sepBy1(BinderOperatorType(qualOp)))
+
 val guardedCaseExpr = GuardBranchType(guard + arrow + exprWhere)
 val caseBranch = CaseAlternativeType(
     Choice(

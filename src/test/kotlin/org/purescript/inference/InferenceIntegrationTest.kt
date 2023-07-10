@@ -371,6 +371,20 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Array Int", pprint("$x"))
     }
+    fun `ignore test binder operator`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | x = do
+                |  a /\ b <- [ Tuple 1 2 ]
+                |  [ b ]
+            """.trimMargin()
+        )
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Array Int", pprint("$x"))
+    }
 
     fun `test generic do expression`() {
         val Main = myFixture.configureByText(
