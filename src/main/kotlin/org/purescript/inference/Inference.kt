@@ -100,7 +100,15 @@ sealed interface InferType {
         override val argument get() = scope.argument
         override fun contains(t: Id): Boolean = name == t || scope.contains(t)
         override fun withNewIds(map: (Id) -> Id): InferType = ForAll(map(name), scope.withNewIds(map))
-        override fun toString(): String = "forall $name. $scope"
+        override fun toString(): String = toString(this)
+
+        companion object {
+            private tailrec fun toString(current: ForAll, vararg names: String): String =
+                when (current.scope) {
+                    is ForAll -> toString(current.scope, *names, "${current.name}")
+                    else -> "forall ${arrayOf(*names, current.name).joinToString(" ")}. ${current.scope}"
+                }
+        }
     }
 
     fun app(vararg others: InferType): InferType = others.fold(this, ::App)
@@ -278,7 +286,7 @@ interface Unifiable {
 }
 
 
-class RecursiveTypeException(t:InferType ,substitution: InferType) :
+class RecursiveTypeException(t: InferType, substitution: InferType) :
     Exception("$substitution is recursive, substituted from $t")
 
 fun PsiReference.inferType(map: (InferType.Id) -> InferType.Id): InferType? =
