@@ -371,11 +371,15 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Array Int", pprint("$x"))
     }
-    fun `ignore test binder operator`() {
+    fun `test binder operator`() {
         val Main = myFixture.configureByText(
             "Main.purs",
             """
                 | module Main where
+                | 
+                | data Tuple a b = Tuple a b
+                | 
+                | infixr 6 Tuple as /\
                 | 
                 | x = do
                 |  a /\ b <- [ Tuple 1 2 ]
