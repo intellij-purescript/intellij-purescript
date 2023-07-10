@@ -71,16 +71,16 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
 
         return when (element) {
             is ValueDeclarationGroup ->
-                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
+                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module.name}#v:${element.name}")
 
             is DataConstructor ->
-                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#v:${element.name}")
+                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module.name}#v:${element.name}")
 
             is DataDeclaration ->
-                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
+                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module.name}#t:${element.name}")
 
             is ClassDecl ->
-                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module?.name}#t:${element.name}")
+                mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.module.name}#t:${element.name}")
 
             is org.purescript.module.Module ->
                 mutableListOf("https://pursuit.purescript.org/packages/purescript-$packageName/${version}/docs/${element.name}")
