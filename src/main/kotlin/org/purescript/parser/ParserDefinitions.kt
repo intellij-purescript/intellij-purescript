@@ -415,9 +415,9 @@ val letBinding = Choice(
 )
 val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
 val doStatement = Choice(
-    DoNotationLet(`'let'` + layout1(letBinding, "let binding").relax("missing binding")),
-    DoNotationBind(binder + larrow + `expr?`),
-    DoNotationValue(expr)
+    DoNotationLetType(`'let'` + layout1(letBinding, "let binding").relax("missing binding")),
+    DoNotationBindType(binder + larrow + `expr?`),
+    DoNotationValueType(expr)
 )
 val doBlock = ChoiceMap(
     qualified(`'do'`),
