@@ -13,7 +13,5 @@ class LetBinder(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace 
     private val where get()  = childrenOfType<PSExpressionWhere>().singleOrNull()
     val namedBinders get() = binder.namedDescendant 
     override val valueNames get() = (where?.valueNames ?: emptySequence()) + namedBinders
-    override fun unify() {
-        unify(binder.inferType(), expr.inferType())
-    }
+    override fun unify() = unify(binder.inferType(), expr.inferType())
 }
