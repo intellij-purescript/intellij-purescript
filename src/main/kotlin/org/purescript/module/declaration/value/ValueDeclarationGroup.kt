@@ -156,5 +156,4 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
         signature?.inferType()?.let(::unify)
         valueDeclarations.forEach { it.inferType().let(::unify) }
     }
-
 }

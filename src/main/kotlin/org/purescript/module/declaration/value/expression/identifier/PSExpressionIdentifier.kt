@@ -91,7 +91,11 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
         val ref = reference.resolve()
         when (ref) {
             is VarBinder -> ref.inferType()
-            is Inferable -> ref.inferType().withNewIds(module.replaceMap())
+            is Inferable -> {
+                val type = ref.inferType()
+                if (type.argument != null) type.withNewIds(module.replaceMap())
+                else type
+            }
             else -> null
         }?.let { unify(it) }
     }

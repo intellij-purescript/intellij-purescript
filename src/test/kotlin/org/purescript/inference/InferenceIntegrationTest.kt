@@ -371,6 +371,37 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Array Int", pprint("$x"))
     }
+    fun `test do expression with multiple let bindings`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | x l = let 
+                |     z = {n: l}
+                |     y = z.n
+                |   in [ y ]
+            """.trimMargin()
+        )
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("a -> Array a", pprint("$x"))
+    }
+    
+    fun `test do function as let binding`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | x = let 
+                |     f x = x
+                |     y = f (f { n: 1}).n
+                |   in [ y ]
+            """.trimMargin()
+        )
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Array Int", pprint("$x"))
+    }
     
     fun `test do expression with let binder`() {
         val Main = myFixture.configureByText(

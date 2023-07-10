@@ -153,8 +153,6 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
         return !binders.any { it !is VarBinder }
     }
     override fun unify() {
-        unify(parameters.foldRight(value?.inferType() ?: return) { parameter, ret -> 
-                function(parameter.inferType(), ret) 
-            })
+        unify(function(*parameters.map { it.inferType() }.toTypedArray(), value?.inferType() ?: return))
     }
 }
