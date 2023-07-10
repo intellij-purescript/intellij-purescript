@@ -3,12 +3,10 @@ package org.purescript.ide.formatting
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.ImportOptimizer
-import com.intellij.openapi.components.service
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import org.purescript.file.PSFile
 import org.purescript.ide.inspections.UnusedInspection
-import org.purescript.psi.PSPsiFactory
 import org.purescript.module.declaration.imports.PSImportedData
 
 class PurescriptImportOptimizer : ImportOptimizer {
@@ -17,7 +15,6 @@ class PurescriptImportOptimizer : ImportOptimizer {
         val psFile = file as PSFile
         val module = psFile.module
             ?: error("File contains no Purescript module: ${file.name} ")
-        val factory: PSPsiFactory = file.project.service()
         val project = file.project
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(file) ?: return Runnable {  }
