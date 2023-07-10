@@ -8,8 +8,12 @@ import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
 class LetBinder(node: ASTNode) : PSPsiElement(node), Expression, ValueNamespace {
-    private val binders get()  = childrenOfType<Binder>().asSequence()
-    private val where get()  = childrenOfType<PSExpressionWhere>().asSequence()
-    val namedBinders get() = binders.flatMap { it.namedDescendant }
-    override val valueNames get() = where.flatMap { it.valueNames } + namedBinders
+    private val binder get()  = childrenOfType<Binder>().single()
+    private val expr get()  = childrenOfType<Expression>().single()
+    private val where get()  = childrenOfType<PSExpressionWhere>().singleOrNull()
+    val namedBinders get() = binder.namedDescendant 
+    override val valueNames get() = (where?.valueNames ?: emptySequence()) + namedBinders
+    override fun unify() {
+        unify(binder.inferType(), expr.inferType())
+    }
 }
