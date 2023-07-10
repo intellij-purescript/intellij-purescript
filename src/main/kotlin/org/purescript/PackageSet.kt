@@ -1,7 +1,6 @@
 package org.purescript
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.project.Project
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.purescript.ide.formatting.ImportDeclaration
@@ -10,7 +9,7 @@ import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.ide.formatting.ImportedValue
 
 @Service
-class PackageSet(project: Project) {
+class PackageSet {
     val reverseLookup: MutableMap<String, MutableList<Pair<String, ImportDeclaration>>> = mutableMapOf()
 
     init {
