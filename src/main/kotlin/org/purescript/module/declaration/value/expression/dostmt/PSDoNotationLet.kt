@@ -14,4 +14,5 @@ class PSDoNotationLet(node: ASTNode) : PSPsiElement(node), DoStatement, ValueNam
     override val expressions get() = childrenOfType<LetBinder>().flatMap { it.expressions }
     override val binders get() = childrenOfType<Binder>().flatMap { it.descendantBinders }
     override val valueNames get() = valueDeclarationGroups.asSequence() + letBinderValueNames.asSequence()
+    override fun unify() {}
 }

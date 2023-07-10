@@ -348,6 +348,40 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val unbox =  Main.getValueDeclarationGroupByName("unbox").inferType()
         TestCase.assertEquals("Box a -> a", pprint("$unbox"))
     }
+    fun `test do expression`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                | 
+                | x = do
+                |   let y = 1
+                |   z <- [ y ]
+                |   [ z ]
+            """.trimMargin()
+        )
+        val x =  Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Array Int", pprint("$x"))
+    }
+    
+    fun `test generic do expression`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                |
+                | class Apply f <= Applicative f where
+                |   pure :: forall a. a -> f a
+                |
+                | x = do
+                |   let y = 1
+                |   z <- [ y ]
+                |   pure z
+            """.trimMargin()
+        )
+        val x =  Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Array Int", pprint("$x"))
+    }
     
     fun pprint(string : String): String {
         val letters = ('a'..'z').joinToString("")
