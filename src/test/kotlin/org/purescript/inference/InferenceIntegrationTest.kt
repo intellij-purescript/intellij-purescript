@@ -5,7 +5,7 @@ import junit.framework.TestCase
 import org.purescript.getClassDeclarations
 import org.purescript.getValueDeclarationGroupByName
 
-class InferenceIntegrationTest: BasePlatformTestCase() {
+class InferenceIntegrationTest : BasePlatformTestCase() {
     fun `test everything`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -28,6 +28,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals(InferType.Int, x)
     }
+
     fun `test primitives`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -49,6 +50,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("String", string.toString())
         TestCase.assertEquals("Boolean", boolean.toString())
     }
+
     fun `test forall`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -66,6 +68,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", "$int")
     }
+
     fun `test records`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -101,6 +104,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         TestCase.assertEquals("{ age::Int, name::String } -> Int", "$checkUserType")
 
     }
+
     fun `test signature`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -120,12 +124,12 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             """.trimMargin()
         )
         val type_class = Main.getValueDeclarationGroupByName("type_class").inferType()
-        TestCase.assertEquals("forall a. Eq a => a -> a",  pprint(type_class.toString()))
+        TestCase.assertEquals("forall a. Eq a => a -> a", pprint(type_class.toString()))
 
         val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int", int.toString())
     }
-    
+
     fun `test union`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -143,7 +147,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             f.toString()
         )
     }
-    
+
     fun `test type synonym`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -166,6 +170,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val boxName = Main.getValueDeclarationGroupByName("boxName").inferType()
         TestCase.assertEquals("String", "$boxName")
     }
+
     fun `test new type`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -199,6 +204,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val typed = typedPsi.inferType()
         TestCase.assertEquals("a -> Typed a", pprint("$typed"))
     }
+
     fun `test data type`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -218,6 +224,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val emptyBox = Main.getValueDeclarationGroupByName("emptyBox").inferType()
         TestCase.assertEquals("Box a", pprint("$emptyBox"))
     }
+
     fun `test classes`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -235,7 +242,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             """.trimMargin()
         )
         val map = Main.getClassDeclarations()
-            .first { it.name == "Functor"}
+            .first { it.name == "Functor" }
             .classMembers
             .single()
             .inferType()
@@ -244,7 +251,7 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             pprint("$map")
         )
         val mapInt = Main.getValueDeclarationGroupByName("mapInt").inferType()
-        TestCase.assertEquals("a Int -> a Int",  pprint("$mapInt"))
+        TestCase.assertEquals("a Int -> a Int", pprint("$mapInt"))
     }
 
     fun `test class with multiple members`() {
@@ -267,18 +274,18 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
         val foldable = Main.getClassDeclarations()
             .first { it.name == "Foldable" }
         val members = foldable.classMembers
-        val foldMap = members.single { it.name == "foldMap"}.inferType()
+        val foldMap = members.single { it.name == "foldMap" }.inferType()
         TestCase.assertEquals(
             "Foldable a => forall b. forall c. Monoid c => (b -> c) -> a b -> c",
             pprint("$foldMap")
         )
-        val foldr = members.single { it.name == "foldr"}.inferType()
+        val foldr = members.single { it.name == "foldr" }.inferType()
         TestCase.assertEquals(
             "Foldable a => forall b. forall c. (b -> c -> c) -> c -> a b -> c",
             pprint("$foldr")
         )
     }
-    
+
     fun `test binders referencing data`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -291,13 +298,13 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val unbox =  Main.getValueDeclarationGroupByName("unbox").inferType()
+        val unbox = Main.getValueDeclarationGroupByName("unbox").inferType()
         TestCase.assertEquals(
             "Box a -> a",
             pprint("$unbox")
         )
     }
-    
+
     fun `test literal binder`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -319,20 +326,20 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        
-        val int =  Main.getValueDeclarationGroupByName("int").inferType()
+
+        val int = Main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals("Int -> Int", "$int")
-        
-        val number =  Main.getValueDeclarationGroupByName("number").inferType()
+
+        val number = Main.getValueDeclarationGroupByName("number").inferType()
         TestCase.assertEquals("Number -> Number", "$number")
-        
-        val bool =  Main.getValueDeclarationGroupByName("bool").inferType()
+
+        val bool = Main.getValueDeclarationGroupByName("bool").inferType()
         TestCase.assertEquals("Boolean -> Boolean", "$bool")
-        
-        val string =  Main.getValueDeclarationGroupByName("string").inferType()
+
+        val string = Main.getValueDeclarationGroupByName("string").inferType()
         TestCase.assertEquals("String -> String", "$string")
     }
-    
+
     fun `test binders referencing newtype`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -345,9 +352,10 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val unbox =  Main.getValueDeclarationGroupByName("unbox").inferType()
+        val unbox = Main.getValueDeclarationGroupByName("unbox").inferType()
         TestCase.assertEquals("Box a -> a", pprint("$unbox"))
     }
+
     fun `test do expression`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -360,10 +368,10 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 |   [ z ]
             """.trimMargin()
         )
-        val x =  Main.getValueDeclarationGroupByName("x").inferType()
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Array Int", pprint("$x"))
     }
-    
+
     fun `test generic do expression`() {
         val Main = myFixture.configureByText(
             "Main.purs",
@@ -379,11 +387,39 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
                 |   pure z
             """.trimMargin()
         )
-        val x =  Main.getValueDeclarationGroupByName("x").inferType()
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Array Int", pprint("$x"))
     }
-    
-    fun pprint(string : String): String {
+
+    fun `test ado expression`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                |
+                | x = ado
+                |   y <- [ 1 ]
+                |   in [ y ]
+            """.trimMargin()
+        )
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Array Int", pprint("$x"))
+    }
+
+    fun `test empty ado expression`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                |
+                | x = ado in [ 1 ]
+            """.trimMargin()
+        )
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Array Int", pprint("$x"))
+    }
+
+    fun pprint(string: String): String {
         val letters = ('a'..'z').joinToString("")
         val id = Regex("u\\d+")
         val us: Map<String, CharSequence> = id.findAll(string)
@@ -392,6 +428,6 @@ class InferenceIntegrationTest: BasePlatformTestCase() {
             .distinct()
             .withIndex()
             .associate { it.value to letters[it.index].toString() }
-        return string.replace(id) { us[it.value]?: it.value}
+        return string.replace(id) { us[it.value] ?: it.value }
     }
 }
