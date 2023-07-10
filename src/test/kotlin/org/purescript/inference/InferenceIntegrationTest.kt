@@ -436,6 +436,21 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Array Int", pprint("$x"))
     }
+    fun `test lambda`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                |
+                | toInt :: Int -> Int
+                | toInt a = a
+                |
+                | x = \y -> toInt y
+            """.trimMargin()
+        )
+        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        TestCase.assertEquals("Int -> Int", pprint("$x"))
+    }
 
     fun pprint(string: String): String {
         val letters = ('a'..'z').joinToString("")
