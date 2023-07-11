@@ -261,7 +261,8 @@ val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
 // otherwise if it's a capital name it's a DataConstructor
 val fixityDeclaration = ChoiceMap(
     fixity,
-    (!`'type'` + qualProperName) + `'as'` + operatorName to FixityDeclType,
+    `'type'` + qualProperName + `'as'` + operatorName to TypeFixityDeclType,
+    qualProperName + `'as'` + operatorName to ConstructorFixityDeclType,
     qualIdentifier + `'as'` + operatorName to FixityDeclType
 )
 
@@ -355,7 +356,7 @@ val exportedItem = Choice(
     ExportedDataType(properName + !dataMembers),
     ExportedModuleType(`'module'` + moduleName),
     ExportedOperatorType(symbol),
-    ExportedTypeType(`'type'` + parens(Identifier(operator))),
+    ExportedTypeOperatorType(`'type'` + symbol),
     ExportedValueType(ident)
 )
 val exportList = ExportListType(parens(exportedItem.sepBy1(`,`)))

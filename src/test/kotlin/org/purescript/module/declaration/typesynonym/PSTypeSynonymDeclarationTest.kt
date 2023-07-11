@@ -1,4 +1,4 @@
-package org.purescript.psi.typesynonym
+package org.purescript.module.declaration.typesynonym
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getTypeSynonymDeclaration

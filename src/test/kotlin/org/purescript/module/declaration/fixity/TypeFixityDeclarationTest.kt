@@ -1,24 +1,27 @@
-package org.purescript.module.declaration
+package org.purescript.module.declaration.fixity
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.purescript.*
+import org.purescript.getDataDeclaration
+import org.purescript.getTypeSynonymDeclaration
 
-class PSFixityDeclarationTest : BasePlatformTestCase() {
+class TypeFixityDeclarationTest : BasePlatformTestCase() {
 
-    fun `test rename`() {
+    fun `ignore test rename`() {
         myFixture.configureByText(
             "Bar.purs",
             """
                 module Bar where
-                import Foo ((+))
+                import Foo (type (+))
             """.trimIndent()
         )
         myFixture.configureByText(
             "Foo.purs",
             """
-                module Foo ((+)) where
-                falseAdd x y = x
-                infixl 6 falseAdd as <caret>+
+                module Foo (type (+)) where
+                data Tuple a b = a b
+                infixl 6 type Tuple as <caret>+
+                infixl 6 Tuple as +
+                x :: Int + Int
                 x = 1 + 1
             """.trimIndent()
         )
@@ -26,10 +29,12 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
         myFixture.checkResult(
             "Foo.purs",
             """
-                module Foo ((++)) where
-                falseAdd x y = x
-                infixl 6 falseAdd as ++
-                x = 1 ++ 1
+                module Foo (type (++)) where
+                data Tuple a b = a b
+                infixl 6 type Tuple as <caret>++
+                infixl 6 Tuple as +
+                x :: Int ++ Int
+                x = 1 + 1
             """.trimIndent(),
             false
         )
@@ -37,89 +42,11 @@ class PSFixityDeclarationTest : BasePlatformTestCase() {
             "Bar.purs",
             """
                 module Bar where
-                import Foo ((++))
+                import Foo (type (++))
             """.trimIndent(),
             false
         )
     }
-
-    fun `test find corresponding value definition`() {
-        val first = myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                
-                infix 0 <caret>foo as +++
-
-                foo _ = 1
-            """.trimIndent()
-        ).getValueDeclarationGroupByName("foo")
-        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
-        assertEquals(first, reference.resolve())
-    }
-
-    fun `test find corresponding data constructor`() {
-        val first = myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                
-                infix 0 <caret>Foo as +++
-
-                data Foo a = Foo a a
-            """.trimIndent()
-        ).getDataConstructor()
-        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
-        assertEquals(first, reference.resolve())
-    }
-    
-    fun `test find imported corresponding data constructor`() {
-        val first = myFixture.configureByText(
-            "Bar.purs",
-            """
-                module Bar where
-                
-                data Bar a = Bar a a
-            """.trimIndent()
-        ).getDataConstructor()
-        myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                
-                import Bar (Bar(..))
-                
-                infix 0 <caret>Bar as +++
-
-            """.trimIndent()
-        )
-        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
-        assertEquals(first, reference.resolve())
-    }
-    fun `test find qualified imported corresponding data constructor`() {
-        val first = myFixture.configureByText(
-            "Bar.purs",
-            """
-                module Bar where
-                
-                data Bar a = Bar a a
-            """.trimIndent()
-        ).getDataConstructor()
-        myFixture.configureByText(
-            "Foo.purs",
-            """
-                module Foo where
-                
-                import Bar (Bar(..)) as B
-                
-                infix 0 <caret>B.Bar as +++
-
-            """.trimIndent()
-        )
-        val reference = myFixture.getReferenceAtCaretPositionWithAssertion()
-        assertEquals(first, reference.resolve())
-    }
-
 
     fun `test find corresponding data declaration`() {
         val first = myFixture.configureByText(

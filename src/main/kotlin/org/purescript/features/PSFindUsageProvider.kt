@@ -12,7 +12,7 @@ import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
-import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.fixity.ValueFixityDeclaration
 import org.purescript.module.declaration.foreign.ForeignValueDecl
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.PSImportAlias
@@ -39,7 +39,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is ClassDecl
             || psiElement is TypeDecl
             || psiElement is PSClassMember
-            || psiElement is FixityDeclaration
+            || psiElement is ValueFixityDeclaration
             || psiElement is PSForeignDataDeclaration
             || psiElement is TypeVarName
             || psiElement is Labeled
@@ -92,7 +92,7 @@ class PSFindUsageProvider : FindUsagesProvider {
             is PSForeignDataDeclaration -> "foreign data"
             is TypeDecl -> "type synonym"
             is PSClassMember -> "class member"
-            is FixityDeclaration -> "operator"
+            is ValueFixityDeclaration -> "operator"
             else -> "unknown"
         }
     }

@@ -140,7 +140,7 @@ Purescript File
         TypeIdentifier(TypeIdentifier)
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
-    PSFixityDeclaration(FixityDeclaration)
+    PSFixityDeclaration(TypeFixityDeclaration)
       PSFixity(Fixity)
         PsiElement(infixr)('infixr')
         PsiElement(natural)('4')

@@ -11,7 +11,9 @@ import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
-import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
+import org.purescript.module.declaration.fixity.TypeFixityDeclaration
+import org.purescript.module.declaration.fixity.ValueFixityDeclaration
 import org.purescript.module.declaration.foreign.ForeignValueDecl
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeCtor
@@ -70,6 +72,10 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
 
     override fun toString() = "PSImportDeclaration($elementType)"
 
+    val importedTypeFixityDeclarations get() = 
+        getImportedDeclarations<TypeFixityDeclaration, PSImportedOperator> { module ->
+        module.exportedTypeFixityDeclarations.toList()
+    }
     val importedConstructors: Sequence<PsiNamedElement>
         get() =
             if (importedModule == null) PSLanguage.getBuiltins(project, moduleNameName).asSequence()
@@ -324,12 +330,16 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     /**
      * @return the [org.purescript.module.declaration.FixityDeclaration] elements imported by this declaration
      */
-    val importedFixityDeclarations
-        get() = getImportedDeclarations<FixityDeclaration, PSImportedOperator> { module ->
-            module.exportedFixityDeclarations.toList()
+    val importedValueFixityDeclarations
+        get() = getImportedDeclarations<ValueFixityDeclaration, PSImportedOperator> { module ->
+            module.exportedValueFixityDeclarations.toList()
+        }
+    val importedConstructorFixityDeclarations
+        get() = getImportedDeclarations<ConstructorFixityDeclaration, PSImportedOperator> { module ->
+            module.exportedConstructorFixityDeclarations.toList()
         }
 
-    fun importedFixityDeclarations(name: String): Sequence<FixityDeclaration> = when {
+    fun importedFixityDeclarations(name: String): Sequence<ValueFixityDeclaration> = when {
         importedItems.isEmpty() -> importedModule?.exportedFixityDeclarations(name) ?: emptySequence()
         isHiding && importedItems.any { it.getName() == name } -> emptySequence()
         !isHiding && importedItems.none { it.getName() == name } -> emptySequence()
@@ -344,10 +354,31 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         else -> importedModule?.exportedValue(name) ?: emptySequence()
     }
 
+    fun importedConstructorFixityDeclarations(name: String): Sequence<ConstructorFixityDeclaration> {
+        return when {
+            importedItems.isEmpty() -> 
+                importedModule?.exportedConstructorFixityDeclarations(name) ?: emptySequence()
+
+            isHiding && importedItems.any { it.getName() == name } -> emptySequence()
+            !isHiding && importedItems.none { it.getName() == name } -> emptySequence()
+            else -> importedModule?.exportedConstructorFixityDeclarations(name) ?: emptySequence()
+        }
+    }
+
+    fun importedTypeFixityDeclarations(name: String): Sequence<TypeFixityDeclaration> {
+        return when {
+            importedItems.isEmpty() ->
+                importedModule?.exportedTypeFixityDeclarations(name) ?: emptySequence()
+
+            isHiding && importedItems.any { it.getName() == name } -> emptySequence()
+            !isHiding && importedItems.none { it.getName() == name } -> emptySequence()
+            else -> importedModule?.exportedTypeFixityDeclarations(name) ?: emptySequence()
+        }
+    }
+
     val isExported
         get() = greenStub?.isExported
-            ?: module?.cache
-                ?.exportedItems
+            ?: module.cache.exportedItems
                 ?.filterIsInstance<ExportedModule>()
                 ?.any { it.name == name }
 }

@@ -3,8 +3,8 @@ package org.purescript.module.declaration.fixity
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 
-class ConstructorFixityReference(fixity: FixityDeclaration) :
-    PsiReferenceBase<FixityDeclaration>(
+class ConstructorFixityReference(fixity: ConstructorFixityDeclaration) :
+    PsiReferenceBase<ConstructorFixityDeclaration>(
         fixity,
         fixity.qualifiedProperName?.textRangeInParent,
         false
@@ -20,7 +20,7 @@ class ConstructorFixityReference(fixity: FixityDeclaration) :
 
     private val candidates: Sequence<PsiNamedElement>
         get() {
-            val module = element.module ?: return emptySequence()
+            val module = element.module
             val qualifyingName = element.qualifiedProperName?.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {

@@ -2676,7 +2676,7 @@ Purescript File
                 PSIdentifier(identifier)
                   PsiElement(identifier)('a')
             PsiElement())(')')
-    PSFixityDeclaration(FixityDeclaration)
+    PSFixityDeclaration(ConstructorFixityDeclaration)
       PSFixity(Fixity)
         PsiElement(infixr)('infixr')
         PsiElement(natural)('6')

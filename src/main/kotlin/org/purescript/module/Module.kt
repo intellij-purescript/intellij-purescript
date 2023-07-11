@@ -18,7 +18,9 @@ import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataDeclaration
-import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
+import org.purescript.module.declaration.fixity.TypeFixityDeclaration
+import org.purescript.module.declaration.fixity.ValueFixityDeclaration
 import org.purescript.module.declaration.foreign.ForeignValueDecl
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.Import
@@ -61,6 +63,35 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     constructor(node: ASTNode) : super(node)
 
     override fun asImport() = ImportDeclaration(name)
+    val exportedTypeFixityDeclarations: Sequence<TypeFixityDeclaration>
+        get() {
+            val explicitlyExportedItems = cache.exportedItems
+            return if (explicitlyExportedItems == null) {
+                typeFixityDeclarations.asSequence()
+            } else sequence {
+                val explicitlyNames = explicitlyExportedItems
+                    .filterIsInstance(ExportedTypeOperator.Psi::class.java)
+                    .map { it.name }
+                    .toSet()
+
+                if (exportsSelf) {
+                    yieldAll(typeFixityDeclarations.asSequence())
+                } else {
+                    yieldAll(typeFixityDeclarations.filter { it.name in explicitlyNames })
+                }
+
+                yieldAll(
+                    explicitlyExportedItems
+                        .asSequence()
+                        .filterIsInstance<ExportedModule>()
+                        .filter { it.name != name }
+                        .flatMap { it.importDeclarations }
+                        .flatMap { it.importedTypeFixityDeclarations }
+                )
+            }
+        }
+    val typeFixityDeclarations get() = children(TypeFixityDeclaration.Type)
+    val constructorFixityDeclarations get() = children(ConstructorFixityDeclaration.Type)
     override val type: PSType? get() = null
     override fun addTypeDeclaration(variable: ValueDeclarationGroup): ValueDeclarationGroup {
         val factory = project.service<PSPsiFactory>()
@@ -68,12 +99,14 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
         return add(variable) as ValueDeclarationGroup
     }
 
+    val imports: Array<Import> get() = cache.imports
+
     override val valueNames: Sequence<PsiNamedElement>
         get() = getProjectPsiDependentCache(this) {
             (valueGroups.asSequence() +
                     foreignValues.asSequence() +
                     classMembers.asSequence() +
-                    cache.imports.flatMap { it.importedValueNames }).toList()
+                    imports.flatMap { it.importedValueNames }).toList()
         }.asSequence()
     override val constructors: List<PsiNamedElement>
         get() = getProjectPsiDependentCache(this) {
@@ -95,7 +128,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     var cache: Module.Cache = Cache()
     val exports get() = child<ExportList>()
     val exportedItems get() = exports?.exportedItems?.asSequence() ?: emptySequence()
-    val fixityDeclarations get() = children(FixityDeclType)
+    val valueFixityDeclarations get() = children(FixityDeclType)
 
     inner class Cache {
         val exportedItems by lazy { exports?.exportedItems }
@@ -137,14 +170,14 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     }
 
     /**
-     * @return the [FixityDeclaration] that this module exports,
+     * @return the [ValueFixityDeclaration] that this module exports,
      * both directly and through re-exported modules
      */
-    val exportedFixityDeclarations: Sequence<FixityDeclaration>
+    val exportedValueFixityDeclarations: Sequence<ValueFixityDeclaration>
         get() {
             val explicitlyExportedItems = cache.exportedItems
             return if (explicitlyExportedItems == null) {
-                fixityDeclarations.asSequence()
+                valueFixityDeclarations.asSequence()
             } else sequence {
                 val explicitlyNames = explicitlyExportedItems
                     .filterIsInstance(ExportedOperator.Psi::class.java)
@@ -152,9 +185,9 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                     .toSet()
 
                 if (exportsSelf) {
-                    yieldAll(fixityDeclarations.asSequence())
+                    yieldAll(valueFixityDeclarations.asSequence())
                 } else {
-                    yieldAll(fixityDeclarations.filter { it.name in explicitlyNames })
+                    yieldAll(valueFixityDeclarations.filter { it.name in explicitlyNames })
                 }
 
                 yieldAll(
@@ -163,15 +196,46 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                         .filterIsInstance<ExportedModule>()
                         .filter { it.name != name }
                         .flatMap { it.importDeclarations }
-                        .flatMap { it.importedFixityDeclarations }
+                        .flatMap { it.importedValueFixityDeclarations }
+                )
+            }
+        }
+    /**
+     * @return the [ValueFixityDeclaration] that this module exports,
+     * both directly and through re-exported modules
+     */
+    val exportedConstructorFixityDeclarations: Sequence<ConstructorFixityDeclaration>
+        get() {
+            val explicitlyExportedItems = cache.exportedItems
+            return if (explicitlyExportedItems == null) {
+                constructorFixityDeclarations.asSequence()
+            } else sequence {
+                val explicitlyNames = explicitlyExportedItems
+                    .filterIsInstance(ExportedOperator.Psi::class.java)
+                    .map { it.name }
+                    .toSet()
+
+                if (exportsSelf) {
+                    yieldAll(constructorFixityDeclarations.asSequence())
+                } else {
+                    yieldAll(constructorFixityDeclarations.filter { it.name in explicitlyNames })
+                }
+
+                yieldAll(
+                    explicitlyExportedItems
+                        .asSequence()
+                        .filterIsInstance<ExportedModule>()
+                        .filter { it.name != name }
+                        .flatMap { it.importDeclarations }
+                        .flatMap { it.importedConstructorFixityDeclarations }
                 )
             }
         }
 
-    fun exportedFixityDeclarations(name: String): Sequence<FixityDeclaration> {
+    fun exportedFixityDeclarations(name: String): Sequence<ValueFixityDeclaration> {
         val explicitlyExportedItems = cache.exportedItems
         return if (explicitlyExportedItems == null) {
-            fixityDeclarations.asSequence().filter { it.name == name }
+            valueFixityDeclarations.asSequence().filter { it.name == name }
         } else sequence {
             val explicitlyNames = explicitlyExportedItems
                 .filterIsInstance(ExportedOperator.Psi::class.java)
@@ -179,7 +243,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 .toSet()
 
             if (exportsSelf || name in explicitlyNames) {
-                fixityDeclarations.firstOrNull { it.name == name }?.let { yield(it) }
+                valueFixityDeclarations.firstOrNull { it.name == name }?.let { yield(it) }
             }
 
             yieldAll(
@@ -353,7 +417,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     fun addImportDeclaration(importDeclaration: ImportDeclaration) {
         if (importDeclaration.moduleName == name) return
-        val imports = cache.imports.filter {
+        val imports = imports.filter {
             it.moduleNameName == importDeclaration.moduleName &&
                     it.importAlias?.name == importDeclaration.alias
         }
@@ -380,7 +444,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     }
 
     private fun addImportDeclaration(importDeclaration: Import) {
-        val lastImportDeclaration = cache.imports.lastOrNull()
+        val lastImportDeclaration = imports.lastOrNull()
         val insertPosition = lastImportDeclaration ?: whereKeyword
         val newLine = project.service<PSPsiFactory>().createNewLine()
         addAfter(importDeclaration, insertPosition)
@@ -427,20 +491,71 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             }
         }
     }
+
     fun newId(): InferType.Id = idGenerator.newId()
     fun substitute(type: InferType): InferType = substitutions.substitute(type)
     fun unify(x: InferType, y: InferType) = substitutions.unify(x, y)
     fun typeIdOf(descendant: PsiElement): InferType.Id = typeMap.getOrPut(descendant, ::newId)
-    fun replaceMap(): (InferType.Id)->InferType.Id {
+    fun replaceMap(): (InferType.Id) -> InferType.Id {
         val map = mutableMapOf<InferType.Id, InferType.Id>()
         return { map.getOrPut(it, ::newId) }
     }
-    
+
     val idGenerator = IdGenerator()
     val substitutions = mutableMapOf<InferType.Id, InferType>()
     var typeMap = WeakHashMap<PsiElement, InferType.Id>()
-    
+
     private fun resetInferredTypes() {
         typeMap = WeakHashMap<PsiElement, InferType.Id>()
+    }
+
+    fun exportedConstructorFixityDeclarations(name: String): Sequence<ConstructorFixityDeclaration> {
+        val explicitlyExportedItems = cache.exportedItems
+        return if (explicitlyExportedItems == null) {
+            constructorFixityDeclarations.asSequence().filter { it.name == name }
+        } else sequence {
+            val explicitlyNames = explicitlyExportedItems
+                .filterIsInstance(ExportedOperator.Psi::class.java)
+                .map { it.name }
+                .toSet()
+
+            if (exportsSelf || name in explicitlyNames) {
+                constructorFixityDeclarations.firstOrNull { it.name == name }?.let { yield(it) }
+            }
+
+            yieldAll(
+                explicitlyExportedItems
+                    .asSequence()
+                    .filterIsInstance<ExportedModule>()
+                    .filter { it.name != name }
+                    .flatMap { it.importDeclarations }
+                    .flatMap { it.importedConstructorFixityDeclarations(name) }
+            )
+        }
+    }
+
+    fun exportedTypeFixityDeclarations(name: String): Sequence<TypeFixityDeclaration>? {
+        val explicitlyExportedItems = cache.exportedItems
+        return if (explicitlyExportedItems == null) {
+            typeFixityDeclarations.asSequence().filter { it.name == name }
+        } else sequence {
+            val explicitlyNames = explicitlyExportedItems
+                .filterIsInstance(ExportedTypeOperator.Psi::class.java)
+                .map { it.name }
+                .toSet()
+
+            if (exportsSelf || name in explicitlyNames) {
+                typeFixityDeclarations.firstOrNull { it.name == name }?.let { yield(it) }
+            }
+
+            yieldAll(
+                explicitlyExportedItems
+                    .asSequence()
+                    .filterIsInstance<ExportedModule>()
+                    .filter { it.name != name }
+                    .flatMap { it.importDeclarations }
+                    .flatMap { it.importedTypeFixityDeclarations(name) }
+            )
+        }
     }
 }

@@ -6,7 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.module.declaration.ImportableIndex
+import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
 import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.fixity.ValueFixityDeclaration
 import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.name.PSModuleName
 import org.purescript.name.PSOperatorName
@@ -16,8 +18,7 @@ import org.purescript.psi.PSPsiFactory
 class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleName?, val operator: PSOperatorName) :
     LocalQuickFixProvider, PsiReferenceBase<PSPsiElement>(symbol, operator.textRangeInParent, false) {
 
-    override fun getVariants(): Array<Any> =
-        candidates.toList().toTypedArray()
+    override fun getVariants() = candidates.toList().toTypedArray()
 
     override fun resolve(): FixityDeclaration? {
         val name = element.name ?: return null
@@ -25,23 +26,26 @@ class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleNa
     }
 
     override fun isReferenceTo(element: PsiElement) = when (element) {
-        is FixityDeclaration ->
-            if (element.name == this.element.name) super.isReferenceTo(element)
-            else false
+        is ValueFixityDeclaration-> element.name == this.element.name
+        is ConstructorFixityDeclaration -> element.name == this.element.name
         else -> false
-    }
+    } && super.isReferenceTo(element)
 
     val candidates
         get() = sequence {
             val module = element.module
-            yieldAll(module.fixityDeclarations.asSequence())
-            yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations })
+            yieldAll(module.valueFixityDeclarations.asSequence())
+            yieldAll(module.constructorFixityDeclarations.asSequence())
+            yieldAll(module.cache.imports.flatMap { it.importedValueFixityDeclarations })
+            yieldAll(module.cache.imports.flatMap { it.importedConstructorFixityDeclarations })
         }
 
-    fun candidates(name: String) = sequence {
+    fun candidates(name: String): Sequence<FixityDeclaration> = sequence {
         val module = element.module
-        yieldAll(module.fixityDeclarations.asSequence())
+        yieldAll(module.valueFixityDeclarations.asSequence())
+        yieldAll(module.constructorFixityDeclarations.asSequence())
         yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations(name) })
+        yieldAll(module.cache.imports.flatMap { it.importedConstructorFixityDeclarations(name) })
     }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
@@ -60,8 +64,7 @@ class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleNa
     }
 
     override fun handleElementRename(name: String): PsiElement? {
-        val newName = PSPsiFactory(element.project).createOperatorName(name)
-            ?: return null
+        val newName = PSPsiFactory(element.project).createOperatorName(name) ?: return null
         operator.replace(newName)
         return element
     }

@@ -6,8 +6,10 @@ import org.purescript.module.declaration.classes.*
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataConstructorList
 import org.purescript.module.declaration.data.DataDeclaration
-import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
 import org.purescript.module.declaration.fixity.PSFixity
+import org.purescript.module.declaration.fixity.TypeFixityDeclaration
+import org.purescript.module.declaration.fixity.ValueFixityDeclaration
 import org.purescript.module.declaration.foreign.ForeignValueDecl
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.*
@@ -50,18 +52,21 @@ import org.purescript.name.*
 import org.purescript.psi.PSElementType.WithPsi
 
 val ModuleType = Module.Type
-val FixityDeclType = FixityDeclaration.Type
+val FixityDeclType = ValueFixityDeclaration.Type
+val ConstructorFixityDeclType = ConstructorFixityDeclaration.Type
+val TypeFixityDeclType = TypeFixityDeclaration.Type
 val ExportListType = ExportList.Type
 val ExportedClassType = ExportedClass.Type
 val ExportedDataType = ExportedData.Type
 val ExportedModuleType = ExportedModule.Type
 val ExportedOperatorType = ExportedOperator.Type
-val ExportedTypeType = ExportedType.Type
+val ExportedTypeOperatorType = ExportedTypeOperator.Type
 val ExportedValueType = ExportedValue.Type
 val ExportedDataMember = PSExportedDataMember.Type
 val ExportedDataMemberListType = PSExportedDataMemberList.Type
 val TypeAppType = WithPsi("TypeApp") { TypeApp(it) }
 val TypeOperatorExpressionType = WithPsi("TypeOperatorExpression") { TypeOperatorExpression(it) }
+val TypeOperatorType = WithPsi("TypeOperatorExpression") { TypeOperatorExpression(it) }
 val TypeStringType = WithPsi("TypeString") { TypeString(it) }
 val TypeWildcardType = WithPsi("TypeWildcard") { TypeWildcard(it) }
 val TypeIntType = WithPsi("TypeInt") { TypeInt(it) }

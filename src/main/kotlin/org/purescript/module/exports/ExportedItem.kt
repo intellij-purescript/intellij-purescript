@@ -117,7 +117,7 @@ interface ExportedOperator {
     }
 }
 
-interface ExportedType {
+interface ExportedTypeOperator {
     class Stub(val name: String, p: StubElement<*>?) : AStub<Psi>(p, Type)
     object Type : WithPsiAndStub<Stub, Psi>("ExportedType") {
         override fun createPsi(node: ASTNode) = Psi(node)
@@ -134,8 +134,9 @@ interface ExportedType {
 
         // Todo clean this up
         override fun toString(): String = "PSExportedType($elementType)"
-        private val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
-        override fun getName(): String = greenStub?.name ?: identifier.name
+        val symbol get() = findNotNullChildByClass(PSSymbol::class.java)
+        override fun getName(): String = greenStub?.name ?: symbol.name
+        override fun getReference() = ExportedTypeOperatorReference(this)
     }
 }
 

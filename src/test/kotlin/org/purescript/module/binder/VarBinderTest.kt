@@ -1,4 +1,4 @@
-package org.purescript.psi.binder
+package org.purescript.module.binder
 
 import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase

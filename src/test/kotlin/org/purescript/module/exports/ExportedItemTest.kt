@@ -1,8 +1,7 @@
-package org.purescript.psi.exports
+package org.purescript.module.exports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getExportedItem
-import org.purescript.module.exports.*
 
 class ExportedItemTest : BasePlatformTestCase() {
 
@@ -89,7 +88,7 @@ class ExportedItemTest : BasePlatformTestCase() {
             """module Main (type (<<=>>)) where"""
         ).getExportedItem()
 
-        assertTrue(exportedItem is ExportedType.Psi)
+        assertTrue(exportedItem is ExportedTypeOperator.Psi)
         assertEquals("<<=>>", exportedItem.name)
     }
 

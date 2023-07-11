@@ -4,7 +4,7 @@ import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.RefactoringActionHandler
 import org.purescript.module.Module
-import org.purescript.module.declaration.fixity.FixityDeclaration
+import org.purescript.module.declaration.fixity.ValueFixityDeclaration
 import org.purescript.module.declaration.imports.PSImportedDataMember
 import org.purescript.module.declaration.imports.PSImportedItem
 import org.purescript.module.declaration.type.Labeled
@@ -18,7 +18,7 @@ class PSRefactoringSupportProvider : RefactoringSupportProvider() {
         element is Module ||
                 element is ValueDeclarationGroup ||
                 element is Labeled ||
-                element is FixityDeclaration ||
+                element is ValueFixityDeclaration ||
                 element is VarBinder ||
                 element is TypeVarName
 

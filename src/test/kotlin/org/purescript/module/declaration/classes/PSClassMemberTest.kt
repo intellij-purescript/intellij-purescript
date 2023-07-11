@@ -1,4 +1,4 @@
-package org.purescript.psi.classes
+package org.purescript.module.declaration.classes
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getClassMember

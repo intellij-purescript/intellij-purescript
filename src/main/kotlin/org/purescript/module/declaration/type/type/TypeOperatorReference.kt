@@ -1,4 +1,4 @@
-package org.purescript.module.declaration.value.binder
+package org.purescript.module.declaration.type.type
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixProvider
@@ -6,39 +6,39 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import org.purescript.module.declaration.ImportableIndex
-import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
+import org.purescript.module.declaration.fixity.TypeFixityDeclaration
 import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.name.PSModuleName
 import org.purescript.name.PSOperatorName
 import org.purescript.psi.PSPsiFactory
 
-class BinderOperatorReference(symbol: BinderOperator, val moduleName: PSModuleName?, val operator: PSOperatorName) :
-    LocalQuickFixProvider, PsiReferenceBase<BinderOperator>(symbol, operator.textRangeInParent, false) {
+class TypeOperatorReference(symbol: TypeOperator, val moduleName: PSModuleName?, val operator: PSOperatorName) :
+    LocalQuickFixProvider, PsiReferenceBase<TypeOperator>(symbol, operator.textRangeInParent, false) {
 
     override fun getVariants(): Array<Any> =
         candidates.toList().toTypedArray()
 
-    override fun resolve(): ConstructorFixityDeclaration? {
+    override fun resolve(): TypeFixityDeclaration? {
         val name = element.name
         return candidates(name).firstOrNull { it.name == name }
     }
 
     override fun isReferenceTo(element: PsiElement) = when (element) {
-        is ConstructorFixityDeclaration -> element.name == this.element.name
+        is TypeFixityDeclaration -> element.name == this.element.name
         else -> false
     } && super.isReferenceTo(element)
 
     val candidates
         get() = sequence {
             val module = element.module
-            yieldAll(module.constructorFixityDeclarations.asSequence())
-            yieldAll(module.cache.imports.flatMap { it.importedConstructorFixityDeclarations })
+            yieldAll(module.typeFixityDeclarations.asSequence())
+            yieldAll(module.cache.imports.flatMap { it.importedTypeFixityDeclarations })
         }
 
     fun candidates(name: String) = sequence {
         val module = element.module
-        yieldAll(module.constructorFixityDeclarations.asSequence())
-        yieldAll(module.cache.imports.flatMap { it.importedConstructorFixityDeclarations(name) })
+        yieldAll(module.typeFixityDeclarations.asSequence())
+        yieldAll(module.cache.imports.flatMap { it.importedTypeFixityDeclarations(name) })
     }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {

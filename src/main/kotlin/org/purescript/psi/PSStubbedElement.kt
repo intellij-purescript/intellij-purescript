@@ -47,15 +47,10 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
     internal fun <T : Any?> `access$findChildrenByClass`(aClass: Class<T>?) =
         super.findChildrenByClass(aClass)    // Todo clean up
 
-    inline fun <reified T: PsiElement>addTyped(element: T): T {
-        return add(element) as T
-    }
-    
-    override val typeId get() = module?.typeIdOf(this)
-    override val substitutedType: InferType get() = 
-        typeId?.let {  module?.substitute(it)} 
-            ?: error("failed to substitute type for $this")
+    inline fun <reified T: PsiElement>addTyped(element: T): T = add(element) as T
+    override val typeId get() = module.typeIdOf(this)
+    override val substitutedType: InferType get() = module.substitute(typeId)
     fun unify(other: InferType) {
-        module?.unify(substitutedType, other )
+        module.unify(substitutedType, other )
     }
 }
