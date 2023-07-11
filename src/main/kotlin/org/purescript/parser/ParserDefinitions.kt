@@ -213,7 +213,10 @@ val expr5 = Reference {
         doBlock,
         ChoiceMap(
             qualified(`'ado'`),
-            `L{` + DoStatementsType.fold( DoStatementsType(doStatement) , `L-sep` + doStatement ) + `L}` + `'in'` + expr to AdoBlockType ,
+            `L{` + DoStatementsType.fold(
+                DoStatementsType(doStatement),
+                `L-sep` + doStatement
+            ) + `L}` + `'in'` + expr to AdoBlockType,
             `L{` + `L}` + `'in'` + expr to EmptyAdoBlockType,
         ),
         letIn
@@ -252,12 +255,14 @@ val foreignDeclaration = `'foreign'` + `'import'` + Choice(
 )
 val fixity = Fixity(`'infixl'` / `'infixr'` / `'infix'` + NATURAL)
 val qualIdentifier = QualifiedIdentifier(!qualifier + ident)
-val fixityDeclaration = FixityDeclType(
-    fixity + Choice(// TODO Should we differentiate Types and DataConstructors?
-        // that would mean that when there is a `type` prefix we parse as Type
-        // otherwise if it's a capital name it's a DataConstructor
-        (!`'type'` + qualProperName), qualIdentifier
-    ) + `'as'` + operatorName
+
+// TODO Should we differentiate Types and DataConstructors?
+// that would mean that when there is a `type` prefix we parse as Type
+// otherwise if it's a capital name it's a DataConstructor
+val fixityDeclaration = ChoiceMap(
+    fixity,
+    (!`'type'` + qualProperName) + `'as'` + operatorName to FixityDeclType,
+    qualIdentifier + `'as'` + operatorName to FixityDeclType
 )
 
 val fundep = ClassFunctionalDependency(type)
@@ -422,7 +427,7 @@ val doStatement = Choice(
 )
 val doBlock = ChoiceMap(
     qualified(`'do'`),
-    `L{` + DoStatementsType.fold( DoStatementsType(doStatement) , `L-sep` + doStatement ) + `L}` to DoBlock,
+    `L{` + DoStatementsType.fold(DoStatementsType(doStatement), `L-sep` + doStatement) + `L}` to DoBlock,
     True to EmptyDoBlockType
 )
 val recordBinder =
