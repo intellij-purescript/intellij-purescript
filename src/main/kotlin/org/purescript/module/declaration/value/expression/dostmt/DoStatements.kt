@@ -8,7 +8,7 @@ import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiElement
 
 class DoStatements(node: ASTNode) : PSPsiElement(node), DoStatement, ValueNamespace {
-    private val children = childrenOfType<DoStatement>()
+    private val children get() = childrenOfType<DoStatement>()
     override val binders get() = children.flatMap { it.binders }
     override fun unify() = unify(children.map { it.inferType() }.last())
     override val statements get() = children.flatMap { it.statements }

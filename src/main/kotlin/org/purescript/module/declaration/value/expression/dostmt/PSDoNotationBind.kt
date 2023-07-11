@@ -9,7 +9,9 @@ import org.purescript.psi.PSPsiElement
 
 class PSDoNotationBind(node: ASTNode) : PSPsiElement(node), DoStatement {
     override val binders get() = binder.descendantBinders
-    private val binder = childrenOfType<Binder>().single()
+    private val binder get() = childrenOfType<Binder>().single()
+    val expression get() = childrenOfType<Expression>().single()
+
     override fun unify() {
         val monad = module.newId()
         parentOfType<PSDoBlock>()?.substitutedType?.let {
@@ -21,6 +23,4 @@ class PSDoNotationBind(node: ASTNode) : PSPsiElement(node), DoStatement {
             monad.app(binder.inferType())
         )
     }
-
-    val expression get() = childrenOfType<Expression>().single()
 }

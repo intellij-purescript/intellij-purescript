@@ -5,5 +5,5 @@ import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
 class EmptyDoBlock(node: ASTNode) : PSPsiElement(node), Expression {
-    override val expressions: Sequence<Expression> get() = emptySequence()
+    override val expressions get() = emptySequence<Expression>()
 }
