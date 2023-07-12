@@ -52,7 +52,7 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
                 else -> module!!.exportList!!.childrenStubs
                     .filterIsInstance<ExportedData.Stub>()
                     .any { exportedData ->
-                        exportedData.name == name &&
+                        exportedData.name == dataDeclaration?.name &&
                                 exportedData.dataMembers.run { isEmpty() || any { it.name == name } }
                     }
             }
