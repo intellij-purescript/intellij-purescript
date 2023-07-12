@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin require-restart="false">
     <id>net.kenro.ji.jin.intellij.purescript</id>
     <name>Purescript</name>
     <version>1.0</version>
