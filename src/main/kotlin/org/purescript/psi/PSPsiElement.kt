@@ -17,7 +17,7 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
     /**
      * @return the [Module] containing this element
      */
-    val module: Module get() = this.parentOfType(true) ?: error("Failed to pares module")
+    val module: Module get() = this.parentOfType(true) ?: error("Failed to parse module")
     override val typeId get() = module.typeIdOf(this)
     override val substitutedType: InferType
         get() =
