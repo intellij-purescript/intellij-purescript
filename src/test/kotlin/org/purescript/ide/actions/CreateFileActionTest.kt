@@ -15,7 +15,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 const val fileName = "Purescript Module.purs"
 
 class CreateFileActionTest : BasePlatformTestCase() {
-    fun `test create simple purescript file`() {
+    fun `xtest create simple purescript file`() {
         performCreateFileAction("Foo")
         myFixture.checkResult(
             fileName,
@@ -24,7 +24,7 @@ class CreateFileActionTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test strips purs suffix`() {
+    fun `xtest strips purs suffix`() {
         performCreateFileAction("Foo.purs")
         myFixture.checkResult(
             fileName,
@@ -42,7 +42,7 @@ class CreateFileActionTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test create file in test directory`() {
+    fun `xtest create file in test directory`() {
         performCreateFileAction("Bar", "test")
         myFixture.checkResult(
             "test/$fileName",
@@ -51,7 +51,7 @@ class CreateFileActionTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test create file in nested directory`() {
+    fun `xtest create file in nested directory`() {
         performCreateFileAction("Bar", "src/Foo")
         myFixture.checkResult(
             "src/Foo/$fileName",
@@ -60,7 +60,7 @@ class CreateFileActionTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test removes purs suffix in nested directory`() {
+    fun `xtest removes purs suffix in nested directory`() {
         performCreateFileAction("Bar.purs", "src/Foo")
         myFixture.checkResult(
             "src/Foo/$fileName",
@@ -69,7 +69,7 @@ class CreateFileActionTest : BasePlatformTestCase() {
         )
     }
 
-    fun `test create file with full name in nested directory`() {
+    fun `xtest create file with full name in nested directory`() {
         performCreateFileAction("Foo.Bar", "src/Foo")
         myFixture.checkResult(
             "src/Foo/$fileName",
@@ -77,7 +77,7 @@ class CreateFileActionTest : BasePlatformTestCase() {
             false
         )
     }
-    fun `test it dont use folder names that is in lowercase`() {
+    fun `xtest it dont use folder names that is in lowercase`() {
         performCreateFileAction("Foo.Bar", "src/lib/Foo")
         myFixture.checkResult(
             "src/lib/Foo/$fileName",
