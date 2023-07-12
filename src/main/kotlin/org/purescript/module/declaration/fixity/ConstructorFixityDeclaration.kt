@@ -99,7 +99,7 @@ class ConstructorFixityDeclaration : PSStubbedElement<ConstructorFixityDeclarati
 
     // Todo clean this up
     override fun toString(): String = "PSFixityDeclaration($elementType)"
-    override fun asImport() = module?.name?.let { ImportDeclaration(it, false, setOf(ImportedOperator(name))) }
+    override fun asImport() = ImportDeclaration(module.name, false, setOf(ImportedOperator(name)))
     override val type: PSType?
         get() = when (val ref = reference.resolve()) {
             is ValueDeclarationGroup -> ref.signature?.type

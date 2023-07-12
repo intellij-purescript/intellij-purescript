@@ -82,7 +82,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
 
         init {
             title = MoveHandler.getRefactoringName()
-            this.targetModuleName = element.module!!.name
+            this.targetModuleName = element.module.name
             this.moduleNameIndex = ModuleNameIndex()
             super.init()
         }

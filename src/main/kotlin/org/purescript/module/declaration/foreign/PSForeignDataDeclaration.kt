@@ -57,7 +57,7 @@ class PSForeignDataDeclaration :
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
+    override fun asImport() = module.asImport().withItems(ImportedData(name))
     override val type: PSType? get() = null
     internal val properName: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
     override fun setName(name: String): PsiElement? = null

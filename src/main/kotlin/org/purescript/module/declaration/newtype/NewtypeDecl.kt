@@ -71,7 +71,7 @@ class NewtypeDecl : PSStubbedElement<NewtypeDecl.Stub>,
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
     override fun getName(): String = greenStub?.name ?: identifier.name
-    override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
+    override fun asImport() = module.asImport().withItems(ImportedData(name))
     override val type: PSType? get() = null
     override val typeNames get() = typeVars.asSequence().map { it.typeName }
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()

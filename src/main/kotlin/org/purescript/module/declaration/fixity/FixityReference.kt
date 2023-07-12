@@ -20,7 +20,7 @@ class FixityReference(fixity: ValueFixityDeclaration) :
 
     private val candidates: Sequence<PsiNamedElement>
         get() {
-            val module = element.module ?: return emptySequence()
+            val module = element.module
             val qualifyingName = element.qualifiedIdentifier?.moduleName?.name
             return sequence {
                 if (qualifyingName == null) {

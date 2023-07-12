@@ -107,7 +107,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     override fun getIcon(flags: Int) = AllIcons.Nodes.Function
     override fun getPresentation() = object : ItemPresentation {
         override fun getPresentableText() = name
-        override fun getLocationString() = module?.name
+        override fun getLocationString() = module.name
         override fun getIcon(unused: Boolean) = getIcon(0)
     }
 
@@ -137,7 +137,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     override val docComments: List<PsiComment>
         get() = this.getDocComments() + valueDeclarations.flatMap { it.docComments }.toList()
 
-    override fun asImport() = module?.name?.let { ImportDeclaration(it, false, setOf(ImportedValue(name))) }
+    override fun asImport() = ImportDeclaration(module.name, false, setOf(ImportedValue(name)))
     override val type: PSType? get() = signature?.type
     val isExported
         get() = greenStub?.isExported ?: when {
@@ -149,7 +149,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     override fun getUseScope(): SearchScope = (
             if (isExported) super.getUseScope()
             else if (isExported) LocalSearchScope(module)
-            else (parentsOfType<ValueDecl>().lastOrNull() ?: module)?.let { LocalSearchScope(it) })
+            else LocalSearchScope((parentsOfType<ValueDecl>().lastOrNull() ?: module)))
 
     
     override fun unify() {

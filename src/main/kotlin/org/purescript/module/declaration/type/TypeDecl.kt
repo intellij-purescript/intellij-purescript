@@ -61,7 +61,7 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = identifier
     override fun getName(): String = greenStub?.name ?: identifier.name
-    override fun asImport() = module?.asImport()?.withItems(ImportedData(name))
+    override fun asImport() = module.asImport().withItems(ImportedData(name))
     override val type get() = findChildByClass(PSType::class.java)
     override val typeNames get() = parameters?.typeNames ?: emptySequence()
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()

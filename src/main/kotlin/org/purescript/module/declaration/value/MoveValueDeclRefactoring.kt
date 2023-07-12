@@ -9,13 +9,13 @@ import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
-import org.purescript.psi.PSPsiFactory
+import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.imports.PSImportedValue
-import org.purescript.module.exports.ExportedValue
-import org.purescript.module.declaration.value.expression.*
+import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
-import org.purescript.module.Module
+import org.purescript.module.exports.ExportedValue
+import org.purescript.psi.PSPsiFactory
 
 class MoveValueDeclRefactoring(
     private val toMove: ValueDeclarationGroup,
@@ -59,7 +59,7 @@ class MoveValueDeclRefactoring(
             }
         targetModule.add(factory.createNewLines(2))
         targetModule.addRange(toMove, toMove)
-        sourceModule?.deleteChildRange(toMove, toMove)
+        sourceModule.deleteChildRange(toMove, toMove)
         targetModule.exports?.let { exportList ->
             val oldNames = exportList.exportedItems.map {
                 it.text
@@ -80,7 +80,7 @@ class MoveValueDeclRefactoring(
                             setOf(ImportedValue(toPatch.name)),
                             toPatch.importDeclaration.importAlias?.name
                         )
-                        toPatch.module?.addImportDeclaration(importDeclaration)
+                        toPatch.module.addImportDeclaration(importDeclaration)
                     }
                     // remove old one
                     val importDeclaration = toPatch.importDeclaration

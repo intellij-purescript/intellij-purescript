@@ -74,9 +74,9 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
-    override fun asImport(): ImportDeclaration? {
+    override fun asImport(): ImportDeclaration {
         val items = ImportedData(dataDeclaration.name, dataMembers = setOf(name))
-        return module?.asImport()?.withItems(items)
+        return module.asImport().withItems(items)
     }
 
     private val types get() = childrenOfType<PSType>()

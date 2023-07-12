@@ -5,7 +5,7 @@ import org.purescript.psi.PSPsiElement
 
 class Kinded(node: ASTNode) : PSPsiElement(node), PSType {
     override fun unify() {
-        val (a, t) = findChildrenByClass(PSType::class.java).map { it.inferType() }
+        val (a, _) = findChildrenByClass(PSType::class.java).map { it.inferType() }
         unify(a)
     }
 } 

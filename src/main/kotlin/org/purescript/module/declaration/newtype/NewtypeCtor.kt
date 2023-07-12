@@ -73,7 +73,7 @@ class NewtypeCtor :
     override fun setName(name: String): PsiElement? = null
     override fun getName(): String = greenStub?.name ?: nameIdentifier.name
     override fun getNameIdentifier(): PSProperName = identifier
-    override fun asImport() = module?.asImport()?.withItems(ImportedData(name, dataMembers = setOf(name)))
+    override fun asImport() = module.asImport().withItems(ImportedData(name, dataMembers = setOf(name)))
     override val type: PSType? get() = null
     val typeAtom: PSType get() = findChildByClass(PSType::class.java) ?: error("newtype constructor without type")
     override fun getIcon(flags: Int) = AllIcons.Nodes.Class

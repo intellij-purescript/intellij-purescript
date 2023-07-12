@@ -82,7 +82,7 @@ class PSClassMember: PSStubbedElement<PSClassMember.Stub>,
      * ```
      */
     val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
-    override fun asImport(): ImportDeclaration? = module?.asImport()?.withItems(ImportedValue(name))
+    override fun asImport(): ImportDeclaration = module.asImport().withItems(ImportedValue(name))
 
     /**
      * @return the [PSType] specifying this member's type signature, e.g.

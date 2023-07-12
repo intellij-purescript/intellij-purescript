@@ -67,7 +67,7 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     override fun getIcon(flags: Int) = AllIcons.Ide.External_link_arrow
     override fun setName(name: String) = null
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
-    override fun asImport() = module?.name?.let { ImportDeclaration(it).withItems(ImportedValue(name)) }
+    override fun asImport() = module.name.let { ImportDeclaration(it).withItems(ImportedValue(name)) }
     override val type: PSType? get() = childrenOfType<PSType>().firstOrNull()
     override fun getName() = greenStub?.name ?: nameIdentifier.name
     override val docComments: List<PsiComment> get() = this.getDocComments()
