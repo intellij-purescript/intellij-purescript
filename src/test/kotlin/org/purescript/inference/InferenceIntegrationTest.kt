@@ -101,7 +101,7 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         TestCase.assertEquals("Int", int.toString())
 
         val checkUserType = Main.getValueDeclarationGroupByName("checkUser").inferType()
-        TestCase.assertEquals("{ age::Int, name::String } -> Int", "$checkUserType")
+        TestCase.assertEquals("User -> Int", "$checkUserType")
 
     }
 
@@ -166,9 +166,9 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
             """.trimMargin()
         )
         val name = Main.getValueDeclarationGroupByName("name").inferType()
-        TestCase.assertEquals("String", "$name")
+        TestCase.assertEquals("Name", "$name")
         val boxName = Main.getValueDeclarationGroupByName("boxName").inferType()
-        TestCase.assertEquals("String", "$boxName")
+        TestCase.assertEquals("Box String", "$boxName")
     }
 
     fun `test new type`() {

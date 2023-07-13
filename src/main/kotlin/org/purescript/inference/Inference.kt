@@ -89,11 +89,13 @@ sealed interface InferType {
         override fun withNewIds(map: (Id) -> Id) = Constraint(constraint.withNewIds(map), of.withNewIds(map))
     }
 
-    data class Alias(val name: String, val type: InferType) : InferType {
+    data class Alias(val name: String, val arguments: List<InferType>, val type: InferType) : InferType {
         override val argument: InferType? get() = type.argument
-        override fun toString(): String = name
+        override fun toString(): String = 
+            listOf(name, *arguments.map { it.toString() }.toTypedArray()).joinToString(" ")
         override fun contains(t: Id): Boolean = type.contains(t)
-        override fun withNewIds(map: (Id) -> Id): InferType = Alias(name, type.withNewIds(map))
+        override fun withNewIds(map: (Id) -> Id): InferType =
+            Alias(name, arguments.map {it.withNewIds(map)}, type.withNewIds(map))
     }
 
     data class ForAll(val name: Id, val scope: InferType) : InferType {
@@ -116,7 +118,7 @@ sealed interface InferType {
     fun withNewIds(map: (Id) -> Id): InferType
     fun withoutConstraints(): InferType = when (this) {
         is Constraint -> of.withoutConstraints()
-        is Alias -> Alias(name, type.withoutConstraints())
+        is Alias -> Alias(name, arguments, type.withoutConstraints())
         is App -> App(f.withoutConstraints(), on.withoutConstraints())
         is Constructor -> this
         is Id -> this
@@ -180,7 +182,7 @@ tailrec fun Map<InferType.Id, InferType>.substitute(t: InferType, andThen: (Infe
         }
 
         is InferType.Alias -> substitute(t.type) { type ->
-            andThen(InferType.Alias(t.name, type))
+            andThen(InferType.Alias(t.name, t.arguments.map {substitute(it)}, type))
         }
 
         is InferType.Row -> substituteRow(t)
@@ -221,8 +223,8 @@ fun MutableMap<InferType.Id, InferType>.unify(x: InferType, y: InferType) {
 
         sx is InferType.Constraint -> unify(sx.of, sy)
         sy is InferType.Constraint -> unify(sx, sy.of)
-        sy is InferType.Alias -> unify(sx, sy.type)
-        sx is InferType.Alias -> unify(sx.type, sy)
+        //sy is InferType.Alias -> unify(sx, sy.type)
+        //sx is InferType.Alias -> unify(sx.type, sy)
     }
 }
 

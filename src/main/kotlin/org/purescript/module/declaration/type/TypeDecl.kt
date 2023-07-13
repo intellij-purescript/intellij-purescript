@@ -68,8 +68,8 @@ class TypeDecl : PSStubbedElement<TypeDecl.Stub>, PsiNameIdentifierOwner, Import
 
     override fun getTextOffset(): Int = identifier.textOffset
     override fun unify() {
-        unify(typeNames.toList().foldRight(type?.inferType() ?: return) { parameter, ret ->
-            InferType.function(parameter.inferType(), ret)
-        })
+        val parameters = typeNames.toList().map { it.inferType() }
+        val retType = type?.inferType()?.let { InferType.Alias(name, parameters,  it) } ?: return
+        unify(InferType.function(*parameters.toTypedArray(), retType))
     }
 }
