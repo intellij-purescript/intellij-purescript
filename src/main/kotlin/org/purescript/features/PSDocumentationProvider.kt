@@ -103,7 +103,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         val flavour = GFMFlavourDescriptor()
         val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(lines)
         val html = HtmlGenerator(lines, parsedTree, flavour).generateHtml()
-        return html.trim()
+        return html.replace("\n", "<br />").trim()
     }
 
     sealed interface MState {
