@@ -17,13 +17,15 @@ import java.util.regex.Pattern
 class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun getPairedBatchInspectionShortName(): String = PursIdeRebuildInspection.SHORT_NAME
     override fun collectInformation(file: PsiFile) = file
-    override fun doAnnotate(file: PsiFile): Response? {
+
+    override fun doAnnotate(file: PsiFile?): Response? {
+        if (file == null) return null
 
         // without a purs bin path we can't annotate with it
         val project = file.project
         val purs = project.service<Purs>()
         val tempFile: File =
-            File.createTempFile("purescript-intellij", file.name)
+                File.createTempFile("purescript-intellij", file.name)
         tempFile.writeText(file.text, file.virtualFile.charset)
         val filePath = file.virtualFile.toNioPath()
         val jsPath = filePath.parent.resolve((filePath.toFile().nameWithoutExtension + ".js"))
@@ -38,16 +40,16 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         val gson = Gson()
         return purs.withServer {
             val output = ExecUtil.execAndGetOutput(
-                purs.commandLine.withParameters("ide", "client"),
-                gson.toJson(
-                    mapOf(
-                        "command" to "rebuild",
-                        "params" to mapOf(
-                            "file" to tempFile.path,
-                            "actualFile" to file.virtualFile.path,
-                        )
+                    purs.commandLine.withParameters("ide", "client"),
+                    gson.toJson(
+                            mapOf(
+                                    "command" to "rebuild",
+                                    "params" to mapOf(
+                                            "file" to tempFile.path,
+                                            "actualFile" to file.virtualFile.path,
+                                    )
+                            )
                     )
-                )
             )
             try {
                 val json = gson.fromJson(output, Response::class.java)
@@ -65,7 +67,8 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         }
     }
 
-    override fun apply(file: PsiFile, annotationResult: Response, holder: AnnotationHolder) {
+    override fun apply(file: PsiFile, annotationResult: Response?, holder: AnnotationHolder) {
+        if (annotationResult == null) return
         val documentManager = PsiDocumentManager.getInstance(file.project)
         val document = documentManager.getDocument(file) ?: return
         val severity = when (annotationResult.resultType) {
@@ -78,16 +81,16 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             if (result.errorCode == "UnusedExplicitImport") continue
             if (result.errorCode == "ModuleNotFound") continue
             val textRange = result.position.textRange(document)
-                .let { if (it.length <= 0) it.grown(1).shiftLeft(1) else it }
+                    .let { if (it.length <= 0) it.grown(1).shiftLeft(1) else it }
             val annotationBuilder = holder
-                .newAnnotation(severity, "Purs ide rebuild: ${result.errorCode}")
-                .tooltip(result.message)
-                .range(textRange)
-                .needsUpdateOnTyping()
+                    .newAnnotation(severity, "Purs ide rebuild: ${result.errorCode}")
+                    .tooltip(limitTooltip(result.message))
+                    .range(textRange)
+                    .needsUpdateOnTyping()
             if (result.suggestion != null) {
                 val name = result.errorCode
-                    ?.split(Pattern.compile("(?=[A-Z])"))
-                    ?.joinToString(" ")
+                        ?.split(Pattern.compile("(?=[A-Z])"))
+                        ?.joinToString(" ")
                 val fix = PursIdeQuickFix(result.suggestion, name ?: result.message)
                 annotationBuilder.withFix(fix)
             }
@@ -99,5 +102,19 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             }
             annotationBuilder.create()
         }
+    }
+
+    // IntelliJ gets very slow on large tooltips
+    private fun limitTooltip(message: String): String {
+        val lines = message.lines()
+        val maxLinesToShow = 50
+        val maxColumnWidth = 120
+        val tooltipLines =
+                if (lines.size < maxLinesToShow) lines
+                else {
+                    val separatorHint = "<br />[... ${lines.size - maxLinesToShow} more lines elided]<br />"
+                    lines.take(35) + listOf(separatorHint) + lines.takeLast(15)
+                }
+        return tooltipLines.joinToString("\n<br>") { it.take(maxColumnWidth) }
     }
 }
