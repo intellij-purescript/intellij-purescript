@@ -112,9 +112,9 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         val tooltipLines =
                 if (lines.size < maxLinesToShow) lines
                 else {
-                    val separatorHint = "<br />[... ${lines.size - maxLinesToShow} more lines elided]<br />"
+                    val separatorHint = "<br />\n[... ${lines.size - maxLinesToShow} more lines elided]<br />\n"
                     lines.take(35) + listOf(separatorHint) + lines.takeLast(15)
                 }
-        return tooltipLines.joinToString("\n<br>") { it.take(maxColumnWidth) }
+        return tooltipLines.joinToString("<br />\n") { it.take(maxColumnWidth) }
     }
 }
