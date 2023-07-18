@@ -6,6 +6,10 @@ import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
+import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
+import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.MarkdownParser
 import org.purescript.PSLanguage
 import org.purescript.inference.Inferable
 import org.purescript.module.declaration.Importable
@@ -96,14 +100,10 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         val lines = commentText
             .joinToString("\n") { it.trim().removePrefix("-- |") }
             .trimIndent()
-            .lines()
-            .toMutableList()
-        HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(project, PSLanguage, "", 1f)
-        val initial: MState = MState.Normal(project, "")
-        val markdown = lines.fold(initial) { a, b ->
-            a.process(b)
-        }
-        return markdown.text().trim()
+        val flavour = GFMFlavourDescriptor()
+        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(lines)
+        val html = HtmlGenerator(lines, parsedTree, flavour).generateHtml()
+        return html.trim()
     }
 
     sealed interface MState {

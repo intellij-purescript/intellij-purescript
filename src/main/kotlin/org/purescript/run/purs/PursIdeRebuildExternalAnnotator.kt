@@ -106,6 +106,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
 
     // IntelliJ gets very slow on large tooltips
     private fun limitTooltip(message: String): String {
+
         val lines = message.lines()
         val maxLinesToShow = 50
         val maxColumnWidth = 120
@@ -115,6 +116,6 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
                     val separatorHint = "<br />[... ${lines.size - maxLinesToShow} more lines elided]<br />"
                     lines.take(35) + listOf(separatorHint) + lines.takeLast(15)
                 }
-        return tooltipLines.joinToString("\n<br>") { it.take(maxColumnWidth) }
+        return tooltipLines.joinToString("<br />") { it.take(maxColumnWidth) }
     }
 }
