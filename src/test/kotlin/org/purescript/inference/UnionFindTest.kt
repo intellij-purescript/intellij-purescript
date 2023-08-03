@@ -97,5 +97,15 @@ class UnionFindTest {
         a.unify(int)
         assertEquals(forall.lookup(), int)
     }
-    
+
+    @Test
+    fun `single row label unifies`() {
+        val space = UnionFind()
+        val a = space.unknown()
+        val b = space.unknown()
+        val labelA = a.labeled("foo")
+        val labelB = b.labeled("foo")
+        labelA.unify(labelB)
+        assertEquals(a.lookup(), b.lookup())
+    }
 }
