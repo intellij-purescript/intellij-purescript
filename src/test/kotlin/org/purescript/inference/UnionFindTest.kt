@@ -3,6 +3,7 @@ package org.purescript.inference
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
+import org.purescript.inference.Node.EmptyRow
 
 class UnionFindTest {
     @Test
@@ -103,8 +104,8 @@ class UnionFindTest {
         val space = UnionFind()
         val a = space.unknown()
         val b = space.unknown()
-        val labelA = a.labeled("foo")
-        val labelB = b.labeled("foo")
+        val labelA = EmptyRow.add("foo", a)
+        val labelB = EmptyRow.add("foo", b)
         labelA.unify(labelB)
         assertEquals(a.lookup(), b.lookup())
     }

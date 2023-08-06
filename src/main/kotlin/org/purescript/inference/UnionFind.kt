@@ -32,7 +32,6 @@ sealed interface Node {
         rest.fold(Application(this, other)) { f, a -> f.application(a) }
 
     fun function(other: Node) = Constructor("Prim.Function").application(this, other)
-    fun labeled(label: String) = RowPair(label, this)
 
     /**
      * all nodes are unknown at the beginning
@@ -105,27 +104,35 @@ sealed interface Node {
         override fun unify(other: Node) {
             other.unifyRight(this)
         }
+        fun add(label: String, type: Node): Row {
+            return Row(label, type, this)
+        }
     }
 
     /**
      * A constructor local to this declaration
      **/
-    class RowPair(
+    class Row(
         private val label: String,
-        private val type: Node
+        private val type: Node,
+        private val next: Node,
     ) : Node {
         override fun lookup(): Node {
             val type = this.type.lookup()
             return if (type == this.type) this
-            else RowPair(label, type)
+            else Row(label, type, next.lookup())
         }
 
         override fun unify(other: Node) = when (other) {
-            is RowPair ->
+            is Row ->
                 if (other.label == label) type.unify(other.type)
                 else other.unifyRight(this)
 
             else -> other.unifyRight(this)
+        }
+
+        fun add(label: String, type: Node): Row {
+            return Row(label, type, this)
         }
     }
 
