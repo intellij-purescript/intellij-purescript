@@ -53,7 +53,7 @@ sealed interface Node {
     }
 
     /**
-     * Reference to a known byt external type to this declaration
+     * Reference to a known but external type to this declaration
      **/
     @JvmInline
     value class Ref(val fqn: String) : Node {
