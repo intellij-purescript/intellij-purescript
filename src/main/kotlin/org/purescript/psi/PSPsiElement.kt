@@ -21,7 +21,7 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
     override val typeId get() = module.typeIdOf(this)
     override val substitutedType: InferType
         get() =
-            typeId?.let { module.substitute(it) } ?: error("failed to substitute type for $this")
+            typeId.let { module.substitute(it) }
 
     fun unify(other: InferType) = unify(substitutedType, other)
     fun unify(first: InferType, other: InferType) {

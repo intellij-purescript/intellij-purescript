@@ -161,14 +161,14 @@ class ExportedModule : ExportedItem<ExportedModule.Stub> {
     val moduleName get() = findNotNullChildByClass(PSModuleName::class.java)
     val importDeclarations: Sequence<Import>
         get() = module
-            ?.cache
+            .cache
             ?.importsByName
             ?.get(name)
             ?.asSequence()
             ?: sequenceOf()
     override val constructors get() = 
-        if (name != module?.name) importDeclarations.flatMap { it.importedConstructors }.toList()
-        else module?.constructors ?: emptyList()
+        if (name != module.name) importDeclarations.flatMap { it.importedConstructors }.toList()
+        else module.constructors
     override fun getName(): String = greenStub?.name ?: moduleName.name
     override fun getReference() = ExportedModuleReference(this)
 }

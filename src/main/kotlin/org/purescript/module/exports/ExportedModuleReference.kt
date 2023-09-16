@@ -15,7 +15,7 @@ class ExportedModuleReference(exportedModule: ExportedModule) : PsiReferenceBase
     }
 
     override fun resolve(): PsiElement? {
-        return if (element.name == myElement.module?.name) {
+        return if (element.name == myElement.module.name) {
             myElement.module
         } else {
             candidates.firstOrNull { it.name == myElement.name }
@@ -32,6 +32,6 @@ class ExportedModuleReference(exportedModule: ExportedModule) : PsiReferenceBase
 
     private val candidates: Array<Import>
         get() =
-            myElement.module?.cache?.imports
+            myElement.module.cache?.imports
                 ?: emptyArray()
 }

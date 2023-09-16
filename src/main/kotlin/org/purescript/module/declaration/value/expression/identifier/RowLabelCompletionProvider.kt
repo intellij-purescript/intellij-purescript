@@ -66,7 +66,7 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
                         LookupElementBuilder
                             .create(labeled, labeled.name)
                             .withTypeText(labeled.typeAsString)
-                            .withTailText("(${labeled.module?.name})")
+                            .withTailText("(${labeled.module.name})")
                     }
                 result.addAllElements(elementBuilders)
             }

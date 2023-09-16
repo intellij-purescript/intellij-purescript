@@ -31,7 +31,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
                     is ValueDeclarationGroup -> LookupElementBuilder
                         .createWithIcon(it)
                         .withTypeText(it.type?.text)
-                        .withTailText(it.module?.name?.let { "($it)" })
+                        .withTailText(it.module.name?.let { "($it)" })
 
                     else -> it
                 }
@@ -84,7 +84,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
                     .map { it.moduleName }
                     .flatMap { ReExportedImportIndex.get(it, project, scope) }
                     .mapNotNull { import ->
-                        import.module?.asImport()
+                        import.module.asImport()
                             ?.withItems(ImportedValue(element.name))
                             ?.withAlias(qualifyingName)
                     }
