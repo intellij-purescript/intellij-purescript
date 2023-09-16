@@ -32,6 +32,5 @@ class ExportedModuleReference(exportedModule: ExportedModule) : PsiReferenceBase
 
     private val candidates: Array<Import>
         get() =
-            myElement.module.cache?.imports
-                ?: emptyArray()
+            myElement.module.cache.imports
 }

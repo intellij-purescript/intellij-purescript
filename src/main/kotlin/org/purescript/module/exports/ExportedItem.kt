@@ -162,7 +162,7 @@ class ExportedModule : ExportedItem<ExportedModule.Stub> {
     val importDeclarations: Sequence<Import>
         get() = module
             .cache
-            ?.importsByName
+            .importsByName
             ?.get(name)
             ?.asSequence()
             ?: sequenceOf()
