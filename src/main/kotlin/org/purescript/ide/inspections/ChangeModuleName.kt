@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import org.purescript.module.Module
 
-class ChangeModuleName(private val module: Module, private val name: String) 
+class ChangeModuleName(module: Module, private val name: String) 
     : LocalQuickFixOnPsiElement(module) {
     override fun getFamilyName() = "Fix Module Name"
     override fun getText() = "Change name to '$name'"
