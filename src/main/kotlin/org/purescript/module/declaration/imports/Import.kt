@@ -23,7 +23,7 @@ import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.exports.ExportedModule
 import org.purescript.name.PSModuleName
 import org.purescript.psi.AStub
-import org.purescript.psi.PSElementType.*
+import org.purescript.psi.PSElementType.WithPsiAndStub
 import org.purescript.psi.PSStubbedElement
 
 /**
@@ -127,7 +127,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val isHiding: Boolean get() = importList?.isHiding ?: false
 
     /**
-     * @return a reference to the [Psi] that this declaration is
+     * @return a reference to the Psi that this declaration is
      * importing from
      */
     override fun getReference(): ModuleReference = ModuleReference(this)
@@ -327,9 +327,6 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     val importedClassMembers: List<PSClassMember>
         get() = getImportedDeclarations<PSClassMember, PSImportedValue>(Module::exportedClassMembers)
 
-    /**
-     * @return the [org.purescript.module.declaration.FixityDeclaration] elements imported by this declaration
-     */
     val importedValueFixityDeclarations
         get() = getImportedDeclarations<ValueFixityDeclaration, PSImportedOperator> { module ->
             module.exportedValueFixityDeclarations.toList()

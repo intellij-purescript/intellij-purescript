@@ -9,7 +9,7 @@ import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.newtype.NewtypeDecl
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.name.PSQualifiedProperName
-import org.purescript.psi.*
+import org.purescript.psi.PSPsiElement
 
 /**
  * A type constructor is a PSI element that references one of the following PSI elements:
@@ -17,9 +17,6 @@ import org.purescript.psi.*
  *  - [NewtypeDecl]
  *  - [Signature]
  *
- * It can appear in many places, for example in one of the following PSI elements:
- *  - [Signature]
- *  - [DataConstructor.PSDataConstructor]
  */
 class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
     /**
