@@ -37,7 +37,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getExpressionIdentifier()
 
-        @Suppress("UnstableApiUsage") val resolve = expressionIdentifier.reference.resolve()
+        val resolve = expressionIdentifier.reference.resolve()
         assertEquals(valueDeclaration, resolve)
     }
 

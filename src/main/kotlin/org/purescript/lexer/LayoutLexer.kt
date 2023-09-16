@@ -1,5 +1,3 @@
-@file:Suppress("ComplexRedundantLet")
-
 package org.purescript.lexer
 
 import com.intellij.lexer.DelegateLexer
@@ -89,24 +87,26 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
             .let(::lex)
             .flatMap { it.tokens }
         val sorted = unsorted.reversed()
-            .let { sequence {
-                var toBubble = mutableListOf<SourceToken>()
-                for(token in it) {
-                    when (token.value) {
-                        LAYOUT_END -> toBubble.add(token)
-                        WHITE_SPACE -> {
-                            toBubble.replaceAll { it.copy(start= token.start, end = token.start) }
-                            yield(token)
-                        }
-                        else -> {
-                            yieldAll(toBubble.reversed())
-                            yield(token)
-                            toBubble = mutableListOf()
+            .let {
+                sequence {
+                    var toBubble = mutableListOf<SourceToken>()
+                    for (token in it) {
+                        when (token.value) {
+                            LAYOUT_END -> toBubble.add(token)
+                            WHITE_SPACE -> {
+                                toBubble.replaceAll { it.copy(start = token.start, end = token.start) }
+                                yield(token)
+                            }
+
+                            else -> {
+                                yieldAll(toBubble.reversed())
+                                yield(token)
+                                toBubble = mutableListOf()
+                            }
                         }
                     }
+                    yieldAll(toBubble.reversed())
                 }
-                yieldAll(toBubble.reversed())
-            } 
             }.toList()
             .reversed()
         this.tokens = sorted
@@ -141,9 +141,9 @@ class LayoutLexer(delegate: Lexer) : DelegateLexer(delegate) {
         for (l in lexemes) when {
             lexeme == null -> lexeme = l
             lexeme.value == PROPER_NAME &&
-                l.value == DOT &&
-                l.trailingWhitespace.isEmpty() &&
-                lexeme.trailingWhitespace.isEmpty() -> {
+                    l.value == DOT &&
+                    l.trailingWhitespace.isEmpty() &&
+                    lexeme.trailingWhitespace.isEmpty() -> {
                 // <Proper Name><.>
                 qualified.add(lexeme)
                 qualified.add(l)
