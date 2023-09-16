@@ -37,7 +37,7 @@ sealed interface Tree {
 
     }
 
-    object Empty : Tree {
+    data object Empty : Tree {
         override val ranges get() = emptySequence<TextRange>()
         override val start: Int get() = TODO("Not yet implemented")
         override val end: Int get() = TODO("Not yet implemented")
