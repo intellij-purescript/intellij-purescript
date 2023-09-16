@@ -24,7 +24,7 @@ class ClassConstraintReference(classConstraint: PSClassConstraint) :
         val scope = GlobalSearchScope.allScope(element.project)
         val imports = ImportableTypeIndex.get(element.name, element.project, scope)
             .filterIsInstance<ClassDecl>()
-            .mapNotNull { it.asImport() }
+            .map { it.asImport() }
         return if (imports.isNotEmpty()) {
             arrayOf(ImportQuickFix(*imports.toTypedArray()))
         } else {
