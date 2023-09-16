@@ -7,7 +7,7 @@ import org.purescript.getValueDeclarationGroupByName
 
 class InferenceIntegrationTest : BasePlatformTestCase() {
     fun `test everything`() {
-        val Main = myFixture.configureByText(
+        val main = myFixture.configureByText(
             "Main.purs",
             """
                 | module Main where
@@ -21,11 +21,11 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
                 | 
             """.trimMargin()
         )
-        val f = Main.getValueDeclarationGroupByName("f").inferType()
+        val f = main.getValueDeclarationGroupByName("f").inferType()
         TestCase.assertEquals(InferType.function(InferType.Id(0), InferType.Id(0)).toString(), "$f")
-        val int = Main.getValueDeclarationGroupByName("int").inferType()
+        val int = main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals(InferType.function(InferType.Int, InferType.Int), int)
-        val x = Main.getValueDeclarationGroupByName("x").inferType()
+        val x = main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals(InferType.Int, x)
     }
 
