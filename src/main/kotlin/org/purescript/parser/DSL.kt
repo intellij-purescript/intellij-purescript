@@ -53,7 +53,7 @@ data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
         val result = start.parse(b)
         if (result) while (healedNext.parse(b)) {
             marker.done(type)
-            if (healedNext.tokenSet?.contains(b.tokenType) == false) return result
+            if (healedNext.tokenSet?.contains(b.tokenType) == false) return true
             marker = marker.precede()
         }
         marker.drop()
