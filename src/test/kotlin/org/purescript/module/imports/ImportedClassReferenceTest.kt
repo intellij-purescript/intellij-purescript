@@ -1,4 +1,4 @@
-package org.purescript.psi.imports
+package org.purescript.module.imports
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.purescript.getClassDeclaration
