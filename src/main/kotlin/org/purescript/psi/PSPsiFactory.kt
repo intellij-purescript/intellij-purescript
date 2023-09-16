@@ -65,7 +65,7 @@ inline fun <reified T : PsiElement> PsiElement.findDescendantOfType(
 }
 
 @Suppress("PSUnresolvedReference")
-@Service
+@Service(Service.Level.PROJECT)
 class PSPsiFactory(private val project: Project) {
 
     fun createModuleName(name: String): PSModuleName? =

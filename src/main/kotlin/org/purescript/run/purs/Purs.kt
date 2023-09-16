@@ -15,7 +15,7 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
 import org.purescript.run.Npm
 
-@Service
+@Service(Service.Level.PROJECT)
 class Purs(val project: Project) {
     private var started = false
     private fun startServer() {

@@ -12,7 +12,7 @@ import com.intellij.util.EnvironmentUtil
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-@Service
+@Service(Service.Level.PROJECT)
 class Npm(val project: Project) {
 
     val localBinPath: String? = project.basePath?.let {

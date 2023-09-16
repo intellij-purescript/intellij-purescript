@@ -4,7 +4,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFileFactory
 
-@Service
+@Service(Service.Level.PROJECT)
 class Prim(project: Project) {
     val file = PsiFileFactory.getInstance(project)
         .createFileFromText("Prim.purs", PSLanguage, """module Prim where

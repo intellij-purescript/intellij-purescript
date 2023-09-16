@@ -27,7 +27,7 @@ import kotlinx.serialization.json.Json
 import org.purescript.icons.PSIcons
 import org.purescript.run.Npm
 
-@Service
+@Service(Service.Level.PROJECT)
 class Spago(val project: Project) {
     var libraries = emptyList<SpagoLibrary>()
 
