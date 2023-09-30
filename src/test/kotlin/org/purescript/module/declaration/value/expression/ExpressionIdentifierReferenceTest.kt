@@ -65,6 +65,30 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
+    fun `test resolves selective deep imported value declarations`() {
+        val valueDeclaration = myFixture.configureByText(
+            "Y.purs", """
+                module Y (y) where
+                y = 1
+            """.trimIndent()
+        ).getValueDeclarationGroup()
+        myFixture.configureByText(
+            "Lib.purs", """
+                module Lib (module Exports) where
+                import Y (y) as Exports
+            """.trimIndent()
+        )
+        val expressionIdentifier = myFixture.configureByText(
+            "Main.purs", """
+                module Main where
+                import Lib
+                x = y
+            """.trimIndent()
+        ).getExpressionIdentifier()
+
+        assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
+    }
+
     fun `test does not resolve unexported value declarations`() {
         myFixture.configureByText(
             "Lib.purs", """
