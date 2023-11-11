@@ -86,9 +86,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         for (nameSpace in nameSpaces) {
             val imports = module.cache.importsByAlias[nameSpace] ?: continue
             for (import in imports) {
-                val items = import.importedItems
-                    .mapNotNull { it.reference?.resolve() }
-                    .filterIsInstance<PsiNamedElement>()
+                val items = import.importedValueNames + import.importedConstructors
                 result.addAllElements(
                     items.map { LookupElementBuilder
                         .create(it, "$nameSpace.${it.name}")
