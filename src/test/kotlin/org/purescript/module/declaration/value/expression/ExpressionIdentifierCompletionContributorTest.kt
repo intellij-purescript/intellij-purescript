@@ -46,16 +46,10 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        myFixture.complete(CompletionType.BASIC, 1)
-        myFixture.checkResult(
-            "Foo.purs",
-            """
-                |module Foo where
-                |
-                |import Bar as Bar
-                |
-                |y0 = Bar.<caret>
-            """.trimMargin(), true)
+        val allCompletions = myFixture.complete(CompletionType.BASIC, 1).flatMap{
+            it.allLookupStrings
+        }
+        assertContainsElements(allCompletions, "Bar.", "Bar.x1")
     }
     fun `test imports only once`() {
         myFixture.configureByText(
