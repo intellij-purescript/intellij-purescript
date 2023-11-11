@@ -33,6 +33,8 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
                 module Bar where
                 
                 x1 = 1
+                
+                data Constr = X2
             """.trimIndent()
         )
         myFixture.configureByText(
@@ -49,7 +51,7 @@ class ExpressionIdentifierCompletionContributorTest: BasePlatformTestCase() {
         val allCompletions = myFixture.complete(CompletionType.BASIC, 1).flatMap{
             it.allLookupStrings
         }
-        assertContainsElements(allCompletions, "Bar.", "Bar.x1")
+        assertContainsElements(allCompletions, "Bar.", "Bar.x1", "Bar.X2")
     }
     fun `test imports only once`() {
         myFixture.configureByText(
