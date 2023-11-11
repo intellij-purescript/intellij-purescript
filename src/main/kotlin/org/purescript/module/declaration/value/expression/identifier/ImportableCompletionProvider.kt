@@ -110,8 +110,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
                     result.addAllElements(
                             items.map {
                                 LookupElementBuilder
-                                        .create(it, "${it.name}")
-                                        .withIcon(it.getIcon(0))
+                                        .createWithIcon(it)
                                         .withTypeText((it as? org.purescript.module.declaration.Importable)?.type?.text)
                                         .withTailText("(${import.moduleNameName})")
                                         .let { PrioritizedLookupElement.withPriority(it, 1.0) }
