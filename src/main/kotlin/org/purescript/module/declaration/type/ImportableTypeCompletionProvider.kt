@@ -41,7 +41,15 @@ class ImportableTypeCompletionProvider : CompletionProvider<CompletionParameters
         }
 
         for (entry in PSLanguage.BUILTIN_MODULES_MAP) {
-            for (element in PSLanguage.getBuiltins(project, entry.key)) {
+            if (entry.key == "Prim") {
+                PSLanguage.getPrimModule(project)?.exportedTypes?.forEach { type ->
+                    result.addElement(
+                        LookupElementBuilder
+                            .createWithIcon(type)
+                            .withTailText("(Prim)")
+                    )
+                }
+            } else for (element in PSLanguage.getBuiltins(project, entry.key)) {
                 if (result.isStopped) return
                 if (!result.prefixMatcher.prefixMatches(element.name)) continue
                 val elementBuilder = lookupElementBuilderForPrim(element, entry, qualifierName, project)
@@ -51,19 +59,24 @@ class ImportableTypeCompletionProvider : CompletionProvider<CompletionParameters
         }
     }
 
-    private fun lookupElementBuilderForPrim(element: PrimTypePsiElement, entry: Map.Entry<String, List<String>>, qualifierName: String?, project: Project) =
-            LookupElementBuilder
-                    .create(element.name)
-                    .withTailText("(${entry.key})")
-                    .withInsertHandler { context, item ->
-                        val import = element.asImport().withAlias(qualifierName)
-                        val module = (context.file as PSFile).module
-                        executeCommand(project, "Import") {
-                            runWriteAction<Unit> {
-                                module?.addImportDeclaration(import)
-                            }
-                        }
+    private fun lookupElementBuilderForPrim(
+        element: PrimTypePsiElement,
+        entry: Map.Entry<String, List<String>>,
+        qualifierName: String?,
+        project: Project
+    ) =
+        LookupElementBuilder
+            .create(element.name)
+            .withTailText("(${entry.key})")
+            .withInsertHandler { context, item ->
+                val import = element.asImport().withAlias(qualifierName)
+                val module = (context.file as PSFile).module
+                executeCommand(project, "Import") {
+                    runWriteAction<Unit> {
+                        module?.addImportDeclaration(import)
                     }
+                }
+            }
 
     private fun lookupElementBuilder(
         it: Importable,

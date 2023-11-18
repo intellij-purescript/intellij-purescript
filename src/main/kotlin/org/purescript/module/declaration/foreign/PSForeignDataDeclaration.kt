@@ -1,6 +1,8 @@
 package org.purescript.module.declaration.foreign
 
+import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
@@ -60,6 +62,14 @@ class PSForeignDataDeclaration :
     override fun asImport() = module.asImport().withItems(ImportedData(name))
     override val type: PSType? get() = null
     internal val properName: PSProperName get() = findNotNullChildByClass(PSProperName::class.java)
+    override fun getIcon(flags: Int) = AllIcons.Nodes.Type
+    override fun getPresentation(): ItemPresentation {
+        return object : ItemPresentation {
+            override fun getPresentableText() = name
+            override fun getLocationString() = module.name
+            override fun getIcon(unused: Boolean) = getIcon(0)
+        }
+    }
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = properName
     override fun getName(): String = greenStub?.name ?: properName.name

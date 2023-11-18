@@ -349,6 +349,8 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 cache.foreignDataDeclarations,
             ) { it.importedForeignDataDeclarations }
         }
+    
+    val exportedTypes get() = exportedDataDeclarations + exportedForeignDataDeclarations
 
     /**
      * @return the [NewtypeDecl] elements that this module exports,

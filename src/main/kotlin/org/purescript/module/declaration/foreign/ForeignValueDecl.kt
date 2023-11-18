@@ -2,6 +2,7 @@ package org.purescript.module.declaration.foreign
 
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
@@ -10,7 +11,6 @@ import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.inference.Inferable
-
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
@@ -65,6 +65,13 @@ class ForeignValueDecl : PSStubbedElement<ForeignValueDecl.Stub>,
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
 
     override fun getIcon(flags: Int) = AllIcons.Ide.External_link_arrow
+    override fun getPresentation(): ItemPresentation {
+        return object : ItemPresentation {
+            override fun getPresentableText() = name
+            override fun getLocationString() = module.name
+            override fun getIcon(unused: Boolean) = getIcon(0)
+        }
+    }
     override fun setName(name: String) = null
     override fun getNameIdentifier() = findChildByClass(PSIdentifier::class.java)!!
     override fun asImport() = module.name.let { ImportDeclaration(it).withItems(ImportedValue(name)) }
