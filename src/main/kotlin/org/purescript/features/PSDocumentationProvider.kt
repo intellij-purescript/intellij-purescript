@@ -2,20 +2,22 @@ package org.purescript.features
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 import org.purescript.PSLanguage
+import org.purescript.Prim
 import org.purescript.inference.Inferable
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
+import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.PSPsiElement
 
@@ -55,11 +57,17 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         pursuitUrlsFromSpagoPath(element)
 
     private fun pursuitUrlsFromSpagoPath(element: PsiElement?): MutableList<String> {
+        val containingFile = element?.containingFile
+        val prim = element?.project?.service<Prim>()?.file
         val path = try {
-            element?.containingFile?.virtualFile?.toNioPath()
-                ?: return mutableListOf()
+            containingFile?.virtualFile?.toNioPath() ?: return mutableListOf()
         } catch (e: Exception) {
-            TODO("Not yet implemented")
+            if (containingFile == prim) {
+                return when (element) {
+                    is PSForeignDataDeclaration -> mutableListOf("https://pursuit.purescript.org/builtins/docs/Prim#t:${element.name}")
+                    else -> mutableListOf("https://pursuit.purescript.org/builtins/docs/Prim")
+                }
+            } else TODO("Not yet implemented")
         }
         val spagoPath = path
             .normalize()
