@@ -10,14 +10,16 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.descendantsOfType
 import org.intellij.lang.annotations.Language
 import org.purescript.PSLanguage
-import org.purescript.ide.formatting.*
-import org.purescript.module.declaration.imports.*
+import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.ide.formatting.ImportDeclarations
+import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.value.ValueDecl
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.PSParens
 import org.purescript.module.declaration.value.expression.controll.ifthenelse.IfThenElse
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.literals.PSStringLiteral
 import org.purescript.module.declaration.value.expression.literals.RecordLabel
 import org.purescript.module.declaration.value.expression.namespace.PSExpressionWhere
 import org.purescript.module.declaration.value.expression.namespace.PSLambda
@@ -104,7 +106,7 @@ class PSPsiFactory(private val project: Project) {
         val file = PsiFileFactory.getInstance(project)
             .createFileFromText(PSLanguage, code)
         return file.descendantsOfType<S>().firstOrNull() to
-            file.descendantsOfType<E>().lastOrNull()
+                file.descendantsOfType<E>().lastOrNull()
     }
 
     fun createIdentifier(name: String): PSIdentifier? {
@@ -159,6 +161,7 @@ class PSPsiFactory(private val project: Project) {
             """.trimMargin()
         )
     }
+
     fun createExpression(expression: String): Expression? {
         return createFromText(
             """
@@ -180,7 +183,7 @@ class PSPsiFactory(private val project: Project) {
         )
     }
 
-    fun createIfThenElse(test: String, then:String, otherwise: String): IfThenElse? {
+    fun createIfThenElse(test: String, then: String, otherwise: String): IfThenElse? {
         return createFromText(
             """
             |module Main where
@@ -217,4 +220,5 @@ class PSPsiFactory(private val project: Project) {
             """.trimMargin()
         )
     }
+
 }

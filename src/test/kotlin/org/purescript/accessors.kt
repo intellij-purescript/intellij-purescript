@@ -26,6 +26,7 @@ import org.purescript.module.declaration.value.binder.record.PunBinder
 import org.purescript.module.declaration.value.expression.identifier.PSAccessor
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionConstructor
 import org.purescript.module.declaration.value.expression.identifier.PSExpressionIdentifier
+import org.purescript.module.declaration.value.expression.literals.PSStringLiteral
 import org.purescript.module.exports.*
 
 
@@ -241,3 +242,6 @@ fun PsiFile.getLabeled(): Labeled =
 
 fun PsiFile.getAllAccessors(): List<PSAccessor> =
     collectDescendantsOfType()
+
+fun PsiFile.getStringLiteral(): PSStringLiteral =
+    collectDescendantsOfType<PSStringLiteral>{true}.first()

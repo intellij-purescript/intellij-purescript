@@ -30,6 +30,8 @@
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <lang.elementManipulator forClass="org.purescript.module.declaration.value.expression.literals.PSStringLiteral"
+                                 implementationClass="org.purescript.module.declaration.value.expression.literals.StringManipulator"/>
         <!-- Add your extensions here -->
         <internalFileTemplate name="Purescript Module"/>
         <additionalLibraryRootsProvider
