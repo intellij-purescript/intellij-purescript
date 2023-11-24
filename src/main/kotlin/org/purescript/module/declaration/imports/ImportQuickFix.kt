@@ -6,9 +6,9 @@ import com.intellij.ide.util.DefaultPsiElementCellRenderer
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.psi.util.PsiEditorUtilBase
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.psi.PSPsiElement
 import java.util.*
@@ -26,13 +26,14 @@ class ImportQuickFix(vararg val imports: ImportDeclaration) : LocalQuickFix {
         }
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val hostModule = (descriptor.psiElement as? PSPsiElement)?.module
+        val element = descriptor.psiElement
+        val hostModule = (element as? PSPsiElement)?.module
             ?: return
         val import = imports.singleOrNull()
         if (import != null) {
             hostModule.addImportDeclaration(import)
         } else {
-            val editor: Editor = PsiEditorUtilBase.findEditorByPsiElement(descriptor.psiElement) ?: return
+            val editor: Editor = FileEditorManager.getInstance(project).selectedTextEditor ?: return
             val sortedImports = imports.toSet().sortedBy { it.moduleName.length }
             val (first, then)  = sortedImports.partition { 
                 it.alias != null && it.alias in it.moduleName

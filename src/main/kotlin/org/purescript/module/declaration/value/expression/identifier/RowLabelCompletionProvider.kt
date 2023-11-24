@@ -3,15 +3,12 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.DeclarativeInsertHandler2.PopupOptions.MemberLookup
-import com.intellij.codeInsight.completion.SingleInsertionDeclarativeInsertHandler
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.inference.InferType
-
 import org.purescript.module.declaration.type.Labeled
 import org.purescript.module.declaration.type.LabeledIndex
 import org.purescript.module.declaration.value.expression.RecordAccess
@@ -34,13 +31,11 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
             if (result.isStopped) return
             if (!result.prefixMatcher.prefixMatches(label)) continue
             if (literalLabels?.contains(label to type) == true) continue
-            val labelInsertHandler = SingleInsertionDeclarativeInsertHandler(":", MemberLookup)
             result.addElement(
                 LookupElementBuilder
                     .create(label)
                     .withTypeText(type.toString())
                     .withTailText("(from type)")
-                    .withInsertHandler(labelInsertHandler)
             )
         }
         if (recordAccessRowType != null) for ((label, type) in recordAccessRowType.mergedLabels()) {
