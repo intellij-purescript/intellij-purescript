@@ -9,13 +9,14 @@ import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
 import org.purescript.module.declaration.fixity.FixityDeclaration
 import org.purescript.module.declaration.fixity.ValueFixityDeclaration
+import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.name.PSModuleName
 import org.purescript.name.PSOperatorName
 import org.purescript.psi.PSPsiElement
 import org.purescript.psi.PSPsiFactory
 
-class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleName?, val operator: PSOperatorName) :
+class ExpressionSymbolReference(symbol: PSPsiElement, val qualifier: PSModuleName?, val operator: PSOperatorName) :
     LocalQuickFixProvider, PsiReferenceBase<PSPsiElement>(symbol, operator.textRangeInParent, false) {
 
     override fun getVariants() = candidates.toList().toTypedArray()
@@ -26,30 +27,36 @@ class ExpressionSymbolReference(symbol: PSPsiElement, val moduleName: PSModuleNa
     }
 
     override fun isReferenceTo(element: PsiElement) = when (element) {
-        is ValueFixityDeclaration-> element.name == this.element.name
+        is ValueFixityDeclaration -> element.name == this.element.name
         is ConstructorFixityDeclaration -> element.name == this.element.name
         else -> false
     } && super.isReferenceTo(element)
 
-    val candidates
+    val localCandidates: Sequence<FixityDeclaration>
         get() = sequence {
             val module = element.module
             yieldAll(module.valueFixityDeclarations.asSequence())
             yieldAll(module.constructorFixityDeclarations.asSequence())
-            yieldAll(module.cache.imports.flatMap { it.importedValueFixityDeclarations })
-            yieldAll(module.cache.imports.flatMap { it.importedConstructorFixityDeclarations })
+        }
+    val candidates
+        get() = sequence {
+            yieldAll(localCandidates)
+            val module = element.module
+            val imports: List<Import> = module.cache.importsByAlias[qualifier?.name] ?: return@sequence
+            yieldAll(imports.flatMap { it.importedValueFixityDeclarations })
+            yieldAll(imports.flatMap { it.importedConstructorFixityDeclarations })
         }
 
     fun candidates(name: String): Sequence<FixityDeclaration> = sequence {
+        yieldAll(localCandidates)
         val module = element.module
-        yieldAll(module.valueFixityDeclarations.asSequence())
-        yieldAll(module.constructorFixityDeclarations.asSequence())
-        yieldAll(module.cache.imports.flatMap { it.importedFixityDeclarations(name) })
-        yieldAll(module.cache.imports.flatMap { it.importedConstructorFixityDeclarations(name) })
+        val imports: List<Import> = module.cache.importsByAlias[qualifier?.name] ?: return@sequence
+        yieldAll(imports.flatMap { it.importedFixityDeclarations(name) })
+        yieldAll(imports.flatMap { it.importedConstructorFixityDeclarations(name) })
     }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val qualifyingName = moduleName?.name
+        val qualifyingName = qualifier?.name
         val scope = GlobalSearchScope.allScope(element.project)
         val imports = ImportableIndex
             .get(element.name!!, element.project, scope)
