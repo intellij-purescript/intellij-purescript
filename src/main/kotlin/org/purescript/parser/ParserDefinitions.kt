@@ -207,7 +207,12 @@ val expr5 = Reference {
     Choice(
         RecordUpdateType(recordLayout1(propertyUpdate, "property update")),
         expr7,
-        Lambda(backslash + ParametersType(!+ParameterType(binderAtom)) + arrow.relax("missing lambda arrow") + expr),
+        Lambda(
+            backslash + 
+                    ParametersType(!+ParameterType(binderAtom)) + 
+                    arrow.relax("missing lambda arrow") + 
+                    expr.relax("missing expression in lambda")
+        ),
         exprCase,
         ifThenElse,
         doBlock,
