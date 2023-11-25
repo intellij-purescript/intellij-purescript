@@ -163,6 +163,19 @@ class PSInlineTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+    fun `test inline value to record`() {
+        doTest(
+            """
+                |module Main where
+                |x{-caret-} = 1
+                |y = {z: x}
+            """.trimMargin(),
+            """
+                |module Main where
+                |y = {z: 1}
+            """.trimMargin()
+        )
+    }
     
     fun `test inline with parameter`() {
         doTest(

@@ -55,7 +55,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             }
 
             is RecordLabel -> factory
-                .createRecordLabel("${this.name}: ${toReplaceWith.text}")
+                .createRecordLabel("${parent.name}: ${toReplaceWith.text}")
                 ?.let { parent.replace(it) }
                 ?: this.replace(toReplaceWith)
 
