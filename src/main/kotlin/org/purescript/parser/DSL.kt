@@ -15,6 +15,7 @@ interface DSL : Parser {
     fun sepBy1(delimiter: DSL) = this + !+(delimiter + this).heal
     val heal: DSL get() = Transaction(this)
     fun relax(message: String) = Relax(this, message)
+    fun error(message: String) = Error(this, message)
     fun relaxTo(to: DSL, message: String) = RelaxTo(this, to, message)
     val tokenSet: TokenSet?
 }
@@ -242,6 +243,19 @@ data class PsiDSL<Tag>(val child: DSL, val symbol: IElementType) : DSL {
 }
 
 
+data class Error(val dsl: DSL, val message: String) : DSL {
+    override val tokenSet: TokenSet? get() = null
+    override fun parse(b: PsiBuilder): Boolean {
+        val errorStart = b.mark()
+        return if (dsl.parse(b)) {
+            errorStart.error(message)
+            true
+        } else {
+            errorStart.rollbackTo()
+            false
+        }
+    }
+}
 data class Relax(val dsl: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? get() = null
     private val healedDsl = dsl.heal

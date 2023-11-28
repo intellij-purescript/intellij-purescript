@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parents
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
@@ -81,6 +82,29 @@ class PSSyntaxHighlightAnnotator : Annotator {
 
                             override fun startInWriteAction() = true
                         }).range(element.textRange).create()
+                }
+
+                "let statement outside of do" -> {
+                    holder.newAnnotation(ERROR, "missing do")
+                        .withFix(object : IntentionAction {
+                            override fun getText(): String = "Add do keyword"
+                            override fun getFamilyName(): String = "Fix Syntax"
+                            override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = true
+                            override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+                                val document = editor?.document ?: return
+                                val line = document.getLineNumber(element.startOffset)
+                                val letIndent = element.startOffset - document.getLineStartOffset(line)
+                                val parent = element.parents(false).first {
+                                    val parentLine = document.getLineNumber(it.parent.startOffset)
+                                    val parentIndent = it.parent.startOffset - document.getLineStartOffset(parentLine)
+                                    parentIndent < letIndent
+                                }
+                                document.insertString(parent.startOffset, "do\n${" ".repeat(letIndent)}")
+                            }
+
+                            override fun startInWriteAction() = true
+                        })
+                        .create()
                 }
             }
         }

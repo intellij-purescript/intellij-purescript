@@ -218,13 +218,12 @@ val expr5 = Reference {
         doBlock,
         ChoiceMap(
             qualified(`'ado'`),
-            `L{` + DoStatementsType.fold(
-                DoStatementsType(doStatement),
-                `L-sep` + doStatement
-            ) + `L}` + `'in'` + expr to AdoBlockType,
+            `L{` + DoStatementsType.fold(DoStatementsType(doStatement), `L-sep` + doStatement) +
+                    `L}` + `'in'` + expr to AdoBlockType,
             `L{` + `L}` + `'in'` + expr to EmptyAdoBlockType,
         ),
-        letIn
+        letIn,
+        EmptyDoBlockType(DoStatementsType(letStatement).error("let statement outside of do"))
     )
 }
 
@@ -426,8 +425,9 @@ val letBinding = Choice(
     (ident + !+binderAtom + guardedDecl)
 )
 val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
+val letStatement = DoNotationLetType(`'let'` + layout1(letBinding, "let binding").relax("missing binding"))
 val doStatement = Choice(
-    DoNotationLetType(`'let'` + layout1(letBinding, "let binding").relax("missing binding")),
+    letStatement,
     DoNotationBindType(binder + larrow + `expr?`),
     DoNotationValueType(expr)
 )
@@ -437,5 +437,5 @@ val doBlock = ChoiceMap(
     True to EmptyDoBlockType
 )
 val recordBinder =
-    RecordLabelBinderType((label + eq / colon).heal + RecordLabelExprBinderType(binder)) / PunBinderType(label)
+    RecordLabelBinderType((label + eq / colon).heal + RecordLabelExprBinderType(binder)) /  PunBinderType(label)
 
