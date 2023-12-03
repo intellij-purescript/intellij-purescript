@@ -64,7 +64,7 @@ Purescript File
         PsiElement(=)('=')
         AdoBlock(AdoBlock)
           PsiElement(ado)('ado')
-          DoStatements(DoNotationLet)
+          DoStatements(DoStatements)
             PSDoNotationBind(DoNotationBind)
               BinderOperatorExpression(BinderOperatorExpression)
                 VarBinder(VarBinder)

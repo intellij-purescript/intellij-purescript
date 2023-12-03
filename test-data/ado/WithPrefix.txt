@@ -15,7 +15,7 @@ Purescript File
           PSModuleName(ModuleName)
             PsiElement(module prefix)('VexceptT.')
           PsiElement(ado)('ado')
-          DoStatements(DoNotationLet)
+          DoStatements(DoStatements)
             PSDoNotationBind(DoNotationBind)
               BinderOperatorExpression(BinderOperatorExpression)
                 VarBinder(VarBinder)

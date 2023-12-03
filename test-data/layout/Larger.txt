@@ -23,7 +23,7 @@ Purescript File
           Argument(Argument)
             PSDoBlock(DoBlock)
               PsiElement(do)('do')
-              DoStatements(DoNotationLet)
+              DoStatements(DoStatements)
                 PSDoNotationValue(DoNotationValue)
                   Call(Call)
                     PSExpressionIdentifier(ExpressionIdentifier)

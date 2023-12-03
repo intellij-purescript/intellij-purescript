@@ -30,7 +30,7 @@ Purescript File
           PSModuleName(ModuleName)
             PsiElement(module prefix)('Prelude.')
           PsiElement(do)('do')
-          DoStatements(DoNotationLet)
+          DoStatements(DoStatements)
             PSDoNotationValue(DoNotationValue)
               Call(Call)
                 PSExpressionIdentifier(ExpressionIdentifier)
