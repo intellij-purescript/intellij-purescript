@@ -22,6 +22,53 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(valueDeclaration, expressionIdentifier.reference.resolve())
     }
 
+    fun `test resolves do binder`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                |module Main where
+                |one = do
+                |   x <- [1]
+                |   pure x
+            """.trimMargin()
+        )
+        val expressionIdentifier = file.getExpressionIdentifiers()[1]
+        val varBinder = file.getVarBinder()
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+    fun `test resolves to closest do binder`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                |module Main where
+                |one = do
+                |   x <- [1]
+                |   x <- [1]
+                |   pure x
+            """.trimMargin()
+        )
+        val expressionIdentifier = file.getExpressionIdentifiers()[1]
+        val varBinder = file.getVarBinders()[1]
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+    fun `test resolves to closest do binder with binders after`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                |module Main where
+                |one = do
+                |   x <- [1]
+                |   x <- [1]
+                |   x <- [x]
+                |   x <- [1]
+                |   pure [1]
+            """.trimMargin()
+        )
+        val expressionIdentifier = file.getExpressionIdentifiers()[0]
+        val varBinder = file.getVarBinders()[1]
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+
     fun `test resolves imported value declarations`() {
         val valueDeclaration = myFixture.configureByText(
             "Lib.purs", """
@@ -399,6 +446,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
+
     fun `test rename argument that is subject of case expression`() {
         doTestRename(
             """
@@ -416,7 +464,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
-    
+
     fun `test rename argument that is subject of case branch expression`() {
         doTestRename(
             """
@@ -434,7 +482,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
             """.trimMargin()
         )
     }
-    
+
     fun `test rename subject of case branch expression that is argument `() {
         doTestRename(
             """
@@ -453,7 +501,11 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         )
     }
 
-    private fun doTestRename(@Language("Purescript") before: String, newName: String, @Language("Purescript") after: String) {
+    private fun doTestRename(
+        @Language("Purescript") before: String,
+        newName: String,
+        @Language("Purescript") after: String
+    ) {
         myFixture.configureByText("Main.purs", before.replace("{-caret-}", "<caret>"))
         myFixture.renameElementAtCaret(newName)
         myFixture.checkResult("Main.purs", after, true)

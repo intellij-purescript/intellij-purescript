@@ -189,6 +189,7 @@ val EmptyDoBlockType = WithPsi("EmptyBlock") { EmptyDoBlock(it) }
 val AdoBlockType = WithPsi("AdoBlock") { AdoBlock(it) }
 val EmptyAdoBlockType = WithPsi("EmptyAdoBlock") { EmptyAdoBlock(it) }
 val DoNotationLetType = WithPsi("DoNotationLet") { PSDoNotationLet(it) }
+// This should not be DoNotationLet but DoStatements
 val DoStatementsType = WithPsi("DoNotationLet") { DoStatements(it) }
 val DoNotationBindType = WithPsi("DoNotationBind") { PSDoNotationBind(it) }
 val DoNotationValueType = WithPsi("DoNotationValue") { PSDoNotationValue(it) }

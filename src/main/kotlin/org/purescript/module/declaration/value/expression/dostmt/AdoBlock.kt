@@ -12,5 +12,5 @@ class AdoBlock(node: ASTNode) : PSPsiElement(node), ValueNamespace, Expression {
         statements.unify()
         unify(childrenOfType<Expression>().single().inferType())
     }
-    override val valueNames get() = statements.valueNames
+    override val valueNames get() = statements.declarations
 }
