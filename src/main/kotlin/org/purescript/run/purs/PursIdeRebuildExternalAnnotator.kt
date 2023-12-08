@@ -7,12 +7,14 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.application.runWriteActionAndWait
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import java.io.File
 import java.util.regex.Pattern
+
 
 class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
     override fun getPairedBatchInspectionShortName(): String = PursIdeRebuildInspection.SHORT_NAME
@@ -24,19 +26,17 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         // without a purs bin path we can't annotate with it
         val project = file.project
         val purs = project.service<Purs>()
-        val tempFile: File =
-                File.createTempFile("purescript-intellij", file.name)
-        tempFile.writeText(file.text, file.virtualFile.charset)
         val filePath = file.virtualFile.toNioPath()
+
+        // Make sure that the corresponding FFI file on disk is up-to-date
         val jsPath = filePath.parent.resolve((filePath.toFile().nameWithoutExtension + ".js"))
-        val jsFile = VirtualFileManager.getInstance().findFileByNioPath(jsPath)
-        val tempJsFile: File?
-        if (jsFile != null) {
-            tempJsFile = (tempFile.toPath().parent.resolve((tempFile.nameWithoutExtension + ".js"))).toFile()
-            tempJsFile?.writeBytes(jsFile.contentsToByteArray())
-        } else {
-            tempJsFile = null
+        VirtualFileManager.getInstance().findFileByNioPath(jsPath)?.let { jsFile ->
+            runWriteActionAndWait {
+                val fdm = FileDocumentManager.getInstance()
+                fdm.getDocument(jsFile)?.let { fdm.saveDocument(it) }
+            }
         }
+
         val gson = Gson()
         return purs.withServer {
             val output = ExecUtil.execAndGetOutput(
@@ -45,7 +45,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
                             mapOf(
                                     "command" to "rebuild",
                                     "params" to mapOf(
-                                            "file" to tempFile.path,
+                                            "file" to ("data:" + file.text),
                                             "actualFile" to file.virtualFile.path,
                                     )
                             )
@@ -60,9 +60,6 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
                 }
             } catch (e: JsonSyntaxException) {
                 null
-            } finally {
-                tempFile.delete()
-                tempJsFile?.delete()
             }
         }
     }
