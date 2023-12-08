@@ -30,25 +30,28 @@ class Purs(val project: Project) {
 
         // without a purs bin path we can't annotate with it
         runBackgroundableTask("purs ide server ($path)", project, true) {
-            CapturingProcessHandler(commandLine.withParameters("ide", "server"))
-                .runProcessWithProgressIndicator(it)
+            val output = CapturingProcessHandler(commandLine.withParameters("ide", "server"))
+                    .runProcessWithProgressIndicator(it)
             started = false
+            if (output.exitCode != 0) {
+                error("purs ide server died with exit code ${output.exitCode}, and stderr:\n${output.stderr}")
+            }
         }
     }
 
     private fun stopServer(path: String) =
-        runBackgroundableTask(
-            "Stopping purs ide server ($path)",
-            project,
-            false
-        ) {
-            ExecUtil.execAndGetOutput(
-                commandLine
-                    .withExePath(path)
-                    .withParameters("ide", "client"),
-                Gson().toJson(mapOf("command" to "quit"))
-            )
-        }
+            runBackgroundableTask(
+                    "Stopping purs ide server ($path)",
+                    project,
+                    false
+            ) {
+                ExecUtil.execAndGetOutput(
+                        commandLine
+                                .withExePath(path)
+                                .withParameters("ide", "client"),
+                        Gson().toJson(mapOf("command" to "quit"))
+                )
+            }
 
     fun <T> withServer(function: () -> T): T {
         startServer()
@@ -74,10 +77,10 @@ class Purs(val project: Project) {
             val npm = project.service<Npm>()
             val pathEnv = npm.populatedPath
             return GeneralCommandLine(path)
-                .withCharset(charset("UTF8"))
-                .withWorkDirectory(project.basePath)
-                .withEnvironment("PATH", pathEnv)
-                .withParentEnvironmentType(CONSOLE)
+                    .withCharset(charset("UTF8"))
+                    .withWorkDirectory(project.basePath)
+                    .withEnvironment("PATH", pathEnv)
+                    .withParentEnvironmentType(CONSOLE)
         }
 
 }
