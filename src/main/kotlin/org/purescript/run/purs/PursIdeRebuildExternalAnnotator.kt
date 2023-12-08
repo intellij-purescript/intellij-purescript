@@ -2,6 +2,7 @@ package org.purescript.run.purs
 
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import com.intellij.execution.util.ExecUtil
 import com.intellij.lang.annotation.AnnotationHolder
@@ -13,6 +14,13 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
+import io.ktor.http.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.purescript.run.spago.Spago
+import java.net.Socket
 import java.util.regex.Pattern
 
 
@@ -37,20 +45,18 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             }
         }
 
-        val gson = Gson()
-        return purs.withServer {
-            val output = ExecUtil.execAndGetOutput(
-                    purs.commandLine.withParameters("ide", "client"),
-                    gson.toJson(
-                            mapOf(
-                                    "command" to "rebuild",
-                                    "params" to mapOf(
-                                            "file" to ("data:" + file.text),
-                                            "actualFile" to file.virtualFile.path,
-                                    )
-                            )
-                    )
-            )
+        val gson = GsonBuilder().disableHtmlEscaping().create()
+
+        return purs.withServer { port ->
+            if (port == null) {
+                error("No PSC ide port")
+                return@withServer null
+            }
+            val payload = Json.encodeToString(PursCommand("rebuild", PursParams("data:"+file.text, file.virtualFile.path))) + "\n"
+            val socket = Socket("localhost", port)
+            socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
+            val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
+
             try {
                 val json = gson.fromJson(output, Response::class.java)
                 if (json?.resultType in listOf("success", "error")) {
@@ -63,6 +69,12 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             }
         }
     }
+
+
+    @Serializable
+    data class PursCommand(val command: String, val params: PursParams)
+    @Serializable
+    data class PursParams(val file:String, val actualFile:String)
 
     override fun apply(file: PsiFile, annotationResult: Response?, holder: AnnotationHolder) {
         if (annotationResult == null) return

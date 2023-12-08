@@ -14,15 +14,17 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
 import org.purescript.run.Npm
+import java.io.File
+import kotlin.random.Random
 
 @Service(Service.Level.PROJECT)
 class Purs(val project: Project) {
-    private var started = false
+    private var port:Int? = null;
     private fun startServer() {
-        // don't start the activity under test, it will hang if it doese
+        // don't start the activity under test, it will hang if it does
         if (PluginManagerCore.isUnitTestMode) return
-        if (started) return
-        started = true
+        if (port != null) return
+        port = Random.nextInt(15000, 16000)
 
         // without a project dir we don't know where to start the server
         val projectDir = project.guessProjectDir() ?: return
@@ -30,9 +32,9 @@ class Purs(val project: Project) {
 
         // without a purs bin path we can't annotate with it
         runBackgroundableTask("purs ide server ($path)", project, true) {
-            val output = CapturingProcessHandler(commandLine.withParameters("ide", "server"))
+            val output = CapturingProcessHandler(commandLine.withParameters("ide", "server", "-p", port.toString()))
                     .runProcessWithProgressIndicator(it)
-            started = false
+            port = null
             if (output.exitCode != 0) {
                 error("purs ide server died with exit code ${output.exitCode}, and stderr:\n${output.stderr}")
             }
@@ -53,9 +55,9 @@ class Purs(val project: Project) {
                 )
             }
 
-    fun <T> withServer(function: () -> T): T {
+    fun <T> withServer(function: (port: Int?) -> T): T {
         startServer()
-        return function()
+        return function(port)
     }
 
     var path: String = commandName
@@ -77,7 +79,7 @@ class Purs(val project: Project) {
             val npm = project.service<Npm>()
             val pathEnv = npm.populatedPath
             return GeneralCommandLine(path)
-                    .withCharset(charset("UTF8"))
+                    .withCharset(Charsets.UTF_8)
                     .withWorkDirectory(project.basePath)
                     .withEnvironment("PATH", pathEnv)
                     .withParentEnvironmentType(CONSOLE)
