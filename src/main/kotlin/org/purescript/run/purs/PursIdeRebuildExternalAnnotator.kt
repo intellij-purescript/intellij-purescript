@@ -51,7 +51,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
             val socket = Socket("localhost", port)
             socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
             val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
-
+            socket.close()
             try {
                 val json = gson.fromJson(output, Response::class.java)
                 if (json?.resultType in listOf("success", "error")) {
