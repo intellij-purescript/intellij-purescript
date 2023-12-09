@@ -58,7 +58,7 @@ class Spago(val project: Project) {
             val npm = project.service<Npm>()
             val pathEnv = npm.populatedPath
             return GeneralCommandLine(commandName)
-                .withCharset(charset("UTF8"))
+                .withCharset(Charsets.UTF_8)
                 .withWorkDirectory(project.basePath)
                 .withEnvironment("PATH", pathEnv)
                 .withParentEnvironmentType(CONSOLE)
