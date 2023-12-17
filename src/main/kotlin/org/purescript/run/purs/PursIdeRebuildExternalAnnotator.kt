@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.net.ConnectException
 import java.net.Socket
 import java.util.regex.Pattern
 
@@ -43,15 +44,23 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         val gson = GsonBuilder().disableHtmlEscaping().create()
 
         return purs.withServer { port ->
-            if (port == null) {
-                error("No PSC ide port")
-                return@withServer null
-            }
+            if (port == null) error("No PSC ide port")
             val payload = Json.encodeToString(PursCommand("rebuild", PursParams("data:"+file.text, file.virtualFile.path))) + "\n"
-            val socket = Socket("localhost", port)
-            socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
-            val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
-            socket.close()
+            val output = try {
+                val socket = Socket("localhost", port)
+                socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
+                val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
+                socket.close()
+                output
+            } catch (e: ConnectException) {
+                Thread.sleep(1000)
+                val socket = Socket("localhost", port)
+                socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
+                val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
+                socket.close()
+                output
+            }
+            
             try {
                 val json = gson.fromJson(output, Response::class.java)
                 if (json?.resultType in listOf("success", "error")) {
