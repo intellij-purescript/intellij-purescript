@@ -6,10 +6,10 @@ val publishChannels: String by project
 
 plugins {
     java
-    kotlin("jvm") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
-    id("org.jetbrains.intellij") version "1.15.0"
-    id("org.jetbrains.grammarkit") version "2021.2.2"
+    kotlin("jvm") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.21"
+    id("org.jetbrains.intellij") version "1.16.1"
+    id("org.jetbrains.grammarkit") version "2022.3.2"
 }
 
 repositories {
@@ -26,8 +26,13 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+// Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
-    jvmToolchain(javaVersion.toInt())
+    @Suppress("UnstableApiUsage")
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.JETBRAINS
+    }
 }
 
 // Plugin config
@@ -54,7 +59,7 @@ tasks {
         untilBuild.set("")
     }
     generateLexer.configure {
-        source.set("src/main/grammar/Purescript.flex")
+        sourceFile.set(file("src/main/grammar/Purescript.flex"))
         targetDir.set("src/main/gen/org/purescript/lexer/")
         targetClass.set("_PSLexer")
         purgeOldFiles.set(true)

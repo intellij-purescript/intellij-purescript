@@ -3,19 +3,10 @@ package org.purescript.lexer
 import com.intellij.lexer.Lexer
 import com.intellij.testFramework.LexerTestCase
 
-abstract class PSLexerTestBase(val folder: String): LexerTestCase() {
-    override fun createLexer(): Lexer {
-        return LayoutLexer(PSLexer())
-    }
-
+abstract class PSLexerTestBase(private val folder: String) : LexerTestCase() {
+    override fun createLexer(): Lexer = LayoutLexer(PSLexer())
     override fun getDirPath(): String = folder
-    fun getTestDataPath(): String = "test-data"
-
-    override fun getPathToTestDataFile(extension: String?): String {
-        return getTestDataPath() + "/" + dirPath + "/" + super.getTestName(false) + extension
-    }
-
-    override fun getExpectedFileExtension(): String {
-        return ".lex.txt"
-    }
+    override fun getExpectedFileExtension(): String = ".lex.txt"
+    override fun getPathToTestDataFile(extension: String): String =
+        "test-data" + "/" + dirPath + "/" + super.getTestName(false) + extension
 }

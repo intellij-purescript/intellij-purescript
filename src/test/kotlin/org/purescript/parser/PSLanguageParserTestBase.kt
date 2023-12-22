@@ -1,7 +1,6 @@
 package org.purescript.parser
 
 import com.intellij.mock.MockVirtualFile
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataFile
@@ -10,15 +9,9 @@ import java.io.File
 
 abstract class PSLanguageParserTestBase(dataPath: String) :
     ParsingTestCase(dataPath, "purs", PSParserDefinition()) {
-    override fun getTestDataPath(): String =
-        "test-data"
-
+    override fun getTestDataPath(): String = "test-data"
     override fun skipSpaces(): Boolean = true
-
-    override fun checkResult(
-        @NonNls @TestDataFile targetDataName: String,
-        file: PsiFile
-    ) {
+    override fun checkResult(@NonNls @TestDataFile targetDataName: String, file: PsiFile) {
         val fullTargetDataName = "" + File.separator + targetDataName
         doCheckResult(
             myFullDataPath,
@@ -32,7 +25,6 @@ abstract class PSLanguageParserTestBase(dataPath: String) :
 
     override fun setUp() {
         super.setUp()
-        val m: VirtualFile = MockVirtualFile(true, myFullDataPath)
-        myProject.baseDir = m
+        project.baseDir = MockVirtualFile(true, myFullDataPath)
     }
 }
