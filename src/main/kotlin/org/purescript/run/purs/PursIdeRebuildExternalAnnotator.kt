@@ -45,22 +45,23 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
 
         return purs.withServer { port ->
             if (port == null) error("No PSC ide port")
-            val payload = Json.encodeToString(PursCommand("rebuild", PursParams("data:"+file.text, file.virtualFile.path))) + "\n"
+            val payload = Json.encodeToString(
+                PursCommand(
+                    "rebuild",
+                    PursParams("data:" + file.text, file.virtualFile.path)
+                )
+            ) + "\n"
+            
             val output = try {
-                val socket = Socket("localhost", port)
-                socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
-                val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
-                socket.close()
-                output
+                Socket("localhost", port)
             } catch (e: ConnectException) {
                 Thread.sleep(1000)
-                val socket = Socket("localhost", port)
-                socket.outputStream.write(payload.toByteArray(Charsets.UTF_8))
-                val output = socket.inputStream.bufferedReader(Charsets.UTF_8).readLine()
-                socket.close()
-                output
+                Socket("localhost", port)
+            }.run {
+                outputStream.write(payload.toByteArray(Charsets.UTF_8))
+                inputStream.bufferedReader(Charsets.UTF_8).readLine().also { close() }
             }
-            
+
             try {
                 val json = gson.fromJson(output, Response::class.java)
                 if (json?.resultType in listOf("success", "error")) {
