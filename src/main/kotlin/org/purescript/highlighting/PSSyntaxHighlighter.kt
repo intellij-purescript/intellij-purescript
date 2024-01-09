@@ -14,6 +14,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     private val keys: MutableMap<IElementType, TextAttributesKey> = HashMap()
     val LINE_COMMENT = createKey("PS_LINE_COMMENT", Default.LINE_COMMENT)
     val BLOCK_COMMENT = createKey("PS_BLOCK_COMMENT", Default.BLOCK_COMMENT)
+    val DOCUMENTATION_COMMENT = createKey("PS_DOC_COMMENT", Default.DOC_COMMENT)
     val KEYWORD = createKey("PS_KEYWORD", Default.KEYWORD)
     val STRING = createKey("PS_STRING", Default.STRING)
     val STRING_GAP = createKey("PS_STRING_GAP", STRING)
@@ -53,6 +54,7 @@ object PSSyntaxHighlighter : SyntaxHighlighterBase() {
     init {
         fillMap(keys, LINE_COMMENT, SLCOMMENT)
         fillMap(keys, BLOCK_COMMENT, MLCOMMENT)
+        fillMap(keys, DOCUMENTATION_COMMENT, DOC_COMMENT)
         fillMap(keys, kKeywords, KEYWORD)
         fillMap(keys, NUMBER, NATURAL)
         fillMap(keys, kStrings, STRING)
