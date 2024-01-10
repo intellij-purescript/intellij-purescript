@@ -27,6 +27,9 @@ import org.purescript.highlighting.PSSyntaxHighlighter.STRING
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_ANNOTATION_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_NAME
 import org.purescript.highlighting.PSSyntaxHighlighter.TYPE_VARIABLE
+import org.purescript.highlighting.PSSyntaxHighlighter.LINE_COMMENT
+import org.purescript.highlighting.PSSyntaxHighlighter.BLOCK_COMMENT
+import org.purescript.highlighting.PSSyntaxHighlighter.DOCUMENTATION_COMMENT
 import org.purescript.icons.PSIcons
 import javax.swing.Icon
 
@@ -55,7 +58,10 @@ class PSColorSettingsPage : ColorSettingsPage {
             AttributesDescriptor("Identifiers//Type", TYPE_NAME),
             AttributesDescriptor("Identifiers//Type variable", TYPE_VARIABLE),
             AttributesDescriptor("Identifiers//Type annotation//name", TYPE_ANNOTATION_NAME),
-            AttributesDescriptor("Import reference", IMPORT_REF)
+            AttributesDescriptor("Import reference", IMPORT_REF),
+            AttributesDescriptor("Comments//Line comment", LINE_COMMENT),
+            AttributesDescriptor("Comments//Block comment", BLOCK_COMMENT),
+            AttributesDescriptor("Comments//Documentation comment", DOCUMENTATION_COMMENT)
         )
 
         init {
@@ -97,7 +103,7 @@ patternDoNewtype = do
 
 data <type_name>Y</type_name> = <type_name>Y Int String Boolean</type_name>
 
--- Guards have access to current scope
+-- | Guards have access to current scope
 collatz2 = \<type_variable>x</type_variable> <type_variable>y</type_variable> -> case x of
   z | y > 0.0 -> z / 2.0
   z -> z * 3.0 + 1.0
