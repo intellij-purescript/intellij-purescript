@@ -116,7 +116,7 @@ class UnusedInspection : LocalInspectionTool() {
         private fun safeDelete(project: Project, element: PsiElement) {
             ApplicationManager.getApplication().invokeLater(
                 { SafeDeleteHandler.invoke(project, arrayOf(element), false) },
-                ModalityState.NON_MODAL
+                ModalityState.nonModal()
             )
         }
     }
