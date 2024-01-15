@@ -5,17 +5,29 @@
     <vendor>intellij-purescript</vendor>
 
     <description><![CDATA[
-      This plugin provides Purescript language support
-      Features:<br>
-      <ul>
-        <li>Syntax highlight</li>
-        <li>Find usage</li>
-        <li>Autocomplete for things in scope</li>
-        <li>Warning missing reference (with some false positives, we are working on it)</li>
-        <li>Import missing reference</li>
-        <li>Ask running purs ide servers for annotations and suggestions</li>
-      </ul>
-    ]]></description>
+  This plugin provides language support
+  Features:<br>
+  <ul>
+    <li>Syntax highlighting</li>
+    <li>Find usage</li>
+    <li>Autocomplete for all items in the project scope and from not yet installed packages</li>
+    <li>Import missing reference</li>
+    <li>Ask running IDE servers for annotations and suggestions</li>
+    <li>Rudimentary inline type annotations</li>
+    <li>Code folding support</li>
+    <li>Tool tips and quick documentation for language elements</li>
+    <li>Spell-checking capabilities</li>
+    <li>Structure view of files for quick overview and navigation</li>
+    <li>Language Injection feature in strings, allowing embedded fragments of other languages to be parsed and highlighted correctly</li>
+    <li>Refactoring
+        <ul>
+            <li>Inline refactoring</li>
+            <li>Safe Delete</li>
+            <li>Move</li>
+        </ul>
+    </li>
+  </ul>
+]]></description>
 
     <change-notes><![CDATA[
       change notes is not updated on release, sorry
@@ -35,82 +47,82 @@
         <!-- Add your extensions here -->
         <internalFileTemplate name="Purescript Module"/>
         <additionalLibraryRootsProvider
-            implementation="org.purescript.run.spago.SpagoLibraryRootsProvider"
+                implementation="org.purescript.run.spago.SpagoLibraryRootsProvider"
         />
         <directoryIndexExcludePolicy
-            implementation="org.purescript.run.spago.SpagoDirectoryIndexExcludePolicy"
+                implementation="org.purescript.run.spago.SpagoDirectoryIndexExcludePolicy"
         />
         <lang.documentationProvider language="Purescript"
                                     implementationClass="org.purescript.features.PSDocumentationProvider"/>
-        <gotoSymbolContributor 
+        <gotoSymbolContributor
                 implementation="org.purescript.module.ModuleChooseByNameContributor"
         />
         <gotoSymbolContributor
                 implementation="org.purescript.module.declaration.value.ValueChooseByNameContributor"
         />
         <spellchecker.support
-            language="Purescript"
-            implementationClass="org.purescript.PSSpellcheckingStrategy"
+                language="Purescript"
+                implementationClass="org.purescript.PSSpellcheckingStrategy"
         />
         <lang.foldingBuilder language="Purescript"
                              implementationClass="org.purescript.ide.folding.PurescriptFoldingBuilder"/>
         <lang.psiStructureViewFactory
-            language="Purescript"
-            implementationClass="org.purescript.PSStructureViewBuilder"
+                language="Purescript"
+                implementationClass="org.purescript.PSStructureViewBuilder"
         />
         <extendWordSelectionHandler
                 implementation="org.purescript.module.declaration.value.expression.ExpressionExtendWordSelectionHandler"/>
         <lang.refactoringSupport
-            language="Purescript"
-            implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
+                language="Purescript"
+                implementationClass="org.purescript.ide.refactoring.PSRefactoringSupportProvider"/>
         <refactoring.safeDeleteProcessor
-            implementation="org.purescript.module.declaration.value.ValueDeclSafeDeleteProcessorDelegate"/>
+                implementation="org.purescript.module.declaration.value.ValueDeclSafeDeleteProcessorDelegate"/>
         <refactoring.moveHandler
-            implementation="org.purescript.module.declaration.value.ValueDeclMoveHandlerDelegate"/>
+                implementation="org.purescript.module.declaration.value.ValueDeclMoveHandlerDelegate"/>
         <inlineActionHandler
-            implementation="org.purescript.ide.refactoring.PSInline"/>
+                implementation="org.purescript.ide.refactoring.PSInline"/>
         <lang.namesValidator language="Purescript"
                              implementationClass="org.purescript.ide.refactoring.PSNamesValidator"/>
         <referenceImporter
-            implementation="org.purescript.features.PSReferenceImporter"
+                implementation="org.purescript.features.PSReferenceImporter"
         />
 
         <lang.findUsagesProvider
-            language="Purescript"
-            implementationClass="org.purescript.features.PSFindUsageProvider"
+                language="Purescript"
+                implementationClass="org.purescript.features.PSFindUsageProvider"
         />
         <importFilteringRule implementation="org.purescript.module.declaration.imports.PSImportFilteringRule"/>
-        <usageGroupingRuleProvider 
+        <usageGroupingRuleProvider
                 implementation="org.purescript.module.declaration.value.ValueUsageGroupingRuleProvider"
         />
         <completion.contributor
-            language="Purescript"
-            implementationClass="org.purescript.keyword.KeywordCompletionContributor"
-            id="KeywordCompletionContributor"
-            order="first"
+                language="Purescript"
+                implementationClass="org.purescript.keyword.KeywordCompletionContributor"
+                id="KeywordCompletionContributor"
+                order="first"
         />
         <completion.contributor
-            language="Purescript"
-            implementationClass="org.purescript.module.declaration.value.expression.identifier.ExpressionCompletionContributor"
-            id="ExpressionCompletionContributor"
+                language="Purescript"
+                implementationClass="org.purescript.module.declaration.value.expression.identifier.ExpressionCompletionContributor"
+                id="ExpressionCompletionContributor"
         />
         <completion.contributor
-            language="Purescript"
-            implementationClass="org.purescript.module.declaration.value.expression.identifier.RecordLabelCompletionContributor"
-            id="RecordLabelCompletionContributor"
+                language="Purescript"
+                implementationClass="org.purescript.module.declaration.value.expression.identifier.RecordLabelCompletionContributor"
+                id="RecordLabelCompletionContributor"
         />
         <completion.contributor
-            language="Purescript"
-            implementationClass="org.purescript.module.declaration.type.TypeCompletionContributor"
-            id="TypeCompletionContributor"
+                language="Purescript"
+                implementationClass="org.purescript.module.declaration.type.TypeCompletionContributor"
+                id="TypeCompletionContributor"
         />
 
         <fileType
-            name="Purescript file"
-            implementationClass="org.purescript.file.PSFileType"
-            fieldName="INSTANCE"
-            language="Purescript"
-            extensions="purs"
+                name="Purescript file"
+                implementationClass="org.purescript.file.PSFileType"
+                fieldName="INSTANCE"
+                language="Purescript"
+                extensions="purs"
         />
 
         <lang.parserDefinition language="Purescript"
@@ -121,142 +133,142 @@
                                        implementationClass="org.purescript.highlighting.PSSyntaxHighlighterFactory"/>
 
         <annotator
-            language="Purescript"
-            implementationClass="org.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
-        
+                language="Purescript"
+                implementationClass="org.purescript.highlighting.PSSyntaxHighlightAnnotator"/>
+
         <colorSettingsPage
-            implementation="org.purescript.highlighting.PSColorSettingsPage"/>
+                implementation="org.purescript.highlighting.PSColorSettingsPage"/>
 
         <lang.commenter
-            language="Purescript"
-            implementationClass="org.purescript.features.PSCommenter"/>
+                language="Purescript"
+                implementationClass="org.purescript.features.PSCommenter"/>
 
         <lang.braceMatcher
-            language="Purescript"
-            implementationClass="org.purescript.features.PSPairedBraceMatcher"/>
+                language="Purescript"
+                implementationClass="org.purescript.features.PSPairedBraceMatcher"/>
 
         <!-- Templates -->
         <liveTemplateContext
-            contextId="PURESCRIPT"
-            implementation="org.purescript.PurescriptLiveTemplateContext"/>
+                contextId="PURESCRIPT"
+                implementation="org.purescript.PurescriptLiveTemplateContext"/>
         <defaultLiveTemplates file="/liveTemplates/Purescript.xml"/>
 
         <!-- Rendering -->
         <moduleRendererFactory
-            implementation="org.purescript.ImportDeclarationModuleRendererFactory"
+                implementation="org.purescript.ImportDeclarationModuleRendererFactory"
         />
         <moduleRendererFactory
-            implementation="org.purescript.PsiElementModuleRendererFactory"
+                implementation="org.purescript.PsiElementModuleRendererFactory"
         />
         <!-- Inspections -->
 
         <localInspection
-            language="Purescript" groupName="Purescript"
-            displayName="Unresolved reference"
-            enabledByDefault="true" level="ERROR"
-            implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
+                language="Purescript" groupName="Purescript"
+                displayName="Unresolved reference"
+                enabledByDefault="true" level="ERROR"
+                implementationClass="org.purescript.ide.inspections.PSUnresolvedReferenceInspection"
         />
         <localInspection
-            language="Purescript" groupName="Purescript"
-            displayName="Module name and file path dont match"
-            enabledByDefault="true" level="WEAK WARNING"
-            implementationClass="org.purescript.ide.inspections.MismatchingModuleName"
+                language="Purescript" groupName="Purescript"
+                displayName="Module name and file path dont match"
+                enabledByDefault="true" level="WEAK WARNING"
+                implementationClass="org.purescript.ide.inspections.MismatchingModuleName"
         />
         <localInspection
-            language="Purescript" groupName="Purescript"
-            displayName="Unnecessary Parentheses"
-            enabledByDefault="true" level="WEAK WARNING"
-            implementationClass="org.purescript.ide.inspections.UnnecessaryParenthesis"
+                language="Purescript" groupName="Purescript"
+                displayName="Unnecessary Parentheses"
+                enabledByDefault="true" level="WEAK WARNING"
+                implementationClass="org.purescript.ide.inspections.UnnecessaryParenthesis"
         />
         <localInspection
-            language="Purescript" groupName="Purescript"
-            displayName="Unused declaration"
-            enabledByDefault="true"
-            implementationClass="org.purescript.ide.inspections.UnusedInspection"
+                language="Purescript" groupName="Purescript"
+                displayName="Unused declaration"
+                enabledByDefault="true"
+                implementationClass="org.purescript.ide.inspections.UnusedInspection"
         />
         <!-- purs ide -->
         <localInspection
-            language="Purescript"
-            groupName="Purescript"
-            displayName="Purs IDE rebuild"
-            shortName="Rebuild"
-            enabledByDefault="true"
-            level="ERROR"
-            implementationClass="org.purescript.run.purs.PursIdeRebuildInspection"
+                language="Purescript"
+                groupName="Purescript"
+                displayName="Purs IDE rebuild"
+                shortName="Rebuild"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="org.purescript.run.purs.PursIdeRebuildInspection"
         />
 
         <externalAnnotator
-            language="Purescript"
-            implementationClass="org.purescript.run.purs.PursIdeRebuildExternalAnnotator"
+                language="Purescript"
+                implementationClass="org.purescript.run.purs.PursIdeRebuildExternalAnnotator"
         />
         <projectConfigurable
-            parentId="build"
-            instance="org.purescript.run.purs.PursConfigurable"
-            id="org.purescript.run.purs.PursConfigurable"
-            displayName="Purs"
-            nonDefaultProject="true"/>
+                parentId="build"
+                instance="org.purescript.run.purs.PursConfigurable"
+                id="org.purescript.run.purs.PursConfigurable"
+                displayName="Purs"
+                nonDefaultProject="true"/>
         <runAnything.executionProvider
-            implementation="org.purescript.run.spago.SpagoRunAnythingProvider"
+                implementation="org.purescript.run.spago.SpagoRunAnythingProvider"
         />
         <runAnything.helpGroup
-            implementation="org.purescript.run.spago.SpagoRunAnythingHelpGroup"
+                implementation="org.purescript.run.spago.SpagoRunAnythingHelpGroup"
         />
 
         <!-- Formatting -->
 
         <formattingService
-            implementation="org.purescript.ide.formatting.PSExternalFormatter"/>
+                implementation="org.purescript.ide.formatting.PSExternalFormatter"/>
 
         <lang.importOptimizer
-            language="Purescript"
-            implementationClass="org.purescript.ide.formatting.PurescriptImportOptimizer"
+                language="Purescript"
+                implementationClass="org.purescript.ide.formatting.PurescriptImportOptimizer"
         />
         <!-- Run Configurations -->
         <configurationType
-            implementation="org.purescript.run.spago.SpagoConfigurationType"/>
+                implementation="org.purescript.run.spago.SpagoConfigurationType"/>
         <runConfigurationProducer
-            implementation="org.purescript.run.spago.SpagoRunConfigurationProducer"/>
+                implementation="org.purescript.run.spago.SpagoRunConfigurationProducer"/>
         <runLineMarkerContributor
-            language="Purescript"
-            implementationClass="org.purescript.run.spago.SpagoRunLineMarkerContributor"/>
+                language="Purescript"
+                implementationClass="org.purescript.run.spago.SpagoRunLineMarkerContributor"/>
         <!-- Indexes -->
         <fileBasedIndex
-            implementation="org.purescript.file.ExportedConstructorsIndex"/>
+                implementation="org.purescript.file.ExportedConstructorsIndex"/>
         <fileBasedIndex
-            implementation="org.purescript.file.ExportedTypesIndex"/>
+                implementation="org.purescript.file.ExportedTypesIndex"/>
         <fileBasedIndex
-            implementation="org.purescript.file.ImportedModuleIndex"/>
+                implementation="org.purescript.file.ImportedModuleIndex"/>
         <stubIndex implementation="org.purescript.module.ModuleNameIndex"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.value.ExportedValueDecl"/>
+                implementation="org.purescript.module.declaration.value.ExportedValueDecl"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.value.TopLevelValueDecl"/>
+                implementation="org.purescript.module.declaration.value.TopLevelValueDecl"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.ImportableIndex"/>
+                implementation="org.purescript.module.declaration.ImportableIndex"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.ImportableTypeIndex"/>
+                implementation="org.purescript.module.declaration.ImportableTypeIndex"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.foreign.ExportedForeignValueDeclIndex"/>
+                implementation="org.purescript.module.declaration.foreign.ExportedForeignValueDeclIndex"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.fixity.ExportedFixityNameIndex"/>
+                implementation="org.purescript.module.declaration.fixity.ExportedFixityNameIndex"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.imports.ReExportedImportIndex"/>
+                implementation="org.purescript.module.declaration.imports.ReExportedImportIndex"/>
         <stubIndex
-            implementation="org.purescript.module.declaration.type.LabeledIndex"/>
+                implementation="org.purescript.module.declaration.type.LabeledIndex"/>
         <codeInsight.template.postfixTemplateProvider
                 language="Purescript"
                 implementationClass="org.purescript.module.declaration.value.expression.ExpressionPostfixTemplateProvider"
         />
         <codeInsight.parameterInfo
-            language="Purescript"
-            implementationClass="org.purescript.module.declaration.value.expression.identifier.PurescriptParameterInfoHandler"
+                language="Purescript"
+                implementationClass="org.purescript.module.declaration.value.expression.identifier.PurescriptParameterInfoHandler"
         />
         <codeInsight.declarativeInlayProviderFactory
                 implementation="org.purescript.module.declaration.TypeInlayHintFactory"
-               />
+        />
         <codeInsight.typeInfo
-            language="Purescript"
-            implementationClass="org.purescript.inference.InferableTypeProvider"
+                language="Purescript"
+                implementationClass="org.purescript.inference.InferableTypeProvider"
         />
     </extensions>
 
