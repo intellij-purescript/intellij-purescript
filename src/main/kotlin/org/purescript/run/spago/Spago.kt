@@ -16,13 +16,20 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.roots.SyntheticLibrary
 import com.intellij.openapi.roots.impl.ProjectRootManagerImpl
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import org.purescript.icons.PSIcons
 import org.purescript.run.Npm
@@ -67,11 +74,33 @@ class Spago(val project: Project) {
     private fun updateLibraries() =
         runBackgroundableTask("Spago", project, true) {
             val commandLine = this.commandLine.withParameters("ls", "deps", "--transitive", "--json")
-            val lines = try {
-                ExecUtil.execAndGetOutput(commandLine, "").split("\n")
+            val jsonRaw = try {
+                ExecUtil.execAndGetOutput(commandLine, "")
             } catch (e: ExecutionException) {
                 return@runBackgroundableTask
             }
+            // spago next
+            runCatching {
+                Json.decodeFromString<Map<String, NextDep>>(jsonRaw)
+            }.onSuccess { depMap ->
+                val projectDir = project.guessProjectDir()
+                libraries = depMap.mapNotNull { (name, dep) ->
+                    val (path, version) = when (dep) {
+                        is NextDep.Registry -> {
+                            val version = dep.version
+                            ".spago/p/$name-$version/src" to "v$version"
+                        }
+                        is NextDep.Local -> "${dep.path}/src" to "local"
+                    }
+                    val root = projectDir?.findFileByRelativePath(path) ?: LocalFileSystem.getInstance().findFileByPath(path)
+                    val roots = listOfNotNull(root).toMutableList()
+                    SpagoLibrary(name, version, roots)
+                }
+                triggerRootsChanged()
+                return@runBackgroundableTask
+            }
+            // spago legacy
+            val lines = jsonRaw.split("\n")
             val libraries = mutableListOf<SpagoLibrary>()
             for (line in lines) {
                 if (line.isEmpty()) continue
@@ -100,6 +129,53 @@ class Spago(val project: Project) {
             rootManagerImpl.makeRootsChange({}, RootsChangeRescanningInfo.TOTAL_RESCAN)
         }
     }
+
+    @Serializable(NextDepDeserializer::class)
+    sealed interface NextDep {
+        data class Registry(val version: String): NextDep
+        data class Local(val path: String): NextDep
+    }
+
+    object NextDepDeserializer: KSerializer<NextDep> {
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("NextDep") {
+            element("type", String.serializer().descriptor)
+            element("value", NextValueSurrogate.serializer().descriptor)
+        }
+        override fun serialize(encoder: Encoder, value: NextDep) {
+            val surrogate = when(value) {
+                is NextDep.Registry -> NextDepSurrogate("registry", NextValueSurrogate(version = value.version))
+                is NextDep.Local -> NextDepSurrogate("local", NextValueSurrogate(path = value.path))
+            }
+            NextDepSurrogate.serializer().serialize(encoder, surrogate)
+        }
+
+        override fun deserialize(decoder: Decoder): NextDep {
+            val surrogate = NextDepSurrogate.serializer().deserialize(decoder)
+            return when (surrogate.type) {
+                "registry" -> {
+                    val version = checkNotNull(surrogate.value.version) {
+                        "Expected version but null. surrogate: $surrogate"
+                    }
+                    NextDep.Registry(version)
+                }
+                "local" -> {
+                    val path = checkNotNull(surrogate.value.path) {
+                        "Expected path but null. surrogate: $surrogate"
+                    }
+                    NextDep.Local(path)
+                }
+                else -> {
+                    throw SerializationException("Unexpected type: ${surrogate.type}")
+                }
+            }
+        }
+    }
+
+    @Serializable
+    data class NextDepSurrogate(val type: String, val value: NextValueSurrogate)
+
+    @Serializable
+    data class NextValueSurrogate(val version: String? = null, val path: String? = null)
 
     @Serializable
     data class Dep(val packageName: String, val version: String, val repo: Repo)
