@@ -90,9 +90,11 @@ class Spago(val project: Project) {
                             val version = dep.version
                             ".spago/p/$name-$version/src" to "v$version"
                         }
+
                         is NextDep.Local -> "${dep.path}/src" to "local"
                     }
-                    val root = projectDir?.findFileByRelativePath(path) ?: LocalFileSystem.getInstance().findFileByPath(path)
+                    val root =
+                        projectDir?.findFileByRelativePath(path) ?: LocalFileSystem.getInstance().findFileByPath(path)
                     val roots = listOfNotNull(root).toMutableList()
                     SpagoLibrary(name, version, roots)
                 }
@@ -130,19 +132,20 @@ class Spago(val project: Project) {
         }
     }
 
-    @Serializable(NextDepDeserializer::class)
+    @Serializable(NextDepSerializer::class)
     sealed interface NextDep {
-        data class Registry(val version: String): NextDep
-        data class Local(val path: String): NextDep
+        data class Registry(val version: String) : NextDep
+        data class Local(val path: String) : NextDep
     }
 
-    object NextDepDeserializer: KSerializer<NextDep> {
+    object NextDepSerializer : KSerializer<NextDep> {
         override val descriptor: SerialDescriptor = buildClassSerialDescriptor("NextDep") {
             element("type", String.serializer().descriptor)
             element("value", NextValueSurrogate.serializer().descriptor)
         }
+
         override fun serialize(encoder: Encoder, value: NextDep) {
-            val surrogate = when(value) {
+            val surrogate = when (value) {
                 is NextDep.Registry -> NextDepSurrogate("registry", NextValueSurrogate(version = value.version))
                 is NextDep.Local -> NextDepSurrogate("local", NextValueSurrogate(path = value.path))
             }
@@ -158,27 +161,30 @@ class Spago(val project: Project) {
                     }
                     NextDep.Registry(version)
                 }
+
                 "local" -> {
                     val path = checkNotNull(surrogate.value.path) {
                         "Expected path but null. surrogate: $surrogate"
                     }
                     NextDep.Local(path)
                 }
+
                 else -> {
                     throw SerializationException("Unexpected type: ${surrogate.type}")
                 }
             }
         }
+
+        @Serializable
+        private data class NextDepSurrogate(val type: String, val value: NextValueSurrogate)
+
+        @Serializable
+        private data class NextValueSurrogate(val version: String? = null, val path: String? = null)
     }
 
     @Serializable
-    data class NextDepSurrogate(val type: String, val value: NextValueSurrogate)
-
-    @Serializable
-    data class NextValueSurrogate(val version: String? = null, val path: String? = null)
-
-    @Serializable
     data class Dep(val packageName: String, val version: String, val repo: Repo)
+
     @Serializable
     data class Repo(val contents: String, val tag: String)
     data class SpagoLibrary(val packageName: String, val version: String, val sourceRoots: MutableList<VirtualFile>) :
