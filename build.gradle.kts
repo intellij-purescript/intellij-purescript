@@ -55,7 +55,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("231")
+        sinceBuild.set("241")
         untilBuild.set("")
     }
     generateLexer.configure {
