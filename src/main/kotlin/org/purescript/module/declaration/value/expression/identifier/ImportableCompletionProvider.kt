@@ -173,7 +173,7 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         val file = it.containingFile.virtualFile
         val libraries = project.service<Spago>().libraries
         return libraries.find {
-            it.sourceRoots.any { it.toNioPath().isAncestor(file.toNioPath()) }
+            it.sourceRoots.any { it.path.startsWith(file.path) }
         }?.packageName?.let { lookupElement.appendTailText("($it)", true) }
                 ?: lookupElement
     }

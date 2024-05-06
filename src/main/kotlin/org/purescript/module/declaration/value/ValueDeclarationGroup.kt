@@ -11,7 +11,6 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentsOfType
-import com.intellij.util.alsoIfNull
 import org.purescript.features.DocCommentOwner
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedValue
@@ -85,8 +84,12 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
         when (val parent = parent) {
             is Let ->
                 if (parent.childrenOfType<ValueDeclarationGroup>().size == 1) {
-                    parent.value?.let { parent.parent.parent.replace(it) }
-                        .alsoIfNull { delete() }
+                    val value = parent.value
+                    when (value) {
+                        null -> delete()
+                        else -> parent.parent.parent.replace(value)
+                    }
+
                 } else {
                     delete()
                 }
@@ -151,7 +154,7 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             else if (isExported) LocalSearchScope(module)
             else LocalSearchScope((parentsOfType<ValueDecl>().lastOrNull() ?: module)))
 
-    
+
     override fun unify() {
         signature?.inferType()?.let(::unify)
         valueDeclarations.forEach { it.inferType().let(::unify) }
