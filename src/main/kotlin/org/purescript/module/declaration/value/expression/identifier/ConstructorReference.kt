@@ -5,7 +5,7 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.parentOfType
-import org.purescript.file.ExportedConstructorsIndex
+import org.purescript.file.filesExportingConstructor
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedData
 import org.purescript.module.declaration.data.DataDeclaration
@@ -66,8 +66,7 @@ class ConstructorReference(
 
     private val importCandidates: Set<Pair<String, String>>
         get() {
-            val modules = ExportedConstructorsIndex
-                .filesExportingConstructor(element.project, qualifiedProperName.name)
+            val modules = filesExportingConstructor(element.project, qualifiedProperName.name)
                 .mapNotNull { it.module }
 
             val importCandidates = mutableSetOf<Pair<String, String>>()
