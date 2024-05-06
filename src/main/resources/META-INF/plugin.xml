@@ -237,8 +237,6 @@
                 implementation="org.purescript.file.ExportedConstructorsIndex"/>
         <fileBasedIndex
                 implementation="org.purescript.file.ExportedTypesIndex"/>
-        <fileBasedIndex
-                implementation="org.purescript.file.ImportedModuleIndex"/>
         <stubIndex implementation="org.purescript.module.ModuleNameIndex"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.value.ExportedValueDecl"/>
