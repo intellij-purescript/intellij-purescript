@@ -1,5 +1,6 @@
 package org.purescript.module
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndex
@@ -20,6 +21,12 @@ class ModuleNameIndex: StringStubIndexExtension<Module>() {
         )
         return allKeys
     }
+
+    fun getModules(
+        name: String,
+        project: Project,
+        scope: GlobalSearchScope
+    ): MutableCollection<Module> = StubIndex.getElements(KEY, name, project, scope, Module::class.java)
 
     companion object {
         val KEY = createIndexKey<String, Module>("purescript.module.name")

@@ -28,12 +28,12 @@ class ModuleChooseByNameContributor: ChooseByNameContributorEx {
     ) {
         val project = parameters.project
         val scope = parameters.searchScope
-        val index = ModuleNameIndex()
-        val modules = index.get(name, project, scope)
+        val modules = ModuleNameIndex().getModules(name, project, scope)
         for (module in modules) {
             if (!processor.process(module)) {
                 return
             }
         }
     }
+
 }

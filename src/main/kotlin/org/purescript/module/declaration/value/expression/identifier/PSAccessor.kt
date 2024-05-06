@@ -24,9 +24,8 @@ class PSAccessor(node: ASTNode) : PSPsiElement(node), Similar {
     ) {
         override fun resolve(): PsiElement? {
             val scope = GlobalSearchScope.allScope(accessor.project)
-            val index = LabeledIndex
             val name = accessor.name
-            val candidates = index.get(name, accessor.project, scope)
+            val candidates = LabeledIndex.getLabeled(name, accessor.project, scope)
             return candidates.singleOrNull()
         }
 
@@ -43,5 +42,7 @@ class PSAccessor(node: ASTNode) : PSPsiElement(node), Similar {
             if (element.name != accessor.name) return false
             return accessor.manager.areElementsEquivalent(resolve(), element)
         }
+
     }
 }
+
