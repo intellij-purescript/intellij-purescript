@@ -4,6 +4,7 @@ import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
 import org.purescript.*
+import org.purescript.module.declaration.value.expression.namespace.Let
 
 class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
     // region value declarations
@@ -312,7 +313,7 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         assertEquals(varBinder, expressionIdentifier.reference.resolve())
     }
 
-    fun `test resolves record var binders`() {
+    fun `test resolves record pun binders`() {
         val file = myFixture.configureByText(
             "Main.purs", """
                 module Main where
@@ -323,6 +324,62 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
         val expressionIdentifier = file.getExpressionIdentifier()
 
         assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+
+    fun `test resolves record var binder inside record label expression binder`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                module Main where
+                x {z: y} = y
+            """.trimIndent()
+        )
+        val varBinder = file.getVarBinder()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+
+    fun `test resolves record var binder inside record label expression binder in lambda`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                module Main where
+                x = \{z: y} -> y
+            """.trimIndent()
+        )
+        val varBinder = file.getVarBinder()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+
+    fun `test resolves record var binder in let-in inside record label expression binder in lambda`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                module Main where
+                x = 
+                  let y = 1
+                  in \{z: y} -> y
+            """.trimIndent()
+        )
+        val varBinder = file.getVarBinder()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+    }
+
+    fun `test not resolve to record lable, that is not a pun`() {
+        val file = myFixture.configureByText(
+            "Main.purs", """
+                module Main where
+                x = 
+                  let z = 1
+                  in \{z: y} -> z
+            """.trimIndent()
+        )
+        val z = (file.getValueDeclaration().value as Let).valueDeclarationGroups.first()
+        val expressionIdentifier = file.getExpressionIdentifier()
+
+        assertEquals(z, expressionIdentifier.reference.resolve())
     }
 
     fun `test resolves var binders used in record expressions`() {
