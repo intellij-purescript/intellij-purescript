@@ -11,7 +11,7 @@ import org.purescript.module.exports.ExportedTypeOperator
 
 class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
 
-    override fun getName(): ID<String, Void?> = NAME
+    override fun getName(): ID<String, Void?> = exportedConstructorsIndexName
 
     override fun getIndexer(): DataIndexer<String, Void?, FileContent> =
         DataIndexer<String, Void?, FileContent> {
@@ -71,23 +71,20 @@ class ExportedConstructorsIndex : ScalarIndexExtension<String>() {
 
     override fun dependsOnFileContent() = true
 
-    companion object {
-        val NAME =
-            ID.create<String, Void?>("org.purescript.file.ExportedConstructorsIndex")
-
-        fun filesExportingConstructor(
-            project: Project,
-            constructor: String
-        ): List<PSFile> =
-            ReadAction.compute<List<PSFile>, Throwable> {
-                val allScope = GlobalSearchScope.allScope(project)
-                val files = FileBasedIndex
-                    .getInstance()
-                    .getContainingFiles(NAME, constructor, allScope)
-                files
-                    .map { PsiManager.getInstance(project).findFile(it) }
-                    .filterIsInstance(PSFile::class.java)
-            }
-    }
-
 }
+
+val exportedConstructorsIndexName =
+    ID.create<String, Void?>("org.purescript.file.ExportedConstructorsIndex")
+
+fun filesExportingConstructor(
+    project: Project,
+    constructor: String
+): List<PSFile> =
+    ReadAction.compute<List<PSFile>, Throwable> {
+        val allScope = GlobalSearchScope.allScope(project)
+        val files = FileBasedIndex.getInstance()
+            .getContainingFiles(exportedConstructorsIndexName, constructor, allScope)
+        files
+            .map { PsiManager.getInstance(project).findFile(it) }
+            .filterIsInstance(PSFile::class.java)
+    }
