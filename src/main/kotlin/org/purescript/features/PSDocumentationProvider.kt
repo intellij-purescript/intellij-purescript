@@ -3,7 +3,7 @@ package org.purescript.features
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.documentation.DocumentationMarkup.*
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil
+import com.intellij.openapi.editor.richcopy.HtmlSyntaxInfoUtil.appendHighlightedByLexerAndEncodedAsHtmlCodeSnippet
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
@@ -26,12 +26,13 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?) = when {
         element is Importable && element is DocCommentOwner ->
             layout(
-                HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                appendHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                    StringBuilder(),
                     element.project,
                     PSLanguage,
                     getType(element),
                     1f
-                ),
+                ).toString(),
                 docCommentsToDocstring(element.docComments.map { it.text })
             )
 
@@ -124,12 +125,14 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                     CodeBlock(project, out, "")
                 } else {
                     val formatted = line.replace(Regex("`([^`]*)`")) {
-                        HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                        appendHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                            StringBuilder(),
                             project,
                             PSLanguage,
                             it.value,
                             1f
                         )
+                            .toString()
                     }.let { "<code>$it</code>" }
                     Normal(project, "$out\n$formatted")
                 }
@@ -140,12 +143,14 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
             override fun text(): String = out
             override fun process(line: String): MState {
                 return if (line.startsWith("```")) {
-                    val formatted = HtmlSyntaxInfoUtil.getHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                    val formatted = appendHighlightedByLexerAndEncodedAsHtmlCodeSnippet(
+                        StringBuilder(),
                         project,
                         PSLanguage,
                         code,
                         1f
-                    ).let { "<code>$it</code>" }
+                    )
+                        .toString().let { "<code>$it</code>" }
                     Normal(project, "$out\n$formatted")
                 } else {
                     CodeBlock(project, out, "$code\n$line")
