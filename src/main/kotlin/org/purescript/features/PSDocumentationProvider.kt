@@ -32,13 +32,13 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
                     getType(element),
                     1f
                 ),
-                docCommentsToDocstring(element.docComments.map { it.text }, element.project)
+                docCommentsToDocstring(element.docComments.map { it.text })
             )
 
         element is DocCommentOwner && element is PsiNamedElement ->
             layout(
                 element.name ?: "unknown",
-                docCommentsToDocstring(element.docComments.map { it.text }, element.project)
+                docCommentsToDocstring(element.docComments.map { it.text })
             )
 
         else -> null
@@ -104,7 +104,7 @@ class PSDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
 
-    fun docCommentsToDocstring(commentText: List<String>, project: Project): String {
+    fun docCommentsToDocstring(commentText: List<String>): String {
         val lines = commentText
             .joinToString("\n") { it.trim().removePrefix("-- |") }
             .trimIndent()
