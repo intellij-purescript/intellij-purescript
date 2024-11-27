@@ -35,8 +35,9 @@ class SpagoRunConfiguration(
         environment: ExecutionEnvironment
     ) = object : CommandLineState(environment) {
         override fun startProcess(): ProcessHandler {
+            val spago = project.service<Spago>()
             val parameters = mutableListOf<String>()
-            if (options.config != null) {
+            if (options.config != null && spago.legacy) {
                 parameters.add("-x")
                 parameters.add(options.config!!)
             }
@@ -44,11 +45,13 @@ class SpagoRunConfiguration(
             if (options.command in listOf("run", "test")) {
                 parameters += "--main"
                 parameters += options.moduleName ?: "Main"
-                parameters += "--source-maps"
-                parameters += "--purs-args"
-                parameters += "-g sourcemaps"
+                if (spago.legacy) {
+                    parameters += "--source-maps"
+                    parameters += "--purs-args"
+                    parameters += "-g sourcemaps"
+                }
             }
-            val commandLine = project.service<Spago>().commandLine
+            val commandLine = spago.commandLine
                 .withParameters(parameters)
                 .withEnvironment("NODE_OPTIONS", options.nodeOptions ?: "--enable-source-maps")
             return ColoredProcessHandler(commandLine)

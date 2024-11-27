@@ -37,7 +37,7 @@ import org.purescript.run.Npm
 @Service(Service.Level.PROJECT)
 class Spago(val project: Project) {
     var libraries = emptyList<SpagoLibrary>()
-
+    var legacy = false
     init {
         updateLibraries()
         project.messageBus.connect().subscribe(
@@ -83,6 +83,7 @@ class Spago(val project: Project) {
             runCatching {
                 Json.decodeFromString<Map<String, NextDep>>(jsonRaw)
             }.onSuccess { depMap ->
+                this.legacy = false
                 val projectDir = project.guessProjectDir()
                 libraries = depMap.mapNotNull { (name, dep) ->
                     val (path, version) = when (dep) {
@@ -102,6 +103,7 @@ class Spago(val project: Project) {
                 return@runBackgroundableTask
             }
             // spago legacy
+            this.legacy = true
             val lines = jsonRaw.split("\n")
             val libraries = mutableListOf<SpagoLibrary>()
             for (line in lines) {
