@@ -8,7 +8,7 @@ plugins {
     java
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.serialization") version "1.9.25"
-    id("org.jetbrains.intellij") version "1.17.3"
+    id("org.jetbrains.intellij") version "1.17.4"
     id("org.jetbrains.grammarkit") version "2022.3.2"
 }
 
