@@ -13,8 +13,8 @@ import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.RootsChangeRescanningInfo
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.SyntheticLibrary
-import com.intellij.openapi.roots.impl.ProjectRootManagerImpl
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -128,8 +128,8 @@ class Spago(val project: Project) {
 
     private fun triggerRootsChanged() = invokeLater {
         runWriteAction {
-            val rootManagerImpl = ProjectRootManagerImpl.getInstanceImpl(project)
-            rootManagerImpl.makeRootsChange({}, RootsChangeRescanningInfo.TOTAL_RESCAN)
+            val rootManager = ProjectRootManager.getInstance(project)
+            rootManager.incModificationCount()
         }
     }
 
