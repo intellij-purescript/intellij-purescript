@@ -12,5 +12,5 @@ import org.purescript.psi.PSPsiElement
  * - Eq
  */
 class PSProperName(node: ASTNode) : PSPsiElement(node) {
-    override fun getName(): String = getProjectPsiDependentCache(this) { text.trim() }
+    override fun getName(): String = text.trim()
 }

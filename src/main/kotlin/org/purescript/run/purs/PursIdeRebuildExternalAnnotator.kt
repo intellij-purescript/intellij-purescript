@@ -6,7 +6,8 @@ import com.google.gson.JsonSyntaxException
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.application.runWriteActionAndWait
+import com.intellij.openapi.application.invokeAndWaitIfNeeded
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
@@ -35,7 +36,7 @@ class PursIdeRebuildExternalAnnotator : ExternalAnnotator<PsiFile, Response>() {
         // Make sure that the corresponding FFI file on disk is up-to-date
         val jsPath = filePath.parent.resolve((filePath.toFile().nameWithoutExtension + ".js"))
         VirtualFileManager.getInstance().findFileByNioPath(jsPath)?.let { jsFile ->
-            runWriteActionAndWait {
+            invokeAndWaitIfNeeded {
                 val fdm = FileDocumentManager.getInstance()
                 fdm.getDocument(jsFile)?.let { fdm.saveDocument(it) }
             }

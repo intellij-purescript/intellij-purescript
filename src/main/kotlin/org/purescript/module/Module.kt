@@ -102,25 +102,24 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val imports: Array<Import> get() = cache.imports
 
     override val valueNames: Sequence<PsiNamedElement>
-        get() = getProjectPsiDependentCache(this) {
+        get() = run {
             (valueGroups.asSequence() +
                     foreignValues.asSequence() +
                     classMembers.asSequence() +
                     imports.flatMap { it.importedValueNames }).toList()
         }.asSequence()
     override val constructors: List<PsiNamedElement>
-        get() = getProjectPsiDependentCache(this) {
-            cache.newTypeConstructors + cache.dataConstructors
-        }
+        get() = cache.newTypeConstructors + cache.dataConstructors
+
     val exportedConstructors: Sequence<PsiNamedElement>
-        get() = getProjectPsiDependentCache(this) {
-            if (exports == null) constructors
-            else exportedItems.flatMap { it.constructors }.toList()
-        }.asSequence()
-    val valueGroups get() = getProjectPsiDependentCache(this) { children<ValueDeclarationGroup>() }
-    val foreignValues get() = getProjectPsiDependentCache(this) { children<ForeignValueDecl>() }
-    val classes get() = getProjectPsiDependentCache(this) { children<ClassDecl>() }
-    val classMembers get() = getProjectPsiDependentCache(this) { classes.flatMap { it.classMembers.toList() } }
+        get() = when (exports) {
+            null -> constructors.asSequence()
+            else -> exportedItems.flatMap { it.constructors }
+        }
+    val valueGroups get() = run { children<ValueDeclarationGroup>() }
+    val foreignValues get() = run { children<ForeignValueDecl>() }
+    val classes get() = run { children<ClassDecl>() }
+    val classMembers get() = run { classes.flatMap { it.classMembers.toList() } }
     override fun unify() {}
 
     // TODO clean up this name
@@ -344,7 +343,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedForeignDataDeclarations: List<PSForeignDataDeclaration>
-        get() = getProjectPsiDependentCache(this) {
+        get() = run {
             getExportedDeclarations<PSForeignDataDeclaration, ExportedData.Psi>(
                 cache.foreignDataDeclarations,
             ) { it.importedForeignDataDeclarations }
@@ -357,7 +356,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedNewTypeDeclarations: List<NewtypeDecl>
-        get() = getProjectPsiDependentCache(this) {
+        get() = run {
             getExportedDeclarations<NewtypeDecl, ExportedData.Psi>(
                 cache.newTypeDeclarations,
             ) { it.importedNewTypeDeclarations }
@@ -368,7 +367,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedDataDeclarations: List<PsiNamedElement>
-        get() = getProjectPsiDependentCache(this) {
+        get() = run {
             getExportedDeclarations<PsiNamedElement, ExportedData.Psi>(
                 cache.dataDeclarations.toList().toTypedArray()
             ) { it.importedDataDeclarations }
@@ -379,7 +378,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedTypeSynonymDeclarations: List<TypeDecl>
-        get() = getProjectPsiDependentCache(this) {
+        get() = run {
             getExportedDeclarations<TypeDecl, ExportedData.Psi>(
                 cache.typeSynonymDeclarations,
             ) { it.importedTypeSynonymDeclarations }
@@ -390,7 +389,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
      * both directly and through re-exported modules
      */
     val exportedClassDeclarations: List<ClassDecl>
-        get() = getProjectPsiDependentCache(this) {
+        get() = run {
             getExportedDeclarations<ClassDecl, ExportedClass.Psi>(
                 classes,
             ) { it.importedClassDeclarations }

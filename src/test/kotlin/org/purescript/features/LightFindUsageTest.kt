@@ -1,12 +1,22 @@
 package org.purescript.features
 
+import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.purescript.file.PSFileType
 import org.purescript.getValueDeclarationGroupByName
 
 class LightFindUsageTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    fun testFileGetsTheCorrectFileType() {
+        val file = myFixture.configureByText(PSFileType, "module Foo where\n")
+        assertEquals(PSFileType, file.fileType)
+    }
+
     fun `test find usage top level`() {
+        val typeManager = FileTypeManager.getInstance()
+        val fileType = typeManager.getFileTypeByExtension("purs")
+        assertEquals(fileType, PSFileType)
         val fn = myFixture.configureByText(
             "Main.purs",
             """

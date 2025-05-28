@@ -15,7 +15,12 @@ import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.type.type.PSType
 
 
-object PSLanguage : Language("Purescript", "text/purescript", "text/x-purescript", "application/x-purescript") {
+object PSLanguage : Language(
+    "Purescript",
+    "text/purescript",
+    "text/x-purescript",
+    "application/x-purescript"
+) {
     /**
      * These modules are built into the purescript compiler,
      * and have no corresponding source files.

@@ -3,7 +3,6 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.CachedValuesManager
 import org.purescript.PSLanguage
 import org.purescript.module.Module
 import org.purescript.module.ModuleReference
@@ -177,9 +176,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     /**
      * @return the [Module] that this declaration is importing from
      */
-    val importedModule get(): Module? = CachedValuesManager.getProjectPsiDependentCache(this) {
-        reference.resolve()
-    }  
+    val importedModule get(): Module? = reference.resolve()
 
     /**
      * @return the [ValueDeclarationGroup] elements imported by this declaration
@@ -188,20 +185,20 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(Module::exportedValueDeclarationGroups)
 
     val importedValueNames: List<PsiNamedElement>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
-            importedValueDeclarationGroups + importedForeignValueDeclarations + importedClassMembers
-        }
+        get() = importedValueDeclarationGroups + importedForeignValueDeclarations + importedClassMembers
 
     val importedTypeNames: List<PsiNamedElement>
-        get() = CachedValuesManager.getProjectPsiDependentCache(this) {
-            if (importedModule == null) {
+        get() = when (importedModule) {
+            null -> {
                 PSLanguage.getBuiltins(project, moduleNameName)
-            } else importedDataDeclarations +
+            }
+            else -> importedDataDeclarations +
                     importedNewTypeDeclarations +
                     importedTypeSynonymDeclarations +
                     importedForeignDataDeclarations +
-                    importedClassDeclarations // TODO: should importedClassDeclarations be included, it's not a type
-        }
+                    importedClassDeclarations
+        } // TODO: should importedClassDeclarations be included, it's not a type
+
 
     /**
      * @return the [ForeignValueDecl] elements imported by this declaration
