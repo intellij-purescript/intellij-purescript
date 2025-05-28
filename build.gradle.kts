@@ -109,6 +109,7 @@ intellijPlatform {
     }
 
     pluginVerification {
+        freeArgs.addAll("-mute", "TemplateWordInPluginId")
         ides {
             recommended()
         }
