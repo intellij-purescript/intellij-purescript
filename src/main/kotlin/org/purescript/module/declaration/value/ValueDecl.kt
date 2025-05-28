@@ -12,7 +12,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.prevLeaf
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 import org.purescript.features.DocCommentOwner
 import org.purescript.inference.InferType.Companion.function
 import org.purescript.inference.Inferable
