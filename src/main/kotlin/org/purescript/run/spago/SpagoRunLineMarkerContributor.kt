@@ -15,8 +15,7 @@ class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {
             val actions = ExecutorAction.getActions(0)
             Info(
                 AllIcons.RunConfigurations.TestState.Run,
-                null,
-                *actions
+                actions
             )
         } else {
             null
