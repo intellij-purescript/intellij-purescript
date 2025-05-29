@@ -8,17 +8,23 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
 %%
 
-%unicode
+%public
 %class _PSLexer
 %implements FlexLexer
 %function advance
 %type IElementType
+%column
+%unicode
 
-%eof{
+%{
+  public _PSLexer() {
+    this((java.io.Reader)null);
+  }
 
-return;
-
-%eof}
+  public int getColumn() {
+      return this.yycolumn;
+  }
+%}
 
 whitespace = [ \t\f\r\n]
 opChars = [\:\!#\$%&*+./<=>?@\\\^|\-~]
@@ -50,8 +56,6 @@ charControl = "^" [:uppercase:]
 
 %{
    int comment_nesting = 0;
-   int yyline = 0;
-   int yycolumn = 0;
 %}
 
 %%

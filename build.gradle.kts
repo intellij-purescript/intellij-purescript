@@ -149,7 +149,6 @@ tasks {
         targetDir.set("src/main/gen/org/purescript/lexer/")
         targetClass.set("_PSLexer")
         purgeOldFiles.set(true)
-        skeleton.set(file("src/main/grammar/idea-flex.skeleton"))
     }
 }
 
