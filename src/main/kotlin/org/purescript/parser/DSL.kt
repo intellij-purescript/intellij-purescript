@@ -2,7 +2,6 @@
 
 package org.purescript.parser
 
-import com.intellij.lang.PsiBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
@@ -31,7 +30,7 @@ operator fun DSL.unaryPlus() = OneOrMore(this)
 
 data class Empty(private val type: IElementType, private val before: DSL) : DSL {
     override val tokenSet: TokenSet? get() = before.tokenSet
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         return b.mark().done(type).let { before.parse(b) }
     }
 }
@@ -48,7 +47,7 @@ fun IElementType.cont(start: DSL, next: DSL) = ChoiceMap(start, next to this)
 
 data class Fold(val type: IElementType, val start: DSL, val next: DSL) : DSL {
     private val healedNext = next.heal
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         if (start.tokenSet?.contains(b.tokenType) == false) return false
         var marker = b.mark()
         val result = start.parse(b)
@@ -85,7 +84,7 @@ operator fun DSL.div(other: String) = Choice(dsl, other.dsl)
 object True : DSL {
     override val heal = this
     override val tokenSet: TokenSet? get() = null
-    override fun parse(b: PsiBuilder): Boolean = true
+    override fun parse(b: PSPsiBuilder): Boolean = true
 }
 
 class Sequence(vararg sequenceRaw: DSL) : DSL {
@@ -99,7 +98,7 @@ class Sequence(vararg sequenceRaw: DSL) : DSL {
         }
     }.filter { it !is True }.toTypedArray()
     override val tokenSet: TokenSet? get() = sequence.firstOrNull()?.tokenSet
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         for (alt in sequence) if (!alt.parse(b)) {
             return false
         }
@@ -177,7 +176,7 @@ class Choice(vararg choicesRaw: DSL) : DSL {
 
     private val optional: Boolean by lazy { choices.any { it is True } }
     private val linear: List<DSL> by lazy { choices.filter { it !is True && it.tokenSet == null } }
-    override fun parse(b: PsiBuilder): Boolean = (lookup[b.tokenType] ?: linear).any { it.heal.parse(b) } || optional
+    override fun parse(b: PSPsiBuilder): Boolean = (lookup[b.tokenType] ?: linear).any { it.heal.parse(b) } || optional
     override val tokenSet by lazy {
         if (choices.none { it.tokenSet == null }) {
             TokenSet.orSet(*choices.mapNotNull { it.tokenSet }.toTypedArray())
@@ -188,7 +187,7 @@ class Choice(vararg choicesRaw: DSL) : DSL {
 @Suppress("ControlFlowWithEmptyBody")
 data class OneOrMore(val child: DSL) : DSL {
     override val tokenSet: TokenSet? get() = child.tokenSet
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         val ret = child.parse(b)
         if (ret) when (val ts = tokenSet) {
             null -> while (child.parse(b));
@@ -200,7 +199,7 @@ data class OneOrMore(val child: DSL) : DSL {
 
 data class Transaction(val child: DSL) : DSL {
     override val heal: Transaction get() = this
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         if (child.tokenSet?.contains(b.tokenType) == false)
             return false
         val pack = b.mark()
@@ -222,13 +221,13 @@ data class Transaction(val child: DSL) : DSL {
 
 data class Reference(val init: DSL.() -> DSL) : DSL {
     private val cache by lazy { this.init() }
-    override fun parse(b: PsiBuilder): Boolean = cache.parse(b)
+    override fun parse(b: PSPsiBuilder): Boolean = cache.parse(b)
     override val tokenSet by lazy { cache.tokenSet }
 }
 
 data class PsiDSL<Tag>(val child: DSL, val symbol: IElementType) : DSL {
     override val tokenSet by lazy { child.tokenSet }
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         if (tokenSet?.contains(b.tokenType) == false)
             return false
         val start = b.mark()
@@ -245,7 +244,7 @@ data class PsiDSL<Tag>(val child: DSL, val symbol: IElementType) : DSL {
 
 data class Error(val dsl: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? get() = null
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         val errorStart = b.mark()
         return if (dsl.parse(b)) {
             errorStart.error(message)
@@ -259,7 +258,7 @@ data class Error(val dsl: DSL, val message: String) : DSL {
 data class Relax(val dsl: DSL, val message: String) : DSL {
     override val tokenSet: TokenSet? get() = null
     private val healedDsl = dsl.heal
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         return if (healedDsl.parse(b)) {
             true
         } else {
@@ -271,7 +270,7 @@ data class Relax(val dsl: DSL, val message: String) : DSL {
 
 data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
     private val healedDsl = dsl.heal
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         return if (healedDsl.parse(b)) {
             true
         } else {
@@ -296,7 +295,7 @@ data class RelaxTo(val dsl: DSL, val to: DSL, val message: String) : DSL {
 
 class ChoiceMap(val init: DSL, private vararg val choices: Pair<DSL, IElementType?>) : DSL {
     override val tokenSet: TokenSet? by lazy { init.tokenSet }
-    override fun parse(b: PsiBuilder): Boolean {
+    override fun parse(b: PSPsiBuilder): Boolean {
         val marker = b.mark()
         if (!init.parse(b)) {
             marker.rollbackTo()
