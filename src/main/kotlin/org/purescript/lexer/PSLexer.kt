@@ -8,15 +8,20 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.tree.TokenSet.WHITE_SPACE
 import org.purescript.parser.*
 
-class PSLexer : LookAheadLexer(
+class PSLexer(val columnAwareLexer: ColumnAwareLexer = ColumnAwareLexer() ) : LookAheadLexer(
     MergingLexerAdapter(
         CollapsingLexer(
             FilterLexer(
-                FlexAdapter(_PSLexer(null)),
+                columnAwareLexer,
                 FilterLexer.SetFilter(TokenSet.create(MLCOMMENT, SLCOMMENT))
             ),
             TokenSet.create(STRING, STRING_GAP, STRING_ESCAPED),
             STRING
         ),
         WHITE_SPACE
-    ))
+    )) {
+
+    fun getColumn(offset: Int):Int = columnAwareLexer.getColumn(offset)
+
+
+}
