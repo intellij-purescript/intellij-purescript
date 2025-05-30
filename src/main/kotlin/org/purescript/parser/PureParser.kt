@@ -19,7 +19,10 @@ class PureParser : PsiParser {
                 )
             }
             psPsiBuilder.advanceLexer()
-            success = moduleBody.parse(psPsiBuilder)
+            success = Choice(
+                `L}`,
+                +(decl.sepBy1(elseDecl).relaxTo(`L-sep`, "malformed declaration") + !`L-sep`) + `L}`,
+            ).parse(psPsiBuilder)
         }
         mark.done(root)
         return builder.treeBuilt

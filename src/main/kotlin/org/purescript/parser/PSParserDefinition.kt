@@ -10,12 +10,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import org.purescript.file.PSFile
-import org.purescript.lexer.LayoutLexer
 import org.purescript.lexer.PSLexer
 import org.purescript.psi.PSElementType
 
 class PSParserDefinition : ParserDefinition {
-    override fun createLexer(project: Project) = LayoutLexer(PSLexer())
+    override fun createLexer(project: Project) = PSLexer()
     override fun createParser(project: Project) = PureParser()
     override fun getFileNodeType(): IFileElementType = PSFile.Type
     override fun getStringLiteralElements(): TokenSet = kStrings

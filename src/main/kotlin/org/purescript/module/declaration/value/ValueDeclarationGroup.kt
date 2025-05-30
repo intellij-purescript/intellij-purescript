@@ -135,7 +135,11 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
     }
 
     override fun getName(): String = greenStub?.name ?: nameIdentifier.name
-    override fun getNameIdentifier(): PSIdentifier = valueDeclarations.first().nameIdentifier
+    override fun getNameIdentifier(): PSIdentifier =
+        valueDeclarations.firstOrNull()
+        ?.nameIdentifier
+        ?: signature?.nameIdentifier
+        ?: error("no name identifier found")
     override fun getTextOffset(): Int = nameIdentifier.textOffset
     override val docComments: List<PsiComment>
         get() = this.getDocComments() + valueDeclarations.flatMap { it.docComments }.toList()
