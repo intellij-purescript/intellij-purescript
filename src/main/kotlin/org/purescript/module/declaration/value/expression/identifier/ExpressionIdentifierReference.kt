@@ -7,11 +7,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex.getElements
 import com.intellij.psi.util.parentsOfType
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.declaration.ImportableIndex
+import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.imports.ImportQuickFix
+import org.purescript.module.declaration.imports.ImportsInModule
+import org.purescript.module.declaration.imports.ImportsInModuleAndWithAlias
+import org.purescript.module.declaration.imports.ImportsInModuleWithoutAlias
 import org.purescript.module.declaration.imports.ReExportedImportIndex
+import org.purescript.module.declaration.value.TopLevelValueDeclarationsByModule
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiFactory
@@ -23,7 +29,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
         expressionIdentifier.qualifiedIdentifier.identifier.textRangeInParent,
         false
     ) {
-
+    val project = expressionIdentifier.project
     override fun getVariants(): Array<Any> =
         moduleLocalCandidates
             .map {
@@ -39,32 +45,76 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
 
     override fun resolve(): PsiNamedElement? {
         val name = element.name
-        return when (val qualifyingName = element.qualifiedIdentifier.moduleName?.name) {
+        return when (val qualifyingName = element.qualifierName) {
             null -> {
                 element
                     .parentsOfType<ValueNamespace>(withSelf = false)
                     .flatMap { it.valueNames }
                     .takeWhile { it.containingFile == element.containingFile }
                     .firstOrNull { it.name == name }
-                    ?: getImportedCandidates(null).firstOrNull { it.name == name }
+                    ?: getImportedCandidates().firstOrNull { it.name == name }
             }
 
-            else -> getImportedCandidates(qualifyingName).firstOrNull { it.name == name }
+            else -> getQualifiedImportedCandidates(qualifyingName).firstOrNull { it.name == name }
         } 
     }
 
-    private fun getImportedCandidates(qualifyingName: String?): Sequence<PsiNamedElement> {
-        val module = element.module
+    private fun getImportedCandidates(): Sequence<PsiNamedElement> {
+        val moduleName = this.element.module.name
         val name = element.name
         return sequence {
-            val importDeclarations = module.cache.imports
-                .filter { it.importAlias?.name == qualifyingName }
-            yieldAll(importDeclarations.flatMap { it.importedValue(name) })
+            val importDeclarations = importsInModuleWithoutAlias(moduleName)
+            for (importDeclaration in importDeclarations) {
+                yieldAll(importDeclaration.importedValue(name))
+            }
         }
     }
 
+    private fun getQualifiedImportedCandidates(qualifyingName: String): Sequence<PsiNamedElement> {
+        val moduleName = this.element.module.name
+        val name = element.name
+        return sequence {
+            val importDeclarations = importsInModuleAndWithAlias(moduleName, qualifyingName)
+            for (importDeclaration in importDeclarations) {
+                yieldAll(importDeclaration.importedValue(name))
+            }
+        }
+    }
+
+    fun importsInModule(moduleName: String) = getElements(
+        ImportsInModule.KEY,
+        moduleName,
+        project,
+        null,
+        Import::class.java
+    )
+
+    fun importsInModuleWithoutAlias(moduleName: String) = getElements(
+        ImportsInModuleWithoutAlias.KEY,
+        moduleName,
+        project,
+        null,
+        Import::class.java
+    )
+
+    fun importsInModuleAndWithAlias(moduleName: String, alias: String) = getElements(
+        ImportsInModuleAndWithAlias.KEY,
+        "$moduleName&$alias",
+        project,
+        null,
+        Import::class.java
+    )
+
+    fun topLevelValueDeclarationsInModule(moduleName: String) = getElements(
+        TopLevelValueDeclarationsByModule.KEY,
+        moduleName,
+        project,
+        null,
+        ValueDeclarationGroup::class.java
+    )
+
     private val moduleLocalCandidates: Sequence<PsiNamedElement>
-        get() = when (element.qualifiedIdentifier.moduleName?.name) {
+        get() = when (element.qualifierName) {
             null -> element
                 .parentsOfType<ValueNamespace>(withSelf = false)
                 .flatMap { it.valueNames }
@@ -73,7 +123,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
         }
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
-        val qualifyingName = element.qualifiedIdentifier.moduleName?.name
+        val qualifyingName = element.qualifierName
         val project = element.project
         val scope = GlobalSearchScope.allScope(project)
         val importable = ImportableIndex.get(element.name, project, scope).toList()
@@ -88,7 +138,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
                     .mapNotNull { import ->
                         import.module.asImport()
                             .withItems(ImportedValue(element.name))
-                            ?.withAlias(qualifyingName)
+                            .withAlias(qualifyingName)
                     }
                 arrayOf(ImportQuickFix(*(reExports + exported).toTypedArray()))
             }

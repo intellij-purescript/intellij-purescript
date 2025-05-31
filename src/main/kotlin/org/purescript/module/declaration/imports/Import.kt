@@ -55,6 +55,14 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
             if (stub.isExported) {
                 sink.occurrence(ReExportedImportIndex.KEY, stub.moduleName)
             }
+            stub.module?.name?.also{
+                sink.occurrence(ImportsInModule.KEY, it)
+                if(stub.alias == null) {
+                    sink.occurrence(ImportsInModuleWithoutAlias.KEY, it)
+                } else {
+                    sink.occurrence(ImportsInModuleAndWithAlias.KEY, "$it&${stub.alias}")
+                }
+            }
         }
 
         override fun serialize(stub: Stub, d: StubOutputStream) {

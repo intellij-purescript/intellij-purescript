@@ -59,9 +59,15 @@ class ValueDeclarationGroup : PSStubbedElement<ValueDeclarationGroup.Stub>,
             if (stub.isExported) {
                 sink.occurrence(ImportableIndex.KEY, stub.name)
                 sink.occurrence(ExportedValueDecl.KEY, stub.name)
+                stub.module?.name?.let {
+                    sink.occurrence(ExportedValuesByModuleName.KEY, it)
+                }
             }
             if (stub.isTopLevel) {
                 sink.occurrence(TopLevelValueDecl.KEY, stub.name)
+                stub.module?.name?.let {
+                    sink.occurrence(TopLevelValueDeclarationsByModule.KEY, it)
+                }
             }
         }
     }
