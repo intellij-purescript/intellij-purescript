@@ -8,7 +8,6 @@ import org.purescript.file.PSFile
 import org.purescript.module.Module
 import org.purescript.module.declaration.classes.ClassDecl
 import org.purescript.module.declaration.classes.PSClassConstraint
-import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.foreign.ForeignValueDecl
@@ -198,8 +197,8 @@ fun PsiFile.getClassDeclarations(): Array<ClassDecl> =
 fun PsiFile.getClassDeclaration(): ClassDecl =
     getClassDeclarations().single()
 
-fun PsiFile.getClassMember(): PSClassMember =
-    getClassDeclaration().classMembers.single()
+fun PsiFile.getClassMember(): ValueDeclarationGroup =
+    getClassDeclaration().valueDeclarationGroups.single()
 
 fun PsiFile.getClassConstraint(): PSClassConstraint =
     getClassDeclaration().classConstraints.single()

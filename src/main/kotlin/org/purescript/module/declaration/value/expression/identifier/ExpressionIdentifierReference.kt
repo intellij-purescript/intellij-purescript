@@ -9,15 +9,12 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex.getElements
 import com.intellij.psi.util.parentsOfType
+import com.jetbrains.rd.generator.nova.cpp.Signature
+import org.purescript.Find
 import org.purescript.ide.formatting.ImportedValue
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.imports.ImportQuickFix
-import org.purescript.module.declaration.imports.ImportsInModule
-import org.purescript.module.declaration.imports.ImportsInModuleAndWithAlias
-import org.purescript.module.declaration.imports.ImportsInModuleWithoutAlias
-import org.purescript.module.declaration.imports.ReExportedImportIndex
-import org.purescript.module.declaration.value.TopLevelValueDeclarationsByModule
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.psi.PSPsiFactory
@@ -30,6 +27,11 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
         false
     ) {
     val project = expressionIdentifier.project
+    val name = expressionIdentifier.name
+    val qualifierName = expressionIdentifier.qualifierName
+    val module = expressionIdentifier.module
+    val find = Find(project)
+
     override fun getVariants(): Array<Any> =
         moduleLocalCandidates
             .map {
@@ -43,82 +45,36 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
                 }
             }.toList().toTypedArray()
 
-    override fun resolve(): PsiNamedElement? {
-        val name = element.name
-        return when (val qualifyingName = element.qualifierName) {
-            null -> {
-                element
-                    .parentsOfType<ValueNamespace>(withSelf = false)
-                    .flatMap { it.valueNames }
-                    .takeWhile { it.containingFile == element.containingFile }
-                    .firstOrNull { it.name == name }
-                    ?: getImportedCandidates().firstOrNull { it.name == name }
-            }
+    override fun resolve(): PsiNamedElement? = when (qualifierName) {
+        null -> {
+            insideTopLevel()
+                ?: getTopLevelValuesInModule()
+                ?: getImportedCandidates()
+        }
 
-            else -> getQualifiedImportedCandidates(qualifyingName).firstOrNull { it.name == name }
-        } 
+        else -> getImportedCandidates()
     }
 
-    private fun getImportedCandidates(): Sequence<PsiNamedElement> {
+    private fun insideTopLevel(): PsiNamedElement? =
+        moduleLocalCandidates.firstOrNull { it.name == name }
+
+    private fun getTopLevelValuesInModule(): ValueDeclarationGroup? {
+        return Find(element.project).topLevelValuesInModule(module.name).firstOrNull() { it.name == name }
+    }
+
+    private fun getImportedCandidates(): PsiNamedElement? {
         val moduleName = this.element.module.name
         val name = element.name
-        return sequence {
-            val importDeclarations = importsInModuleWithoutAlias(moduleName)
-            for (importDeclaration in importDeclarations) {
-                yieldAll(importDeclaration.importedValue(name))
-            }
-        }
+        return Find(element.project).importedValueInModule(name, moduleName, qualifierName)
     }
-
-    private fun getQualifiedImportedCandidates(qualifyingName: String): Sequence<PsiNamedElement> {
-        val moduleName = this.element.module.name
-        val name = element.name
-        return sequence {
-            val importDeclarations = importsInModuleAndWithAlias(moduleName, qualifyingName)
-            for (importDeclaration in importDeclarations) {
-                yieldAll(importDeclaration.importedValue(name))
-            }
-        }
-    }
-
-    fun importsInModule(moduleName: String) = getElements(
-        ImportsInModule.KEY,
-        moduleName,
-        project,
-        null,
-        Import::class.java
-    )
-
-    fun importsInModuleWithoutAlias(moduleName: String) = getElements(
-        ImportsInModuleWithoutAlias.KEY,
-        moduleName,
-        project,
-        null,
-        Import::class.java
-    )
-
-    fun importsInModuleAndWithAlias(moduleName: String, alias: String) = getElements(
-        ImportsInModuleAndWithAlias.KEY,
-        "$moduleName&$alias",
-        project,
-        null,
-        Import::class.java
-    )
-
-    fun topLevelValueDeclarationsInModule(moduleName: String) = getElements(
-        TopLevelValueDeclarationsByModule.KEY,
-        moduleName,
-        project,
-        null,
-        ValueDeclarationGroup::class.java
-    )
 
     private val moduleLocalCandidates: Sequence<PsiNamedElement>
-        get() = when (element.qualifierName) {
+        get() = when (qualifierName) {
             null -> element
                 .parentsOfType<ValueNamespace>(withSelf = false)
                 .flatMap { it.valueNames }
                 .filter { it.containingFile == element.containingFile }
+
             else -> emptySequence()
         }
 
@@ -134,7 +90,7 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
             else -> {
                 val reExports = exported
                     .map { it.moduleName }
-                    .flatMap { ReExportedImportIndex.get(it, project, scope) }
+                    .flatMap { Find.ExportedImportsInModule().get(it, project, scope) }
                     .mapNotNull { import ->
                         import.module.asImport()
                             .withItems(ImportedValue(element.name))

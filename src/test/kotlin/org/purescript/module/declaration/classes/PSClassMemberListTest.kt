@@ -16,6 +16,6 @@ class PSClassMemberListTest : BasePlatformTestCase() {
             """.trimIndent()
         ).getClassDeclaration().classMemberList!!
 
-        assertSize(2, classMemberList.classMembers)
+        assertSize(2, classMemberList.valueDeclarationGroups)
     }
 }

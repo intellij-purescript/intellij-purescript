@@ -36,7 +36,7 @@ class FixityReference(fixity: ValueFixityDeclaration) :
                     importDeclarations
                         .asSequence()
                         .flatMap { it.importedClassDeclarations.asSequence() }
-                        .flatMap { it.classMembers.asSequence() }
+                        .flatMap { it.valueDeclarationGroups.asSequence() }
                 yieldAll(importedClassMembers)
             }
         }

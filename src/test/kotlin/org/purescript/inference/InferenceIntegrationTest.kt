@@ -243,7 +243,7 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         )
         val map = Main.getClassDeclarations()
             .first { it.name == "Functor" }
-            .classMembers
+            .valueDeclarationGroups
             .single()
             .inferType()
         TestCase.assertEquals(
@@ -273,7 +273,7 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         TestCase.assertEquals("Additive Int", pprint("$f"))
         val foldable = Main.getClassDeclarations()
             .first { it.name == "Foldable" }
-        val members = foldable.classMembers
+        val members = foldable.valueDeclarationGroups
         val foldMap = members.single { it.name == "foldMap" }.inferType()
         TestCase.assertEquals(
             "Foldable a => forall b c. Monoid c => (b -> c) -> a b -> c",

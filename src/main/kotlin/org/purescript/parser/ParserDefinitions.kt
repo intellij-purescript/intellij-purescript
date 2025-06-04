@@ -296,7 +296,7 @@ val classSignature = ClassName(properName) + dcolon + type
 // this first is described in haskell code and not in normal happy expression
 // see `fmap (Left . DeclKindSignature () $1) parseClassSignature`
 val classHead = `'class'` + classSignature.heal / (!classSuper.heal + classNameAndFundeps)
-val classMember = ClassMember(ident + dcolon + type)
+val classMember = valueDeclarationGroup
 val classDeclaration =
     ClassDeclType(classHead + !ClassMemberList(`'where'` + block(classMember)).heal)
 

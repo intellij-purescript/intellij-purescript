@@ -9,6 +9,7 @@ import org.purescript.inference.Inferable
 import org.purescript.inference.Unifiable
 
 import org.purescript.module.declaration.type.type.PSType
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.name.PSIdentifier
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -55,9 +56,14 @@ class Signature :
         nameIdentifier.replace(identifier)
     }
 
-    override fun getReference(): PsiReference? =
-        parent?.let { PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, it) }
+    override fun getReference(): PsiReference? {
+        val valueGroup = parent as? ValueDeclarationGroup ?: return null
+        if (valueGroup.valueDeclarations.isEmpty()) return null
+        if (valueGroup.isClassMember) return null
+        return PsiReferenceBase.Immediate(this, nameIdentifier.textRangeInParent, valueGroup)
+    }
+
     override fun unify() {
-        type.inferType().let { unify(it) }
+        unify(type.inferType())
     }
 }

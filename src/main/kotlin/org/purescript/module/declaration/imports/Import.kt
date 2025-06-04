@@ -3,11 +3,11 @@ package org.purescript.module.declaration.imports
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
+import org.purescript.Find
 import org.purescript.PSLanguage
 import org.purescript.module.Module
 import org.purescript.module.ModuleReference
 import org.purescript.module.declaration.classes.ClassDecl
-import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
@@ -52,15 +52,15 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         override fun createPsi(stub: Stub) = Import(stub, this)
         override fun createStub(my: Import, p: StubElement<*>?) = Stub(my.moduleNameName, my.importAlias?.name, p)
         override fun indexStub(stub: Stub, sink: IndexSink) {
-            if (stub.isExported) {
-                sink.occurrence(ReExportedImportIndex.KEY, stub.moduleName)
-            }
             stub.module?.name?.also{
-                sink.occurrence(ImportsInModule.KEY, it)
+                sink.occurrence(Find.importsInModule, it)
+                if (stub.isExported) {
+                    sink.occurrence(Find.exportedImportsInModule, it)
+                }
                 if(stub.alias == null) {
-                    sink.occurrence(ImportsInModuleWithoutAlias.KEY, it)
+                    sink.occurrence(Find.importsInModuleWithoutAlias, it)
                 } else {
-                    sink.occurrence(ImportsInModuleAndWithAlias.KEY, "$it&${stub.alias}")
+                    sink.occurrence(Find.importsInModuleAndWithAlias, "$it&${stub.alias}")
                 }
             }
         }
@@ -193,7 +193,7 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
         get() = getImportedDeclarations<ValueDeclarationGroup, PSImportedValue>(Module::exportedValueDeclarationGroups)
 
     val importedValueNames: List<PsiNamedElement>
-        get() = importedValueDeclarationGroups + importedForeignValueDeclarations + importedClassMembers
+        get() = importedValueDeclarationGroups + importedForeignValueDeclarations
 
     val importedTypeNames: List<PsiNamedElement>
         get() = when (importedModule) {
@@ -325,12 +325,6 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
      */
     val importedClassDeclarations: List<ClassDecl>
         get() = getImportedDeclarations<ClassDecl, PSImportedClass>(Module::exportedClassDeclarations)
-
-    /**
-     * @return the [PSClassMember] elements imported by this declaration
-     */
-    val importedClassMembers: List<PSClassMember>
-        get() = getImportedDeclarations<PSClassMember, PSImportedValue>(Module::exportedClassMembers)
 
     val importedValueFixityDeclarations
         get() = getImportedDeclarations<ValueFixityDeclaration, PSImportedOperator> { module ->

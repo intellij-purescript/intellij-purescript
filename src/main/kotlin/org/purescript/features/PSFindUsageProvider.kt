@@ -9,7 +9,6 @@ import com.intellij.psi.tree.TokenSet
 import org.purescript.lexer.PSLexer
 import org.purescript.module.Module
 import org.purescript.module.declaration.classes.ClassDecl
-import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataConstructor
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.fixity.ValueFixityDeclaration
@@ -38,7 +37,6 @@ class PSFindUsageProvider : FindUsagesProvider {
             || psiElement is DataConstructor
             || psiElement is ClassDecl
             || psiElement is TypeDecl
-            || psiElement is PSClassMember
             || psiElement is ValueFixityDeclaration
             || psiElement is PSForeignDataDeclaration
             || psiElement is TypeVarName
@@ -91,7 +89,6 @@ class PSFindUsageProvider : FindUsagesProvider {
             is ForeignValueDecl -> "foreign value"
             is PSForeignDataDeclaration -> "foreign data"
             is TypeDecl -> "type synonym"
-            is PSClassMember -> "class member"
             is ValueFixityDeclaration -> "operator"
             else -> "unknown"
         }

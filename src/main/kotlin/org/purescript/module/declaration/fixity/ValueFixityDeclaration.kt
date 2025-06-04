@@ -15,7 +15,6 @@ import org.purescript.inference.inferType
 import org.purescript.module.Module
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
-import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.module.declaration.value.expression.Expression
@@ -104,7 +103,6 @@ class ValueFixityDeclaration : PSStubbedElement<ValueFixityDeclaration.Stub>,
     override val type: PSType?
         get() = when (val ref = reference.resolve()) {
             is ValueDeclarationGroup -> ref.signature?.type
-            is PSClassMember -> ref.type
             else -> null
         }
     val fixity: PSFixity get() = child()!!

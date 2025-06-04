@@ -153,7 +153,8 @@ class ExportedValueReferenceTest : BasePlatformTestCase() {
             """.trimIndent()
         )
         val exportedValue = file.getExportedValue()
-        val usageInfo = myFixture.findUsages(file.getClassMember()).single()
+        val usages = myFixture.findUsages(file.getClassMember())
+        val usageInfo = usages.single()
 
         run {
             assertEquals(exportedValue, usageInfo.element)

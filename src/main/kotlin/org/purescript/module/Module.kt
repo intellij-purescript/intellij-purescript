@@ -9,14 +9,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.inference.*
 import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.classes.ClassDecl
-import org.purescript.module.declaration.classes.PSClassMember
 import org.purescript.module.declaration.data.DataDeclaration
 import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
 import org.purescript.module.declaration.fixity.TypeFixityDeclaration
@@ -116,14 +114,13 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
             null -> constructors.asSequence()
             else -> exportedItems.flatMap { it.constructors }
         }
-    val valueGroups get() = run { children<ValueDeclarationGroup>() }
-    val foreignValues get() = run { children<ForeignValueDecl>() }
-    val classes get() = run { children<ClassDecl>() }
-    val classMembers get() = run { classes.flatMap { it.classMembers.toList() } }
+    val valueGroups get() = children<ValueDeclarationGroup>()
+    val foreignValues get() = children<ForeignValueDecl>()
+    val classes get() = children<ClassDecl>()
+    val classMembers get() = classes.flatMap { it.valueDeclarationGroups.toList() }
     override fun unify() {}
 
-    // TODO clean up this name
-    override fun toString(): String = "PSModule($elementType)"
+    override fun toString(): String = "PSModule(Module)"
     var cache: Module.Cache = Cache()
     val exports get() = child<ExportList>()
     val exportedItems get() = exports?.exportedItems?.asSequence() ?: emptySequence()
@@ -328,7 +325,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val exportedValueNames: List<PsiNamedElement>
         get() = exportedForeignValueDeclarations +
                 exportedValueDeclarationGroups +
-                exportedClassDeclarations.flatMap { it.classMembers.asSequence() }
+                exportedClassDeclarations.flatMap { it.valueDeclarationGroups.asSequence() }
 
     /**
      * @return the [ForeignValueDecl] elements that this module exports,
@@ -394,13 +391,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 classes,
             ) { it.importedClassDeclarations }
         }
-
-    /**
-     * @return the [PSClassMember] elements that this module exports,
-     * both directly and through re-exported modules
-     */
-    val exportedClassMembers: List<PSClassMember>
-        get() = getExportedDeclarations<PSClassMember, ExportedValue.Psi>(classMembers.toTypedArray()) { it.importedClassMembers }
 
     val reexportedModuleNames: List<String>
         get() =

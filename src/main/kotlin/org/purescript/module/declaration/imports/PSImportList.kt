@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.childrenOfType
+import org.purescript.ide.formatting.ImportedValue
 import org.purescript.parser.HIDING
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -46,4 +47,5 @@ class PSImportList : PSStubbedElement<PSImportList.Stub> {
      * is `true` or `false`, respectively.
      */
     val importedItems: List<PSImportedItem> get() = childrenOfType<PSImportedItem>()
+    val values get() = childrenOfType<PSImportedValue>().map { it.name }.toSet()
 }

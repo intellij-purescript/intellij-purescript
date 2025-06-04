@@ -2,6 +2,7 @@ package org.purescript.module.declaration.classes
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.psi.PSElementType
 import org.purescript.psi.AStub
 import org.purescript.psi.PSStubbedElement
@@ -35,8 +36,8 @@ class PSClassMemberList: PSStubbedElement<PSClassMemberList.Stub> {
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, type: IStubElementType<*, *>) : super(stub, type)
     /**
-     * @return the [PSClassMember] elements contained in this list
+     * @return the [ValueDeclarationGroup] elements contained in this list
      */
-    val classMembers: Array<PSClassMember>
-        get() = findChildrenByClass(PSClassMember::class.java)
+    val valueDeclarationGroups: Array<ValueDeclarationGroup>
+        get() = findChildrenByClass(ValueDeclarationGroup::class.java)
 }

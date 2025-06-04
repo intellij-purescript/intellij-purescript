@@ -127,11 +127,11 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
     val parameters get() = parameterList.parameters
     val where: PSExpressionWhere? get() = findChildByClass(PSExpressionWhere::class.java)
     fun inline(arguments: List<Expression>): Expression {
-        val copy = this.copy() as ValueDecl
-        val binders = copy.namedParameters
+        val backup = this.copy() as ValueDecl
+        val binders = this.namedParameters
         val parametersToInline = binders.map {
             ReferencesSearch
-                .search(it, LocalSearchScope(copy))
+                .search(it, LocalSearchScope(this))
                 .findAll()
                 .map { it.element }
         }.toList()
@@ -140,6 +140,8 @@ class ValueDecl : PSStubbedElement<ValueDecl.Stub>,
                 place.replace(argument.firstChild)
             }
         }
+        val copy = this.copy() as ValueDecl
+        this.replace(backup)
         return if (arguments.size < parametersToInline.size) {
             val parametersLeft = binders.drop(arguments.size)
             val factory = project.service<PSPsiFactory>()

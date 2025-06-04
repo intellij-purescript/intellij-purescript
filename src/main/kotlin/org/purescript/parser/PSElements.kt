@@ -111,7 +111,6 @@ val ClassConstraintList = WithPsi("ClassConstraintList") { PSClassConstraintList
 val ClassConstraint = WithPsi("ClassConstraint") { PSClassConstraint(it) }
 val ClassFunctionalDependencyList = WithPsi("ClassFunctionalDependencyList") { PSClassFunctionalDependencyList(it) }
 val ClassFunctionalDependency = WithPsi("ClassFunctionalDependency") { PSClassFunctionalDependency(it) }
-val ClassMember = PSClassMember.Type
 val ClassMemberList = PSClassMemberList.Type
 val InstanceDeclType = PSInstanceDeclaration.Type
 val NewtypeDeclType = NewtypeDecl.Type

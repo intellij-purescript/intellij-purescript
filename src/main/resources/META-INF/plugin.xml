@@ -238,28 +238,21 @@
         <stubIndex implementation="org.purescript.module.ModuleNameIndex"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.value.ExportedValueDecl"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.value.ExportedValuesByModuleName"/>
+        <stubIndex implementation="org.purescript.Find$ExportedValuesByModuleName"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.value.TopLevelValueDecl"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.value.TopLevelValueDeclarationsByModule"/>
+        <stubIndex implementation="org.purescript.Find$TopLevelValuesByModule"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.ImportableIndex"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.ImportableTypeIndex"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.imports.ImportsInModule"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.imports.ImportsInModuleAndWithAlias"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.imports.ImportsInModuleWithoutAlias"/>
+        <stubIndex implementation="org.purescript.Find$ImportsInModule"/>
+        <stubIndex implementation="org.purescript.Find$ImportsInModuleAndWithAlias"/>
+        <stubIndex implementation="org.purescript.Find$ImportsInModuleWithoutAlias"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.foreign.ExportedForeignValueDeclIndex"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.fixity.ExportedFixityNameIndex"/>
-        <stubIndex
-                implementation="org.purescript.module.declaration.imports.ReExportedImportIndex"/>
+        <stubIndex implementation="org.purescript.module.declaration.fixity.ExportedFixityNameIndex"/>
+        <stubIndex implementation="org.purescript.Find$ExportedImportsInModule"/>
         <stubIndex
                 implementation="org.purescript.module.declaration.type.LabeledIndex"/>
         <codeInsight.template.postfixTemplateProvider

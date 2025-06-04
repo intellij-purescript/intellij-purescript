@@ -16,6 +16,7 @@ import org.purescript.module.declaration.type.TypeNamespace
 import org.purescript.module.declaration.type.type.PSType
 import org.purescript.module.declaration.type.type.TypeVar
 import org.purescript.module.declaration.type.type.TypeVarName
+import org.purescript.module.declaration.value.ValueDeclarationGroup
 import org.purescript.name.PSClassName
 import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
@@ -60,16 +61,17 @@ class ClassDecl :
     internal val classMemberList: PSClassMemberList? get() = findChildByClass(PSClassMemberList::class.java)
 
     /**
-     * @return the [PSClassMember] elements in this declaration,
+     * @return the [ValueDeclarationGroup] elements in this declaration,
      * or an empty array if [classConstraintList] is null.
      */
     val classConstraints: Array<PSClassConstraint> get() = classConstraintList?.classConstraints ?: emptyArray()
 
     /**
-     * @return the [PSClassMember] elements in this declaration,
+     * @return the [ValueDeclarationGroup] elements in this declaration,
      * or an empty array if [classMemberList] is null.
      */
-    val classMembers: Array<PSClassMember> get() = classMemberList?.classMembers ?: emptyArray()
+    val valueDeclarationGroups: Array<ValueDeclarationGroup> get() =
+        classMemberList?.valueDeclarationGroups ?: emptyArray()
     override fun getName(): String = greenStub?.name ?: className.name
     override fun setName(name: String): PsiElement? = null
     override fun getNameIdentifier(): PsiElement = className

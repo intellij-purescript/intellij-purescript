@@ -33,5 +33,6 @@ class ExportList : PSStubbedElement<ExportList.Stub> {
     // Todo clean this up
     override fun toString(): String = "PSExportList($elementType)"
     val values: List<ExportedValue.Psi> get() = childrenOfType<ExportedValue.Psi>()
+    val modules: List<ExportedModule> get() = childrenOfType<ExportedModule>()
     val exportedItems = children<ExportedItem<*>>()
 }

@@ -16,7 +16,7 @@ class PSClassMemberTest : BasePlatformTestCase() {
         ).getClassMember()
 
         assertEquals("qux", classMember.name)
-        assertEquals("Int", classMember.type.text)
+        assertEquals("Int", classMember.type?.text)
     }
 
     fun `test parses class member with type variables`() {
@@ -30,6 +30,6 @@ class PSClassMemberTest : BasePlatformTestCase() {
         ).getClassMember()
 
         assertEquals("qux", classMember.name)
-        assertEquals("a -> b", classMember.type.text)
+        assertEquals("a -> b", classMember.type?.text)
     }
 }
