@@ -273,6 +273,7 @@ fun MutableMap<InferType.Id, InferType>.unifyLabels(sx: InferType.Row, sy: Infer
 
 interface Inferable : HasTypeId, Unifiable {
     fun inferType(): InferType {
+        if(typeId != substitutedType) return substitutedType
         this.unify()
         return this.substitutedType
     }

@@ -22,7 +22,7 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
             """.trimMargin()
         )
         val f = main.getValueDeclarationGroupByName("f").inferType()
-        TestCase.assertEquals(InferType.function(InferType.Id(0), InferType.Id(0)).toString(), "$f")
+        TestCase.assertEquals(InferType.function(InferType.Id(3), InferType.Id(3)).toString(), "$f")
         val int = main.getValueDeclarationGroupByName("int").inferType()
         TestCase.assertEquals(InferType.function(InferType.Int, InferType.Int), int)
         val x = main.getValueDeclarationGroupByName("x").inferType()
@@ -281,7 +281,7 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         )
         val foldr = members.single { it.name == "foldr" }.inferType()
         TestCase.assertEquals(
-            "Foldable a => forall b c. (b -> c -> c) -> c -> a b -> c",
+            "Foldable c => forall a b. (a -> b -> b) -> b -> c a -> b",
             pprint("$foldr")
         )
     }
@@ -500,6 +500,23 @@ class InferenceIntegrationTest : BasePlatformTestCase() {
         )
         val x = Main.getValueDeclarationGroupByName("x").inferType()
         TestCase.assertEquals("Int -> Int", pprint("$x"))
+    }
+
+    fun `test recurscive fib`() {
+        val Main = myFixture.configureByText(
+            "Main.purs",
+            """
+                | module Main where
+                |
+                | fib :: Int -> Int
+                | fib n = 
+                |   if n == 0 then 0
+                |   else if n == 1 then 1
+                |   else fib (n - 1) + fib (n - 2)
+            """.trimMargin()
+        )
+        val fib = Main.getValueDeclarationGroupByName("fib").inferType()
+        TestCase.assertEquals("Int -> Int", pprint("$fib"))
     }
 
     fun pprint(string: String): String {
