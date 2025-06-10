@@ -1,15 +1,18 @@
 package org.purescript.ide.refactoring
 
 import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.ide.util.DefaultPsiElementCellRenderer
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.util.Pair
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.presentation.java.SymbolPresentationUtil
+import com.intellij.psi.presentation.java.SymbolPresentationUtil.*
 import com.intellij.psi.util.parents
 import com.intellij.psi.util.parentsOfType
 import com.intellij.refactoring.RefactoringBundle.message
@@ -91,7 +94,12 @@ class ValueGroupIntroducer :
     override fun getRefactoringName() = message("extract.method.title")
     override fun getHelpID() = null
     override fun getChooseScopeTitle() = "Choose Scope <title>"
-    override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<ValueOwner>
+    override fun getScopeRenderer(): PsiElementListCellRenderer<ValueOwner> =
+        object : PsiElementListCellRenderer<ValueOwner>() {
+            override fun getIconFlags(): Int = Iconable.ICON_FLAG_VISIBILITY
+            override fun getElementText(e: ValueOwner): String? = getSymbolPresentableText(e)
+            override fun getContainerText(e: ValueOwner?, name: String?): String? = getSymbolContainerText(e)
+        }
     override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? =
         null
 
