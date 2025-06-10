@@ -7,7 +7,8 @@ import org.purescript.PSLanguage
 
 class TypeInlayHintFactory : InlayHintsProviderFactory {
     override fun getSupportedLanguages(): Set<Language> = setOf(PSLanguage)
-    override fun getProviderInfo(l: Language, id: String) = providers.firstOrNull { it.providerId == id }
+    override fun getProviderInfo(language: Language, providerId: String) =
+        providers.firstOrNull { it.providerId == providerId }
     override fun getProvidersForLanguage(language: Language) = providers
     private val providers = listOf(
         InlayProviderInfo(

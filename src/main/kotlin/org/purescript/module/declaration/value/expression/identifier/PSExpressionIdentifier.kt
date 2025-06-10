@@ -66,13 +66,13 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
 
     override fun getName(): String = qualifiedIdentifier.name
     override fun getReference(): ExpressionIdentifierReference = ExpressionIdentifierReference(this)
-    override fun areSimilarTo(otherUnknown: Similar): Boolean {
-        val other = otherUnknown as? PSExpressionIdentifier ?: return false
+    override fun areSimilarTo(other: Similar): Boolean {
+        val otherIdentifier = other as? PSExpressionIdentifier ?: return false
         val ref = reference.resolve()
-        val otherRef = other.reference.resolve()
+        val otherRef = otherIdentifier.reference.resolve()
         return when {
             ref == otherRef -> true
-            name != other.name -> false
+            name != otherIdentifier.name -> false
             ref is ValueDeclarationGroup && otherRef is ValueDeclarationGroup -> ref.valueDeclarations
                 .zip(otherRef.valueDeclarations) { a, b -> b.value?.let { a.value?.areSimilarTo(it) } ?: false }
                 .all { it }
