@@ -89,7 +89,7 @@ class SignatureInlayHintProvider : InlayHintsProvider {
                                 ),
                                 null,
                                 null,
-                                true,
+                                HintFormat.default,
                             ) {
                                 text(":: ")
                                 this.pprint(type)

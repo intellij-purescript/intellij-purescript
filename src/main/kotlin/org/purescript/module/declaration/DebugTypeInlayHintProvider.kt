@@ -19,17 +19,23 @@ class DebugTypeInlayHintProvider : InlayHintsProvider {
                             val hint = ":: ${element.inferType()}"
                             sink.addPresentation(
                                 InlineInlayPosition(element.endOffset, true),
-                                null, null, true
+                                null,
+                                null,
+                                HintFormat.default
                             ) { text(hint) }
                         } catch (e: NotImplementedError) {
                             sink.addPresentation(
                                 InlineInlayPosition(element.endOffset, true),
-                                null, null, true
+                                null,
+                                null,
+                                HintFormat.default
                             ) { text("?! ${e.message?.removePrefix("An operation is not implemented: ")}") }
                         } catch (e: RecursiveTypeException) {
                             sink.addPresentation(
                                 InlineInlayPosition(element.endOffset, true),
-                                null, null, true
+                                null,
+                                null,
+                                HintFormat.default
                             ) { text("?! ${e.message}") }
                         }
                     }
