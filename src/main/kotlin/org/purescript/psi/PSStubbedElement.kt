@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.parentOfType
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
@@ -23,7 +24,7 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
 
     inline fun <Stub : StubElement<Out>, reified Out : StubBasedPsiElement<Stub>>
         children(childType: IStubElementType<Stub, Out>): Array<Out> =
-        getStubOrPsiChildren(childType, arrayOf<Out>())
+        getStubOrPsiChildren(childType as IElementType, arrayOf<Out>())
 
     inline fun <reified Psi : PSStubbedElement<*>> children(): Array<Psi> {
         return when(val exists = greenStub) {
