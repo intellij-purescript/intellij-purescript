@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.purescript.features.DocCommentOwner
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
@@ -124,7 +123,7 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     // TODO clean up this name
     override fun toString(): String = "PSModule($elementType)"
-    var cache: Module.Cache = Cache()
+    var cache: Cache = Cache()
     val exports get() = child<ExportList>()
     val exportedItems get() = exports?.exportedItems?.asSequence() ?: emptySequence()
     val valueFixityDeclarations get() = children(FixityDeclType)
