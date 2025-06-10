@@ -1,5 +1,6 @@
 package org.purescript.inference
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 
 sealed interface InferType {
@@ -271,7 +272,7 @@ fun MutableMap<InferType.Id, InferType>.unifyLabels(sx: InferType.Row, sy: Infer
     }
 }
 
-interface Inferable : HasTypeId, Unifiable {
+interface Inferable : PsiElement, HasTypeId, Unifiable {
     fun inferType(): InferType {
         this.unify()
         return this.substitutedType

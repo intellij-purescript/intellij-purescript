@@ -7,8 +7,10 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
 import org.purescript.inference.Inferable
+import org.purescript.inference.Unifiable
 import org.purescript.module.declaration.fixity.PSFixity
 
 class BinderOperatorExpression(node: ASTNode) : Binder(node) {
@@ -16,7 +18,11 @@ class BinderOperatorExpression(node: ASTNode) : Binder(node) {
         CachedValueProvider.Result(Tree.fromElement(this) ?: error("could not parse expression"), *children)
     }
     override fun unify() = unify(tree.inferType())
-    sealed interface Tree : Inferable {
+    sealed interface Tree : HasTypeId, Unifiable {
+        fun inferType(): InferType {
+            this.unify()
+            return this.substitutedType
+        }
         companion object {
             fun fromElement(e: Binder): Tree? {
                 var tree: Tree? = null
