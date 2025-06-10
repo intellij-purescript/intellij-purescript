@@ -3,7 +3,7 @@
 .intellijPlatform
 .qodana
 build
-
+.kotlin
 /node_modules/
 /.spago/
 /output/
