@@ -13,11 +13,7 @@ class SpagoRunLineMarkerContributor: RunLineMarkerContributor() {
         val decl = element.parentOfType<ValueDeclarationGroup>() ?: return null
         return if (decl.nameIdentifier.firstChild == element && decl.name == "main") {
             val actions = ExecutorAction.getActions(0)
-            Info(
-                AllIcons.RunConfigurations.TestState.Run,
-                null,
-                *actions
-            )
+            Info(AllIcons.RunConfigurations.TestState.Run, actions)
         } else {
             null
         }
