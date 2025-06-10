@@ -84,8 +84,8 @@ val typeVar = Choice(
 )
 val rowLabel = LabeledType(label + dcolon + type.relax("malformed type"))
 val row = Choice(
-    `|` + type,
-    rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal + !(`|` + type)
+    pipe + type,
+    rowLabel + !+(`,` + rowLabel.relaxTo(RCURLY.dsl / `,`, "malformed row label")).heal + !(pipe + type)
 )
 
 val typeAtom: DSL = Choice(
@@ -149,7 +149,7 @@ val type1 = Choice(
 
 val expr = TypedExpressionType.cont(Reference { expr1 }, dcolon + type)
 
-val `expr?` = expr.relax("missing expression")
+val relaced_expr = expr.relax("missing expression")
 val propertyUpdate: DSL = label + !eq + expr
 val symbol = Symbol(parens(operatorName))
 
@@ -199,7 +199,7 @@ val badSingleCaseBranch =
 * to allow layout end at any time.
 */
 val exprCase: DSL = Case(
-    `'case'` + (`expr?`.sepBy1(`,`) + `'of'` + Choice(
+    `'case'` + (relaced_expr.sepBy1(`,`) + `'of'` + Choice(
         badSingleCaseBranch, layout1(Reference { caseBranch }, "case branch")
     ).relax("missing case branches")).relax("incomplete case of")
 )
@@ -243,10 +243,10 @@ val expr1: DSL = (OperatorExpressionType.cont(
 ) + !(ExpressionOperator(qualOp.heal) + expr2.relax("missing value")).heal) /
         parens(`_`.relax("missing hole") + qualOp + expr2).heal
 val patternGuard = !(binder + larrow).heal + Reference { expr1 }
-val guard = GuardType(`|` + patternGuard.sepBy(`,`))
+val guard = GuardType(pipe + patternGuard.sepBy(`,`))
 val dataCtor = DataCtor(properName + !+typeAtom)
 
-val exprWhere: DSL = `expr?` + !ExpressionWhere(
+val exprWhere: DSL = relaced_expr + !ExpressionWhere(
     `'where'` + layout1(
         Reference { letBinding }, "where statement"
     )
@@ -271,7 +271,7 @@ val fixityDeclaration = ChoiceMap(
 )
 
 val fundep = ClassFunctionalDependency(type)
-val fundeps = `|` + fundep.sepBy1(`,`)
+val fundeps = pipe + fundep.sepBy1(`,`)
 val constraint = ClassConstraint(ClassName(qualProperName) + !+typeAtom)
 val constraints = parens(constraint.sepBy1(`,`)) / constraint
 val classSuper = ClassConstraintList(constraints + pImplies(ldarrow))
@@ -337,7 +337,7 @@ fun valueDeclarationGroup() = ValueDeclarationGroupType(Capture(ident.tokenSet) 
 val decl = Choice(
     (`'data'` + properName + TypeParametersType(!+typeVar) + dcolon) + type,
     DataDecl(
-        `'data'` + properName + TypeParametersType(!+typeVar) + !(eq + DataCtorList(dataCtor.sepBy1(`|`)))
+        `'data'` + properName + TypeParametersType(!+typeVar) + !(eq + DataCtorList(dataCtor.sepBy1(pipe)))
     ),
     (`'newtype'` + properName + dcolon) + type,
     NewtypeDeclType(
@@ -390,9 +390,9 @@ val caseBranch = CaseAlternativeType(
     )
 )
 val ifThenElse =
-    IfThenElseType(`'if'` + `expr?` + `'then'` + `expr?` + `'else'` + `expr?`) /
-            ErrorIfThenType(`'if'` + `expr?` + `'then'` + `expr?` + (`'else'` + `expr?`).relax("missing else")) /
-            ErrorIfType(`'if'` + `expr?` + (`'then'` + `expr?` + `'else'` + `expr?`).relax("missing then"))
+    IfThenElseType(`'if'` + relaced_expr + `'then'` + relaced_expr + `'else'` + relaced_expr) /
+            ErrorIfThenType(`'if'` + relaced_expr + `'then'` + relaced_expr + (`'else'` + relaced_expr).relax("missing else")) /
+            ErrorIfType(`'if'` + relaced_expr + (`'then'` + relaced_expr + `'else'` + relaced_expr).relax("missing then"))
 
 
 fun layout1(statement: DSL, name: String): DSL {
@@ -428,7 +428,7 @@ val letIn = Let(`'let'` + layout1(letBinding, "let binding") + `'in'` + expr)
 val letStatement = DoNotationLetType(`'let'` + layout1(letBinding, "let binding").relax("missing binding"))
 val doStatement = Choice(
     letStatement,
-    DoNotationBindType(binder + larrow + `expr?`),
+    DoNotationBindType(binder + larrow + relaced_expr),
     DoNotationValueType(expr)
 )
 val doBlock = ChoiceMap(
