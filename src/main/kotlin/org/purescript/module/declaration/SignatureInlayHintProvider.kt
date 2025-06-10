@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.refactoring.suggested.endOffset
+import com.intellij.psi.util.endOffset
 import org.purescript.inference.InferType
 import org.purescript.inference.RecursiveTypeException
 

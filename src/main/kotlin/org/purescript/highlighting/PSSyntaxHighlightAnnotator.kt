@@ -10,9 +10,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parents
-import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_CALL
 import org.purescript.highlighting.PSSyntaxHighlighter.FUNCTION_DECLARATION
 import org.purescript.highlighting.PSSyntaxHighlighter.GLOBAL_VARIABLE
