@@ -1,21 +1,21 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('RandomConsoleEffects')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('eff')
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('random')
           PsiElement(::)('::')
@@ -24,7 +24,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('RANDOM')
         PsiElement(,)(',')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('console')
           PsiElement(::)('::')

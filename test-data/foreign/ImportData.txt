@@ -1,5 +1,5 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('ImportData')
@@ -10,11 +10,11 @@ Purescript File
     TypeParameters(TypeParameters)
       <empty list>
     PsiElement(::)('::')
-    ForAll(ForAll)
+    ForAll
       PsiElement(forall)('forall')
       PSTypeVarKinded(TypeVarKinded)
         PsiElement(()('(')
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('k')
         PsiElement(::)('::')
@@ -33,26 +33,26 @@ Purescript File
           PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Type')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('TList')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
     PsiElement(foreign)('foreign')
     PsiElement(import)('import')
-    PSForeignDataDeclaration(ForeignDataDeclaration)
+    PSForeignDataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('A')
       PsiElement(::)('::')
-      ForAll(ForAll)
+      ForAll
         PsiElement(forall)('forall')
         PSTypeVarKinded(TypeVarKinded)
           PsiElement(()('(')
-          TypeVarName(TypeVarName)
+          TypeVarName
             PSIdentifier(identifier)
               PsiElement(identifier)('k')
           PsiElement(::)('::')

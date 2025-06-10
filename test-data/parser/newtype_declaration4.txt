@@ -1,22 +1,22 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('A')
     PsiElement(where)('where')
-    NewtypeDecl(NewtypeDecl)
+    NewtypeDecl
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('User6')
       TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
-      NewtypeCtor(NewtypeCtor)
+      NewtypeCtor
         PSProperName(ProperName)
           PsiElement(proper name)('User6')
         TypeRecord(TypeRecord)
           PsiElement({)('{')
-          Labeled(Labeled)
+          Labeled
             PSIdentifier(identifier)
               PsiElement(identifier)('name')
             PsiElement(::)('::')

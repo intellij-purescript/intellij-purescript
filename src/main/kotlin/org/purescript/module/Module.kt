@@ -121,8 +121,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
     val classMembers get() = run { classes.flatMap { it.classMembers.toList() } }
     override fun unify() {}
 
-    // TODO clean up this name
-    override fun toString(): String = "PSModule($elementType)"
     var cache: Cache = Cache()
     val exports get() = child<ExportList>()
     val exportedItems get() = exports?.exportedItems?.asSequence() ?: emptySequence()

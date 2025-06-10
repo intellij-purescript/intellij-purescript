@@ -1,27 +1,27 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Woo')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
       PsiElement(=)('=')
-      ForAll(ForAll)
+      ForAll
         PsiElement(forall)('forall')
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
         PsiElement(.)('.')
         TypeRecord(TypeRecord)
           PsiElement({)('{')
-          Labeled(Labeled)
+          Labeled
             PSIdentifier(identifier)
               PsiElement(identifier)('name')
             PsiElement(::)('::')

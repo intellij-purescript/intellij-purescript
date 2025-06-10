@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('WithPrefix')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('thingy')
         Parameters(Parameters)

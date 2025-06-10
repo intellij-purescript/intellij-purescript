@@ -1,26 +1,26 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Effect.')
         PsiElement(proper name)('Console')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement())(')')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
         Parameters(Parameters)

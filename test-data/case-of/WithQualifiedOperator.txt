@@ -1,14 +1,14 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('WithQualifiedOperator')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
@@ -17,8 +17,8 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('L')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('x')
         Parameters(Parameters)

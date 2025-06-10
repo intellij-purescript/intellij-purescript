@@ -1,17 +1,17 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Node.')
         PsiElement(proper name)('ChildProcess')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('CHILD_PROCESS')
         PsiElement())(')')

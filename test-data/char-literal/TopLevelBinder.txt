@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('TopLevel')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('topLevel')
         Parameters(Parameters)
@@ -15,7 +15,7 @@ Purescript File
         PsiElement(=)('=')
         PSNumericLiteral(NumericLiteral)
           PsiElement(natural)('1')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('topLevel')
         Parameters(Parameters)

@@ -1,17 +1,17 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('NewTypeWithRowTypeType')
     PsiElement(where)('where')
-    NewtypeDecl(NewtypeDecl)
+    NewtypeDecl
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Empty')
       TypeParameters(TypeParameters)
         PSTypeVarKinded(TypeVarKinded)
           PsiElement(()('(')
-          TypeVarName(TypeVarName)
+          TypeVarName
             PSIdentifier(identifier)
               PsiElement(identifier)('r')
           PsiElement(::)('::')
@@ -32,7 +32,7 @@ Purescript File
                   PsiElement(proper name)('Type')
           PsiElement())(')')
       PsiElement(=)('=')
-      NewtypeCtor(NewtypeCtor)
+      NewtypeCtor
         PSProperName(ProperName)
           PsiElement(proper name)('Empty')
         TypeIdentifier(TypeIdentifier)

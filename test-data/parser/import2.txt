@@ -1,29 +1,29 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('A')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
         PsiElement(proper name)('Management')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('Main')
         PsiElement(,)(',')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('main')
         PsiElement(,)(',')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('x')
         PsiElement(,)(',')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('User')
           PSImportedDataMemberList(ImportedDataMemberList)
@@ -31,7 +31,7 @@ Purescript File
             PsiElement(..)('..')
             PsiElement())(')')
         PsiElement(,)(',')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('Data')
           PSImportedDataMemberList(ImportedDataMemberList)

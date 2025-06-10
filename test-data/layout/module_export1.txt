@@ -1,46 +1,46 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Hello')
-    PSExportList(ExportList)
+    ExportList
       PsiElement(()('(')
-      PSExportedValue(ExportedValue)
+      Psi
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
       PsiElement(,)(',')
-      PSExportedModule(ExportedModule)
+      ExportedModule
         PsiElement(module)('module')
         PSModuleName(ModuleName)
           PsiElement(proper name)('A')
       PsiElement(,)(',')
-      PSExportedData(ExportedData)
+      Psi
         PSProperName(ProperName)
           PsiElement(proper name)('Label')
       PsiElement(,)(',')
-      PSExportedData(ExportedData)
+      Psi
         PSProperName(ProperName)
           PsiElement(proper name)('User')
-        PSExportedDataMemberList(ExportedDataMemberList)
+        PSExportedDataMemberList
           PsiElement(()('(')
           PsiElement(..)('..')
           PsiElement())(')')
       PsiElement(,)(',')
-      PSExportedData(ExportedData)
+      Psi
         PSProperName(ProperName)
           PsiElement(proper name)('Core')
-        PSExportedDataMemberList(ExportedDataMemberList)
+        PSExportedDataMemberList
           PsiElement(()('(')
-          PSExportedDataMember(ExportedDataMember)
+          PSExportedDataMember
             PSProperName(ProperName)
               PsiElement(proper name)('Main')
           PsiElement(,)(',')
-          PSExportedDataMember(ExportedDataMember)
+          PSExportedDataMember
             PSProperName(ProperName)
               PsiElement(proper name)('Data')
           PsiElement())(')')
       PsiElement(,)(',')
-      PSExportedType(ExportedType)
+      Psi
         PsiElement(type)('type')
         PSSymbol(symbol)
           PsiElement(()('(')
@@ -48,7 +48,7 @@ Purescript File
             PsiElement(operator)('<~~')
           PsiElement())(')')
       PsiElement(,)(',')
-      PSExportedOperator(ExportedOperator)
+      Psi
         PSSymbol(symbol)
           PsiElement(()('(')
           PSOperatorName(OperatorName)

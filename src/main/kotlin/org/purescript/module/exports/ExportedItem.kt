@@ -46,8 +46,6 @@ interface ExportedData {
         constructor(node: ASTNode) : super(node)
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
-        // Todo clean this up
-        override fun toString(): String = "PSExportedData($elementType)"
         val properName get() = findNotNullChildByClass(PSProperName::class.java)
         val dataMemberList get() = findChildByClass(PSExportedDataMemberList::class.java)
         val exportsAll get() = dataMemberList?.doubleDot != null
@@ -87,8 +85,6 @@ interface ExportedClass {
         constructor(node: ASTNode) : super(node)
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
-        // Todo clean this up
-        override fun toString(): String = "PSExportedClass($elementType)"
         private val properName get() = findNotNullChildByClass(PSProperName::class.java)
         override fun getName(): String = greenStub?.name ?: properName.name
     }
@@ -108,9 +104,6 @@ interface ExportedOperator {
     class Psi : ExportedItem<Stub> {
         constructor(node: ASTNode) : super(node)
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
-
-        // Todo clean this up
-        override fun toString(): String = "PSExportedOperator($elementType)"
         val symbol get() = findNotNullChildByClass(PSSymbol::class.java)
         override fun getName(): String = greenStub?.name ?: symbol.name
         override fun getReference() = ExportedOperatorReference(this)
@@ -132,8 +125,6 @@ interface ExportedTypeOperator {
         constructor(node: ASTNode) : super(node)
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
-        // Todo clean this up
-        override fun toString(): String = "PSExportedType($elementType)"
         val symbol get() = findNotNullChildByClass(PSSymbol::class.java)
         override fun getName(): String = greenStub?.name ?: symbol.name
         override fun getReference() = ExportedTypeOperatorReference(this)
@@ -156,8 +147,6 @@ class ExportedModule : ExportedItem<ExportedModule.Stub> {
     constructor(node: ASTNode) : super(node)
     constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
-    // Todo clean this up
-    override fun toString(): String = "PSExportedModule($elementType)"
     val moduleName get() = findNotNullChildByClass(PSModuleName::class.java)
     val importDeclarations: Sequence<Import>
         get() = module
@@ -189,8 +178,6 @@ interface ExportedValue {
         constructor(node: ASTNode) : super(node)
         constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
 
-        // Todo clean this up
-        override fun toString(): String = "PSExportedValue($elementType)"
         val identifier get() = findNotNullChildByClass(PSIdentifier::class.java)
         override fun getName() = greenStub?.name ?: identifier.name
         override fun getReference() = ExportedValueReference(this)

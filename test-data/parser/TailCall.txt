@@ -1,39 +1,39 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement(,)(',')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('logShow')
         PsiElement())(')')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('L')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
       PsiElement(=)('=')
-      PSDataConstructorList(DataConstructorList)
-        PSDataConstructor(DataConstructor)
+      Psi
+        DataConstructor
           PSProperName(ProperName)
             PsiElement(proper name)('C')
           TypeIdentifier(TypeIdentifier)
@@ -51,11 +51,11 @@ Purescript File
                   PsiElement(identifier)('a')
             PsiElement())(')')
         PsiElement(|)('|')
-        PSDataConstructor(DataConstructor)
+        DataConstructor
           PSProperName(ProperName)
             PsiElement(proper name)('N')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('test')
         PsiElement(::)('::')
@@ -80,7 +80,7 @@ Purescript File
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)
                   PsiElement(proper name)('Number')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('test')
         Parameters(Parameters)
@@ -98,7 +98,7 @@ Purescript File
           PSQualifiedIdentifier(QualifiedIdentifier)
             PSIdentifier(identifier)
               PsiElement(identifier)('n')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('test')
         Parameters(Parameters)
@@ -152,14 +152,14 @@ Purescript File
               PSQualifiedIdentifier(QualifiedIdentifier)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('xs')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('loop')
         PsiElement(::)('::')
-        ForAll(ForAll)
+        ForAll
           PsiElement(forall)('forall')
-          TypeVarName(TypeVarName)
+          TypeVarName
             PSIdentifier(identifier)
               PsiElement(identifier)('a')
           PsiElement(.)('.')
@@ -172,7 +172,7 @@ Purescript File
             TypeIdentifier(TypeIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('a')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('loop')
         Parameters(Parameters)
@@ -201,8 +201,8 @@ Purescript File
                 PSNumericLiteral(NumericLiteral)
                   PsiElement(float)('1.0')
               PsiElement())(')')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('notATailCall')
         Parameters(Parameters)
@@ -254,8 +254,8 @@ Purescript File
                       PSIdentifier(identifier)
                         PsiElement(identifier)('x')
                 PsiElement())(')')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
         Parameters(Parameters)

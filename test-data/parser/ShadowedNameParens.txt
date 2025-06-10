@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         PsiElement(::)('::')
@@ -25,7 +25,7 @@ Purescript File
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)
                   PsiElement(proper name)('Int')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         Parameters(Parameters)

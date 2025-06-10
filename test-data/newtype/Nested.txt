@@ -1,5 +1,5 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Nested')
@@ -8,9 +8,9 @@ Purescript File
     PSProperName(ProperName)
       PsiElement(proper name)('And')
     PsiElement(::)('::')
-    ForAll(ForAll)
+    ForAll
       PsiElement(forall)('forall')
-      TypeVarName(TypeVarName)
+      TypeVarName
         PSIdentifier(identifier)
           PsiElement(identifier)('k')
       PsiElement(.)('.')
@@ -29,34 +29,34 @@ Purescript File
             PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('Type')
-    NewtypeDecl(NewtypeDecl)
+    NewtypeDecl
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('And')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('b')
       PsiElement(=)('=')
-      NewtypeCtor(NewtypeCtor)
+      NewtypeCtor
         PSProperName(ProperName)
           PsiElement(proper name)('And')
         TypeIdentifier(TypeIdentifier)
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
-    NewtypeDecl(NewtypeDecl)
+    NewtypeDecl
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Nesting')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('hooks')
       PsiElement(=)('=')
-      NewtypeCtor(NewtypeCtor)
+      NewtypeCtor
         PSProperName(ProperName)
           PsiElement(proper name)('Nesting')
         TypeParenthesis(TypeParenthesis)
@@ -146,7 +146,7 @@ Purescript File
                                                 PsiElement(proper name)('And')
                                           TypeRecord(TypeRecord)
                                             PsiElement({)('{')
-                                            Labeled(Labeled)
+                                            Labeled
                                               PSIdentifier(identifier)
                                                 PsiElement(identifier)('name')
                                               PsiElement(::)('::')
@@ -156,7 +156,7 @@ Purescript File
                                             PsiElement(})('}')
                                         TypeRecord(TypeRecord)
                                           PsiElement({)('{')
-                                          Labeled(Labeled)
+                                          Labeled
                                             PSIdentifier(identifier)
                                               PsiElement(identifier)('name')
                                             PsiElement(::)('::')

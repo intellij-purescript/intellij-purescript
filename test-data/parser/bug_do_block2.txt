@@ -1,22 +1,22 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(module prefix)('Quasar.Mount.')
       PsiElement(proper name)('Common')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
         PsiElement(proper name)('Either')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('Either')
           PSImportedDataMemberList(ImportedDataMemberList)
@@ -24,14 +24,14 @@ Purescript File
             PsiElement(..)('..')
             PsiElement())(')')
         PsiElement())(')')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
         PsiElement(proper name)('Maybe')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('Maybe')
           PSImportedDataMemberList(ImportedDataMemberList)
@@ -39,19 +39,19 @@ Purescript File
             PsiElement(..)('..')
             PsiElement())(')')
         PsiElement())(')')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
         PsiElement(proper name)('Newtype')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedClass(ImportedClass)
+        PSImportedClass
           PsiElement(class)('class')
           PSProperName(ProperName)
             PsiElement(proper name)('Newtype')
         PsiElement())(')')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
@@ -60,18 +60,18 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('Str')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
         PsiElement(proper name)('Tuple')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedData(ImportedData)
+        PSImportedData
           PSProperName(ProperName)
             PsiElement(proper name)('Tuple')
         PsiElement())(')')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
@@ -80,7 +80,7 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('URI')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Host')
@@ -113,8 +113,8 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('Port')
           PsiElement())(')')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('extractHost')
         PsiElement(::)('∷')
@@ -145,7 +145,7 @@ Purescript File
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)
                   PsiElement(proper name)('Host')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('extractHost')
         Parameters(Parameters)
@@ -231,7 +231,7 @@ Purescript File
               Argument(Argument)
                 PSStringLiteral(StringLiteral)
                   PsiElement(string)('"Multiple hosts specified"')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('extractHost')
         Parameters(Parameters)
@@ -247,19 +247,19 @@ Purescript File
           Argument(Argument)
             PSStringLiteral(StringLiteral)
               PsiElement(string)('"No host specified"')
-    NewtypeDecl(NewtypeDecl)
+    NewtypeDecl
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Credentials')
       TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
-      NewtypeCtor(NewtypeCtor)
+      NewtypeCtor
         PSProperName(ProperName)
           PsiElement(proper name)('Credentials')
         TypeRecord(TypeRecord)
           PsiElement({)('{')
-          Labeled(Labeled)
+          Labeled
             PSIdentifier(identifier)
               PsiElement(identifier)('user')
             PsiElement(::)('∷')
@@ -268,7 +268,7 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('String')
           PsiElement(,)(',')
-          Labeled(Labeled)
+          Labeled
             PSIdentifier(identifier)
               PsiElement(identifier)('password')
             PsiElement(::)('∷')
@@ -277,7 +277,7 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('String')
           PsiElement(})('}')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(derive)('derive')
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
@@ -293,7 +293,7 @@ Purescript File
             PsiElement(proper name)('Credentials')
       TypeWildcard(TypeWildcard)
         PsiElement(wildcard)('_')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(derive)('derive')
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
@@ -307,7 +307,7 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Credentials')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(derive)('derive')
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
@@ -321,7 +321,7 @@ Purescript File
         PSQualifiedProperName(QualifiedProperName)
           PSProperName(ProperName)
             PsiElement(proper name)('Credentials')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('showCredentials')
@@ -335,8 +335,8 @@ Purescript File
           PSProperName(ProperName)
             PsiElement(proper name)('Credentials')
       PsiElement(where)('where')
-      ValueDeclarationGroup(ValueDeclarationGroup)
-        ValueDecl(ValueDecl)
+      ValueDeclarationGroup
+        ValueDecl
           PSIdentifier(identifier)
             PsiElement(identifier)('show')
           Parameters(Parameters)
@@ -404,8 +404,8 @@ Purescript File
                   PsiElement(operator)('<>')
             PSStringLiteral(StringLiteral)
               PsiElement(string)('" })"')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('combineCredentials')
         PsiElement(::)('∷')
@@ -419,7 +419,7 @@ Purescript File
             PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('String')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('combineCredentials')
         Parameters(Parameters)
@@ -490,8 +490,8 @@ Purescript File
               PSQualifiedIdentifier(QualifiedIdentifier)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('password')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('extractCredentials')
         PsiElement(::)('∷')
@@ -517,7 +517,7 @@ Purescript File
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)
                   PsiElement(proper name)('Credentials')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('extractCredentials')
         Parameters(Parameters)

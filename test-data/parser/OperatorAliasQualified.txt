@@ -1,10 +1,10 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Data.')
@@ -13,8 +13,8 @@ Purescript File
         PsiElement(as)('as')
         PSModuleName(ModuleName)
           PsiElement(proper name)('DF')
-    PSFixityDeclaration(FixityDeclaration)
-      PSFixity(Fixity)
+    ValueFixityDeclaration
+      PSFixity
         PsiElement(infixr)('infixr')
         PsiElement(natural)('0')
       PSQualifiedIdentifier(QualifiedIdentifier)
@@ -25,8 +25,8 @@ Purescript File
       PsiElement(as)('as')
       PSOperatorName(OperatorName)
         PsiElement(operator)('/>')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
         Parameters(Parameters)

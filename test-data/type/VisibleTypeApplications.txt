@@ -1,18 +1,18 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('VisibleTypeApplications')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('def')
         PsiElement(::)('::')
-        ForAll(ForAll)
+        ForAll
           PsiElement(forall)('forall')
           PsiElement(@)('@')
-          TypeVarName(TypeVarName)
+          TypeVarName
             PSIdentifier(identifier)
               PsiElement(identifier)('a')
           PsiElement(.)('.')
@@ -24,7 +24,7 @@ Purescript File
             TypeIdentifier(TypeIdentifier)
               PSIdentifier(identifier)
                 PsiElement(identifier)('a')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('def')
         Parameters(Parameters)
@@ -37,8 +37,8 @@ Purescript File
           PSQualifiedIdentifier(QualifiedIdentifier)
             PSIdentifier(identifier)
               PsiElement(identifier)('x')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('app')
         Parameters(Parameters)

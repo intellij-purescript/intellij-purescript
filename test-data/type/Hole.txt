@@ -1,30 +1,30 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Hole')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('X')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
       PsiElement(=)('=')
-      PSDataConstructorList(DataConstructorList)
-        PSDataConstructor(DataConstructor)
+      Psi
+        DataConstructor
           PSProperName(ProperName)
             PsiElement(proper name)('X')
           TypeIdentifier(TypeIdentifier)
             PSIdentifier(identifier)
               PsiElement(identifier)('a')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(instance)('instance')
       PSTypeConstructor(TypeConstructor)
         PSQualifiedProperName(QualifiedProperName)
@@ -55,8 +55,8 @@ Purescript File
       PsiElement(::)('::')
       PSTypeHole(TypeHole)
         PsiElement(hole)('?t')
-      ValueDeclarationGroup(ValueDeclarationGroup)
-        ValueDecl(ValueDecl)
+      ValueDeclarationGroup
+        ValueDecl
           PSIdentifier(identifier)
             PsiElement(identifier)('show')
           Parameters(Parameters)

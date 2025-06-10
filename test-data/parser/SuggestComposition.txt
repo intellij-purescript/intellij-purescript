@@ -1,15 +1,15 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('SuggestComposition')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         Parameters(Parameters)
@@ -26,8 +26,8 @@ Purescript File
               PsiElement(identifier)('g')
         PSExpressionWhere(ExpressionWhere)
           PsiElement(where)('where')
-          ValueDeclarationGroup(ValueDeclarationGroup)
-            ValueDecl(ValueDecl)
+          ValueDeclarationGroup
+            ValueDecl
               PSIdentifier(identifier)
                 PsiElement(identifier)('g')
               Parameters(Parameters)

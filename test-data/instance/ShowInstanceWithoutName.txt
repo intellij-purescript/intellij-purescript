@@ -1,21 +1,21 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('ShowInstanceWithoutName')
     PsiElement(where)('where')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('A')
       TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
-      PSDataConstructorList(DataConstructorList)
-        PSDataConstructor(DataConstructor)
+      Psi
+        DataConstructor
           PSProperName(ProperName)
             PsiElement(proper name)('A')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(instance)('instance')
       PSTypeConstructor(TypeConstructor)
         PSQualifiedProperName(QualifiedProperName)
@@ -26,8 +26,8 @@ Purescript File
           PSProperName(ProperName)
             PsiElement(proper name)('A')
       PsiElement(where)('where')
-      ValueDeclarationGroup(ValueDeclarationGroup)
-        ValueDecl(ValueDecl)
+      ValueDeclarationGroup
+        ValueDecl
           PSIdentifier(identifier)
             PsiElement(identifier)('show')
           Parameters(Parameters)

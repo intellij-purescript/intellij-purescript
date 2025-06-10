@@ -1,24 +1,24 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('TypeLevelString')
     PsiElement(where)('where')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('Foo')
       TypeParameters(TypeParameters)
         <empty list>
-    ClassDecl(ClassDecl)
+    ClassDecl
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Bar')
-      TypeVarName(TypeVarName)
+      TypeVarName
         PSIdentifier(identifier)
           PsiElement(identifier)('a')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('fooBar')

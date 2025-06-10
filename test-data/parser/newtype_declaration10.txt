@@ -1,19 +1,19 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('A')
     PsiElement(where)('where')
-    NewtypeDecl(NewtypeDecl)
+    NewtypeDecl
       PsiElement(newtype)('newtype')
       PSProperName(ProperName)
         PsiElement(proper name)('Ta')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
       PsiElement(=)('=')
-      NewtypeCtor(NewtypeCtor)
+      NewtypeCtor
         PSProperName(ProperName)
           PsiElement(proper name)('Ta')
         TypeParenthesis(TypeParenthesis)
@@ -26,7 +26,7 @@ Purescript File
                     PsiElement(proper name)('Eff')
               TypeRow(TypeRow)
                 PsiElement(()('(')
-                Labeled(Labeled)
+                Labeled
                   PSIdentifier(identifier)
                     PsiElement(identifier)('console')
                   PsiElement(::)('::')

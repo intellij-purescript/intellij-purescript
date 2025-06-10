@@ -101,8 +101,6 @@ class TypeFixityDeclaration : PSStubbedElement<TypeFixityDeclaration.Stub>,
     override fun unify() =
         unify(reference.inferType(module.replaceMap()) ?: error("could not find reference for $name"))
 
-    // Todo clean this up
-    override fun toString(): String = "PSFixityDeclaration($elementType)"
     override fun asImport() = ImportDeclaration(module.name, false, setOf(ImportedOperator(name)))
     override val type: PSType?
         get() = when (val ref = reference.resolve()) {

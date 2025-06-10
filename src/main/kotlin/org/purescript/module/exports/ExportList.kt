@@ -30,8 +30,6 @@ class ExportList : PSStubbedElement<ExportList.Stub> {
     }
     constructor(node: ASTNode) : super(node)
     constructor(s: Stub, t: IStubElementType<*, *>) : super(s, t)
-    // Todo clean this up
-    override fun toString(): String = "PSExportList($elementType)"
     val values: List<ExportedValue.Psi> get() = childrenOfType<ExportedValue.Psi>()
     val exportedItems = children<ExportedItem<*>>()
 }

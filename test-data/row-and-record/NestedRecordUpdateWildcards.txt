@@ -1,20 +1,20 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('update')
         Parameters(Parameters)
@@ -49,8 +49,8 @@ Purescript File
                   PsiElement(wildcard)('_')
                 PsiElement(})('}')
               PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('init')
         Parameters(Parameters)
@@ -86,8 +86,8 @@ Purescript File
                   PsiElement(natural)('3')
               PsiElement(})('}')
           PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('after')
         Parameters(Parameters)
@@ -115,8 +115,8 @@ Purescript File
           Argument(Argument)
             PSNumericLiteral(NumericLiteral)
               PsiElement(natural)('30')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('expected')
         Parameters(Parameters)
@@ -152,8 +152,8 @@ Purescript File
                   PsiElement(natural)('30')
               PsiElement(})('}')
           PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('check')
         Parameters(Parameters)
@@ -261,8 +261,8 @@ Purescript File
             PSAccessor(Accessor)
               PSIdentifier(identifier)
                 PsiElement(identifier)('qux')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
         Parameters(Parameters)

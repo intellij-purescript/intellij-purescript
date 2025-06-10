@@ -1,10 +1,10 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
@@ -13,7 +13,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('console')
           PsiElement(::)('::')
@@ -35,7 +35,7 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('eff')
         PsiElement())(')')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
@@ -44,7 +44,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('console')
           PsiElement(::)('::')
@@ -62,7 +62,7 @@ Purescript File
                     PsiElement(proper name)('String')
             PsiElement())(')')
         PsiElement())(')')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
@@ -71,7 +71,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('console')
           PsiElement(::)('::')
@@ -95,7 +95,7 @@ Purescript File
                 PsiElement())(')')
             PsiElement())(')')
         PsiElement())(')')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Wii')
@@ -104,7 +104,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('console')
           PsiElement(::)('::')

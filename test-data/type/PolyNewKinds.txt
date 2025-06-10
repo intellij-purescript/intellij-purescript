@@ -1,5 +1,5 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('PolyNewKinds')
@@ -8,9 +8,9 @@ Purescript File
     PSProperName(ProperName)
       PsiElement(proper name)('ReaderT')
     PsiElement(::)('::')
-    ForAll(ForAll)
+    ForAll
       PsiElement(forall)('forall')
-      TypeVarName(TypeVarName)
+      TypeVarName
         PSIdentifier(identifier)
           PsiElement(identifier)('k')
       PsiElement(.)('.')

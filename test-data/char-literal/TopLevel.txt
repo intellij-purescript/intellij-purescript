@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('TopLevel')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('topLevelA')
         Parameters(Parameters)
@@ -13,8 +13,8 @@ Purescript File
         PsiElement(=)('=')
         PSCharLiteral(CharLiteral)
           PsiElement(char)(''a'')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('topLevelB')
         Parameters(Parameters)
@@ -22,8 +22,8 @@ Purescript File
         PsiElement(=)('=')
         PSCharLiteral(CharLiteral)
           PsiElement(char)(''b'')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('topLevelQuote')
         Parameters(Parameters)
@@ -31,8 +31,8 @@ Purescript File
         PsiElement(=)('=')
         PSCharLiteral(CharLiteral)
           PsiElement(char)(''\''')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('topLevelTab')
         Parameters(Parameters)

@@ -71,8 +71,6 @@ class DataDeclaration : PSStubbedElement<DataDeclaration.Stub>,
     override val typeNames get() = parameters?.typeNames ?: emptySequence()
     val parameters get() = childrenOfType<TypeParameters>().firstOrNull()
 
-    // Todo clean this up
-    override fun toString(): String = "PSDataDeclaration($elementType)"
     override fun unify() {
         val constructorName = InferType.Constructor(name) as InferType
         val varNames = typeNames.toList()

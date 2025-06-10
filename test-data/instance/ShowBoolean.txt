@@ -1,10 +1,10 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('ShowBoolean')
     PsiElement(where)('where')
-    PSInstanceDeclaration(TypeInstanceDeclaration)
+    PSInstanceDeclaration
       PsiElement(instance)('instance')
       PSIdentifier(identifier)
         PsiElement(identifier)('showBoolean')
@@ -31,8 +31,8 @@ Purescript File
           PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('String')
-      ValueDeclarationGroup(ValueDeclarationGroup)
-        ValueDecl(ValueDecl)
+      ValueDeclarationGroup
+        ValueDecl
           PSIdentifier(identifier)
             PsiElement(identifier)('show')
           Parameters(Parameters)
@@ -42,7 +42,7 @@ Purescript File
           PsiElement(=)('=')
           PSStringLiteral(StringLiteral)
             PsiElement(string)('"true"')
-        ValueDecl(ValueDecl)
+        ValueDecl
           PSIdentifier(identifier)
             PsiElement(identifier)('show')
           Parameters(Parameters)

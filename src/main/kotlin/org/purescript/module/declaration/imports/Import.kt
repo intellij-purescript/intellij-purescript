@@ -69,8 +69,6 @@ class Import : PSStubbedElement<Import.Stub>, Comparable<Import> {
     constructor(node: ASTNode) : super(node)
     constructor(stub: Stub, t: IStubElementType<*, *>) : super(stub, t)
 
-    override fun toString() = "PSImportDeclaration($elementType)"
-
     val importedTypeFixityDeclarations get() = 
         getImportedDeclarations<TypeFixityDeclaration, PSImportedOperator> { module ->
         module.exportedTypeFixityDeclarations.toList()

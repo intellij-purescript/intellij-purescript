@@ -85,8 +85,6 @@ class DataConstructor : PSStubbedElement<DataConstructor.Stub>, PsiNameIdentifie
     override val type: PSType? get() = null
     override val docComments: List<PsiComment> get() = getDocComments()
 
-    // Todo clean this up
-    override fun toString(): String = "PSDataConstructor($elementType)"
     override fun unify() {
         val constructorName = InferType.Constructor(dataDeclaration.name) as InferType
         val typeNames = dataDeclaration.typeNames.toList()

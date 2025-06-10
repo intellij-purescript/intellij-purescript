@@ -1,30 +1,30 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(module prefix)('Control.Monad.Eff.')
         PsiElement(proper name)('Console')
-      PSImportList(ImportList)
+      PSImportList
         PsiElement(()('(')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('log')
         PsiElement(,)(',')
-        PSImportedValue(ImportedValue)
+        PSImportedValue
           PSIdentifier(identifier)
             PsiElement(identifier)('logShow')
         PsiElement())(')')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('greet')
         Parameters(Parameters)
@@ -73,8 +73,8 @@ Purescript File
                 PsiElement(operator)('<>')
           PSStringLiteral(StringLiteral)
             PsiElement(string)('"."')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('main')
         Parameters(Parameters)
@@ -116,8 +116,8 @@ Purescript File
                     PsiElement(string)('"Done"')
         PSExpressionWhere(ExpressionWhere)
           PsiElement(where)('where')
-          ValueDeclarationGroup(ValueDeclarationGroup)
-            ValueDecl(ValueDecl)
+          ValueDeclarationGroup
+            ValueDecl
               PSIdentifier(identifier)
                 PsiElement(identifier)('greeting')
               Parameters(Parameters)
@@ -125,8 +125,8 @@ Purescript File
               PsiElement(=)('=')
               PSStringLiteral(StringLiteral)
                 PsiElement(string)('"Hello"')
-          ValueDeclarationGroup(ValueDeclarationGroup)
-            ValueDecl(ValueDecl)
+          ValueDeclarationGroup
+            ValueDecl
               PSIdentifier(identifier)
                 PsiElement(identifier)('name')
               Parameters(Parameters)

@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('RecordWithKeywordsAsLabel')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('r')
         Parameters(Parameters)
@@ -20,8 +20,8 @@ Purescript File
             PSNumericLiteral(NumericLiteral)
               PsiElement(natural)('1')
           PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('y')
         Parameters(Parameters)
@@ -36,8 +36,8 @@ Purescript File
           PSAccessor(Accessor)
             PSIdentifier(identifier)
               PsiElement(import)('import')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      ValueDecl(ValueDecl)
+    ValueDeclarationGroup
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('z')
         Parameters(Parameters)

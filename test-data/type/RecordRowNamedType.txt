@@ -1,21 +1,21 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('RecordRowNamedType')
     PsiElement(where)('where')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('Unit')
       TypeParameters(TypeParameters)
         <empty list>
       PsiElement(=)('=')
-      PSDataConstructorList(DataConstructorList)
-        PSDataConstructor(DataConstructor)
+      Psi
+        DataConstructor
           PSProperName(ProperName)
             PsiElement(proper name)('Unit')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('TypeRecord')
@@ -24,7 +24,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRecord(TypeRecord)
         PsiElement({)('{')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(type)('type')
           PsiElement(::)('::')
@@ -33,8 +33,8 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('String')
         PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         PsiElement(::)('::')
@@ -48,7 +48,7 @@ Purescript File
             PSQualifiedProperName(QualifiedProperName)
               PSProperName(ProperName)
                 PsiElement(proper name)('String')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('f')
         Parameters(Parameters)

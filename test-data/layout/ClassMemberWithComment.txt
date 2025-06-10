@@ -1,18 +1,18 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('ClassMemberWithComment')
     PsiElement(where)('where')
-    ClassDecl(ClassDecl)
+    ClassDecl
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('X')
-      PSClassMemberList(ClassMemberList)
+      PSClassMemberList
         PsiElement(where)('where')
         PsiComment(doc comment)('-- | comment')
-        PSClassMember(ClassMember)
+        PSClassMember
           PSIdentifier(identifier)
             PsiElement(identifier)('x')
           PsiElement(::)('::')

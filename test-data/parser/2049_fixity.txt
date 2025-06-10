@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSFixityDeclaration(ConstructorFixityDeclaration)
-      PSFixity(Fixity)
+    ConstructorFixityDeclaration
+      PSFixity
         PsiElement(infixr)('infixr')
         PsiElement(natural)('6')
       PSQualifiedProperName(QualifiedProperName)

@@ -1,25 +1,25 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('A')
     PsiElement(where)('where')
-    PSDataDeclaration(DataDeclaration)
+    DataDeclaration
       PsiElement(data)('data')
       PSProperName(ProperName)
         PsiElement(proper name)('User7')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('a')
       PsiElement(=)('=')
-      PSDataConstructorList(DataConstructorList)
-        PSDataConstructor(DataConstructor)
+      Psi
+        DataConstructor
           PSProperName(ProperName)
             PsiElement(proper name)('User7')
           TypeRecord(TypeRecord)
             PsiElement({)('{')
-            Labeled(Labeled)
+            Labeled
               PSIdentifier(identifier)
                 PsiElement(identifier)('name')
               PsiElement(::)('::')
@@ -28,7 +28,7 @@ Purescript File
                   PSProperName(ProperName)
                     PsiElement(proper name)('String')
             PsiElement(,)(',')
-            Labeled(Labeled)
+            Labeled
               PSIdentifier(identifier)
                 PsiElement(identifier)('isEnabled')
               PsiElement(::)('::')

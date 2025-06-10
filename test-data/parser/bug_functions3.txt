@@ -1,11 +1,11 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('fromURI')
         PsiElement(::)('∷')
@@ -31,7 +31,7 @@ Purescript File
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)
                   PsiElement(proper name)('Config')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('fromURI')
         Parameters(Parameters)
@@ -301,8 +301,8 @@ Purescript File
                             PsiElement(string)('"An auth database was specified, but no user credentials"')
               PSDoNotationLet(DoNotationLet)
                 PsiElement(let)('let')
-                ValueDeclarationGroup(ValueDeclarationGroup)
-                  ValueDecl(ValueDecl)
+                ValueDeclarationGroup
+                  ValueDecl
                     PSIdentifier(identifier)
                       PsiElement(identifier)('props')
                     Parameters(Parameters)
@@ -392,8 +392,8 @@ Purescript File
                           PSIdentifier(identifier)
                             PsiElement(identifier)('props')
                     PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('uriScheme')
         PsiElement(::)('∷')
@@ -403,7 +403,7 @@ Purescript File
               PsiElement(module prefix)('URI.')
             PSProperName(ProperName)
               PsiElement(proper name)('URIScheme')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('uriScheme')
         Parameters(Parameters)
@@ -419,8 +419,8 @@ Purescript File
           Argument(Argument)
             PSStringLiteral(StringLiteral)
               PsiElement(string)('"mongodb"')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('extractHosts')
         PsiElement(::)('∷')
@@ -464,7 +464,7 @@ Purescript File
                     PSProperName(ProperName)
                       PsiElement(proper name)('Host')
               PsiElement())(')')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('extractHosts')
         Parameters(Parameters)
@@ -515,8 +515,8 @@ Purescript File
             PsiElement())(')')
         PSExpressionWhere(ExpressionWhere)
           PsiElement(where)('where')
-          ValueDeclarationGroup(ValueDeclarationGroup)
-            ValueDecl(ValueDecl)
+          ValueDeclarationGroup
+            ValueDecl
               PSIdentifier(identifier)
                 PsiElement(identifier)('getHosts')
               Parameters(Parameters)
@@ -543,8 +543,8 @@ Purescript File
                 PSQualifiedIdentifier(QualifiedIdentifier)
                   PSIdentifier(identifier)
                     PsiElement(identifier)('hs')
-          ValueDeclarationGroup(ValueDeclarationGroup)
-            ValueDecl(ValueDecl)
+          ValueDeclarationGroup
+            ValueDecl
               PSIdentifier(identifier)
                 PsiElement(identifier)('toNonEmpty')
               Parameters(Parameters)
@@ -590,8 +590,8 @@ Purescript File
                       PSQualifiedIdentifier(QualifiedIdentifier)
                         PSIdentifier(identifier)
                           PsiElement(identifier)('hs')
-          ValueDeclarationGroup(ValueDeclarationGroup)
-            ValueDecl(ValueDecl)
+          ValueDeclarationGroup
+            ValueDecl
               PSIdentifier(identifier)
                 PsiElement(identifier)('err')
               Parameters(Parameters)

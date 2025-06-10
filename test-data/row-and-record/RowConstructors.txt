@@ -1,14 +1,14 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('Main')
     PsiElement(where)('where')
-    PSImportDeclaration(ImportDeclaration)
+    Import
       PsiElement(import)('import')
       PSModuleName(ModuleName)
         PsiElement(proper name)('Prelude')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Foo')
@@ -17,7 +17,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('x')
           PsiElement(::)('::')
@@ -28,7 +28,7 @@ Purescript File
         PsiElement(|)('|')
         TypeRow(TypeRow)
           PsiElement(()('(')
-          Labeled(Labeled)
+          Labeled
             PSIdentifier(identifier)
               PsiElement(identifier)('y')
             PsiElement(::)('::')
@@ -39,7 +39,7 @@ Purescript File
           PsiElement(|)('|')
           TypeRow(TypeRow)
             PsiElement(()('(')
-            Labeled(Labeled)
+            Labeled
               PSIdentifier(identifier)
                 PsiElement(identifier)('z')
               PsiElement(::)('::')
@@ -50,7 +50,7 @@ Purescript File
             PsiElement())(')')
           PsiElement())(')')
         PsiElement())(')')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Bar')
@@ -59,7 +59,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('x')
           PsiElement(::)('::')
@@ -68,7 +68,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Number')
         PsiElement(,)(',')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('y')
           PsiElement(::)('::')
@@ -77,7 +77,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Number')
         PsiElement(,)(',')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('z')
           PsiElement(::)('::')
@@ -86,7 +86,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Number')
         PsiElement())(')')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Baz')
@@ -95,7 +95,7 @@ Purescript File
       PsiElement(=)('=')
       TypeRecord(TypeRecord)
         PsiElement({)('{')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('w')
           PsiElement(::)('::')
@@ -109,8 +109,8 @@ Purescript File
             PSProperName(ProperName)
               PsiElement(proper name)('Bar')
         PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('foo')
         PsiElement(::)('::')
@@ -122,7 +122,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Foo')
           PsiElement(})('}')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('foo')
         Parameters(Parameters)
@@ -151,8 +151,8 @@ Purescript File
             PSNumericLiteral(NumericLiteral)
               PsiElement(float)('0.0')
           PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('bar')
         PsiElement(::)('::')
@@ -164,7 +164,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Bar')
           PsiElement(})('}')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('bar')
         Parameters(Parameters)
@@ -193,8 +193,8 @@ Purescript File
             PSNumericLiteral(NumericLiteral)
               PsiElement(float)('0.0')
           PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('id'')
         PsiElement(::)('::')
@@ -218,7 +218,7 @@ Purescript File
               PSQualifiedProperName(QualifiedProperName)
                 PSProperName(ProperName)
                   PsiElement(proper name)('Bar')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('id'')
         Parameters(Parameters)
@@ -228,8 +228,8 @@ Purescript File
           PSQualifiedIdentifier(QualifiedIdentifier)
             PSIdentifier(identifier)
               PsiElement(identifier)('id')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('foo'')
         PsiElement(::)('::')
@@ -241,7 +241,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Foo')
           PsiElement(})('}')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('foo'')
         Parameters(Parameters)
@@ -257,8 +257,8 @@ Purescript File
               PSQualifiedIdentifier(QualifiedIdentifier)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('foo')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('bar'')
         PsiElement(::)('::')
@@ -270,7 +270,7 @@ Purescript File
               PSProperName(ProperName)
                 PsiElement(proper name)('Bar')
           PsiElement(})('}')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('bar'')
         Parameters(Parameters)
@@ -286,8 +286,8 @@ Purescript File
               PSQualifiedIdentifier(QualifiedIdentifier)
                 PSIdentifier(identifier)
                   PsiElement(identifier)('bar')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('baz')
         PsiElement(::)('::')
@@ -295,7 +295,7 @@ Purescript File
           PSQualifiedProperName(QualifiedProperName)
             PSProperName(ProperName)
               PsiElement(proper name)('Baz')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('baz')
         Parameters(Parameters)
@@ -331,18 +331,18 @@ Purescript File
             PSNumericLiteral(NumericLiteral)
               PsiElement(float)('0.0')
           PsiElement(})('}')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Quux')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('r')
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('q')
           PsiElement(::)('::')
@@ -355,18 +355,18 @@ Purescript File
           PSIdentifier(identifier)
             PsiElement(identifier)('r')
         PsiElement())(')')
-    TypeDecl(TypeDecl)
+    TypeDecl
       PsiElement(type)('type')
       PSProperName(ProperName)
         PsiElement(proper name)('Norf')
       TypeParameters(TypeParameters)
-        TypeVarName(TypeVarName)
+        TypeVarName
           PSIdentifier(identifier)
             PsiElement(identifier)('r')
       PsiElement(=)('=')
       TypeRow(TypeRow)
         PsiElement(()('(')
-        Labeled(Labeled)
+        Labeled
           PSIdentifier(identifier)
             PsiElement(identifier)('q'')
           PsiElement(::)('::')
@@ -384,14 +384,14 @@ Purescript File
             PSIdentifier(identifier)
               PsiElement(identifier)('r')
         PsiElement())(')')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('quux')
         PsiElement(::)('::')
         TypeRecord(TypeRecord)
           PsiElement({)('{')
-          Labeled(Labeled)
+          Labeled
             PSIdentifier(identifier)
               PsiElement(identifier)('f')
             PsiElement(::)('::')
@@ -414,7 +414,7 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('Bar')
           PsiElement(})('}')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('quux')
         Parameters(Parameters)
@@ -459,8 +459,8 @@ Purescript File
             PSNumericLiteral(NumericLiteral)
               PsiElement(float)('0.0')
           PsiElement(})('}')
-    ValueDeclarationGroup(ValueDeclarationGroup)
-      Signature(Signature)
+    ValueDeclarationGroup
+      Signature
         PSIdentifier(identifier)
           PsiElement(identifier)('quux'')
         PsiElement(::)('::')
@@ -477,7 +477,7 @@ Purescript File
                 PSProperName(ProperName)
                   PsiElement(proper name)('Bar')
           PsiElement(})('}')
-      ValueDecl(ValueDecl)
+      ValueDecl
         PSIdentifier(identifier)
           PsiElement(identifier)('quux'')
         Parameters(Parameters)

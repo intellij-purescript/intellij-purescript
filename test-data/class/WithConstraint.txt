@@ -1,18 +1,18 @@
 Purescript File
-  PSModule(Module)
+  Module
     PsiElement(module)('module')
     PSModuleName(ModuleName)
       PsiElement(proper name)('WithConstraint')
     PsiElement(where)('where')
-    ClassDecl(ClassDecl)
+    ClassDecl
       PsiElement(class)('class')
       PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Foo')
-      TypeVarName(TypeVarName)
+      TypeVarName
         PSIdentifier(identifier)
           PsiElement(identifier)('a')
-    ClassDecl(ClassDecl)
+    ClassDecl
       PsiElement(class)('class')
       PSClassConstraintList(ClassConstraintList)
         PSClassConstraint(ClassConstraint)
@@ -28,6 +28,6 @@ Purescript File
       PSClassName(ClassName)
         PSProperName(ProperName)
           PsiElement(proper name)('Bar')
-      TypeVarName(TypeVarName)
+      TypeVarName
         PSIdentifier(identifier)
           PsiElement(identifier)('a')

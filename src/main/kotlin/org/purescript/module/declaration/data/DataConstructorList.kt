@@ -38,9 +38,6 @@ interface DataConstructorList{
         constructor(node: ASTNode) : super(node)
         constructor(stub: Stub, type: IStubElementType<*, *>) :
             super(stub, type)
-
-        // Todo clean this up
-        override fun toString(): String = "PSDataConstructorList($elementType)"
         /**
          * @return the [DataConstructor] elements in this list
          */
