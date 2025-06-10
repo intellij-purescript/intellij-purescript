@@ -124,8 +124,8 @@ class UnusedInspection : LocalInspectionTool() {
     }
 
     class UnusedImport(element: PsiElement) : LocalQuickFixOnPsiElement(element) {
-        override fun getFamilyName() = "Unused Import"
-        override fun getText(): String = "Unused Import"
+        override fun getFamilyName() = "Unused import"
+        override fun getText(): String = "Unused import"
         override fun getFileModifierForPreview(target: PsiFile): FileModifier? = null
         override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
             val documentManager = PsiDocumentManager.getInstance(project)

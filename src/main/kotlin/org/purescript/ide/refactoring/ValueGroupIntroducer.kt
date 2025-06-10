@@ -90,7 +90,7 @@ class ValueGroupIntroducer :
 
     override fun getRefactoringName() = message("extract.method.title")
     override fun getHelpID() = null
-    override fun getChooseScopeTitle() = "Choose scope <title>"
+    override fun getChooseScopeTitle() = "Choose Scope <title>"
     override fun getScopeRenderer() = DefaultPsiElementCellRenderer() as PsiElementListCellRenderer<ValueOwner>
     override fun checkSelectedTarget(t: PsiIntroduceTarget<Expression>, f: PsiFile, e: Editor, p: Project): String? =
         null
