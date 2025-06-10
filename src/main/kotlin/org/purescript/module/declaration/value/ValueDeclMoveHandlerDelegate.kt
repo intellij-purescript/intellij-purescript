@@ -53,7 +53,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
             row("To:") {
                 val modules = moduleNameIndex
                     .getAllKeys(GlobalSearchScope.projectScope(project))
-                    .flatMap { moduleNameIndex.get(it, project, GlobalSearchScope.projectScope(project)) }
+                    .flatMap { ModuleNameIndex.get(it, project, GlobalSearchScope.projectScope(project)) }
                     .filter { it.isValid }
                     .map { it.name }
                     .sorted()
@@ -68,7 +68,7 @@ class ValueDeclMoveHandlerDelegate : MoveHandlerDelegate() {
 
         override fun doAction() {
             applyFields()
-            val modules: MutableCollection<Module> = moduleNameIndex.get(
+            val modules: Collection<Module> = ModuleNameIndex.get(
                 targetModuleName,
                 project,
                 GlobalSearchScope.projectScope(project)

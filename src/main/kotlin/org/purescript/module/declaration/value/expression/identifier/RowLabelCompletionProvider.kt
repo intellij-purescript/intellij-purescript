@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.inference.InferType
@@ -55,7 +56,13 @@ class RowLabelCompletionProvider : CompletionProvider<CompletionParameters>() {
             for (label in labels) {
                 if (result.isStopped) return
                 if (!result.prefixMatcher.prefixMatches(label)) continue
-                val elements = index.get(label, project, scope)
+                val elements = StubIndex.getElements(
+                    index.key,
+                    label,
+                    project,
+                    scope,
+                    Labeled::class.java
+                )
                 val elementBuilders = elements
                     .mapNotNull { labeled: Labeled ->
                         LookupElementBuilder

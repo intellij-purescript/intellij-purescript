@@ -30,5 +30,8 @@ class ModuleNameIndex: StringStubIndexExtension<Module>() {
 
     companion object {
         val KEY = createIndexKey<String, Module>("purescript.module.name")
+        fun get(name: String, project: Project, scope: GlobalSearchScope): Collection<Module> =
+            StubIndex.getElements(KEY, name, project, scope, Module::class.java)
+
     }
 }

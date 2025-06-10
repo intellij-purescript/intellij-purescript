@@ -3,6 +3,7 @@ package org.purescript.module.declaration.value
 import com.intellij.navigation.ChooseByNameContributorEx
 import com.intellij.navigation.NavigationItem
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
@@ -16,7 +17,7 @@ class ValueChooseByNameContributor: ChooseByNameContributorEx {
         val index = TopLevelValueDecl
         val keys = index.getAllKeys(project)
         for (key in keys) {
-            val modules = index.get(key, project, scope)
+            val modules = StubIndex.getElements(index.key, key, project, scope, ValueDeclarationGroup::class.java)
             if (modules.isNotEmpty()) {
                 if (!processor.process(key)) {
                     return
@@ -33,7 +34,7 @@ class ValueChooseByNameContributor: ChooseByNameContributorEx {
         val project = parameters.project
         val scope = parameters.searchScope
         val index = TopLevelValueDecl
-        val modules = index.get(name, project, scope)
+        val modules = StubIndex.getElements(index.key, name, project, scope, ValueDeclarationGroup::class.java)
         for (module in modules) {
             if (!processor.process(module)) {
                 return

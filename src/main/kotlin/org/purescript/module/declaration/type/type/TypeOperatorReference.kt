@@ -5,6 +5,8 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.fixity.TypeFixityDeclaration
 import org.purescript.module.declaration.imports.ImportQuickFix
@@ -44,8 +46,13 @@ class TypeOperatorReference(symbol: TypeOperator, val moduleName: PSModuleName?,
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = moduleName?.name
         val scope = GlobalSearchScope.allScope(element.project)
-        val imports = ImportableIndex
-            .get(element.name, element.project, scope)
+        val imports = StubIndex.getElements(
+            ImportableIndex.key,
+            element.name,
+            element.project,
+            scope,
+            Importable::class.java
+        )
             .filter { it.isValid }
             .mapNotNull { it.asImport()?.withAlias(qualifyingName) }
             .toTypedArray()

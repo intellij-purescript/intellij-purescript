@@ -3,6 +3,7 @@ package org.purescript.module
 import com.intellij.navigation.ChooseByNameContributorEx
 import com.intellij.navigation.NavigationItem
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
@@ -12,11 +13,9 @@ class ModuleChooseByNameContributor: ChooseByNameContributorEx {
         val project = scope.project ?: return
         val index = ModuleNameIndex()
         for (key in index.getAllKeys(scope)) {
-            val modules = index.get(key, project, scope)
-            if (modules.isNotEmpty()) {
-                if (!processor.process(key)) {
-                    return
-                }
+            val modules = StubIndex.getElements(index.key, key, project, scope, Module::class.java)
+            if (modules.isNotEmpty() && !processor.process(key)) {
+                return
             }
         }
     }

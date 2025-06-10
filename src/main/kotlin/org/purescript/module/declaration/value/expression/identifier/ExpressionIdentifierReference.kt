@@ -7,9 +7,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parentsOfType
 import org.purescript.ide.formatting.ImportedValue
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
+import org.purescript.module.declaration.imports.Import
 import org.purescript.module.declaration.imports.ImportQuickFix
 import org.purescript.module.declaration.imports.ReExportedImportIndex
 import org.purescript.module.declaration.value.ValueDeclarationGroup
@@ -76,7 +79,13 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
         val qualifyingName = element.qualifiedIdentifier.moduleName?.name
         val project = element.project
         val scope = GlobalSearchScope.allScope(project)
-        val importable = ImportableIndex.get(element.name, project, scope).toList()
+        val importable = StubIndex.getElements(
+            ImportableIndex.key,
+            element.name,
+            project,
+            scope,
+            Importable::class.java
+        ).toList()
         val exported = importable.mapNotNull { it.asImport()?.withAlias(qualifyingName) }
         return when (exported.size) {
             0 -> arrayOf()
@@ -84,7 +93,15 @@ class ExpressionIdentifierReference(expressionIdentifier: PSExpressionIdentifier
             else -> {
                 val reExports = exported
                     .map { it.moduleName }
-                    .flatMap { ReExportedImportIndex.get(it, project, scope) }
+                    .flatMap {
+                        StubIndex.getElements(
+                            ReExportedImportIndex.key,
+                            it,
+                            project,
+                            scope,
+                            Import::class.java
+                        )
+                    }
                     .mapNotNull { import ->
                         import.module.asImport()
                             .withItems(ImportedValue(element.name))

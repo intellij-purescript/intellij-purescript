@@ -5,6 +5,8 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.fixity.ConstructorFixityDeclaration
 import org.purescript.module.declaration.fixity.FixityDeclaration
@@ -58,11 +60,16 @@ class ExpressionSymbolReference(symbol: PSPsiElement, val qualifier: PSModuleNam
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val qualifyingName = qualifier?.name
         val scope = GlobalSearchScope.allScope(element.project)
-        val imports = ImportableIndex
-            .get(element.name!!, element.project, scope)
+        val imports = StubIndex.getElements(
+            ImportableIndex.key,
+            element.name!!,
+            element.project,
+            scope,
+            Importable::class.java
+        )
             .filter { it.isValid }
-            .map { it.asImport()?.withAlias(qualifyingName) }
-            .filterNotNull().toTypedArray()
+            .mapNotNull { it.asImport()?.withAlias(qualifyingName) }
+            .toTypedArray()
         return if (imports.isNotEmpty()) {
             arrayOf(ImportQuickFix(*imports))
         } else {

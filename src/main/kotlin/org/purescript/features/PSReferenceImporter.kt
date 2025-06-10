@@ -9,11 +9,13 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.elementsAtOffsetUp
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.value.binder.ConstructorBinder
@@ -42,9 +44,9 @@ class PSReferenceImporter : ReferenceImporter {
         val scope = GlobalSearchScope.allScope(project)
         val name = element.getName()
         val possibleImports = when(element) {
-            is ExpressionAtom -> ImportableIndex.get(name, project, scope)
-            is ConstructorBinder -> ImportableIndex.get(name, project, scope)
-            else -> ImportableTypeIndex.get(name, project, scope)
+            is ExpressionAtom -> StubIndex.getElements(ImportableIndex.getKey(), name, project, scope, Importable::class.java)
+            is ConstructorBinder -> StubIndex.getElements(ImportableIndex.getKey(), name, project, scope, Importable::class.java)
+            else -> StubIndex.getElements(ImportableTypeIndex.getKey(), name, project, scope, Importable::class.java)
         } .mapNotNull { it.asImport() }.map { it.withAlias(element.qualifierName) }.toList()
         val qualifiedImports: List<String> = module.cache.importsByName
             .getOrDefault(element.qualifierName, listOf())

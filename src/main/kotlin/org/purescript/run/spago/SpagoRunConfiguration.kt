@@ -16,8 +16,10 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import org.purescript.module.Module
 import org.purescript.module.ModuleNameIndex
 import javax.swing.JComponent
 
@@ -84,7 +86,14 @@ class SpagoRunConfiguration(
     private fun usesTeamcityReporter(): Boolean {
         val scope = GlobalSearchScope.allScope(project)
         val module = options.moduleName?.let {
-            ModuleNameIndex().get(it, project, scope)
+            val index = ModuleNameIndex()
+            StubIndex.getElements(
+                index.key,
+                it,
+                project,
+                scope,
+                Module::class.java
+            )
         }?.firstOrNull() ?: return false
         val main = module.exportedValueDeclarationGroups
             .firstOrNull { it.name == "main" } ?: return false

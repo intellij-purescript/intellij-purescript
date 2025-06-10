@@ -13,11 +13,13 @@ import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import com.intellij.util.io.isAncestor
 import org.purescript.PackageSet
 import org.purescript.file.PSFile
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableIndex
 import org.purescript.module.declaration.value.expression.Qualified
 import org.purescript.psi.PSPsiElement
@@ -142,7 +144,13 @@ class ImportableCompletionProvider : CompletionProvider<CompletionParameters>() 
         for (name in names) {
             if (improvedResult.isStopped) return
             if (!improvedResult.prefixMatcher.prefixMatches(name)) continue
-            val elements = index.get(name, project, scope)
+            val elements = StubIndex.getElements(
+                index.key,
+                name,
+                project,
+                scope,
+                Importable::class.java
+            )
             val elementBuilders = elements
                     .filter { parameters.originalFile != it.containingFile }
                     .mapNotNull { lookupElementBuilder(it, qualifiedName, project) }

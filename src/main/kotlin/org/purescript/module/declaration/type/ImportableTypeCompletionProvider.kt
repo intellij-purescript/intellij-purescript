@@ -8,6 +8,7 @@ import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import org.purescript.PSLanguage
@@ -33,7 +34,13 @@ class ImportableTypeCompletionProvider : CompletionProvider<CompletionParameters
         for (name in names) {
             if (result.isStopped) return
             if (!result.prefixMatcher.prefixMatches(name)) continue
-            val elements = index.get(name, project, scope)
+            val elements = StubIndex.getElements(
+                index.key,
+                name,
+                project,
+                scope,
+                Importable::class.java
+            )
             val elementBuilders = elements
                 .filter { parameters.originalFile != it.containingFile }
                 .mapNotNull { lookupElementBuilder(it, qualifierName, project) }

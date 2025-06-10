@@ -5,8 +5,10 @@ import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import org.purescript.PSLanguage
 import org.purescript.module.Module
+import org.purescript.module.declaration.Importable
 import org.purescript.module.declaration.ImportableTypeIndex
 import org.purescript.module.declaration.foreign.PSForeignDataDeclaration
 import org.purescript.module.declaration.imports.ImportQuickFix
@@ -66,9 +68,13 @@ class TypeConstructorReference(typeConstructor: PSTypeConstructor) :
 
     override fun getQuickFixes(): Array<LocalQuickFix> {
         val scope = GlobalSearchScope.allScope(element.project)
-        val imports = ImportableTypeIndex
-            .get(element.name, element.project, scope)
-            .mapNotNull { it.asImport()?.withAlias(element.qualifierName) }.toTypedArray()
+        val imports = StubIndex.getElements(
+            ImportableTypeIndex.key,
+            element.name,
+            element.project,
+            scope,
+            Importable::class.java
+        ).mapNotNull { it.asImport()?.withAlias(element.qualifierName) }.toTypedArray()
         return if (imports.isNotEmpty()) {
             arrayOf(ImportQuickFix(*imports))
         } else {
