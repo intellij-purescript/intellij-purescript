@@ -33,8 +33,6 @@ class InlineDialog<Element:PsiElement , Location: PsiElement>(
     public override fun getProject(): Project = super.getProject()
 
     override fun getNameLabelText(): String = "Inline value"
-    override fun getBorderTitle(): String = RefactoringBundle.message("inline.field.border.title")
-
     override fun getInlineAllText(): String = RefactoringBundle.message("all.references.and.remove.the.local")
     override fun getKeepTheDeclarationText(): String? = null
     override fun getInlineThisText(): String = RefactoringBundle.message("this.reference.only.and.keep.the.variable")
