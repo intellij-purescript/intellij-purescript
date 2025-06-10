@@ -49,7 +49,9 @@ class UnusedInspection : LocalInspectionTool() {
             is PSImportedValue, is PSImportedOperator, is PSImportedDataMember -> when {
                 element.parentOfType<Import>()?.isExported == true -> Unit
                 element.parentOfType<Import>()?.isHiding == true -> Unit
-                referenceIsUsedInFile(element) -> Unit
+                element is PSImportedValue && referenceIsUsedInFile(element) -> Unit
+                element is PSImportedOperator && referenceIsUsedInFile(element) -> Unit
+                element is PSImportedDataMember && referenceIsUsedInFile(element) -> Unit
                 else -> registerImportItem(element)
             }
 
