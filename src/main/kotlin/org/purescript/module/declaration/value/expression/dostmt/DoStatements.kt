@@ -4,7 +4,9 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.childrenOfType
+import org.purescript.inference.Inferable
 import org.purescript.module.declaration.value.ValueNamespace
+import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
 /**
@@ -12,23 +14,12 @@ import org.purescript.psi.PSPsiElement
  *
  * They are grouped like so (DoStatements, DoStatement) or just DoStatement
  */
-class DoStatements(node: ASTNode) : PSPsiElement(node), DoStatement, ValueNamespace {
-    private val children get() = childrenOfType<DoStatement>()
-    override val binders get() = children.flatMap { it.binders }
-    override fun unify() = unify(children.map { it.inferType() }.last())
-    override val statements get() = children.flatMap { it.statements }
-    override val scopes: Array<PsiElement> get() = (parent as? DoStatements)?.scopes ?: arrayOf(this)
-    override val valueNames get() = doStatements?.declarations ?: emptySequence()
-    private val doStatements get() = childrenOfType<DoStatements>().firstOrNull()
-    val declarations: Sequence<PsiNamedElement>
-        get() = children.reversed().asSequence().flatMap {
-            when (it) {
-                is DoStatements -> it.declarations
-                is PSDoNotationLet -> it.valueNames
-                is PSDoNotationBind -> it.binders.filterIsInstance<PsiNamedElement>().asSequence()
-                else -> emptySequence()
-            }
-        }
-
-
+class DoStatements(node: ASTNode) : PSPsiElement(node), Inferable {
+    val statements get() = childrenOfType<DoStatement>()
+    val expressions: List<Expression> get() = statements.flatMap { it.expressions }
+    val binders get() = statements.flatMap { it.binders }
+    override fun unify() {
+        val other = statements.map { it.inferType() }.lastOrNull()
+        other?.let { unify(it) }
+    }
 }

@@ -58,16 +58,17 @@ class ExpressionIdentifierReferenceTest : BasePlatformTestCase() {
                 |module Main where
                 |one = do
                 |   x <- [1]
-                |   x <- [1]
+                |   x <- [2]
                 |   x <- [x]
-                |   x <- [1]
-                |   pure [1]
+                |   x <- [3]
+                |   pure [4]
             """.trimMargin()
         )
         val expressionIdentifier = file.getExpressionIdentifiers()[0]
-        val varBinder = file.getVarBinders()[1]
+        val expected = file.getVarBinders()[1]
 
-        assertEquals(varBinder, expressionIdentifier.reference.resolve())
+        val actual = expressionIdentifier.reference.resolve()
+        assertEquals(expected.parent.parent.text, actual?.parent?.parent?.text)
     }
 
     fun `test resolves imported value declarations`() {

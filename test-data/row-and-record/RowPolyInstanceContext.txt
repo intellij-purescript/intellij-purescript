@@ -383,34 +383,32 @@ Purescript File
         PSDoBlock(DoBlock)
           PsiElement(do)('do')
           DoStatements(DoStatements)
-            DoStatements(DoStatements)
-              DoStatements(DoStatements)
-                PSDoNotationLet(DoNotationLet)
-                  PsiElement(let)('let')
-                  ValueDeclarationGroup
-                    ValueDecl
+            PSDoNotationLet(DoNotationLet)
+              PsiElement(let)('let')
+              ValueDeclarationGroup
+                ValueDecl
+                  PSIdentifier(identifier)
+                    PsiElement(identifier)('t1')
+                  Parameters(Parameters)
+                    <empty list>
+                  PsiElement(=)('=')
+                  PSExpressionIdentifier(ExpressionIdentifier)
+                    PSQualifiedIdentifier(QualifiedIdentifier)
                       PSIdentifier(identifier)
-                        PsiElement(identifier)('t1')
-                      Parameters(Parameters)
-                        <empty list>
-                      PsiElement(=)('=')
-                      PSExpressionIdentifier(ExpressionIdentifier)
-                        PSQualifiedIdentifier(QualifiedIdentifier)
-                          PSIdentifier(identifier)
-                            PsiElement(identifier)('test1')
-              PSDoNotationLet(DoNotationLet)
-                PsiElement(let)('let')
-                ValueDeclarationGroup
-                  ValueDecl
-                    PSIdentifier(identifier)
-                      PsiElement(identifier)('t2')
-                    Parameters(Parameters)
-                      <empty list>
-                    PsiElement(=)('=')
-                    PSExpressionIdentifier(ExpressionIdentifier)
-                      PSQualifiedIdentifier(QualifiedIdentifier)
-                        PSIdentifier(identifier)
-                          PsiElement(identifier)('test2')
+                        PsiElement(identifier)('test1')
+            PSDoNotationLet(DoNotationLet)
+              PsiElement(let)('let')
+              ValueDeclarationGroup
+                ValueDecl
+                  PSIdentifier(identifier)
+                    PsiElement(identifier)('t2')
+                  Parameters(Parameters)
+                    <empty list>
+                  PsiElement(=)('=')
+                  PSExpressionIdentifier(ExpressionIdentifier)
+                    PSQualifiedIdentifier(QualifiedIdentifier)
+                      PSIdentifier(identifier)
+                        PsiElement(identifier)('test2')
             PSDoNotationValue(DoNotationValue)
               Call(Call)
                 PSExpressionIdentifier(ExpressionIdentifier)

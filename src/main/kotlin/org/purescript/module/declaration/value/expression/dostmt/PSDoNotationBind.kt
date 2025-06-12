@@ -1,8 +1,10 @@
 package org.purescript.module.declaration.value.expression.dostmt
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
+import org.purescript.module.declaration.value.ValueNamespace
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
@@ -23,4 +25,7 @@ class PSDoNotationBind(node: ASTNode) : PSPsiElement(node), DoStatement {
             monad.app(binder.inferType())
         )
     }
+
+    override val valueNamesAhead: Sequence<PsiNamedElement>
+        get() = binders.filterIsInstance<PsiNamedElement>().asSequence() + valueNames
 }

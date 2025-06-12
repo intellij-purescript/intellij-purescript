@@ -427,7 +427,7 @@ val doStatement = Choice(
     DoNotationValueType(expr)
 )
 
-val statements = DoStatementsType.fold(DoStatementsType(doStatement), `L-sep` + doStatement)
+val statements = DoStatementsType(doStatement.sepBy(`L-sep`))
 
 val doBlock = ChoiceMap(
     qualified(`'do'`),

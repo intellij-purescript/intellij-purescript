@@ -57,8 +57,10 @@ Purescript File
               PSIdentifier(identifier)
                 PsiElement(identifier)('a')
         PsiElement(=)('=')
-        EmptyAdoBlock(EmptyAdoBlock)
+        AdoBlock(AdoBlock)
           PsiElement(ado)('ado')
+          DoStatements(DoStatements)
+            <empty list>
           PsiElement(in)('in')
           Call(Call)
             PSExpressionIdentifier(ExpressionIdentifier)
