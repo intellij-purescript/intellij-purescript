@@ -7,10 +7,10 @@ import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
 
 class AdoBlock(node: ASTNode) : PSPsiElement(node), ValueNamespace, Expression {
-    private val statements get() = childrenOfType<DoStatements>().single()
     override fun unify() {
-        statements.unify()
+        childrenOfType<DoStatement>().forEach {it.unify()}
         unify(childrenOfType<Expression>().single().inferType())
     }
-    override val valueNames get() = statements.statements.lastOrNull()?.valueNamesAhead ?: emptySequence()
+
+    override val valueNames get() = childrenOfType<DoStatement>().lastOrNull()?.valueNamesAhead ?: emptySequence()
 }

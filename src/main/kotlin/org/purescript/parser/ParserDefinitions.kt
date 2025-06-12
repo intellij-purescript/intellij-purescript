@@ -217,8 +217,7 @@ val expr5 = Reference {
         ifThenElse,
         doBlock,
         adoBlock,
-        letIn,
-        EmptyDoBlockType(DoStatementsType(letStatement).error("let statement outside of do"))
+        letIn
     )
 }
 
@@ -427,16 +426,15 @@ val doStatement = Choice(
     DoNotationValueType(expr)
 )
 
-val statements = DoStatementsType(doStatement.sepBy(`L-sep`))
-
+val block = `L{` + doStatement.sepBy(`L-sep`) + `L}`
 val doBlock = ChoiceMap(
     qualified(`'do'`),
-    `L{` + statements + `L}` to DoBlock,
+    block to DoBlock,
     True to EmptyDoBlockType
 )
 val adoBlock = ChoiceMap(
     qualified(`'ado'`),
-    `L{` + statements + `L}` + `'in'` + expr to AdoBlockType,
+    block + `'in'` + expr to AdoBlockType,
     `L{` + `L}` + `'in'` + expr to EmptyAdoBlockType,
 )
 val recordBinder =
