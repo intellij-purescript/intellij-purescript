@@ -25,15 +25,16 @@ class PSFile(viewProvider: FileViewProvider) :
             override fun createStubForFile(file: PsiFile): Stub = Stub(file as PSFile)
         }
     }
-        override fun getFileType(): FileType = PSFileType
-        override fun toString(): String = "Purescript File"
 
-        /**
-         * @return the [Module] that this file contains,
-         * or null if the module couldn't be parsed
-         */
-        val module: Module?
-            get() = findChildByClass(Module::class.java)
+    override fun getFileType(): FileType = PSFileType
+    override fun toString(): String = "Purescript File"
+
+    /**
+     * @return the [Module] that this file contains,
+     * or null if the module couldn't be parsed
+     */
+    val module: Module?
+        get() = findChildByClass(Module::class.java)
 
     fun suggestModuleName(): String? {
         val fileName = name.removeSuffix(".purs")
