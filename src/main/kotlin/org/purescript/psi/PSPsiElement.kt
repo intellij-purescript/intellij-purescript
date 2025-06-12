@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.util.parentOfType
+import org.purescript.file.PSFile
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
 import org.purescript.module.Module
@@ -20,10 +21,10 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
      * @return the [Module] containing this element
      */
     val module: Module get() = this.parentOfType(true) ?: error("Failed to parse module")
-    override val typeId get() = module.typeIdOf(this)
+    override val typeId get() = (module.containingFile as PSFile).typeSpace.typeIdOf(this)
     override val substitutedType: InferType
         get() =
-            typeId.let { module.substitute(it) }
+            typeId.let { (module.containingFile as PSFile).typeSpace.substitute(it) }
 
     fun unify(other: InferType) {
         try {
@@ -33,6 +34,6 @@ abstract class PSPsiElement(node: ASTNode, val string: String? = null) :
         }
     }
     fun unify(first: InferType, other: InferType) {
-        module.unify(first, other)
+        (module.containingFile as PSFile).typeSpace.unify(first, other)
     }
 }

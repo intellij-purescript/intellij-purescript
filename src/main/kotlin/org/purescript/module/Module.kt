@@ -10,6 +10,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.*
 import org.purescript.features.DocCommentOwner
+import org.purescript.file.PSFile
 import org.purescript.icons.PSIcons
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.inference.*
@@ -37,7 +38,6 @@ import org.purescript.psi.AStub
 import org.purescript.psi.PSElementType
 import org.purescript.psi.PSPsiFactory
 import org.purescript.psi.PSStubbedElement
-import java.util.*
 
 class Module : PsiNameIdentifierOwner, DocCommentOwner,
     PSStubbedElement<Module.Stub>, Importable, ValueOwner, Unifiable {
@@ -148,7 +148,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
 
     override fun subtreeChanged() {
         cache = Cache()
-        resetInferredTypes()
         super.subtreeChanged()
     }
 
@@ -482,23 +481,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                     }.let { yieldAll(it) }
             }
         }
-    }
-
-    fun newId(): InferType.Id = idGenerator.newId()
-    fun substitute(type: InferType): InferType = substitutions.substitute(type)
-    fun unify(x: InferType, y: InferType) = substitutions.unify(x, y)
-    fun typeIdOf(descendant: PsiElement): InferType.Id = typeMap.getOrPut(descendant, ::newId)
-    fun replaceMap(): (InferType.Id) -> InferType.Id {
-        val map = mutableMapOf<InferType.Id, InferType.Id>()
-        return { map.getOrPut(it, ::newId) }
-    }
-
-    val idGenerator = IdGenerator()
-    val substitutions = mutableMapOf<InferType.Id, InferType>()
-    var typeMap = WeakHashMap<PsiElement, InferType.Id>()
-
-    private fun resetInferredTypes() {
-        typeMap = WeakHashMap<PsiElement, InferType.Id>()
     }
 
     fun exportedConstructorFixityDeclarations(name: String): Sequence<ConstructorFixityDeclaration> {

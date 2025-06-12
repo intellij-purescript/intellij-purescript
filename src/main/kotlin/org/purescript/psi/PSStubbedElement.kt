@@ -8,6 +8,7 @@ import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.parentOfType
+import org.purescript.file.PSFile
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
 import org.purescript.module.Module
@@ -48,9 +49,9 @@ abstract class PSStubbedElement<Stub : StubElement<*>> :
         super.findChildrenByClass(aClass)    // Todo clean up
 
     inline fun <reified T: PsiElement>addTyped(element: T): T = add(element) as T
-    override val typeId get() = module.typeIdOf(this)
-    override val substitutedType: InferType get() = module.substitute(typeId)
+    override val typeId get() = (module.containingFile as PSFile).typeSpace.typeIdOf(this)
+    override val substitutedType: InferType get() = (module.containingFile as PSFile).typeSpace.substitute(typeId)
     fun unify(other: InferType) {
-        module.unify(substitutedType, other )
+        (module.containingFile as PSFile).typeSpace.unify(substitutedType, other)
     }
 }

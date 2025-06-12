@@ -1,6 +1,7 @@
 package org.purescript.module.declaration.value.binder
 
 import com.intellij.lang.ASTNode
+import org.purescript.file.PSFile
 import org.purescript.inference.Inferable
 import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.expression.Qualified
@@ -26,6 +27,6 @@ class ConstructorBinder(node: ASTNode) : Binder(node), Qualified, Inferable {
     override val qualifierName: String? get() = qualifiedProperName.moduleName?.name
     override fun getReference(): ConstructorReference = ConstructorReference(this, this.qualifiedProperName)
     override fun unify() { 
-        reference.inferType(module.replaceMap())?.let { unify(it) }
+        reference.inferType((module.containingFile as PSFile).typeSpace.replaceMap())?.let { unify(it) }
     }
 }

@@ -3,6 +3,7 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
+import org.purescript.file.PSFile
 import org.purescript.inference.Inferable
 
 import org.purescript.module.declaration.value.Similar
@@ -93,7 +94,7 @@ class PSExpressionIdentifier(node: ASTNode) : PSPsiElement(node), ExpressionAtom
             is VarBinder -> ref.inferType()
             is Inferable -> {
                 val type = ref.inferType()
-                if (type.argument != null) type.withNewIds(module.replaceMap())
+                if (type.argument != null) type.withNewIds((module.containingFile as PSFile).typeSpace.replaceMap())
                 else type
             }
             else -> null

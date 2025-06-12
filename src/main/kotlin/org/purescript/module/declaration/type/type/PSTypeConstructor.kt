@@ -1,6 +1,7 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
+import org.purescript.file.PSFile
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
 import org.purescript.inference.Unifiable
@@ -36,18 +37,18 @@ class PSTypeConstructor(node: ASTNode) : PSPsiElement(node), Qualified, PSType {
                 "Boolean" -> InferType.Boolean
                 "Char" -> InferType.Char
                 "Function" -> {
-                    val a = module.newId()
-                    val b = module.newId()
+                    val a = (module.containingFile as PSFile).typeSpace.newId()
+                    val b = (module.containingFile as PSFile).typeSpace.newId()
                     InferType.function(a, b, InferType.Function.app(a).app(b))
                 }
 
                 "Record" -> {
-                    val a = module.newId()
+                    val a = (module.containingFile as PSFile).typeSpace.newId()
                     InferType.function(a, InferType.Record.app(a))
                 }
                 "Union" -> {
-                    val left = InferType.RowId(module.newId())
-                    val right = InferType.RowId(module.newId())
+                    val left = InferType.RowId((module.containingFile as PSFile).typeSpace.newId())
+                    val right = InferType.RowId((module.containingFile as PSFile).typeSpace.newId())
                     val union = InferType.RowMerge(left, right)
                     val ret = InferType.Union.app(left).app(right).app(union)
                     InferType.function(left, right, union, ret)

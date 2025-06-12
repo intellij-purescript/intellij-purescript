@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
-import org.purescript.module.declaration.value.ValueNamespace
+import org.purescript.file.PSFile
 import org.purescript.module.declaration.value.binder.Binder
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.psi.PSPsiElement
@@ -15,9 +15,9 @@ class PSDoNotationBind(node: ASTNode) : PSPsiElement(node), DoStatement {
     val expression get() = childrenOfType<Expression>().single()
 
     override fun unify() {
-        val monad = module.newId()
+        val monad = (module.containingFile as PSFile).typeSpace.newId()
         parentOfType<PSDoBlock>()?.substitutedType?.let {
-            val unknown = module.newId()
+            val unknown = (module.containingFile as PSFile).typeSpace.newId()
             unify(it, monad.app(unknown))
         }
         unify(

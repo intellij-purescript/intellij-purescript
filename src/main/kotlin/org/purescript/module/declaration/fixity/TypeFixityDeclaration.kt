@@ -10,6 +10,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.parentsOfType
 import org.purescript.features.DocCommentOwner
+import org.purescript.file.PSFile
 import org.purescript.ide.formatting.ImportDeclaration
 import org.purescript.ide.formatting.ImportedOperator
 import org.purescript.inference.Inferable
@@ -99,7 +100,7 @@ class TypeFixityDeclaration : PSStubbedElement<TypeFixityDeclaration.Stub>,
     }
 
     override fun unify() =
-        unify(reference.inferType(module.replaceMap()) ?: error("could not find reference for $name"))
+        unify(reference.inferType((module.containingFile as PSFile).typeSpace.replaceMap()) ?: error("could not find reference for $name"))
 
     override fun asImport() = ImportDeclaration(module.name, false, setOf(ImportedOperator(name)))
     override val type: PSType?

@@ -1,6 +1,7 @@
 package org.purescript.module.declaration.value.expression.identifier
 
 import com.intellij.lang.ASTNode
+import org.purescript.file.PSFile
 import org.purescript.inference.inferType
 import org.purescript.module.declaration.value.expression.ExpressionAtom
 import org.purescript.module.declaration.value.expression.Qualified
@@ -30,6 +31,6 @@ class PSExpressionConstructor(node: ASTNode) : PSPsiElement(node), ExpressionAto
     override val qualifierName get() = qualifiedProperName.moduleName?.name
     override fun getReference(): ConstructorReference = ConstructorReference(this, qualifiedProperName)
     override fun unify() {
-        reference.inferType(module.replaceMap())?.let { unify(it) }
+        reference.inferType((module.containingFile as PSFile).typeSpace.replaceMap())?.let { unify(it) }
     }
 }

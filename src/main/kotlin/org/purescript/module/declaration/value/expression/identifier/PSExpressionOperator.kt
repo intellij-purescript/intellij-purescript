@@ -3,6 +3,7 @@ package org.purescript.module.declaration.value.expression.identifier
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import org.purescript.file.PSFile
 
 import org.purescript.module.declaration.value.expression.Expression
 import org.purescript.module.declaration.value.expression.ExpressionAtom
@@ -47,7 +48,7 @@ class PSExpressionOperator(node: ASTNode) : PSPsiElement(node), ExpressionAtom, 
 
     override fun getName(): String = qualifiedOperator.name
     override fun unify() = 
-        unify(reference.resolve()?.inferType()?.withNewIds(module.replaceMap()) ?: module.newId())
+        unify(reference.resolve()?.inferType()?.withNewIds((module.containingFile as PSFile).typeSpace.replaceMap()) ?: (module.containingFile as PSFile).typeSpace.newId())
 
     val associativity get() = reference.resolve()?.associativity
     val precedence get() = reference.resolve()?.precedence

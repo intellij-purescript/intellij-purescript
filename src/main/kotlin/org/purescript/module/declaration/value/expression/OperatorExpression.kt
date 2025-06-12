@@ -7,9 +7,9 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
+import org.purescript.file.PSFile
 import org.purescript.inference.HasTypeId
 import org.purescript.inference.InferType
-import org.purescript.inference.Inferable
 import org.purescript.inference.Unifiable
 
 import org.purescript.module.declaration.fixity.PSFixity
@@ -79,19 +79,21 @@ class OperatorExpression(node: ASTNode) : PSPsiElement(node), Expression {
             override fun ranges() = l.ranges() + r.ranges() + sequenceOf(TextRange(start, end))
             override val start: Int get() = l.start
             override val end: Int get() = r.end
-            override val typeId: InferType.Id = o.module.newId()
-            override val substitutedType: InferType get() = o.module.substitute(typeId)
+            override val typeId: InferType.Id = (o.module.containingFile as PSFile).typeSpace.newId()
+            override val substitutedType: InferType get() = (o.module.containingFile as PSFile).typeSpace.substitute(
+                typeId
+            )
             override fun unify() {
                 val leftHand = l.inferType()
                 val rightHand = r.inferType()
                 val operatorType = o.inferType()
-                val ret = o.module.newId()
-                o.module.unify(operatorType, InferType.function(leftHand, ret))
-                val app1 = o.module.substitute(ret)
-                val ret1 = o.module.newId()
-                o.module.unify(app1, InferType.function(rightHand, ret1))
-                val app2 = o.module.substitute(ret1)
-                o.module.unify(substitutedType, app2)
+                val ret = (o.module.containingFile as PSFile).typeSpace.newId()
+                (o.module.containingFile as PSFile).typeSpace.unify(operatorType, InferType.function(leftHand, ret))
+                val app1 = (o.module.containingFile as PSFile).typeSpace.substitute(ret)
+                val ret1 = (o.module.containingFile as PSFile).typeSpace.newId()
+                (o.module.containingFile as PSFile).typeSpace.unify(app1, InferType.function(rightHand, ret1))
+                val app2 = (o.module.containingFile as PSFile).typeSpace.substitute(ret1)
+                (o.module.containingFile as PSFile).typeSpace.unify(substitutedType, app2)
             }
 
             override fun insertRight(other: Expression) = when (other) {

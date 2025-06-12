@@ -1,6 +1,7 @@
 package org.purescript.module.declaration.type.type
 
 import com.intellij.lang.ASTNode
+import org.purescript.file.PSFile
 import org.purescript.inference.Inferable
 import org.purescript.inference.inferType
 import org.purescript.name.PSQualifiedOperatorName
@@ -10,7 +11,7 @@ import org.purescript.psi.PSPsiElement
 class TypeOperator(node: ASTNode) : PSPsiElement(node), PSType, Inferable {
 
     override fun unify() {
-        reference.inferType(module.replaceMap())?.let { unify(it) }
+        reference.inferType((module.containingFile as PSFile).typeSpace.replaceMap())?.let { unify(it) }
     }
 
     val associativity get() = reference.resolve()?.associativity

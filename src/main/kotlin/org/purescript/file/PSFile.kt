@@ -9,13 +9,14 @@ import com.intellij.psi.stubs.DefaultStubBuilder
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
+import org.purescript.inference.TypeSpace
 import org.purescript.module.Module
 import org.purescript.module.exports.ExportedModule
 import java.nio.file.Path
 import java.nio.file.Paths
 
 class PSFile(viewProvider: FileViewProvider) :
-    PsiFileBase(viewProvider, PSLanguage) {
+    PsiFileBase(viewProvider, PSLanguage){
     class Stub(file: PSFile) : PsiFileStubImpl<PSFile>(file) {
         override fun getType() = Type
     }
@@ -69,4 +70,9 @@ class PSFile(viewProvider: FileViewProvider) :
             ?.toList()
             ?: emptyList()
 
+    var typeSpace = TypeSpace()
+    override fun subtreeChanged() {
+        typeSpace = TypeSpace()
+        super.subtreeChanged()
+    }
 }
