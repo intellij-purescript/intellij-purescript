@@ -426,15 +426,17 @@ val doStatement = Choice(
     DoNotationBindType(binder + larrow + relaced_expr),
     DoNotationValueType(expr)
 )
+
+val statements = DoStatementsType.fold(DoStatementsType(doStatement), `L-sep` + doStatement)
+
 val doBlock = ChoiceMap(
     qualified(`'do'`),
-    `L{` + DoStatementsType.fold(DoStatementsType(doStatement), `L-sep` + doStatement) + `L}` to DoBlock,
+    `L{` + statements + `L}` to DoBlock,
     True to EmptyDoBlockType
 )
 val adoBlock = ChoiceMap(
     qualified(`'ado'`),
-    `L{` + DoStatementsType.fold(DoStatementsType(doStatement), `L-sep` + doStatement) +
-            `L}` + `'in'` + expr to AdoBlockType,
+    `L{` + statements + `L}` + `'in'` + expr to AdoBlockType,
     `L{` + `L}` + `'in'` + expr to EmptyAdoBlockType,
 )
 val recordBinder =
