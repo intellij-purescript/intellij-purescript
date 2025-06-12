@@ -10,6 +10,7 @@ import com.intellij.psi.stubs.PsiFileStubImpl
 import com.intellij.psi.tree.IStubFileElementType
 import org.purescript.PSLanguage
 import org.purescript.module.Module
+import org.purescript.module.exports.ExportedModule
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -60,5 +61,12 @@ class PSFile(viewProvider: FileViewProvider) :
             }
             .removePrefix(".")
     }
+
+    val exportedNames: List<String>
+        get() = module?.exportedItems
+            ?.filter { it !is ExportedModule }
+            ?.map { it.text.trim() }
+            ?.toList()
+            ?: emptyList()
 
 }

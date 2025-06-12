@@ -4,6 +4,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import org.purescript.*
+import org.purescript.file.PSFile
 
 class PSModuleTest : BasePlatformTestCase() {
 
@@ -32,7 +33,7 @@ class PSModuleTest : BasePlatformTestCase() {
             "Main.purs",
             """module My.Main where"""
         ).getModule()
-        assertEquals(0, module.exportedNames.size)
+        assertEquals(0, (module.containingFile as PSFile).exportedNames.size)
     }
 
     fun `test be able to find one exported names`() {
@@ -43,7 +44,7 @@ class PSModuleTest : BasePlatformTestCase() {
             x  = 1
             """.trimIndent()
         ).getModule()
-        assertEquals(1, module.exportedNames.size)
+        assertEquals(1, (module.containingFile as PSFile).exportedNames.size)
     }
 
     fun `test be able to find two exported names`() {
@@ -54,8 +55,8 @@ class PSModuleTest : BasePlatformTestCase() {
                y = 2
             """.trimIndent()
         ).getModule()
-        assertEquals(2, module.exportedNames.size)
-        assertContainsElements(module.exportedNames, "x", "y")
+        assertEquals(2, (module.containingFile as PSFile).exportedNames.size)
+        assertContainsElements((module.containingFile as PSFile).exportedNames, "x", "y")
     }
 
     fun `test do not count module export as exported names`() {
@@ -68,7 +69,7 @@ class PSModuleTest : BasePlatformTestCase() {
                x = 1
             """.trimIndent()
         ).getModule()
-        assertEquals(1, module.exportedNames.size)
+        assertEquals(1, (module.containingFile as PSFile).exportedNames.size)
     }
 
     fun `test knows what modules get reexported`() {

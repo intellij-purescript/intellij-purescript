@@ -407,12 +407,6 @@ class Module : PsiNameIdentifierOwner, DocCommentOwner,
                 ?.toList()
                 ?: emptyList()
 
-    val exportedNames: List<String>
-        get() = exportedItems
-            .filter { it !is ExportedModule }
-            .map { it.text.trim() }
-            .toList()
-
     fun addImportDeclaration(importDeclaration: ImportDeclaration) {
         if (importDeclaration.moduleName == name) return
         val imports = imports.filter {
